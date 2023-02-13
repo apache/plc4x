@@ -57,6 +57,7 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
   protected void serializeBACnetSpecialEventPeriodChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetSpecialEventPeriodCalendarReference");
 
@@ -76,6 +77,7 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetSpecialEventPeriodCalendarReference _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (calendarReference)
     lengthInBits += calendarReference.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
     return lengthInBits;
   }
 
-  public static BACnetSpecialEventPeriodCalendarReferenceBuilder staticParseBuilder(
+  public static BACnetSpecialEventPeriodBuilder staticParseBACnetSpecialEventPeriodBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetSpecialEventPeriodCalendarReference");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier calendarReference =
         readSimpleField(
@@ -104,16 +107,15 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
 
     readBuffer.closeContext("BACnetSpecialEventPeriodCalendarReference");
     // Create the instance
-    return new BACnetSpecialEventPeriodCalendarReferenceBuilder(calendarReference);
+    return new BACnetSpecialEventPeriodCalendarReferenceBuilderImpl(calendarReference);
   }
 
-  public static class BACnetSpecialEventPeriodCalendarReferenceBuilder
+  public static class BACnetSpecialEventPeriodCalendarReferenceBuilderImpl
       implements BACnetSpecialEventPeriod.BACnetSpecialEventPeriodBuilder {
     private final BACnetContextTagObjectIdentifier calendarReference;
 
-    public BACnetSpecialEventPeriodCalendarReferenceBuilder(
+    public BACnetSpecialEventPeriodCalendarReferenceBuilderImpl(
         BACnetContextTagObjectIdentifier calendarReference) {
-
       this.calendarReference = calendarReference;
     }
 

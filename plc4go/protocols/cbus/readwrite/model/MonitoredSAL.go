@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -52,12 +53,11 @@ type _MonitoredSAL struct {
 
 type _MonitoredSALChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type MonitoredSALParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child MonitoredSAL, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MonitoredSAL, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -104,21 +104,21 @@ func (m *_MonitoredSAL) GetTypeName() string {
 	return "MonitoredSAL"
 }
 
-func (m *_MonitoredSAL) GetParentLengthInBits() uint16 {
+func (m *_MonitoredSAL) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_MonitoredSAL) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MonitoredSAL) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MonitoredSALParse(theBytes []byte, cBusOptions CBusOptions) (MonitoredSAL, error) {
-	return MonitoredSALParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return MonitoredSALParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func MonitoredSALParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSAL, error) {
+func MonitoredSALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSAL, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MonitoredSAL"); pullErr != nil {
@@ -147,9 +147,9 @@ func MonitoredSALParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOp
 	var typeSwitchError error
 	switch {
 	case salType == 0x05: // MonitoredSALLongFormSmartMode
-		_childTemp, typeSwitchError = MonitoredSALLongFormSmartModeParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = MonitoredSALLongFormSmartModeParseWithBuffer(ctx, readBuffer, cBusOptions)
 	case 0 == 0: // MonitoredSALShortFormBasicMode
-		_childTemp, typeSwitchError = MonitoredSALShortFormBasicModeParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = MonitoredSALShortFormBasicModeParseWithBuffer(ctx, readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [salType=%v]", salType)
 	}
@@ -167,7 +167,7 @@ func MonitoredSALParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOp
 	return _child, nil
 }
 
-func (pm *_MonitoredSAL) SerializeParent(writeBuffer utils.WriteBuffer, child MonitoredSAL, serializeChildFunction func() error) error {
+func (pm *_MonitoredSAL) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MonitoredSAL, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -207,7 +207,7 @@ func (m *_MonitoredSAL) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

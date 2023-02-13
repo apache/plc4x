@@ -78,6 +78,7 @@ public class BACnetConstructedDataCarPosition extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCarPosition");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataCarPosition extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCarPosition _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (carPosition)
     lengthInBits += carPosition.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataCarPosition extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCarPositionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataCarPosition extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger carPosition =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataCarPosition extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataCarPosition");
     // Create the instance
-    return new BACnetConstructedDataCarPositionBuilder(carPosition, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCarPositionBuilderImpl(
+        carPosition, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCarPositionBuilder
+  public static class BACnetConstructedDataCarPositionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger carPosition;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCarPositionBuilder(
+    public BACnetConstructedDataCarPositionBuilderImpl(
         BACnetApplicationTagUnsignedInteger carPosition,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.carPosition = carPosition;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

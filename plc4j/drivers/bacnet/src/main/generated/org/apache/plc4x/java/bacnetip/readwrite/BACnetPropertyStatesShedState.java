@@ -56,6 +56,7 @@ public class BACnetPropertyStatesShedState extends BACnetPropertyStates implemen
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesShedState");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesShedState extends BACnetPropertyStates implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesShedState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (shedState)
     lengthInBits += shedState.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesShedState extends BACnetPropertyStates implemen
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesShedStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesShedState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetShedStateTagged shedState =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesShedState extends BACnetPropertyStates implemen
 
     readBuffer.closeContext("BACnetPropertyStatesShedState");
     // Create the instance
-    return new BACnetPropertyStatesShedStateBuilder(shedState);
+    return new BACnetPropertyStatesShedStateBuilderImpl(shedState);
   }
 
-  public static class BACnetPropertyStatesShedStateBuilder
+  public static class BACnetPropertyStatesShedStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetShedStateTagged shedState;
 
-    public BACnetPropertyStatesShedStateBuilder(BACnetShedStateTagged shedState) {
-
+    public BACnetPropertyStatesShedStateBuilderImpl(BACnetShedStateTagged shedState) {
       this.shedState = shedState;
     }
 

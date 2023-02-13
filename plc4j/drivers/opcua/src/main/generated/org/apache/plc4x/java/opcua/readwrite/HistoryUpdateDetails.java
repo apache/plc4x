@@ -58,6 +58,7 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryUpdateDetails");
 
@@ -76,6 +77,7 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     HistoryUpdateDetails _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nodeId)
     lengthInBits += nodeId.getLengthInBits();
@@ -83,12 +85,13 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static HistoryUpdateDetailsBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryUpdateDetails");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
         readSimpleField(
@@ -97,15 +100,14 @@ public class HistoryUpdateDetails extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("HistoryUpdateDetails");
     // Create the instance
-    return new HistoryUpdateDetailsBuilder(nodeId);
+    return new HistoryUpdateDetailsBuilderImpl(nodeId);
   }
 
-  public static class HistoryUpdateDetailsBuilder
+  public static class HistoryUpdateDetailsBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId nodeId;
 
-    public HistoryUpdateDetailsBuilder(NodeId nodeId) {
-
+    public HistoryUpdateDetailsBuilderImpl(NodeId nodeId) {
       this.nodeId = nodeId;
     }
 

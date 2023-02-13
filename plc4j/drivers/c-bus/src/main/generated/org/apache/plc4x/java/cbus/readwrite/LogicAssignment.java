@@ -44,6 +44,7 @@ public class LogicAssignment implements Message {
   protected final boolean assignedToGav15;
   protected final boolean assignedToGav14;
   protected final boolean assignedToGav13;
+
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;
@@ -90,6 +91,7 @@ public class LogicAssignment implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LogicAssignment");
 
@@ -135,6 +137,7 @@ public class LogicAssignment implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     LogicAssignment _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (greaterOfOrLogic)
     lengthInBits += 1;
@@ -174,6 +177,7 @@ public class LogicAssignment implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean greaterOfOrLogic = readSimpleField("greaterOfOrLogic", readBoolean(readBuffer));
 

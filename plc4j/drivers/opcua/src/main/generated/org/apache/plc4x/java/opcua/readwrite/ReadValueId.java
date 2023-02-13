@@ -77,6 +77,7 @@ public class ReadValueId extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReadValueId");
 
@@ -104,6 +105,7 @@ public class ReadValueId extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ReadValueId _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nodeId)
     lengthInBits += nodeId.getLengthInBits();
@@ -120,12 +122,13 @@ public class ReadValueId extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static ReadValueIdBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ReadValueId");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
         readSimpleField(
@@ -147,19 +150,18 @@ public class ReadValueId extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("ReadValueId");
     // Create the instance
-    return new ReadValueIdBuilder(nodeId, attributeId, indexRange, dataEncoding);
+    return new ReadValueIdBuilderImpl(nodeId, attributeId, indexRange, dataEncoding);
   }
 
-  public static class ReadValueIdBuilder
+  public static class ReadValueIdBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId nodeId;
     private final long attributeId;
     private final PascalString indexRange;
     private final QualifiedName dataEncoding;
 
-    public ReadValueIdBuilder(
+    public ReadValueIdBuilderImpl(
         NodeId nodeId, long attributeId, PascalString indexRange, QualifiedName dataEncoding) {
-
       this.nodeId = nodeId;
       this.attributeId = attributeId;
       this.indexRange = indexRange;

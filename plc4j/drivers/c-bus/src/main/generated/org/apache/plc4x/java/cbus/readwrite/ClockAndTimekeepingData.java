@@ -67,6 +67,7 @@ public abstract class ClockAndTimekeepingData implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ClockAndTimekeepingData");
 
@@ -102,6 +103,7 @@ public abstract class ClockAndTimekeepingData implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ClockAndTimekeepingData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (commandTypeContainer)
     lengthInBits += 8;
@@ -127,6 +129,7 @@ public abstract class ClockAndTimekeepingData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!(org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper
         .knowsClockAndTimekeepingCommandTypeContainer(readBuffer))) {
@@ -152,14 +155,18 @@ public abstract class ClockAndTimekeepingData implements Message {
     ClockAndTimekeepingDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE)
         && EvaluationHelper.equals(argument, (byte) 0x01)) {
-      builder = ClockAndTimekeepingDataUpdateTime.staticParseBuilder(readBuffer);
+      builder =
+          ClockAndTimekeepingDataUpdateTime.staticParseClockAndTimekeepingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
             commandType, ClockAndTimekeepingCommandType.UPDATE_NETWORK_VARIABLE)
         && EvaluationHelper.equals(argument, (byte) 0x02)) {
-      builder = ClockAndTimekeepingDataUpdateDate.staticParseBuilder(readBuffer);
+      builder =
+          ClockAndTimekeepingDataUpdateDate.staticParseClockAndTimekeepingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, ClockAndTimekeepingCommandType.REQUEST_REFRESH)
         && EvaluationHelper.equals(argument, (byte) 0x03)) {
-      builder = ClockAndTimekeepingDataRequestRefresh.staticParseBuilder(readBuffer);
+      builder =
+          ClockAndTimekeepingDataRequestRefresh.staticParseClockAndTimekeepingDataBuilder(
+              readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -180,7 +187,7 @@ public abstract class ClockAndTimekeepingData implements Message {
     return _clockAndTimekeepingData;
   }
 
-  public static interface ClockAndTimekeepingDataBuilder {
+  public interface ClockAndTimekeepingDataBuilder {
     ClockAndTimekeepingData build(
         ClockAndTimekeepingCommandTypeContainer commandTypeContainer, byte argument);
   }

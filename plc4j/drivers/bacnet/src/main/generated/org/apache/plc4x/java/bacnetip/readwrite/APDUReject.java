@@ -70,6 +70,7 @@ public class APDUReject extends APDU implements Message {
   @Override
   protected void serializeAPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("APDUReject");
 
@@ -97,6 +98,7 @@ public class APDUReject extends APDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     APDUReject _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 4;
@@ -110,12 +112,13 @@ public class APDUReject extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDURejectBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUReject");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 4), (byte) 0x00);
@@ -130,16 +133,16 @@ public class APDUReject extends APDU implements Message {
 
     readBuffer.closeContext("APDUReject");
     // Create the instance
-    return new APDURejectBuilder(originalInvokeId, rejectReason, apduLength, reservedField0);
+    return new APDURejectBuilderImpl(originalInvokeId, rejectReason, apduLength, reservedField0);
   }
 
-  public static class APDURejectBuilder implements APDU.APDUBuilder {
+  public static class APDURejectBuilderImpl implements APDU.APDUBuilder {
     private final short originalInvokeId;
     private final BACnetRejectReasonTagged rejectReason;
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDURejectBuilder(
+    public APDURejectBuilderImpl(
         short originalInvokeId,
         BACnetRejectReasonTagged rejectReason,
         Integer apduLength,

@@ -83,6 +83,7 @@ public abstract class BACnetNotificationParameters implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParameters");
 
@@ -111,6 +112,7 @@ public abstract class BACnetNotificationParameters implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetNotificationParameters _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -163,6 +165,7 @@ public abstract class BACnetNotificationParameters implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -182,84 +185,94 @@ public abstract class BACnetNotificationParameters implements Message {
     BACnetNotificationParametersBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
       builder =
-          BACnetNotificationParametersChangeOfBitString.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersChangeOfBitString
+              .staticParseBACnetNotificationParametersBuilder(
+                  readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetNotificationParametersChangeOfState.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersChangeOfState.staticParseBACnetNotificationParametersBuilder(
+              readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetNotificationParametersChangeOfValue.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersChangeOfValue.staticParseBACnetNotificationParametersBuilder(
+              readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
       builder =
-          BACnetNotificationParametersCommandFailure.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersCommandFailure.staticParseBACnetNotificationParametersBuilder(
+              readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetNotificationParametersFloatingLimit.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersFloatingLimit.staticParseBACnetNotificationParametersBuilder(
+              readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetNotificationParametersOutOfRange.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersOutOfRange.staticParseBACnetNotificationParametersBuilder(
+              readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
       builder =
-          BACnetNotificationParametersComplexEventType.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersComplexEventType
+              .staticParseBACnetNotificationParametersBuilder(
+                  readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
       builder =
-          BACnetNotificationParametersChangeOfLifeSafety.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersChangeOfLifeSafety
+              .staticParseBACnetNotificationParametersBuilder(
+                  readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
       builder =
-          BACnetNotificationParametersExtended.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersExtended.staticParseBACnetNotificationParametersBuilder(
+              readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 10)) {
       builder =
-          BACnetNotificationParametersBufferReady.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersBufferReady.staticParseBACnetNotificationParametersBuilder(
+              readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
       builder =
-          BACnetNotificationParametersUnsignedRange.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersUnsignedRange.staticParseBACnetNotificationParametersBuilder(
+              readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 13)) {
       builder =
-          BACnetNotificationParametersAccessEvent.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersAccessEvent.staticParseBACnetNotificationParametersBuilder(
+              readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 14)) {
       builder =
-          BACnetNotificationParametersDoubleOutOfRange.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersDoubleOutOfRange
+              .staticParseBACnetNotificationParametersBuilder(
+                  readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 15)) {
       builder =
-          BACnetNotificationParametersSignedOutOfRange.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersSignedOutOfRange
+              .staticParseBACnetNotificationParametersBuilder(
+                  readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 16)) {
       builder =
-          BACnetNotificationParametersUnsignedOutOfRange.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersUnsignedOutOfRange
+              .staticParseBACnetNotificationParametersBuilder(
+                  readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 17)) {
       builder =
-          BACnetNotificationParametersChangeOfCharacterString.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersChangeOfCharacterString
+              .staticParseBACnetNotificationParametersBuilder(
+                  readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 18)) {
       builder =
-          BACnetNotificationParametersChangeOfStatusFlags.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersChangeOfStatusFlags
+              .staticParseBACnetNotificationParametersBuilder(
+                  readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 19)) {
       builder =
-          BACnetNotificationParametersChangeOfReliability.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersChangeOfReliability
+              .staticParseBACnetNotificationParametersBuilder(
+                  readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 21)) {
       builder =
-          BACnetNotificationParametersChangeOfDiscreteValue.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersChangeOfDiscreteValue
+              .staticParseBACnetNotificationParametersBuilder(
+                  readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 22)) {
       builder =
-          BACnetNotificationParametersChangeOfTimer.staticParseBuilder(
-              readBuffer, tagNumber, objectTypeArgument, peekedTagNumber);
+          BACnetNotificationParametersChangeOfTimer.staticParseBACnetNotificationParametersBuilder(
+              readBuffer, peekedTagNumber, tagNumber, objectTypeArgument);
     }
     if (builder == null) {
       throw new ParseException(
@@ -283,7 +296,7 @@ public abstract class BACnetNotificationParameters implements Message {
     return _bACnetNotificationParameters;
   }
 
-  public static interface BACnetNotificationParametersBuilder {
+  public interface BACnetNotificationParametersBuilder {
     BACnetNotificationParameters build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

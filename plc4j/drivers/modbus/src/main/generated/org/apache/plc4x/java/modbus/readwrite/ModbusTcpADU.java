@@ -50,16 +50,11 @@ public class ModbusTcpADU extends ModbusADU implements Message {
   protected final short unitIdentifier;
   protected final ModbusPDU pdu;
 
-  // Arguments.
-  protected final Boolean response;
-
-  public ModbusTcpADU(
-      int transactionIdentifier, short unitIdentifier, ModbusPDU pdu, Boolean response) {
-    super(response);
+  public ModbusTcpADU(int transactionIdentifier, short unitIdentifier, ModbusPDU pdu) {
+    super();
     this.transactionIdentifier = transactionIdentifier;
     this.unitIdentifier = unitIdentifier;
     this.pdu = pdu;
-    this.response = response;
   }
 
   public int getTransactionIdentifier() {
@@ -81,6 +76,7 @@ public class ModbusTcpADU extends ModbusADU implements Message {
   @Override
   protected void serializeModbusADUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusTcpADU");
 
@@ -92,12 +88,20 @@ public class ModbusTcpADU extends ModbusADU implements Message {
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (protocolIdentifier)
-    writeConstField("protocolIdentifier", PROTOCOLIDENTIFIER, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "protocolIdentifier",
+        PROTOCOLIDENTIFIER,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int length = (int) ((getPdu().getLengthInBytes()) + (1));
-    writeImplicitField("length", length, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "length",
+        length,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (unitIdentifier)
     writeSimpleField(
@@ -125,6 +129,7 @@ public class ModbusTcpADU extends ModbusADU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusTcpADU _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (transactionIdentifier)
     lengthInBits += 16;
@@ -144,12 +149,13 @@ public class ModbusTcpADU extends ModbusADU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusTcpADUBuilder staticParseBuilder(
+  public static ModbusADUBuilder staticParseModbusADUBuilder(
       ReadBuffer readBuffer, DriverType driverType, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusTcpADU");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int transactionIdentifier =
         readSimpleField(
@@ -185,28 +191,22 @@ public class ModbusTcpADU extends ModbusADU implements Message {
 
     readBuffer.closeContext("ModbusTcpADU");
     // Create the instance
-    return new ModbusTcpADUBuilder(transactionIdentifier, unitIdentifier, pdu, response);
+    return new ModbusTcpADUBuilderImpl(transactionIdentifier, unitIdentifier, pdu);
   }
 
-  public static class ModbusTcpADUBuilder implements ModbusADU.ModbusADUBuilder {
+  public static class ModbusTcpADUBuilderImpl implements ModbusADU.ModbusADUBuilder {
     private final int transactionIdentifier;
     private final short unitIdentifier;
     private final ModbusPDU pdu;
-    private final Boolean response;
 
-    public ModbusTcpADUBuilder(
-        int transactionIdentifier, short unitIdentifier, ModbusPDU pdu, Boolean response) {
-
+    public ModbusTcpADUBuilderImpl(int transactionIdentifier, short unitIdentifier, ModbusPDU pdu) {
       this.transactionIdentifier = transactionIdentifier;
       this.unitIdentifier = unitIdentifier;
       this.pdu = pdu;
-      this.response = response;
     }
 
-    public ModbusTcpADU build(Boolean response) {
-
-      ModbusTcpADU modbusTcpADU =
-          new ModbusTcpADU(transactionIdentifier, unitIdentifier, pdu, response);
+    public ModbusTcpADU build() {
+      ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, pdu);
       return modbusTcpADU;
     }
   }

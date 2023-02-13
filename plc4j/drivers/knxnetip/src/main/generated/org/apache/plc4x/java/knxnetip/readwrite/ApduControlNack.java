@@ -49,6 +49,7 @@ public class ApduControlNack extends ApduControl implements Message {
   @Override
   protected void serializeApduControlChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduControlNack");
 
@@ -64,25 +65,27 @@ public class ApduControlNack extends ApduControl implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduControlNack _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduControlNackBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ApduControlBuilder staticParseApduControlBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ApduControlNack");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduControlNack");
     // Create the instance
-    return new ApduControlNackBuilder();
+    return new ApduControlNackBuilderImpl();
   }
 
-  public static class ApduControlNackBuilder implements ApduControl.ApduControlBuilder {
+  public static class ApduControlNackBuilderImpl implements ApduControl.ApduControlBuilder {
 
-    public ApduControlNackBuilder() {}
+    public ApduControlNackBuilderImpl() {}
 
     public ApduControlNack build() {
       ApduControlNack apduControlNack = new ApduControlNack();

@@ -57,6 +57,7 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
   protected void serializeBACnetLandingCallStatusCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLandingCallStatusCommandDirection");
 
@@ -75,6 +76,7 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLandingCallStatusCommandDirection _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (direction)
     lengthInBits += direction.getLengthInBits();
@@ -82,12 +84,14 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
     return lengthInBits;
   }
 
-  public static BACnetLandingCallStatusCommandDirectionBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetLandingCallStatusCommandBuilder
+      staticParseBACnetLandingCallStatusCommandBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetLandingCallStatusCommandDirection");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDirectionTagged direction =
         readSimpleField(
@@ -100,15 +104,15 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
 
     readBuffer.closeContext("BACnetLandingCallStatusCommandDirection");
     // Create the instance
-    return new BACnetLandingCallStatusCommandDirectionBuilder(direction);
+    return new BACnetLandingCallStatusCommandDirectionBuilderImpl(direction);
   }
 
-  public static class BACnetLandingCallStatusCommandDirectionBuilder
+  public static class BACnetLandingCallStatusCommandDirectionBuilderImpl
       implements BACnetLandingCallStatusCommand.BACnetLandingCallStatusCommandBuilder {
     private final BACnetLiftCarDirectionTagged direction;
 
-    public BACnetLandingCallStatusCommandDirectionBuilder(BACnetLiftCarDirectionTagged direction) {
-
+    public BACnetLandingCallStatusCommandDirectionBuilderImpl(
+        BACnetLiftCarDirectionTagged direction) {
       this.direction = direction;
     }
 

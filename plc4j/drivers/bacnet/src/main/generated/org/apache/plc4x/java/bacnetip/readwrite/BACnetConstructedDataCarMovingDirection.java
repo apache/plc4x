@@ -79,6 +79,7 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCarMovingDirection");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCarMovingDirection _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (carMovingDirection)
     lengthInBits += carMovingDirection.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCarMovingDirectionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDirectionTagged carMovingDirection =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataCarMovingDirection");
     // Create the instance
-    return new BACnetConstructedDataCarMovingDirectionBuilder(
+    return new BACnetConstructedDataCarMovingDirectionBuilderImpl(
         carMovingDirection, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCarMovingDirectionBuilder
+  public static class BACnetConstructedDataCarMovingDirectionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLiftCarDirectionTagged carMovingDirection;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCarMovingDirectionBuilder(
+    public BACnetConstructedDataCarMovingDirectionBuilderImpl(
         BACnetLiftCarDirectionTagged carMovingDirection,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.carMovingDirection = carMovingDirection;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

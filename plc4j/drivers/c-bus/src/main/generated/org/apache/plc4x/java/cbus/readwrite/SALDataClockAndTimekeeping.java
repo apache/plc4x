@@ -58,6 +58,7 @@ public class SALDataClockAndTimekeeping extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataClockAndTimekeeping");
 
@@ -79,6 +80,7 @@ public class SALDataClockAndTimekeeping extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataClockAndTimekeeping _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (clockAndTimekeepingData)
     lengthInBits += clockAndTimekeepingData.getLengthInBits();
@@ -86,12 +88,13 @@ public class SALDataClockAndTimekeeping extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataClockAndTimekeepingBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataClockAndTimekeeping");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ClockAndTimekeepingData clockAndTimekeepingData =
         readSimpleField(
@@ -101,14 +104,13 @@ public class SALDataClockAndTimekeeping extends SALData implements Message {
 
     readBuffer.closeContext("SALDataClockAndTimekeeping");
     // Create the instance
-    return new SALDataClockAndTimekeepingBuilder(clockAndTimekeepingData);
+    return new SALDataClockAndTimekeepingBuilderImpl(clockAndTimekeepingData);
   }
 
-  public static class SALDataClockAndTimekeepingBuilder implements SALData.SALDataBuilder {
+  public static class SALDataClockAndTimekeepingBuilderImpl implements SALData.SALDataBuilder {
     private final ClockAndTimekeepingData clockAndTimekeepingData;
 
-    public SALDataClockAndTimekeepingBuilder(ClockAndTimekeepingData clockAndTimekeepingData) {
-
+    public SALDataClockAndTimekeepingBuilderImpl(ClockAndTimekeepingData clockAndTimekeepingData) {
       this.clockAndTimekeepingData = clockAndTimekeepingData;
     }
 

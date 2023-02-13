@@ -51,6 +51,7 @@ public abstract class SysexCommand implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommand");
 
@@ -72,6 +73,7 @@ public abstract class SysexCommand implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     SysexCommand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (commandType)
     lengthInBits += 8;
@@ -107,45 +109,53 @@ public abstract class SysexCommand implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short commandType = readDiscriminatorField("commandType", readUnsignedShort(readBuffer, 8));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     SysexCommandBuilder builder = null;
     if (EvaluationHelper.equals(commandType, (short) 0x00)) {
-      builder = SysexCommandExtendedId.staticParseBuilder(readBuffer, response);
+      builder = SysexCommandExtendedId.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x69)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = SysexCommandAnalogMappingQueryRequest.staticParseBuilder(readBuffer, response);
+      builder =
+          SysexCommandAnalogMappingQueryRequest.staticParseSysexCommandBuilder(
+              readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x69)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = SysexCommandAnalogMappingQueryResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          SysexCommandAnalogMappingQueryResponse.staticParseSysexCommandBuilder(
+              readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x6A)) {
-      builder = SysexCommandAnalogMappingResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          SysexCommandAnalogMappingResponse.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x6B)) {
-      builder = SysexCommandCapabilityQuery.staticParseBuilder(readBuffer, response);
+      builder = SysexCommandCapabilityQuery.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x6C)) {
-      builder = SysexCommandCapabilityResponse.staticParseBuilder(readBuffer, response);
+      builder = SysexCommandCapabilityResponse.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x6D)) {
-      builder = SysexCommandPinStateQuery.staticParseBuilder(readBuffer, response);
+      builder = SysexCommandPinStateQuery.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x6E)) {
-      builder = SysexCommandPinStateResponse.staticParseBuilder(readBuffer, response);
+      builder = SysexCommandPinStateResponse.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x6F)) {
-      builder = SysexCommandExtendedAnalog.staticParseBuilder(readBuffer, response);
+      builder = SysexCommandExtendedAnalog.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x71)) {
-      builder = SysexCommandStringData.staticParseBuilder(readBuffer, response);
+      builder = SysexCommandStringData.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x79)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = SysexCommandReportFirmwareRequest.staticParseBuilder(readBuffer, response);
+      builder =
+          SysexCommandReportFirmwareRequest.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x79)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = SysexCommandReportFirmwareResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          SysexCommandReportFirmwareResponse.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x7A)) {
-      builder = SysexCommandSamplingInterval.staticParseBuilder(readBuffer, response);
+      builder = SysexCommandSamplingInterval.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x7E)) {
-      builder = SysexCommandSysexNonRealtime.staticParseBuilder(readBuffer, response);
+      builder = SysexCommandSysexNonRealtime.staticParseSysexCommandBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(commandType, (short) 0x7F)) {
-      builder = SysexCommandSysexRealtime.staticParseBuilder(readBuffer, response);
+      builder = SysexCommandSysexRealtime.staticParseSysexCommandBuilder(readBuffer, response);
     }
     if (builder == null) {
       throw new ParseException(
@@ -165,7 +175,7 @@ public abstract class SysexCommand implements Message {
     return _sysexCommand;
   }
 
-  public static interface SysexCommandBuilder {
+  public interface SysexCommandBuilder {
     SysexCommand build();
   }
 

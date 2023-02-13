@@ -101,6 +101,7 @@ public class GroupObjectDescriptorRealisationTypeB implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("GroupObjectDescriptorRealisationTypeB");
 
@@ -152,6 +153,7 @@ public class GroupObjectDescriptorRealisationTypeB implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     GroupObjectDescriptorRealisationTypeB _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (updateEnable)
     lengthInBits += 1;
@@ -192,6 +194,7 @@ public class GroupObjectDescriptorRealisationTypeB implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean updateEnable = readSimpleField("updateEnable", readBoolean(readBuffer));
 

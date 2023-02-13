@@ -55,6 +55,7 @@ public class BACnetApplicationTagBitString extends BACnetApplicationTag implemen
   protected void serializeBACnetApplicationTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagBitString");
 
@@ -73,6 +74,7 @@ public class BACnetApplicationTagBitString extends BACnetApplicationTag implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetApplicationTagBitString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetApplicationTagBitString extends BACnetApplicationTag implemen
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagBitStringBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagBitString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadBitString payload =
         readSimpleField(
@@ -98,15 +101,14 @@ public class BACnetApplicationTagBitString extends BACnetApplicationTag implemen
 
     readBuffer.closeContext("BACnetApplicationTagBitString");
     // Create the instance
-    return new BACnetApplicationTagBitStringBuilder(payload);
+    return new BACnetApplicationTagBitStringBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagBitStringBuilder
+  public static class BACnetApplicationTagBitStringBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadBitString payload;
 
-    public BACnetApplicationTagBitStringBuilder(BACnetTagPayloadBitString payload) {
-
+    public BACnetApplicationTagBitStringBuilderImpl(BACnetTagPayloadBitString payload) {
       this.payload = payload;
     }
 

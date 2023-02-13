@@ -87,6 +87,7 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModifyMonitoredItemsRequest");
 
@@ -124,6 +125,7 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModifyMonitoredItemsRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -141,7 +143,7 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
     if (itemsToModify != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : itemsToModify) {
-        boolean last = ++i >= itemsToModify.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= itemsToModify.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -149,12 +151,13 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static ModifyMonitoredItemsRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ModifyMonitoredItemsRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -184,11 +187,11 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("ModifyMonitoredItemsRequest");
     // Create the instance
-    return new ModifyMonitoredItemsRequestBuilder(
+    return new ModifyMonitoredItemsRequestBuilderImpl(
         requestHeader, subscriptionId, timestampsToReturn, noOfItemsToModify, itemsToModify);
   }
 
-  public static class ModifyMonitoredItemsRequestBuilder
+  public static class ModifyMonitoredItemsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long subscriptionId;
@@ -196,13 +199,12 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
     private final int noOfItemsToModify;
     private final List<ExtensionObjectDefinition> itemsToModify;
 
-    public ModifyMonitoredItemsRequestBuilder(
+    public ModifyMonitoredItemsRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long subscriptionId,
         TimestampsToReturn timestampsToReturn,
         int noOfItemsToModify,
         List<ExtensionObjectDefinition> itemsToModify) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.timestampsToReturn = timestampsToReturn;

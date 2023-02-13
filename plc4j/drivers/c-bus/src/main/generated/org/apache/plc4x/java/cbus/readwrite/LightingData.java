@@ -60,6 +60,7 @@ public abstract class LightingData implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LightingData");
 
@@ -92,6 +93,7 @@ public abstract class LightingData implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     LightingData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (commandTypeContainer)
     lengthInBits += 8;
@@ -114,6 +116,7 @@ public abstract class LightingData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!(org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper.knowsLightingCommandTypeContainer(
         readBuffer))) {
@@ -133,15 +136,15 @@ public abstract class LightingData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     LightingDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, LightingCommandType.OFF)) {
-      builder = LightingDataOff.staticParseBuilder(readBuffer);
+      builder = LightingDataOff.staticParseLightingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, LightingCommandType.ON)) {
-      builder = LightingDataOn.staticParseBuilder(readBuffer);
+      builder = LightingDataOn.staticParseLightingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, LightingCommandType.RAMP_TO_LEVEL)) {
-      builder = LightingDataRampToLevel.staticParseBuilder(readBuffer);
+      builder = LightingDataRampToLevel.staticParseLightingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, LightingCommandType.TERMINATE_RAMP)) {
-      builder = LightingDataTerminateRamp.staticParseBuilder(readBuffer);
+      builder = LightingDataTerminateRamp.staticParseLightingDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, LightingCommandType.LABEL)) {
-      builder = LightingDataLabel.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder = LightingDataLabel.staticParseLightingDataBuilder(readBuffer, commandTypeContainer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -158,7 +161,7 @@ public abstract class LightingData implements Message {
     return _lightingData;
   }
 
-  public static interface LightingDataBuilder {
+  public interface LightingDataBuilder {
     LightingData build(LightingCommandTypeContainer commandTypeContainer);
   }
 

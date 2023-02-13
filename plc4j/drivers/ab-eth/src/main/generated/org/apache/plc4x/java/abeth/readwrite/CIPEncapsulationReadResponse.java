@@ -45,19 +45,14 @@ public class CIPEncapsulationReadResponse extends CIPEncapsulationPacket impleme
   // Properties.
   protected final DF1ResponseMessage response;
 
-  // Arguments.
-  protected final Integer packetLen;
-
   public CIPEncapsulationReadResponse(
       long sessionHandle,
       long status,
       List<Short> senderContext,
       long options,
-      DF1ResponseMessage response,
-      Integer packetLen) {
+      DF1ResponseMessage response) {
     super(sessionHandle, status, senderContext, options);
     this.response = response;
-    this.packetLen = packetLen;
   }
 
   public DF1ResponseMessage getResponse() {
@@ -68,6 +63,7 @@ public class CIPEncapsulationReadResponse extends CIPEncapsulationPacket impleme
   protected void serializeCIPEncapsulationPacketChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CIPEncapsulationReadResponse");
 
@@ -90,6 +86,7 @@ public class CIPEncapsulationReadResponse extends CIPEncapsulationPacket impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CIPEncapsulationReadResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (response)
     lengthInBits += response.getLengthInBits();
@@ -97,12 +94,13 @@ public class CIPEncapsulationReadResponse extends CIPEncapsulationPacket impleme
     return lengthInBits;
   }
 
-  public static CIPEncapsulationReadResponseBuilder staticParseBuilder(
+  public static CIPEncapsulationPacketBuilder staticParseCIPEncapsulationPacketBuilder(
       ReadBuffer readBuffer, Integer packetLen) throws ParseException {
     readBuffer.pullContext("CIPEncapsulationReadResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DF1ResponseMessage response =
         readSimpleField(
@@ -113,25 +111,21 @@ public class CIPEncapsulationReadResponse extends CIPEncapsulationPacket impleme
 
     readBuffer.closeContext("CIPEncapsulationReadResponse");
     // Create the instance
-    return new CIPEncapsulationReadResponseBuilder(response, packetLen);
+    return new CIPEncapsulationReadResponseBuilderImpl(response);
   }
 
-  public static class CIPEncapsulationReadResponseBuilder
+  public static class CIPEncapsulationReadResponseBuilderImpl
       implements CIPEncapsulationPacket.CIPEncapsulationPacketBuilder {
     private final DF1ResponseMessage response;
-    private final Integer packetLen;
 
-    public CIPEncapsulationReadResponseBuilder(DF1ResponseMessage response, Integer packetLen) {
-
+    public CIPEncapsulationReadResponseBuilderImpl(DF1ResponseMessage response) {
       this.response = response;
-      this.packetLen = packetLen;
     }
 
     public CIPEncapsulationReadResponse build(
         long sessionHandle, long status, List<Short> senderContext, long options) {
       CIPEncapsulationReadResponse cIPEncapsulationReadResponse =
-          new CIPEncapsulationReadResponse(
-              sessionHandle, status, senderContext, options, response, packetLen);
+          new CIPEncapsulationReadResponse(sessionHandle, status, senderContext, options, response);
       return cIPEncapsulationReadResponse;
     }
   }

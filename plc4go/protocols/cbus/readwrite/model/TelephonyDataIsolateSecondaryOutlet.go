@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -90,10 +91,14 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetIsolateStatus() byte {
 ///////////////////////
 
 func (m *_TelephonyDataIsolateSecondaryOutlet) GetIsBehaveNormal() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetIsolateStatus()) == (0x00)))
 }
 
 func (m *_TelephonyDataIsolateSecondaryOutlet) GetIsToBeIsolated() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetIsolateStatus()) == (0x01)))
 }
 
@@ -127,12 +132,8 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetTypeName() string {
 	return "TelephonyDataIsolateSecondaryOutlet"
 }
 
-func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (isolateStatus)
 	lengthInBits += 8
@@ -144,15 +145,15 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBitsConditional(lastIt
 	return lengthInBits
 }
 
-func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TelephonyDataIsolateSecondaryOutlet) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TelephonyDataIsolateSecondaryOutletParse(theBytes []byte) (TelephonyDataIsolateSecondaryOutlet, error) {
-	return TelephonyDataIsolateSecondaryOutletParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return TelephonyDataIsolateSecondaryOutletParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func TelephonyDataIsolateSecondaryOutletParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataIsolateSecondaryOutlet, error) {
+func TelephonyDataIsolateSecondaryOutletParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataIsolateSecondaryOutlet, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataIsolateSecondaryOutlet"); pullErr != nil {
@@ -192,14 +193,14 @@ func TelephonyDataIsolateSecondaryOutletParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_TelephonyDataIsolateSecondaryOutlet) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TelephonyDataIsolateSecondaryOutlet) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataIsolateSecondaryOutlet) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -214,11 +215,11 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_isolateStatusErr, "Error serializing 'isolateStatus' field")
 		}
 		// Virtual field
-		if _isBehaveNormalErr := writeBuffer.WriteVirtual("isBehaveNormal", m.GetIsBehaveNormal()); _isBehaveNormalErr != nil {
+		if _isBehaveNormalErr := writeBuffer.WriteVirtual(ctx, "isBehaveNormal", m.GetIsBehaveNormal()); _isBehaveNormalErr != nil {
 			return errors.Wrap(_isBehaveNormalErr, "Error serializing 'isBehaveNormal' field")
 		}
 		// Virtual field
-		if _isToBeIsolatedErr := writeBuffer.WriteVirtual("isToBeIsolated", m.GetIsToBeIsolated()); _isToBeIsolatedErr != nil {
+		if _isToBeIsolatedErr := writeBuffer.WriteVirtual(ctx, "isToBeIsolated", m.GetIsToBeIsolated()); _isToBeIsolatedErr != nil {
 			return errors.Wrap(_isToBeIsolatedErr, "Error serializing 'isToBeIsolated' field")
 		}
 
@@ -227,7 +228,7 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_TelephonyDataIsolateSecondaryOutlet) isTelephonyDataIsolateSecondaryOutlet() bool {
@@ -239,7 +240,7 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

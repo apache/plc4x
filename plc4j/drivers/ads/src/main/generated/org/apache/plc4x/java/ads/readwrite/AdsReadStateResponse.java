@@ -82,6 +82,7 @@ public class AdsReadStateResponse extends AmsPacket implements Message {
   @Override
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsReadStateResponse");
 
@@ -111,6 +112,7 @@ public class AdsReadStateResponse extends AmsPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsReadStateResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (result)
     lengthInBits += 32;
@@ -124,12 +126,13 @@ public class AdsReadStateResponse extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsReadStateResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsReadStateResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ReturnCode result =
         readEnumField(
@@ -144,16 +147,15 @@ public class AdsReadStateResponse extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsReadStateResponse");
     // Create the instance
-    return new AdsReadStateResponseBuilder(result, adsState, deviceState);
+    return new AdsReadStateResponseBuilderImpl(result, adsState, deviceState);
   }
 
-  public static class AdsReadStateResponseBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsReadStateResponseBuilderImpl implements AmsPacket.AmsPacketBuilder {
     private final ReturnCode result;
     private final int adsState;
     private final int deviceState;
 
-    public AdsReadStateResponseBuilder(ReturnCode result, int adsState, int deviceState) {
-
+    public AdsReadStateResponseBuilderImpl(ReturnCode result, int adsState, int deviceState) {
       this.result = result;
       this.adsState = adsState;
       this.deviceState = deviceState;

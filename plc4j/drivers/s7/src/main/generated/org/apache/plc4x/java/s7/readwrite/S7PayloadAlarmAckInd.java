@@ -69,6 +69,7 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadAlarmAckInd");
 
@@ -87,6 +88,7 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadAlarmAckInd _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (alarmMessage)
     lengthInBits += alarmMessage.getLengthInBits();
@@ -94,12 +96,13 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
     return lengthInBits;
   }
 
-  public static S7PayloadAlarmAckIndBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadAlarmAckInd");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AlarmMessageAckPushType alarmMessage =
         readSimpleField(
@@ -109,15 +112,14 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
 
     readBuffer.closeContext("S7PayloadAlarmAckInd");
     // Create the instance
-    return new S7PayloadAlarmAckIndBuilder(alarmMessage);
+    return new S7PayloadAlarmAckIndBuilderImpl(alarmMessage);
   }
 
-  public static class S7PayloadAlarmAckIndBuilder
+  public static class S7PayloadAlarmAckIndBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final AlarmMessageAckPushType alarmMessage;
 
-    public S7PayloadAlarmAckIndBuilder(AlarmMessageAckPushType alarmMessage) {
-
+    public S7PayloadAlarmAckIndBuilderImpl(AlarmMessageAckPushType alarmMessage) {
       this.alarmMessage = alarmMessage;
     }
 

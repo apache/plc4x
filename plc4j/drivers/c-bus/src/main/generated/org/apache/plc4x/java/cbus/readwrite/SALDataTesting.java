@@ -49,6 +49,7 @@ public class SALDataTesting extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataTesting");
 
@@ -64,16 +65,18 @@ public class SALDataTesting extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataTesting _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SALDataTestingBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataTesting");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {
       throw new ParseValidationException("TESTING Not yet implemented");
@@ -81,12 +84,12 @@ public class SALDataTesting extends SALData implements Message {
 
     readBuffer.closeContext("SALDataTesting");
     // Create the instance
-    return new SALDataTestingBuilder();
+    return new SALDataTestingBuilderImpl();
   }
 
-  public static class SALDataTestingBuilder implements SALData.SALDataBuilder {
+  public static class SALDataTestingBuilderImpl implements SALData.SALDataBuilder {
 
-    public SALDataTestingBuilder() {}
+    public SALDataTestingBuilderImpl() {}
 
     public SALDataTesting build(SALData salData) {
       SALDataTesting sALDataTesting = new SALDataTesting(salData);

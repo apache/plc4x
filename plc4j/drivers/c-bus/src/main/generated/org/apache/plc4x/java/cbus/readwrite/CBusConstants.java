@@ -50,6 +50,7 @@ public class CBusConstants implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusConstants");
 
@@ -68,6 +69,7 @@ public class CBusConstants implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CBusConstants _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (cbusTcpDefaultPort)
     lengthInBits += 16;
@@ -86,6 +88,7 @@ public class CBusConstants implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int cbusTcpDefaultPort =
         readConstField(

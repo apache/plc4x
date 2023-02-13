@@ -79,6 +79,7 @@ public class BACnetConstructedDataTimerMinPresValue extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimerMinPresValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataTimerMinPresValue extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimerMinPresValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (minPresValue)
     lengthInBits += minPresValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataTimerMinPresValue extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimerMinPresValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataTimerMinPresValue extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger minPresValue =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataTimerMinPresValue extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataTimerMinPresValue");
     // Create the instance
-    return new BACnetConstructedDataTimerMinPresValueBuilder(
+    return new BACnetConstructedDataTimerMinPresValueBuilderImpl(
         minPresValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimerMinPresValueBuilder
+  public static class BACnetConstructedDataTimerMinPresValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger minPresValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimerMinPresValueBuilder(
+    public BACnetConstructedDataTimerMinPresValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger minPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minPresValue = minPresValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -42,17 +42,14 @@ public class ApduDataExtDomainAddressRead extends ApduDataExt implements Message
     return (short) 0x21;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtDomainAddressRead(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtDomainAddressRead() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtDomainAddressRead");
 
@@ -68,35 +65,32 @@ public class ApduDataExtDomainAddressRead extends ApduDataExt implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtDomainAddressRead _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtDomainAddressReadBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtDomainAddressRead");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtDomainAddressRead");
     // Create the instance
-    return new ApduDataExtDomainAddressReadBuilder(length);
+    return new ApduDataExtDomainAddressReadBuilderImpl();
   }
 
-  public static class ApduDataExtDomainAddressReadBuilder
+  public static class ApduDataExtDomainAddressReadBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtDomainAddressReadBuilder(Short length) {
+    public ApduDataExtDomainAddressReadBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtDomainAddressRead build(Short length) {
-
+    public ApduDataExtDomainAddressRead build() {
       ApduDataExtDomainAddressRead apduDataExtDomainAddressRead =
-          new ApduDataExtDomainAddressRead(length);
+          new ApduDataExtDomainAddressRead();
       return apduDataExtDomainAddressRead;
     }
   }

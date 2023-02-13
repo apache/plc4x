@@ -65,6 +65,7 @@ public class BACnetConstructedDataGlobalGroupAll extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataGlobalGroupAll");
 
@@ -80,11 +81,12 @@ public class BACnetConstructedDataGlobalGroupAll extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataGlobalGroupAll _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataGlobalGroupAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -95,6 +97,7 @@ public class BACnetConstructedDataGlobalGroupAll extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {
       throw new ParseValidationException(
@@ -103,17 +106,16 @@ public class BACnetConstructedDataGlobalGroupAll extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataGlobalGroupAll");
     // Create the instance
-    return new BACnetConstructedDataGlobalGroupAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataGlobalGroupAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataGlobalGroupAllBuilder
+  public static class BACnetConstructedDataGlobalGroupAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataGlobalGroupAllBuilder(
+    public BACnetConstructedDataGlobalGroupAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

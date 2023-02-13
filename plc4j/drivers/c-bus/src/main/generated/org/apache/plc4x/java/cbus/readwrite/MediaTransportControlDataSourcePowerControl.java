@@ -67,6 +67,7 @@ public class MediaTransportControlDataSourcePowerControl extends MediaTransportC
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataSourcePowerControl");
 
@@ -93,6 +94,7 @@ public class MediaTransportControlDataSourcePowerControl extends MediaTransportC
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataSourcePowerControl _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (state)
     lengthInBits += 8;
@@ -104,12 +106,13 @@ public class MediaTransportControlDataSourcePowerControl extends MediaTransportC
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataSourcePowerControlBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataSourcePowerControl");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte state = readSimpleField("state", readByte(readBuffer, 8));
     boolean isShouldPowerOn = readVirtualField("isShouldPowerOn", boolean.class, (state) == (0x00));
@@ -118,15 +121,14 @@ public class MediaTransportControlDataSourcePowerControl extends MediaTransportC
 
     readBuffer.closeContext("MediaTransportControlDataSourcePowerControl");
     // Create the instance
-    return new MediaTransportControlDataSourcePowerControlBuilder(state);
+    return new MediaTransportControlDataSourcePowerControlBuilderImpl(state);
   }
 
-  public static class MediaTransportControlDataSourcePowerControlBuilder
+  public static class MediaTransportControlDataSourcePowerControlBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte state;
 
-    public MediaTransportControlDataSourcePowerControlBuilder(byte state) {
-
+    public MediaTransportControlDataSourcePowerControlBuilderImpl(byte state) {
       this.state = state;
     }
 

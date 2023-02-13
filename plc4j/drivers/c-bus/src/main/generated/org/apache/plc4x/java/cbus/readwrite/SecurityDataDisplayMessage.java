@@ -55,6 +55,7 @@ public class SecurityDataDisplayMessage extends SecurityData implements Message 
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataDisplayMessage");
 
@@ -76,6 +77,7 @@ public class SecurityDataDisplayMessage extends SecurityData implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataDisplayMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (message)
     lengthInBits += (((commandTypeContainer.getNumBytes()) - (1))) * (8);
@@ -83,13 +85,14 @@ public class SecurityDataDisplayMessage extends SecurityData implements Message 
     return lengthInBits;
   }
 
-  public static SecurityDataDisplayMessageBuilder staticParseBuilder(
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(
       ReadBuffer readBuffer, SecurityCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataDisplayMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String message =
         readSimpleField(
@@ -98,15 +101,14 @@ public class SecurityDataDisplayMessage extends SecurityData implements Message 
 
     readBuffer.closeContext("SecurityDataDisplayMessage");
     // Create the instance
-    return new SecurityDataDisplayMessageBuilder(message);
+    return new SecurityDataDisplayMessageBuilderImpl(message);
   }
 
-  public static class SecurityDataDisplayMessageBuilder
+  public static class SecurityDataDisplayMessageBuilderImpl
       implements SecurityData.SecurityDataBuilder {
     private final String message;
 
-    public SecurityDataDisplayMessageBuilder(String message) {
-
+    public SecurityDataDisplayMessageBuilderImpl(String message) {
       this.message = message;
     }
 

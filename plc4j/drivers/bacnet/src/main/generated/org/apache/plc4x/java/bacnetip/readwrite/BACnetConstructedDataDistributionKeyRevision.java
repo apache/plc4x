@@ -79,6 +79,7 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDistributionKeyRevision");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDistributionKeyRevision _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (distributionKeyRevision)
     lengthInBits += distributionKeyRevision.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDistributionKeyRevisionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger distributionKeyRevision =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataDistributionKeyRevision");
     // Create the instance
-    return new BACnetConstructedDataDistributionKeyRevisionBuilder(
+    return new BACnetConstructedDataDistributionKeyRevisionBuilderImpl(
         distributionKeyRevision, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDistributionKeyRevisionBuilder
+  public static class BACnetConstructedDataDistributionKeyRevisionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger distributionKeyRevision;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDistributionKeyRevisionBuilder(
+    public BACnetConstructedDataDistributionKeyRevisionBuilderImpl(
         BACnetApplicationTagUnsignedInteger distributionKeyRevision,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.distributionKeyRevision = distributionKeyRevision;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

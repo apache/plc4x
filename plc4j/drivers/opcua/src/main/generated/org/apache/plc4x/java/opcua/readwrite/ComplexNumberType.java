@@ -64,6 +64,7 @@ public class ComplexNumberType extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ComplexNumberType");
 
@@ -85,6 +86,7 @@ public class ComplexNumberType extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ComplexNumberType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (real)
     lengthInBits += 32;
@@ -95,12 +97,13 @@ public class ComplexNumberType extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static ComplexNumberTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ComplexNumberType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     float real = readSimpleField("real", readFloat(readBuffer, 32));
 
@@ -108,16 +111,15 @@ public class ComplexNumberType extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("ComplexNumberType");
     // Create the instance
-    return new ComplexNumberTypeBuilder(real, imaginary);
+    return new ComplexNumberTypeBuilderImpl(real, imaginary);
   }
 
-  public static class ComplexNumberTypeBuilder
+  public static class ComplexNumberTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final float real;
     private final float imaginary;
 
-    public ComplexNumberTypeBuilder(float real, float imaginary) {
-
+    public ComplexNumberTypeBuilderImpl(float real, float imaginary) {
       this.real = real;
       this.imaginary = imaginary;
     }

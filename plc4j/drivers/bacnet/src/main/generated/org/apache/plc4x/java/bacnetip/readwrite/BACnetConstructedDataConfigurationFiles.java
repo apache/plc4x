@@ -89,6 +89,7 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataConfigurationFiles");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataConfigurationFiles _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,7 +138,7 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataConfigurationFilesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -147,6 +149,7 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -174,23 +177,22 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataConfigurationFiles");
     // Create the instance
-    return new BACnetConstructedDataConfigurationFilesBuilder(
+    return new BACnetConstructedDataConfigurationFilesBuilderImpl(
         numberOfDataElements, configurationFiles, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataConfigurationFilesBuilder
+  public static class BACnetConstructedDataConfigurationFilesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagObjectIdentifier> configurationFiles;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataConfigurationFilesBuilder(
+    public BACnetConstructedDataConfigurationFilesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagObjectIdentifier> configurationFiles,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.configurationFiles = configurationFiles;
       this.tagNumber = tagNumber;

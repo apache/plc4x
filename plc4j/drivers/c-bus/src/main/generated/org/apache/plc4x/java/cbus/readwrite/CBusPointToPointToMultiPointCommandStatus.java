@@ -67,6 +67,7 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
   protected void serializeCBusPointToPointToMultiPointCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToPointToMultiPointCommandStatus");
 
@@ -91,6 +92,7 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusPointToPointToMultiPointCommandStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -101,12 +103,14 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
     return lengthInBits;
   }
 
-  public static CBusPointToPointToMultiPointCommandStatusBuilder staticParseBuilder(
-      ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
+  public static CBusPointToPointToMultiPointCommandBuilder
+      staticParseCBusPointToPointToMultiPointCommandBuilder(
+          ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToPointToMultiPointCommandStatus");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0xFF);
 
@@ -118,17 +122,17 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
 
     readBuffer.closeContext("CBusPointToPointToMultiPointCommandStatus");
     // Create the instance
-    return new CBusPointToPointToMultiPointCommandStatusBuilder(
+    return new CBusPointToPointToMultiPointCommandStatusBuilderImpl(
         statusRequest, cBusOptions, reservedField0);
   }
 
-  public static class CBusPointToPointToMultiPointCommandStatusBuilder
+  public static class CBusPointToPointToMultiPointCommandStatusBuilderImpl
       implements CBusPointToPointToMultiPointCommand.CBusPointToPointToMultiPointCommandBuilder {
     private final StatusRequest statusRequest;
     private final CBusOptions cBusOptions;
     private final Byte reservedField0;
 
-    public CBusPointToPointToMultiPointCommandStatusBuilder(
+    public CBusPointToPointToMultiPointCommandStatusBuilderImpl(
         StatusRequest statusRequest, CBusOptions cBusOptions, Byte reservedField0) {
       this.statusRequest = statusRequest;
       this.cBusOptions = cBusOptions;

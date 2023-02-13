@@ -57,6 +57,7 @@ public class ModbusPDUGetComEventCounterRequest extends ModbusPDU implements Mes
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUGetComEventCounterRequest");
 
@@ -72,26 +73,28 @@ public class ModbusPDUGetComEventCounterRequest extends ModbusPDU implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUGetComEventCounterRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ModbusPDUGetComEventCounterRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUGetComEventCounterRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ModbusPDUGetComEventCounterRequest");
     // Create the instance
-    return new ModbusPDUGetComEventCounterRequestBuilder();
+    return new ModbusPDUGetComEventCounterRequestBuilderImpl();
   }
 
-  public static class ModbusPDUGetComEventCounterRequestBuilder
+  public static class ModbusPDUGetComEventCounterRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
 
-    public ModbusPDUGetComEventCounterRequestBuilder() {}
+    public ModbusPDUGetComEventCounterRequestBuilderImpl() {}
 
     public ModbusPDUGetComEventCounterRequest build() {
       ModbusPDUGetComEventCounterRequest modbusPDUGetComEventCounterRequest =

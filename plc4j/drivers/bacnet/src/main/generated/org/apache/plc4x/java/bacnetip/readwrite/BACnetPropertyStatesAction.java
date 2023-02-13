@@ -55,6 +55,7 @@ public class BACnetPropertyStatesAction extends BACnetPropertyStates implements 
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesAction");
 
@@ -73,6 +74,7 @@ public class BACnetPropertyStatesAction extends BACnetPropertyStates implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesAction _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (action)
     lengthInBits += action.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetPropertyStatesAction extends BACnetPropertyStates implements 
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesActionBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesAction");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetActionTagged action =
         readSimpleField(
@@ -100,15 +103,14 @@ public class BACnetPropertyStatesAction extends BACnetPropertyStates implements 
 
     readBuffer.closeContext("BACnetPropertyStatesAction");
     // Create the instance
-    return new BACnetPropertyStatesActionBuilder(action);
+    return new BACnetPropertyStatesActionBuilderImpl(action);
   }
 
-  public static class BACnetPropertyStatesActionBuilder
+  public static class BACnetPropertyStatesActionBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetActionTagged action;
 
-    public BACnetPropertyStatesActionBuilder(BACnetActionTagged action) {
-
+    public BACnetPropertyStatesActionBuilderImpl(BACnetActionTagged action) {
       this.action = action;
     }
 

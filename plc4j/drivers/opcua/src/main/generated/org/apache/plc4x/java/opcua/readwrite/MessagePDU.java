@@ -51,6 +51,7 @@ public abstract class MessagePDU implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MessagePDU");
 
@@ -72,6 +73,7 @@ public abstract class MessagePDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     MessagePDU _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (messageType)
     lengthInBits += 24;
@@ -107,6 +109,7 @@ public abstract class MessagePDU implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String messageType = readDiscriminatorField("messageType", readString(readBuffer, 24));
 
@@ -114,25 +117,25 @@ public abstract class MessagePDU implements Message {
     MessagePDUBuilder builder = null;
     if (EvaluationHelper.equals(messageType, (String) "HEL")
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = OpcuaHelloRequest.staticParseBuilder(readBuffer, response);
+      builder = OpcuaHelloRequest.staticParseMessagePDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (String) "ACK")
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = OpcuaAcknowledgeResponse.staticParseBuilder(readBuffer, response);
+      builder = OpcuaAcknowledgeResponse.staticParseMessagePDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (String) "OPN")
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = OpcuaOpenRequest.staticParseBuilder(readBuffer, response);
+      builder = OpcuaOpenRequest.staticParseMessagePDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (String) "OPN")
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = OpcuaOpenResponse.staticParseBuilder(readBuffer, response);
+      builder = OpcuaOpenResponse.staticParseMessagePDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (String) "CLO")
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = OpcuaCloseRequest.staticParseBuilder(readBuffer, response);
+      builder = OpcuaCloseRequest.staticParseMessagePDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (String) "MSG")
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = OpcuaMessageRequest.staticParseBuilder(readBuffer, response);
+      builder = OpcuaMessageRequest.staticParseMessagePDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(messageType, (String) "MSG")
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = OpcuaMessageResponse.staticParseBuilder(readBuffer, response);
+      builder = OpcuaMessageResponse.staticParseMessagePDUBuilder(readBuffer, response);
     }
     if (builder == null) {
       throw new ParseException(
@@ -152,7 +155,7 @@ public abstract class MessagePDU implements Message {
     return _messagePDU;
   }
 
-  public static interface MessagePDUBuilder {
+  public interface MessagePDUBuilder {
     MessagePDU build();
   }
 

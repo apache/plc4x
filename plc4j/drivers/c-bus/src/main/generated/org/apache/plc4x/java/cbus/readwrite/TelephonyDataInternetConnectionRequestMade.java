@@ -48,6 +48,7 @@ public class TelephonyDataInternetConnectionRequestMade extends TelephonyData im
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataInternetConnectionRequestMade");
 
@@ -63,26 +64,28 @@ public class TelephonyDataInternetConnectionRequestMade extends TelephonyData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataInternetConnectionRequestMade _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static TelephonyDataInternetConnectionRequestMadeBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("TelephonyDataInternetConnectionRequestMade");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TelephonyDataInternetConnectionRequestMade");
     // Create the instance
-    return new TelephonyDataInternetConnectionRequestMadeBuilder();
+    return new TelephonyDataInternetConnectionRequestMadeBuilderImpl();
   }
 
-  public static class TelephonyDataInternetConnectionRequestMadeBuilder
+  public static class TelephonyDataInternetConnectionRequestMadeBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
 
-    public TelephonyDataInternetConnectionRequestMadeBuilder() {}
+    public TelephonyDataInternetConnectionRequestMadeBuilderImpl() {}
 
     public TelephonyDataInternetConnectionRequestMade build(
         TelephonyCommandTypeContainer commandTypeContainer, byte argument) {

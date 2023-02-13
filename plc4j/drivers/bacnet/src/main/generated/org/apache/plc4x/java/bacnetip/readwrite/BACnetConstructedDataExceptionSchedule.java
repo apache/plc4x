@@ -89,6 +89,7 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataExceptionSchedule");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataExceptionSchedule _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,7 +138,7 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataExceptionScheduleBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -147,6 +149,7 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -171,23 +174,22 @@ public class BACnetConstructedDataExceptionSchedule extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataExceptionSchedule");
     // Create the instance
-    return new BACnetConstructedDataExceptionScheduleBuilder(
+    return new BACnetConstructedDataExceptionScheduleBuilderImpl(
         numberOfDataElements, exceptionSchedule, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataExceptionScheduleBuilder
+  public static class BACnetConstructedDataExceptionScheduleBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetSpecialEvent> exceptionSchedule;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataExceptionScheduleBuilder(
+    public BACnetConstructedDataExceptionScheduleBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetSpecialEvent> exceptionSchedule,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.exceptionSchedule = exceptionSchedule;
       this.tagNumber = tagNumber;

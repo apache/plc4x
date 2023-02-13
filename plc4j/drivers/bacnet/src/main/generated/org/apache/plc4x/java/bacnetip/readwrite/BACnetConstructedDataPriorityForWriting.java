@@ -79,6 +79,7 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPriorityForWriting");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPriorityForWriting _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (priorityForWriting)
     lengthInBits += priorityForWriting.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPriorityForWritingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger priorityForWriting =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataPriorityForWriting");
     // Create the instance
-    return new BACnetConstructedDataPriorityForWritingBuilder(
+    return new BACnetConstructedDataPriorityForWritingBuilderImpl(
         priorityForWriting, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPriorityForWritingBuilder
+  public static class BACnetConstructedDataPriorityForWritingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger priorityForWriting;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPriorityForWritingBuilder(
+    public BACnetConstructedDataPriorityForWritingBuilderImpl(
         BACnetApplicationTagUnsignedInteger priorityForWriting,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.priorityForWriting = priorityForWriting;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

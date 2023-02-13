@@ -78,6 +78,7 @@ public class BACnetConstructedDataDeadband extends BACnetConstructedData impleme
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDeadband");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataDeadband extends BACnetConstructedData impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDeadband _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (deadband)
     lengthInBits += deadband.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataDeadband extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDeadbandBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataDeadband extends BACnetConstructedData impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal deadband =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataDeadband extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataDeadband");
     // Create the instance
-    return new BACnetConstructedDataDeadbandBuilder(deadband, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDeadbandBuilderImpl(deadband, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDeadbandBuilder
+  public static class BACnetConstructedDataDeadbandBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal deadband;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDeadbandBuilder(
+    public BACnetConstructedDataDeadbandBuilderImpl(
         BACnetApplicationTagReal deadband,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.deadband = deadband;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

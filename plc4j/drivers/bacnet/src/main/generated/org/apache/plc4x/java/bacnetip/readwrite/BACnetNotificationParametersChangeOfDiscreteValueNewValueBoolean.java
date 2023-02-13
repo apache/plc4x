@@ -65,6 +65,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
   protected void serializeBACnetNotificationParametersChangeOfDiscreteValueNewValueChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean");
 
@@ -83,6 +84,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (booleanValue)
     lengthInBits += booleanValue.getLengthInBits();
@@ -90,12 +92,14 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+      staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean booleanValue =
         readSimpleField(
@@ -106,19 +110,18 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder(
+    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilderImpl(
         booleanValue, tagNumber);
   }
 
-  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder
+  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagBoolean booleanValue;
     private final Short tagNumber;
 
-    public BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilder(
+    public BACnetNotificationParametersChangeOfDiscreteValueNewValueBooleanBuilderImpl(
         BACnetApplicationTagBoolean booleanValue, Short tagNumber) {
-
       this.booleanValue = booleanValue;
       this.tagNumber = tagNumber;
     }

@@ -65,6 +65,7 @@ public class BACnetConstructedDataBinaryOutputAll extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBinaryOutputAll");
 
@@ -80,11 +81,12 @@ public class BACnetConstructedDataBinaryOutputAll extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBinaryOutputAll _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBinaryOutputAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -95,6 +97,7 @@ public class BACnetConstructedDataBinaryOutputAll extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {
       throw new ParseValidationException(
@@ -103,17 +106,16 @@ public class BACnetConstructedDataBinaryOutputAll extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataBinaryOutputAll");
     // Create the instance
-    return new BACnetConstructedDataBinaryOutputAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBinaryOutputAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBinaryOutputAllBuilder
+  public static class BACnetConstructedDataBinaryOutputAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBinaryOutputAllBuilder(
+    public BACnetConstructedDataBinaryOutputAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

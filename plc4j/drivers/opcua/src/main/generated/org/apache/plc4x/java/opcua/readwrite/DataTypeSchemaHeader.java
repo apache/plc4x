@@ -108,6 +108,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataTypeSchemaHeader");
 
@@ -148,6 +149,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DataTypeSchemaHeader _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfNamespaces)
     lengthInBits += 32;
@@ -156,7 +158,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     if (namespaces != null) {
       int i = 0;
       for (PascalString element : namespaces) {
-        boolean last = ++i >= namespaces.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= namespaces.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -168,7 +170,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     if (structureDataTypes != null) {
       int i = 0;
       for (DataTypeDescription element : structureDataTypes) {
-        boolean last = ++i >= structureDataTypes.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= structureDataTypes.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -180,7 +182,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     if (enumDataTypes != null) {
       int i = 0;
       for (DataTypeDescription element : enumDataTypes) {
-        boolean last = ++i >= enumDataTypes.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= enumDataTypes.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -192,7 +194,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     if (simpleDataTypes != null) {
       int i = 0;
       for (DataTypeDescription element : simpleDataTypes) {
-        boolean last = ++i >= simpleDataTypes.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= simpleDataTypes.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -200,12 +202,13 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static DataTypeSchemaHeaderBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataTypeSchemaHeader");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfNamespaces = readSimpleField("noOfNamespaces", readSignedInt(readBuffer, 32));
 
@@ -254,7 +257,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("DataTypeSchemaHeader");
     // Create the instance
-    return new DataTypeSchemaHeaderBuilder(
+    return new DataTypeSchemaHeaderBuilderImpl(
         noOfNamespaces,
         namespaces,
         noOfStructureDataTypes,
@@ -265,7 +268,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
         simpleDataTypes);
   }
 
-  public static class DataTypeSchemaHeaderBuilder
+  public static class DataTypeSchemaHeaderBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfNamespaces;
     private final List<PascalString> namespaces;
@@ -276,7 +279,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     private final int noOfSimpleDataTypes;
     private final List<DataTypeDescription> simpleDataTypes;
 
-    public DataTypeSchemaHeaderBuilder(
+    public DataTypeSchemaHeaderBuilderImpl(
         int noOfNamespaces,
         List<PascalString> namespaces,
         int noOfStructureDataTypes,
@@ -285,7 +288,6 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
         List<DataTypeDescription> enumDataTypes,
         int noOfSimpleDataTypes,
         List<DataTypeDescription> simpleDataTypes) {
-
       this.noOfNamespaces = noOfNamespaces;
       this.namespaces = namespaces;
       this.noOfStructureDataTypes = noOfStructureDataTypes;

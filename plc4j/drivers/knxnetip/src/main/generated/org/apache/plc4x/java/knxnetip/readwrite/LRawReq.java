@@ -42,17 +42,14 @@ public class LRawReq extends CEMI implements Message {
     return (short) 0x10;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public LRawReq(Integer size) {
-    super(size);
-    this.size = size;
+  public LRawReq() {
+    super();
   }
 
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LRawReq");
 
@@ -68,34 +65,30 @@ public class LRawReq extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LRawReq _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static LRawReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LRawReq");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("LRawReq");
     // Create the instance
-    return new LRawReqBuilder(size);
+    return new LRawReqBuilderImpl();
   }
 
-  public static class LRawReqBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class LRawReqBuilderImpl implements CEMI.CEMIBuilder {
 
-    public LRawReqBuilder(Integer size) {
+    public LRawReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public LRawReq build(Integer size) {
-
-      LRawReq lRawReq = new LRawReq(size);
-
+    public LRawReq build() {
+      LRawReq lRawReq = new LRawReq();
       return lRawReq;
     }
   }

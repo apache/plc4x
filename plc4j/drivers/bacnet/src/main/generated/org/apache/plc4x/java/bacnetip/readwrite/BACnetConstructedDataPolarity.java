@@ -78,6 +78,7 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPolarity");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPolarity _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (polarity)
     lengthInBits += polarity.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPolarityBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetPolarityTagged polarity =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataPolarity");
     // Create the instance
-    return new BACnetConstructedDataPolarityBuilder(polarity, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPolarityBuilderImpl(polarity, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPolarityBuilder
+  public static class BACnetConstructedDataPolarityBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetPolarityTagged polarity;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPolarityBuilder(
+    public BACnetConstructedDataPolarityBuilderImpl(
         BACnetPolarityTagged polarity,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.polarity = polarity;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

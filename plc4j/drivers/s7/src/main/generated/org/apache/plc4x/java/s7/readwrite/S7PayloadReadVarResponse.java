@@ -49,13 +49,9 @@ public class S7PayloadReadVarResponse extends S7Payload implements Message {
   // Properties.
   protected final List<S7VarPayloadDataItem> items;
 
-  // Arguments.
-  protected final S7Parameter parameter;
-
-  public S7PayloadReadVarResponse(List<S7VarPayloadDataItem> items, S7Parameter parameter) {
-    super(parameter);
+  public S7PayloadReadVarResponse(List<S7VarPayloadDataItem> items) {
+    super();
     this.items = items;
-    this.parameter = parameter;
   }
 
   public List<S7VarPayloadDataItem> getItems() {
@@ -65,6 +61,7 @@ public class S7PayloadReadVarResponse extends S7Payload implements Message {
   @Override
   protected void serializeS7PayloadChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadReadVarResponse");
 
@@ -83,12 +80,13 @@ public class S7PayloadReadVarResponse extends S7Payload implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadReadVarResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (items != null) {
       int i = 0;
       for (S7VarPayloadDataItem element : items) {
-        boolean last = ++i >= items.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= items.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -96,12 +94,13 @@ public class S7PayloadReadVarResponse extends S7Payload implements Message {
     return lengthInBits;
   }
 
-  public static S7PayloadReadVarResponseBuilder staticParseBuilder(
+  public static S7PayloadBuilder staticParseS7PayloadBuilder(
       ReadBuffer readBuffer, Short messageType, S7Parameter parameter) throws ParseException {
     readBuffer.pullContext("S7PayloadReadVarResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<S7VarPayloadDataItem> items =
         readCountArrayField(
@@ -112,24 +111,18 @@ public class S7PayloadReadVarResponse extends S7Payload implements Message {
 
     readBuffer.closeContext("S7PayloadReadVarResponse");
     // Create the instance
-    return new S7PayloadReadVarResponseBuilder(items, parameter);
+    return new S7PayloadReadVarResponseBuilderImpl(items);
   }
 
-  public static class S7PayloadReadVarResponseBuilder implements S7Payload.S7PayloadBuilder {
+  public static class S7PayloadReadVarResponseBuilderImpl implements S7Payload.S7PayloadBuilder {
     private final List<S7VarPayloadDataItem> items;
-    private final S7Parameter parameter;
 
-    public S7PayloadReadVarResponseBuilder(
-        List<S7VarPayloadDataItem> items, S7Parameter parameter) {
-
+    public S7PayloadReadVarResponseBuilderImpl(List<S7VarPayloadDataItem> items) {
       this.items = items;
-      this.parameter = parameter;
     }
 
-    public S7PayloadReadVarResponse build(S7Parameter parameter) {
-
-      S7PayloadReadVarResponse s7PayloadReadVarResponse =
-          new S7PayloadReadVarResponse(items, parameter);
+    public S7PayloadReadVarResponse build() {
+      S7PayloadReadVarResponse s7PayloadReadVarResponse = new S7PayloadReadVarResponse(items);
       return s7PayloadReadVarResponse;
     }
   }

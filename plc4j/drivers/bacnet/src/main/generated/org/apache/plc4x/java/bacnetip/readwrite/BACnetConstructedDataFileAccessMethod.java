@@ -79,6 +79,7 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFileAccessMethod");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFileAccessMethod _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileAccessMethod)
     lengthInBits += fileAccessMethod.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFileAccessMethodBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetFileAccessMethodTagged fileAccessMethod =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataFileAccessMethod");
     // Create the instance
-    return new BACnetConstructedDataFileAccessMethodBuilder(
+    return new BACnetConstructedDataFileAccessMethodBuilderImpl(
         fileAccessMethod, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFileAccessMethodBuilder
+  public static class BACnetConstructedDataFileAccessMethodBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetFileAccessMethodTagged fileAccessMethod;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFileAccessMethodBuilder(
+    public BACnetConstructedDataFileAccessMethodBuilderImpl(
         BACnetFileAccessMethodTagged fileAccessMethod,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fileAccessMethod = fileAccessMethod;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

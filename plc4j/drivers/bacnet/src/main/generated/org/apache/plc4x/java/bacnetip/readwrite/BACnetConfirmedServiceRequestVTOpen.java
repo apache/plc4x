@@ -72,6 +72,7 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestVTOpen");
 
@@ -96,6 +97,7 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestVTOpen _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (vtClass)
     lengthInBits += vtClass.getLengthInBits();
@@ -106,12 +108,14 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestVTOpenBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestVTOpen");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetVTClassTagged vtClass =
         readSimpleField(
@@ -133,21 +137,20 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestVTOpen");
     // Create the instance
-    return new BACnetConfirmedServiceRequestVTOpenBuilder(
+    return new BACnetConfirmedServiceRequestVTOpenBuilderImpl(
         vtClass, localVtSessionIdentifier, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestVTOpenBuilder
+  public static class BACnetConfirmedServiceRequestVTOpenBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetVTClassTagged vtClass;
     private final BACnetApplicationTagUnsignedInteger localVtSessionIdentifier;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestVTOpenBuilder(
+    public BACnetConfirmedServiceRequestVTOpenBuilderImpl(
         BACnetVTClassTagged vtClass,
         BACnetApplicationTagUnsignedInteger localVtSessionIdentifier,
         Long serviceRequestLength) {
-
       this.vtClass = vtClass;
       this.localVtSessionIdentifier = localVtSessionIdentifier;
       this.serviceRequestLength = serviceRequestLength;

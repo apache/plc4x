@@ -56,6 +56,7 @@ public class BACnetClientCOVObject extends BACnetClientCOV implements Message {
   protected void serializeBACnetClientCOVChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetClientCOVObject");
 
@@ -74,6 +75,7 @@ public class BACnetClientCOVObject extends BACnetClientCOV implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetClientCOVObject _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (realIncrement)
     lengthInBits += realIncrement.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetClientCOVObject extends BACnetClientCOV implements Message {
     return lengthInBits;
   }
 
-  public static BACnetClientCOVObjectBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetClientCOVBuilder staticParseBACnetClientCOVBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetClientCOVObject");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal realIncrement =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetClientCOVObject extends BACnetClientCOV implements Message {
 
     readBuffer.closeContext("BACnetClientCOVObject");
     // Create the instance
-    return new BACnetClientCOVObjectBuilder(realIncrement);
+    return new BACnetClientCOVObjectBuilderImpl(realIncrement);
   }
 
-  public static class BACnetClientCOVObjectBuilder
+  public static class BACnetClientCOVObjectBuilderImpl
       implements BACnetClientCOV.BACnetClientCOVBuilder {
     private final BACnetApplicationTagReal realIncrement;
 
-    public BACnetClientCOVObjectBuilder(BACnetApplicationTagReal realIncrement) {
-
+    public BACnetClientCOVObjectBuilderImpl(BACnetApplicationTagReal realIncrement) {
       this.realIncrement = realIncrement;
     }
 

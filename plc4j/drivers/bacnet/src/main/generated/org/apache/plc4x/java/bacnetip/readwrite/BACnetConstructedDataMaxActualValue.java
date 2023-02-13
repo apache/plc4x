@@ -78,6 +78,7 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaxActualValue");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMaxActualValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxActualValue)
     lengthInBits += maxActualValue.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMaxActualValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal maxActualValue =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataMaxActualValue");
     // Create the instance
-    return new BACnetConstructedDataMaxActualValueBuilder(
+    return new BACnetConstructedDataMaxActualValueBuilderImpl(
         maxActualValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMaxActualValueBuilder
+  public static class BACnetConstructedDataMaxActualValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal maxActualValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMaxActualValueBuilder(
+    public BACnetConstructedDataMaxActualValueBuilderImpl(
         BACnetApplicationTagReal maxActualValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxActualValue = maxActualValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

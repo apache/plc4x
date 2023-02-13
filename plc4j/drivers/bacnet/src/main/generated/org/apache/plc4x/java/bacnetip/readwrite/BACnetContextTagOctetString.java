@@ -63,6 +63,7 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
   protected void serializeBACnetContextTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagOctetString");
 
@@ -81,6 +82,7 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetContextTagOctetString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -88,16 +90,17 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
     return lengthInBits;
   }
 
-  public static BACnetContextTagOctetStringBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagOctetString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadOctetString payload =
         readSimpleField(
@@ -110,17 +113,16 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
 
     readBuffer.closeContext("BACnetContextTagOctetString");
     // Create the instance
-    return new BACnetContextTagOctetStringBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagOctetStringBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagOctetStringBuilder
+  public static class BACnetContextTagOctetStringBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadOctetString payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagOctetStringBuilder(
+    public BACnetContextTagOctetStringBuilderImpl(
         BACnetTagPayloadOctetString payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

@@ -67,6 +67,7 @@ public class APDUUnknown extends APDU implements Message {
   @Override
   protected void serializeAPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("APDUUnknown");
 
@@ -88,6 +89,7 @@ public class APDUUnknown extends APDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     APDUUnknown _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unknownTypeRest)
     lengthInBits += 4;
@@ -100,12 +102,13 @@ public class APDUUnknown extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUUnknownBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUUnknown");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte unknownTypeRest = readSimpleField("unknownTypeRest", readUnsignedByte(readBuffer, 4));
 
@@ -115,16 +118,15 @@ public class APDUUnknown extends APDU implements Message {
 
     readBuffer.closeContext("APDUUnknown");
     // Create the instance
-    return new APDUUnknownBuilder(unknownTypeRest, unknownBytes, apduLength);
+    return new APDUUnknownBuilderImpl(unknownTypeRest, unknownBytes, apduLength);
   }
 
-  public static class APDUUnknownBuilder implements APDU.APDUBuilder {
+  public static class APDUUnknownBuilderImpl implements APDU.APDUBuilder {
     private final byte unknownTypeRest;
     private final byte[] unknownBytes;
     private final Integer apduLength;
 
-    public APDUUnknownBuilder(byte unknownTypeRest, byte[] unknownBytes, Integer apduLength) {
-
+    public APDUUnknownBuilderImpl(byte unknownTypeRest, byte[] unknownBytes, Integer apduLength) {
       this.unknownTypeRest = unknownTypeRest;
       this.unknownBytes = unknownBytes;
       this.apduLength = apduLength;

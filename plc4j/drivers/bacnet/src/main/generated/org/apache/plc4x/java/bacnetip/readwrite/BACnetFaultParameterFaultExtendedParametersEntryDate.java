@@ -57,6 +57,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDate
   protected void serializeBACnetFaultParameterFaultExtendedParametersEntryChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryDate");
 
@@ -75,6 +76,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDate
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultExtendedParametersEntryDate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dateValue)
     lengthInBits += dateValue.getLengthInBits();
@@ -82,12 +84,14 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDate
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryDateBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryDate");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDate dateValue =
         readSimpleField(
@@ -98,17 +102,16 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDate
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryDate");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryDateBuilder(dateValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryDateBuilderImpl(dateValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryDateBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagDate dateValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryDateBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryDateBuilderImpl(
         BACnetApplicationTagDate dateValue) {
-
       this.dateValue = dateValue;
     }
 

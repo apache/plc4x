@@ -59,6 +59,7 @@ public class MediaTransportControlDataSelectionName extends MediaTransportContro
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataSelectionName");
 
@@ -80,6 +81,7 @@ public class MediaTransportControlDataSelectionName extends MediaTransportContro
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataSelectionName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (selectionName)
     lengthInBits += (((commandTypeContainer.getNumBytes()) - (1))) * (8);
@@ -87,13 +89,14 @@ public class MediaTransportControlDataSelectionName extends MediaTransportContro
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataSelectionNameBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer, MediaTransportControlCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataSelectionName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String selectionName =
         readSimpleField(
@@ -102,15 +105,14 @@ public class MediaTransportControlDataSelectionName extends MediaTransportContro
 
     readBuffer.closeContext("MediaTransportControlDataSelectionName");
     // Create the instance
-    return new MediaTransportControlDataSelectionNameBuilder(selectionName);
+    return new MediaTransportControlDataSelectionNameBuilderImpl(selectionName);
   }
 
-  public static class MediaTransportControlDataSelectionNameBuilder
+  public static class MediaTransportControlDataSelectionNameBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final String selectionName;
 
-    public MediaTransportControlDataSelectionNameBuilder(String selectionName) {
-
+    public MediaTransportControlDataSelectionNameBuilderImpl(String selectionName) {
       this.selectionName = selectionName;
     }
 

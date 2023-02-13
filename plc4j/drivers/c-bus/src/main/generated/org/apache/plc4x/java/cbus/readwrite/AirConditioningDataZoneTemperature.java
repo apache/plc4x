@@ -78,6 +78,7 @@ public class AirConditioningDataZoneTemperature extends AirConditioningData impl
   protected void serializeAirConditioningDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningDataZoneTemperature");
 
@@ -112,6 +113,7 @@ public class AirConditioningDataZoneTemperature extends AirConditioningData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AirConditioningDataZoneTemperature _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneGroup)
     lengthInBits += 8;
@@ -128,12 +130,13 @@ public class AirConditioningDataZoneTemperature extends AirConditioningData impl
     return lengthInBits;
   }
 
-  public static AirConditioningDataZoneTemperatureBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataZoneTemperature");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte zoneGroup = readSimpleField("zoneGroup", readByte(readBuffer, 8));
 
@@ -157,23 +160,22 @@ public class AirConditioningDataZoneTemperature extends AirConditioningData impl
 
     readBuffer.closeContext("AirConditioningDataZoneTemperature");
     // Create the instance
-    return new AirConditioningDataZoneTemperatureBuilder(
+    return new AirConditioningDataZoneTemperatureBuilderImpl(
         zoneGroup, zoneList, temperature, sensorStatus);
   }
 
-  public static class AirConditioningDataZoneTemperatureBuilder
+  public static class AirConditioningDataZoneTemperatureBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
     private final HVACTemperature temperature;
     private final HVACSensorStatus sensorStatus;
 
-    public AirConditioningDataZoneTemperatureBuilder(
+    public AirConditioningDataZoneTemperatureBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACTemperature temperature,
         HVACSensorStatus sensorStatus) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.temperature = temperature;

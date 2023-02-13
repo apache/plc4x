@@ -95,6 +95,7 @@ public class ClockAndTimekeepingDataUpdateTime extends ClockAndTimekeepingData i
   protected void serializeClockAndTimekeepingDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ClockAndTimekeepingDataUpdateTime");
 
@@ -138,6 +139,7 @@ public class ClockAndTimekeepingDataUpdateTime extends ClockAndTimekeepingData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ClockAndTimekeepingDataUpdateTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (hours)
     lengthInBits += 8;
@@ -162,12 +164,13 @@ public class ClockAndTimekeepingDataUpdateTime extends ClockAndTimekeepingData i
     return lengthInBits;
   }
 
-  public static ClockAndTimekeepingDataUpdateTimeBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static ClockAndTimekeepingDataBuilder staticParseClockAndTimekeepingDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ClockAndTimekeepingDataUpdateTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short hours = readSimpleField("hours", readUnsignedShort(readBuffer, 8));
 
@@ -189,19 +192,18 @@ public class ClockAndTimekeepingDataUpdateTime extends ClockAndTimekeepingData i
 
     readBuffer.closeContext("ClockAndTimekeepingDataUpdateTime");
     // Create the instance
-    return new ClockAndTimekeepingDataUpdateTimeBuilder(hours, minute, second, daylightSaving);
+    return new ClockAndTimekeepingDataUpdateTimeBuilderImpl(hours, minute, second, daylightSaving);
   }
 
-  public static class ClockAndTimekeepingDataUpdateTimeBuilder
+  public static class ClockAndTimekeepingDataUpdateTimeBuilderImpl
       implements ClockAndTimekeepingData.ClockAndTimekeepingDataBuilder {
     private final short hours;
     private final short minute;
     private final short second;
     private final byte daylightSaving;
 
-    public ClockAndTimekeepingDataUpdateTimeBuilder(
+    public ClockAndTimekeepingDataUpdateTimeBuilderImpl(
         short hours, short minute, short second, byte daylightSaving) {
-
       this.hours = hours;
       this.minute = minute;
       this.second = second;

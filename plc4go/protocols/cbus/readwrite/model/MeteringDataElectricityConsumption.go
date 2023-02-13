@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,12 +107,8 @@ func (m *_MeteringDataElectricityConsumption) GetTypeName() string {
 	return "MeteringDataElectricityConsumption"
 }
 
-func (m *_MeteringDataElectricityConsumption) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MeteringDataElectricityConsumption) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MeteringDataElectricityConsumption) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (kWhr)
 	lengthInBits += 32
@@ -119,15 +116,15 @@ func (m *_MeteringDataElectricityConsumption) GetLengthInBitsConditional(lastIte
 	return lengthInBits
 }
 
-func (m *_MeteringDataElectricityConsumption) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MeteringDataElectricityConsumption) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MeteringDataElectricityConsumptionParse(theBytes []byte) (MeteringDataElectricityConsumption, error) {
-	return MeteringDataElectricityConsumptionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MeteringDataElectricityConsumptionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MeteringDataElectricityConsumptionParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringDataElectricityConsumption, error) {
+func MeteringDataElectricityConsumptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataElectricityConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringDataElectricityConsumption"); pullErr != nil {
@@ -157,14 +154,14 @@ func MeteringDataElectricityConsumptionParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_MeteringDataElectricityConsumption) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MeteringDataElectricityConsumption) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MeteringDataElectricityConsumption) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_MeteringDataElectricityConsumption) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MeteringDataElectricityConsumption) isMeteringDataElectricityConsumption() bool {
@@ -196,7 +193,7 @@ func (m *_MeteringDataElectricityConsumption) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

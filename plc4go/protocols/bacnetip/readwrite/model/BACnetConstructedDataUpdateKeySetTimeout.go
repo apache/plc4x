@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetUpdateKeySetTimeout() BAC
 ///////////////////////
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetUpdateKeySetTimeout())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetTypeName() string {
 	return "BACnetConstructedDataUpdateKeySetTimeout"
 }
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (updateKeySetTimeout)
-	lengthInBits += m.UpdateKeySetTimeout.GetLengthInBits()
+	lengthInBits += m.UpdateKeySetTimeout.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataUpdateKeySetTimeoutParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateKeySetTimeout, error) {
-	return BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateKeySetTimeout, error) {
+func BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateKeySetTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUpdateKeySetTimeout"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("updateKeySetTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for updateKeySetTimeout")
 	}
-	_updateKeySetTimeout, _updateKeySetTimeoutErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_updateKeySetTimeout, _updateKeySetTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _updateKeySetTimeoutErr != nil {
 		return nil, errors.Wrap(_updateKeySetTimeoutErr, "Error parsing 'updateKeySetTimeout' field of BACnetConstructedDataUpdateKeySetTimeout")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataUpdateKeySetTimeout) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataUpdateKeySetTimeout) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("updateKeySetTimeout"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for updateKeySetTimeout")
 		}
-		_updateKeySetTimeoutErr := writeBuffer.WriteSerializable(m.GetUpdateKeySetTimeout())
+		_updateKeySetTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetUpdateKeySetTimeout())
 		if popErr := writeBuffer.PopContext("updateKeySetTimeout"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for updateKeySetTimeout")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) SerializeWithWriteBuffer(wri
 			return errors.Wrap(_updateKeySetTimeoutErr, "Error serializing 'updateKeySetTimeout' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataUpdateKeySetTimeout) isBACnetConstructedDataUpdateKeySetTimeout() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataUpdateKeySetTimeout) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

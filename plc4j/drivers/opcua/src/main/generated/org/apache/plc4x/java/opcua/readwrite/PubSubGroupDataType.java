@@ -52,8 +52,6 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
   protected final long maxNetworkMessageSize;
   protected final int noOfGroupProperties;
   protected final List<ExtensionObjectDefinition> groupProperties;
-  // Reserved Fields
-  private Short reservedField0;
 
   public PubSubGroupDataType(
       PascalString name,
@@ -117,6 +115,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PubSubGroupDataType");
 
@@ -124,10 +123,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (enabled)
     writeSimpleField("enabled", enabled, writeBoolean(writeBuffer));
@@ -175,6 +171,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PubSubGroupDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
@@ -198,7 +195,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     if (securityKeyServices != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : securityKeyServices) {
-        boolean last = ++i >= securityKeyServices.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= securityKeyServices.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -213,7 +210,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     if (groupProperties != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : groupProperties) {
-        boolean last = ++i >= groupProperties.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= groupProperties.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -221,12 +218,13 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static PubSubGroupDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PubSubGroupDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(
@@ -276,7 +274,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("PubSubGroupDataType");
     // Create the instance
-    return new PubSubGroupDataTypeBuilder(
+    return new PubSubGroupDataTypeBuilderImpl(
         name,
         enabled,
         securityMode,
@@ -285,11 +283,10 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         securityKeyServices,
         maxNetworkMessageSize,
         noOfGroupProperties,
-        groupProperties,
-        reservedField0);
+        groupProperties);
   }
 
-  public static class PubSubGroupDataTypeBuilder
+  public static class PubSubGroupDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
     private final boolean enabled;
@@ -300,9 +297,8 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     private final long maxNetworkMessageSize;
     private final int noOfGroupProperties;
     private final List<ExtensionObjectDefinition> groupProperties;
-    private final Short reservedField0;
 
-    public PubSubGroupDataTypeBuilder(
+    public PubSubGroupDataTypeBuilderImpl(
         PascalString name,
         boolean enabled,
         MessageSecurityMode securityMode,
@@ -311,8 +307,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         List<ExtensionObjectDefinition> securityKeyServices,
         long maxNetworkMessageSize,
         int noOfGroupProperties,
-        List<ExtensionObjectDefinition> groupProperties,
-        Short reservedField0) {
+        List<ExtensionObjectDefinition> groupProperties) {
       this.name = name;
       this.enabled = enabled;
       this.securityMode = securityMode;
@@ -322,7 +317,6 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
       this.maxNetworkMessageSize = maxNetworkMessageSize;
       this.noOfGroupProperties = noOfGroupProperties;
       this.groupProperties = groupProperties;
-      this.reservedField0 = reservedField0;
     }
 
     public PubSubGroupDataType build() {
@@ -337,7 +331,6 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
               maxNetworkMessageSize,
               noOfGroupProperties,
               groupProperties);
-      pubSubGroupDataType.reservedField0 = reservedField0;
       return pubSubGroupDataType;
     }
   }

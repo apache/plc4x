@@ -63,6 +63,7 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckVTOpen");
 
@@ -84,6 +85,7 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckVTOpen _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (remoteVtSessionIdentifier)
     lengthInBits += remoteVtSessionIdentifier.getLengthInBits();
@@ -91,12 +93,13 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
     return lengthInBits;
   }
 
-  public static BACnetServiceAckVTOpenBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckVTOpen");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier =
         readSimpleField(
@@ -109,17 +112,16 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
 
     readBuffer.closeContext("BACnetServiceAckVTOpen");
     // Create the instance
-    return new BACnetServiceAckVTOpenBuilder(remoteVtSessionIdentifier, serviceAckLength);
+    return new BACnetServiceAckVTOpenBuilderImpl(remoteVtSessionIdentifier, serviceAckLength);
   }
 
-  public static class BACnetServiceAckVTOpenBuilder
+  public static class BACnetServiceAckVTOpenBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckVTOpenBuilder(
+    public BACnetServiceAckVTOpenBuilderImpl(
         BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier, Long serviceAckLength) {
-
       this.remoteVtSessionIdentifier = remoteVtSessionIdentifier;
       this.serviceAckLength = serviceAckLength;
     }

@@ -58,6 +58,7 @@ public class TelephonyDataDialOutFailure extends TelephonyData implements Messag
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataDialOutFailure");
 
@@ -83,6 +84,7 @@ public class TelephonyDataDialOutFailure extends TelephonyData implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataDialOutFailure _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reason)
     lengthInBits += 8;
@@ -90,12 +92,13 @@ public class TelephonyDataDialOutFailure extends TelephonyData implements Messag
     return lengthInBits;
   }
 
-  public static TelephonyDataDialOutFailureBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataDialOutFailure");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DialOutFailureReason reason =
         readEnumField(
@@ -106,15 +109,14 @@ public class TelephonyDataDialOutFailure extends TelephonyData implements Messag
 
     readBuffer.closeContext("TelephonyDataDialOutFailure");
     // Create the instance
-    return new TelephonyDataDialOutFailureBuilder(reason);
+    return new TelephonyDataDialOutFailureBuilderImpl(reason);
   }
 
-  public static class TelephonyDataDialOutFailureBuilder
+  public static class TelephonyDataDialOutFailureBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
     private final DialOutFailureReason reason;
 
-    public TelephonyDataDialOutFailureBuilder(DialOutFailureReason reason) {
-
+    public TelephonyDataDialOutFailureBuilderImpl(DialOutFailureReason reason) {
       this.reason = reason;
     }
 

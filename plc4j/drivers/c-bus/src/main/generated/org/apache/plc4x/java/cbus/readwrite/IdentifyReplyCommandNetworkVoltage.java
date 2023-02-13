@@ -81,6 +81,7 @@ public class IdentifyReplyCommandNetworkVoltage extends IdentifyReplyCommand imp
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandNetworkVoltage");
 
@@ -108,6 +109,7 @@ public class IdentifyReplyCommandNetworkVoltage extends IdentifyReplyCommand imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandNetworkVoltage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (volts)
     lengthInBits += 16;
@@ -124,12 +126,13 @@ public class IdentifyReplyCommandNetworkVoltage extends IdentifyReplyCommand imp
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandNetworkVoltageBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandNetworkVoltage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String volts = readSimpleField("volts", readString(readBuffer, 16));
 
@@ -142,18 +145,17 @@ public class IdentifyReplyCommandNetworkVoltage extends IdentifyReplyCommand imp
 
     readBuffer.closeContext("IdentifyReplyCommandNetworkVoltage");
     // Create the instance
-    return new IdentifyReplyCommandNetworkVoltageBuilder(volts, voltsDecimalPlace, numBytes);
+    return new IdentifyReplyCommandNetworkVoltageBuilderImpl(volts, voltsDecimalPlace, numBytes);
   }
 
-  public static class IdentifyReplyCommandNetworkVoltageBuilder
+  public static class IdentifyReplyCommandNetworkVoltageBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String volts;
     private final String voltsDecimalPlace;
     private final Short numBytes;
 
-    public IdentifyReplyCommandNetworkVoltageBuilder(
+    public IdentifyReplyCommandNetworkVoltageBuilderImpl(
         String volts, String voltsDecimalPlace, Short numBytes) {
-
       this.volts = volts;
       this.voltsDecimalPlace = voltsDecimalPlace;
       this.numBytes = numBytes;

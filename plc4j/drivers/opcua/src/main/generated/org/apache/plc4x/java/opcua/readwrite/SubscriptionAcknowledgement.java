@@ -64,6 +64,7 @@ public class SubscriptionAcknowledgement extends ExtensionObjectDefinition imple
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SubscriptionAcknowledgement");
 
@@ -85,6 +86,7 @@ public class SubscriptionAcknowledgement extends ExtensionObjectDefinition imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SubscriptionAcknowledgement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (subscriptionId)
     lengthInBits += 32;
@@ -95,12 +97,13 @@ public class SubscriptionAcknowledgement extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static SubscriptionAcknowledgementBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SubscriptionAcknowledgement");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long subscriptionId = readSimpleField("subscriptionId", readUnsignedLong(readBuffer, 32));
 
@@ -108,16 +111,15 @@ public class SubscriptionAcknowledgement extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("SubscriptionAcknowledgement");
     // Create the instance
-    return new SubscriptionAcknowledgementBuilder(subscriptionId, sequenceNumber);
+    return new SubscriptionAcknowledgementBuilderImpl(subscriptionId, sequenceNumber);
   }
 
-  public static class SubscriptionAcknowledgementBuilder
+  public static class SubscriptionAcknowledgementBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long subscriptionId;
     private final long sequenceNumber;
 
-    public SubscriptionAcknowledgementBuilder(long subscriptionId, long sequenceNumber) {
-
+    public SubscriptionAcknowledgementBuilderImpl(long subscriptionId, long sequenceNumber) {
       this.subscriptionId = subscriptionId;
       this.sequenceNumber = sequenceNumber;
     }

@@ -57,6 +57,7 @@ public class BACnetLogDataLogDataEntryEnumeratedValue extends BACnetLogDataLogDa
   protected void serializeBACnetLogDataLogDataEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryEnumeratedValue");
 
@@ -76,6 +77,7 @@ public class BACnetLogDataLogDataEntryEnumeratedValue extends BACnetLogDataLogDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogDataLogDataEntryEnumeratedValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (enumeratedValue)
     lengthInBits += enumeratedValue.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetLogDataLogDataEntryEnumeratedValue extends BACnetLogDataLogDa
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryEnumeratedValueBuilder staticParseBuilder(
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryEnumeratedValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagEnumerated enumeratedValue =
         readSimpleField(
@@ -102,16 +105,15 @@ public class BACnetLogDataLogDataEntryEnumeratedValue extends BACnetLogDataLogDa
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryEnumeratedValue");
     // Create the instance
-    return new BACnetLogDataLogDataEntryEnumeratedValueBuilder(enumeratedValue);
+    return new BACnetLogDataLogDataEntryEnumeratedValueBuilderImpl(enumeratedValue);
   }
 
-  public static class BACnetLogDataLogDataEntryEnumeratedValueBuilder
+  public static class BACnetLogDataLogDataEntryEnumeratedValueBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final BACnetContextTagEnumerated enumeratedValue;
 
-    public BACnetLogDataLogDataEntryEnumeratedValueBuilder(
+    public BACnetLogDataLogDataEntryEnumeratedValueBuilderImpl(
         BACnetContextTagEnumerated enumeratedValue) {
-
       this.enumeratedValue = enumeratedValue;
     }
 

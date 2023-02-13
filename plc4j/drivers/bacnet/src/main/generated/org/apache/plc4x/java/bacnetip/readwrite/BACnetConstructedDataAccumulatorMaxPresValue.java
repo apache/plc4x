@@ -79,6 +79,7 @@ public class BACnetConstructedDataAccumulatorMaxPresValue extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccumulatorMaxPresValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataAccumulatorMaxPresValue extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccumulatorMaxPresValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxPresValue)
     lengthInBits += maxPresValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataAccumulatorMaxPresValue extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccumulatorMaxPresValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataAccumulatorMaxPresValue extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxPresValue =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataAccumulatorMaxPresValue extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataAccumulatorMaxPresValue");
     // Create the instance
-    return new BACnetConstructedDataAccumulatorMaxPresValueBuilder(
+    return new BACnetConstructedDataAccumulatorMaxPresValueBuilderImpl(
         maxPresValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccumulatorMaxPresValueBuilder
+  public static class BACnetConstructedDataAccumulatorMaxPresValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxPresValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccumulatorMaxPresValueBuilder(
+    public BACnetConstructedDataAccumulatorMaxPresValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxPresValue = maxPresValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

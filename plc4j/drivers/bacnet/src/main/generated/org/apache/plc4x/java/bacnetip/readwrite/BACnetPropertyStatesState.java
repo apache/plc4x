@@ -55,6 +55,7 @@ public class BACnetPropertyStatesState extends BACnetPropertyStates implements M
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesState");
 
@@ -73,6 +74,7 @@ public class BACnetPropertyStatesState extends BACnetPropertyStates implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (state)
     lengthInBits += state.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetPropertyStatesState extends BACnetPropertyStates implements M
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEventStateTagged state =
         readSimpleField(
@@ -100,15 +103,14 @@ public class BACnetPropertyStatesState extends BACnetPropertyStates implements M
 
     readBuffer.closeContext("BACnetPropertyStatesState");
     // Create the instance
-    return new BACnetPropertyStatesStateBuilder(state);
+    return new BACnetPropertyStatesStateBuilderImpl(state);
   }
 
-  public static class BACnetPropertyStatesStateBuilder
+  public static class BACnetPropertyStatesStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetEventStateTagged state;
 
-    public BACnetPropertyStatesStateBuilder(BACnetEventStateTagged state) {
-
+    public BACnetPropertyStatesStateBuilderImpl(BACnetEventStateTagged state) {
       this.state = state;
     }
 

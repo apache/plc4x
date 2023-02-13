@@ -46,8 +46,6 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
   protected final ExtensionObjectDefinition requestHeader;
   protected final boolean releaseContinuationPoint;
   protected final PascalByteString continuationPoint;
-  // Reserved Fields
-  private Short reservedField0;
 
   public QueryNextRequest(
       ExtensionObjectDefinition requestHeader,
@@ -75,6 +73,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("QueryNextRequest");
 
@@ -82,10 +81,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
     writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (releaseContinuationPoint)
     writeSimpleField(
@@ -107,6 +103,7 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     QueryNextRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -123,12 +120,13 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static QueryNextRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("QueryNextRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -151,32 +149,28 @@ public class QueryNextRequest extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("QueryNextRequest");
     // Create the instance
-    return new QueryNextRequestBuilder(
-        requestHeader, releaseContinuationPoint, continuationPoint, reservedField0);
+    return new QueryNextRequestBuilderImpl(
+        requestHeader, releaseContinuationPoint, continuationPoint);
   }
 
-  public static class QueryNextRequestBuilder
+  public static class QueryNextRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final boolean releaseContinuationPoint;
     private final PascalByteString continuationPoint;
-    private final Short reservedField0;
 
-    public QueryNextRequestBuilder(
+    public QueryNextRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         boolean releaseContinuationPoint,
-        PascalByteString continuationPoint,
-        Short reservedField0) {
+        PascalByteString continuationPoint) {
       this.requestHeader = requestHeader;
       this.releaseContinuationPoint = releaseContinuationPoint;
       this.continuationPoint = continuationPoint;
-      this.reservedField0 = reservedField0;
     }
 
     public QueryNextRequest build() {
       QueryNextRequest queryNextRequest =
           new QueryNextRequest(requestHeader, releaseContinuationPoint, continuationPoint);
-      queryNextRequest.reservedField0 = reservedField0;
       return queryNextRequest;
     }
   }

@@ -78,6 +78,7 @@ public class BACnetConstructedDataStrikeCount extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataStrikeCount");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataStrikeCount extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataStrikeCount _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (strikeCount)
     lengthInBits += strikeCount.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataStrikeCount extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataStrikeCountBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataStrikeCount extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger strikeCount =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataStrikeCount extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataStrikeCount");
     // Create the instance
-    return new BACnetConstructedDataStrikeCountBuilder(strikeCount, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataStrikeCountBuilderImpl(
+        strikeCount, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataStrikeCountBuilder
+  public static class BACnetConstructedDataStrikeCountBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger strikeCount;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStrikeCountBuilder(
+    public BACnetConstructedDataStrikeCountBuilderImpl(
         BACnetApplicationTagUnsignedInteger strikeCount,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.strikeCount = strikeCount;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

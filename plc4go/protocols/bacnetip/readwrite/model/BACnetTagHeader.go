@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,6 +118,8 @@ func (m *_BACnetTagHeader) GetExtExtExtLength() *uint32 {
 ///////////////////////
 
 func (m *_BACnetTagHeader) GetActualTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	extTagNumber := m.ExtTagNumber
 	_ = extTagNumber
 	extLength := m.ExtLength
@@ -129,6 +132,8 @@ func (m *_BACnetTagHeader) GetActualTagNumber() uint8 {
 }
 
 func (m *_BACnetTagHeader) GetIsBoolean() bool {
+	ctx := context.Background()
+	_ = ctx
 	extTagNumber := m.ExtTagNumber
 	_ = extTagNumber
 	extLength := m.ExtLength
@@ -141,6 +146,8 @@ func (m *_BACnetTagHeader) GetIsBoolean() bool {
 }
 
 func (m *_BACnetTagHeader) GetIsConstructed() bool {
+	ctx := context.Background()
+	_ = ctx
 	extTagNumber := m.ExtTagNumber
 	_ = extTagNumber
 	extLength := m.ExtLength
@@ -153,6 +160,8 @@ func (m *_BACnetTagHeader) GetIsConstructed() bool {
 }
 
 func (m *_BACnetTagHeader) GetIsPrimitiveAndNotBoolean() bool {
+	ctx := context.Background()
+	_ = ctx
 	extTagNumber := m.ExtTagNumber
 	_ = extTagNumber
 	extLength := m.ExtLength
@@ -165,6 +174,8 @@ func (m *_BACnetTagHeader) GetIsPrimitiveAndNotBoolean() bool {
 }
 
 func (m *_BACnetTagHeader) GetActualLength() uint32 {
+	ctx := context.Background()
+	_ = ctx
 	extTagNumber := m.ExtTagNumber
 	_ = extTagNumber
 	extLength := m.ExtLength
@@ -205,11 +216,7 @@ func (m *_BACnetTagHeader) GetTypeName() string {
 	return "BACnetTagHeader"
 }
 
-func (m *_BACnetTagHeader) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTagHeader) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetTagHeader) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (tagNumber)
@@ -254,15 +261,15 @@ func (m *_BACnetTagHeader) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetTagHeader) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTagHeader) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTagHeaderParse(theBytes []byte) (BACnetTagHeader, error) {
-	return BACnetTagHeaderParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetTagHeaderParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetTagHeaderParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {
+func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTagHeader"); pullErr != nil {
@@ -282,7 +289,7 @@ func BACnetTagHeaderParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTagHeade
 	if pullErr := readBuffer.PullContext("tagClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for tagClass")
 	}
-	_tagClass, _tagClassErr := TagClassParseWithBuffer(readBuffer)
+	_tagClass, _tagClassErr := TagClassParseWithBuffer(ctx, readBuffer)
 	if _tagClassErr != nil {
 		return nil, errors.Wrap(_tagClassErr, "Error parsing 'tagClass' field of BACnetTagHeader")
 	}
@@ -384,14 +391,14 @@ func BACnetTagHeaderParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetTagHeade
 }
 
 func (m *_BACnetTagHeader) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTagHeader) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetTagHeader"); pushErr != nil {
@@ -409,7 +416,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("tagClass"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for tagClass")
 	}
-	_tagClassErr := writeBuffer.WriteSerializable(m.GetTagClass())
+	_tagClassErr := writeBuffer.WriteSerializable(ctx, m.GetTagClass())
 	if popErr := writeBuffer.PopContext("tagClass"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for tagClass")
 	}
@@ -434,19 +441,19 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		}
 	}
 	// Virtual field
-	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.GetActualTagNumber()); _actualTagNumberErr != nil {
+	if _actualTagNumberErr := writeBuffer.WriteVirtual(ctx, "actualTagNumber", m.GetActualTagNumber()); _actualTagNumberErr != nil {
 		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
 	}
 	// Virtual field
-	if _isBooleanErr := writeBuffer.WriteVirtual("isBoolean", m.GetIsBoolean()); _isBooleanErr != nil {
+	if _isBooleanErr := writeBuffer.WriteVirtual(ctx, "isBoolean", m.GetIsBoolean()); _isBooleanErr != nil {
 		return errors.Wrap(_isBooleanErr, "Error serializing 'isBoolean' field")
 	}
 	// Virtual field
-	if _isConstructedErr := writeBuffer.WriteVirtual("isConstructed", m.GetIsConstructed()); _isConstructedErr != nil {
+	if _isConstructedErr := writeBuffer.WriteVirtual(ctx, "isConstructed", m.GetIsConstructed()); _isConstructedErr != nil {
 		return errors.Wrap(_isConstructedErr, "Error serializing 'isConstructed' field")
 	}
 	// Virtual field
-	if _isPrimitiveAndNotBooleanErr := writeBuffer.WriteVirtual("isPrimitiveAndNotBoolean", m.GetIsPrimitiveAndNotBoolean()); _isPrimitiveAndNotBooleanErr != nil {
+	if _isPrimitiveAndNotBooleanErr := writeBuffer.WriteVirtual(ctx, "isPrimitiveAndNotBoolean", m.GetIsPrimitiveAndNotBoolean()); _isPrimitiveAndNotBooleanErr != nil {
 		return errors.Wrap(_isPrimitiveAndNotBooleanErr, "Error serializing 'isPrimitiveAndNotBoolean' field")
 	}
 
@@ -480,7 +487,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		}
 	}
 	// Virtual field
-	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.GetActualLength()); _actualLengthErr != nil {
+	if _actualLengthErr := writeBuffer.WriteVirtual(ctx, "actualLength", m.GetActualLength()); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
 	}
 
@@ -499,7 +506,7 @@ func (m *_BACnetTagHeader) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

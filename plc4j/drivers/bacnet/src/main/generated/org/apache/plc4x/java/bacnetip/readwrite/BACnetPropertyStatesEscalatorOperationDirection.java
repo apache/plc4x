@@ -58,6 +58,7 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesEscalatorOperationDirection");
 
@@ -79,6 +80,7 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesEscalatorOperationDirection _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (escalatorOperationDirection)
     lengthInBits += escalatorOperationDirection.getLengthInBits();
@@ -86,12 +88,13 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesEscalatorOperationDirectionBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesEscalatorOperationDirection");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEscalatorOperationDirectionTagged escalatorOperationDirection =
         readSimpleField(
@@ -106,16 +109,16 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
 
     readBuffer.closeContext("BACnetPropertyStatesEscalatorOperationDirection");
     // Create the instance
-    return new BACnetPropertyStatesEscalatorOperationDirectionBuilder(escalatorOperationDirection);
+    return new BACnetPropertyStatesEscalatorOperationDirectionBuilderImpl(
+        escalatorOperationDirection);
   }
 
-  public static class BACnetPropertyStatesEscalatorOperationDirectionBuilder
+  public static class BACnetPropertyStatesEscalatorOperationDirectionBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetEscalatorOperationDirectionTagged escalatorOperationDirection;
 
-    public BACnetPropertyStatesEscalatorOperationDirectionBuilder(
+    public BACnetPropertyStatesEscalatorOperationDirectionBuilderImpl(
         BACnetEscalatorOperationDirectionTagged escalatorOperationDirection) {
-
       this.escalatorOperationDirection = escalatorOperationDirection;
     }
 

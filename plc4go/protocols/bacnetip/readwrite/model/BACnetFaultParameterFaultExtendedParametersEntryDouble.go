@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetTypeName() 
 	return "BACnetFaultParameterFaultExtendedParametersEntryDouble"
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (doubleValue)
-	lengthInBits += m.DoubleValue.GetLengthInBits()
+	lengthInBits += m.DoubleValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetFaultParameterFaultExtendedParametersEntryDoubleParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryDouble, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryDoubleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetFaultParameterFaultExtendedParametersEntryDoubleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryDoubleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryDouble, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryDoubleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryDouble, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryDouble"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryDoubleParseWithBuffer(readB
 	if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doubleValue")
 	}
-	_doubleValue, _doubleValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_doubleValue, _doubleValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _doubleValueErr != nil {
 		return nil, errors.Wrap(_doubleValueErr, "Error parsing 'doubleValue' field of BACnetFaultParameterFaultExtendedParametersEntryDouble")
 	}
@@ -162,14 +159,14 @@ func BACnetFaultParameterFaultExtendedParametersEntryDoubleParseWithBuffer(readB
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) SerializeWithW
 		if pushErr := writeBuffer.PushContext("doubleValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for doubleValue")
 		}
-		_doubleValueErr := writeBuffer.WriteSerializable(m.GetDoubleValue())
+		_doubleValueErr := writeBuffer.WriteSerializable(ctx, m.GetDoubleValue())
 		if popErr := writeBuffer.PopContext("doubleValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for doubleValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) SerializeWithW
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) isBACnetFaultParameterFaultExtendedParametersEntryDouble() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryDouble) String() strin
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

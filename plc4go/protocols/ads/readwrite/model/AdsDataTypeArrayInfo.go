@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -75,6 +76,8 @@ func (m *_AdsDataTypeArrayInfo) GetNumElements() uint32 {
 ///////////////////////
 
 func (m *_AdsDataTypeArrayInfo) GetUpperBound() uint32 {
+	ctx := context.Background()
+	_ = ctx
 	return uint32(uint32(m.GetLowerBound()) + uint32(m.GetNumElements()))
 }
 
@@ -103,11 +106,7 @@ func (m *_AdsDataTypeArrayInfo) GetTypeName() string {
 	return "AdsDataTypeArrayInfo"
 }
 
-func (m *_AdsDataTypeArrayInfo) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsDataTypeArrayInfo) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AdsDataTypeArrayInfo) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (lowerBound)
@@ -121,15 +120,15 @@ func (m *_AdsDataTypeArrayInfo) GetLengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *_AdsDataTypeArrayInfo) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsDataTypeArrayInfo) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsDataTypeArrayInfoParse(theBytes []byte) (AdsDataTypeArrayInfo, error) {
-	return AdsDataTypeArrayInfoParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+	return AdsDataTypeArrayInfoParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
-func AdsDataTypeArrayInfoParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
+func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDataTypeArrayInfo"); pullErr != nil {
@@ -169,14 +168,14 @@ func AdsDataTypeArrayInfoParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDataTy
 }
 
 func (m *_AdsDataTypeArrayInfo) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AdsDataTypeArrayInfo"); pushErr != nil {
@@ -197,7 +196,7 @@ func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(writeBuffer utils.Write
 		return errors.Wrap(_numElementsErr, "Error serializing 'numElements' field")
 	}
 	// Virtual field
-	if _upperBoundErr := writeBuffer.WriteVirtual("upperBound", m.GetUpperBound()); _upperBoundErr != nil {
+	if _upperBoundErr := writeBuffer.WriteVirtual(ctx, "upperBound", m.GetUpperBound()); _upperBoundErr != nil {
 		return errors.Wrap(_upperBoundErr, "Error serializing 'upperBound' field")
 	}
 
@@ -216,7 +215,7 @@ func (m *_AdsDataTypeArrayInfo) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

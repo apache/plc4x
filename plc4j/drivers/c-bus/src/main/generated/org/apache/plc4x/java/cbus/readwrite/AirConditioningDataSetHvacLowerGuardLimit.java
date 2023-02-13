@@ -79,6 +79,7 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
   protected void serializeAirConditioningDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningDataSetHvacLowerGuardLimit");
 
@@ -107,6 +108,7 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AirConditioningDataSetHvacLowerGuardLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneGroup)
     lengthInBits += 8;
@@ -123,12 +125,13 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
     return lengthInBits;
   }
 
-  public static AirConditioningDataSetHvacLowerGuardLimitBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetHvacLowerGuardLimit");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte zoneGroup = readSimpleField("zoneGroup", readByte(readBuffer, 8));
 
@@ -151,23 +154,22 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
 
     readBuffer.closeContext("AirConditioningDataSetHvacLowerGuardLimit");
     // Create the instance
-    return new AirConditioningDataSetHvacLowerGuardLimitBuilder(
+    return new AirConditioningDataSetHvacLowerGuardLimitBuilderImpl(
         zoneGroup, zoneList, limit, hvacModeAndFlags);
   }
 
-  public static class AirConditioningDataSetHvacLowerGuardLimitBuilder
+  public static class AirConditioningDataSetHvacLowerGuardLimitBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
     private final HVACTemperature limit;
     private final HVACModeAndFlags hvacModeAndFlags;
 
-    public AirConditioningDataSetHvacLowerGuardLimitBuilder(
+    public AirConditioningDataSetHvacLowerGuardLimitBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACTemperature limit,
         HVACModeAndFlags hvacModeAndFlags) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.limit = limit;

@@ -64,6 +64,7 @@ public class ServiceCounterDataType extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServiceCounterDataType");
 
@@ -85,6 +86,7 @@ public class ServiceCounterDataType extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ServiceCounterDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (totalCount)
     lengthInBits += 32;
@@ -95,12 +97,13 @@ public class ServiceCounterDataType extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static ServiceCounterDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ServiceCounterDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long totalCount = readSimpleField("totalCount", readUnsignedLong(readBuffer, 32));
 
@@ -108,16 +111,15 @@ public class ServiceCounterDataType extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("ServiceCounterDataType");
     // Create the instance
-    return new ServiceCounterDataTypeBuilder(totalCount, errorCount);
+    return new ServiceCounterDataTypeBuilderImpl(totalCount, errorCount);
   }
 
-  public static class ServiceCounterDataTypeBuilder
+  public static class ServiceCounterDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long totalCount;
     private final long errorCount;
 
-    public ServiceCounterDataTypeBuilder(long totalCount, long errorCount) {
-
+    public ServiceCounterDataTypeBuilderImpl(long totalCount, long errorCount) {
       this.totalCount = totalCount;
       this.errorCount = errorCount;
     }

@@ -68,6 +68,7 @@ public class IdentifyReplyCommandDelays extends IdentifyReplyCommand implements 
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandDelays");
 
@@ -89,6 +90,7 @@ public class IdentifyReplyCommandDelays extends IdentifyReplyCommand implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandDelays _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (terminalLevels != null) {
@@ -101,12 +103,13 @@ public class IdentifyReplyCommandDelays extends IdentifyReplyCommand implements 
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandDelaysBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandDelays");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] terminalLevels =
         readBuffer.readByteArray("terminalLevels", Math.toIntExact((numBytes) - (1)));
@@ -115,18 +118,17 @@ public class IdentifyReplyCommandDelays extends IdentifyReplyCommand implements 
 
     readBuffer.closeContext("IdentifyReplyCommandDelays");
     // Create the instance
-    return new IdentifyReplyCommandDelaysBuilder(terminalLevels, reStrikeDelay, numBytes);
+    return new IdentifyReplyCommandDelaysBuilderImpl(terminalLevels, reStrikeDelay, numBytes);
   }
 
-  public static class IdentifyReplyCommandDelaysBuilder
+  public static class IdentifyReplyCommandDelaysBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] terminalLevels;
     private final byte reStrikeDelay;
     private final Short numBytes;
 
-    public IdentifyReplyCommandDelaysBuilder(
+    public IdentifyReplyCommandDelaysBuilderImpl(
         byte[] terminalLevels, byte reStrikeDelay, Short numBytes) {
-
       this.terminalLevels = terminalLevels;
       this.reStrikeDelay = reStrikeDelay;
       this.numBytes = numBytes;

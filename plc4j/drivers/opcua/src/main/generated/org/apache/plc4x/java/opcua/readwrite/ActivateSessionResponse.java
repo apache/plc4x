@@ -94,6 +94,7 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ActivateSessionResponse");
 
@@ -127,6 +128,7 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ActivateSessionResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -141,7 +143,7 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     if (results != null) {
       int i = 0;
       for (StatusCode element : results) {
-        boolean last = ++i >= results.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= results.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -153,7 +155,7 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -161,12 +163,13 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static ActivateSessionResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ActivateSessionResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -200,11 +203,11 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("ActivateSessionResponse");
     // Create the instance
-    return new ActivateSessionResponseBuilder(
+    return new ActivateSessionResponseBuilderImpl(
         responseHeader, serverNonce, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class ActivateSessionResponseBuilder
+  public static class ActivateSessionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final PascalByteString serverNonce;
@@ -213,14 +216,13 @@ public class ActivateSessionResponse extends ExtensionObjectDefinition implement
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public ActivateSessionResponseBuilder(
+    public ActivateSessionResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         PascalByteString serverNonce,
         int noOfResults,
         List<StatusCode> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.serverNonce = serverNonce;
       this.noOfResults = noOfResults;

@@ -61,6 +61,7 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
   @Override
   protected void serializeEncodedReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EncodedReplyCALReply");
 
@@ -79,6 +80,7 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EncodedReplyCALReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (calReply)
     lengthInBits += calReply.getLengthInBits();
@@ -86,13 +88,14 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
     return lengthInBits;
   }
 
-  public static EncodedReplyCALReplyBuilder staticParseBuilder(
+  public static EncodedReplyBuilder staticParseEncodedReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("EncodedReplyCALReply");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CALReply calReply =
         readSimpleField(
@@ -105,17 +108,16 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
 
     readBuffer.closeContext("EncodedReplyCALReply");
     // Create the instance
-    return new EncodedReplyCALReplyBuilder(calReply, cBusOptions, requestContext);
+    return new EncodedReplyCALReplyBuilderImpl(calReply, cBusOptions, requestContext);
   }
 
-  public static class EncodedReplyCALReplyBuilder implements EncodedReply.EncodedReplyBuilder {
+  public static class EncodedReplyCALReplyBuilderImpl implements EncodedReply.EncodedReplyBuilder {
     private final CALReply calReply;
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public EncodedReplyCALReplyBuilder(
+    public EncodedReplyCALReplyBuilderImpl(
         CALReply calReply, CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.calReply = calReply;
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;

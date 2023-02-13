@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -90,25 +91,21 @@ func (m *_ConnectionRequestInformationDeviceManagement) GetTypeName() string {
 	return "ConnectionRequestInformationDeviceManagement"
 }
 
-func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ConnectionRequestInformationDeviceManagement) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ConnectionRequestInformationDeviceManagementParse(theBytes []byte) (ConnectionRequestInformationDeviceManagement, error) {
-	return ConnectionRequestInformationDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ConnectionRequestInformationDeviceManagementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ConnectionRequestInformationDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRequestInformationDeviceManagement, error) {
+func ConnectionRequestInformationDeviceManagementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequestInformationDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformationDeviceManagement"); pullErr != nil {
@@ -130,14 +127,14 @@ func ConnectionRequestInformationDeviceManagementParseWithBuffer(readBuffer util
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ConnectionRequestInformationDeviceManagement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ConnectionRequestInformationDeviceManagement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -150,7 +147,7 @@ func (m *_ConnectionRequestInformationDeviceManagement) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ConnectionRequestInformationDeviceManagement) isConnectionRequestInformationDeviceManagement() bool {
@@ -162,7 +159,7 @@ func (m *_ConnectionRequestInformationDeviceManagement) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

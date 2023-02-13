@@ -57,6 +57,7 @@ public class DF1UnprotectedReadResponse extends DF1Command implements Message {
   @Override
   protected void serializeDF1CommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1UnprotectedReadResponse");
 
@@ -80,6 +81,7 @@ public class DF1UnprotectedReadResponse extends DF1Command implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DF1UnprotectedReadResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Manual Array Field (data)
     lengthInBits += org.apache.plc4x.java.df1.readwrite.utils.StaticHelper.dataLength(data) * 8;
@@ -87,12 +89,13 @@ public class DF1UnprotectedReadResponse extends DF1Command implements Message {
     return lengthInBits;
   }
 
-  public static DF1UnprotectedReadResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static DF1CommandBuilder staticParseDF1CommandBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DF1UnprotectedReadResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] data =
         readManualByteArrayField(
@@ -108,14 +111,14 @@ public class DF1UnprotectedReadResponse extends DF1Command implements Message {
 
     readBuffer.closeContext("DF1UnprotectedReadResponse");
     // Create the instance
-    return new DF1UnprotectedReadResponseBuilder(data);
+    return new DF1UnprotectedReadResponseBuilderImpl(data);
   }
 
-  public static class DF1UnprotectedReadResponseBuilder implements DF1Command.DF1CommandBuilder {
+  public static class DF1UnprotectedReadResponseBuilderImpl
+      implements DF1Command.DF1CommandBuilder {
     private final byte[] data;
 
-    public DF1UnprotectedReadResponseBuilder(byte[] data) {
-
+    public DF1UnprotectedReadResponseBuilderImpl(byte[] data) {
       this.data = data;
     }
 

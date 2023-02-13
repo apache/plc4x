@@ -64,6 +64,7 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueInterfaceOptions1PowerUpSettings");
 
@@ -82,6 +83,7 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueInterfaceOptions1PowerUpSettings _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += value.getLengthInBits();
@@ -89,12 +91,13 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
     return lengthInBits;
   }
 
-  public static ParameterValueInterfaceOptions1PowerUpSettingsBuilder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueInterfaceOptions1PowerUpSettings");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {
       throw new ParseValidationException("InterfaceOptions1PowerUpSettings has exactly one byte");
@@ -108,17 +111,16 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
 
     readBuffer.closeContext("ParameterValueInterfaceOptions1PowerUpSettings");
     // Create the instance
-    return new ParameterValueInterfaceOptions1PowerUpSettingsBuilder(value, numBytes);
+    return new ParameterValueInterfaceOptions1PowerUpSettingsBuilderImpl(value, numBytes);
   }
 
-  public static class ParameterValueInterfaceOptions1PowerUpSettingsBuilder
+  public static class ParameterValueInterfaceOptions1PowerUpSettingsBuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final InterfaceOptions1PowerUpSettings value;
     private final Short numBytes;
 
-    public ParameterValueInterfaceOptions1PowerUpSettingsBuilder(
+    public ParameterValueInterfaceOptions1PowerUpSettingsBuilderImpl(
         InterfaceOptions1PowerUpSettings value, Short numBytes) {
-
       this.value = value;
       this.numBytes = numBytes;
     }

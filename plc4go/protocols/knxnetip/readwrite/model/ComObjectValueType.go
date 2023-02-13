@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -243,19 +244,19 @@ func CastComObjectValueType(structType interface{}) ComObjectValueType {
 	return castFunc(structType)
 }
 
-func (m ComObjectValueType) GetLengthInBits() uint16 {
+func (m ComObjectValueType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m ComObjectValueType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ComObjectValueType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ComObjectValueTypeParse(theBytes []byte) (ComObjectValueType, error) {
-	return ComObjectValueTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ComObjectValueTypeParse(ctx context.Context, theBytes []byte) (ComObjectValueType, error) {
+	return ComObjectValueTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ComObjectValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ComObjectValueType, error) {
+func ComObjectValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ComObjectValueType, error) {
 	val, err := readBuffer.ReadUint8("ComObjectValueType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ComObjectValueType")
@@ -270,13 +271,13 @@ func ComObjectValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ComObjectVa
 
 func (e ComObjectValueType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ComObjectValueType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ComObjectValueType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ComObjectValueType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

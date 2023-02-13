@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,11 +99,7 @@ func (m *_Services) GetTypeName() string {
 	return "Services"
 }
 
-func (m *_Services) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_Services) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_Services) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (serviceNb)
@@ -114,24 +112,26 @@ func (m *_Services) GetLengthInBitsConditional(lastItem bool) uint16 {
 
 	// Array field
 	if len(m.Services) > 0 {
-		for i, element := range m.Services {
-			last := i == len(m.Services)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.Services {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Services), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_Services) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_Services) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ServicesParse(theBytes []byte, servicesLen uint16) (Services, error) {
-	return ServicesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), servicesLen)
+	return ServicesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), servicesLen)
 }
 
-func ServicesParseWithBuffer(readBuffer utils.ReadBuffer, servicesLen uint16) (Services, error) {
+func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, servicesLen uint16) (Services, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Services"); pullErr != nil {
@@ -158,12 +158,16 @@ func ServicesParseWithBuffer(readBuffer utils.ReadBuffer, servicesLen uint16) (S
 		offsets = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
+		_numItems := uint16(serviceNb)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint16("", 16)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'offsets' field of Services")
 			}
-			offsets[curItem] = _item
+			offsets[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("offsets", utils.WithRenderAsList(true)); closeErr != nil {
@@ -181,12 +185,16 @@ func ServicesParseWithBuffer(readBuffer utils.ReadBuffer, servicesLen uint16) (S
 		services = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(serviceNb); curItem++ {
-			_item, _err := CipServiceParseWithBuffer(readBuffer, uint16(servicesLen)/uint16(serviceNb))
+		_numItems := uint16(serviceNb)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := CipServiceParseWithBuffer(arrayCtx, readBuffer, uint16(servicesLen)/uint16(serviceNb))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'services' field of Services")
 			}
-			services[curItem] = _item.(CipService)
+			services[_curItem] = _item.(CipService)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("services", utils.WithRenderAsList(true)); closeErr != nil {
@@ -207,14 +215,14 @@ func ServicesParseWithBuffer(readBuffer utils.ReadBuffer, servicesLen uint16) (S
 }
 
 func (m *_Services) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_Services) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("Services"); pushErr != nil {
@@ -232,7 +240,8 @@ func (m *_Services) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) erro
 	if pushErr := writeBuffer.PushContext("offsets", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for offsets")
 	}
-	for _, _element := range m.GetOffsets() {
+	for _curItem, _element := range m.GetOffsets() {
+		_ = _curItem
 		_elementErr := writeBuffer.WriteUint16("", 16, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
@@ -246,8 +255,11 @@ func (m *_Services) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) erro
 	if pushErr := writeBuffer.PushContext("services", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for services")
 	}
-	for _, _element := range m.GetServices() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
+	for _curItem, _element := range m.GetServices() {
+		_ = _curItem
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetServices()), _curItem)
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'services' field")
 		}
@@ -281,7 +293,7 @@ func (m *_Services) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

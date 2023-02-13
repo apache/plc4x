@@ -65,6 +65,7 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
   protected void serializeBACnetFaultParameterFaultOutOfRangeMaxNormalValueChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble");
 
@@ -83,6 +84,7 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doubleValue)
     lengthInBits += doubleValue.getLengthInBits();
@@ -90,12 +92,14 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder
+      staticParseBACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble doubleValue =
         readSimpleField(
@@ -106,19 +110,18 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble");
     // Create the instance
-    return new BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder(
+    return new BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilderImpl(
         doubleValue, tagNumber);
   }
 
-  public static class BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder
+  public static class BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilderImpl
       implements BACnetFaultParameterFaultOutOfRangeMaxNormalValue
           .BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder {
     private final BACnetApplicationTagDouble doubleValue;
     private final Short tagNumber;
 
-    public BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilder(
+    public BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleBuilderImpl(
         BACnetApplicationTagDouble doubleValue, Short tagNumber) {
-
       this.doubleValue = doubleValue;
       this.tagNumber = tagNumber;
     }

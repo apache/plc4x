@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -826,19 +827,19 @@ func CastLightingCommandTypeContainer(structType interface{}) LightingCommandTyp
 	return castFunc(structType)
 }
 
-func (m LightingCommandTypeContainer) GetLengthInBits() uint16 {
+func (m LightingCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m LightingCommandTypeContainer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m LightingCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func LightingCommandTypeContainerParse(theBytes []byte) (LightingCommandTypeContainer, error) {
-	return LightingCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func LightingCommandTypeContainerParse(ctx context.Context, theBytes []byte) (LightingCommandTypeContainer, error) {
+	return LightingCommandTypeContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func LightingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (LightingCommandTypeContainer, error) {
+func LightingCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("LightingCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LightingCommandTypeContainer")
@@ -853,13 +854,13 @@ func LightingCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (L
 
 func (e LightingCommandTypeContainer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e LightingCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e LightingCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LightingCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

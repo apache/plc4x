@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -66,12 +67,11 @@ type _Request struct {
 
 type _RequestChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type RequestParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child Request, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child Request, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -119,6 +119,8 @@ func (m *_Request) GetTermination() RequestTermination {
 ///////////////////////
 
 func (m *_Request) GetActualPeek() RequestType {
+	ctx := context.Background()
+	_ = ctx
 	startingCR := m.StartingCR
 	_ = startingCR
 	resetMode := m.ResetMode
@@ -151,7 +153,7 @@ func (m *_Request) GetTypeName() string {
 	return "Request"
 }
 
-func (m *_Request) GetParentLengthInBits() uint16 {
+func (m *_Request) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (startingCR)
@@ -167,20 +169,20 @@ func (m *_Request) GetParentLengthInBits() uint16 {
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (termination)
-	lengthInBits += m.Termination.GetLengthInBits()
+	lengthInBits += m.Termination.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_Request) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_Request) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func RequestParse(theBytes []byte, cBusOptions CBusOptions) (Request, error) {
-	return RequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return RequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func RequestParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request, error) {
+func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Request"); pullErr != nil {
@@ -194,7 +196,7 @@ func RequestParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	if pullErr := readBuffer.PullContext("peekedByte"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedByte")
 	}
-	peekedByte, _err := RequestTypeParseWithBuffer(readBuffer)
+	peekedByte, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field of Request")
 	}
@@ -210,7 +212,7 @@ func RequestParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 		if pullErr := readBuffer.PullContext("startingCR"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for startingCR")
 		}
-		_val, _err := RequestTypeParseWithBuffer(readBuffer)
+		_val, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'startingCR' field of Request")
 		}
@@ -226,7 +228,7 @@ func RequestParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 		if pullErr := readBuffer.PullContext("resetMode"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for resetMode")
 		}
-		_val, _err := RequestTypeParseWithBuffer(readBuffer)
+		_val, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'resetMode' field of Request")
 		}
@@ -241,7 +243,7 @@ func RequestParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	if pullErr := readBuffer.PullContext("secondPeek"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for secondPeek")
 	}
-	secondPeek, _err := RequestTypeParseWithBuffer(readBuffer)
+	secondPeek, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'secondPeek' field of Request")
 	}
@@ -267,19 +269,19 @@ func RequestParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	var typeSwitchError error
 	switch {
 	case actualPeek == RequestType_SMART_CONNECT_SHORTCUT: // RequestSmartConnectShortcut
-		_childTemp, typeSwitchError = RequestSmartConnectShortcutParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestSmartConnectShortcutParseWithBuffer(ctx, readBuffer, cBusOptions)
 	case actualPeek == RequestType_RESET: // RequestReset
-		_childTemp, typeSwitchError = RequestResetParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestResetParseWithBuffer(ctx, readBuffer, cBusOptions)
 	case actualPeek == RequestType_DIRECT_COMMAND: // RequestDirectCommandAccess
-		_childTemp, typeSwitchError = RequestDirectCommandAccessParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestDirectCommandAccessParseWithBuffer(ctx, readBuffer, cBusOptions)
 	case actualPeek == RequestType_REQUEST_COMMAND: // RequestCommand
-		_childTemp, typeSwitchError = RequestCommandParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestCommandParseWithBuffer(ctx, readBuffer, cBusOptions)
 	case actualPeek == RequestType_NULL: // RequestNull
-		_childTemp, typeSwitchError = RequestNullParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestNullParseWithBuffer(ctx, readBuffer, cBusOptions)
 	case actualPeek == RequestType_EMPTY: // RequestEmpty
-		_childTemp, typeSwitchError = RequestEmptyParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestEmptyParseWithBuffer(ctx, readBuffer, cBusOptions)
 	case 0 == 0: // RequestObsolete
-		_childTemp, typeSwitchError = RequestObsoleteParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = RequestObsoleteParseWithBuffer(ctx, readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [actualPeek=%v]", actualPeek)
 	}
@@ -292,7 +294,7 @@ func RequestParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for termination")
 	}
-	_termination, _terminationErr := RequestTerminationParseWithBuffer(readBuffer)
+	_termination, _terminationErr := RequestTerminationParseWithBuffer(ctx, readBuffer)
 	if _terminationErr != nil {
 		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of Request")
 	}
@@ -310,7 +312,7 @@ func RequestParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions
 	return _child, nil
 }
 
-func (pm *_Request) SerializeParent(writeBuffer utils.WriteBuffer, child Request, serializeChildFunction func() error) error {
+func (pm *_Request) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child Request, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -327,7 +329,7 @@ func (pm *_Request) SerializeParent(writeBuffer utils.WriteBuffer, child Request
 			return errors.Wrap(pushErr, "Error pushing for startingCR")
 		}
 		startingCR = m.GetStartingCR()
-		_startingCRErr := writeBuffer.WriteSerializable(startingCR)
+		_startingCRErr := writeBuffer.WriteSerializable(ctx, startingCR)
 		if popErr := writeBuffer.PopContext("startingCR"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for startingCR")
 		}
@@ -343,7 +345,7 @@ func (pm *_Request) SerializeParent(writeBuffer utils.WriteBuffer, child Request
 			return errors.Wrap(pushErr, "Error pushing for resetMode")
 		}
 		resetMode = m.GetResetMode()
-		_resetModeErr := writeBuffer.WriteSerializable(resetMode)
+		_resetModeErr := writeBuffer.WriteSerializable(ctx, resetMode)
 		if popErr := writeBuffer.PopContext("resetMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for resetMode")
 		}
@@ -352,7 +354,7 @@ func (pm *_Request) SerializeParent(writeBuffer utils.WriteBuffer, child Request
 		}
 	}
 	// Virtual field
-	if _actualPeekErr := writeBuffer.WriteVirtual("actualPeek", m.GetActualPeek()); _actualPeekErr != nil {
+	if _actualPeekErr := writeBuffer.WriteVirtual(ctx, "actualPeek", m.GetActualPeek()); _actualPeekErr != nil {
 		return errors.Wrap(_actualPeekErr, "Error serializing 'actualPeek' field")
 	}
 
@@ -365,7 +367,7 @@ func (pm *_Request) SerializeParent(writeBuffer utils.WriteBuffer, child Request
 	if pushErr := writeBuffer.PushContext("termination"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for termination")
 	}
-	_terminationErr := writeBuffer.WriteSerializable(m.GetTermination())
+	_terminationErr := writeBuffer.WriteSerializable(ctx, m.GetTermination())
 	if popErr := writeBuffer.PopContext("termination"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for termination")
 	}
@@ -398,7 +400,7 @@ func (m *_Request) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

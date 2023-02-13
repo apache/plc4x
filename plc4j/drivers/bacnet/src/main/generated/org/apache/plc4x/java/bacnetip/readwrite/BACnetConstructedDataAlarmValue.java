@@ -78,6 +78,7 @@ public class BACnetConstructedDataAlarmValue extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAlarmValue");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataAlarmValue extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAlarmValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (binaryPv)
     lengthInBits += binaryPv.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataAlarmValue extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAlarmValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataAlarmValue extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBinaryPVTagged binaryPv =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataAlarmValue extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataAlarmValue");
     // Create the instance
-    return new BACnetConstructedDataAlarmValueBuilder(binaryPv, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAlarmValueBuilderImpl(binaryPv, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAlarmValueBuilder
+  public static class BACnetConstructedDataAlarmValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBinaryPVTagged binaryPv;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAlarmValueBuilder(
+    public BACnetConstructedDataAlarmValueBuilderImpl(
         BACnetBinaryPVTagged binaryPv,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.binaryPv = binaryPv;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

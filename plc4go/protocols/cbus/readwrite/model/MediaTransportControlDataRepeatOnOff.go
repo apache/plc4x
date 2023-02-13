@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -92,14 +93,20 @@ func (m *_MediaTransportControlDataRepeatOnOff) GetRepeatType() byte {
 ///////////////////////
 
 func (m *_MediaTransportControlDataRepeatOnOff) GetIsOff() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetRepeatType()) == (0x00)))
 }
 
 func (m *_MediaTransportControlDataRepeatOnOff) GetIsRepeatCurrent() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(bool((m.GetRepeatType()) > (0x00))) && bool(bool((m.GetRepeatType()) <= (0xFE))))
 }
 
 func (m *_MediaTransportControlDataRepeatOnOff) GetIsRepeatTracks() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetRepeatType()) >= (0xFE)))
 }
 
@@ -133,12 +140,8 @@ func (m *_MediaTransportControlDataRepeatOnOff) GetTypeName() string {
 	return "MediaTransportControlDataRepeatOnOff"
 }
 
-func (m *_MediaTransportControlDataRepeatOnOff) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataRepeatOnOff) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataRepeatOnOff) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (repeatType)
 	lengthInBits += 8
@@ -152,15 +155,15 @@ func (m *_MediaTransportControlDataRepeatOnOff) GetLengthInBitsConditional(lastI
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataRepeatOnOff) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataRepeatOnOff) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataRepeatOnOffParse(theBytes []byte) (MediaTransportControlDataRepeatOnOff, error) {
-	return MediaTransportControlDataRepeatOnOffParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataRepeatOnOffParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataRepeatOnOffParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataRepeatOnOff, error) {
+func MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRepeatOnOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataRepeatOnOff"); pullErr != nil {
@@ -205,14 +208,14 @@ func MediaTransportControlDataRepeatOnOffParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_MediaTransportControlDataRepeatOnOff) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataRepeatOnOff) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataRepeatOnOff) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -227,15 +230,15 @@ func (m *_MediaTransportControlDataRepeatOnOff) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_repeatTypeErr, "Error serializing 'repeatType' field")
 		}
 		// Virtual field
-		if _isOffErr := writeBuffer.WriteVirtual("isOff", m.GetIsOff()); _isOffErr != nil {
+		if _isOffErr := writeBuffer.WriteVirtual(ctx, "isOff", m.GetIsOff()); _isOffErr != nil {
 			return errors.Wrap(_isOffErr, "Error serializing 'isOff' field")
 		}
 		// Virtual field
-		if _isRepeatCurrentErr := writeBuffer.WriteVirtual("isRepeatCurrent", m.GetIsRepeatCurrent()); _isRepeatCurrentErr != nil {
+		if _isRepeatCurrentErr := writeBuffer.WriteVirtual(ctx, "isRepeatCurrent", m.GetIsRepeatCurrent()); _isRepeatCurrentErr != nil {
 			return errors.Wrap(_isRepeatCurrentErr, "Error serializing 'isRepeatCurrent' field")
 		}
 		// Virtual field
-		if _isRepeatTracksErr := writeBuffer.WriteVirtual("isRepeatTracks", m.GetIsRepeatTracks()); _isRepeatTracksErr != nil {
+		if _isRepeatTracksErr := writeBuffer.WriteVirtual(ctx, "isRepeatTracks", m.GetIsRepeatTracks()); _isRepeatTracksErr != nil {
 			return errors.Wrap(_isRepeatTracksErr, "Error serializing 'isRepeatTracks' field")
 		}
 
@@ -244,7 +247,7 @@ func (m *_MediaTransportControlDataRepeatOnOff) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataRepeatOnOff) isMediaTransportControlDataRepeatOnOff() bool {
@@ -256,7 +259,7 @@ func (m *_MediaTransportControlDataRepeatOnOff) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

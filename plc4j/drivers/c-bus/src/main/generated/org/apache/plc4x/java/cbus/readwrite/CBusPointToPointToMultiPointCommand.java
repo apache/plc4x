@@ -76,6 +76,7 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToPointToMultiPointCommand");
 
@@ -100,6 +101,7 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CBusPointToPointToMultiPointCommand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bridgeAddress)
     lengthInBits += bridgeAddress.getLengthInBits();
@@ -136,6 +138,7 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BridgeAddress bridgeAddress =
         readSimpleField(
@@ -154,10 +157,12 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
     CBusPointToPointToMultiPointCommandBuilder builder = null;
     if (EvaluationHelper.equals(peekedApplication, (byte) 0xFF)) {
       builder =
-          CBusPointToPointToMultiPointCommandStatus.staticParseBuilder(readBuffer, cBusOptions);
+          CBusPointToPointToMultiPointCommandStatus
+              .staticParseCBusPointToPointToMultiPointCommandBuilder(readBuffer, cBusOptions);
     } else if (true) {
       builder =
-          CBusPointToPointToMultiPointCommandNormal.staticParseBuilder(readBuffer, cBusOptions);
+          CBusPointToPointToMultiPointCommandNormal
+              .staticParseCBusPointToPointToMultiPointCommandBuilder(readBuffer, cBusOptions);
     }
     if (builder == null) {
       throw new ParseException(
@@ -175,7 +180,7 @@ public abstract class CBusPointToPointToMultiPointCommand implements Message {
     return _cBusPointToPointToMultiPointCommand;
   }
 
-  public static interface CBusPointToPointToMultiPointCommandBuilder {
+  public interface CBusPointToPointToMultiPointCommandBuilder {
     CBusPointToPointToMultiPointCommand build(
         BridgeAddress bridgeAddress,
         NetworkRoute networkRoute,

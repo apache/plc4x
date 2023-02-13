@@ -71,6 +71,7 @@ public class BACnetFaultParameterFaultListed extends BACnetFaultParameter implem
   protected void serializeBACnetFaultParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultListed");
 
@@ -96,6 +97,7 @@ public class BACnetFaultParameterFaultListed extends BACnetFaultParameter implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultListed _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -109,12 +111,13 @@ public class BACnetFaultParameterFaultListed extends BACnetFaultParameter implem
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultListedBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetFaultParameterBuilder staticParseBACnetFaultParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultListed");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -139,20 +142,20 @@ public class BACnetFaultParameterFaultListed extends BACnetFaultParameter implem
 
     readBuffer.closeContext("BACnetFaultParameterFaultListed");
     // Create the instance
-    return new BACnetFaultParameterFaultListedBuilder(openingTag, faultListReference, closingTag);
+    return new BACnetFaultParameterFaultListedBuilderImpl(
+        openingTag, faultListReference, closingTag);
   }
 
-  public static class BACnetFaultParameterFaultListedBuilder
+  public static class BACnetFaultParameterFaultListedBuilderImpl
       implements BACnetFaultParameter.BACnetFaultParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetDeviceObjectPropertyReferenceEnclosed faultListReference;
     private final BACnetClosingTag closingTag;
 
-    public BACnetFaultParameterFaultListedBuilder(
+    public BACnetFaultParameterFaultListedBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetDeviceObjectPropertyReferenceEnclosed faultListReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.faultListReference = faultListReference;
       this.closingTag = closingTag;

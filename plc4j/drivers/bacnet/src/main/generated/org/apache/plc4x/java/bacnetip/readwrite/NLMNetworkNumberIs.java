@@ -70,6 +70,7 @@ public class NLMNetworkNumberIs extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMNetworkNumberIs");
 
@@ -97,6 +98,7 @@ public class NLMNetworkNumberIs extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMNetworkNumberIs _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (networkNumber)
     lengthInBits += 16;
@@ -110,12 +112,13 @@ public class NLMNetworkNumberIs extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMNetworkNumberIsBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMNetworkNumberIs");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int networkNumber = readSimpleField("networkNumber", readUnsignedInt(readBuffer, 16));
 
@@ -127,17 +130,17 @@ public class NLMNetworkNumberIs extends NLM implements Message {
 
     readBuffer.closeContext("NLMNetworkNumberIs");
     // Create the instance
-    return new NLMNetworkNumberIsBuilder(
+    return new NLMNetworkNumberIsBuilderImpl(
         networkNumber, networkNumberConfigured, apduLength, reservedField0);
   }
 
-  public static class NLMNetworkNumberIsBuilder implements NLM.NLMBuilder {
+  public static class NLMNetworkNumberIsBuilderImpl implements NLM.NLMBuilder {
     private final int networkNumber;
     private final boolean networkNumberConfigured;
     private final Integer apduLength;
     private final Short reservedField0;
 
-    public NLMNetworkNumberIsBuilder(
+    public NLMNetworkNumberIsBuilderImpl(
         int networkNumber,
         boolean networkNumberConfigured,
         Integer apduLength,

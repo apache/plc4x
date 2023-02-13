@@ -92,6 +92,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckGetEnrollmentSummary");
 
@@ -124,6 +125,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckGetEnrollmentSummary _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectIdentifier)
     lengthInBits += objectIdentifier.getLengthInBits();
@@ -145,12 +147,13 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     return lengthInBits;
   }
 
-  public static BACnetServiceAckGetEnrollmentSummaryBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckGetEnrollmentSummary");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(
@@ -199,11 +202,11 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
 
     readBuffer.closeContext("BACnetServiceAckGetEnrollmentSummary");
     // Create the instance
-    return new BACnetServiceAckGetEnrollmentSummaryBuilder(
+    return new BACnetServiceAckGetEnrollmentSummaryBuilderImpl(
         objectIdentifier, eventType, eventState, priority, notificationClass, serviceAckLength);
   }
 
-  public static class BACnetServiceAckGetEnrollmentSummaryBuilder
+  public static class BACnetServiceAckGetEnrollmentSummaryBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final BACnetEventTypeTagged eventType;
@@ -212,14 +215,13 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     private final BACnetApplicationTagUnsignedInteger notificationClass;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckGetEnrollmentSummaryBuilder(
+    public BACnetServiceAckGetEnrollmentSummaryBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier,
         BACnetEventTypeTagged eventType,
         BACnetEventStateTagged eventState,
         BACnetApplicationTagUnsignedInteger priority,
         BACnetApplicationTagUnsignedInteger notificationClass,
         Long serviceAckLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.eventType = eventType;
       this.eventState = eventState;

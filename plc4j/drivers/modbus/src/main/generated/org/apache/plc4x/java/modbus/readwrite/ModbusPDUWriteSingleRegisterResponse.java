@@ -71,6 +71,7 @@ public class ModbusPDUWriteSingleRegisterResponse extends ModbusPDU implements M
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUWriteSingleRegisterResponse");
 
@@ -92,6 +93,7 @@ public class ModbusPDUWriteSingleRegisterResponse extends ModbusPDU implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUWriteSingleRegisterResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (address)
     lengthInBits += 16;
@@ -102,12 +104,13 @@ public class ModbusPDUWriteSingleRegisterResponse extends ModbusPDU implements M
     return lengthInBits;
   }
 
-  public static ModbusPDUWriteSingleRegisterResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUWriteSingleRegisterResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int address = readSimpleField("address", readUnsignedInt(readBuffer, 16));
 
@@ -115,16 +118,15 @@ public class ModbusPDUWriteSingleRegisterResponse extends ModbusPDU implements M
 
     readBuffer.closeContext("ModbusPDUWriteSingleRegisterResponse");
     // Create the instance
-    return new ModbusPDUWriteSingleRegisterResponseBuilder(address, value);
+    return new ModbusPDUWriteSingleRegisterResponseBuilderImpl(address, value);
   }
 
-  public static class ModbusPDUWriteSingleRegisterResponseBuilder
+  public static class ModbusPDUWriteSingleRegisterResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int address;
     private final int value;
 
-    public ModbusPDUWriteSingleRegisterResponseBuilder(int address, int value) {
-
+    public ModbusPDUWriteSingleRegisterResponseBuilderImpl(int address, int value) {
       this.address = address;
       this.value = value;
     }

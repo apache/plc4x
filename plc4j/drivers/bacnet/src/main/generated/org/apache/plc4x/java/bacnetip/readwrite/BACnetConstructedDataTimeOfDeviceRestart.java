@@ -79,6 +79,7 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimeOfDeviceRestart");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimeOfDeviceRestart _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeOfDeviceRestart)
     lengthInBits += timeOfDeviceRestart.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimeOfDeviceRestartBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimeStamp timeOfDeviceRestart =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataTimeOfDeviceRestart");
     // Create the instance
-    return new BACnetConstructedDataTimeOfDeviceRestartBuilder(
+    return new BACnetConstructedDataTimeOfDeviceRestartBuilderImpl(
         timeOfDeviceRestart, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimeOfDeviceRestartBuilder
+  public static class BACnetConstructedDataTimeOfDeviceRestartBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimeStamp timeOfDeviceRestart;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimeOfDeviceRestartBuilder(
+    public BACnetConstructedDataTimeOfDeviceRestartBuilderImpl(
         BACnetTimeStamp timeOfDeviceRestart,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timeOfDeviceRestart = timeOfDeviceRestart;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

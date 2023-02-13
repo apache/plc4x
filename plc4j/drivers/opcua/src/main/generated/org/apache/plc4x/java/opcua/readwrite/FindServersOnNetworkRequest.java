@@ -87,6 +87,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FindServersOnNetworkRequest");
 
@@ -118,6 +119,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FindServersOnNetworkRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -135,7 +137,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     if (serverCapabilityFilter != null) {
       int i = 0;
       for (PascalString element : serverCapabilityFilter) {
-        boolean last = ++i >= serverCapabilityFilter.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverCapabilityFilter.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -143,12 +145,13 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static FindServersOnNetworkRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FindServersOnNetworkRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -173,7 +176,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("FindServersOnNetworkRequest");
     // Create the instance
-    return new FindServersOnNetworkRequestBuilder(
+    return new FindServersOnNetworkRequestBuilderImpl(
         requestHeader,
         startingRecordId,
         maxRecordsToReturn,
@@ -181,7 +184,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
         serverCapabilityFilter);
   }
 
-  public static class FindServersOnNetworkRequestBuilder
+  public static class FindServersOnNetworkRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long startingRecordId;
@@ -189,13 +192,12 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     private final int noOfServerCapabilityFilter;
     private final List<PascalString> serverCapabilityFilter;
 
-    public FindServersOnNetworkRequestBuilder(
+    public FindServersOnNetworkRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long startingRecordId,
         long maxRecordsToReturn,
         int noOfServerCapabilityFilter,
         List<PascalString> serverCapabilityFilter) {
-
       this.requestHeader = requestHeader;
       this.startingRecordId = startingRecordId;
       this.maxRecordsToReturn = maxRecordsToReturn;

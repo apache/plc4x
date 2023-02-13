@@ -65,9 +65,6 @@ public class AdsSymbolTableEntry implements Message {
   protected final String dataTypeName;
   protected final String comment;
   protected final byte[] rest;
-  // Reserved Fields
-  private Byte reservedField0;
-  private Integer reservedField1;
 
   public AdsSymbolTableEntry(
       long entryLength,
@@ -219,6 +216,7 @@ public class AdsSymbolTableEntry implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsSymbolTableEntry");
 
@@ -316,8 +314,9 @@ public class AdsSymbolTableEntry implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 3));
+        (byte) 0x00,
+        writeUnsignedByte(writeBuffer, 3),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (flagExtendedFlags)
     writeSimpleField(
@@ -357,23 +356,36 @@ public class AdsSymbolTableEntry implements Message {
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField1 != null ? reservedField1 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        (int) 0x0000,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Implicit Field (nameLength) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int nameLength = (int) (STR_LEN(getName()));
-    writeImplicitField("nameLength", nameLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "nameLength",
+        nameLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Implicit Field (dataTypeNameLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int dataTypeNameLength = (int) (STR_LEN(getDataTypeName()));
-    writeImplicitField("dataTypeNameLength", dataTypeNameLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "dataTypeNameLength",
+        dataTypeNameLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Implicit Field (commentLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int commentLength = (int) (STR_LEN(getComment()));
-    writeImplicitField("commentLength", commentLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "commentLength",
+        commentLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (name)
     writeSimpleField(
@@ -383,7 +395,11 @@ public class AdsSymbolTableEntry implements Message {
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Const Field (nameTerminator)
-    writeConstField("nameTerminator", NAMETERMINATOR, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "nameTerminator",
+        NAMETERMINATOR,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (dataTypeName)
     writeSimpleField(
@@ -394,7 +410,10 @@ public class AdsSymbolTableEntry implements Message {
 
     // Const Field (dataTypeNameTerminator)
     writeConstField(
-        "dataTypeNameTerminator", DATATYPENAMETERMINATOR, writeUnsignedShort(writeBuffer, 8));
+        "dataTypeNameTerminator",
+        DATATYPENAMETERMINATOR,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (comment)
     writeSimpleField(
@@ -404,10 +423,18 @@ public class AdsSymbolTableEntry implements Message {
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Const Field (commentTerminator)
-    writeConstField("commentTerminator", COMMENTTERMINATOR, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "commentTerminator",
+        COMMENTTERMINATOR,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Array Field (rest)
-    writeByteArrayField("rest", rest, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "rest",
+        rest,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("AdsSymbolTableEntry");
   }
@@ -421,6 +448,7 @@ public class AdsSymbolTableEntry implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     AdsSymbolTableEntry _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (entryLength)
     lengthInBits += 32;
@@ -528,6 +556,7 @@ public class AdsSymbolTableEntry implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long entryLength =
         readSimpleField(
@@ -741,8 +770,6 @@ public class AdsSymbolTableEntry implements Message {
             dataTypeName,
             comment,
             rest);
-    _adsSymbolTableEntry.reservedField0 = reservedField0;
-    _adsSymbolTableEntry.reservedField1 = reservedField1;
     return _adsSymbolTableEntry;
   }
 

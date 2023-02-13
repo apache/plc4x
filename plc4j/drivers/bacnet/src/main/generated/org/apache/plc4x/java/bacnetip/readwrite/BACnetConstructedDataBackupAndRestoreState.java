@@ -79,6 +79,7 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBackupAndRestoreState");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBackupAndRestoreState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (backupAndRestoreState)
     lengthInBits += backupAndRestoreState.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBackupAndRestoreStateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBackupStateTagged backupAndRestoreState =
         readSimpleField(
@@ -138,21 +141,20 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataBackupAndRestoreState");
     // Create the instance
-    return new BACnetConstructedDataBackupAndRestoreStateBuilder(
+    return new BACnetConstructedDataBackupAndRestoreStateBuilderImpl(
         backupAndRestoreState, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBackupAndRestoreStateBuilder
+  public static class BACnetConstructedDataBackupAndRestoreStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBackupStateTagged backupAndRestoreState;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBackupAndRestoreStateBuilder(
+    public BACnetConstructedDataBackupAndRestoreStateBuilderImpl(
         BACnetBackupStateTagged backupAndRestoreState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.backupAndRestoreState = backupAndRestoreState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

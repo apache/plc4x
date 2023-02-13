@@ -50,8 +50,6 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
   protected final int maxAmqCaller;
   protected final int maxAmqCallee;
   protected final int pduLength;
-  // Reserved Fields
-  private Short reservedField0;
 
   public S7ParameterSetupCommunication(int maxAmqCaller, int maxAmqCallee, int pduLength) {
     super();
@@ -75,14 +73,12 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
   @Override
   protected void serializeS7ParameterChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7ParameterSetupCommunication");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (maxAmqCaller)
     writeSimpleField("maxAmqCaller", maxAmqCaller, writeUnsignedInt(writeBuffer, 16));
@@ -105,6 +101,7 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7ParameterSetupCommunication _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -121,12 +118,13 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
     return lengthInBits;
   }
 
-  public static S7ParameterSetupCommunicationBuilder staticParseBuilder(
+  public static S7ParameterBuilder staticParseS7ParameterBuilder(
       ReadBuffer readBuffer, Short messageType) throws ParseException {
     readBuffer.pullContext("S7ParameterSetupCommunication");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
@@ -139,29 +137,25 @@ public class S7ParameterSetupCommunication extends S7Parameter implements Messag
 
     readBuffer.closeContext("S7ParameterSetupCommunication");
     // Create the instance
-    return new S7ParameterSetupCommunicationBuilder(
-        maxAmqCaller, maxAmqCallee, pduLength, reservedField0);
+    return new S7ParameterSetupCommunicationBuilderImpl(maxAmqCaller, maxAmqCallee, pduLength);
   }
 
-  public static class S7ParameterSetupCommunicationBuilder
+  public static class S7ParameterSetupCommunicationBuilderImpl
       implements S7Parameter.S7ParameterBuilder {
     private final int maxAmqCaller;
     private final int maxAmqCallee;
     private final int pduLength;
-    private final Short reservedField0;
 
-    public S7ParameterSetupCommunicationBuilder(
-        int maxAmqCaller, int maxAmqCallee, int pduLength, Short reservedField0) {
+    public S7ParameterSetupCommunicationBuilderImpl(
+        int maxAmqCaller, int maxAmqCallee, int pduLength) {
       this.maxAmqCaller = maxAmqCaller;
       this.maxAmqCallee = maxAmqCallee;
       this.pduLength = pduLength;
-      this.reservedField0 = reservedField0;
     }
 
     public S7ParameterSetupCommunication build() {
       S7ParameterSetupCommunication s7ParameterSetupCommunication =
           new S7ParameterSetupCommunication(maxAmqCaller, maxAmqCallee, pduLength);
-      s7ParameterSetupCommunication.reservedField0 = reservedField0;
       return s7ParameterSetupCommunication;
     }
   }

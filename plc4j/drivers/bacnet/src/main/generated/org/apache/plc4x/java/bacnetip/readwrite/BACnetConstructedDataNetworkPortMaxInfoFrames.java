@@ -79,6 +79,7 @@ public class BACnetConstructedDataNetworkPortMaxInfoFrames extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNetworkPortMaxInfoFrames");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataNetworkPortMaxInfoFrames extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNetworkPortMaxInfoFrames _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxInfoFrames)
     lengthInBits += maxInfoFrames.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataNetworkPortMaxInfoFrames extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNetworkPortMaxInfoFramesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataNetworkPortMaxInfoFrames extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxInfoFrames =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataNetworkPortMaxInfoFrames extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataNetworkPortMaxInfoFrames");
     // Create the instance
-    return new BACnetConstructedDataNetworkPortMaxInfoFramesBuilder(
+    return new BACnetConstructedDataNetworkPortMaxInfoFramesBuilderImpl(
         maxInfoFrames, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNetworkPortMaxInfoFramesBuilder
+  public static class BACnetConstructedDataNetworkPortMaxInfoFramesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxInfoFrames;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkPortMaxInfoFramesBuilder(
+    public BACnetConstructedDataNetworkPortMaxInfoFramesBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxInfoFrames,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxInfoFrames = maxInfoFrames;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,40 +112,36 @@ func (m *_BACnetEventPriorities) GetTypeName() string {
 	return "BACnetEventPriorities"
 }
 
-func (m *_BACnetEventPriorities) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventPriorities) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetEventPriorities) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (toOffnormal)
-	lengthInBits += m.ToOffnormal.GetLengthInBits()
+	lengthInBits += m.ToOffnormal.GetLengthInBits(ctx)
 
 	// Simple field (toFault)
-	lengthInBits += m.ToFault.GetLengthInBits()
+	lengthInBits += m.ToFault.GetLengthInBits(ctx)
 
 	// Simple field (toNormal)
-	lengthInBits += m.ToNormal.GetLengthInBits()
+	lengthInBits += m.ToNormal.GetLengthInBits(ctx)
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventPriorities) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventPriorities) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventPrioritiesParse(theBytes []byte, tagNumber uint8) (BACnetEventPriorities, error) {
-	return BACnetEventPrioritiesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetEventPrioritiesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetEventPrioritiesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventPriorities, error) {
+func BACnetEventPrioritiesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventPriorities, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventPriorities"); pullErr != nil {
@@ -157,7 +154,7 @@ func BACnetEventPrioritiesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventPriorities")
 	}
@@ -170,7 +167,7 @@ func BACnetEventPrioritiesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("toOffnormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toOffnormal")
 	}
-	_toOffnormal, _toOffnormalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_toOffnormal, _toOffnormalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _toOffnormalErr != nil {
 		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field of BACnetEventPriorities")
 	}
@@ -183,7 +180,7 @@ func BACnetEventPrioritiesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("toFault"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toFault")
 	}
-	_toFault, _toFaultErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_toFault, _toFaultErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _toFaultErr != nil {
 		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field of BACnetEventPriorities")
 	}
@@ -196,7 +193,7 @@ func BACnetEventPrioritiesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("toNormal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toNormal")
 	}
-	_toNormal, _toNormalErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_toNormal, _toNormalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _toNormalErr != nil {
 		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field of BACnetEventPriorities")
 	}
@@ -209,7 +206,7 @@ func BACnetEventPrioritiesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventPriorities")
 	}
@@ -234,14 +231,14 @@ func BACnetEventPrioritiesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber
 }
 
 func (m *_BACnetEventPriorities) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventPriorities) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventPriorities) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetEventPriorities"); pushErr != nil {
@@ -252,7 +249,7 @@ func (m *_BACnetEventPriorities) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -264,7 +261,7 @@ func (m *_BACnetEventPriorities) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("toOffnormal"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for toOffnormal")
 	}
-	_toOffnormalErr := writeBuffer.WriteSerializable(m.GetToOffnormal())
+	_toOffnormalErr := writeBuffer.WriteSerializable(ctx, m.GetToOffnormal())
 	if popErr := writeBuffer.PopContext("toOffnormal"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for toOffnormal")
 	}
@@ -276,7 +273,7 @@ func (m *_BACnetEventPriorities) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("toFault"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for toFault")
 	}
-	_toFaultErr := writeBuffer.WriteSerializable(m.GetToFault())
+	_toFaultErr := writeBuffer.WriteSerializable(ctx, m.GetToFault())
 	if popErr := writeBuffer.PopContext("toFault"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for toFault")
 	}
@@ -288,7 +285,7 @@ func (m *_BACnetEventPriorities) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("toNormal"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for toNormal")
 	}
-	_toNormalErr := writeBuffer.WriteSerializable(m.GetToNormal())
+	_toNormalErr := writeBuffer.WriteSerializable(ctx, m.GetToNormal())
 	if popErr := writeBuffer.PopContext("toNormal"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for toNormal")
 	}
@@ -300,7 +297,7 @@ func (m *_BACnetEventPriorities) SerializeWithWriteBuffer(writeBuffer utils.Writ
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -333,7 +330,7 @@ func (m *_BACnetEventPriorities) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

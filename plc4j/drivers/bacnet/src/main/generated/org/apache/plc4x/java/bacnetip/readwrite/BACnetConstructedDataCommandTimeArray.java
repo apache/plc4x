@@ -89,6 +89,7 @@ public class BACnetConstructedDataCommandTimeArray extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCommandTimeArray");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataCommandTimeArray extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCommandTimeArray _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,7 +138,7 @@ public class BACnetConstructedDataCommandTimeArray extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCommandTimeArrayBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -147,6 +149,7 @@ public class BACnetConstructedDataCommandTimeArray extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -175,23 +178,22 @@ public class BACnetConstructedDataCommandTimeArray extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataCommandTimeArray");
     // Create the instance
-    return new BACnetConstructedDataCommandTimeArrayBuilder(
+    return new BACnetConstructedDataCommandTimeArrayBuilderImpl(
         numberOfDataElements, commandTimeArray, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCommandTimeArrayBuilder
+  public static class BACnetConstructedDataCommandTimeArrayBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetTimeStamp> commandTimeArray;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCommandTimeArrayBuilder(
+    public BACnetConstructedDataCommandTimeArrayBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetTimeStamp> commandTimeArray,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.commandTimeArray = commandTimeArray;
       this.tagNumber = tagNumber;

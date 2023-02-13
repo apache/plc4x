@@ -42,17 +42,14 @@ public class ApduDataUserMessage extends ApduData implements Message {
     return (byte) 0xB;
   }
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataUserMessage(Short dataLength) {
-    super(dataLength);
-    this.dataLength = dataLength;
+  public ApduDataUserMessage() {
+    super();
   }
 
   @Override
   protected void serializeApduDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataUserMessage");
 
@@ -68,34 +65,30 @@ public class ApduDataUserMessage extends ApduData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataUserMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataUserMessageBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataUserMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataUserMessage");
     // Create the instance
-    return new ApduDataUserMessageBuilder(dataLength);
+    return new ApduDataUserMessageBuilderImpl();
   }
 
-  public static class ApduDataUserMessageBuilder implements ApduData.ApduDataBuilder {
-    private final Short dataLength;
+  public static class ApduDataUserMessageBuilderImpl implements ApduData.ApduDataBuilder {
 
-    public ApduDataUserMessageBuilder(Short dataLength) {
+    public ApduDataUserMessageBuilderImpl() {}
 
-      this.dataLength = dataLength;
-    }
-
-    public ApduDataUserMessage build(Short dataLength) {
-
-      ApduDataUserMessage apduDataUserMessage = new ApduDataUserMessage(dataLength);
-
+    public ApduDataUserMessage build() {
+      ApduDataUserMessage apduDataUserMessage = new ApduDataUserMessage();
       return apduDataUserMessage;
     }
   }

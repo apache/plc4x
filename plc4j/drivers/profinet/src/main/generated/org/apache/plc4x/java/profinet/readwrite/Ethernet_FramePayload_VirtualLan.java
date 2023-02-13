@@ -77,6 +77,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
   protected void serializeEthernet_FramePayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Ethernet_FramePayload_VirtualLan");
 
@@ -111,6 +112,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     Ethernet_FramePayload_VirtualLan _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (priority)
     lengthInBits += 3;
@@ -127,12 +129,13 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
     return lengthInBits;
   }
 
-  public static Ethernet_FramePayload_VirtualLanBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static Ethernet_FramePayloadBuilder staticParseEthernet_FramePayloadBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_FramePayload_VirtualLan");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     VirtualLanPriority priority =
         readEnumField(
@@ -153,19 +156,18 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
 
     readBuffer.closeContext("Ethernet_FramePayload_VirtualLan");
     // Create the instance
-    return new Ethernet_FramePayload_VirtualLanBuilder(priority, ineligible, id, payload);
+    return new Ethernet_FramePayload_VirtualLanBuilderImpl(priority, ineligible, id, payload);
   }
 
-  public static class Ethernet_FramePayload_VirtualLanBuilder
+  public static class Ethernet_FramePayload_VirtualLanBuilderImpl
       implements Ethernet_FramePayload.Ethernet_FramePayloadBuilder {
     private final VirtualLanPriority priority;
     private final boolean ineligible;
     private final int id;
     private final Ethernet_FramePayload payload;
 
-    public Ethernet_FramePayload_VirtualLanBuilder(
+    public Ethernet_FramePayload_VirtualLanBuilderImpl(
         VirtualLanPriority priority, boolean ineligible, int id, Ethernet_FramePayload payload) {
-
       this.priority = priority;
       this.ineligible = ineligible;
       this.id = id;

@@ -57,6 +57,7 @@ public class SDOAbortResponse extends SDOResponse implements Message {
   @Override
   protected void serializeSDOResponseChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOAbortResponse");
 
@@ -75,6 +76,7 @@ public class SDOAbortResponse extends SDOResponse implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOAbortResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (abort)
     lengthInBits += abort.getLengthInBits();
@@ -82,12 +84,13 @@ public class SDOAbortResponse extends SDOResponse implements Message {
     return lengthInBits;
   }
 
-  public static SDOAbortResponseBuilder staticParseBuilder(
+  public static SDOResponseBuilder staticParseSDOResponseBuilder(
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOAbortResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SDOAbort abort =
         readSimpleField(
@@ -96,14 +99,13 @@ public class SDOAbortResponse extends SDOResponse implements Message {
 
     readBuffer.closeContext("SDOAbortResponse");
     // Create the instance
-    return new SDOAbortResponseBuilder(abort);
+    return new SDOAbortResponseBuilderImpl(abort);
   }
 
-  public static class SDOAbortResponseBuilder implements SDOResponse.SDOResponseBuilder {
+  public static class SDOAbortResponseBuilderImpl implements SDOResponse.SDOResponseBuilder {
     private final SDOAbort abort;
 
-    public SDOAbortResponseBuilder(SDOAbort abort) {
-
+    public SDOAbortResponseBuilderImpl(SDOAbort abort) {
       this.abort = abort;
     }
 

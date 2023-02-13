@@ -55,6 +55,7 @@ public class BACnetCalendarEntryDate extends BACnetCalendarEntry implements Mess
   protected void serializeBACnetCalendarEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCalendarEntryDate");
 
@@ -73,6 +74,7 @@ public class BACnetCalendarEntryDate extends BACnetCalendarEntry implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetCalendarEntryDate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dateValue)
     lengthInBits += dateValue.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetCalendarEntryDate extends BACnetCalendarEntry implements Mess
     return lengthInBits;
   }
 
-  public static BACnetCalendarEntryDateBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetCalendarEntryBuilder staticParseBACnetCalendarEntryBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCalendarEntryDate");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagDate dateValue =
         readSimpleField(
@@ -99,15 +102,14 @@ public class BACnetCalendarEntryDate extends BACnetCalendarEntry implements Mess
 
     readBuffer.closeContext("BACnetCalendarEntryDate");
     // Create the instance
-    return new BACnetCalendarEntryDateBuilder(dateValue);
+    return new BACnetCalendarEntryDateBuilderImpl(dateValue);
   }
 
-  public static class BACnetCalendarEntryDateBuilder
+  public static class BACnetCalendarEntryDateBuilderImpl
       implements BACnetCalendarEntry.BACnetCalendarEntryBuilder {
     private final BACnetContextTagDate dateValue;
 
-    public BACnetCalendarEntryDateBuilder(BACnetContextTagDate dateValue) {
-
+    public BACnetCalendarEntryDateBuilderImpl(BACnetContextTagDate dateValue) {
       this.dateValue = dateValue;
     }
 

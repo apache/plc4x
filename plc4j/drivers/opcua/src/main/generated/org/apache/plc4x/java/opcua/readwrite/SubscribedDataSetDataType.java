@@ -50,6 +50,7 @@ public class SubscribedDataSetDataType extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SubscribedDataSetDataType");
 
@@ -65,26 +66,28 @@ public class SubscribedDataSetDataType extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SubscribedDataSetDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SubscribedDataSetDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SubscribedDataSetDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SubscribedDataSetDataType");
     // Create the instance
-    return new SubscribedDataSetDataTypeBuilder();
+    return new SubscribedDataSetDataTypeBuilderImpl();
   }
 
-  public static class SubscribedDataSetDataTypeBuilder
+  public static class SubscribedDataSetDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public SubscribedDataSetDataTypeBuilder() {}
+    public SubscribedDataSetDataTypeBuilderImpl() {}
 
     public SubscribedDataSetDataType build() {
       SubscribedDataSetDataType subscribedDataSetDataType = new SubscribedDataSetDataType();

@@ -62,6 +62,7 @@ public class BACnetPriorityValueInteger extends BACnetPriorityValue implements M
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueInteger");
 
@@ -80,6 +81,7 @@ public class BACnetPriorityValueInteger extends BACnetPriorityValue implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueInteger _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (integerValue)
     lengthInBits += integerValue.getLengthInBits();
@@ -87,12 +89,13 @@ public class BACnetPriorityValueInteger extends BACnetPriorityValue implements M
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueIntegerBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueInteger");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger integerValue =
         readSimpleField(
@@ -105,17 +108,16 @@ public class BACnetPriorityValueInteger extends BACnetPriorityValue implements M
 
     readBuffer.closeContext("BACnetPriorityValueInteger");
     // Create the instance
-    return new BACnetPriorityValueIntegerBuilder(integerValue, objectTypeArgument);
+    return new BACnetPriorityValueIntegerBuilderImpl(integerValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueIntegerBuilder
+  public static class BACnetPriorityValueIntegerBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagSignedInteger integerValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueIntegerBuilder(
+    public BACnetPriorityValueIntegerBuilderImpl(
         BACnetApplicationTagSignedInteger integerValue, BACnetObjectType objectTypeArgument) {
-
       this.integerValue = integerValue;
       this.objectTypeArgument = objectTypeArgument;
     }

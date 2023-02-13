@@ -79,6 +79,7 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSlaveProxyEnable");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSlaveProxyEnable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (slaveProxyEnable)
     lengthInBits += slaveProxyEnable.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSlaveProxyEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean slaveProxyEnable =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataSlaveProxyEnable");
     // Create the instance
-    return new BACnetConstructedDataSlaveProxyEnableBuilder(
+    return new BACnetConstructedDataSlaveProxyEnableBuilderImpl(
         slaveProxyEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSlaveProxyEnableBuilder
+  public static class BACnetConstructedDataSlaveProxyEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean slaveProxyEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSlaveProxyEnableBuilder(
+    public BACnetConstructedDataSlaveProxyEnableBuilderImpl(
         BACnetApplicationTagBoolean slaveProxyEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.slaveProxyEnable = slaveProxyEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -79,6 +79,7 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaximumValueTimestamp");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMaximumValueTimestamp _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maximumValueTimestamp)
     lengthInBits += maximumValueTimestamp.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMaximumValueTimestampBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime maximumValueTimestamp =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataMaximumValueTimestamp");
     // Create the instance
-    return new BACnetConstructedDataMaximumValueTimestampBuilder(
+    return new BACnetConstructedDataMaximumValueTimestampBuilderImpl(
         maximumValueTimestamp, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMaximumValueTimestampBuilder
+  public static class BACnetConstructedDataMaximumValueTimestampBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime maximumValueTimestamp;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMaximumValueTimestampBuilder(
+    public BACnetConstructedDataMaximumValueTimestampBuilderImpl(
         BACnetDateTime maximumValueTimestamp,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maximumValueTimestamp = maximumValueTimestamp;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

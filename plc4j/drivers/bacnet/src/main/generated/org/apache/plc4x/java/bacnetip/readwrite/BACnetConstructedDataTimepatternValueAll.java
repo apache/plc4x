@@ -66,6 +66,7 @@ public class BACnetConstructedDataTimepatternValueAll extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimepatternValueAll");
 
@@ -81,11 +82,12 @@ public class BACnetConstructedDataTimepatternValueAll extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimepatternValueAll _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimepatternValueAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -96,6 +98,7 @@ public class BACnetConstructedDataTimepatternValueAll extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {
       throw new ParseValidationException(
@@ -104,17 +107,16 @@ public class BACnetConstructedDataTimepatternValueAll extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataTimepatternValueAll");
     // Create the instance
-    return new BACnetConstructedDataTimepatternValueAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTimepatternValueAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimepatternValueAllBuilder
+  public static class BACnetConstructedDataTimepatternValueAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimepatternValueAllBuilder(
+    public BACnetConstructedDataTimepatternValueAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

@@ -49,8 +49,6 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
   protected final boolean includeSubtypes;
   protected final long nodeClassMask;
   protected final long resultMask;
-  // Reserved Fields
-  private Short reservedField0;
 
   public BrowseDescription(
       NodeId nodeId,
@@ -96,6 +94,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BrowseDescription");
 
@@ -115,10 +114,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (includeSubtypes)
     writeSimpleField("includeSubtypes", includeSubtypes, writeBoolean(writeBuffer));
@@ -141,6 +137,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BrowseDescription _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nodeId)
     lengthInBits += nodeId.getLengthInBits();
@@ -166,12 +163,13 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static BrowseDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BrowseDescription");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
         readSimpleField(
@@ -201,17 +199,11 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("BrowseDescription");
     // Create the instance
-    return new BrowseDescriptionBuilder(
-        nodeId,
-        browseDirection,
-        referenceTypeId,
-        includeSubtypes,
-        nodeClassMask,
-        resultMask,
-        reservedField0);
+    return new BrowseDescriptionBuilderImpl(
+        nodeId, browseDirection, referenceTypeId, includeSubtypes, nodeClassMask, resultMask);
   }
 
-  public static class BrowseDescriptionBuilder
+  public static class BrowseDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId nodeId;
     private final BrowseDirection browseDirection;
@@ -219,30 +211,26 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
     private final boolean includeSubtypes;
     private final long nodeClassMask;
     private final long resultMask;
-    private final Short reservedField0;
 
-    public BrowseDescriptionBuilder(
+    public BrowseDescriptionBuilderImpl(
         NodeId nodeId,
         BrowseDirection browseDirection,
         NodeId referenceTypeId,
         boolean includeSubtypes,
         long nodeClassMask,
-        long resultMask,
-        Short reservedField0) {
+        long resultMask) {
       this.nodeId = nodeId;
       this.browseDirection = browseDirection;
       this.referenceTypeId = referenceTypeId;
       this.includeSubtypes = includeSubtypes;
       this.nodeClassMask = nodeClassMask;
       this.resultMask = resultMask;
-      this.reservedField0 = reservedField0;
     }
 
     public BrowseDescription build() {
       BrowseDescription browseDescription =
           new BrowseDescription(
               nodeId, browseDirection, referenceTypeId, includeSubtypes, nodeClassMask, resultMask);
-      browseDescription.reservedField0 = reservedField0;
       return browseDescription;
     }
   }

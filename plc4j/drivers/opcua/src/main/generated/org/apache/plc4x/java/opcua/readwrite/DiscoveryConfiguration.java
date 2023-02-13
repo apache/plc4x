@@ -50,6 +50,7 @@ public class DiscoveryConfiguration extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DiscoveryConfiguration");
 
@@ -65,26 +66,28 @@ public class DiscoveryConfiguration extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DiscoveryConfiguration _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static DiscoveryConfigurationBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DiscoveryConfiguration");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("DiscoveryConfiguration");
     // Create the instance
-    return new DiscoveryConfigurationBuilder();
+    return new DiscoveryConfigurationBuilderImpl();
   }
 
-  public static class DiscoveryConfigurationBuilder
+  public static class DiscoveryConfigurationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public DiscoveryConfigurationBuilder() {}
+    public DiscoveryConfigurationBuilderImpl() {}
 
     public DiscoveryConfiguration build() {
       DiscoveryConfiguration discoveryConfiguration = new DiscoveryConfiguration();

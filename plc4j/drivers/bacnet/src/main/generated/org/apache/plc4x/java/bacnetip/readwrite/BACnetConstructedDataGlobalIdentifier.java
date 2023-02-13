@@ -79,6 +79,7 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataGlobalIdentifier");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataGlobalIdentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (globalIdentifier)
     lengthInBits += globalIdentifier.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataGlobalIdentifierBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger globalIdentifier =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataGlobalIdentifier");
     // Create the instance
-    return new BACnetConstructedDataGlobalIdentifierBuilder(
+    return new BACnetConstructedDataGlobalIdentifierBuilderImpl(
         globalIdentifier, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataGlobalIdentifierBuilder
+  public static class BACnetConstructedDataGlobalIdentifierBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger globalIdentifier;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataGlobalIdentifierBuilder(
+    public BACnetConstructedDataGlobalIdentifierBuilderImpl(
         BACnetApplicationTagUnsignedInteger globalIdentifier,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.globalIdentifier = globalIdentifier;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

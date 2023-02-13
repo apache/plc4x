@@ -79,6 +79,7 @@ public class BACnetConstructedDataAttemptedSamples extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAttemptedSamples");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataAttemptedSamples extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAttemptedSamples _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (attemptedSamples)
     lengthInBits += attemptedSamples.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataAttemptedSamples extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAttemptedSamplesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataAttemptedSamples extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger attemptedSamples =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataAttemptedSamples extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataAttemptedSamples");
     // Create the instance
-    return new BACnetConstructedDataAttemptedSamplesBuilder(
+    return new BACnetConstructedDataAttemptedSamplesBuilderImpl(
         attemptedSamples, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAttemptedSamplesBuilder
+  public static class BACnetConstructedDataAttemptedSamplesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger attemptedSamples;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAttemptedSamplesBuilder(
+    public BACnetConstructedDataAttemptedSamplesBuilderImpl(
         BACnetApplicationTagUnsignedInteger attemptedSamples,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.attemptedSamples = attemptedSamples;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

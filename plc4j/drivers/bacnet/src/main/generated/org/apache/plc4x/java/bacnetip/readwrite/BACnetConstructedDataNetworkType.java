@@ -78,6 +78,7 @@ public class BACnetConstructedDataNetworkType extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNetworkType");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataNetworkType extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNetworkType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (networkType)
     lengthInBits += networkType.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataNetworkType extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNetworkTypeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataNetworkType extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNetworkTypeTagged networkType =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataNetworkType extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataNetworkType");
     // Create the instance
-    return new BACnetConstructedDataNetworkTypeBuilder(networkType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNetworkTypeBuilderImpl(
+        networkType, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNetworkTypeBuilder
+  public static class BACnetConstructedDataNetworkTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetNetworkTypeTagged networkType;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkTypeBuilder(
+    public BACnetConstructedDataNetworkTypeBuilderImpl(
         BACnetNetworkTypeTagged networkType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.networkType = networkType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

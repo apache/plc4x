@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -231,19 +232,19 @@ func CastSecurityResponseCode(structType interface{}) SecurityResponseCode {
 	return castFunc(structType)
 }
 
-func (m SecurityResponseCode) GetLengthInBits() uint16 {
+func (m SecurityResponseCode) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m SecurityResponseCode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m SecurityResponseCode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityResponseCodeParse(theBytes []byte) (SecurityResponseCode, error) {
-	return SecurityResponseCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func SecurityResponseCodeParse(ctx context.Context, theBytes []byte) (SecurityResponseCode, error) {
+	return SecurityResponseCodeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityResponseCodeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityResponseCode, error) {
+func SecurityResponseCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityResponseCode, error) {
 	val, err := readBuffer.ReadUint8("SecurityResponseCode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SecurityResponseCode")
@@ -258,13 +259,13 @@ func SecurityResponseCodeParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityR
 
 func (e SecurityResponseCode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e SecurityResponseCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e SecurityResponseCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SecurityResponseCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

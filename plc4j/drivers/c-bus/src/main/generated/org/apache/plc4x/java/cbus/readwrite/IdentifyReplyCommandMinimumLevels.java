@@ -62,6 +62,7 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandMinimumLevels");
 
@@ -80,6 +81,7 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandMinimumLevels _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (minimumLevels != null) {
@@ -89,27 +91,27 @@ public class IdentifyReplyCommandMinimumLevels extends IdentifyReplyCommand impl
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandMinimumLevelsBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandMinimumLevels");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] minimumLevels = readBuffer.readByteArray("minimumLevels", Math.toIntExact(numBytes));
 
     readBuffer.closeContext("IdentifyReplyCommandMinimumLevels");
     // Create the instance
-    return new IdentifyReplyCommandMinimumLevelsBuilder(minimumLevels, numBytes);
+    return new IdentifyReplyCommandMinimumLevelsBuilderImpl(minimumLevels, numBytes);
   }
 
-  public static class IdentifyReplyCommandMinimumLevelsBuilder
+  public static class IdentifyReplyCommandMinimumLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] minimumLevels;
     private final Short numBytes;
 
-    public IdentifyReplyCommandMinimumLevelsBuilder(byte[] minimumLevels, Short numBytes) {
-
+    public IdentifyReplyCommandMinimumLevelsBuilderImpl(byte[] minimumLevels, Short numBytes) {
       this.minimumLevels = minimumLevels;
       this.numBytes = numBytes;
     }

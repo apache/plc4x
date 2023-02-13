@@ -78,6 +78,7 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataScheduleDefault");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataScheduleDefault _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (scheduleDefault)
     lengthInBits += scheduleDefault.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataScheduleDefaultBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConstructedDataElement scheduleDefault =
         readSimpleField(
@@ -138,21 +141,20 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataScheduleDefault");
     // Create the instance
-    return new BACnetConstructedDataScheduleDefaultBuilder(
+    return new BACnetConstructedDataScheduleDefaultBuilderImpl(
         scheduleDefault, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataScheduleDefaultBuilder
+  public static class BACnetConstructedDataScheduleDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetConstructedDataElement scheduleDefault;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataScheduleDefaultBuilder(
+    public BACnetConstructedDataScheduleDefaultBuilderImpl(
         BACnetConstructedDataElement scheduleDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.scheduleDefault = scheduleDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

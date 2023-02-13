@@ -66,6 +66,7 @@ public class BACnetConstructedDataTrendLogMultipleAll extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrendLogMultipleAll");
 
@@ -81,11 +82,12 @@ public class BACnetConstructedDataTrendLogMultipleAll extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTrendLogMultipleAll _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTrendLogMultipleAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -96,6 +98,7 @@ public class BACnetConstructedDataTrendLogMultipleAll extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {
       throw new ParseValidationException(
@@ -104,17 +107,16 @@ public class BACnetConstructedDataTrendLogMultipleAll extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataTrendLogMultipleAll");
     // Create the instance
-    return new BACnetConstructedDataTrendLogMultipleAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTrendLogMultipleAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTrendLogMultipleAllBuilder
+  public static class BACnetConstructedDataTrendLogMultipleAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTrendLogMultipleAllBuilder(
+    public BACnetConstructedDataTrendLogMultipleAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

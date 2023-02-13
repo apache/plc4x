@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueNull extends BACnetTimerStateChangeValue
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueNull");
 
@@ -81,6 +82,7 @@ public class BACnetTimerStateChangeValueNull extends BACnetTimerStateChangeValue
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueNull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nullValue)
     lengthInBits += nullValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetTimerStateChangeValueNull extends BACnetTimerStateChangeValue
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueNullBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueNull");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =
         readSimpleField(
@@ -104,17 +107,16 @@ public class BACnetTimerStateChangeValueNull extends BACnetTimerStateChangeValue
 
     readBuffer.closeContext("BACnetTimerStateChangeValueNull");
     // Create the instance
-    return new BACnetTimerStateChangeValueNullBuilder(nullValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueNullBuilderImpl(nullValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueNullBuilder
+  public static class BACnetTimerStateChangeValueNullBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagNull nullValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueNullBuilder(
+    public BACnetTimerStateChangeValueNullBuilderImpl(
         BACnetApplicationTagNull nullValue, BACnetObjectType objectTypeArgument) {
-
       this.nullValue = nullValue;
       this.objectTypeArgument = objectTypeArgument;
     }

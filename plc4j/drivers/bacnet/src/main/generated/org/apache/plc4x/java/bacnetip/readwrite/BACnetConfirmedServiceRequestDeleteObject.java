@@ -64,6 +64,7 @@ public class BACnetConfirmedServiceRequestDeleteObject extends BACnetConfirmedSe
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestDeleteObject");
 
@@ -83,6 +84,7 @@ public class BACnetConfirmedServiceRequestDeleteObject extends BACnetConfirmedSe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestDeleteObject _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectIdentifier)
     lengthInBits += objectIdentifier.getLengthInBits();
@@ -90,12 +92,14 @@ public class BACnetConfirmedServiceRequestDeleteObject extends BACnetConfirmedSe
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestDeleteObjectBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestDeleteObject");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(
@@ -108,18 +112,17 @@ public class BACnetConfirmedServiceRequestDeleteObject extends BACnetConfirmedSe
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestDeleteObject");
     // Create the instance
-    return new BACnetConfirmedServiceRequestDeleteObjectBuilder(
+    return new BACnetConfirmedServiceRequestDeleteObjectBuilderImpl(
         objectIdentifier, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestDeleteObjectBuilder
+  public static class BACnetConfirmedServiceRequestDeleteObjectBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestDeleteObjectBuilder(
+    public BACnetConfirmedServiceRequestDeleteObjectBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier, Long serviceRequestLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.serviceRequestLength = serviceRequestLength;
     }

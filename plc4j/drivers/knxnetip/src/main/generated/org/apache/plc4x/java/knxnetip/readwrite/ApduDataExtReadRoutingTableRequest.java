@@ -42,17 +42,14 @@ public class ApduDataExtReadRoutingTableRequest extends ApduDataExt implements M
     return (short) 0x01;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtReadRoutingTableRequest(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtReadRoutingTableRequest() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtReadRoutingTableRequest");
 
@@ -68,35 +65,32 @@ public class ApduDataExtReadRoutingTableRequest extends ApduDataExt implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtReadRoutingTableRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtReadRoutingTableRequestBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtReadRoutingTableRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtReadRoutingTableRequest");
     // Create the instance
-    return new ApduDataExtReadRoutingTableRequestBuilder(length);
+    return new ApduDataExtReadRoutingTableRequestBuilderImpl();
   }
 
-  public static class ApduDataExtReadRoutingTableRequestBuilder
+  public static class ApduDataExtReadRoutingTableRequestBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtReadRoutingTableRequestBuilder(Short length) {
+    public ApduDataExtReadRoutingTableRequestBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtReadRoutingTableRequest build(Short length) {
-
+    public ApduDataExtReadRoutingTableRequest build() {
       ApduDataExtReadRoutingTableRequest apduDataExtReadRoutingTableRequest =
-          new ApduDataExtReadRoutingTableRequest(length);
+          new ApduDataExtReadRoutingTableRequest();
       return apduDataExtReadRoutingTableRequest;
     }
   }

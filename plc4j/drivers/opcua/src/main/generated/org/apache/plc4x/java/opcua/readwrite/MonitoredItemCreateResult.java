@@ -87,6 +87,7 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredItemCreateResult");
 
@@ -118,6 +119,7 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MonitoredItemCreateResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -137,12 +139,13 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static MonitoredItemCreateResultBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoredItemCreateResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(
@@ -164,11 +167,11 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("MonitoredItemCreateResult");
     // Create the instance
-    return new MonitoredItemCreateResultBuilder(
+    return new MonitoredItemCreateResultBuilderImpl(
         statusCode, monitoredItemId, revisedSamplingInterval, revisedQueueSize, filterResult);
   }
 
-  public static class MonitoredItemCreateResultBuilder
+  public static class MonitoredItemCreateResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final long monitoredItemId;
@@ -176,13 +179,12 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
     private final long revisedQueueSize;
     private final ExtensionObject filterResult;
 
-    public MonitoredItemCreateResultBuilder(
+    public MonitoredItemCreateResultBuilderImpl(
         StatusCode statusCode,
         long monitoredItemId,
         double revisedSamplingInterval,
         long revisedQueueSize,
         ExtensionObject filterResult) {
-
       this.statusCode = statusCode;
       this.monitoredItemId = monitoredItemId;
       this.revisedSamplingInterval = revisedSamplingInterval;

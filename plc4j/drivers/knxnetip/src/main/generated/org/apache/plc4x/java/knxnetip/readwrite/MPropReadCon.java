@@ -50,25 +50,20 @@ public class MPropReadCon extends CEMI implements Message {
   protected final int startIndex;
   protected final int data;
 
-  // Arguments.
-  protected final Integer size;
-
   public MPropReadCon(
       int interfaceObjectType,
       short objectInstance,
       short propertyId,
       byte numberOfElements,
       int startIndex,
-      int data,
-      Integer size) {
-    super(size);
+      int data) {
+    super();
     this.interfaceObjectType = interfaceObjectType;
     this.objectInstance = objectInstance;
     this.propertyId = propertyId;
     this.numberOfElements = numberOfElements;
     this.startIndex = startIndex;
     this.data = data;
-    this.size = size;
   }
 
   public int getInterfaceObjectType() {
@@ -98,6 +93,7 @@ public class MPropReadCon extends CEMI implements Message {
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MPropReadCon");
 
@@ -131,6 +127,7 @@ public class MPropReadCon extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MPropReadCon _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (interfaceObjectType)
     lengthInBits += 16;
@@ -153,12 +150,13 @@ public class MPropReadCon extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static MPropReadConBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MPropReadCon");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int interfaceObjectType =
         readSimpleField("interfaceObjectType", readUnsignedInt(readBuffer, 16));
@@ -175,48 +173,37 @@ public class MPropReadCon extends CEMI implements Message {
 
     readBuffer.closeContext("MPropReadCon");
     // Create the instance
-    return new MPropReadConBuilder(
-        interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex, data, size);
+    return new MPropReadConBuilderImpl(
+        interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex, data);
   }
 
-  public static class MPropReadConBuilder implements CEMI.CEMIBuilder {
+  public static class MPropReadConBuilderImpl implements CEMI.CEMIBuilder {
     private final int interfaceObjectType;
     private final short objectInstance;
     private final short propertyId;
     private final byte numberOfElements;
     private final int startIndex;
     private final int data;
-    private final Integer size;
 
-    public MPropReadConBuilder(
+    public MPropReadConBuilderImpl(
         int interfaceObjectType,
         short objectInstance,
         short propertyId,
         byte numberOfElements,
         int startIndex,
-        int data,
-        Integer size) {
-
+        int data) {
       this.interfaceObjectType = interfaceObjectType;
       this.objectInstance = objectInstance;
       this.propertyId = propertyId;
       this.numberOfElements = numberOfElements;
       this.startIndex = startIndex;
       this.data = data;
-      this.size = size;
     }
 
-    public MPropReadCon build(Integer size) {
-
+    public MPropReadCon build() {
       MPropReadCon mPropReadCon =
           new MPropReadCon(
-              interfaceObjectType,
-              objectInstance,
-              propertyId,
-              numberOfElements,
-              startIndex,
-              data,
-              size);
+              interfaceObjectType, objectInstance, propertyId, numberOfElements, startIndex, data);
       return mPropReadCon;
     }
   }

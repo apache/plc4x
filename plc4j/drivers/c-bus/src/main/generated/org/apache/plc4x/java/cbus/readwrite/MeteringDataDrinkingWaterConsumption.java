@@ -55,6 +55,7 @@ public class MeteringDataDrinkingWaterConsumption extends MeteringData implement
   @Override
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataDrinkingWaterConsumption");
 
@@ -73,6 +74,7 @@ public class MeteringDataDrinkingWaterConsumption extends MeteringData implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MeteringDataDrinkingWaterConsumption _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (kL)
     lengthInBits += 32;
@@ -80,26 +82,26 @@ public class MeteringDataDrinkingWaterConsumption extends MeteringData implement
     return lengthInBits;
   }
 
-  public static MeteringDataDrinkingWaterConsumptionBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("MeteringDataDrinkingWaterConsumption");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long kL = readSimpleField("kL", readUnsignedLong(readBuffer, 32));
 
     readBuffer.closeContext("MeteringDataDrinkingWaterConsumption");
     // Create the instance
-    return new MeteringDataDrinkingWaterConsumptionBuilder(kL);
+    return new MeteringDataDrinkingWaterConsumptionBuilderImpl(kL);
   }
 
-  public static class MeteringDataDrinkingWaterConsumptionBuilder
+  public static class MeteringDataDrinkingWaterConsumptionBuilderImpl
       implements MeteringData.MeteringDataBuilder {
     private final long kL;
 
-    public MeteringDataDrinkingWaterConsumptionBuilder(long kL) {
-
+    public MeteringDataDrinkingWaterConsumptionBuilderImpl(long kL) {
       this.kL = kL;
     }
 

@@ -71,6 +71,7 @@ public class RepublishRequest extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RepublishRequest");
 
@@ -96,6 +97,7 @@ public class RepublishRequest extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RepublishRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -109,12 +111,13 @@ public class RepublishRequest extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static RepublishRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RepublishRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -130,20 +133,19 @@ public class RepublishRequest extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("RepublishRequest");
     // Create the instance
-    return new RepublishRequestBuilder(requestHeader, subscriptionId, retransmitSequenceNumber);
+    return new RepublishRequestBuilderImpl(requestHeader, subscriptionId, retransmitSequenceNumber);
   }
 
-  public static class RepublishRequestBuilder
+  public static class RepublishRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long subscriptionId;
     private final long retransmitSequenceNumber;
 
-    public RepublishRequestBuilder(
+    public RepublishRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long subscriptionId,
         long retransmitSequenceNumber) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.retransmitSequenceNumber = retransmitSequenceNumber;

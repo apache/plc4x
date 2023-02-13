@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,37 +132,33 @@ func (m *_BACnetNotificationParametersChangeOfBitString) GetTypeName() string {
 	return "BACnetNotificationParametersChangeOfBitString"
 }
 
-func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (changeOfBitString)
-	lengthInBits += m.ChangeOfBitString.GetLengthInBits()
+	lengthInBits += m.ChangeOfBitString.GetLengthInBits(ctx)
 
 	// Simple field (statusFlags)
-	lengthInBits += m.StatusFlags.GetLengthInBits()
+	lengthInBits += m.StatusFlags.GetLengthInBits(ctx)
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.GetLengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetNotificationParametersChangeOfBitString) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNotificationParametersChangeOfBitStringParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfBitString, error) {
-	return BACnetNotificationParametersChangeOfBitStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, peekedTagNumber)
+func BACnetNotificationParametersChangeOfBitStringParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfBitString, error) {
+	return BACnetNotificationParametersChangeOfBitStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
-func BACnetNotificationParametersChangeOfBitStringParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersChangeOfBitString, error) {
+func BACnetNotificationParametersChangeOfBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfBitString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfBitString"); pullErr != nil {
@@ -174,7 +171,7 @@ func BACnetNotificationParametersChangeOfBitStringParseWithBuffer(readBuffer uti
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersChangeOfBitString")
 	}
@@ -187,7 +184,7 @@ func BACnetNotificationParametersChangeOfBitStringParseWithBuffer(readBuffer uti
 	if pullErr := readBuffer.PullContext("changeOfBitString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changeOfBitString")
 	}
-	_changeOfBitString, _changeOfBitStringErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
+	_changeOfBitString, _changeOfBitStringErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
 	if _changeOfBitStringErr != nil {
 		return nil, errors.Wrap(_changeOfBitStringErr, "Error parsing 'changeOfBitString' field of BACnetNotificationParametersChangeOfBitString")
 	}
@@ -200,7 +197,7 @@ func BACnetNotificationParametersChangeOfBitStringParseWithBuffer(readBuffer uti
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for statusFlags")
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersChangeOfBitString")
 	}
@@ -213,7 +210,7 @@ func BACnetNotificationParametersChangeOfBitStringParseWithBuffer(readBuffer uti
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersChangeOfBitString")
 	}
@@ -242,14 +239,14 @@ func BACnetNotificationParametersChangeOfBitStringParseWithBuffer(readBuffer uti
 }
 
 func (m *_BACnetNotificationParametersChangeOfBitString) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetNotificationParametersChangeOfBitString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersChangeOfBitString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -261,7 +258,7 @@ func (m *_BACnetNotificationParametersChangeOfBitString) SerializeWithWriteBuffe
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.GetInnerOpeningTag())
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -273,7 +270,7 @@ func (m *_BACnetNotificationParametersChangeOfBitString) SerializeWithWriteBuffe
 		if pushErr := writeBuffer.PushContext("changeOfBitString"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for changeOfBitString")
 		}
-		_changeOfBitStringErr := writeBuffer.WriteSerializable(m.GetChangeOfBitString())
+		_changeOfBitStringErr := writeBuffer.WriteSerializable(ctx, m.GetChangeOfBitString())
 		if popErr := writeBuffer.PopContext("changeOfBitString"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for changeOfBitString")
 		}
@@ -285,7 +282,7 @@ func (m *_BACnetNotificationParametersChangeOfBitString) SerializeWithWriteBuffe
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
-		_statusFlagsErr := writeBuffer.WriteSerializable(m.GetStatusFlags())
+		_statusFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetStatusFlags())
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -297,7 +294,7 @@ func (m *_BACnetNotificationParametersChangeOfBitString) SerializeWithWriteBuffe
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := writeBuffer.WriteSerializable(m.GetInnerClosingTag())
+		_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -310,7 +307,7 @@ func (m *_BACnetNotificationParametersChangeOfBitString) SerializeWithWriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetNotificationParametersChangeOfBitString) isBACnetNotificationParametersChangeOfBitString() bool {
@@ -322,7 +319,7 @@ func (m *_BACnetNotificationParametersChangeOfBitString) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

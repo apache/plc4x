@@ -79,6 +79,7 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
   protected void serializeBACnetEventLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventLogRecordLogDatumNotification");
 
@@ -105,6 +106,7 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventLogRecordLogDatumNotification _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (innerOpeningTag)
     lengthInBits += innerOpeningTag.getLengthInBits();
@@ -118,12 +120,13 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
     return lengthInBits;
   }
 
-  public static BACnetEventLogRecordLogDatumNotificationBuilder staticParseBuilder(
+  public static BACnetEventLogRecordLogDatumBuilder staticParseBACnetEventLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetEventLogRecordLogDatumNotification");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
@@ -145,23 +148,22 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
 
     readBuffer.closeContext("BACnetEventLogRecordLogDatumNotification");
     // Create the instance
-    return new BACnetEventLogRecordLogDatumNotificationBuilder(
+    return new BACnetEventLogRecordLogDatumNotificationBuilderImpl(
         innerOpeningTag, notification, innerClosingTag, tagNumber);
   }
 
-  public static class BACnetEventLogRecordLogDatumNotificationBuilder
+  public static class BACnetEventLogRecordLogDatumNotificationBuilderImpl
       implements BACnetEventLogRecordLogDatum.BACnetEventLogRecordLogDatumBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final ConfirmedEventNotificationRequest notification;
     private final BACnetClosingTag innerClosingTag;
     private final Short tagNumber;
 
-    public BACnetEventLogRecordLogDatumNotificationBuilder(
+    public BACnetEventLogRecordLogDatumNotificationBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         ConfirmedEventNotificationRequest notification,
         BACnetClosingTag innerClosingTag,
         Short tagNumber) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.notification = notification;
       this.innerClosingTag = innerClosingTag;

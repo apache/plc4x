@@ -50,6 +50,7 @@ public class PublishedDataSetSourceDataType extends ExtensionObjectDefinition im
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PublishedDataSetSourceDataType");
 
@@ -65,26 +66,28 @@ public class PublishedDataSetSourceDataType extends ExtensionObjectDefinition im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PublishedDataSetSourceDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static PublishedDataSetSourceDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PublishedDataSetSourceDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PublishedDataSetSourceDataType");
     // Create the instance
-    return new PublishedDataSetSourceDataTypeBuilder();
+    return new PublishedDataSetSourceDataTypeBuilderImpl();
   }
 
-  public static class PublishedDataSetSourceDataTypeBuilder
+  public static class PublishedDataSetSourceDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public PublishedDataSetSourceDataTypeBuilder() {}
+    public PublishedDataSetSourceDataTypeBuilderImpl() {}
 
     public PublishedDataSetSourceDataType build() {
       PublishedDataSetSourceDataType publishedDataSetSourceDataType =

@@ -23,11 +23,15 @@ package bacnetip
 type Capability struct {
 }
 
+func NewCapability() *Capability {
+	return &Capability{}
+}
+
 // TODO: implement
 type Collector struct {
 }
 
-func (c *Collector) CapabilityFunctions(fn string) []func() {
+func (c *Collector) CapabilityFunctions(fn string) []func() error {
 	// TODO: implement
 	return nil
 }

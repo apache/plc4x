@@ -75,6 +75,7 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessZoneAlarmValues");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessZoneAlarmValues _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (alarmValues != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessZoneAlarmValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetAccessZoneOccupancyStateTagged> alarmValues =
         readTerminatedArrayField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAccessZoneAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataAccessZoneAlarmValuesBuilder(
+    return new BACnetConstructedDataAccessZoneAlarmValuesBuilderImpl(
         alarmValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessZoneAlarmValuesBuilder
+  public static class BACnetConstructedDataAccessZoneAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAccessZoneOccupancyStateTagged> alarmValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessZoneAlarmValuesBuilder(
+    public BACnetConstructedDataAccessZoneAlarmValuesBuilderImpl(
         List<BACnetAccessZoneOccupancyStateTagged> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

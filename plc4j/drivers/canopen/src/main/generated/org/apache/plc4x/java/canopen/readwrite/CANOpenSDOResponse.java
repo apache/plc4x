@@ -64,6 +64,7 @@ public class CANOpenSDOResponse extends CANOpenPayload implements Message {
   protected void serializeCANOpenPayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenSDOResponse");
 
@@ -92,6 +93,7 @@ public class CANOpenSDOResponse extends CANOpenPayload implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CANOpenSDOResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (command)
     lengthInBits += 3;
@@ -102,12 +104,13 @@ public class CANOpenSDOResponse extends CANOpenPayload implements Message {
     return lengthInBits;
   }
 
-  public static CANOpenSDOResponseBuilder staticParseBuilder(
+  public static CANOpenPayloadBuilder staticParseCANOpenPayloadBuilder(
       ReadBuffer readBuffer, CANOpenService service) throws ParseException {
     readBuffer.pullContext("CANOpenSDOResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SDOResponseCommand command =
         readEnumField(
@@ -125,15 +128,15 @@ public class CANOpenSDOResponse extends CANOpenPayload implements Message {
 
     readBuffer.closeContext("CANOpenSDOResponse");
     // Create the instance
-    return new CANOpenSDOResponseBuilder(command, response);
+    return new CANOpenSDOResponseBuilderImpl(command, response);
   }
 
-  public static class CANOpenSDOResponseBuilder implements CANOpenPayload.CANOpenPayloadBuilder {
+  public static class CANOpenSDOResponseBuilderImpl
+      implements CANOpenPayload.CANOpenPayloadBuilder {
     private final SDOResponseCommand command;
     private final SDOResponse response;
 
-    public CANOpenSDOResponseBuilder(SDOResponseCommand command, SDOResponse response) {
-
+    public CANOpenSDOResponseBuilderImpl(SDOResponseCommand command, SDOResponse response) {
       this.command = command;
       this.response = response;
     }

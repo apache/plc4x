@@ -64,6 +64,7 @@ public class DisconnectResponse extends KnxNetIpMessage implements Message {
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DisconnectResponse");
 
@@ -80,7 +81,8 @@ public class DisconnectResponse extends KnxNetIpMessage implements Message {
         "Status",
         status,
         new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)));
+            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("DisconnectResponse");
   }
@@ -94,6 +96,7 @@ public class DisconnectResponse extends KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DisconnectResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (communicationChannelId)
     lengthInBits += 8;
@@ -104,12 +107,13 @@ public class DisconnectResponse extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static DisconnectResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DisconnectResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short communicationChannelId =
         readSimpleField(
@@ -126,15 +130,15 @@ public class DisconnectResponse extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("DisconnectResponse");
     // Create the instance
-    return new DisconnectResponseBuilder(communicationChannelId, status);
+    return new DisconnectResponseBuilderImpl(communicationChannelId, status);
   }
 
-  public static class DisconnectResponseBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class DisconnectResponseBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final short communicationChannelId;
     private final Status status;
 
-    public DisconnectResponseBuilder(short communicationChannelId, Status status) {
-
+    public DisconnectResponseBuilderImpl(short communicationChannelId, Status status) {
       this.communicationChannelId = communicationChannelId;
       this.status = status;
     }

@@ -88,6 +88,7 @@ public class BACnetConstructedDataPropertyList extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPropertyList");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataPropertyList extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPropertyList _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataPropertyList extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPropertyListBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataPropertyList extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -173,23 +176,22 @@ public class BACnetConstructedDataPropertyList extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataPropertyList");
     // Create the instance
-    return new BACnetConstructedDataPropertyListBuilder(
+    return new BACnetConstructedDataPropertyListBuilderImpl(
         numberOfDataElements, propertyList, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPropertyListBuilder
+  public static class BACnetConstructedDataPropertyListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetPropertyIdentifierTagged> propertyList;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPropertyListBuilder(
+    public BACnetConstructedDataPropertyListBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetPropertyIdentifierTagged> propertyList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.propertyList = propertyList;
       this.tagNumber = tagNumber;

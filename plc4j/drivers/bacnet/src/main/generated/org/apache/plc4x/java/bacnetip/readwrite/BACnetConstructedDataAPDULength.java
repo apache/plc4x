@@ -78,6 +78,7 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAPDULength");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAPDULength _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (apduLength)
     lengthInBits += apduLength.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAPDULengthBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger apduLength =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataAPDULength");
     // Create the instance
-    return new BACnetConstructedDataAPDULengthBuilder(apduLength, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAPDULengthBuilderImpl(
+        apduLength, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAPDULengthBuilder
+  public static class BACnetConstructedDataAPDULengthBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger apduLength;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAPDULengthBuilder(
+    public BACnetConstructedDataAPDULengthBuilderImpl(
         BACnetApplicationTagUnsignedInteger apduLength,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.apduLength = apduLength;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

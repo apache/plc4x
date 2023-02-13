@@ -88,6 +88,7 @@ public class BACnetConstructedDataShedLevels extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataShedLevels");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataShedLevels extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataShedLevels _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataShedLevels extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataShedLevelsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataShedLevels extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -173,23 +176,22 @@ public class BACnetConstructedDataShedLevels extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataShedLevels");
     // Create the instance
-    return new BACnetConstructedDataShedLevelsBuilder(
+    return new BACnetConstructedDataShedLevelsBuilderImpl(
         numberOfDataElements, shedLevels, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataShedLevelsBuilder
+  public static class BACnetConstructedDataShedLevelsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagUnsignedInteger> shedLevels;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataShedLevelsBuilder(
+    public BACnetConstructedDataShedLevelsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagUnsignedInteger> shedLevels,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.shedLevels = shedLevels;
       this.tagNumber = tagNumber;

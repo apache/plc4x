@@ -20,18 +20,20 @@
 package tests
 
 import (
+	"context"
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/internal/s7"
 	s7IO "github.com/apache/plc4x/plc4go/protocols/s7/readwrite"
 	s7Model "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestS7Driver(t *testing.T) {
 	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return s7Model.TPKTPacketParseWithBuffer(readBufferByteBased)
+		return s7Model.TPKTPacketParseWithBuffer(context.Background(), readBufferByteBased)
 	})}
 	testutils.RunDriverTestsuiteWithOptions(t, s7.NewDriver(), "assets/testing/protocols/s7/DriverTestsuite.xml", s7IO.S7XmlParserHelper{}, options)
 }

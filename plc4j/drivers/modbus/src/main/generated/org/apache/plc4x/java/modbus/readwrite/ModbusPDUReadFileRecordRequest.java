@@ -65,6 +65,7 @@ public class ModbusPDUReadFileRecordRequest extends ModbusPDU implements Message
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadFileRecordRequest");
 
@@ -88,6 +89,7 @@ public class ModbusPDUReadFileRecordRequest extends ModbusPDU implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadFileRecordRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (byteCount)
     lengthInBits += 8;
@@ -102,12 +104,13 @@ public class ModbusPDUReadFileRecordRequest extends ModbusPDU implements Message
     return lengthInBits;
   }
 
-  public static ModbusPDUReadFileRecordRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadFileRecordRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short byteCount = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8));
 
@@ -120,14 +123,15 @@ public class ModbusPDUReadFileRecordRequest extends ModbusPDU implements Message
 
     readBuffer.closeContext("ModbusPDUReadFileRecordRequest");
     // Create the instance
-    return new ModbusPDUReadFileRecordRequestBuilder(items);
+    return new ModbusPDUReadFileRecordRequestBuilderImpl(items);
   }
 
-  public static class ModbusPDUReadFileRecordRequestBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUReadFileRecordRequestBuilderImpl
+      implements ModbusPDU.ModbusPDUBuilder {
     private final List<ModbusPDUReadFileRecordRequestItem> items;
 
-    public ModbusPDUReadFileRecordRequestBuilder(List<ModbusPDUReadFileRecordRequestItem> items) {
-
+    public ModbusPDUReadFileRecordRequestBuilderImpl(
+        List<ModbusPDUReadFileRecordRequestItem> items) {
       this.items = items;
     }
 

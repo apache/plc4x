@@ -50,6 +50,7 @@ public class DataSetReaderTransportDataType extends ExtensionObjectDefinition im
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataSetReaderTransportDataType");
 
@@ -65,26 +66,28 @@ public class DataSetReaderTransportDataType extends ExtensionObjectDefinition im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DataSetReaderTransportDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static DataSetReaderTransportDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataSetReaderTransportDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("DataSetReaderTransportDataType");
     // Create the instance
-    return new DataSetReaderTransportDataTypeBuilder();
+    return new DataSetReaderTransportDataTypeBuilderImpl();
   }
 
-  public static class DataSetReaderTransportDataTypeBuilder
+  public static class DataSetReaderTransportDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public DataSetReaderTransportDataTypeBuilder() {}
+    public DataSetReaderTransportDataTypeBuilderImpl() {}
 
     public DataSetReaderTransportDataType build() {
       DataSetReaderTransportDataType dataSetReaderTransportDataType =

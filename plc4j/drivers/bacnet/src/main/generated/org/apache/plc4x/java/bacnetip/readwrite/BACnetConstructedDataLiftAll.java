@@ -65,6 +65,7 @@ public class BACnetConstructedDataLiftAll extends BACnetConstructedData implemen
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLiftAll");
 
@@ -80,11 +81,12 @@ public class BACnetConstructedDataLiftAll extends BACnetConstructedData implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLiftAll _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLiftAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -95,6 +97,7 @@ public class BACnetConstructedDataLiftAll extends BACnetConstructedData implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {
       throw new ParseValidationException(
@@ -103,17 +106,16 @@ public class BACnetConstructedDataLiftAll extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataLiftAll");
     // Create the instance
-    return new BACnetConstructedDataLiftAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLiftAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLiftAllBuilder
+  public static class BACnetConstructedDataLiftAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLiftAllBuilder(
+    public BACnetConstructedDataLiftAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

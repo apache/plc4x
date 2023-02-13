@@ -78,6 +78,7 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterCommandFailure");
 
@@ -108,6 +109,7 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterCommandFailure _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -124,12 +126,13 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
     return lengthInBits;
   }
 
-  public static BACnetEventParameterCommandFailureBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterCommandFailure");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -166,23 +169,22 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
 
     readBuffer.closeContext("BACnetEventParameterCommandFailure");
     // Create the instance
-    return new BACnetEventParameterCommandFailureBuilder(
+    return new BACnetEventParameterCommandFailureBuilderImpl(
         openingTag, timeDelay, feedbackPropertyReference, closingTag);
   }
 
-  public static class BACnetEventParameterCommandFailureBuilder
+  public static class BACnetEventParameterCommandFailureBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
     private final BACnetDeviceObjectPropertyReferenceEnclosed feedbackPropertyReference;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterCommandFailureBuilder(
+    public BACnetEventParameterCommandFailureBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetDeviceObjectPropertyReferenceEnclosed feedbackPropertyReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.feedbackPropertyReference = feedbackPropertyReference;

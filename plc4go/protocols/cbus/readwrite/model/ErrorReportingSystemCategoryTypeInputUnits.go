@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -108,12 +109,8 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetTypeName() string {
 	return "ErrorReportingSystemCategoryTypeInputUnits"
 }
 
-func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (categoryForType)
 	lengthInBits += 4
@@ -121,15 +118,15 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetLengthInBitsConditional
 	return lengthInBits
 }
 
-func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ErrorReportingSystemCategoryTypeInputUnitsParse(theBytes []byte, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeInputUnits, error) {
-	return ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
+	return ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
 }
 
-func ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeInputUnits, error) {
+func ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeInputUnits, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeInputUnits"); pullErr != nil {
@@ -142,7 +139,7 @@ func ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("categoryForType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for categoryForType")
 	}
-	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForInputUnitsParseWithBuffer(readBuffer)
+	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForInputUnitsParseWithBuffer(ctx, readBuffer)
 	if _categoryForTypeErr != nil {
 		return nil, errors.Wrap(_categoryForTypeErr, "Error parsing 'categoryForType' field of ErrorReportingSystemCategoryTypeInputUnits")
 	}
@@ -165,14 +162,14 @@ func ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(readBuffer utils.
 }
 
 func (m *_ErrorReportingSystemCategoryTypeInputUnits) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ErrorReportingSystemCategoryTypeInputUnits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("categoryForType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for categoryForType")
 		}
-		_categoryForTypeErr := writeBuffer.WriteSerializable(m.GetCategoryForType())
+		_categoryForTypeErr := writeBuffer.WriteSerializable(ctx, m.GetCategoryForType())
 		if popErr := writeBuffer.PopContext("categoryForType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for categoryForType")
 		}
@@ -197,7 +194,7 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ErrorReportingSystemCategoryTypeInputUnits) isErrorReportingSystemCategoryTypeInputUnits() bool {
@@ -209,7 +206,7 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

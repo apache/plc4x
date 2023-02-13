@@ -47,6 +47,7 @@ public class SecurityDataMainsRestoredOrApplied extends SecurityData implements 
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataMainsRestoredOrApplied");
 
@@ -62,26 +63,28 @@ public class SecurityDataMainsRestoredOrApplied extends SecurityData implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataMainsRestoredOrApplied _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SecurityDataMainsRestoredOrAppliedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataMainsRestoredOrApplied");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataMainsRestoredOrApplied");
     // Create the instance
-    return new SecurityDataMainsRestoredOrAppliedBuilder();
+    return new SecurityDataMainsRestoredOrAppliedBuilderImpl();
   }
 
-  public static class SecurityDataMainsRestoredOrAppliedBuilder
+  public static class SecurityDataMainsRestoredOrAppliedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataMainsRestoredOrAppliedBuilder() {}
+    public SecurityDataMainsRestoredOrAppliedBuilderImpl() {}
 
     public SecurityDataMainsRestoredOrApplied build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

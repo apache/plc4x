@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetApplicationSoftwar
 ///////////////////////
 
 func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetActualValue() BACnetApplicationTagCharacterString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagCharacterString(m.GetApplicationSoftwareVersion())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetTypeName() string 
 	return "BACnetConstructedDataApplicationSoftwareVersion"
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (applicationSoftwareVersion)
-	lengthInBits += m.ApplicationSoftwareVersion.GetLengthInBits()
+	lengthInBits += m.ApplicationSoftwareVersion.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataApplicationSoftwareVersion) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataApplicationSoftwareVersionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataApplicationSoftwareVersion, error) {
-	return BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataApplicationSoftwareVersion, error) {
+func BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataApplicationSoftwareVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataApplicationSoftwareVersion"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("applicationSoftwareVersion"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for applicationSoftwareVersion")
 	}
-	_applicationSoftwareVersion, _applicationSoftwareVersionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_applicationSoftwareVersion, _applicationSoftwareVersionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _applicationSoftwareVersionErr != nil {
 		return nil, errors.Wrap(_applicationSoftwareVersionErr, "Error parsing 'applicationSoftwareVersion' field of BACnetConstructedDataApplicationSoftwareVersion")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(readBuffer u
 }
 
 func (m *_BACnetConstructedDataApplicationSoftwareVersion) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataApplicationSoftwareVersion) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataApplicationSoftwareVersion) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("applicationSoftwareVersion"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for applicationSoftwareVersion")
 		}
-		_applicationSoftwareVersionErr := writeBuffer.WriteSerializable(m.GetApplicationSoftwareVersion())
+		_applicationSoftwareVersionErr := writeBuffer.WriteSerializable(ctx, m.GetApplicationSoftwareVersion())
 		if popErr := writeBuffer.PopContext("applicationSoftwareVersion"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for applicationSoftwareVersion")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) SerializeWithWriteBuf
 			return errors.Wrap(_applicationSoftwareVersionErr, "Error serializing 'applicationSoftwareVersion' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataApplicationSoftwareVersion) isBACnetConstructedDataApplicationSoftwareVersion() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataApplicationSoftwareVersion) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

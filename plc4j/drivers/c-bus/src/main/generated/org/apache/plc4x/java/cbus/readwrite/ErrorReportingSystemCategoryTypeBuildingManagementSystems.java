@@ -60,6 +60,7 @@ public class ErrorReportingSystemCategoryTypeBuildingManagementSystems
   protected void serializeErrorReportingSystemCategoryTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingSystemCategoryTypeBuildingManagementSystems");
 
@@ -85,6 +86,7 @@ public class ErrorReportingSystemCategoryTypeBuildingManagementSystems
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ErrorReportingSystemCategoryTypeBuildingManagementSystems _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (categoryForType)
     lengthInBits += 4;
@@ -92,13 +94,16 @@ public class ErrorReportingSystemCategoryTypeBuildingManagementSystems
     return lengthInBits;
   }
 
-  public static ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder staticParseBuilder(
-      ReadBuffer readBuffer, ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
-      throws ParseException {
+  public static ErrorReportingSystemCategoryTypeBuilder
+      staticParseErrorReportingSystemCategoryTypeBuilder(
+          ReadBuffer readBuffer,
+          ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
+          throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeBuildingManagementSystems");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorReportingSystemCategoryTypeForBuildingManagementSystems categoryForType =
         readEnumField(
@@ -110,16 +115,16 @@ public class ErrorReportingSystemCategoryTypeBuildingManagementSystems
 
     readBuffer.closeContext("ErrorReportingSystemCategoryTypeBuildingManagementSystems");
     // Create the instance
-    return new ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder(categoryForType);
+    return new ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilderImpl(
+        categoryForType);
   }
 
-  public static class ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
+  public static class ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilderImpl
       implements ErrorReportingSystemCategoryType.ErrorReportingSystemCategoryTypeBuilder {
     private final ErrorReportingSystemCategoryTypeForBuildingManagementSystems categoryForType;
 
-    public ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder(
+    public ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilderImpl(
         ErrorReportingSystemCategoryTypeForBuildingManagementSystems categoryForType) {
-
       this.categoryForType = categoryForType;
     }
 

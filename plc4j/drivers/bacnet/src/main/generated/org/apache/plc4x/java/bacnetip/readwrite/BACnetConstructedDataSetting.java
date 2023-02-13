@@ -78,6 +78,7 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSetting");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSetting _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (setting)
     lengthInBits += setting.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSettingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger setting =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataSetting extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataSetting");
     // Create the instance
-    return new BACnetConstructedDataSettingBuilder(setting, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataSettingBuilderImpl(setting, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSettingBuilder
+  public static class BACnetConstructedDataSettingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger setting;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSettingBuilder(
+    public BACnetConstructedDataSettingBuilderImpl(
         BACnetApplicationTagUnsignedInteger setting,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.setting = setting;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

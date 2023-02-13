@@ -46,6 +46,7 @@ public class MeteringDataMeasureGas extends MeteringData implements Message {
   @Override
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataMeasureGas");
 
@@ -61,25 +62,28 @@ public class MeteringDataMeasureGas extends MeteringData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MeteringDataMeasureGas _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static MeteringDataMeasureGasBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataMeasureGas");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MeteringDataMeasureGas");
     // Create the instance
-    return new MeteringDataMeasureGasBuilder();
+    return new MeteringDataMeasureGasBuilderImpl();
   }
 
-  public static class MeteringDataMeasureGasBuilder implements MeteringData.MeteringDataBuilder {
+  public static class MeteringDataMeasureGasBuilderImpl
+      implements MeteringData.MeteringDataBuilder {
 
-    public MeteringDataMeasureGasBuilder() {}
+    public MeteringDataMeasureGasBuilderImpl() {}
 
     public MeteringDataMeasureGas build(
         MeteringCommandTypeContainer commandTypeContainer, byte argument) {

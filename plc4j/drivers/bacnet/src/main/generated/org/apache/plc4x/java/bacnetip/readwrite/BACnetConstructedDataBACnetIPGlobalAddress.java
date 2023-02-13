@@ -79,6 +79,7 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPGlobalAddress");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBACnetIPGlobalAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bacnetIpGlobalAddress)
     lengthInBits += bacnetIpGlobalAddress.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBACnetIPGlobalAddressBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetHostNPort bacnetIpGlobalAddress =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPGlobalAddress");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPGlobalAddressBuilder(
+    return new BACnetConstructedDataBACnetIPGlobalAddressBuilderImpl(
         bacnetIpGlobalAddress, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBACnetIPGlobalAddressBuilder
+  public static class BACnetConstructedDataBACnetIPGlobalAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetHostNPort bacnetIpGlobalAddress;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBACnetIPGlobalAddressBuilder(
+    public BACnetConstructedDataBACnetIPGlobalAddressBuilderImpl(
         BACnetHostNPort bacnetIpGlobalAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bacnetIpGlobalAddress = bacnetIpGlobalAddress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

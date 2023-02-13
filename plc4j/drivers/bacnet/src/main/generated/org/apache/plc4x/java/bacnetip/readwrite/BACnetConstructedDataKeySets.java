@@ -88,6 +88,7 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataKeySets");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataKeySets _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataKeySetsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -174,23 +177,22 @@ public class BACnetConstructedDataKeySets extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataKeySets");
     // Create the instance
-    return new BACnetConstructedDataKeySetsBuilder(
+    return new BACnetConstructedDataKeySetsBuilderImpl(
         numberOfDataElements, keySets, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataKeySetsBuilder
+  public static class BACnetConstructedDataKeySetsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetSecurityKeySet> keySets;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataKeySetsBuilder(
+    public BACnetConstructedDataKeySetsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetSecurityKeySet> keySets,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.keySets = keySets;
       this.tagNumber = tagNumber;

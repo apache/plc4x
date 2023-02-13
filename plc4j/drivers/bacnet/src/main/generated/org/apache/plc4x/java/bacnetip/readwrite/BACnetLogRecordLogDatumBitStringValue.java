@@ -65,6 +65,7 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumBitStringValue");
 
@@ -83,6 +84,7 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumBitStringValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bitStringValue)
     lengthInBits += bitStringValue.getLengthInBits();
@@ -90,12 +92,13 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumBitStringValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumBitStringValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagBitString bitStringValue =
         readSimpleField(
@@ -109,17 +112,16 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
 
     readBuffer.closeContext("BACnetLogRecordLogDatumBitStringValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumBitStringValueBuilder(bitStringValue, tagNumber);
+    return new BACnetLogRecordLogDatumBitStringValueBuilderImpl(bitStringValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumBitStringValueBuilder
+  public static class BACnetLogRecordLogDatumBitStringValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagBitString bitStringValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumBitStringValueBuilder(
+    public BACnetLogRecordLogDatumBitStringValueBuilderImpl(
         BACnetContextTagBitString bitStringValue, Short tagNumber) {
-
       this.bitStringValue = bitStringValue;
       this.tagNumber = tagNumber;
     }

@@ -56,6 +56,7 @@ public class BACnetChannelValueBitString extends BACnetChannelValue implements M
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueBitString");
 
@@ -74,6 +75,7 @@ public class BACnetChannelValueBitString extends BACnetChannelValue implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueBitString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bitStringValue)
     lengthInBits += bitStringValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetChannelValueBitString extends BACnetChannelValue implements M
     return lengthInBits;
   }
 
-  public static BACnetChannelValueBitStringBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueBitString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBitString bitStringValue =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetChannelValueBitString extends BACnetChannelValue implements M
 
     readBuffer.closeContext("BACnetChannelValueBitString");
     // Create the instance
-    return new BACnetChannelValueBitStringBuilder(bitStringValue);
+    return new BACnetChannelValueBitStringBuilderImpl(bitStringValue);
   }
 
-  public static class BACnetChannelValueBitStringBuilder
+  public static class BACnetChannelValueBitStringBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagBitString bitStringValue;
 
-    public BACnetChannelValueBitStringBuilder(BACnetApplicationTagBitString bitStringValue) {
-
+    public BACnetChannelValueBitStringBuilderImpl(BACnetApplicationTagBitString bitStringValue) {
       this.bitStringValue = bitStringValue;
     }
 

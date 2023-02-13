@@ -63,6 +63,7 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
   protected void serializeDF1RequestMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1CommandRequestMessage");
 
@@ -81,6 +82,7 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DF1CommandRequestMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (command)
     lengthInBits += command.getLengthInBits();
@@ -88,12 +90,13 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
     return lengthInBits;
   }
 
-  public static DF1CommandRequestMessageBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static DF1RequestMessageBuilder staticParseDF1RequestMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DF1CommandRequestMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DF1RequestCommand command =
         readSimpleField(
@@ -103,15 +106,14 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
 
     readBuffer.closeContext("DF1CommandRequestMessage");
     // Create the instance
-    return new DF1CommandRequestMessageBuilder(command);
+    return new DF1CommandRequestMessageBuilderImpl(command);
   }
 
-  public static class DF1CommandRequestMessageBuilder
+  public static class DF1CommandRequestMessageBuilderImpl
       implements DF1RequestMessage.DF1RequestMessageBuilder {
     private final DF1RequestCommand command;
 
-    public DF1CommandRequestMessageBuilder(DF1RequestCommand command) {
-
+    public DF1CommandRequestMessageBuilderImpl(DF1RequestCommand command) {
       this.command = command;
     }
 

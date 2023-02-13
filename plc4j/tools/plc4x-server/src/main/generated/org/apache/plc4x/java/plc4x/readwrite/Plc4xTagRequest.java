@@ -51,6 +51,7 @@ public class Plc4xTagRequest implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Plc4xTagRequest");
 
@@ -69,6 +70,7 @@ public class Plc4xTagRequest implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     Plc4xTagRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (tag)
     lengthInBits += tag.getLengthInBits();
@@ -87,6 +89,7 @@ public class Plc4xTagRequest implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Plc4xTag tag =
         readSimpleField(

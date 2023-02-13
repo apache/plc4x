@@ -57,6 +57,7 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
   protected void serializeBACnetLogDataLogDataEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryBitStringValue");
 
@@ -75,6 +76,7 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogDataLogDataEntryBitStringValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bitStringValue)
     lengthInBits += bitStringValue.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryBitStringValueBuilder staticParseBuilder(
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryBitStringValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagBitString bitStringValue =
         readSimpleField(
@@ -101,16 +104,15 @@ public class BACnetLogDataLogDataEntryBitStringValue extends BACnetLogDataLogDat
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryBitStringValue");
     // Create the instance
-    return new BACnetLogDataLogDataEntryBitStringValueBuilder(bitStringValue);
+    return new BACnetLogDataLogDataEntryBitStringValueBuilderImpl(bitStringValue);
   }
 
-  public static class BACnetLogDataLogDataEntryBitStringValueBuilder
+  public static class BACnetLogDataLogDataEntryBitStringValueBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final BACnetContextTagBitString bitStringValue;
 
-    public BACnetLogDataLogDataEntryBitStringValueBuilder(
+    public BACnetLogDataLogDataEntryBitStringValueBuilderImpl(
         BACnetContextTagBitString bitStringValue) {
-
       this.bitStringValue = bitStringValue;
     }
 

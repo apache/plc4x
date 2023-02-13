@@ -68,6 +68,7 @@ public class ParameterValueApplicationAddress1 extends ParameterValue implements
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueApplicationAddress1");
 
@@ -89,6 +90,7 @@ public class ParameterValueApplicationAddress1 extends ParameterValue implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueApplicationAddress1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += value.getLengthInBits();
@@ -101,12 +103,13 @@ public class ParameterValueApplicationAddress1 extends ParameterValue implements
     return lengthInBits;
   }
 
-  public static ParameterValueApplicationAddress1Builder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueApplicationAddress1");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {
       throw new ParseValidationException("ApplicationAddress1 has exactly one byte");
@@ -122,18 +125,17 @@ public class ParameterValueApplicationAddress1 extends ParameterValue implements
 
     readBuffer.closeContext("ParameterValueApplicationAddress1");
     // Create the instance
-    return new ParameterValueApplicationAddress1Builder(value, data, numBytes);
+    return new ParameterValueApplicationAddress1BuilderImpl(value, data, numBytes);
   }
 
-  public static class ParameterValueApplicationAddress1Builder
+  public static class ParameterValueApplicationAddress1BuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final ApplicationAddress1 value;
     private final byte[] data;
     private final Short numBytes;
 
-    public ParameterValueApplicationAddress1Builder(
+    public ParameterValueApplicationAddress1BuilderImpl(
         ApplicationAddress1 value, byte[] data, Short numBytes) {
-
       this.value = value;
       this.data = data;
       this.numBytes = numBytes;

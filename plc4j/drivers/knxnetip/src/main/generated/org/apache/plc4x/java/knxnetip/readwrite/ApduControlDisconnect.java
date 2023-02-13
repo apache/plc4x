@@ -49,6 +49,7 @@ public class ApduControlDisconnect extends ApduControl implements Message {
   @Override
   protected void serializeApduControlChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduControlDisconnect");
 
@@ -64,25 +65,27 @@ public class ApduControlDisconnect extends ApduControl implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduControlDisconnect _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduControlDisconnectBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ApduControlBuilder staticParseApduControlBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ApduControlDisconnect");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduControlDisconnect");
     // Create the instance
-    return new ApduControlDisconnectBuilder();
+    return new ApduControlDisconnectBuilderImpl();
   }
 
-  public static class ApduControlDisconnectBuilder implements ApduControl.ApduControlBuilder {
+  public static class ApduControlDisconnectBuilderImpl implements ApduControl.ApduControlBuilder {
 
-    public ApduControlDisconnectBuilder() {}
+    public ApduControlDisconnectBuilderImpl() {}
 
     public ApduControlDisconnect build() {
       ApduControlDisconnect apduControlDisconnect = new ApduControlDisconnect();

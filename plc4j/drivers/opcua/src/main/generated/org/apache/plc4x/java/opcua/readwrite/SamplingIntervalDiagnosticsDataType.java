@@ -81,6 +81,7 @@ public class SamplingIntervalDiagnosticsDataType extends ExtensionObjectDefiniti
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SamplingIntervalDiagnosticsDataType");
 
@@ -112,6 +113,7 @@ public class SamplingIntervalDiagnosticsDataType extends ExtensionObjectDefiniti
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SamplingIntervalDiagnosticsDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (samplingInterval)
     lengthInBits += 64;
@@ -128,12 +130,13 @@ public class SamplingIntervalDiagnosticsDataType extends ExtensionObjectDefiniti
     return lengthInBits;
   }
 
-  public static SamplingIntervalDiagnosticsDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SamplingIntervalDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     double samplingInterval = readSimpleField("samplingInterval", readDouble(readBuffer, 64));
 
@@ -148,23 +151,22 @@ public class SamplingIntervalDiagnosticsDataType extends ExtensionObjectDefiniti
 
     readBuffer.closeContext("SamplingIntervalDiagnosticsDataType");
     // Create the instance
-    return new SamplingIntervalDiagnosticsDataTypeBuilder(
+    return new SamplingIntervalDiagnosticsDataTypeBuilderImpl(
         samplingInterval, monitoredItemCount, maxMonitoredItemCount, disabledMonitoredItemCount);
   }
 
-  public static class SamplingIntervalDiagnosticsDataTypeBuilder
+  public static class SamplingIntervalDiagnosticsDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final double samplingInterval;
     private final long monitoredItemCount;
     private final long maxMonitoredItemCount;
     private final long disabledMonitoredItemCount;
 
-    public SamplingIntervalDiagnosticsDataTypeBuilder(
+    public SamplingIntervalDiagnosticsDataTypeBuilderImpl(
         double samplingInterval,
         long monitoredItemCount,
         long maxMonitoredItemCount,
         long disabledMonitoredItemCount) {
-
       this.samplingInterval = samplingInterval;
       this.monitoredItemCount = monitoredItemCount;
       this.maxMonitoredItemCount = maxMonitoredItemCount;

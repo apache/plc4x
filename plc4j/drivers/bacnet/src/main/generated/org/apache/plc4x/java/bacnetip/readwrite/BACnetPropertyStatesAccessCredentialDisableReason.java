@@ -58,6 +58,7 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesAccessCredentialDisableReason");
 
@@ -79,6 +80,7 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesAccessCredentialDisableReason _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessCredentialDisableReason)
     lengthInBits += accessCredentialDisableReason.getLengthInBits();
@@ -86,12 +88,13 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesAccessCredentialDisableReasonBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesAccessCredentialDisableReason");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessCredentialDisableReasonTagged accessCredentialDisableReason =
         readSimpleField(
@@ -106,17 +109,16 @@ public class BACnetPropertyStatesAccessCredentialDisableReason extends BACnetPro
 
     readBuffer.closeContext("BACnetPropertyStatesAccessCredentialDisableReason");
     // Create the instance
-    return new BACnetPropertyStatesAccessCredentialDisableReasonBuilder(
+    return new BACnetPropertyStatesAccessCredentialDisableReasonBuilderImpl(
         accessCredentialDisableReason);
   }
 
-  public static class BACnetPropertyStatesAccessCredentialDisableReasonBuilder
+  public static class BACnetPropertyStatesAccessCredentialDisableReasonBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetAccessCredentialDisableReasonTagged accessCredentialDisableReason;
 
-    public BACnetPropertyStatesAccessCredentialDisableReasonBuilder(
+    public BACnetPropertyStatesAccessCredentialDisableReasonBuilderImpl(
         BACnetAccessCredentialDisableReasonTagged accessCredentialDisableReason) {
-
       this.accessCredentialDisableReason = accessCredentialDisableReason;
     }
 

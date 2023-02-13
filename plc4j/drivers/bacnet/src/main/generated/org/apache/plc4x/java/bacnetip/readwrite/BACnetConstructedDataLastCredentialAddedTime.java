@@ -79,6 +79,7 @@ public class BACnetConstructedDataLastCredentialAddedTime extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLastCredentialAddedTime");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataLastCredentialAddedTime extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLastCredentialAddedTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lastCredentialAddedTime)
     lengthInBits += lastCredentialAddedTime.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataLastCredentialAddedTime extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastCredentialAddedTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataLastCredentialAddedTime extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime lastCredentialAddedTime =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataLastCredentialAddedTime extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataLastCredentialAddedTime");
     // Create the instance
-    return new BACnetConstructedDataLastCredentialAddedTimeBuilder(
+    return new BACnetConstructedDataLastCredentialAddedTimeBuilderImpl(
         lastCredentialAddedTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastCredentialAddedTimeBuilder
+  public static class BACnetConstructedDataLastCredentialAddedTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime lastCredentialAddedTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastCredentialAddedTimeBuilder(
+    public BACnetConstructedDataLastCredentialAddedTimeBuilderImpl(
         BACnetDateTime lastCredentialAddedTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastCredentialAddedTime = lastCredentialAddedTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

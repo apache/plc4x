@@ -150,6 +150,7 @@ public class Node extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Node");
 
@@ -213,6 +214,7 @@ public class Node extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     Node _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nodeId)
     lengthInBits += nodeId.getLengthInBits();
@@ -242,7 +244,7 @@ public class Node extends ExtensionObjectDefinition implements Message {
     if (rolePermissions != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : rolePermissions) {
-        boolean last = ++i >= rolePermissions.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= rolePermissions.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -254,7 +256,7 @@ public class Node extends ExtensionObjectDefinition implements Message {
     if (userRolePermissions != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : userRolePermissions) {
-        boolean last = ++i >= userRolePermissions.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= userRolePermissions.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -269,7 +271,7 @@ public class Node extends ExtensionObjectDefinition implements Message {
     if (references != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : references) {
-        boolean last = ++i >= references.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= references.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -277,12 +279,13 @@ public class Node extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static NodeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("Node");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
         readSimpleField(
@@ -352,7 +355,7 @@ public class Node extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("Node");
     // Create the instance
-    return new NodeBuilder(
+    return new NodeBuilderImpl(
         nodeId,
         nodeClass,
         browseName,
@@ -369,7 +372,7 @@ public class Node extends ExtensionObjectDefinition implements Message {
         references);
   }
 
-  public static class NodeBuilder
+  public static class NodeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId nodeId;
     private final NodeClass nodeClass;
@@ -386,7 +389,7 @@ public class Node extends ExtensionObjectDefinition implements Message {
     private final int noOfReferences;
     private final List<ExtensionObjectDefinition> references;
 
-    public NodeBuilder(
+    public NodeBuilderImpl(
         NodeId nodeId,
         NodeClass nodeClass,
         QualifiedName browseName,
@@ -401,7 +404,6 @@ public class Node extends ExtensionObjectDefinition implements Message {
         int accessRestrictions,
         int noOfReferences,
         List<ExtensionObjectDefinition> references) {
-
       this.nodeId = nodeId;
       this.nodeClass = nodeClass;
       this.browseName = browseName;

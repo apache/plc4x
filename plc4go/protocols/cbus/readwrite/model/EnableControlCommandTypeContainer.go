@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -336,19 +337,19 @@ func CastEnableControlCommandTypeContainer(structType interface{}) EnableControl
 	return castFunc(structType)
 }
 
-func (m EnableControlCommandTypeContainer) GetLengthInBits() uint16 {
+func (m EnableControlCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m EnableControlCommandTypeContainer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m EnableControlCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func EnableControlCommandTypeContainerParse(theBytes []byte) (EnableControlCommandTypeContainer, error) {
-	return EnableControlCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func EnableControlCommandTypeContainerParse(ctx context.Context, theBytes []byte) (EnableControlCommandTypeContainer, error) {
+	return EnableControlCommandTypeContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func EnableControlCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (EnableControlCommandTypeContainer, error) {
+func EnableControlCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EnableControlCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("EnableControlCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading EnableControlCommandTypeContainer")
@@ -363,13 +364,13 @@ func EnableControlCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffe
 
 func (e EnableControlCommandTypeContainer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e EnableControlCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e EnableControlCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("EnableControlCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

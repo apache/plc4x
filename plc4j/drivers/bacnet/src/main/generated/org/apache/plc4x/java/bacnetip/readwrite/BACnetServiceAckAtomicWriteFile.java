@@ -63,6 +63,7 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAtomicWriteFile");
 
@@ -82,6 +83,7 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckAtomicWriteFile _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileStartPosition)
     lengthInBits += fileStartPosition.getLengthInBits();
@@ -89,12 +91,13 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
     return lengthInBits;
   }
 
-  public static BACnetServiceAckAtomicWriteFileBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicWriteFile");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagSignedInteger fileStartPosition =
         readSimpleField(
@@ -110,17 +113,16 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
 
     readBuffer.closeContext("BACnetServiceAckAtomicWriteFile");
     // Create the instance
-    return new BACnetServiceAckAtomicWriteFileBuilder(fileStartPosition, serviceAckLength);
+    return new BACnetServiceAckAtomicWriteFileBuilderImpl(fileStartPosition, serviceAckLength);
   }
 
-  public static class BACnetServiceAckAtomicWriteFileBuilder
+  public static class BACnetServiceAckAtomicWriteFileBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetContextTagSignedInteger fileStartPosition;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckAtomicWriteFileBuilder(
+    public BACnetServiceAckAtomicWriteFileBuilderImpl(
         BACnetContextTagSignedInteger fileStartPosition, Long serviceAckLength) {
-
       this.fileStartPosition = fileStartPosition;
       this.serviceAckLength = serviceAckLength;
     }

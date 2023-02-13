@@ -42,17 +42,14 @@ public class ApduDataExtIndividualAddressSerialNumberWrite extends ApduDataExt i
     return (short) 0x1E;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtIndividualAddressSerialNumberWrite(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtIndividualAddressSerialNumberWrite() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtIndividualAddressSerialNumberWrite");
 
@@ -68,35 +65,32 @@ public class ApduDataExtIndividualAddressSerialNumberWrite extends ApduDataExt i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtIndividualAddressSerialNumberWrite _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtIndividualAddressSerialNumberWriteBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtIndividualAddressSerialNumberWrite");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtIndividualAddressSerialNumberWrite");
     // Create the instance
-    return new ApduDataExtIndividualAddressSerialNumberWriteBuilder(length);
+    return new ApduDataExtIndividualAddressSerialNumberWriteBuilderImpl();
   }
 
-  public static class ApduDataExtIndividualAddressSerialNumberWriteBuilder
+  public static class ApduDataExtIndividualAddressSerialNumberWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtIndividualAddressSerialNumberWriteBuilder(Short length) {
+    public ApduDataExtIndividualAddressSerialNumberWriteBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtIndividualAddressSerialNumberWrite build(Short length) {
-
+    public ApduDataExtIndividualAddressSerialNumberWrite build() {
       ApduDataExtIndividualAddressSerialNumberWrite apduDataExtIndividualAddressSerialNumberWrite =
-          new ApduDataExtIndividualAddressSerialNumberWrite(length);
+          new ApduDataExtIndividualAddressSerialNumberWrite();
       return apduDataExtIndividualAddressSerialNumberWrite;
     }
   }

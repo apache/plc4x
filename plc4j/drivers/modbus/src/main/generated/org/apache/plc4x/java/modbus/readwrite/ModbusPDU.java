@@ -53,6 +53,7 @@ public abstract class ModbusPDU implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDU");
 
@@ -77,6 +78,7 @@ public abstract class ModbusPDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ModbusPDU _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (errorFlag)
     lengthInBits += 1;
@@ -114,6 +116,7 @@ public abstract class ModbusPDU implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean errorFlag = readDiscriminatorField("errorFlag", readBoolean(readBuffer));
 
@@ -122,165 +125,189 @@ public abstract class ModbusPDU implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ModbusPDUBuilder builder = null;
     if (EvaluationHelper.equals(errorFlag, (boolean) true)) {
-      builder = ModbusPDUError.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUError.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x02)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUReadDiscreteInputsRequest.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUReadDiscreteInputsRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x02)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUReadDiscreteInputsResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUReadDiscreteInputsResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x01)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUReadCoilsRequest.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUReadCoilsRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x01)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUReadCoilsResponse.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUReadCoilsResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x05)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUWriteSingleCoilRequest.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUWriteSingleCoilRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x05)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUWriteSingleCoilResponse.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUWriteSingleCoilResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x0F)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUWriteMultipleCoilsRequest.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUWriteMultipleCoilsRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x0F)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUWriteMultipleCoilsResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUWriteMultipleCoilsResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x04)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUReadInputRegistersRequest.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUReadInputRegistersRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x04)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUReadInputRegistersResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUReadInputRegistersResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x03)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUReadHoldingRegistersRequest.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUReadHoldingRegistersRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x03)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUReadHoldingRegistersResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUReadHoldingRegistersResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x06)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUWriteSingleRegisterRequest.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUWriteSingleRegisterRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x06)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUWriteSingleRegisterResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUWriteSingleRegisterResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x10)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder =
-          ModbusPDUWriteMultipleHoldingRegistersRequest.staticParseBuilder(readBuffer, response);
+          ModbusPDUWriteMultipleHoldingRegistersRequest.staticParseModbusPDUBuilder(
+              readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x10)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder =
-          ModbusPDUWriteMultipleHoldingRegistersResponse.staticParseBuilder(readBuffer, response);
+          ModbusPDUWriteMultipleHoldingRegistersResponse.staticParseModbusPDUBuilder(
+              readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x17)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder =
-          ModbusPDUReadWriteMultipleHoldingRegistersRequest.staticParseBuilder(
+          ModbusPDUReadWriteMultipleHoldingRegistersRequest.staticParseModbusPDUBuilder(
               readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x17)
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder =
-          ModbusPDUReadWriteMultipleHoldingRegistersResponse.staticParseBuilder(
+          ModbusPDUReadWriteMultipleHoldingRegistersResponse.staticParseModbusPDUBuilder(
               readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x16)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUMaskWriteHoldingRegisterRequest.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUMaskWriteHoldingRegisterRequest.staticParseModbusPDUBuilder(
+              readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x16)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUMaskWriteHoldingRegisterResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUMaskWriteHoldingRegisterResponse.staticParseModbusPDUBuilder(
+              readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x18)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUReadFifoQueueRequest.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUReadFifoQueueRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x18)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUReadFifoQueueResponse.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUReadFifoQueueResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x14)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUReadFileRecordRequest.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUReadFileRecordRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x14)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUReadFileRecordResponse.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUReadFileRecordResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x15)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUWriteFileRecordRequest.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUWriteFileRecordRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x15)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUWriteFileRecordResponse.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUWriteFileRecordResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x07)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUReadExceptionStatusRequest.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUReadExceptionStatusRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x07)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUReadExceptionStatusResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUReadExceptionStatusResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x08)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUDiagnosticRequest.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUDiagnosticRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x08)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUDiagnosticResponse.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUDiagnosticResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x0B)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUGetComEventCounterRequest.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUGetComEventCounterRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x0B)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUGetComEventCounterResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUGetComEventCounterResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x0C)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUGetComEventLogRequest.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUGetComEventLogRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x0C)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUGetComEventLogResponse.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUGetComEventLogResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x11)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUReportServerIdRequest.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUReportServerIdRequest.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x11)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUReportServerIdResponse.staticParseBuilder(readBuffer, response);
+      builder = ModbusPDUReportServerIdResponse.staticParseModbusPDUBuilder(readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x2B)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = ModbusPDUReadDeviceIdentificationRequest.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUReadDeviceIdentificationRequest.staticParseModbusPDUBuilder(
+              readBuffer, response);
     } else if (EvaluationHelper.equals(errorFlag, (boolean) false)
         && EvaluationHelper.equals(functionFlag, (short) 0x2B)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = ModbusPDUReadDeviceIdentificationResponse.staticParseBuilder(readBuffer, response);
+      builder =
+          ModbusPDUReadDeviceIdentificationResponse.staticParseModbusPDUBuilder(
+              readBuffer, response);
     }
     if (builder == null) {
       throw new ParseException(
@@ -303,7 +330,7 @@ public abstract class ModbusPDU implements Message {
     return _modbusPDU;
   }
 
-  public static interface ModbusPDUBuilder {
+  public interface ModbusPDUBuilder {
     ModbusPDU build();
   }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataCOVIncrement) GetCovIncrement() BACnetApplication
 ///////////////////////
 
 func (m *_BACnetConstructedDataCOVIncrement) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetCovIncrement())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataCOVIncrement) GetTypeName() string {
 	return "BACnetConstructedDataCOVIncrement"
 }
 
-func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (covIncrement)
-	lengthInBits += m.CovIncrement.GetLengthInBits()
+	lengthInBits += m.CovIncrement.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataCOVIncrement) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataCOVIncrementParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVIncrement, error) {
-	return BACnetConstructedDataCOVIncrementParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataCOVIncrementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataCOVIncrementParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVIncrement, error) {
+func BACnetConstructedDataCOVIncrementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVIncrement"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataCOVIncrementParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
 	}
-	_covIncrement, _covIncrementErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_covIncrement, _covIncrementErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _covIncrementErr != nil {
 		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field of BACnetConstructedDataCOVIncrement")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataCOVIncrementParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataCOVIncrement) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataCOVIncrement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCOVIncrement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataCOVIncrement) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("covIncrement"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for covIncrement")
 		}
-		_covIncrementErr := writeBuffer.WriteSerializable(m.GetCovIncrement())
+		_covIncrementErr := writeBuffer.WriteSerializable(ctx, m.GetCovIncrement())
 		if popErr := writeBuffer.PopContext("covIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for covIncrement")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataCOVIncrement) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_covIncrementErr, "Error serializing 'covIncrement' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataCOVIncrement) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataCOVIncrement) isBACnetConstructedDataCOVIncrement() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataCOVIncrement) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_BACnetServiceAckVTOpen) GetTypeName() string {
 	return "BACnetServiceAckVTOpen"
 }
 
-func (m *_BACnetServiceAckVTOpen) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetServiceAckVTOpen) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetServiceAckVTOpen) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (remoteVtSessionIdentifier)
-	lengthInBits += m.RemoteVtSessionIdentifier.GetLengthInBits()
+	lengthInBits += m.RemoteVtSessionIdentifier.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckVTOpen) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetServiceAckVTOpen) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetServiceAckVTOpenParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckVTOpen, error) {
-	return BACnetServiceAckVTOpenParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+	return BACnetServiceAckVTOpenParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
-func BACnetServiceAckVTOpenParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTOpen, error) {
+func BACnetServiceAckVTOpenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTOpen"); pullErr != nil {
@@ -141,7 +138,7 @@ func BACnetServiceAckVTOpenParseWithBuffer(readBuffer utils.ReadBuffer, serviceA
 	if pullErr := readBuffer.PullContext("remoteVtSessionIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for remoteVtSessionIdentifier")
 	}
-	_remoteVtSessionIdentifier, _remoteVtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_remoteVtSessionIdentifier, _remoteVtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _remoteVtSessionIdentifierErr != nil {
 		return nil, errors.Wrap(_remoteVtSessionIdentifierErr, "Error parsing 'remoteVtSessionIdentifier' field of BACnetServiceAckVTOpen")
 	}
@@ -166,14 +163,14 @@ func BACnetServiceAckVTOpenParseWithBuffer(readBuffer utils.ReadBuffer, serviceA
 }
 
 func (m *_BACnetServiceAckVTOpen) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetServiceAckVTOpen) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckVTOpen) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_BACnetServiceAckVTOpen) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("remoteVtSessionIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for remoteVtSessionIdentifier")
 		}
-		_remoteVtSessionIdentifierErr := writeBuffer.WriteSerializable(m.GetRemoteVtSessionIdentifier())
+		_remoteVtSessionIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetRemoteVtSessionIdentifier())
 		if popErr := writeBuffer.PopContext("remoteVtSessionIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for remoteVtSessionIdentifier")
 		}
@@ -198,7 +195,7 @@ func (m *_BACnetServiceAckVTOpen) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetServiceAckVTOpen) isBACnetServiceAckVTOpen() bool {
@@ -210,7 +207,7 @@ func (m *_BACnetServiceAckVTOpen) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

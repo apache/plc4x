@@ -88,6 +88,7 @@ public class BACnetConstructedDataDoorMembers extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDoorMembers");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataDoorMembers extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDoorMembers _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataDoorMembers extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDoorMembersBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataDoorMembers extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -170,23 +173,22 @@ public class BACnetConstructedDataDoorMembers extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataDoorMembers");
     // Create the instance
-    return new BACnetConstructedDataDoorMembersBuilder(
+    return new BACnetConstructedDataDoorMembersBuilderImpl(
         numberOfDataElements, doorMembers, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDoorMembersBuilder
+  public static class BACnetConstructedDataDoorMembersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetDeviceObjectReference> doorMembers;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDoorMembersBuilder(
+    public BACnetConstructedDataDoorMembersBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetDeviceObjectReference> doorMembers,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.doorMembers = doorMembers;
       this.tagNumber = tagNumber;

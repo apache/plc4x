@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) GetTypeName() string {
 	return "BACnetPropertyStatesAuthenticationStatus"
 }
 
-func (m *_BACnetPropertyStatesAuthenticationStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesAuthenticationStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesAuthenticationStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (authenticationStatus)
-	lengthInBits += m.AuthenticationStatus.GetLengthInBits()
+	lengthInBits += m.AuthenticationStatus.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesAuthenticationStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesAuthenticationStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesAuthenticationStatusParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesAuthenticationStatus, error) {
-	return BACnetPropertyStatesAuthenticationStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesAuthenticationStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesAuthenticationStatusParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAuthenticationStatus, error) {
+func BACnetPropertyStatesAuthenticationStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAuthenticationStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAuthenticationStatus"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesAuthenticationStatusParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("authenticationStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for authenticationStatus")
 	}
-	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _authenticationStatusErr != nil {
 		return nil, errors.Wrap(_authenticationStatusErr, "Error parsing 'authenticationStatus' field of BACnetPropertyStatesAuthenticationStatus")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesAuthenticationStatusParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetPropertyStatesAuthenticationStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesAuthenticationStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesAuthenticationStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("authenticationStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for authenticationStatus")
 		}
-		_authenticationStatusErr := writeBuffer.WriteSerializable(m.GetAuthenticationStatus())
+		_authenticationStatusErr := writeBuffer.WriteSerializable(ctx, m.GetAuthenticationStatus())
 		if popErr := writeBuffer.PopContext("authenticationStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for authenticationStatus")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesAuthenticationStatus) isBACnetPropertyStatesAuthenticationStatus() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesAuthenticationStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

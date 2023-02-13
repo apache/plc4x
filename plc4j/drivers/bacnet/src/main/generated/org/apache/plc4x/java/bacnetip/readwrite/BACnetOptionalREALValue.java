@@ -56,6 +56,7 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
   protected void serializeBACnetOptionalREALChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalREALValue");
 
@@ -74,6 +75,7 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalREALValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (realValue)
     lengthInBits += realValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
     return lengthInBits;
   }
 
-  public static BACnetOptionalREALValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetOptionalREALBuilder staticParseBACnetOptionalREALBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalREALValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal realValue =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
 
     readBuffer.closeContext("BACnetOptionalREALValue");
     // Create the instance
-    return new BACnetOptionalREALValueBuilder(realValue);
+    return new BACnetOptionalREALValueBuilderImpl(realValue);
   }
 
-  public static class BACnetOptionalREALValueBuilder
+  public static class BACnetOptionalREALValueBuilderImpl
       implements BACnetOptionalREAL.BACnetOptionalREALBuilder {
     private final BACnetApplicationTagReal realValue;
 
-    public BACnetOptionalREALValueBuilder(BACnetApplicationTagReal realValue) {
-
+    public BACnetOptionalREALValueBuilderImpl(BACnetApplicationTagReal realValue) {
       this.realValue = realValue;
     }
 

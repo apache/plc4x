@@ -47,6 +47,7 @@ public class SecurityDataExitDelayStarted extends SecurityData implements Messag
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataExitDelayStarted");
 
@@ -62,26 +63,28 @@ public class SecurityDataExitDelayStarted extends SecurityData implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataExitDelayStarted _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SecurityDataExitDelayStartedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataExitDelayStarted");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataExitDelayStarted");
     // Create the instance
-    return new SecurityDataExitDelayStartedBuilder();
+    return new SecurityDataExitDelayStartedBuilderImpl();
   }
 
-  public static class SecurityDataExitDelayStartedBuilder
+  public static class SecurityDataExitDelayStartedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataExitDelayStartedBuilder() {}
+    public SecurityDataExitDelayStartedBuilderImpl() {}
 
     public SecurityDataExitDelayStarted build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

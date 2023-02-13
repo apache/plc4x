@@ -87,6 +87,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServerOnNetwork");
 
@@ -118,6 +119,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ServerOnNetwork _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (recordId)
     lengthInBits += 32;
@@ -135,7 +137,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     if (serverCapabilities != null) {
       int i = 0;
       for (PascalString element : serverCapabilities) {
-        boolean last = ++i >= serverCapabilities.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverCapabilities.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -143,12 +145,13 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static ServerOnNetworkBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ServerOnNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long recordId = readSimpleField("recordId", readUnsignedLong(readBuffer, 32));
 
@@ -173,11 +176,11 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("ServerOnNetwork");
     // Create the instance
-    return new ServerOnNetworkBuilder(
+    return new ServerOnNetworkBuilderImpl(
         recordId, serverName, discoveryUrl, noOfServerCapabilities, serverCapabilities);
   }
 
-  public static class ServerOnNetworkBuilder
+  public static class ServerOnNetworkBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long recordId;
     private final PascalString serverName;
@@ -185,13 +188,12 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     private final int noOfServerCapabilities;
     private final List<PascalString> serverCapabilities;
 
-    public ServerOnNetworkBuilder(
+    public ServerOnNetworkBuilderImpl(
         long recordId,
         PascalString serverName,
         PascalString discoveryUrl,
         int noOfServerCapabilities,
         List<PascalString> serverCapabilities) {
-
       this.recordId = recordId;
       this.serverName = serverName;
       this.discoveryUrl = discoveryUrl;

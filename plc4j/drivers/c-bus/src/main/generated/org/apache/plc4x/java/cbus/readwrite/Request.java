@@ -99,6 +99,7 @@ public abstract class Request implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Request");
 
@@ -142,6 +143,7 @@ public abstract class Request implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     Request _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (startingCR)
     if (startingCR != null) {
@@ -186,6 +188,7 @@ public abstract class Request implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     RequestType peekedByte =
         readPeekField(
@@ -225,19 +228,19 @@ public abstract class Request implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     RequestBuilder builder = null;
     if (EvaluationHelper.equals(actualPeek, RequestType.SMART_CONNECT_SHORTCUT)) {
-      builder = RequestSmartConnectShortcut.staticParseBuilder(readBuffer, cBusOptions);
+      builder = RequestSmartConnectShortcut.staticParseRequestBuilder(readBuffer, cBusOptions);
     } else if (EvaluationHelper.equals(actualPeek, RequestType.RESET)) {
-      builder = RequestReset.staticParseBuilder(readBuffer, cBusOptions);
+      builder = RequestReset.staticParseRequestBuilder(readBuffer, cBusOptions);
     } else if (EvaluationHelper.equals(actualPeek, RequestType.DIRECT_COMMAND)) {
-      builder = RequestDirectCommandAccess.staticParseBuilder(readBuffer, cBusOptions);
+      builder = RequestDirectCommandAccess.staticParseRequestBuilder(readBuffer, cBusOptions);
     } else if (EvaluationHelper.equals(actualPeek, RequestType.REQUEST_COMMAND)) {
-      builder = RequestCommand.staticParseBuilder(readBuffer, cBusOptions);
+      builder = RequestCommand.staticParseRequestBuilder(readBuffer, cBusOptions);
     } else if (EvaluationHelper.equals(actualPeek, RequestType.NULL)) {
-      builder = RequestNull.staticParseBuilder(readBuffer, cBusOptions);
+      builder = RequestNull.staticParseRequestBuilder(readBuffer, cBusOptions);
     } else if (EvaluationHelper.equals(actualPeek, RequestType.EMPTY)) {
-      builder = RequestEmpty.staticParseBuilder(readBuffer, cBusOptions);
+      builder = RequestEmpty.staticParseRequestBuilder(readBuffer, cBusOptions);
     } else if (true) {
-      builder = RequestObsolete.staticParseBuilder(readBuffer, cBusOptions);
+      builder = RequestObsolete.staticParseRequestBuilder(readBuffer, cBusOptions);
     }
     if (builder == null) {
       throw new ParseException(
@@ -261,7 +264,7 @@ public abstract class Request implements Message {
     return _request;
   }
 
-  public static interface RequestBuilder {
+  public interface RequestBuilder {
     Request build(
         RequestType peekedByte,
         RequestType startingCR,

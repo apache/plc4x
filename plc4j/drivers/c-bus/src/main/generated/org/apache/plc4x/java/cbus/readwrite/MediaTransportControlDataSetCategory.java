@@ -59,6 +59,7 @@ public class MediaTransportControlDataSetCategory extends MediaTransportControlD
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataSetCategory");
 
@@ -77,6 +78,7 @@ public class MediaTransportControlDataSetCategory extends MediaTransportControlD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataSetCategory _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (categoryNumber)
     lengthInBits += 8;
@@ -84,26 +86,26 @@ public class MediaTransportControlDataSetCategory extends MediaTransportControlD
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataSetCategoryBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataSetCategory");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short categoryNumber = readSimpleField("categoryNumber", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("MediaTransportControlDataSetCategory");
     // Create the instance
-    return new MediaTransportControlDataSetCategoryBuilder(categoryNumber);
+    return new MediaTransportControlDataSetCategoryBuilderImpl(categoryNumber);
   }
 
-  public static class MediaTransportControlDataSetCategoryBuilder
+  public static class MediaTransportControlDataSetCategoryBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final short categoryNumber;
 
-    public MediaTransportControlDataSetCategoryBuilder(short categoryNumber) {
-
+    public MediaTransportControlDataSetCategoryBuilderImpl(short categoryNumber) {
       this.categoryNumber = categoryNumber;
     }
 

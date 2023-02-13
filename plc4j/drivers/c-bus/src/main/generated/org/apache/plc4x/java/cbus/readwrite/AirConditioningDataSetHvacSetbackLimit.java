@@ -78,6 +78,7 @@ public class AirConditioningDataSetHvacSetbackLimit extends AirConditioningData 
   protected void serializeAirConditioningDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningDataSetHvacSetbackLimit");
 
@@ -106,6 +107,7 @@ public class AirConditioningDataSetHvacSetbackLimit extends AirConditioningData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AirConditioningDataSetHvacSetbackLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneGroup)
     lengthInBits += 8;
@@ -122,12 +124,13 @@ public class AirConditioningDataSetHvacSetbackLimit extends AirConditioningData 
     return lengthInBits;
   }
 
-  public static AirConditioningDataSetHvacSetbackLimitBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetHvacSetbackLimit");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte zoneGroup = readSimpleField("zoneGroup", readByte(readBuffer, 8));
 
@@ -150,23 +153,22 @@ public class AirConditioningDataSetHvacSetbackLimit extends AirConditioningData 
 
     readBuffer.closeContext("AirConditioningDataSetHvacSetbackLimit");
     // Create the instance
-    return new AirConditioningDataSetHvacSetbackLimitBuilder(
+    return new AirConditioningDataSetHvacSetbackLimitBuilderImpl(
         zoneGroup, zoneList, limit, hvacModeAndFlags);
   }
 
-  public static class AirConditioningDataSetHvacSetbackLimitBuilder
+  public static class AirConditioningDataSetHvacSetbackLimitBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
     private final HVACTemperature limit;
     private final HVACModeAndFlags hvacModeAndFlags;
 
-    public AirConditioningDataSetHvacSetbackLimitBuilder(
+    public AirConditioningDataSetHvacSetbackLimitBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACTemperature limit,
         HVACModeAndFlags hvacModeAndFlags) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.limit = limit;

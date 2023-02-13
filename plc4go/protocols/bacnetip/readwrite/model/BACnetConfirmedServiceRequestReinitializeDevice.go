@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -117,33 +118,29 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetTypeName() string 
 	return "BACnetConfirmedServiceRequestReinitializeDevice"
 }
 
-func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (reinitializedStateOfDevice)
-	lengthInBits += m.ReinitializedStateOfDevice.GetLengthInBits()
+	lengthInBits += m.ReinitializedStateOfDevice.GetLengthInBits(ctx)
 
 	// Optional Field (password)
 	if m.Password != nil {
-		lengthInBits += m.Password.GetLengthInBits()
+		lengthInBits += m.Password.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestReinitializeDeviceParse(theBytes []byte, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReinitializeDevice, error) {
-	return BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
+	return BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReinitializeDevice, error) {
+func BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReinitializeDevice, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReinitializeDevice"); pullErr != nil {
@@ -156,7 +153,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("reinitializedStateOfDevice"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reinitializedStateOfDevice")
 	}
-	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _reinitializedStateOfDeviceErr != nil {
 		return nil, errors.Wrap(_reinitializedStateOfDeviceErr, "Error parsing 'reinitializedStateOfDevice' field of BACnetConfirmedServiceRequestReinitializeDevice")
 	}
@@ -172,7 +169,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(readBuffer u
 		if pullErr := readBuffer.PullContext("password"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for password")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_CHARACTER_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_CHARACTER_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -204,14 +201,14 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(readBuffer u
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDevice) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReinitializeDevice) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestReinitializeDevice) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -223,7 +220,7 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("reinitializedStateOfDevice"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for reinitializedStateOfDevice")
 		}
-		_reinitializedStateOfDeviceErr := writeBuffer.WriteSerializable(m.GetReinitializedStateOfDevice())
+		_reinitializedStateOfDeviceErr := writeBuffer.WriteSerializable(ctx, m.GetReinitializedStateOfDevice())
 		if popErr := writeBuffer.PopContext("reinitializedStateOfDevice"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reinitializedStateOfDevice")
 		}
@@ -238,7 +235,7 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) SerializeWithWriteBuf
 				return errors.Wrap(pushErr, "Error pushing for password")
 			}
 			password = m.GetPassword()
-			_passwordErr := writeBuffer.WriteSerializable(password)
+			_passwordErr := writeBuffer.WriteSerializable(ctx, password)
 			if popErr := writeBuffer.PopContext("password"); popErr != nil {
 				return errors.Wrap(popErr, "Error popping for password")
 			}
@@ -252,7 +249,7 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDevice) isBACnetConfirmedServiceRequestReinitializeDevice() bool {
@@ -264,7 +261,7 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDevice) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -56,6 +56,7 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesTimerTransition");
 
@@ -75,6 +76,7 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesTimerTransition _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timerTransition)
     lengthInBits += timerTransition.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesTimerTransitionBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesTimerTransition");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimerTransitionTagged timerTransition =
         readSimpleField(
@@ -102,15 +105,15 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
 
     readBuffer.closeContext("BACnetPropertyStatesTimerTransition");
     // Create the instance
-    return new BACnetPropertyStatesTimerTransitionBuilder(timerTransition);
+    return new BACnetPropertyStatesTimerTransitionBuilderImpl(timerTransition);
   }
 
-  public static class BACnetPropertyStatesTimerTransitionBuilder
+  public static class BACnetPropertyStatesTimerTransitionBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetTimerTransitionTagged timerTransition;
 
-    public BACnetPropertyStatesTimerTransitionBuilder(BACnetTimerTransitionTagged timerTransition) {
-
+    public BACnetPropertyStatesTimerTransitionBuilderImpl(
+        BACnetTimerTransitionTagged timerTransition) {
       this.timerTransition = timerTransition;
     }
 

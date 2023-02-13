@@ -79,6 +79,7 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProportionalConstant");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataProportionalConstant _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (proportionalConstant)
     lengthInBits += proportionalConstant.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProportionalConstantBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal proportionalConstant =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataProportionalConstant");
     // Create the instance
-    return new BACnetConstructedDataProportionalConstantBuilder(
+    return new BACnetConstructedDataProportionalConstantBuilderImpl(
         proportionalConstant, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProportionalConstantBuilder
+  public static class BACnetConstructedDataProportionalConstantBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal proportionalConstant;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProportionalConstantBuilder(
+    public BACnetConstructedDataProportionalConstantBuilderImpl(
         BACnetApplicationTagReal proportionalConstant,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.proportionalConstant = proportionalConstant;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -78,6 +78,7 @@ public class BACnetConstructedDataAccessEvent extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessEvent");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataAccessEvent extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessEvent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessEvent)
     lengthInBits += accessEvent.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataAccessEvent extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessEventBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataAccessEvent extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessEventTagged accessEvent =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataAccessEvent extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataAccessEvent");
     // Create the instance
-    return new BACnetConstructedDataAccessEventBuilder(accessEvent, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAccessEventBuilderImpl(
+        accessEvent, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessEventBuilder
+  public static class BACnetConstructedDataAccessEventBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessEventTagged accessEvent;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessEventBuilder(
+    public BACnetConstructedDataAccessEventBuilderImpl(
         BACnetAccessEventTagged accessEvent,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessEvent = accessEvent;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

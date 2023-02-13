@@ -78,6 +78,7 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataActivationTime");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataActivationTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (activationTime)
     lengthInBits += activationTime.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataActivationTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime activationTime =
         readSimpleField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataActivationTime");
     // Create the instance
-    return new BACnetConstructedDataActivationTimeBuilder(
+    return new BACnetConstructedDataActivationTimeBuilderImpl(
         activationTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataActivationTimeBuilder
+  public static class BACnetConstructedDataActivationTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime activationTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataActivationTimeBuilder(
+    public BACnetConstructedDataActivationTimeBuilderImpl(
         BACnetDateTime activationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activationTime = activationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

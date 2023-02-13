@@ -78,6 +78,7 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTraceFlag");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTraceFlag _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (traceFlag)
     lengthInBits += traceFlag.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTraceFlagBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean traceFlag =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataTraceFlag");
     // Create the instance
-    return new BACnetConstructedDataTraceFlagBuilder(traceFlag, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTraceFlagBuilderImpl(traceFlag, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTraceFlagBuilder
+  public static class BACnetConstructedDataTraceFlagBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean traceFlag;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTraceFlagBuilder(
+    public BACnetConstructedDataTraceFlagBuilderImpl(
         BACnetApplicationTagBoolean traceFlag,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.traceFlag = traceFlag;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

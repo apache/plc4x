@@ -79,6 +79,7 @@ public class ConfirmedPrivateTransferError extends BACnetError implements Messag
   @Override
   protected void serializeBACnetErrorChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConfirmedPrivateTransferError");
 
@@ -107,6 +108,7 @@ public class ConfirmedPrivateTransferError extends BACnetError implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConfirmedPrivateTransferError _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (errorType)
     lengthInBits += errorType.getLengthInBits();
@@ -125,12 +127,13 @@ public class ConfirmedPrivateTransferError extends BACnetError implements Messag
     return lengthInBits;
   }
 
-  public static ConfirmedPrivateTransferErrorBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("ConfirmedPrivateTransferError");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed errorType =
         readSimpleField(
@@ -175,23 +178,22 @@ public class ConfirmedPrivateTransferError extends BACnetError implements Messag
 
     readBuffer.closeContext("ConfirmedPrivateTransferError");
     // Create the instance
-    return new ConfirmedPrivateTransferErrorBuilder(
+    return new ConfirmedPrivateTransferErrorBuilderImpl(
         errorType, vendorId, serviceNumber, errorParameters);
   }
 
-  public static class ConfirmedPrivateTransferErrorBuilder
+  public static class ConfirmedPrivateTransferErrorBuilderImpl
       implements BACnetError.BACnetErrorBuilder {
     private final ErrorEnclosed errorType;
     private final BACnetVendorIdTagged vendorId;
     private final BACnetContextTagUnsignedInteger serviceNumber;
     private final BACnetConstructedData errorParameters;
 
-    public ConfirmedPrivateTransferErrorBuilder(
+    public ConfirmedPrivateTransferErrorBuilderImpl(
         ErrorEnclosed errorType,
         BACnetVendorIdTagged vendorId,
         BACnetContextTagUnsignedInteger serviceNumber,
         BACnetConstructedData errorParameters) {
-
       this.errorType = errorType;
       this.vendorId = vendorId;
       this.serviceNumber = serviceNumber;

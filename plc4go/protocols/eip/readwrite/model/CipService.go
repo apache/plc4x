@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,13 +52,12 @@ type _CipService struct {
 
 type _CipServiceChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetService() uint8
 }
 
 type CipServiceParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child CipService, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CipService, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -90,7 +90,7 @@ func (m *_CipService) GetTypeName() string {
 	return "CipService"
 }
 
-func (m *_CipService) GetParentLengthInBits() uint16 {
+func (m *_CipService) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (service)
 	lengthInBits += 8
@@ -98,15 +98,15 @@ func (m *_CipService) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_CipService) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CipService) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CipServiceParse(theBytes []byte, serviceLen uint16) (CipService, error) {
-	return CipServiceParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceLen)
+	return CipServiceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceLen)
 }
 
-func CipServiceParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (CipService, error) {
+func CipServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceLen uint16) (CipService, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipService"); pullErr != nil {
@@ -132,19 +132,19 @@ func CipServiceParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (
 	var typeSwitchError error
 	switch {
 	case service == 0x4C: // CipReadRequest
-		_childTemp, typeSwitchError = CipReadRequestParseWithBuffer(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = CipReadRequestParseWithBuffer(ctx, readBuffer, serviceLen)
 	case service == 0xCC: // CipReadResponse
-		_childTemp, typeSwitchError = CipReadResponseParseWithBuffer(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = CipReadResponseParseWithBuffer(ctx, readBuffer, serviceLen)
 	case service == 0x4D: // CipWriteRequest
-		_childTemp, typeSwitchError = CipWriteRequestParseWithBuffer(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = CipWriteRequestParseWithBuffer(ctx, readBuffer, serviceLen)
 	case service == 0xCD: // CipWriteResponse
-		_childTemp, typeSwitchError = CipWriteResponseParseWithBuffer(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = CipWriteResponseParseWithBuffer(ctx, readBuffer, serviceLen)
 	case service == 0x0A: // MultipleServiceRequest
-		_childTemp, typeSwitchError = MultipleServiceRequestParseWithBuffer(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = MultipleServiceRequestParseWithBuffer(ctx, readBuffer, serviceLen)
 	case service == 0x8A: // MultipleServiceResponse
-		_childTemp, typeSwitchError = MultipleServiceResponseParseWithBuffer(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = MultipleServiceResponseParseWithBuffer(ctx, readBuffer, serviceLen)
 	case service == 0x52: // CipUnconnectedRequest
-		_childTemp, typeSwitchError = CipUnconnectedRequestParseWithBuffer(readBuffer, serviceLen)
+		_childTemp, typeSwitchError = CipUnconnectedRequestParseWithBuffer(ctx, readBuffer, serviceLen)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [service=%v]", service)
 	}
@@ -162,7 +162,7 @@ func CipServiceParseWithBuffer(readBuffer utils.ReadBuffer, serviceLen uint16) (
 	return _child, nil
 }
 
-func (pm *_CipService) SerializeParent(writeBuffer utils.WriteBuffer, child CipService, serializeChildFunction func() error) error {
+func (pm *_CipService) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CipService, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -210,7 +210,7 @@ func (m *_CipService) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

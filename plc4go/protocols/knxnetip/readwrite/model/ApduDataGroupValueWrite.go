@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,12 +116,8 @@ func (m *_ApduDataGroupValueWrite) GetTypeName() string {
 	return "ApduDataGroupValueWrite"
 }
 
-func (m *_ApduDataGroupValueWrite) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ApduDataGroupValueWrite) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ApduDataGroupValueWrite) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (dataFirstByte)
 	lengthInBits += 6
@@ -133,15 +130,15 @@ func (m *_ApduDataGroupValueWrite) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_ApduDataGroupValueWrite) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduDataGroupValueWrite) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduDataGroupValueWriteParse(theBytes []byte, dataLength uint8) (ApduDataGroupValueWrite, error) {
-	return ApduDataGroupValueWriteParseWithBuffer(utils.NewReadBufferByteBased(theBytes), dataLength)
+	return ApduDataGroupValueWriteParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
-func ApduDataGroupValueWriteParseWithBuffer(readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueWrite, error) {
+func ApduDataGroupValueWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataGroupValueWrite"); pullErr != nil {
@@ -180,14 +177,14 @@ func ApduDataGroupValueWriteParseWithBuffer(readBuffer utils.ReadBuffer, dataLen
 }
 
 func (m *_ApduDataGroupValueWrite) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ApduDataGroupValueWrite) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataGroupValueWrite) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -213,7 +210,7 @@ func (m *_ApduDataGroupValueWrite) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ApduDataGroupValueWrite) isApduDataGroupValueWrite() bool {
@@ -225,7 +222,7 @@ func (m *_ApduDataGroupValueWrite) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -78,6 +78,7 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNumberOfStates");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNumberOfStates _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (numberOfState)
     lengthInBits += numberOfState.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNumberOfStatesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger numberOfState =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataNumberOfStates");
     // Create the instance
-    return new BACnetConstructedDataNumberOfStatesBuilder(
+    return new BACnetConstructedDataNumberOfStatesBuilderImpl(
         numberOfState, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNumberOfStatesBuilder
+  public static class BACnetConstructedDataNumberOfStatesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfState;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNumberOfStatesBuilder(
+    public BACnetConstructedDataNumberOfStatesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfState = numberOfState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -61,6 +61,7 @@ public class NLMWhoIsRouterToNetwork extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMWhoIsRouterToNetwork");
 
@@ -80,6 +81,7 @@ public class NLMWhoIsRouterToNetwork extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMWhoIsRouterToNetwork _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (destinationNetworkAddress)
     if (destinationNetworkAddress != null) {
@@ -89,27 +91,28 @@ public class NLMWhoIsRouterToNetwork extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMWhoIsRouterToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMWhoIsRouterToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer destinationNetworkAddress =
         readOptionalField("destinationNetworkAddress", readUnsignedInt(readBuffer, 16));
 
     readBuffer.closeContext("NLMWhoIsRouterToNetwork");
     // Create the instance
-    return new NLMWhoIsRouterToNetworkBuilder(destinationNetworkAddress, apduLength);
+    return new NLMWhoIsRouterToNetworkBuilderImpl(destinationNetworkAddress, apduLength);
   }
 
-  public static class NLMWhoIsRouterToNetworkBuilder implements NLM.NLMBuilder {
+  public static class NLMWhoIsRouterToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final Integer destinationNetworkAddress;
     private final Integer apduLength;
 
-    public NLMWhoIsRouterToNetworkBuilder(Integer destinationNetworkAddress, Integer apduLength) {
-
+    public NLMWhoIsRouterToNetworkBuilderImpl(
+        Integer destinationNetworkAddress, Integer apduLength) {
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.apduLength = apduLength;
     }

@@ -79,6 +79,7 @@ public class BACnetConstructedDataValueBeforeChange extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataValueBeforeChange");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataValueBeforeChange extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataValueBeforeChange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (valuesBeforeChange)
     lengthInBits += valuesBeforeChange.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataValueBeforeChange extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataValueBeforeChangeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataValueBeforeChange extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger valuesBeforeChange =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataValueBeforeChange extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataValueBeforeChange");
     // Create the instance
-    return new BACnetConstructedDataValueBeforeChangeBuilder(
+    return new BACnetConstructedDataValueBeforeChangeBuilderImpl(
         valuesBeforeChange, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataValueBeforeChangeBuilder
+  public static class BACnetConstructedDataValueBeforeChangeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger valuesBeforeChange;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataValueBeforeChangeBuilder(
+    public BACnetConstructedDataValueBeforeChangeBuilderImpl(
         BACnetApplicationTagUnsignedInteger valuesBeforeChange,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.valuesBeforeChange = valuesBeforeChange;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

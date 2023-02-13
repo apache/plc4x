@@ -46,15 +46,15 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
   protected final byte[] bytesOfRemovedService;
 
   // Arguments.
-  protected final Long serviceAckLength;
   protected final Long serviceAckPayloadLength;
+  protected final Long serviceAckLength;
 
   public BACnetServiceAckRequestKey(
-      byte[] bytesOfRemovedService, Long serviceAckLength, Long serviceAckPayloadLength) {
+      byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
     super(serviceAckLength);
     this.bytesOfRemovedService = bytesOfRemovedService;
-    this.serviceAckLength = serviceAckLength;
     this.serviceAckPayloadLength = serviceAckPayloadLength;
+    this.serviceAckLength = serviceAckLength;
   }
 
   public byte[] getBytesOfRemovedService() {
@@ -65,6 +65,7 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckRequestKey");
 
@@ -84,6 +85,7 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckRequestKey _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (bytesOfRemovedService != null) {
@@ -93,42 +95,42 @@ public class BACnetServiceAckRequestKey extends BACnetServiceAck implements Mess
     return lengthInBits;
   }
 
-  public static BACnetServiceAckRequestKeyBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceAckLength, Long serviceAckPayloadLength)
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
+      ReadBuffer readBuffer, Long serviceAckPayloadLength, Long serviceAckLength)
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckRequestKey");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] bytesOfRemovedService =
         readBuffer.readByteArray("bytesOfRemovedService", Math.toIntExact(serviceAckPayloadLength));
 
     readBuffer.closeContext("BACnetServiceAckRequestKey");
     // Create the instance
-    return new BACnetServiceAckRequestKeyBuilder(
-        bytesOfRemovedService, serviceAckLength, serviceAckPayloadLength);
+    return new BACnetServiceAckRequestKeyBuilderImpl(
+        bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
   }
 
-  public static class BACnetServiceAckRequestKeyBuilder
+  public static class BACnetServiceAckRequestKeyBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final byte[] bytesOfRemovedService;
-    private final Long serviceAckLength;
     private final Long serviceAckPayloadLength;
+    private final Long serviceAckLength;
 
-    public BACnetServiceAckRequestKeyBuilder(
-        byte[] bytesOfRemovedService, Long serviceAckLength, Long serviceAckPayloadLength) {
-
+    public BACnetServiceAckRequestKeyBuilderImpl(
+        byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
       this.bytesOfRemovedService = bytesOfRemovedService;
-      this.serviceAckLength = serviceAckLength;
       this.serviceAckPayloadLength = serviceAckPayloadLength;
+      this.serviceAckLength = serviceAckLength;
     }
 
     public BACnetServiceAckRequestKey build(Long serviceAckLength) {
 
       BACnetServiceAckRequestKey bACnetServiceAckRequestKey =
           new BACnetServiceAckRequestKey(
-              bytesOfRemovedService, serviceAckLength, serviceAckPayloadLength);
+              bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
       return bACnetServiceAckRequestKey;
     }
   }

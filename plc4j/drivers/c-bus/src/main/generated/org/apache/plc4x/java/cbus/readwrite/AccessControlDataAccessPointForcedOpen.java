@@ -48,6 +48,7 @@ public class AccessControlDataAccessPointForcedOpen extends AccessControlData im
   protected void serializeAccessControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataAccessPointForcedOpen");
 
@@ -63,26 +64,28 @@ public class AccessControlDataAccessPointForcedOpen extends AccessControlData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AccessControlDataAccessPointForcedOpen _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static AccessControlDataAccessPointForcedOpenBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static AccessControlDataBuilder staticParseAccessControlDataBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("AccessControlDataAccessPointForcedOpen");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("AccessControlDataAccessPointForcedOpen");
     // Create the instance
-    return new AccessControlDataAccessPointForcedOpenBuilder();
+    return new AccessControlDataAccessPointForcedOpenBuilderImpl();
   }
 
-  public static class AccessControlDataAccessPointForcedOpenBuilder
+  public static class AccessControlDataAccessPointForcedOpenBuilderImpl
       implements AccessControlData.AccessControlDataBuilder {
 
-    public AccessControlDataAccessPointForcedOpenBuilder() {}
+    public AccessControlDataAccessPointForcedOpenBuilderImpl() {}
 
     public AccessControlDataAccessPointForcedOpen build(
         AccessControlCommandTypeContainer commandTypeContainer,

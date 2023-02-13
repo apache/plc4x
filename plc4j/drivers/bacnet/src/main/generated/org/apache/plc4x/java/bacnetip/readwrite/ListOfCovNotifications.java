@@ -73,6 +73,7 @@ public class ListOfCovNotifications implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ListOfCovNotifications");
 
@@ -103,6 +104,7 @@ public class ListOfCovNotifications implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ListOfCovNotifications _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (monitoredObjectIdentifier)
     lengthInBits += monitoredObjectIdentifier.getLengthInBits();
@@ -134,6 +136,7 @@ public class ListOfCovNotifications implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier monitoredObjectIdentifier =
         readSimpleField(

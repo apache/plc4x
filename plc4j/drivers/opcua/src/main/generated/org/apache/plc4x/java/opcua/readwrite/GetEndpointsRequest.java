@@ -94,6 +94,7 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("GetEndpointsRequest");
 
@@ -127,6 +128,7 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     GetEndpointsRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -141,7 +143,7 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     if (localeIds != null) {
       int i = 0;
       for (PascalString element : localeIds) {
-        boolean last = ++i >= localeIds.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= localeIds.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -153,7 +155,7 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     if (profileUris != null) {
       int i = 0;
       for (PascalString element : profileUris) {
-        boolean last = ++i >= profileUris.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= profileUris.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -161,12 +163,13 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static GetEndpointsRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("GetEndpointsRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -198,11 +201,11 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("GetEndpointsRequest");
     // Create the instance
-    return new GetEndpointsRequestBuilder(
+    return new GetEndpointsRequestBuilderImpl(
         requestHeader, endpointUrl, noOfLocaleIds, localeIds, noOfProfileUris, profileUris);
   }
 
-  public static class GetEndpointsRequestBuilder
+  public static class GetEndpointsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final PascalString endpointUrl;
@@ -211,14 +214,13 @@ public class GetEndpointsRequest extends ExtensionObjectDefinition implements Me
     private final int noOfProfileUris;
     private final List<PascalString> profileUris;
 
-    public GetEndpointsRequestBuilder(
+    public GetEndpointsRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         PascalString endpointUrl,
         int noOfLocaleIds,
         List<PascalString> localeIds,
         int noOfProfileUris,
         List<PascalString> profileUris) {
-
       this.requestHeader = requestHeader;
       this.endpointUrl = endpointUrl;
       this.noOfLocaleIds = noOfLocaleIds;

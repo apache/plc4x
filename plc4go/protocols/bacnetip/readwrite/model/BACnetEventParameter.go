@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,12 +52,11 @@ type _BACnetEventParameter struct {
 
 type _BACnetEventParameterChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetEventParameterParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetEventParameter, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetEventParameter, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -88,6 +88,8 @@ func (m *_BACnetEventParameter) GetPeekedTagHeader() BACnetTagHeader {
 ///////////////////////
 
 func (m *_BACnetEventParameter) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
@@ -116,7 +118,7 @@ func (m *_BACnetEventParameter) GetTypeName() string {
 	return "BACnetEventParameter"
 }
 
-func (m *_BACnetEventParameter) GetParentLengthInBits() uint16 {
+func (m *_BACnetEventParameter) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -124,15 +126,15 @@ func (m *_BACnetEventParameter) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameter) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventParameter) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventParameterParse(theBytes []byte) (BACnetEventParameter, error) {
-	return BACnetEventParameterParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetEventParameterParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEventParameterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameter, error) {
+func BACnetEventParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameter"); pullErr != nil {
@@ -146,7 +148,7 @@ func BACnetEventParameterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEve
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -165,43 +167,43 @@ func BACnetEventParameterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEve
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventParameterChangeOfBitstring
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfBitstringParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfBitstringParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(1): // BACnetEventParameterChangeOfState
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStateParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStateParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(2): // BACnetEventParameterChangeOfValue
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfValueParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(3): // BACnetEventParameterCommandFailure
-		_childTemp, typeSwitchError = BACnetEventParameterCommandFailureParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterCommandFailureParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(4): // BACnetEventParameterFloatingLimit
-		_childTemp, typeSwitchError = BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterFloatingLimitParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(5): // BACnetEventParameterOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterOutOfRangeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterOutOfRangeParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(8): // BACnetEventParameterChangeOfLifeSavety
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfLifeSavetyParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfLifeSavetyParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(9): // BACnetEventParameterExtended
-		_childTemp, typeSwitchError = BACnetEventParameterExtendedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterExtendedParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(10): // BACnetEventParameterBufferReady
-		_childTemp, typeSwitchError = BACnetEventParameterBufferReadyParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterBufferReadyParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(11): // BACnetEventParameterUnsignedRange
-		_childTemp, typeSwitchError = BACnetEventParameterUnsignedRangeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterUnsignedRangeParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(13): // BACnetEventParameterAccessEvent
-		_childTemp, typeSwitchError = BACnetEventParameterAccessEventParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterAccessEventParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(14): // BACnetEventParameterDoubleOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterDoubleOutOfRangeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterDoubleOutOfRangeParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(15): // BACnetEventParameterSignedOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterSignedOutOfRangeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterSignedOutOfRangeParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(16): // BACnetEventParameterUnsignedOutOfRange
-		_childTemp, typeSwitchError = BACnetEventParameterUnsignedOutOfRangeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterUnsignedOutOfRangeParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(17): // BACnetEventParameterChangeOfCharacterString
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfCharacterStringParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfCharacterStringParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(18): // BACnetEventParameterChangeOfStatusFlags
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfStatusFlagsParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(20): // BACnetEventParameterNone
-		_childTemp, typeSwitchError = BACnetEventParameterNoneParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterNoneParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(21): // BACnetEventParameterChangeOfDiscreteValue
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfDiscreteValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfDiscreteValueParseWithBuffer(ctx, readBuffer)
 	case peekedTagNumber == uint8(22): // BACnetEventParameterChangeOfTimer
-		_childTemp, typeSwitchError = BACnetEventParameterChangeOfTimerParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetEventParameterChangeOfTimerParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -219,7 +221,7 @@ func BACnetEventParameterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEve
 	return _child, nil
 }
 
-func (pm *_BACnetEventParameter) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetEventParameter, serializeChildFunction func() error) error {
+func (pm *_BACnetEventParameter) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetEventParameter, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -229,7 +231,7 @@ func (pm *_BACnetEventParameter) SerializeParent(writeBuffer utils.WriteBuffer, 
 		return errors.Wrap(pushErr, "Error pushing for BACnetEventParameter")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -253,7 +255,7 @@ func (m *_BACnetEventParameter) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

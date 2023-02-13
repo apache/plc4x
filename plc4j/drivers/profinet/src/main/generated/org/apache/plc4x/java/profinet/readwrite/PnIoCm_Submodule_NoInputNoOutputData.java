@@ -84,20 +84,37 @@ public class PnIoCm_Submodule_NoInputNoOutputData extends PnIoCm_Submodule imple
   protected void serializePnIoCm_SubmoduleChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Submodule_NoInputNoOutputData");
 
     // Const Field (dataDescription)
-    writeConstField("dataDescription", DATADESCRIPTION, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "dataDescription",
+        DATADESCRIPTION,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (submoduleDataLength)
-    writeConstField("submoduleDataLength", SUBMODULEDATALENGTH, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "submoduleDataLength",
+        SUBMODULEDATALENGTH,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (lengthIoCs)
-    writeConstField("lengthIoCs", LENGTHIOCS, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "lengthIoCs",
+        LENGTHIOCS,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (lengthIoPs)
-    writeConstField("lengthIoPs", LENGTHIOPS, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "lengthIoPs",
+        LENGTHIOPS,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_Submodule_NoInputNoOutputData");
   }
@@ -111,6 +128,7 @@ public class PnIoCm_Submodule_NoInputNoOutputData extends PnIoCm_Submodule imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Submodule_NoInputNoOutputData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (dataDescription)
     lengthInBits += 16;
@@ -127,46 +145,51 @@ public class PnIoCm_Submodule_NoInputNoOutputData extends PnIoCm_Submodule imple
     return lengthInBits;
   }
 
-  public static PnIoCm_Submodule_NoInputNoOutputDataBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnIoCm_SubmoduleBuilder staticParsePnIoCm_SubmoduleBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnIoCm_Submodule_NoInputNoOutputData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int dataDescription =
         readConstField(
             "dataDescription",
             readUnsignedInt(readBuffer, 16),
-            PnIoCm_Submodule_NoInputNoOutputData.DATADESCRIPTION);
+            PnIoCm_Submodule_NoInputNoOutputData.DATADESCRIPTION,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int submoduleDataLength =
         readConstField(
             "submoduleDataLength",
             readUnsignedInt(readBuffer, 16),
-            PnIoCm_Submodule_NoInputNoOutputData.SUBMODULEDATALENGTH);
+            PnIoCm_Submodule_NoInputNoOutputData.SUBMODULEDATALENGTH,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     short lengthIoCs =
         readConstField(
             "lengthIoCs",
             readUnsignedShort(readBuffer, 8),
-            PnIoCm_Submodule_NoInputNoOutputData.LENGTHIOCS);
+            PnIoCm_Submodule_NoInputNoOutputData.LENGTHIOCS,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     short lengthIoPs =
         readConstField(
             "lengthIoPs",
             readUnsignedShort(readBuffer, 8),
-            PnIoCm_Submodule_NoInputNoOutputData.LENGTHIOPS);
+            PnIoCm_Submodule_NoInputNoOutputData.LENGTHIOPS,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_Submodule_NoInputNoOutputData");
     // Create the instance
-    return new PnIoCm_Submodule_NoInputNoOutputDataBuilder();
+    return new PnIoCm_Submodule_NoInputNoOutputDataBuilderImpl();
   }
 
-  public static class PnIoCm_Submodule_NoInputNoOutputDataBuilder
+  public static class PnIoCm_Submodule_NoInputNoOutputDataBuilderImpl
       implements PnIoCm_Submodule.PnIoCm_SubmoduleBuilder {
 
-    public PnIoCm_Submodule_NoInputNoOutputDataBuilder() {}
+    public PnIoCm_Submodule_NoInputNoOutputDataBuilderImpl() {}
 
     public PnIoCm_Submodule_NoInputNoOutputData build(
         int slotNumber,

@@ -89,6 +89,7 @@ public class BACnetConstructedDataElevatorGroupGroupMembers extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataElevatorGroupGroupMembers");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataElevatorGroupGroupMembers extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataElevatorGroupGroupMembers _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,7 +138,7 @@ public class BACnetConstructedDataElevatorGroupGroupMembers extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataElevatorGroupGroupMembersBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -147,6 +149,7 @@ public class BACnetConstructedDataElevatorGroupGroupMembers extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -174,23 +177,22 @@ public class BACnetConstructedDataElevatorGroupGroupMembers extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataElevatorGroupGroupMembers");
     // Create the instance
-    return new BACnetConstructedDataElevatorGroupGroupMembersBuilder(
+    return new BACnetConstructedDataElevatorGroupGroupMembersBuilderImpl(
         numberOfDataElements, groupMembers, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataElevatorGroupGroupMembersBuilder
+  public static class BACnetConstructedDataElevatorGroupGroupMembersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagObjectIdentifier> groupMembers;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataElevatorGroupGroupMembersBuilder(
+    public BACnetConstructedDataElevatorGroupGroupMembersBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagObjectIdentifier> groupMembers,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.groupMembers = groupMembers;
       this.tagNumber = tagNumber;

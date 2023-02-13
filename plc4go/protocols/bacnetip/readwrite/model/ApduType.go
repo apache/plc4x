@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -171,19 +172,19 @@ func CastApduType(structType interface{}) ApduType {
 	return castFunc(structType)
 }
 
-func (m ApduType) GetLengthInBits() uint16 {
+func (m ApduType) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m ApduType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ApduType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ApduTypeParse(theBytes []byte) (ApduType, error) {
-	return ApduTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ApduTypeParse(ctx context.Context, theBytes []byte) (ApduType, error) {
+	return ApduTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ApduTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ApduType, error) {
+func ApduTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduType, error) {
 	val, err := readBuffer.ReadUint8("ApduType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ApduType")
@@ -198,13 +199,13 @@ func ApduTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ApduType, error) {
 
 func (e ApduType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ApduType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ApduType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ApduType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

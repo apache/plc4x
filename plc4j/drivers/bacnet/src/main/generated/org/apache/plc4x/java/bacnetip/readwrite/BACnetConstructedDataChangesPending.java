@@ -78,6 +78,7 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataChangesPending");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataChangesPending _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (changesPending)
     lengthInBits += changesPending.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataChangesPendingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean changesPending =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataChangesPending");
     // Create the instance
-    return new BACnetConstructedDataChangesPendingBuilder(
+    return new BACnetConstructedDataChangesPendingBuilderImpl(
         changesPending, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataChangesPendingBuilder
+  public static class BACnetConstructedDataChangesPendingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean changesPending;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataChangesPendingBuilder(
+    public BACnetConstructedDataChangesPendingBuilderImpl(
         BACnetApplicationTagBoolean changesPending,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.changesPending = changesPending;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

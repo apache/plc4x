@@ -61,6 +61,7 @@ public class SysexCommandExtendedId extends SysexCommand implements Message {
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandExtendedId");
 
@@ -79,6 +80,7 @@ public class SysexCommandExtendedId extends SysexCommand implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandExtendedId _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (id != null) {
@@ -88,25 +90,26 @@ public class SysexCommandExtendedId extends SysexCommand implements Message {
     return lengthInBits;
   }
 
-  public static SysexCommandExtendedIdBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandExtendedId");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<Byte> id = readCountArrayField("id", readSignedByte(readBuffer, 8), 2);
 
     readBuffer.closeContext("SysexCommandExtendedId");
     // Create the instance
-    return new SysexCommandExtendedIdBuilder(id);
+    return new SysexCommandExtendedIdBuilderImpl(id);
   }
 
-  public static class SysexCommandExtendedIdBuilder implements SysexCommand.SysexCommandBuilder {
+  public static class SysexCommandExtendedIdBuilderImpl
+      implements SysexCommand.SysexCommandBuilder {
     private final List<Byte> id;
 
-    public SysexCommandExtendedIdBuilder(List<Byte> id) {
-
+    public SysexCommandExtendedIdBuilderImpl(List<Byte> id) {
       this.id = id;
     }
 

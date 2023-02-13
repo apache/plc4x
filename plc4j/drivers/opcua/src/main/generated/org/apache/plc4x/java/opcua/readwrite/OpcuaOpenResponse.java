@@ -111,6 +111,7 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
   @Override
   protected void serializeMessagePDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpcuaOpenResponse");
 
@@ -160,6 +161,7 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpcuaOpenResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (chunk)
     lengthInBits += 8;
@@ -193,12 +195,13 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaOpenResponseBuilder staticParseBuilder(ReadBuffer readBuffer, Boolean response)
-      throws ParseException {
+  public static MessagePDUBuilder staticParseMessagePDUBuilder(
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaOpenResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String chunk = readSimpleField("chunk", readString(readBuffer, 8));
 
@@ -245,7 +248,7 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
 
     readBuffer.closeContext("OpcuaOpenResponse");
     // Create the instance
-    return new OpcuaOpenResponseBuilder(
+    return new OpcuaOpenResponseBuilderImpl(
         chunk,
         secureChannelId,
         securityPolicyUri,
@@ -256,7 +259,7 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
         message);
   }
 
-  public static class OpcuaOpenResponseBuilder implements MessagePDU.MessagePDUBuilder {
+  public static class OpcuaOpenResponseBuilderImpl implements MessagePDU.MessagePDUBuilder {
     private final String chunk;
     private final int secureChannelId;
     private final PascalString securityPolicyUri;
@@ -266,7 +269,7 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
     private final int requestId;
     private final byte[] message;
 
-    public OpcuaOpenResponseBuilder(
+    public OpcuaOpenResponseBuilderImpl(
         String chunk,
         int secureChannelId,
         PascalString securityPolicyUri,
@@ -275,7 +278,6 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
         int sequenceNumber,
         int requestId,
         byte[] message) {
-
       this.chunk = chunk;
       this.secureChannelId = secureChannelId;
       this.securityPolicyUri = securityPolicyUri;

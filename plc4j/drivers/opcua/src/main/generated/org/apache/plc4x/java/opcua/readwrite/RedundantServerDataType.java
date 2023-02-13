@@ -71,6 +71,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RedundantServerDataType");
 
@@ -100,6 +101,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RedundantServerDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (serverId)
     lengthInBits += serverId.getLengthInBits();
@@ -113,12 +115,13 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static RedundantServerDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RedundantServerDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString serverId =
         readSimpleField(
@@ -136,18 +139,17 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("RedundantServerDataType");
     // Create the instance
-    return new RedundantServerDataTypeBuilder(serverId, serviceLevel, serverState);
+    return new RedundantServerDataTypeBuilderImpl(serverId, serviceLevel, serverState);
   }
 
-  public static class RedundantServerDataTypeBuilder
+  public static class RedundantServerDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString serverId;
     private final short serviceLevel;
     private final ServerState serverState;
 
-    public RedundantServerDataTypeBuilder(
+    public RedundantServerDataTypeBuilderImpl(
         PascalString serverId, short serviceLevel, ServerState serverState) {
-
       this.serverId = serverId;
       this.serviceLevel = serviceLevel;
       this.serverState = serverState;

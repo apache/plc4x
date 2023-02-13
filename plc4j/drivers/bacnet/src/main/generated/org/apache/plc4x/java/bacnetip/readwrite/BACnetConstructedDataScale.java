@@ -78,6 +78,7 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataScale");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataScale _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (scale)
     lengthInBits += scale.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataScaleBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetScale scale =
         readSimpleField(
@@ -129,18 +132,17 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
 
     readBuffer.closeContext("BACnetConstructedDataScale");
     // Create the instance
-    return new BACnetConstructedDataScaleBuilder(scale, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataScaleBuilderImpl(scale, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataScaleBuilder
+  public static class BACnetConstructedDataScaleBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetScale scale;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataScaleBuilder(
+    public BACnetConstructedDataScaleBuilderImpl(
         BACnetScale scale, Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.scale = scale;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

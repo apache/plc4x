@@ -57,6 +57,7 @@ public class SecurityDataStatusReport2 extends SecurityData implements Message {
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataStatusReport2");
 
@@ -75,12 +76,13 @@ public class SecurityDataStatusReport2 extends SecurityData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataStatusReport2 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (zoneStatus != null) {
       int i = 0;
       for (ZoneStatus element : zoneStatus) {
-        boolean last = ++i >= zoneStatus.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= zoneStatus.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -88,12 +90,13 @@ public class SecurityDataStatusReport2 extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataStatusReport2Builder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataStatusReport2");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<ZoneStatus> zoneStatus =
         readCountArrayField(
@@ -103,14 +106,14 @@ public class SecurityDataStatusReport2 extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataStatusReport2");
     // Create the instance
-    return new SecurityDataStatusReport2Builder(zoneStatus);
+    return new SecurityDataStatusReport2BuilderImpl(zoneStatus);
   }
 
-  public static class SecurityDataStatusReport2Builder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataStatusReport2BuilderImpl
+      implements SecurityData.SecurityDataBuilder {
     private final List<ZoneStatus> zoneStatus;
 
-    public SecurityDataStatusReport2Builder(List<ZoneStatus> zoneStatus) {
-
+    public SecurityDataStatusReport2BuilderImpl(List<ZoneStatus> zoneStatus) {
       this.zoneStatus = zoneStatus;
     }
 

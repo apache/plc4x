@@ -79,6 +79,7 @@ public class BACnetConstructedDataProportionalConstantUnits extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProportionalConstantUnits");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataProportionalConstantUnits extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataProportionalConstantUnits _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (units)
     lengthInBits += units.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataProportionalConstantUnits extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProportionalConstantUnitsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataProportionalConstantUnits extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEngineeringUnitsTagged units =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataProportionalConstantUnits extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataProportionalConstantUnits");
     // Create the instance
-    return new BACnetConstructedDataProportionalConstantUnitsBuilder(
+    return new BACnetConstructedDataProportionalConstantUnitsBuilderImpl(
         units, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProportionalConstantUnitsBuilder
+  public static class BACnetConstructedDataProportionalConstantUnitsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEngineeringUnitsTagged units;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProportionalConstantUnitsBuilder(
+    public BACnetConstructedDataProportionalConstantUnitsBuilderImpl(
         BACnetEngineeringUnitsTagged units,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.units = units;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -59,6 +59,7 @@ public class BACnetApplicationTagReal extends BACnetApplicationTag implements Me
   protected void serializeBACnetApplicationTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagReal");
 
@@ -81,6 +82,7 @@ public class BACnetApplicationTagReal extends BACnetApplicationTag implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetApplicationTagReal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -90,12 +92,13 @@ public class BACnetApplicationTagReal extends BACnetApplicationTag implements Me
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagRealBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagReal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadReal payload =
         readSimpleField(
@@ -106,15 +109,14 @@ public class BACnetApplicationTagReal extends BACnetApplicationTag implements Me
 
     readBuffer.closeContext("BACnetApplicationTagReal");
     // Create the instance
-    return new BACnetApplicationTagRealBuilder(payload);
+    return new BACnetApplicationTagRealBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagRealBuilder
+  public static class BACnetApplicationTagRealBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadReal payload;
 
-    public BACnetApplicationTagRealBuilder(BACnetTagPayloadReal payload) {
-
+    public BACnetApplicationTagRealBuilderImpl(BACnetTagPayloadReal payload) {
       this.payload = payload;
     }
 

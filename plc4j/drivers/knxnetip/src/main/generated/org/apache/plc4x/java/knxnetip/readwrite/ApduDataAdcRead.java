@@ -42,17 +42,14 @@ public class ApduDataAdcRead extends ApduData implements Message {
     return (byte) 0x6;
   }
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataAdcRead(Short dataLength) {
-    super(dataLength);
-    this.dataLength = dataLength;
+  public ApduDataAdcRead() {
+    super();
   }
 
   @Override
   protected void serializeApduDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataAdcRead");
 
@@ -68,34 +65,30 @@ public class ApduDataAdcRead extends ApduData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataAdcRead _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataAdcReadBuilder staticParseBuilder(ReadBuffer readBuffer, Short dataLength)
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
       throws ParseException {
     readBuffer.pullContext("ApduDataAdcRead");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataAdcRead");
     // Create the instance
-    return new ApduDataAdcReadBuilder(dataLength);
+    return new ApduDataAdcReadBuilderImpl();
   }
 
-  public static class ApduDataAdcReadBuilder implements ApduData.ApduDataBuilder {
-    private final Short dataLength;
+  public static class ApduDataAdcReadBuilderImpl implements ApduData.ApduDataBuilder {
 
-    public ApduDataAdcReadBuilder(Short dataLength) {
+    public ApduDataAdcReadBuilderImpl() {}
 
-      this.dataLength = dataLength;
-    }
-
-    public ApduDataAdcRead build(Short dataLength) {
-
-      ApduDataAdcRead apduDataAdcRead = new ApduDataAdcRead(dataLength);
-
+    public ApduDataAdcRead build() {
+      ApduDataAdcRead apduDataAdcRead = new ApduDataAdcRead();
       return apduDataAdcRead;
     }
   }

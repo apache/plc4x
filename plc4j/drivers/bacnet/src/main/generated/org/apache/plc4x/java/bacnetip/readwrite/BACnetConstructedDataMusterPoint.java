@@ -78,6 +78,7 @@ public class BACnetConstructedDataMusterPoint extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMusterPoint");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataMusterPoint extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMusterPoint _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (musterPoint)
     lengthInBits += musterPoint.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataMusterPoint extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMusterPointBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataMusterPoint extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean musterPoint =
         readSimpleField(
@@ -132,20 +135,20 @@ public class BACnetConstructedDataMusterPoint extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataMusterPoint");
     // Create the instance
-    return new BACnetConstructedDataMusterPointBuilder(musterPoint, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMusterPointBuilderImpl(
+        musterPoint, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMusterPointBuilder
+  public static class BACnetConstructedDataMusterPointBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean musterPoint;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMusterPointBuilder(
+    public BACnetConstructedDataMusterPointBuilderImpl(
         BACnetApplicationTagBoolean musterPoint,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.musterPoint = musterPoint;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -66,6 +66,7 @@ public class MediaTransportControlDataSetSelection extends MediaTransportControl
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataSetSelection");
 
@@ -87,6 +88,7 @@ public class MediaTransportControlDataSetSelection extends MediaTransportControl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataSetSelection _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (selectionHi)
     lengthInBits += 8;
@@ -97,12 +99,13 @@ public class MediaTransportControlDataSetSelection extends MediaTransportControl
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataSetSelectionBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataSetSelection");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte selectionHi = readSimpleField("selectionHi", readByte(readBuffer, 8));
 
@@ -110,16 +113,15 @@ public class MediaTransportControlDataSetSelection extends MediaTransportControl
 
     readBuffer.closeContext("MediaTransportControlDataSetSelection");
     // Create the instance
-    return new MediaTransportControlDataSetSelectionBuilder(selectionHi, selectionLo);
+    return new MediaTransportControlDataSetSelectionBuilderImpl(selectionHi, selectionLo);
   }
 
-  public static class MediaTransportControlDataSetSelectionBuilder
+  public static class MediaTransportControlDataSetSelectionBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte selectionHi;
     private final byte selectionLo;
 
-    public MediaTransportControlDataSetSelectionBuilder(byte selectionHi, byte selectionLo) {
-
+    public MediaTransportControlDataSetSelectionBuilderImpl(byte selectionHi, byte selectionLo) {
       this.selectionHi = selectionHi;
       this.selectionLo = selectionLo;
     }

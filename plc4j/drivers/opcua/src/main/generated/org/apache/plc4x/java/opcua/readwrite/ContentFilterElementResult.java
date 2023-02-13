@@ -87,6 +87,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ContentFilterElementResult");
 
@@ -119,6 +120,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ContentFilterElementResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -130,7 +132,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     if (operandStatusCodes != null) {
       int i = 0;
       for (StatusCode element : operandStatusCodes) {
-        boolean last = ++i >= operandStatusCodes.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= operandStatusCodes.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -142,7 +144,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     if (operandDiagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : operandDiagnosticInfos) {
-        boolean last = ++i >= operandDiagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= operandDiagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -150,12 +152,13 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static ContentFilterElementResultBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ContentFilterElementResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(
@@ -183,7 +186,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("ContentFilterElementResult");
     // Create the instance
-    return new ContentFilterElementResultBuilder(
+    return new ContentFilterElementResultBuilderImpl(
         statusCode,
         noOfOperandStatusCodes,
         operandStatusCodes,
@@ -191,7 +194,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
         operandDiagnosticInfos);
   }
 
-  public static class ContentFilterElementResultBuilder
+  public static class ContentFilterElementResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final int noOfOperandStatusCodes;
@@ -199,13 +202,12 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     private final int noOfOperandDiagnosticInfos;
     private final List<DiagnosticInfo> operandDiagnosticInfos;
 
-    public ContentFilterElementResultBuilder(
+    public ContentFilterElementResultBuilderImpl(
         StatusCode statusCode,
         int noOfOperandStatusCodes,
         List<StatusCode> operandStatusCodes,
         int noOfOperandDiagnosticInfos,
         List<DiagnosticInfo> operandDiagnosticInfos) {
-
       this.statusCode = statusCode;
       this.noOfOperandStatusCodes = noOfOperandStatusCodes;
       this.operandStatusCodes = operandStatusCodes;

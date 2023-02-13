@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -51,12 +52,11 @@ type _BACnetProcessIdSelection struct {
 
 type _BACnetProcessIdSelectionChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetProcessIdSelectionParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetProcessIdSelection, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetProcessIdSelection, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -88,6 +88,8 @@ func (m *_BACnetProcessIdSelection) GetPeekedTagHeader() BACnetTagHeader {
 ///////////////////////
 
 func (m *_BACnetProcessIdSelection) GetPeekedTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPeekedTagHeader().GetActualTagNumber())
 }
 
@@ -116,7 +118,7 @@ func (m *_BACnetProcessIdSelection) GetTypeName() string {
 	return "BACnetProcessIdSelection"
 }
 
-func (m *_BACnetProcessIdSelection) GetParentLengthInBits() uint16 {
+func (m *_BACnetProcessIdSelection) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -124,15 +126,15 @@ func (m *_BACnetProcessIdSelection) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetProcessIdSelection) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetProcessIdSelection) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetProcessIdSelectionParse(theBytes []byte) (BACnetProcessIdSelection, error) {
-	return BACnetProcessIdSelectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetProcessIdSelectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetProcessIdSelectionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetProcessIdSelection, error) {
+func BACnetProcessIdSelectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetProcessIdSelection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetProcessIdSelection"); pullErr != nil {
@@ -146,7 +148,7 @@ func BACnetProcessIdSelectionParseWithBuffer(readBuffer utils.ReadBuffer) (BACne
 	if pullErr := readBuffer.PullContext("peekedTagHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for peekedTagHeader")
 	}
-	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(readBuffer)
+	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
 	// Virtual field
@@ -165,9 +167,9 @@ func BACnetProcessIdSelectionParseWithBuffer(readBuffer utils.ReadBuffer) (BACne
 	var typeSwitchError error
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetProcessIdSelectionNull
-		_childTemp, typeSwitchError = BACnetProcessIdSelectionNullParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetProcessIdSelectionNullParseWithBuffer(ctx, readBuffer)
 	case 0 == 0: // BACnetProcessIdSelectionValue
-		_childTemp, typeSwitchError = BACnetProcessIdSelectionValueParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetProcessIdSelectionValueParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedTagNumber=%v]", peekedTagNumber)
 	}
@@ -185,7 +187,7 @@ func BACnetProcessIdSelectionParseWithBuffer(readBuffer utils.ReadBuffer) (BACne
 	return _child, nil
 }
 
-func (pm *_BACnetProcessIdSelection) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetProcessIdSelection, serializeChildFunction func() error) error {
+func (pm *_BACnetProcessIdSelection) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetProcessIdSelection, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -195,7 +197,7 @@ func (pm *_BACnetProcessIdSelection) SerializeParent(writeBuffer utils.WriteBuff
 		return errors.Wrap(pushErr, "Error pushing for BACnetProcessIdSelection")
 	}
 	// Virtual field
-	if _peekedTagNumberErr := writeBuffer.WriteVirtual("peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
+	if _peekedTagNumberErr := writeBuffer.WriteVirtual(ctx, "peekedTagNumber", m.GetPeekedTagNumber()); _peekedTagNumberErr != nil {
 		return errors.Wrap(_peekedTagNumberErr, "Error serializing 'peekedTagNumber' field")
 	}
 
@@ -219,7 +221,7 @@ func (m *_BACnetProcessIdSelection) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

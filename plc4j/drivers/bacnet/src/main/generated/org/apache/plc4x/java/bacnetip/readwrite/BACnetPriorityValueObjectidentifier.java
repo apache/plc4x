@@ -62,6 +62,7 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueObjectidentifier");
 
@@ -83,6 +84,7 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueObjectidentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectidentifierValue)
     lengthInBits += objectidentifierValue.getLengthInBits();
@@ -90,12 +92,13 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueObjectidentifierBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueObjectidentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectidentifierValue =
         readSimpleField(
@@ -108,19 +111,18 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
 
     readBuffer.closeContext("BACnetPriorityValueObjectidentifier");
     // Create the instance
-    return new BACnetPriorityValueObjectidentifierBuilder(
+    return new BACnetPriorityValueObjectidentifierBuilderImpl(
         objectidentifierValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueObjectidentifierBuilder
+  public static class BACnetPriorityValueObjectidentifierBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagObjectIdentifier objectidentifierValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueObjectidentifierBuilder(
+    public BACnetPriorityValueObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue,
         BACnetObjectType objectTypeArgument) {
-
       this.objectidentifierValue = objectidentifierValue;
       this.objectTypeArgument = objectTypeArgument;
     }

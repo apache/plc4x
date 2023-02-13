@@ -79,6 +79,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
   protected void serializeBACnetUnconfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestWhoHas");
 
@@ -110,6 +111,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestWhoHas _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (deviceInstanceRangeLowLimit)
     if (deviceInstanceRangeLowLimit != null) {
@@ -127,12 +129,14 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestWhoHasBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestWhoHas");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit =
         readOptionalField(
@@ -168,23 +172,22 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestWhoHas");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestWhoHasBuilder(
+    return new BACnetUnconfirmedServiceRequestWhoHasBuilderImpl(
         deviceInstanceRangeLowLimit, deviceInstanceRangeHighLimit, object, serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestWhoHasBuilder
+  public static class BACnetUnconfirmedServiceRequestWhoHasBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit;
     private final BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit;
     private final BACnetUnconfirmedServiceRequestWhoHasObject object;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestWhoHasBuilder(
+    public BACnetUnconfirmedServiceRequestWhoHasBuilderImpl(
         BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit,
         BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit,
         BACnetUnconfirmedServiceRequestWhoHasObject object,
         Integer serviceRequestLength) {
-
       this.deviceInstanceRangeLowLimit = deviceInstanceRangeLowLimit;
       this.deviceInstanceRangeHighLimit = deviceInstanceRangeHighLimit;
       this.object = object;

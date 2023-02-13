@@ -88,6 +88,7 @@ public class BACnetConstructedDataWeeklySchedule extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataWeeklySchedule");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataWeeklySchedule extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataWeeklySchedule _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataWeeklySchedule extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataWeeklyScheduleBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataWeeklySchedule extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -174,23 +177,22 @@ public class BACnetConstructedDataWeeklySchedule extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataWeeklySchedule");
     // Create the instance
-    return new BACnetConstructedDataWeeklyScheduleBuilder(
+    return new BACnetConstructedDataWeeklyScheduleBuilderImpl(
         numberOfDataElements, weeklySchedule, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataWeeklyScheduleBuilder
+  public static class BACnetConstructedDataWeeklyScheduleBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetDailySchedule> weeklySchedule;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataWeeklyScheduleBuilder(
+    public BACnetConstructedDataWeeklyScheduleBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetDailySchedule> weeklySchedule,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.weeklySchedule = weeklySchedule;
       this.tagNumber = tagNumber;

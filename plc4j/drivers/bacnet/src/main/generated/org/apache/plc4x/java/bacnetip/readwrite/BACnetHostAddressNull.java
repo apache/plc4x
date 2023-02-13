@@ -55,6 +55,7 @@ public class BACnetHostAddressNull extends BACnetHostAddress implements Message 
   protected void serializeBACnetHostAddressChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetHostAddressNull");
 
@@ -73,6 +74,7 @@ public class BACnetHostAddressNull extends BACnetHostAddress implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetHostAddressNull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (none)
     lengthInBits += none.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetHostAddressNull extends BACnetHostAddress implements Message 
     return lengthInBits;
   }
 
-  public static BACnetHostAddressNullBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetHostAddressBuilder staticParseBACnetHostAddressBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetHostAddressNull");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagNull none =
         readSimpleField(
@@ -99,15 +102,14 @@ public class BACnetHostAddressNull extends BACnetHostAddress implements Message 
 
     readBuffer.closeContext("BACnetHostAddressNull");
     // Create the instance
-    return new BACnetHostAddressNullBuilder(none);
+    return new BACnetHostAddressNullBuilderImpl(none);
   }
 
-  public static class BACnetHostAddressNullBuilder
+  public static class BACnetHostAddressNullBuilderImpl
       implements BACnetHostAddress.BACnetHostAddressBuilder {
     private final BACnetContextTagNull none;
 
-    public BACnetHostAddressNullBuilder(BACnetContextTagNull none) {
-
+    public BACnetHostAddressNullBuilderImpl(BACnetContextTagNull none) {
       this.none = none;
     }
 

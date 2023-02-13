@@ -40,10 +40,6 @@ public class SocketCANFrame implements Message {
   // Properties.
   protected final int rawId;
   protected final byte[] data;
-  // Reserved Fields
-  private Short reservedField0;
-  private Short reservedField1;
-  private Short reservedField2;
 
   public SocketCANFrame(int rawId, byte[] data) {
     super();
@@ -81,6 +77,7 @@ public class SocketCANFrame implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SocketCANFrame");
 
@@ -110,32 +107,47 @@ public class SocketCANFrame implements Message {
     // Implicit Field (size) (Used for parsing, but its value is not stored as it's implicitly given
     // by the objects content)
     short size = (short) (COUNT(getData()));
-    writeImplicitField("size", size, writeUnsignedShort(writeBuffer, 8));
+    writeImplicitField(
+        "size",
+        size,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x0,
-        writeUnsignedShort(writeBuffer, 8));
+        (short) 0x0,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField1 != null ? reservedField1 : (short) 0x0,
-        writeUnsignedShort(writeBuffer, 8));
+        (short) 0x0,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField2 != null ? reservedField2 : (short) 0x0,
-        writeUnsignedShort(writeBuffer, 8));
+        (short) 0x0,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Array Field (data)
-    writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "data",
+        data,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Padding Field (padding)
     writePaddingField(
-        "padding", (int) ((8) - ((COUNT(data)))), (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+        "padding",
+        (int) ((8) - ((COUNT(data)))),
+        (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("SocketCANFrame");
   }
@@ -149,6 +161,7 @@ public class SocketCANFrame implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     SocketCANFrame _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (rawId)
     lengthInBits += 32;
@@ -198,6 +211,7 @@ public class SocketCANFrame implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int rawId =
         readSimpleField(
@@ -269,9 +283,6 @@ public class SocketCANFrame implements Message {
     // Create the instance
     SocketCANFrame _socketCANFrame;
     _socketCANFrame = new SocketCANFrame(rawId, data);
-    _socketCANFrame.reservedField0 = reservedField0;
-    _socketCANFrame.reservedField1 = reservedField1;
-    _socketCANFrame.reservedField2 = reservedField2;
     return _socketCANFrame;
   }
 

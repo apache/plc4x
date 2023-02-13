@@ -43,11 +43,13 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
   }
 
   // Properties.
+  protected final short blockVersionHigh;
+  protected final short blockVersionLow;
   protected final PnIoCm_ArType arType;
   protected final Uuid arUuid;
   protected final int sessionKey;
   protected final MacAddress cmInitiatorMacAddr;
-  protected final Uuid cmInitiatorObjectUuid;
+  protected final DceRpc_ObjectUuid cmInitiatorObjectUuid;
   protected final boolean pullModuleAlarmAllowed;
   protected final boolean nonLegacyStartupMode;
   protected final boolean combinedObjectContainerUsed;
@@ -60,6 +62,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
   protected final int cmInitiatorActivityTimeoutFactor;
   protected final int cmInitiatorUdpRtPort;
   protected final String cmInitiatorStationName;
+
   // Reserved Fields
   private Long reservedField0;
   private Byte reservedField1;
@@ -71,7 +74,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
       Uuid arUuid,
       int sessionKey,
       MacAddress cmInitiatorMacAddr,
-      Uuid cmInitiatorObjectUuid,
+      DceRpc_ObjectUuid cmInitiatorObjectUuid,
       boolean pullModuleAlarmAllowed,
       boolean nonLegacyStartupMode,
       boolean combinedObjectContainerUsed,
@@ -84,7 +87,9 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
       int cmInitiatorActivityTimeoutFactor,
       int cmInitiatorUdpRtPort,
       String cmInitiatorStationName) {
-    super(blockVersionHigh, blockVersionLow);
+    super();
+    this.blockVersionHigh = blockVersionHigh;
+    this.blockVersionLow = blockVersionLow;
     this.arType = arType;
     this.arUuid = arUuid;
     this.sessionKey = sessionKey;
@@ -104,6 +109,14 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     this.cmInitiatorStationName = cmInitiatorStationName;
   }
 
+  public short getBlockVersionHigh() {
+    return blockVersionHigh;
+  }
+
+  public short getBlockVersionLow() {
+    return blockVersionLow;
+  }
+
   public PnIoCm_ArType getArType() {
     return arType;
   }
@@ -120,7 +133,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     return cmInitiatorMacAddr;
   }
 
-  public Uuid getCmInitiatorObjectUuid() {
+  public DceRpc_ObjectUuid getCmInitiatorObjectUuid() {
     return cmInitiatorObjectUuid;
   }
 
@@ -175,8 +188,32 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
   @Override
   protected void serializePnIoCm_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block_ArReq");
+
+    // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int blockLength = (int) ((getLengthInBytes()) - (4));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionHigh)
+    writeSimpleField(
+        "blockVersionHigh",
+        blockVersionHigh,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionLow)
+    writeSimpleField(
+        "blockVersionLow",
+        blockVersionLow,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (arType)
     writeSimpleEnumField(
@@ -184,7 +221,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         "PnIoCm_ArType",
         arType,
         new DataWriterEnumDefault<>(
-            PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)));
+            PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (arUuid)
     writeSimpleField(
@@ -239,7 +277,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (long) 0x00000,
-        writeUnsignedLong(writeBuffer, 17));
+        writeUnsignedLong(writeBuffer, 17),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (acknowledgeCompanionAr)
     writeSimpleField(
@@ -256,7 +295,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         new DataWriterEnumDefault<>(
             PnIoCm_CompanionArType::getValue,
             PnIoCm_CompanionArType::name,
-            writeUnsignedByte(writeBuffer, 2)));
+            writeUnsignedByte(writeBuffer, 2)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (deviceAccess)
     writeSimpleField(
@@ -269,7 +309,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (byte) 0x0,
-        writeUnsignedByte(writeBuffer, 3));
+        writeUnsignedByte(writeBuffer, 3),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (cmInitiator)
     writeSimpleField(
@@ -291,7 +332,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         "PnIoCm_State",
         state,
         new DataWriterEnumDefault<>(
-            PnIoCm_State::getValue, PnIoCm_State::name, writeUnsignedByte(writeBuffer, 3)));
+            PnIoCm_State::getValue, PnIoCm_State::name, writeUnsignedByte(writeBuffer, 3)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (cmInitiatorActivityTimeoutFactor)
     writeSimpleField(
@@ -310,7 +352,11 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     // Implicit Field (stationNameLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int stationNameLength = (int) (STR_LEN(getCmInitiatorStationName()));
-    writeImplicitField("stationNameLength", stationNameLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "stationNameLength",
+        stationNameLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (cmInitiatorStationName)
     writeSimpleField(
@@ -331,6 +377,16 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Block_ArReq _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    // Implicit Field (blockLength)
+    lengthInBits += 16;
+
+    // Simple field (blockVersionHigh)
+    lengthInBits += 8;
+
+    // Simple field (blockVersionLow)
+    lengthInBits += 8;
 
     // Simple field (arType)
     lengthInBits += 16;
@@ -395,12 +451,31 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_ArReqBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_ArReq");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    int blockLength =
+        readImplicitField(
+            "blockLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionHigh =
+        readSimpleField(
+            "blockVersionHigh",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionLow =
+        readSimpleField(
+            "blockVersionLow",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_ArType arType =
         readEnumField(
@@ -428,10 +503,11 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
             new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    Uuid cmInitiatorObjectUuid =
+    DceRpc_ObjectUuid cmInitiatorObjectUuid =
         readSimpleField(
             "cmInitiatorObjectUuid",
-            new DataReaderComplexDefault<>(() -> Uuid.staticParse(readBuffer), readBuffer),
+            new DataReaderComplexDefault<>(
+                () -> DceRpc_ObjectUuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean pullModuleAlarmAllowed =
@@ -530,7 +606,9 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block_ArReq");
     // Create the instance
-    return new PnIoCm_Block_ArReqBuilder(
+    return new PnIoCm_Block_ArReqBuilderImpl(
+        blockVersionHigh,
+        blockVersionLow,
         arType,
         arUuid,
         sessionKey,
@@ -552,12 +630,14 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         reservedField1);
   }
 
-  public static class PnIoCm_Block_ArReqBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCm_Block_ArReqBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
+    private final short blockVersionHigh;
+    private final short blockVersionLow;
     private final PnIoCm_ArType arType;
     private final Uuid arUuid;
     private final int sessionKey;
     private final MacAddress cmInitiatorMacAddr;
-    private final Uuid cmInitiatorObjectUuid;
+    private final DceRpc_ObjectUuid cmInitiatorObjectUuid;
     private final boolean pullModuleAlarmAllowed;
     private final boolean nonLegacyStartupMode;
     private final boolean combinedObjectContainerUsed;
@@ -573,12 +653,14 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     private final Long reservedField0;
     private final Byte reservedField1;
 
-    public PnIoCm_Block_ArReqBuilder(
+    public PnIoCm_Block_ArReqBuilderImpl(
+        short blockVersionHigh,
+        short blockVersionLow,
         PnIoCm_ArType arType,
         Uuid arUuid,
         int sessionKey,
         MacAddress cmInitiatorMacAddr,
-        Uuid cmInitiatorObjectUuid,
+        DceRpc_ObjectUuid cmInitiatorObjectUuid,
         boolean pullModuleAlarmAllowed,
         boolean nonLegacyStartupMode,
         boolean combinedObjectContainerUsed,
@@ -593,6 +675,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         String cmInitiatorStationName,
         Long reservedField0,
         Byte reservedField1) {
+      this.blockVersionHigh = blockVersionHigh;
+      this.blockVersionLow = blockVersionLow;
       this.arType = arType;
       this.arUuid = arUuid;
       this.sessionKey = sessionKey;
@@ -614,7 +698,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
       this.reservedField1 = reservedField1;
     }
 
-    public PnIoCm_Block_ArReq build(short blockVersionHigh, short blockVersionLow) {
+    public PnIoCm_Block_ArReq build() {
       PnIoCm_Block_ArReq pnIoCm_Block_ArReq =
           new PnIoCm_Block_ArReq(
               blockVersionHigh,
@@ -651,7 +735,9 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
       return false;
     }
     PnIoCm_Block_ArReq that = (PnIoCm_Block_ArReq) o;
-    return (getArType() == that.getArType())
+    return (getBlockVersionHigh() == that.getBlockVersionHigh())
+        && (getBlockVersionLow() == that.getBlockVersionLow())
+        && (getArType() == that.getArType())
         && (getArUuid() == that.getArUuid())
         && (getSessionKey() == that.getSessionKey())
         && (getCmInitiatorMacAddr() == that.getCmInitiatorMacAddr())
@@ -676,6 +762,8 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
   public int hashCode() {
     return Objects.hash(
         super.hashCode(),
+        getBlockVersionHigh(),
+        getBlockVersionLow(),
         getArType(),
         getArUuid(),
         getSessionKey(),

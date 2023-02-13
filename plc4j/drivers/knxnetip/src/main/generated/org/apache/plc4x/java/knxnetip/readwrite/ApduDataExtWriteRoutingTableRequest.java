@@ -42,17 +42,14 @@ public class ApduDataExtWriteRoutingTableRequest extends ApduDataExt implements 
     return (short) 0x03;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtWriteRoutingTableRequest(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtWriteRoutingTableRequest() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtWriteRoutingTableRequest");
 
@@ -68,35 +65,32 @@ public class ApduDataExtWriteRoutingTableRequest extends ApduDataExt implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtWriteRoutingTableRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtWriteRoutingTableRequestBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtWriteRoutingTableRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtWriteRoutingTableRequest");
     // Create the instance
-    return new ApduDataExtWriteRoutingTableRequestBuilder(length);
+    return new ApduDataExtWriteRoutingTableRequestBuilderImpl();
   }
 
-  public static class ApduDataExtWriteRoutingTableRequestBuilder
+  public static class ApduDataExtWriteRoutingTableRequestBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtWriteRoutingTableRequestBuilder(Short length) {
+    public ApduDataExtWriteRoutingTableRequestBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtWriteRoutingTableRequest build(Short length) {
-
+    public ApduDataExtWriteRoutingTableRequest build() {
       ApduDataExtWriteRoutingTableRequest apduDataExtWriteRoutingTableRequest =
-          new ApduDataExtWriteRoutingTableRequest(length);
+          new ApduDataExtWriteRoutingTableRequest();
       return apduDataExtWriteRoutingTableRequest;
     }
   }

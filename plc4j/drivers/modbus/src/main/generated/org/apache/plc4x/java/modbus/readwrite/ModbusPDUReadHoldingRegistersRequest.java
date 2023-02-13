@@ -71,6 +71,7 @@ public class ModbusPDUReadHoldingRegistersRequest extends ModbusPDU implements M
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadHoldingRegistersRequest");
 
@@ -92,6 +93,7 @@ public class ModbusPDUReadHoldingRegistersRequest extends ModbusPDU implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadHoldingRegistersRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (startingAddress)
     lengthInBits += 16;
@@ -102,12 +104,13 @@ public class ModbusPDUReadHoldingRegistersRequest extends ModbusPDU implements M
     return lengthInBits;
   }
 
-  public static ModbusPDUReadHoldingRegistersRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadHoldingRegistersRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int startingAddress = readSimpleField("startingAddress", readUnsignedInt(readBuffer, 16));
 
@@ -115,16 +118,15 @@ public class ModbusPDUReadHoldingRegistersRequest extends ModbusPDU implements M
 
     readBuffer.closeContext("ModbusPDUReadHoldingRegistersRequest");
     // Create the instance
-    return new ModbusPDUReadHoldingRegistersRequestBuilder(startingAddress, quantity);
+    return new ModbusPDUReadHoldingRegistersRequestBuilderImpl(startingAddress, quantity);
   }
 
-  public static class ModbusPDUReadHoldingRegistersRequestBuilder
+  public static class ModbusPDUReadHoldingRegistersRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int startingAddress;
     private final int quantity;
 
-    public ModbusPDUReadHoldingRegistersRequestBuilder(int startingAddress, int quantity) {
-
+    public ModbusPDUReadHoldingRegistersRequestBuilderImpl(int startingAddress, int quantity) {
       this.startingAddress = startingAddress;
       this.quantity = quantity;
     }

@@ -65,6 +65,7 @@ public class BACnetConstructedDataAveragingAll extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAveragingAll");
 
@@ -80,11 +81,12 @@ public class BACnetConstructedDataAveragingAll extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAveragingAll _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAveragingAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -95,6 +97,7 @@ public class BACnetConstructedDataAveragingAll extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {
       throw new ParseValidationException(
@@ -103,17 +106,16 @@ public class BACnetConstructedDataAveragingAll extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataAveragingAll");
     // Create the instance
-    return new BACnetConstructedDataAveragingAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAveragingAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAveragingAllBuilder
+  public static class BACnetConstructedDataAveragingAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAveragingAllBuilder(
+    public BACnetConstructedDataAveragingAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

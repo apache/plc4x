@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,19 +88,19 @@ func CastTagClass(structType interface{}) TagClass {
 	return castFunc(structType)
 }
 
-func (m TagClass) GetLengthInBits() uint16 {
+func (m TagClass) GetLengthInBits(ctx context.Context) uint16 {
 	return 1
 }
 
-func (m TagClass) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m TagClass) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func TagClassParse(theBytes []byte) (TagClass, error) {
-	return TagClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func TagClassParse(ctx context.Context, theBytes []byte) (TagClass, error) {
+	return TagClassParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func TagClassParseWithBuffer(readBuffer utils.ReadBuffer) (TagClass, error) {
+func TagClassParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TagClass, error) {
 	val, err := readBuffer.ReadUint8("TagClass", 1)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TagClass")
@@ -114,13 +115,13 @@ func TagClassParseWithBuffer(readBuffer utils.ReadBuffer) (TagClass, error) {
 
 func (e TagClass) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e TagClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e TagClass) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TagClass", 1, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

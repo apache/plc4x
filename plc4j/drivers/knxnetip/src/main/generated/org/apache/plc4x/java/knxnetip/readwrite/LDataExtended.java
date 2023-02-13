@@ -102,6 +102,7 @@ public class LDataExtended extends LDataFrame implements Message {
   @Override
   protected void serializeLDataFrameChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LDataExtended");
 
@@ -140,6 +141,7 @@ public class LDataExtended extends LDataFrame implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LDataExtended _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (groupAddress)
     lengthInBits += 1;
@@ -167,12 +169,13 @@ public class LDataExtended extends LDataFrame implements Message {
     return lengthInBits;
   }
 
-  public static LDataExtendedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LDataFrameBuilder staticParseLDataFrameBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LDataExtended");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean groupAddress = readSimpleField("groupAddress", readBoolean(readBuffer));
 
@@ -198,11 +201,11 @@ public class LDataExtended extends LDataFrame implements Message {
 
     readBuffer.closeContext("LDataExtended");
     // Create the instance
-    return new LDataExtendedBuilder(
+    return new LDataExtendedBuilderImpl(
         groupAddress, hopCount, extendedFrameFormat, sourceAddress, destinationAddress, apdu);
   }
 
-  public static class LDataExtendedBuilder implements LDataFrame.LDataFrameBuilder {
+  public static class LDataExtendedBuilderImpl implements LDataFrame.LDataFrameBuilder {
     private final boolean groupAddress;
     private final byte hopCount;
     private final byte extendedFrameFormat;
@@ -210,14 +213,13 @@ public class LDataExtended extends LDataFrame implements Message {
     private final byte[] destinationAddress;
     private final Apdu apdu;
 
-    public LDataExtendedBuilder(
+    public LDataExtendedBuilderImpl(
         boolean groupAddress,
         byte hopCount,
         byte extendedFrameFormat,
         KnxAddress sourceAddress,
         byte[] destinationAddress,
         Apdu apdu) {
-
       this.groupAddress = groupAddress;
       this.hopCount = hopCount;
       this.extendedFrameFormat = extendedFrameFormat;

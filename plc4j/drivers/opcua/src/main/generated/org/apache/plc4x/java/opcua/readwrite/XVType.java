@@ -64,6 +64,7 @@ public class XVType extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("XVType");
 
@@ -85,6 +86,7 @@ public class XVType extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     XVType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (x)
     lengthInBits += 64;
@@ -95,12 +97,13 @@ public class XVType extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static XVTypeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("XVType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     double x = readSimpleField("x", readDouble(readBuffer, 64));
 
@@ -108,16 +111,15 @@ public class XVType extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("XVType");
     // Create the instance
-    return new XVTypeBuilder(x, value);
+    return new XVTypeBuilderImpl(x, value);
   }
 
-  public static class XVTypeBuilder
+  public static class XVTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final double x;
     private final float value;
 
-    public XVTypeBuilder(double x, float value) {
-
+    public XVTypeBuilderImpl(double x, float value) {
       this.x = x;
       this.value = value;
     }

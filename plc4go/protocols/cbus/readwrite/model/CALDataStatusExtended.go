@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -118,10 +120,14 @@ func (m *_CALDataStatusExtended) GetLevelInformation() []LevelInformation {
 ///////////////////////
 
 func (m *_CALDataStatusExtended) GetNumberOfStatusBytes() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(utils.InlineIf((bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() interface{} { return uint8((uint8(m.GetCommandTypeContainer().NumBytes()) - uint8(uint8(3)))) }, func() interface{} { return uint8((uint8(0))) }).(uint8))
 }
 
 func (m *_CALDataStatusExtended) GetNumberOfLevelInformation() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(utils.InlineIf((bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((m.GetCoding()) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() interface{} {
 		return uint8((uint8((uint8(m.GetCommandTypeContainer().NumBytes()) - uint8(uint8(3)))) / uint8(uint8(2))))
 	}, func() interface{} { return uint8((uint8(0))) }).(uint8))
@@ -161,12 +167,8 @@ func (m *_CALDataStatusExtended) GetTypeName() string {
 	return "CALDataStatusExtended"
 }
 
-func (m *_CALDataStatusExtended) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CALDataStatusExtended) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CALDataStatusExtended) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (coding)
 	lengthInBits += 8
@@ -183,32 +185,36 @@ func (m *_CALDataStatusExtended) GetLengthInBitsConditional(lastItem bool) uint1
 
 	// Array field
 	if len(m.StatusBytes) > 0 {
-		for i, element := range m.StatusBytes {
-			last := i == len(m.StatusBytes)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.StatusBytes {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.StatusBytes), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	// Array field
 	if len(m.LevelInformation) > 0 {
-		for i, element := range m.LevelInformation {
-			last := i == len(m.LevelInformation)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.LevelInformation {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.LevelInformation), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_CALDataStatusExtended) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CALDataStatusExtended) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALDataStatusExtendedParse(theBytes []byte, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataStatusExtended, error) {
-	return CALDataStatusExtendedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), requestContext, commandTypeContainer)
+func CALDataStatusExtendedParse(theBytes []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataStatusExtended, error) {
+	return CALDataStatusExtendedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
 }
 
-func CALDataStatusExtendedParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataStatusExtended, error) {
+func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataStatusExtended, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataStatusExtended"); pullErr != nil {
@@ -221,7 +227,7 @@ func CALDataStatusExtendedParseWithBuffer(readBuffer utils.ReadBuffer, requestCo
 	if pullErr := readBuffer.PullContext("coding"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for coding")
 	}
-	_coding, _codingErr := StatusCodingParseWithBuffer(readBuffer)
+	_coding, _codingErr := StatusCodingParseWithBuffer(ctx, readBuffer)
 	if _codingErr != nil {
 		return nil, errors.Wrap(_codingErr, "Error parsing 'coding' field of CALDataStatusExtended")
 	}
@@ -234,7 +240,7 @@ func CALDataStatusExtendedParseWithBuffer(readBuffer utils.ReadBuffer, requestCo
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CALDataStatusExtended")
 	}
@@ -273,12 +279,16 @@ func CALDataStatusExtendedParseWithBuffer(readBuffer utils.ReadBuffer, requestCo
 		statusBytes = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(numberOfStatusBytes); curItem++ {
-			_item, _err := StatusByteParseWithBuffer(readBuffer)
+		_numItems := uint16(numberOfStatusBytes)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := StatusByteParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'statusBytes' field of CALDataStatusExtended")
 			}
-			statusBytes[curItem] = _item.(StatusByte)
+			statusBytes[_curItem] = _item.(StatusByte)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("statusBytes", utils.WithRenderAsList(true)); closeErr != nil {
@@ -296,12 +306,16 @@ func CALDataStatusExtendedParseWithBuffer(readBuffer utils.ReadBuffer, requestCo
 		levelInformation = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(numberOfLevelInformation); curItem++ {
-			_item, _err := LevelInformationParseWithBuffer(readBuffer)
+		_numItems := uint16(numberOfLevelInformation)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := LevelInformationParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'levelInformation' field of CALDataStatusExtended")
 			}
-			levelInformation[curItem] = _item.(LevelInformation)
+			levelInformation[_curItem] = _item.(LevelInformation)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("levelInformation", utils.WithRenderAsList(true)); closeErr != nil {
@@ -328,14 +342,14 @@ func CALDataStatusExtendedParseWithBuffer(readBuffer utils.ReadBuffer, requestCo
 }
 
 func (m *_CALDataStatusExtended) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -347,7 +361,7 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("coding"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for coding")
 		}
-		_codingErr := writeBuffer.WriteSerializable(m.GetCoding())
+		_codingErr := writeBuffer.WriteSerializable(ctx, m.GetCoding())
 		if popErr := writeBuffer.PopContext("coding"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for coding")
 		}
@@ -359,7 +373,7 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for application")
 		}
-		_applicationErr := writeBuffer.WriteSerializable(m.GetApplication())
+		_applicationErr := writeBuffer.WriteSerializable(ctx, m.GetApplication())
 		if popErr := writeBuffer.PopContext("application"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for application")
 		}
@@ -374,11 +388,11 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(writeBuffer utils.Writ
 			return errors.Wrap(_blockStartErr, "Error serializing 'blockStart' field")
 		}
 		// Virtual field
-		if _numberOfStatusBytesErr := writeBuffer.WriteVirtual("numberOfStatusBytes", m.GetNumberOfStatusBytes()); _numberOfStatusBytesErr != nil {
+		if _numberOfStatusBytesErr := writeBuffer.WriteVirtual(ctx, "numberOfStatusBytes", m.GetNumberOfStatusBytes()); _numberOfStatusBytesErr != nil {
 			return errors.Wrap(_numberOfStatusBytesErr, "Error serializing 'numberOfStatusBytes' field")
 		}
 		// Virtual field
-		if _numberOfLevelInformationErr := writeBuffer.WriteVirtual("numberOfLevelInformation", m.GetNumberOfLevelInformation()); _numberOfLevelInformationErr != nil {
+		if _numberOfLevelInformationErr := writeBuffer.WriteVirtual(ctx, "numberOfLevelInformation", m.GetNumberOfLevelInformation()); _numberOfLevelInformationErr != nil {
 			return errors.Wrap(_numberOfLevelInformationErr, "Error serializing 'numberOfLevelInformation' field")
 		}
 
@@ -386,8 +400,11 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("statusBytes", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusBytes")
 		}
-		for _, _element := range m.GetStatusBytes() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetStatusBytes() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetStatusBytes()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'statusBytes' field")
 			}
@@ -400,8 +417,11 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("levelInformation", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for levelInformation")
 		}
-		for _, _element := range m.GetLevelInformation() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetLevelInformation() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetLevelInformation()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'levelInformation' field")
 			}
@@ -415,7 +435,7 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CALDataStatusExtended) isCALDataStatusExtended() bool {
@@ -427,7 +447,7 @@ func (m *_CALDataStatusExtended) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

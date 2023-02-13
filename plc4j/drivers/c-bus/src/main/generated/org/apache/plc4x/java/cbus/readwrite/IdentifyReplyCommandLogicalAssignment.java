@@ -63,6 +63,7 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandLogicalAssignment");
 
@@ -81,12 +82,13 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandLogicalAssignment _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (logicAssigment != null) {
       int i = 0;
       for (LogicAssignment element : logicAssigment) {
-        boolean last = ++i >= logicAssigment.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= logicAssigment.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -94,12 +96,13 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandLogicalAssignmentBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandLogicalAssignment");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<LogicAssignment> logicAssigment =
         readCountArrayField(
@@ -110,17 +113,16 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
 
     readBuffer.closeContext("IdentifyReplyCommandLogicalAssignment");
     // Create the instance
-    return new IdentifyReplyCommandLogicalAssignmentBuilder(logicAssigment, numBytes);
+    return new IdentifyReplyCommandLogicalAssignmentBuilderImpl(logicAssigment, numBytes);
   }
 
-  public static class IdentifyReplyCommandLogicalAssignmentBuilder
+  public static class IdentifyReplyCommandLogicalAssignmentBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final List<LogicAssignment> logicAssigment;
     private final Short numBytes;
 
-    public IdentifyReplyCommandLogicalAssignmentBuilder(
+    public IdentifyReplyCommandLogicalAssignmentBuilderImpl(
         List<LogicAssignment> logicAssigment, Short numBytes) {
-
       this.logicAssigment = logicAssigment;
       this.numBytes = numBytes;
     }

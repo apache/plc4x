@@ -45,14 +45,9 @@ public class ApduControlContainer extends Apdu implements Message {
   // Properties.
   protected final ApduControl controlApdu;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduControlContainer(
-      boolean numbered, byte counter, ApduControl controlApdu, Short dataLength) {
-    super(numbered, counter, dataLength);
+  public ApduControlContainer(boolean numbered, byte counter, ApduControl controlApdu) {
+    super(numbered, counter);
     this.controlApdu = controlApdu;
-    this.dataLength = dataLength;
   }
 
   public ApduControl getControlApdu() {
@@ -62,6 +57,7 @@ public class ApduControlContainer extends Apdu implements Message {
   @Override
   protected void serializeApduChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduControlContainer");
 
@@ -80,6 +76,7 @@ public class ApduControlContainer extends Apdu implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduControlContainer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (controlApdu)
     lengthInBits += controlApdu.getLengthInBits();
@@ -87,12 +84,13 @@ public class ApduControlContainer extends Apdu implements Message {
     return lengthInBits;
   }
 
-  public static ApduControlContainerBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduBuilder staticParseApduBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduControlContainer");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ApduControl controlApdu =
         readSimpleField(
@@ -101,22 +99,19 @@ public class ApduControlContainer extends Apdu implements Message {
 
     readBuffer.closeContext("ApduControlContainer");
     // Create the instance
-    return new ApduControlContainerBuilder(controlApdu, dataLength);
+    return new ApduControlContainerBuilderImpl(controlApdu);
   }
 
-  public static class ApduControlContainerBuilder implements Apdu.ApduBuilder {
+  public static class ApduControlContainerBuilderImpl implements Apdu.ApduBuilder {
     private final ApduControl controlApdu;
-    private final Short dataLength;
 
-    public ApduControlContainerBuilder(ApduControl controlApdu, Short dataLength) {
-
+    public ApduControlContainerBuilderImpl(ApduControl controlApdu) {
       this.controlApdu = controlApdu;
-      this.dataLength = dataLength;
     }
 
-    public ApduControlContainer build(boolean numbered, byte counter, Short dataLength) {
+    public ApduControlContainer build(boolean numbered, byte counter) {
       ApduControlContainer apduControlContainer =
-          new ApduControlContainer(numbered, counter, controlApdu, dataLength);
+          new ApduControlContainer(numbered, counter, controlApdu);
       return apduControlContainer;
     }
   }

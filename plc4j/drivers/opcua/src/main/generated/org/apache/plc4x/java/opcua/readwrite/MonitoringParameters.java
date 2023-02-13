@@ -48,8 +48,6 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
   protected final ExtensionObject filter;
   protected final long queueSize;
   protected final boolean discardOldest;
-  // Reserved Fields
-  private Short reservedField0;
 
   public MonitoringParameters(
       long clientHandle,
@@ -89,6 +87,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoringParameters");
 
@@ -105,10 +104,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     writeSimpleField("queueSize", queueSize, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (discardOldest)
     writeSimpleField("discardOldest", discardOldest, writeBoolean(writeBuffer));
@@ -125,6 +121,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MonitoringParameters _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (clientHandle)
     lengthInBits += 32;
@@ -147,12 +144,13 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static MonitoringParametersBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoringParameters");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long clientHandle = readSimpleField("clientHandle", readUnsignedLong(readBuffer, 32));
 
@@ -173,39 +171,35 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("MonitoringParameters");
     // Create the instance
-    return new MonitoringParametersBuilder(
-        clientHandle, samplingInterval, filter, queueSize, discardOldest, reservedField0);
+    return new MonitoringParametersBuilderImpl(
+        clientHandle, samplingInterval, filter, queueSize, discardOldest);
   }
 
-  public static class MonitoringParametersBuilder
+  public static class MonitoringParametersBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long clientHandle;
     private final double samplingInterval;
     private final ExtensionObject filter;
     private final long queueSize;
     private final boolean discardOldest;
-    private final Short reservedField0;
 
-    public MonitoringParametersBuilder(
+    public MonitoringParametersBuilderImpl(
         long clientHandle,
         double samplingInterval,
         ExtensionObject filter,
         long queueSize,
-        boolean discardOldest,
-        Short reservedField0) {
+        boolean discardOldest) {
       this.clientHandle = clientHandle;
       this.samplingInterval = samplingInterval;
       this.filter = filter;
       this.queueSize = queueSize;
       this.discardOldest = discardOldest;
-      this.reservedField0 = reservedField0;
     }
 
     public MonitoringParameters build() {
       MonitoringParameters monitoringParameters =
           new MonitoringParameters(
               clientHandle, samplingInterval, filter, queueSize, discardOldest);
-      monitoringParameters.reservedField0 = reservedField0;
       return monitoringParameters;
     }
   }

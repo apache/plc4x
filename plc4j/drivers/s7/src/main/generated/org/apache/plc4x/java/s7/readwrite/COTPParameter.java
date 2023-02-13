@@ -40,12 +40,8 @@ public abstract class COTPParameter implements Message {
   // Abstract accessors for discriminator values.
   public abstract Short getParameterType();
 
-  // Arguments.
-  protected final Short rest;
-
-  public COTPParameter(Short rest) {
+  public COTPParameter() {
     super();
-    this.rest = rest;
   }
 
   protected abstract void serializeCOTPParameterChild(WriteBuffer writeBuffer)
@@ -53,6 +49,7 @@ public abstract class COTPParameter implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("COTPParameter");
 
@@ -80,6 +77,7 @@ public abstract class COTPParameter implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     COTPParameter _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (parameterType)
     lengthInBits += 8;
@@ -117,6 +115,7 @@ public abstract class COTPParameter implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short parameterType = readDiscriminatorField("parameterType", readUnsignedShort(readBuffer, 8));
 
@@ -125,15 +124,17 @@ public abstract class COTPParameter implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     COTPParameterBuilder builder = null;
     if (EvaluationHelper.equals(parameterType, (short) 0xC0)) {
-      builder = COTPParameterTpduSize.staticParseBuilder(readBuffer, rest);
+      builder = COTPParameterTpduSize.staticParseCOTPParameterBuilder(readBuffer, rest);
     } else if (EvaluationHelper.equals(parameterType, (short) 0xC1)) {
-      builder = COTPParameterCallingTsap.staticParseBuilder(readBuffer, rest);
+      builder = COTPParameterCallingTsap.staticParseCOTPParameterBuilder(readBuffer, rest);
     } else if (EvaluationHelper.equals(parameterType, (short) 0xC2)) {
-      builder = COTPParameterCalledTsap.staticParseBuilder(readBuffer, rest);
+      builder = COTPParameterCalledTsap.staticParseCOTPParameterBuilder(readBuffer, rest);
     } else if (EvaluationHelper.equals(parameterType, (short) 0xC3)) {
-      builder = COTPParameterChecksum.staticParseBuilder(readBuffer, rest);
+      builder = COTPParameterChecksum.staticParseCOTPParameterBuilder(readBuffer, rest);
     } else if (EvaluationHelper.equals(parameterType, (short) 0xE0)) {
-      builder = COTPParameterDisconnectAdditionalInformation.staticParseBuilder(readBuffer, rest);
+      builder =
+          COTPParameterDisconnectAdditionalInformation.staticParseCOTPParameterBuilder(
+              readBuffer, rest);
     }
     if (builder == null) {
       throw new ParseException(
@@ -146,13 +147,12 @@ public abstract class COTPParameter implements Message {
 
     readBuffer.closeContext("COTPParameter");
     // Create the instance
-    COTPParameter _cOTPParameter = builder.build(rest);
-
+    COTPParameter _cOTPParameter = builder.build();
     return _cOTPParameter;
   }
 
-  public static interface COTPParameterBuilder {
-    COTPParameter build(Short rest);
+  public interface COTPParameterBuilder {
+    COTPParameter build();
   }
 
   @Override

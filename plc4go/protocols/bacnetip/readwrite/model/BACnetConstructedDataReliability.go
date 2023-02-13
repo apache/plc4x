@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataReliability) GetReliability() BACnetReliabilityTa
 ///////////////////////
 
 func (m *_BACnetConstructedDataReliability) GetActualValue() BACnetReliabilityTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetReliabilityTagged(m.GetReliability())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataReliability) GetTypeName() string {
 	return "BACnetConstructedDataReliability"
 }
 
-func (m *_BACnetConstructedDataReliability) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataReliability) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataReliability) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (reliability)
-	lengthInBits += m.Reliability.GetLengthInBits()
+	lengthInBits += m.Reliability.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataReliability) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataReliability) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataReliabilityParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReliability, error) {
-	return BACnetConstructedDataReliabilityParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataReliabilityParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataReliabilityParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReliability, error) {
+func BACnetConstructedDataReliabilityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReliability, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReliability"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataReliabilityParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("reliability"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reliability")
 	}
-	_reliability, _reliabilityErr := BACnetReliabilityTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_reliability, _reliabilityErr := BACnetReliabilityTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _reliabilityErr != nil {
 		return nil, errors.Wrap(_reliabilityErr, "Error parsing 'reliability' field of BACnetConstructedDataReliability")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataReliabilityParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataReliability) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataReliability) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataReliability) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataReliability) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("reliability"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for reliability")
 		}
-		_reliabilityErr := writeBuffer.WriteSerializable(m.GetReliability())
+		_reliabilityErr := writeBuffer.WriteSerializable(ctx, m.GetReliability())
 		if popErr := writeBuffer.PopContext("reliability"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reliability")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataReliability) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_reliabilityErr, "Error serializing 'reliability' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataReliability) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataReliability) isBACnetConstructedDataReliability() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataReliability) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

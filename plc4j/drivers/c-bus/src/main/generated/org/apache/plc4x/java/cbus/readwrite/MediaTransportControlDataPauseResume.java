@@ -67,6 +67,7 @@ public class MediaTransportControlDataPauseResume extends MediaTransportControlD
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataPauseResume");
 
@@ -93,6 +94,7 @@ public class MediaTransportControlDataPauseResume extends MediaTransportControlD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataPauseResume _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (operation)
     lengthInBits += 8;
@@ -104,12 +106,13 @@ public class MediaTransportControlDataPauseResume extends MediaTransportControlD
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataPauseResumeBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataPauseResume");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte operation = readSimpleField("operation", readByte(readBuffer, 8));
     boolean isPause = readVirtualField("isPause", boolean.class, (operation) == (0x00));
@@ -117,15 +120,14 @@ public class MediaTransportControlDataPauseResume extends MediaTransportControlD
 
     readBuffer.closeContext("MediaTransportControlDataPauseResume");
     // Create the instance
-    return new MediaTransportControlDataPauseResumeBuilder(operation);
+    return new MediaTransportControlDataPauseResumeBuilderImpl(operation);
   }
 
-  public static class MediaTransportControlDataPauseResumeBuilder
+  public static class MediaTransportControlDataPauseResumeBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte operation;
 
-    public MediaTransportControlDataPauseResumeBuilder(byte operation) {
-
+    public MediaTransportControlDataPauseResumeBuilderImpl(byte operation) {
       this.operation = operation;
     }
 

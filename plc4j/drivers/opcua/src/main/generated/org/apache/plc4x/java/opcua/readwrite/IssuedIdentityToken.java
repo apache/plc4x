@@ -64,6 +64,7 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
   protected void serializeUserIdentityTokenDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IssuedIdentityToken");
 
@@ -86,6 +87,7 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IssuedIdentityToken _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (tokenData)
     lengthInBits += tokenData.getLengthInBits();
@@ -96,12 +98,13 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
     return lengthInBits;
   }
 
-  public static IssuedIdentityTokenBuilder staticParseBuilder(
+  public static UserIdentityTokenDefinitionBuilder staticParseUserIdentityTokenDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("IssuedIdentityToken");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString tokenData =
         readSimpleField(
@@ -116,17 +119,16 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
 
     readBuffer.closeContext("IssuedIdentityToken");
     // Create the instance
-    return new IssuedIdentityTokenBuilder(tokenData, encryptionAlgorithm);
+    return new IssuedIdentityTokenBuilderImpl(tokenData, encryptionAlgorithm);
   }
 
-  public static class IssuedIdentityTokenBuilder
+  public static class IssuedIdentityTokenBuilderImpl
       implements UserIdentityTokenDefinition.UserIdentityTokenDefinitionBuilder {
     private final PascalByteString tokenData;
     private final PascalString encryptionAlgorithm;
 
-    public IssuedIdentityTokenBuilder(
+    public IssuedIdentityTokenBuilderImpl(
         PascalByteString tokenData, PascalString encryptionAlgorithm) {
-
       this.tokenData = tokenData;
       this.encryptionAlgorithm = encryptionAlgorithm;
     }

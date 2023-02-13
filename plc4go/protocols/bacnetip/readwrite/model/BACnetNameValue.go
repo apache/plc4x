@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -88,33 +89,29 @@ func (m *_BACnetNameValue) GetTypeName() string {
 	return "BACnetNameValue"
 }
 
-func (m *_BACnetNameValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetNameValue) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetNameValue) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (name)
-	lengthInBits += m.Name.GetLengthInBits()
+	lengthInBits += m.Name.GetLengthInBits(ctx)
 
 	// Optional Field (value)
 	if m.Value != nil {
-		lengthInBits += m.Value.GetLengthInBits()
+		lengthInBits += m.Value.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetNameValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetNameValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetNameValueParse(theBytes []byte) (BACnetNameValue, error) {
-	return BACnetNameValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetNameValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetNameValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNameValue, error) {
+func BACnetNameValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNameValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNameValue"); pullErr != nil {
@@ -127,7 +124,7 @@ func BACnetNameValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNameValu
 	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for name")
 	}
-	_name, _nameErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_name, _nameErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _nameErr != nil {
 		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of BACnetNameValue")
 	}
@@ -143,7 +140,7 @@ func BACnetNameValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNameValu
 		if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for value")
 		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(readBuffer, uint8(1), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
+		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(1), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -170,14 +167,14 @@ func BACnetNameValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetNameValu
 }
 
 func (m *_BACnetNameValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetNameValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNameValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetNameValue"); pushErr != nil {
@@ -188,7 +185,7 @@ func (m *_BACnetNameValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("name"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for name")
 	}
-	_nameErr := writeBuffer.WriteSerializable(m.GetName())
+	_nameErr := writeBuffer.WriteSerializable(ctx, m.GetName())
 	if popErr := writeBuffer.PopContext("name"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for name")
 	}
@@ -203,7 +200,7 @@ func (m *_BACnetNameValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 			return errors.Wrap(pushErr, "Error pushing for value")
 		}
 		value = m.GetValue()
-		_valueErr := writeBuffer.WriteSerializable(value)
+		_valueErr := writeBuffer.WriteSerializable(ctx, value)
 		if popErr := writeBuffer.PopContext("value"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for value")
 		}
@@ -227,7 +224,7 @@ func (m *_BACnetNameValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -75,6 +75,7 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEventLogLogBuffer");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEventLogLogBuffer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (floorText != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEventLogLogBufferBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetEventLogRecord> floorText =
         readTerminatedArrayField(
@@ -128,21 +131,20 @@ public class BACnetConstructedDataEventLogLogBuffer extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataEventLogLogBuffer");
     // Create the instance
-    return new BACnetConstructedDataEventLogLogBufferBuilder(
+    return new BACnetConstructedDataEventLogLogBufferBuilderImpl(
         floorText, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEventLogLogBufferBuilder
+  public static class BACnetConstructedDataEventLogLogBufferBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetEventLogRecord> floorText;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventLogLogBufferBuilder(
+    public BACnetConstructedDataEventLogLogBufferBuilderImpl(
         List<BACnetEventLogRecord> floorText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.floorText = floorText;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

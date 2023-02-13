@@ -115,6 +115,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("QueryFirstResponse");
 
@@ -158,6 +159,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     QueryFirstResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -169,7 +171,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     if (queryDataSets != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : queryDataSets) {
-        boolean last = ++i >= queryDataSets.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= queryDataSets.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -184,7 +186,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     if (parsingResults != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : parsingResults) {
-        boolean last = ++i >= parsingResults.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= parsingResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -196,7 +198,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -207,12 +209,13 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static QueryFirstResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("QueryFirstResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -265,7 +268,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("QueryFirstResponse");
     // Create the instance
-    return new QueryFirstResponseBuilder(
+    return new QueryFirstResponseBuilderImpl(
         responseHeader,
         noOfQueryDataSets,
         queryDataSets,
@@ -277,7 +280,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
         filterResult);
   }
 
-  public static class QueryFirstResponseBuilder
+  public static class QueryFirstResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfQueryDataSets;
@@ -289,7 +292,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     private final List<DiagnosticInfo> diagnosticInfos;
     private final ExtensionObjectDefinition filterResult;
 
-    public QueryFirstResponseBuilder(
+    public QueryFirstResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfQueryDataSets,
         List<ExtensionObjectDefinition> queryDataSets,
@@ -299,7 +302,6 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos,
         ExtensionObjectDefinition filterResult) {
-
       this.responseHeader = responseHeader;
       this.noOfQueryDataSets = noOfQueryDataSets;
       this.queryDataSets = queryDataSets;

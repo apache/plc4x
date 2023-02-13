@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataTimerRunning) GetTimerRunning() BACnetApplication
 ///////////////////////
 
 func (m *_BACnetConstructedDataTimerRunning) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetTimerRunning())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataTimerRunning) GetTypeName() string {
 	return "BACnetConstructedDataTimerRunning"
 }
 
-func (m *_BACnetConstructedDataTimerRunning) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataTimerRunning) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataTimerRunning) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (timerRunning)
-	lengthInBits += m.TimerRunning.GetLengthInBits()
+	lengthInBits += m.TimerRunning.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTimerRunning) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataTimerRunning) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataTimerRunningParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerRunning, error) {
-	return BACnetConstructedDataTimerRunningParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataTimerRunningParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataTimerRunningParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerRunning, error) {
+func BACnetConstructedDataTimerRunningParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerRunning, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimerRunning"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataTimerRunningParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("timerRunning"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timerRunning")
 	}
-	_timerRunning, _timerRunningErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_timerRunning, _timerRunningErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _timerRunningErr != nil {
 		return nil, errors.Wrap(_timerRunningErr, "Error parsing 'timerRunning' field of BACnetConstructedDataTimerRunning")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataTimerRunningParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataTimerRunning) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataTimerRunning) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTimerRunning) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataTimerRunning) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("timerRunning"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timerRunning")
 		}
-		_timerRunningErr := writeBuffer.WriteSerializable(m.GetTimerRunning())
+		_timerRunningErr := writeBuffer.WriteSerializable(ctx, m.GetTimerRunning())
 		if popErr := writeBuffer.PopContext("timerRunning"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timerRunning")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataTimerRunning) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_timerRunningErr, "Error serializing 'timerRunning' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataTimerRunning) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataTimerRunning) isBACnetConstructedDataTimerRunning() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataTimerRunning) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

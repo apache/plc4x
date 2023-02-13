@@ -86,6 +86,7 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
   protected void serializeBACnetUnconfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestWriteGroup");
 
@@ -113,6 +114,7 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestWriteGroup _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (groupNumber)
     lengthInBits += groupNumber.getLengthInBits();
@@ -131,12 +133,14 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestWriteGroupBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestWriteGroup");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger groupNumber =
         readSimpleField(
@@ -183,11 +187,11 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestWriteGroup");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestWriteGroupBuilder(
+    return new BACnetUnconfirmedServiceRequestWriteGroupBuilderImpl(
         groupNumber, writePriority, changeList, inhibitDelay, serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestWriteGroupBuilder
+  public static class BACnetUnconfirmedServiceRequestWriteGroupBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger groupNumber;
     private final BACnetContextTagUnsignedInteger writePriority;
@@ -195,13 +199,12 @@ public class BACnetUnconfirmedServiceRequestWriteGroup extends BACnetUnconfirmed
     private final BACnetContextTagUnsignedInteger inhibitDelay;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestWriteGroupBuilder(
+    public BACnetUnconfirmedServiceRequestWriteGroupBuilderImpl(
         BACnetContextTagUnsignedInteger groupNumber,
         BACnetContextTagUnsignedInteger writePriority,
         BACnetGroupChannelValueList changeList,
         BACnetContextTagUnsignedInteger inhibitDelay,
         Integer serviceRequestLength) {
-
       this.groupNumber = groupNumber;
       this.writePriority = writePriority;
       this.changeList = changeList;

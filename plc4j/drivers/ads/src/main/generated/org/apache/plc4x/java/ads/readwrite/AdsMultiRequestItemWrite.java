@@ -70,6 +70,7 @@ public class AdsMultiRequestItemWrite extends AdsMultiRequestItem implements Mes
   protected void serializeAdsMultiRequestItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsMultiRequestItemWrite");
 
@@ -94,6 +95,7 @@ public class AdsMultiRequestItemWrite extends AdsMultiRequestItem implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsMultiRequestItemWrite _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (itemIndexGroup)
     lengthInBits += 32;
@@ -107,12 +109,13 @@ public class AdsMultiRequestItemWrite extends AdsMultiRequestItem implements Mes
     return lengthInBits;
   }
 
-  public static AdsMultiRequestItemWriteBuilder staticParseBuilder(
+  public static AdsMultiRequestItemBuilder staticParseAdsMultiRequestItemBuilder(
       ReadBuffer readBuffer, Long indexGroup) throws ParseException {
     readBuffer.pullContext("AdsMultiRequestItemWrite");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long itemIndexGroup = readSimpleField("itemIndexGroup", readUnsignedLong(readBuffer, 32));
 
@@ -122,18 +125,18 @@ public class AdsMultiRequestItemWrite extends AdsMultiRequestItem implements Mes
 
     readBuffer.closeContext("AdsMultiRequestItemWrite");
     // Create the instance
-    return new AdsMultiRequestItemWriteBuilder(itemIndexGroup, itemIndexOffset, itemWriteLength);
+    return new AdsMultiRequestItemWriteBuilderImpl(
+        itemIndexGroup, itemIndexOffset, itemWriteLength);
   }
 
-  public static class AdsMultiRequestItemWriteBuilder
+  public static class AdsMultiRequestItemWriteBuilderImpl
       implements AdsMultiRequestItem.AdsMultiRequestItemBuilder {
     private final long itemIndexGroup;
     private final long itemIndexOffset;
     private final long itemWriteLength;
 
-    public AdsMultiRequestItemWriteBuilder(
+    public AdsMultiRequestItemWriteBuilderImpl(
         long itemIndexGroup, long itemIndexOffset, long itemWriteLength) {
-
       this.itemIndexGroup = itemIndexGroup;
       this.itemIndexOffset = itemIndexOffset;
       this.itemWriteLength = itemWriteLength;

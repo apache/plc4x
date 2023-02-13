@@ -57,6 +57,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryInteger
   protected void serializeBACnetFaultParameterFaultExtendedParametersEntryChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryInteger");
 
@@ -75,6 +76,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryInteger
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultExtendedParametersEntryInteger _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (integerValue)
     lengthInBits += integerValue.getLengthInBits();
@@ -82,12 +84,14 @@ public class BACnetFaultParameterFaultExtendedParametersEntryInteger
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryInteger");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger integerValue =
         readSimpleField(
@@ -100,17 +104,16 @@ public class BACnetFaultParameterFaultExtendedParametersEntryInteger
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryInteger");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder(integerValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilderImpl(integerValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagSignedInteger integerValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilderImpl(
         BACnetApplicationTagSignedInteger integerValue) {
-
       this.integerValue = integerValue;
     }
 

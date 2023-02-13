@@ -62,6 +62,7 @@ public class BACnetPriorityValueCharacterString extends BACnetPriorityValue impl
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueCharacterString");
 
@@ -81,6 +82,7 @@ public class BACnetPriorityValueCharacterString extends BACnetPriorityValue impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueCharacterString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (characterStringValue)
     lengthInBits += characterStringValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetPriorityValueCharacterString extends BACnetPriorityValue impl
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueCharacterStringBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueCharacterString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString characterStringValue =
         readSimpleField(
@@ -106,18 +109,18 @@ public class BACnetPriorityValueCharacterString extends BACnetPriorityValue impl
 
     readBuffer.closeContext("BACnetPriorityValueCharacterString");
     // Create the instance
-    return new BACnetPriorityValueCharacterStringBuilder(characterStringValue, objectTypeArgument);
+    return new BACnetPriorityValueCharacterStringBuilderImpl(
+        characterStringValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueCharacterStringBuilder
+  public static class BACnetPriorityValueCharacterStringBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagCharacterString characterStringValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueCharacterStringBuilder(
+    public BACnetPriorityValueCharacterStringBuilderImpl(
         BACnetApplicationTagCharacterString characterStringValue,
         BACnetObjectType objectTypeArgument) {
-
       this.characterStringValue = characterStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

@@ -73,6 +73,7 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DeleteNodesRequest");
 
@@ -97,6 +98,7 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DeleteNodesRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -108,7 +110,7 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
     if (nodesToDelete != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : nodesToDelete) {
-        boolean last = ++i >= nodesToDelete.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToDelete.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -116,12 +118,13 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static DeleteNodesRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteNodesRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -142,20 +145,19 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("DeleteNodesRequest");
     // Create the instance
-    return new DeleteNodesRequestBuilder(requestHeader, noOfNodesToDelete, nodesToDelete);
+    return new DeleteNodesRequestBuilderImpl(requestHeader, noOfNodesToDelete, nodesToDelete);
   }
 
-  public static class DeleteNodesRequestBuilder
+  public static class DeleteNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfNodesToDelete;
     private final List<ExtensionObjectDefinition> nodesToDelete;
 
-    public DeleteNodesRequestBuilder(
+    public DeleteNodesRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToDelete,
         List<ExtensionObjectDefinition> nodesToDelete) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToDelete = noOfNodesToDelete;
       this.nodesToDelete = nodesToDelete;

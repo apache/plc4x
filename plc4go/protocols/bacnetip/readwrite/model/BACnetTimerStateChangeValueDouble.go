@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetTimerStateChangeValueDouble) GetTypeName() string {
 	return "BACnetTimerStateChangeValueDouble"
 }
 
-func (m *_BACnetTimerStateChangeValueDouble) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTimerStateChangeValueDouble) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetTimerStateChangeValueDouble) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (doubleValue)
-	lengthInBits += m.DoubleValue.GetLengthInBits()
+	lengthInBits += m.DoubleValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetTimerStateChangeValueDouble) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTimerStateChangeValueDouble) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTimerStateChangeValueDoubleParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueDouble, error) {
-	return BACnetTimerStateChangeValueDoubleParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+	return BACnetTimerStateChangeValueDoubleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetTimerStateChangeValueDoubleParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueDouble, error) {
+func BACnetTimerStateChangeValueDoubleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueDouble, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueDouble"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetTimerStateChangeValueDoubleParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for doubleValue")
 	}
-	_doubleValue, _doubleValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_doubleValue, _doubleValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _doubleValueErr != nil {
 		return nil, errors.Wrap(_doubleValueErr, "Error parsing 'doubleValue' field of BACnetTimerStateChangeValueDouble")
 	}
@@ -164,14 +161,14 @@ func BACnetTimerStateChangeValueDoubleParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetTimerStateChangeValueDouble) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTimerStateChangeValueDouble) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTimerStateChangeValueDouble) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_BACnetTimerStateChangeValueDouble) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("doubleValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for doubleValue")
 		}
-		_doubleValueErr := writeBuffer.WriteSerializable(m.GetDoubleValue())
+		_doubleValueErr := writeBuffer.WriteSerializable(ctx, m.GetDoubleValue())
 		if popErr := writeBuffer.PopContext("doubleValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for doubleValue")
 		}
@@ -196,7 +193,7 @@ func (m *_BACnetTimerStateChangeValueDouble) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetTimerStateChangeValueDouble) isBACnetTimerStateChangeValueDouble() bool {
@@ -208,7 +205,7 @@ func (m *_BACnetTimerStateChangeValueDouble) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

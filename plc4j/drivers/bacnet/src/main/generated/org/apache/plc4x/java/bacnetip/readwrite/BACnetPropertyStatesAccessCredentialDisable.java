@@ -58,6 +58,7 @@ public class BACnetPropertyStatesAccessCredentialDisable extends BACnetPropertyS
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesAccessCredentialDisable");
 
@@ -79,6 +80,7 @@ public class BACnetPropertyStatesAccessCredentialDisable extends BACnetPropertyS
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesAccessCredentialDisable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessCredentialDisable)
     lengthInBits += accessCredentialDisable.getLengthInBits();
@@ -86,12 +88,13 @@ public class BACnetPropertyStatesAccessCredentialDisable extends BACnetPropertyS
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesAccessCredentialDisableBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesAccessCredentialDisable");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessCredentialDisableTagged accessCredentialDisable =
         readSimpleField(
@@ -106,16 +109,15 @@ public class BACnetPropertyStatesAccessCredentialDisable extends BACnetPropertyS
 
     readBuffer.closeContext("BACnetPropertyStatesAccessCredentialDisable");
     // Create the instance
-    return new BACnetPropertyStatesAccessCredentialDisableBuilder(accessCredentialDisable);
+    return new BACnetPropertyStatesAccessCredentialDisableBuilderImpl(accessCredentialDisable);
   }
 
-  public static class BACnetPropertyStatesAccessCredentialDisableBuilder
+  public static class BACnetPropertyStatesAccessCredentialDisableBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetAccessCredentialDisableTagged accessCredentialDisable;
 
-    public BACnetPropertyStatesAccessCredentialDisableBuilder(
+    public BACnetPropertyStatesAccessCredentialDisableBuilderImpl(
         BACnetAccessCredentialDisableTagged accessCredentialDisable) {
-
       this.accessCredentialDisable = accessCredentialDisable;
     }
 

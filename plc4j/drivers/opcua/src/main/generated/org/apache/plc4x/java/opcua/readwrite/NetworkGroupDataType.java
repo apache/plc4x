@@ -71,6 +71,7 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NetworkGroupDataType");
 
@@ -95,6 +96,7 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NetworkGroupDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (serverUri)
     lengthInBits += serverUri.getLengthInBits();
@@ -106,7 +108,7 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
     if (networkPaths != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : networkPaths) {
-        boolean last = ++i >= networkPaths.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= networkPaths.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -114,12 +116,13 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static NetworkGroupDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NetworkGroupDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString serverUri =
         readSimpleField(
@@ -138,20 +141,19 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("NetworkGroupDataType");
     // Create the instance
-    return new NetworkGroupDataTypeBuilder(serverUri, noOfNetworkPaths, networkPaths);
+    return new NetworkGroupDataTypeBuilderImpl(serverUri, noOfNetworkPaths, networkPaths);
   }
 
-  public static class NetworkGroupDataTypeBuilder
+  public static class NetworkGroupDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString serverUri;
     private final int noOfNetworkPaths;
     private final List<ExtensionObjectDefinition> networkPaths;
 
-    public NetworkGroupDataTypeBuilder(
+    public NetworkGroupDataTypeBuilderImpl(
         PascalString serverUri,
         int noOfNetworkPaths,
         List<ExtensionObjectDefinition> networkPaths) {
-
       this.serverUri = serverUri;
       this.noOfNetworkPaths = noOfNetworkPaths;
       this.networkPaths = networkPaths;

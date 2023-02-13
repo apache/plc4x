@@ -50,6 +50,7 @@ public class NotificationData extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NotificationData");
 
@@ -65,26 +66,28 @@ public class NotificationData extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NotificationData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static NotificationDataBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NotificationData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("NotificationData");
     // Create the instance
-    return new NotificationDataBuilder();
+    return new NotificationDataBuilderImpl();
   }
 
-  public static class NotificationDataBuilder
+  public static class NotificationDataBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public NotificationDataBuilder() {}
+    public NotificationDataBuilderImpl() {}
 
     public NotificationData build() {
       NotificationData notificationData = new NotificationData();

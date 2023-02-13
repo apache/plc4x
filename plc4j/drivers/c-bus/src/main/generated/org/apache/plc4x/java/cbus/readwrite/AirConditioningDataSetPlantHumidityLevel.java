@@ -100,6 +100,7 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
   protected void serializeAirConditioningDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningDataSetPlantHumidityLevel");
 
@@ -156,6 +157,7 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AirConditioningDataSetPlantHumidityLevel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneGroup)
     lengthInBits += 8;
@@ -187,12 +189,13 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
     return lengthInBits;
   }
 
-  public static AirConditioningDataSetPlantHumidityLevelBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetPlantHumidityLevel");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte zoneGroup = readSimpleField("zoneGroup", readByte(readBuffer, 8));
 
@@ -235,11 +238,11 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
 
     readBuffer.closeContext("AirConditioningDataSetPlantHumidityLevel");
     // Create the instance
-    return new AirConditioningDataSetPlantHumidityLevelBuilder(
+    return new AirConditioningDataSetPlantHumidityLevelBuilderImpl(
         zoneGroup, zoneList, humidityModeAndFlags, humidityType, level, rawLevel, auxLevel);
   }
 
-  public static class AirConditioningDataSetPlantHumidityLevelBuilder
+  public static class AirConditioningDataSetPlantHumidityLevelBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
@@ -249,7 +252,7 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
     private final HVACRawLevels rawLevel;
     private final HVACAuxiliaryLevel auxLevel;
 
-    public AirConditioningDataSetPlantHumidityLevelBuilder(
+    public AirConditioningDataSetPlantHumidityLevelBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACHumidityModeAndFlags humidityModeAndFlags,
@@ -257,7 +260,6 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
         HVACHumidity level,
         HVACRawLevels rawLevel,
         HVACAuxiliaryLevel auxLevel) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.humidityModeAndFlags = humidityModeAndFlags;

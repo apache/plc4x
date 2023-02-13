@@ -66,6 +66,7 @@ public class BACnetConstructedDataMultiStateValueAll extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMultiStateValueAll");
 
@@ -81,11 +82,12 @@ public class BACnetConstructedDataMultiStateValueAll extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMultiStateValueAll _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMultiStateValueAllBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -96,6 +98,7 @@ public class BACnetConstructedDataMultiStateValueAll extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {
       throw new ParseValidationException(
@@ -104,17 +107,16 @@ public class BACnetConstructedDataMultiStateValueAll extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateValueAll");
     // Create the instance
-    return new BACnetConstructedDataMultiStateValueAllBuilder(tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataMultiStateValueAllBuilderImpl(tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMultiStateValueAllBuilder
+  public static class BACnetConstructedDataMultiStateValueAllBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMultiStateValueAllBuilder(
+    public BACnetConstructedDataMultiStateValueAllBuilderImpl(
         Short tagNumber, BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;
     }

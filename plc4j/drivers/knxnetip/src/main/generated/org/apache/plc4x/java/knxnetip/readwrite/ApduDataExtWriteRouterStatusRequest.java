@@ -42,17 +42,14 @@ public class ApduDataExtWriteRouterStatusRequest extends ApduDataExt implements 
     return (short) 0x0F;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtWriteRouterStatusRequest(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtWriteRouterStatusRequest() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtWriteRouterStatusRequest");
 
@@ -68,35 +65,32 @@ public class ApduDataExtWriteRouterStatusRequest extends ApduDataExt implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtWriteRouterStatusRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtWriteRouterStatusRequestBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtWriteRouterStatusRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtWriteRouterStatusRequest");
     // Create the instance
-    return new ApduDataExtWriteRouterStatusRequestBuilder(length);
+    return new ApduDataExtWriteRouterStatusRequestBuilderImpl();
   }
 
-  public static class ApduDataExtWriteRouterStatusRequestBuilder
+  public static class ApduDataExtWriteRouterStatusRequestBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtWriteRouterStatusRequestBuilder(Short length) {
+    public ApduDataExtWriteRouterStatusRequestBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtWriteRouterStatusRequest build(Short length) {
-
+    public ApduDataExtWriteRouterStatusRequest build() {
       ApduDataExtWriteRouterStatusRequest apduDataExtWriteRouterStatusRequest =
-          new ApduDataExtWriteRouterStatusRequest(length);
+          new ApduDataExtWriteRouterStatusRequest();
       return apduDataExtWriteRouterStatusRequest;
     }
   }

@@ -59,6 +59,7 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
   protected void serializeBACnetApplicationTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagBoolean");
 
@@ -81,6 +82,7 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetApplicationTagBoolean _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -90,12 +92,13 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagBooleanBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagBoolean");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadBoolean payload =
         readSimpleField(
@@ -109,15 +112,14 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
 
     readBuffer.closeContext("BACnetApplicationTagBoolean");
     // Create the instance
-    return new BACnetApplicationTagBooleanBuilder(payload);
+    return new BACnetApplicationTagBooleanBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagBooleanBuilder
+  public static class BACnetApplicationTagBooleanBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadBoolean payload;
 
-    public BACnetApplicationTagBooleanBuilder(BACnetTagPayloadBoolean payload) {
-
+    public BACnetApplicationTagBooleanBuilderImpl(BACnetTagPayloadBoolean payload) {
       this.payload = payload;
     }
 

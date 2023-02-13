@@ -78,6 +78,7 @@ public class BACnetConstructedDataCOVUPeriod extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCOVUPeriod");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataCOVUPeriod extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCOVUPeriod _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (covuPeriod)
     lengthInBits += covuPeriod.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataCOVUPeriod extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCOVUPeriodBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataCOVUPeriod extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger covuPeriod =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataCOVUPeriod extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataCOVUPeriod");
     // Create the instance
-    return new BACnetConstructedDataCOVUPeriodBuilder(covuPeriod, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCOVUPeriodBuilderImpl(
+        covuPeriod, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCOVUPeriodBuilder
+  public static class BACnetConstructedDataCOVUPeriodBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger covuPeriod;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCOVUPeriodBuilder(
+    public BACnetConstructedDataCOVUPeriodBuilderImpl(
         BACnetApplicationTagUnsignedInteger covuPeriod,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.covuPeriod = covuPeriod;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

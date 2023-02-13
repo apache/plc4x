@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueOctetString extends BACnetTimerStateChan
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueOctetString");
 
@@ -82,6 +83,7 @@ public class BACnetTimerStateChangeValueOctetString extends BACnetTimerStateChan
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueOctetString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (octetStringValue)
     lengthInBits += octetStringValue.getLengthInBits();
@@ -89,12 +91,13 @@ public class BACnetTimerStateChangeValueOctetString extends BACnetTimerStateChan
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueOctetStringBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueOctetString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString octetStringValue =
         readSimpleField(
@@ -106,17 +109,17 @@ public class BACnetTimerStateChangeValueOctetString extends BACnetTimerStateChan
 
     readBuffer.closeContext("BACnetTimerStateChangeValueOctetString");
     // Create the instance
-    return new BACnetTimerStateChangeValueOctetStringBuilder(octetStringValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueOctetStringBuilderImpl(
+        octetStringValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueOctetStringBuilder
+  public static class BACnetTimerStateChangeValueOctetStringBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagOctetString octetStringValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueOctetStringBuilder(
+    public BACnetTimerStateChangeValueOctetStringBuilderImpl(
         BACnetApplicationTagOctetString octetStringValue, BACnetObjectType objectTypeArgument) {
-
       this.octetStringValue = octetStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

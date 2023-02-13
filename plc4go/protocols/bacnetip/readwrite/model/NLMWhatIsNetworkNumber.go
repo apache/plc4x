@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -89,25 +90,21 @@ func (m *_NLMWhatIsNetworkNumber) GetTypeName() string {
 	return "NLMWhatIsNetworkNumber"
 }
 
-func (m *_NLMWhatIsNetworkNumber) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NLMWhatIsNetworkNumber) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_NLMWhatIsNetworkNumber) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_NLMWhatIsNetworkNumber) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NLMWhatIsNetworkNumber) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NLMWhatIsNetworkNumberParse(theBytes []byte, apduLength uint16) (NLMWhatIsNetworkNumber, error) {
-	return NLMWhatIsNetworkNumberParseWithBuffer(utils.NewReadBufferByteBased(theBytes), apduLength)
+	return NLMWhatIsNetworkNumberParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
-func NLMWhatIsNetworkNumberParseWithBuffer(readBuffer utils.ReadBuffer, apduLength uint16) (NLMWhatIsNetworkNumber, error) {
+func NLMWhatIsNetworkNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMWhatIsNetworkNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMWhatIsNetworkNumber"); pullErr != nil {
@@ -131,14 +128,14 @@ func NLMWhatIsNetworkNumberParseWithBuffer(readBuffer utils.ReadBuffer, apduLeng
 }
 
 func (m *_NLMWhatIsNetworkNumber) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NLMWhatIsNetworkNumber) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMWhatIsNetworkNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -151,7 +148,7 @@ func (m *_NLMWhatIsNetworkNumber) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_NLMWhatIsNetworkNumber) isNLMWhatIsNetworkNumber() bool {
@@ -163,7 +160,7 @@ func (m *_NLMWhatIsNetworkNumber) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

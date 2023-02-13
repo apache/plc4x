@@ -53,6 +53,7 @@ public class PnDcp_Block_ControlOptionSignal extends PnDcp_Block implements Mess
   @Override
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_ControlOptionSignal");
 
@@ -68,26 +69,28 @@ public class PnDcp_Block_ControlOptionSignal extends PnDcp_Block implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Block_ControlOptionSignal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static PnDcp_Block_ControlOptionSignalBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_ControlOptionSignal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnDcp_Block_ControlOptionSignal");
     // Create the instance
-    return new PnDcp_Block_ControlOptionSignalBuilder();
+    return new PnDcp_Block_ControlOptionSignalBuilderImpl();
   }
 
-  public static class PnDcp_Block_ControlOptionSignalBuilder
+  public static class PnDcp_Block_ControlOptionSignalBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_ControlOptionSignalBuilder() {}
+    public PnDcp_Block_ControlOptionSignalBuilderImpl() {}
 
     public PnDcp_Block_ControlOptionSignal build() {
       PnDcp_Block_ControlOptionSignal pnDcp_Block_ControlOptionSignal =

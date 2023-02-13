@@ -21,7 +21,8 @@ package org.apache.plc4x.java.can.generic;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import org.apache.plc4x.java.PlcDriverManager;
+
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
@@ -34,7 +35,7 @@ public class GenericCANDriverTest {
 
     @Test
     void testConnection() throws PlcConnectionException {
-        PlcConnection connection = new PlcDriverManager().getConnection("genericcan:virtualcan://");
+        PlcConnection connection = new DefaultPlcDriverManager().getConnection("genericcan:virtualcan://");
 
         assertNotNull(connection);
         assertTrue(connection.isConnected());
@@ -48,7 +49,7 @@ public class GenericCANDriverTest {
     void testSubscribeAndWrite() throws Exception {
 //        PlcConnection connection1 = new PlcDriverManager().getConnection("genericcan:socketcan://vcan0");
 //        PlcConnection connection2 = new PlcDriverManager().getConnection("genericcan:socketcan://vcan0");
-        PlcConnection connection1 = new PlcDriverManager().getConnection("genericcan:virtualcan://");
+        PlcConnection connection1 = new DefaultPlcDriverManager().getConnection("genericcan:virtualcan://");
         PlcConnection connection2 = connection1;
 
         CountDownLatch latch = new CountDownLatch(1);

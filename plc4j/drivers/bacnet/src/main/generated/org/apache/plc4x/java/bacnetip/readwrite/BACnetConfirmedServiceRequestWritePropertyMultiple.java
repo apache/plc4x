@@ -47,17 +47,17 @@ public class BACnetConfirmedServiceRequestWritePropertyMultiple
   protected final List<BACnetWriteAccessSpecification> data;
 
   // Arguments.
-  protected final Long serviceRequestLength;
   protected final Long serviceRequestPayloadLength;
+  protected final Long serviceRequestLength;
 
   public BACnetConfirmedServiceRequestWritePropertyMultiple(
       List<BACnetWriteAccessSpecification> data,
-      Long serviceRequestLength,
-      Long serviceRequestPayloadLength) {
+      Long serviceRequestPayloadLength,
+      Long serviceRequestLength) {
     super(serviceRequestLength);
     this.data = data;
-    this.serviceRequestLength = serviceRequestLength;
     this.serviceRequestPayloadLength = serviceRequestPayloadLength;
+    this.serviceRequestLength = serviceRequestLength;
   }
 
   public List<BACnetWriteAccessSpecification> getData() {
@@ -68,6 +68,7 @@ public class BACnetConfirmedServiceRequestWritePropertyMultiple
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestWritePropertyMultiple");
 
@@ -86,6 +87,7 @@ public class BACnetConfirmedServiceRequestWritePropertyMultiple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestWritePropertyMultiple _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (data != null) {
@@ -97,13 +99,15 @@ public class BACnetConfirmedServiceRequestWritePropertyMultiple
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestWritePropertyMultipleBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength, Long serviceRequestPayloadLength)
-      throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestPayloadLength, Long serviceRequestLength)
+          throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestWritePropertyMultiple");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetWriteAccessSpecification> data =
         readLengthArrayField(
@@ -114,24 +118,23 @@ public class BACnetConfirmedServiceRequestWritePropertyMultiple
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestWritePropertyMultiple");
     // Create the instance
-    return new BACnetConfirmedServiceRequestWritePropertyMultipleBuilder(
-        data, serviceRequestLength, serviceRequestPayloadLength);
+    return new BACnetConfirmedServiceRequestWritePropertyMultipleBuilderImpl(
+        data, serviceRequestPayloadLength, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestWritePropertyMultipleBuilder
+  public static class BACnetConfirmedServiceRequestWritePropertyMultipleBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final List<BACnetWriteAccessSpecification> data;
-    private final Long serviceRequestLength;
     private final Long serviceRequestPayloadLength;
+    private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestWritePropertyMultipleBuilder(
+    public BACnetConfirmedServiceRequestWritePropertyMultipleBuilderImpl(
         List<BACnetWriteAccessSpecification> data,
-        Long serviceRequestLength,
-        Long serviceRequestPayloadLength) {
-
+        Long serviceRequestPayloadLength,
+        Long serviceRequestLength) {
       this.data = data;
-      this.serviceRequestLength = serviceRequestLength;
       this.serviceRequestPayloadLength = serviceRequestPayloadLength;
+      this.serviceRequestLength = serviceRequestLength;
     }
 
     public BACnetConfirmedServiceRequestWritePropertyMultiple build(Long serviceRequestLength) {
@@ -139,7 +142,7 @@ public class BACnetConfirmedServiceRequestWritePropertyMultiple
       BACnetConfirmedServiceRequestWritePropertyMultiple
           bACnetConfirmedServiceRequestWritePropertyMultiple =
               new BACnetConfirmedServiceRequestWritePropertyMultiple(
-                  data, serviceRequestLength, serviceRequestPayloadLength);
+                  data, serviceRequestPayloadLength, serviceRequestLength);
       return bACnetConfirmedServiceRequestWritePropertyMultiple;
     }
   }

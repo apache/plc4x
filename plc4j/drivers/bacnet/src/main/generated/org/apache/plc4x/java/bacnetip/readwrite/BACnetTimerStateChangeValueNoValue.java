@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueNoValue extends BACnetTimerStateChangeVa
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueNoValue");
 
@@ -81,6 +82,7 @@ public class BACnetTimerStateChangeValueNoValue extends BACnetTimerStateChangeVa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueNoValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noValue)
     lengthInBits += noValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetTimerStateChangeValueNoValue extends BACnetTimerStateChangeVa
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueNoValueBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueNoValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagNull noValue =
         readSimpleField(
@@ -107,17 +110,16 @@ public class BACnetTimerStateChangeValueNoValue extends BACnetTimerStateChangeVa
 
     readBuffer.closeContext("BACnetTimerStateChangeValueNoValue");
     // Create the instance
-    return new BACnetTimerStateChangeValueNoValueBuilder(noValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueNoValueBuilderImpl(noValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueNoValueBuilder
+  public static class BACnetTimerStateChangeValueNoValueBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetContextTagNull noValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueNoValueBuilder(
+    public BACnetTimerStateChangeValueNoValueBuilderImpl(
         BACnetContextTagNull noValue, BACnetObjectType objectTypeArgument) {
-
       this.noValue = noValue;
       this.objectTypeArgument = objectTypeArgument;
     }

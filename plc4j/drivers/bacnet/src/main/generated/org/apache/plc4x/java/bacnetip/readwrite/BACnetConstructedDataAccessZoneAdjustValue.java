@@ -79,6 +79,7 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessZoneAdjustValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessZoneAdjustValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (adjustValue)
     lengthInBits += adjustValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessZoneAdjustValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger adjustValue =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAccessZoneAdjustValue");
     // Create the instance
-    return new BACnetConstructedDataAccessZoneAdjustValueBuilder(
+    return new BACnetConstructedDataAccessZoneAdjustValueBuilderImpl(
         adjustValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessZoneAdjustValueBuilder
+  public static class BACnetConstructedDataAccessZoneAdjustValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger adjustValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessZoneAdjustValueBuilder(
+    public BACnetConstructedDataAccessZoneAdjustValueBuilderImpl(
         BACnetApplicationTagSignedInteger adjustValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.adjustValue = adjustValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

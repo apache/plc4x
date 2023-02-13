@@ -56,6 +56,7 @@ public class BACnetPropertyStatesSecurityLevel extends BACnetPropertyStates impl
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesSecurityLevel");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesSecurityLevel extends BACnetPropertyStates impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesSecurityLevel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (securityLevel)
     lengthInBits += securityLevel.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesSecurityLevel extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesSecurityLevelBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesSecurityLevel");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetSecurityLevelTagged securityLevel =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesSecurityLevel extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesSecurityLevel");
     // Create the instance
-    return new BACnetPropertyStatesSecurityLevelBuilder(securityLevel);
+    return new BACnetPropertyStatesSecurityLevelBuilderImpl(securityLevel);
   }
 
-  public static class BACnetPropertyStatesSecurityLevelBuilder
+  public static class BACnetPropertyStatesSecurityLevelBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetSecurityLevelTagged securityLevel;
 
-    public BACnetPropertyStatesSecurityLevelBuilder(BACnetSecurityLevelTagged securityLevel) {
-
+    public BACnetPropertyStatesSecurityLevelBuilderImpl(BACnetSecurityLevelTagged securityLevel) {
       this.securityLevel = securityLevel;
     }
 

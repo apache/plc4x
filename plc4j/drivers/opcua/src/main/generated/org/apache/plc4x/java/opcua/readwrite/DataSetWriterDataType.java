@@ -53,8 +53,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
   protected final List<ExtensionObjectDefinition> dataSetWriterProperties;
   protected final ExtensionObject transportSettings;
   protected final ExtensionObject messageSettings;
-  // Reserved Fields
-  private Short reservedField0;
 
   public DataSetWriterDataType(
       PascalString name,
@@ -124,6 +122,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataSetWriterDataType");
 
@@ -131,10 +130,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (enabled)
     writeSimpleField("enabled", enabled, writeBoolean(writeBuffer));
@@ -187,6 +183,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DataSetWriterDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
@@ -216,7 +213,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     if (dataSetWriterProperties != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : dataSetWriterProperties) {
-        boolean last = ++i >= dataSetWriterProperties.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataSetWriterProperties.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -230,12 +227,13 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static DataSetWriterDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataSetWriterDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(
@@ -288,7 +286,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("DataSetWriterDataType");
     // Create the instance
-    return new DataSetWriterDataTypeBuilder(
+    return new DataSetWriterDataTypeBuilderImpl(
         name,
         enabled,
         dataSetWriterId,
@@ -298,11 +296,10 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         noOfDataSetWriterProperties,
         dataSetWriterProperties,
         transportSettings,
-        messageSettings,
-        reservedField0);
+        messageSettings);
   }
 
-  public static class DataSetWriterDataTypeBuilder
+  public static class DataSetWriterDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
     private final boolean enabled;
@@ -314,9 +311,8 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     private final List<ExtensionObjectDefinition> dataSetWriterProperties;
     private final ExtensionObject transportSettings;
     private final ExtensionObject messageSettings;
-    private final Short reservedField0;
 
-    public DataSetWriterDataTypeBuilder(
+    public DataSetWriterDataTypeBuilderImpl(
         PascalString name,
         boolean enabled,
         int dataSetWriterId,
@@ -326,8 +322,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         int noOfDataSetWriterProperties,
         List<ExtensionObjectDefinition> dataSetWriterProperties,
         ExtensionObject transportSettings,
-        ExtensionObject messageSettings,
-        Short reservedField0) {
+        ExtensionObject messageSettings) {
       this.name = name;
       this.enabled = enabled;
       this.dataSetWriterId = dataSetWriterId;
@@ -338,7 +333,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
       this.dataSetWriterProperties = dataSetWriterProperties;
       this.transportSettings = transportSettings;
       this.messageSettings = messageSettings;
-      this.reservedField0 = reservedField0;
     }
 
     public DataSetWriterDataType build() {
@@ -354,7 +348,6 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
               dataSetWriterProperties,
               transportSettings,
               messageSettings);
-      dataSetWriterDataType.reservedField0 = reservedField0;
       return dataSetWriterDataType;
     }
   }

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -57,12 +58,11 @@ type _AccessControlData struct {
 
 type _AccessControlDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type AccessControlDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child AccessControlData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AccessControlData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -102,6 +102,8 @@ func (m *_AccessControlData) GetAccessPointId() byte {
 ///////////////////////
 
 func (m *_AccessControlData) GetCommandType() AccessControlCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastAccessControlCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
@@ -130,7 +132,7 @@ func (m *_AccessControlData) GetTypeName() string {
 	return "AccessControlData"
 }
 
-func (m *_AccessControlData) GetParentLengthInBits() uint16 {
+func (m *_AccessControlData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -147,15 +149,15 @@ func (m *_AccessControlData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_AccessControlData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AccessControlData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AccessControlDataParse(theBytes []byte) (AccessControlData, error) {
-	return AccessControlDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AccessControlDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AccessControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (AccessControlData, error) {
+func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AccessControlData"); pullErr != nil {
@@ -173,7 +175,7 @@ func AccessControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (AccessContro
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := AccessControlCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := AccessControlCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of AccessControlData")
 	}
@@ -212,21 +214,21 @@ func AccessControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (AccessContro
 	var typeSwitchError error
 	switch {
 	case commandType == AccessControlCommandType_VALID_ACCESS: // AccessControlDataValidAccessRequest
-		_childTemp, typeSwitchError = AccessControlDataValidAccessRequestParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = AccessControlDataValidAccessRequestParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	case commandType == AccessControlCommandType_INVALID_ACCESS: // AccessControlDataInvalidAccessRequest
-		_childTemp, typeSwitchError = AccessControlDataInvalidAccessRequestParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = AccessControlDataInvalidAccessRequestParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	case commandType == AccessControlCommandType_ACCESS_POINT_LEFT_OPEN: // AccessControlDataAccessPointLeftOpen
-		_childTemp, typeSwitchError = AccessControlDataAccessPointLeftOpenParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataAccessPointLeftOpenParseWithBuffer(ctx, readBuffer)
 	case commandType == AccessControlCommandType_ACCESS_POINT_FORCED_OPEN: // AccessControlDataAccessPointForcedOpen
-		_childTemp, typeSwitchError = AccessControlDataAccessPointForcedOpenParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataAccessPointForcedOpenParseWithBuffer(ctx, readBuffer)
 	case commandType == AccessControlCommandType_ACCESS_POINT_CLOSED: // AccessControlDataAccessPointClosed
-		_childTemp, typeSwitchError = AccessControlDataAccessPointClosedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataAccessPointClosedParseWithBuffer(ctx, readBuffer)
 	case commandType == AccessControlCommandType_REQUEST_TO_EXIT: // AccessControlDataRequestToExit
-		_childTemp, typeSwitchError = AccessControlDataRequestToExitParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataRequestToExitParseWithBuffer(ctx, readBuffer)
 	case commandType == AccessControlCommandType_CLOSE_ACCESS_POINT: // AccessControlDataCloseAccessPoint
-		_childTemp, typeSwitchError = AccessControlDataCloseAccessPointParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataCloseAccessPointParseWithBuffer(ctx, readBuffer)
 	case commandType == AccessControlCommandType_LOCK_ACCESS_POINT: // AccessControlDataLockAccessPoint
-		_childTemp, typeSwitchError = AccessControlDataLockAccessPointParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = AccessControlDataLockAccessPointParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
@@ -244,7 +246,7 @@ func AccessControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (AccessContro
 	return _child, nil
 }
 
-func (pm *_AccessControlData) SerializeParent(writeBuffer utils.WriteBuffer, child AccessControlData, serializeChildFunction func() error) error {
+func (pm *_AccessControlData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AccessControlData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -258,7 +260,7 @@ func (pm *_AccessControlData) SerializeParent(writeBuffer utils.WriteBuffer, chi
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -266,7 +268,7 @@ func (pm *_AccessControlData) SerializeParent(writeBuffer utils.WriteBuffer, chi
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -304,7 +306,7 @@ func (m *_AccessControlData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

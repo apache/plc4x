@@ -53,6 +53,7 @@ public class PnDcp_Block_DhcpOptionServerIdentifier extends PnDcp_Block implemen
   @Override
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DhcpOptionServerIdentifier");
 
@@ -68,26 +69,28 @@ public class PnDcp_Block_DhcpOptionServerIdentifier extends PnDcp_Block implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Block_DhcpOptionServerIdentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DhcpOptionServerIdentifierBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DhcpOptionServerIdentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnDcp_Block_DhcpOptionServerIdentifier");
     // Create the instance
-    return new PnDcp_Block_DhcpOptionServerIdentifierBuilder();
+    return new PnDcp_Block_DhcpOptionServerIdentifierBuilderImpl();
   }
 
-  public static class PnDcp_Block_DhcpOptionServerIdentifierBuilder
+  public static class PnDcp_Block_DhcpOptionServerIdentifierBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DhcpOptionServerIdentifierBuilder() {}
+    public PnDcp_Block_DhcpOptionServerIdentifierBuilderImpl() {}
 
     public PnDcp_Block_DhcpOptionServerIdentifier build() {
       PnDcp_Block_DhcpOptionServerIdentifier pnDcp_Block_DhcpOptionServerIdentifier =

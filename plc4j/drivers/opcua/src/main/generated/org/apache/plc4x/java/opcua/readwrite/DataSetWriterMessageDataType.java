@@ -50,6 +50,7 @@ public class DataSetWriterMessageDataType extends ExtensionObjectDefinition impl
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataSetWriterMessageDataType");
 
@@ -65,26 +66,28 @@ public class DataSetWriterMessageDataType extends ExtensionObjectDefinition impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DataSetWriterMessageDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static DataSetWriterMessageDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DataSetWriterMessageDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("DataSetWriterMessageDataType");
     // Create the instance
-    return new DataSetWriterMessageDataTypeBuilder();
+    return new DataSetWriterMessageDataTypeBuilderImpl();
   }
 
-  public static class DataSetWriterMessageDataTypeBuilder
+  public static class DataSetWriterMessageDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public DataSetWriterMessageDataTypeBuilder() {}
+    public DataSetWriterMessageDataTypeBuilderImpl() {}
 
     public DataSetWriterMessageDataType build() {
       DataSetWriterMessageDataType dataSetWriterMessageDataType =

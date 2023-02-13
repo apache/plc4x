@@ -56,6 +56,7 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueEnumerated");
 
@@ -75,6 +76,7 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueEnumerated _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (enumeratedValue)
     lengthInBits += enumeratedValue.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
     return lengthInBits;
   }
 
-  public static BACnetChannelValueEnumeratedBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueEnumerated");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagEnumerated enumeratedValue =
         readSimpleField(
@@ -98,15 +101,14 @@ public class BACnetChannelValueEnumerated extends BACnetChannelValue implements 
 
     readBuffer.closeContext("BACnetChannelValueEnumerated");
     // Create the instance
-    return new BACnetChannelValueEnumeratedBuilder(enumeratedValue);
+    return new BACnetChannelValueEnumeratedBuilderImpl(enumeratedValue);
   }
 
-  public static class BACnetChannelValueEnumeratedBuilder
+  public static class BACnetChannelValueEnumeratedBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagEnumerated enumeratedValue;
 
-    public BACnetChannelValueEnumeratedBuilder(BACnetApplicationTagEnumerated enumeratedValue) {
-
+    public BACnetChannelValueEnumeratedBuilderImpl(BACnetApplicationTagEnumerated enumeratedValue) {
       this.enumeratedValue = enumeratedValue;
     }
 

@@ -57,6 +57,7 @@ public class SALDataEnableControl extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataEnableControl");
 
@@ -76,6 +77,7 @@ public class SALDataEnableControl extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataEnableControl _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (enableControlData)
     lengthInBits += enableControlData.getLengthInBits();
@@ -83,12 +85,13 @@ public class SALDataEnableControl extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataEnableControlBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataEnableControl");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     EnableControlData enableControlData =
         readSimpleField(
@@ -98,14 +101,13 @@ public class SALDataEnableControl extends SALData implements Message {
 
     readBuffer.closeContext("SALDataEnableControl");
     // Create the instance
-    return new SALDataEnableControlBuilder(enableControlData);
+    return new SALDataEnableControlBuilderImpl(enableControlData);
   }
 
-  public static class SALDataEnableControlBuilder implements SALData.SALDataBuilder {
+  public static class SALDataEnableControlBuilderImpl implements SALData.SALDataBuilder {
     private final EnableControlData enableControlData;
 
-    public SALDataEnableControlBuilder(EnableControlData enableControlData) {
-
+    public SALDataEnableControlBuilderImpl(EnableControlData enableControlData) {
       this.enableControlData = enableControlData;
     }
 

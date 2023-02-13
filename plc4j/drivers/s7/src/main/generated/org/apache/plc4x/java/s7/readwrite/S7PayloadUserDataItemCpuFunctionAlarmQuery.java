@@ -61,9 +61,6 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
   protected final SyntaxIdType syntaxId;
   protected final QueryType queryType;
   protected final AlarmType alarmType;
-  // Reserved Fields
-  private Short reservedField0;
-  private Short reservedField1;
 
   public S7PayloadUserDataItemCpuFunctionAlarmQuery(
       DataTransportErrorCode returnCode,
@@ -109,6 +106,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionAlarmQuery");
 
@@ -133,10 +131,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
             SyntaxIdType::getValue, SyntaxIdType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (queryType)
     writeSimpleEnumField(
@@ -147,10 +142,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
             QueryType::getValue, QueryType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (short) 0x34,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x34, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (alarmType)
     writeSimpleEnumField(
@@ -172,6 +164,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadUserDataItemCpuFunctionAlarmQuery _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (functionId)
     lengthInBits += 8;
@@ -203,12 +196,13 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionAlarmQueryBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionAlarmQuery");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short functionId =
         readConstField(
@@ -261,29 +255,21 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionAlarmQuery");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionAlarmQueryBuilder(
-        syntaxId, queryType, alarmType, reservedField0, reservedField1);
+    return new S7PayloadUserDataItemCpuFunctionAlarmQueryBuilderImpl(
+        syntaxId, queryType, alarmType);
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionAlarmQueryBuilder
+  public static class S7PayloadUserDataItemCpuFunctionAlarmQueryBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final SyntaxIdType syntaxId;
     private final QueryType queryType;
     private final AlarmType alarmType;
-    private final Short reservedField0;
-    private final Short reservedField1;
 
-    public S7PayloadUserDataItemCpuFunctionAlarmQueryBuilder(
-        SyntaxIdType syntaxId,
-        QueryType queryType,
-        AlarmType alarmType,
-        Short reservedField0,
-        Short reservedField1) {
+    public S7PayloadUserDataItemCpuFunctionAlarmQueryBuilderImpl(
+        SyntaxIdType syntaxId, QueryType queryType, AlarmType alarmType) {
       this.syntaxId = syntaxId;
       this.queryType = queryType;
       this.alarmType = alarmType;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public S7PayloadUserDataItemCpuFunctionAlarmQuery build(
@@ -291,8 +277,6 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQuery extends S7PayloadUserDat
       S7PayloadUserDataItemCpuFunctionAlarmQuery s7PayloadUserDataItemCpuFunctionAlarmQuery =
           new S7PayloadUserDataItemCpuFunctionAlarmQuery(
               returnCode, transportSize, syntaxId, queryType, alarmType);
-      s7PayloadUserDataItemCpuFunctionAlarmQuery.reservedField0 = reservedField0;
-      s7PayloadUserDataItemCpuFunctionAlarmQuery.reservedField1 = reservedField1;
       return s7PayloadUserDataItemCpuFunctionAlarmQuery;
     }
   }

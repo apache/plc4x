@@ -55,6 +55,7 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
   protected void serializeBACnetLogDataLogDataEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryFailure");
 
@@ -73,6 +74,7 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogDataLogDataEntryFailure _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (failure)
     lengthInBits += failure.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryFailureBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryFailure");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed failure =
         readSimpleField(
@@ -95,15 +98,14 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryFailure");
     // Create the instance
-    return new BACnetLogDataLogDataEntryFailureBuilder(failure);
+    return new BACnetLogDataLogDataEntryFailureBuilderImpl(failure);
   }
 
-  public static class BACnetLogDataLogDataEntryFailureBuilder
+  public static class BACnetLogDataLogDataEntryFailureBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final ErrorEnclosed failure;
 
-    public BACnetLogDataLogDataEntryFailureBuilder(ErrorEnclosed failure) {
-
+    public BACnetLogDataLogDataEntryFailureBuilderImpl(ErrorEnclosed failure) {
       this.failure = failure;
     }
 

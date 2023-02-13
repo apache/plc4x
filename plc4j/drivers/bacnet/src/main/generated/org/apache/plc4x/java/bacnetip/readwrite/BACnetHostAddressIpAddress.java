@@ -56,6 +56,7 @@ public class BACnetHostAddressIpAddress extends BACnetHostAddress implements Mes
   protected void serializeBACnetHostAddressChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetHostAddressIpAddress");
 
@@ -74,6 +75,7 @@ public class BACnetHostAddressIpAddress extends BACnetHostAddress implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetHostAddressIpAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ipAddress)
     lengthInBits += ipAddress.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetHostAddressIpAddress extends BACnetHostAddress implements Mes
     return lengthInBits;
   }
 
-  public static BACnetHostAddressIpAddressBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetHostAddressBuilder staticParseBACnetHostAddressBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetHostAddressIpAddress");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagOctetString ipAddress =
         readSimpleField(
@@ -102,15 +105,14 @@ public class BACnetHostAddressIpAddress extends BACnetHostAddress implements Mes
 
     readBuffer.closeContext("BACnetHostAddressIpAddress");
     // Create the instance
-    return new BACnetHostAddressIpAddressBuilder(ipAddress);
+    return new BACnetHostAddressIpAddressBuilderImpl(ipAddress);
   }
 
-  public static class BACnetHostAddressIpAddressBuilder
+  public static class BACnetHostAddressIpAddressBuilderImpl
       implements BACnetHostAddress.BACnetHostAddressBuilder {
     private final BACnetContextTagOctetString ipAddress;
 
-    public BACnetHostAddressIpAddressBuilder(BACnetContextTagOctetString ipAddress) {
-
+    public BACnetHostAddressIpAddressBuilderImpl(BACnetContextTagOctetString ipAddress) {
       this.ipAddress = ipAddress;
     }
 

@@ -79,6 +79,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataObjectPropertyReference");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataObjectPropertyReference _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (propertyReference)
     lengthInBits += propertyReference.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataObjectPropertyReferenceBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectPropertyReference propertyReference =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataObjectPropertyReference");
     // Create the instance
-    return new BACnetConstructedDataObjectPropertyReferenceBuilder(
+    return new BACnetConstructedDataObjectPropertyReferenceBuilderImpl(
         propertyReference, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataObjectPropertyReferenceBuilder
+  public static class BACnetConstructedDataObjectPropertyReferenceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectPropertyReference propertyReference;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataObjectPropertyReferenceBuilder(
+    public BACnetConstructedDataObjectPropertyReferenceBuilderImpl(
         BACnetDeviceObjectPropertyReference propertyReference,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.propertyReference = propertyReference;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

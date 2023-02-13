@@ -50,6 +50,7 @@ public class HistoryReadDetails extends ExtensionObjectDefinition implements Mes
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryReadDetails");
 
@@ -65,26 +66,28 @@ public class HistoryReadDetails extends ExtensionObjectDefinition implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     HistoryReadDetails _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static HistoryReadDetailsBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryReadDetails");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("HistoryReadDetails");
     // Create the instance
-    return new HistoryReadDetailsBuilder();
+    return new HistoryReadDetailsBuilderImpl();
   }
 
-  public static class HistoryReadDetailsBuilder
+  public static class HistoryReadDetailsBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public HistoryReadDetailsBuilder() {}
+    public HistoryReadDetailsBuilderImpl() {}
 
     public HistoryReadDetails build() {
       HistoryReadDetails historyReadDetails = new HistoryReadDetails();

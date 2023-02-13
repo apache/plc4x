@@ -70,6 +70,7 @@ public class Annotation extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Annotation");
 
@@ -94,6 +95,7 @@ public class Annotation extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     Annotation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (message)
     lengthInBits += message.getLengthInBits();
@@ -107,12 +109,13 @@ public class Annotation extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static AnnotationBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("Annotation");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString message =
         readSimpleField(
@@ -128,17 +131,16 @@ public class Annotation extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("Annotation");
     // Create the instance
-    return new AnnotationBuilder(message, userName, annotationTime);
+    return new AnnotationBuilderImpl(message, userName, annotationTime);
   }
 
-  public static class AnnotationBuilder
+  public static class AnnotationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString message;
     private final PascalString userName;
     private final long annotationTime;
 
-    public AnnotationBuilder(PascalString message, PascalString userName, long annotationTime) {
-
+    public AnnotationBuilderImpl(PascalString message, PascalString userName, long annotationTime) {
       this.message = message;
       this.userName = userName;
       this.annotationTime = annotationTime;

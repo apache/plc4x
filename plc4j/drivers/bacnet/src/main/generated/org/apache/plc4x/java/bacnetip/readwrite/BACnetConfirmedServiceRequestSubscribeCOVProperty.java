@@ -100,6 +100,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestSubscribeCOVProperty");
 
@@ -145,6 +146,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestSubscribeCOVProperty _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (subscriberProcessIdentifier)
     lengthInBits += subscriberProcessIdentifier.getLengthInBits();
@@ -173,12 +175,14 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger subscriberProcessIdentifier =
         readSimpleField(
@@ -245,7 +249,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestSubscribeCOVProperty");
     // Create the instance
-    return new BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder(
+    return new BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilderImpl(
         subscriberProcessIdentifier,
         monitoredObjectIdentifier,
         issueConfirmedNotifications,
@@ -255,7 +259,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder
+  public static class BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger subscriberProcessIdentifier;
     private final BACnetContextTagObjectIdentifier monitoredObjectIdentifier;
@@ -265,7 +269,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
     private final BACnetContextTagReal covIncrement;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilder(
+    public BACnetConfirmedServiceRequestSubscribeCOVPropertyBuilderImpl(
         BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
         BACnetContextTagObjectIdentifier monitoredObjectIdentifier,
         BACnetContextTagBoolean issueConfirmedNotifications,
@@ -273,7 +277,6 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
         BACnetPropertyReferenceEnclosed monitoredPropertyIdentifier,
         BACnetContextTagReal covIncrement,
         Long serviceRequestLength) {
-
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.monitoredObjectIdentifier = monitoredObjectIdentifier;
       this.issueConfirmedNotifications = issueConfirmedNotifications;

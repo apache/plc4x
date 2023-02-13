@@ -67,6 +67,7 @@ public class BACnetContextTagCharacterString extends BACnetContextTag implements
   protected void serializeBACnetContextTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagCharacterString");
 
@@ -89,6 +90,7 @@ public class BACnetContextTagCharacterString extends BACnetContextTag implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetContextTagCharacterString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -98,16 +100,17 @@ public class BACnetContextTagCharacterString extends BACnetContextTag implements
     return lengthInBits;
   }
 
-  public static BACnetContextTagCharacterStringBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagCharacterString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadCharacterString payload =
         readSimpleField(
@@ -121,17 +124,16 @@ public class BACnetContextTagCharacterString extends BACnetContextTag implements
 
     readBuffer.closeContext("BACnetContextTagCharacterString");
     // Create the instance
-    return new BACnetContextTagCharacterStringBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagCharacterStringBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagCharacterStringBuilder
+  public static class BACnetContextTagCharacterStringBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadCharacterString payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagCharacterStringBuilder(
+    public BACnetContextTagCharacterStringBuilderImpl(
         BACnetTagPayloadCharacterString payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

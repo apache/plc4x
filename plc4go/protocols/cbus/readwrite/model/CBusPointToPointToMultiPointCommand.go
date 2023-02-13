@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -58,12 +59,11 @@ type _CBusPointToPointToMultiPointCommand struct {
 
 type _CBusPointToPointToMultiPointCommandChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type CBusPointToPointToMultiPointCommandParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child CBusPointToPointToMultiPointCommand, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CBusPointToPointToMultiPointCommand, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -118,27 +118,27 @@ func (m *_CBusPointToPointToMultiPointCommand) GetTypeName() string {
 	return "CBusPointToPointToMultiPointCommand"
 }
 
-func (m *_CBusPointToPointToMultiPointCommand) GetParentLengthInBits() uint16 {
+func (m *_CBusPointToPointToMultiPointCommand) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (bridgeAddress)
-	lengthInBits += m.BridgeAddress.GetLengthInBits()
+	lengthInBits += m.BridgeAddress.GetLengthInBits(ctx)
 
 	// Simple field (networkRoute)
-	lengthInBits += m.NetworkRoute.GetLengthInBits()
+	lengthInBits += m.NetworkRoute.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusPointToPointToMultiPointCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusPointToPointToMultiPointCommandParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommand, error) {
-	return CBusPointToPointToMultiPointCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusPointToPointToMultiPointCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func CBusPointToPointToMultiPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommand, error) {
+func CBusPointToPointToMultiPointCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToPointToMultiPointCommand"); pullErr != nil {
@@ -151,7 +151,7 @@ func CBusPointToPointToMultiPointCommandParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
 	}
-	_bridgeAddress, _bridgeAddressErr := BridgeAddressParseWithBuffer(readBuffer)
+	_bridgeAddress, _bridgeAddressErr := BridgeAddressParseWithBuffer(ctx, readBuffer)
 	if _bridgeAddressErr != nil {
 		return nil, errors.Wrap(_bridgeAddressErr, "Error parsing 'bridgeAddress' field of CBusPointToPointToMultiPointCommand")
 	}
@@ -164,7 +164,7 @@ func CBusPointToPointToMultiPointCommandParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("networkRoute"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkRoute")
 	}
-	_networkRoute, _networkRouteErr := NetworkRouteParseWithBuffer(readBuffer)
+	_networkRoute, _networkRouteErr := NetworkRouteParseWithBuffer(ctx, readBuffer)
 	if _networkRouteErr != nil {
 		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of CBusPointToPointToMultiPointCommand")
 	}
@@ -193,9 +193,9 @@ func CBusPointToPointToMultiPointCommandParseWithBuffer(readBuffer utils.ReadBuf
 	var typeSwitchError error
 	switch {
 	case peekedApplication == 0xFF: // CBusPointToPointToMultiPointCommandStatus
-		_childTemp, typeSwitchError = CBusPointToPointToMultiPointCommandStatusParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToPointToMultiPointCommandStatusParseWithBuffer(ctx, readBuffer, cBusOptions)
 	case 0 == 0: // CBusPointToPointToMultiPointCommandNormal
-		_childTemp, typeSwitchError = CBusPointToPointToMultiPointCommandNormalParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToPointToMultiPointCommandNormalParseWithBuffer(ctx, readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedApplication=%v]", peekedApplication)
 	}
@@ -213,7 +213,7 @@ func CBusPointToPointToMultiPointCommandParseWithBuffer(readBuffer utils.ReadBuf
 	return _child, nil
 }
 
-func (pm *_CBusPointToPointToMultiPointCommand) SerializeParent(writeBuffer utils.WriteBuffer, child CBusPointToPointToMultiPointCommand, serializeChildFunction func() error) error {
+func (pm *_CBusPointToPointToMultiPointCommand) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CBusPointToPointToMultiPointCommand, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -227,7 +227,7 @@ func (pm *_CBusPointToPointToMultiPointCommand) SerializeParent(writeBuffer util
 	if pushErr := writeBuffer.PushContext("bridgeAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for bridgeAddress")
 	}
-	_bridgeAddressErr := writeBuffer.WriteSerializable(m.GetBridgeAddress())
+	_bridgeAddressErr := writeBuffer.WriteSerializable(ctx, m.GetBridgeAddress())
 	if popErr := writeBuffer.PopContext("bridgeAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for bridgeAddress")
 	}
@@ -239,7 +239,7 @@ func (pm *_CBusPointToPointToMultiPointCommand) SerializeParent(writeBuffer util
 	if pushErr := writeBuffer.PushContext("networkRoute"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for networkRoute")
 	}
-	_networkRouteErr := writeBuffer.WriteSerializable(m.GetNetworkRoute())
+	_networkRouteErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkRoute())
 	if popErr := writeBuffer.PopContext("networkRoute"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for networkRoute")
 	}
@@ -277,7 +277,7 @@ func (m *_CBusPointToPointToMultiPointCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

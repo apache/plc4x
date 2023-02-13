@@ -79,6 +79,7 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNotificationThreshold");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNotificationThreshold _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (notificationThreshold)
     lengthInBits += notificationThreshold.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNotificationThresholdBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger notificationThreshold =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataNotificationThreshold");
     // Create the instance
-    return new BACnetConstructedDataNotificationThresholdBuilder(
+    return new BACnetConstructedDataNotificationThresholdBuilderImpl(
         notificationThreshold, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNotificationThresholdBuilder
+  public static class BACnetConstructedDataNotificationThresholdBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger notificationThreshold;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNotificationThresholdBuilder(
+    public BACnetConstructedDataNotificationThresholdBuilderImpl(
         BACnetApplicationTagUnsignedInteger notificationThreshold,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.notificationThreshold = notificationThreshold;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -48,6 +48,7 @@ public class TelephonyDataLineOnHook extends TelephonyData implements Message {
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataLineOnHook");
 
@@ -63,25 +64,28 @@ public class TelephonyDataLineOnHook extends TelephonyData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataLineOnHook _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static TelephonyDataLineOnHookBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataLineOnHook");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TelephonyDataLineOnHook");
     // Create the instance
-    return new TelephonyDataLineOnHookBuilder();
+    return new TelephonyDataLineOnHookBuilderImpl();
   }
 
-  public static class TelephonyDataLineOnHookBuilder implements TelephonyData.TelephonyDataBuilder {
+  public static class TelephonyDataLineOnHookBuilderImpl
+      implements TelephonyData.TelephonyDataBuilder {
 
-    public TelephonyDataLineOnHookBuilder() {}
+    public TelephonyDataLineOnHookBuilderImpl() {}
 
     public TelephonyDataLineOnHook build(
         TelephonyCommandTypeContainer commandTypeContainer, byte argument) {

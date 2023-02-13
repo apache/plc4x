@@ -146,6 +146,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
   @Override
   protected void serializeAPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("APDUConfirmedRequest");
 
@@ -243,6 +244,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     APDUConfirmedRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (segmentedMessage)
     lengthInBits += 1;
@@ -297,12 +299,13 @@ public class APDUConfirmedRequest extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUConfirmedRequestBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("APDUConfirmedRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean segmentedMessage = readSimpleField("segmentedMessage", readBoolean(readBuffer));
 
@@ -375,7 +378,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
 
     readBuffer.closeContext("APDUConfirmedRequest");
     // Create the instance
-    return new APDUConfirmedRequestBuilder(
+    return new APDUConfirmedRequestBuilderImpl(
         segmentedMessage,
         moreFollows,
         segmentedResponseAccepted,
@@ -391,7 +394,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
         reservedField0);
   }
 
-  public static class APDUConfirmedRequestBuilder implements APDU.APDUBuilder {
+  public static class APDUConfirmedRequestBuilderImpl implements APDU.APDUBuilder {
     private final boolean segmentedMessage;
     private final boolean moreFollows;
     private final boolean segmentedResponseAccepted;
@@ -406,7 +409,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDUConfirmedRequestBuilder(
+    public APDUConfirmedRequestBuilderImpl(
         boolean segmentedMessage,
         boolean moreFollows,
         boolean segmentedResponseAccepted,

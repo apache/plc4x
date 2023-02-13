@@ -50,6 +50,7 @@ package model
 <#macro importSectionWithContentBelow>
 	<#local sectionContent><#nested></#local>
 import (
+	"context"
 	<#if helper.getRequiredImports()?has_content>
 	<#list helper.getRequiredImports() as import>
 	${import}
@@ -153,8 +154,7 @@ type _${type.name} struct {
 <#assign discriminatedParentType = type.asComplexTypeDefinition().orElseThrow()>
 type _${type.name}ChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
     <#list discriminatedParentType.getDiscriminatorNames() as discriminatorName>
     <#-- If the discriminator name matches that of another field, suppress the methods generation -->
         <#if !type.isNonDiscriminatorField(discriminatorName)>
@@ -212,7 +212,7 @@ func (m *_${type.name})  Get${discriminatorName?cap_first}() <#if typeRef.isNonS
 <#if type.isDiscriminatedParentTypeDefinition()>
 
 type ${type.name}Parent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child ${type.name}, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ${type.name}, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -288,6 +288,9 @@ func (m *_${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAcc
 	<#list type.virtualFields as field>
 		<#assign typeRef=field.asTypedField().orElseThrow().type>
 func (m *_${type.name}) Get${field.name?cap_first}() <#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)} {
+	<#-- TODO: This should only be output, if ctx is needed -->
+	ctx := context.Background()
+	_ = ctx
   	  <#list type.propertyFields?filter(f->f.isOptionalField()) as field>
 	${field.name} := m.${field.name?cap_first}
 	_ = ${field.name}
@@ -393,20 +396,14 @@ func (m *_${type.name}) GetTypeName() string {
 }
 
 <#if !type.isDiscriminatedParentTypeDefinition()>
-func (m *_${type.name}) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-</#if>
-
-<#if !type.isDiscriminatedParentTypeDefinition()>
-<#-- TODO: use serializer args instead of a fixed bool for one case -->
-func (m *_${type.name}) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 		<#if type.isDiscriminatedChildTypeDefinition()>
-	lengthInBits := uint16(m.GetParentLengthInBits())
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 		<#else>
 	lengthInBits := uint16(0)
 		</#if>
 		<#list type.fields as field>
+            <#if helper.needsVariable(field, "_lastItem", true)><@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" /></#if>
 			<#switch field.typeName>
 				<#case "array">
 					<#assign arrayField = field.asArrayField().orElseThrow()>
@@ -422,12 +419,15 @@ func (m *_${type.name}) GetLengthInBitsConditional(lastItem bool) uint16 {
 		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
 				<#else>
 				<#if arrayField.isCountArrayField()>
-		for i, element := range m.${arrayField.name?cap_first} {
-			last := i == len(m.${arrayField.name?cap_first}) -1
-			lengthInBits += element.(interface{GetLengthInBitsConditional(bool) uint16}).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.${arrayField.name?cap_first} {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.${arrayField.name?cap_first}), _curItem)<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+			<#-- TODO: find a way to do this nicer -->
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{GetLengthInBits(context.Context) uint16}).GetLengthInBits(arrayCtx)
 				<#else>
 		for _, element := range m.${arrayField.name?cap_first} {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 				</#if>
 		}
 				</#if>
@@ -506,9 +506,9 @@ func (m *_${type.name}) GetLengthInBitsConditional(lastItem bool) uint16 {
 					<#elseif helper.isEnumField(optionalField)>
 		lengthInBits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits}
                     <#elseif optionalField.type.isComplexTypeReference()>
-		lengthInBits += m.${optionalField.name?cap_first}.GetLengthInBits()
+		lengthInBits += m.${optionalField.name?cap_first}.GetLengthInBits(ctx)
 					<#else>
-		lengthInBits += (*m.${optionalField.name?cap_first}).GetLengthInBits()
+		lengthInBits += (*m.${optionalField.name?cap_first}).GetLengthInBits(ctx)
 					</#if>
 	}
 					<#break>
@@ -544,14 +544,14 @@ func (m *_${type.name}) GetLengthInBitsConditional(lastItem bool) uint16 {
 					<#elseif helper.isEnumField(field)>
 	lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits}
 					<#else>
-	lengthInBits += m.${simpleField.name?cap_first}.GetLengthInBits()
+	lengthInBits += m.${simpleField.name?cap_first}.GetLengthInBits(ctx)
 					</#if>
 					<#break>
 				<#case "switch">
 					<#assign switchField = field.asSwitchField().orElseThrow()>
 
 	// Length of sub-type elements will be added by sub-type...
-	lengthInBits += m.GetLengthInBits()
+	lengthInBits += m.GetLengthInBits(ctx)
 					<#break>
 				<#case "unknown">
 					<#assign unknownField = field.asUnknownField().orElseThrow()>
@@ -574,7 +574,7 @@ func (m *_${type.name}) GetLengthInBitsConditional(lastItem bool) uint16 {
 </#if>
 
 <#if type.isDiscriminatedParentTypeDefinition()>
-func (m *_${type.name}) GetParentLengthInBits() uint16 {
+func (m *_${type.name}) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	<#list type.fields as field>
 		<#switch field.typeName>
@@ -592,12 +592,15 @@ func (m *_${type.name}) GetParentLengthInBits() uint16 {
 		lengthInBits += ${simpleTypeReference.sizeInBits} * uint16(len(m.${arrayField.name?cap_first}))
 				<#else>
 					<#if arrayField.isCountArrayField()>
-		for i, element := range m.${arrayField.name?cap_first} {
-			last := i >= len(m.${arrayField.name?cap_first}) -1
-			lengthInBits += element.(interface{GetLengthInBitsConditional(bool) uint16}).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.${arrayField.name?cap_first} {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.${arrayField.name?cap_first}), _curItem)<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+            <#-- TODO: find a way to do this nicer -->
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{GetLengthInBits(context.Context) uint16}).GetLengthInBits(arrayCtx)
 					<#else>
 		for _, element := range m.${arrayField.name?cap_first} {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 					</#if>
 		}
 				</#if>
@@ -638,7 +641,7 @@ func (m *_${type.name}) GetParentLengthInBits() uint16 {
 				<#elseif helper.isEnumField(discriminatorField)>
 	lengthInBits += ${helper.getEnumBaseTypeReference(discriminatorField.type).sizeInBits};
 				<#else>
-	lengthInBits += ${discriminatorField.name}.GetLengthInBits();
+	lengthInBits += ${discriminatorField.name}.GetLengthInBits(ctx);
 				</#if>
 				<#break>
 			<#case "enum">
@@ -678,9 +681,9 @@ func (m *_${type.name}) GetParentLengthInBits() uint16 {
 				<#elseif helper.isEnumField(field)>
 		lengthInBits += ${helper.getEnumBaseTypeReference(optionalField.type).sizeInBits}
                 <#elseif optionalField.type.isComplexTypeReference()>
-		lengthInBits += m.${optionalField.name?cap_first}.GetLengthInBits()
+		lengthInBits += m.${optionalField.name?cap_first}.GetLengthInBits(ctx)
                 <#else>
-		lengthInBits += (*m.${optionalField.name?cap_first}).GetLengthInBits()
+		lengthInBits += (*m.${optionalField.name?cap_first}).GetLengthInBits(ctx)
 				</#if>
 	}
 				<#break>
@@ -716,7 +719,7 @@ func (m *_${type.name}) GetParentLengthInBits() uint16 {
 				<#elseif helper.isEnumField(field)>
 	lengthInBits += ${helper.getEnumBaseTypeReference(simpleField.type).sizeInBits}
 				<#else>
-	lengthInBits += m.${simpleField.name?cap_first}.GetLengthInBits()
+	lengthInBits += m.${simpleField.name?cap_first}.GetLengthInBits(ctx)
 				</#if>
 				<#break>
 			<#case "unknown">
@@ -739,18 +742,18 @@ func (m *_${type.name}) GetParentLengthInBits() uint16 {
 }
 </#if>
 
-func (m *_${type.name}) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_${type.name}) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 <#assign hasParserArguments=parserArguments?has_content/>
 <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
 <#assign parserArgumentNameList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
 func ${type.name}Parse(theBytes []byte<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
-	return ${type.name}ParseWithBuffer(utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true)})<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
+	return ${type.name}ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true)})<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
 }
 
-func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
+func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
@@ -805,10 +808,12 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 		${arrayField.name} = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}); curItem++ {
-						<#if (!arrayElementType.isSimpleTypeReference()) && helper.requiresVariable(arrayField, "lastItem")>
-			lastItem := curItem == uint16(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)} - 1)
-						</#if>
+		_numItems := uint16(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+            <#-- TODO: find a way to do this nicer -->
+			_ = arrayCtx
+			_ = _curItem
                         <@compress single_line=true>
 			_item, _err :=
                             <#if arrayElementType.isSimpleTypeReference()>
@@ -833,7 +838,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
                                         </#list>
                                     </#if>
                                 </#assign>
-                                ${typeName}ParseWithBuffer(readBuffer${refParams})
+                                ${typeName}ParseWithBuffer(arrayCtx, readBuffer${refParams})
                             </#if>
                         </@compress>
 
@@ -841,9 +846,9 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 				return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 			}
                         <#if arrayElementType.isSimpleTypeReference()>
-			${arrayField.name}[curItem] = _item
+			${arrayField.name}[_curItem] = _item
                         <#else>
-			${arrayField.name}[curItem] = _item.(${arrayElementType.asComplexTypeReference().orElseThrow().name})
+			${arrayField.name}[_curItem] = _item.(${arrayElementType.asComplexTypeReference().orElseThrow().name})
                         </#if>
 		}
 	}
@@ -878,7 +883,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
                                     </#list>
                                 </#if>
                             </#assign>
-                            ${typeName}ParseWithBuffer(readBuffer${refParams})
+                            ${typeName}ParseWithBuffer(ctx, readBuffer${refParams})
                         </#if>
                         </@compress>
 
@@ -920,7 +925,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
                                         </#list>
                                     </#if>
                                 </#assign>
-                                ${typeName}ParseWithBuffer(readBuffer${refParams})
+                                ${typeName}ParseWithBuffer(ctx, readBuffer${refParams})
 							</#if>
 						</@compress>
 
@@ -976,7 +981,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 		return nil, errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
                     <#else>
-	${constField.name}, _${constField.name}Err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(readBuffer)
+	${constField.name}, _${constField.name}Err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(ctx, readBuffer)
 	if _${constField.name}Err != nil {
 		return nil, errors.Wrap(_${constField.name}Err, "Error parsing '${constField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1000,7 +1005,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 	if pullErr := readBuffer.PullContext("${namedField.name}"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
-	${helper.getVariableName(field)}_temp, _${discriminatorField.name}Err := ${helper.getLanguageTypeNameForField(discriminatorField)}ParseWithBuffer(readBuffer)
+	${helper.getVariableName(field)}_temp, _${discriminatorField.name}Err := ${helper.getLanguageTypeNameForField(discriminatorField)}ParseWithBuffer(ctx, readBuffer)
 	var ${helper.getVariableName(field)} ${helper.getLanguageTypeNameForField(discriminatorField)} = ${helper.getVariableName(field)}_temp
 	if closeErr := readBuffer.CloseContext("${namedField.name}"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
@@ -1138,7 +1143,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 		if pullErr := readBuffer.PullContext("${optionalField.name}"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
-		_val, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(readBuffer)
+		_val, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(ctx, readBuffer)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -1170,7 +1175,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 						</#list>
 					</#if>
 				</#assign>
-		_val, _err := ${typeName}ParseWithBuffer(readBuffer${refParams})
+		_val, _err := ${typeName}ParseWithBuffer(ctx, readBuffer${refParams})
                 </@compress>
 
 		switch {
@@ -1198,7 +1203,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 		return nil, errors.Wrap(_err, "Error parsing '${assertField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 			<#elseif helper.isEnumField(field)>
-	${assertField.name}, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(readBuffer)
+	${assertField.name}, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(ctx, readBuffer)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing '${assertField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1215,7 +1220,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 				<#assign hasRefParams=complexTypeReference.params.isPresent() && typeDefinition.parserArguments.isPresent()>
 				<#assign refParams> <#if hasRefParams>, <#list complexTypeReference.params.orElseThrow() as typeParam>${helper.toTypedParseExpression(assertField, null, typeParam, null)}<#sep>, </#sep></#list> </#if> </#assign>
                 </@compress>
-	_val, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(readBuffer${refParams})
+	_val, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(ctx, readBuffer${refParams})
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing '${assertField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1304,7 +1309,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
                 </#list>
             </#if>
         </#assign>
-		${typeName}ParseWithBuffer(readBuffer${refParams})
+		${typeName}ParseWithBuffer(ctx, readBuffer${refParams})
 	</#if>
     </@compress>
 
@@ -1375,7 +1380,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 						</#if>: // ${case.name}
                     </@compress>
 
-		_childTemp, typeSwitchError = ${case.name}ParseWithBuffer(readBuffer<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
+		_childTemp, typeSwitchError = ${case.name}ParseWithBuffer(ctx, readBuffer<#if case.allParserArguments.isPresent()>, <#list case.allParserArguments.orElseThrow() as parserArgument><#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow().isOptionalField()>*</#if>${parserArgument.name}<#sep>, </#sep></#list></#if>)
 				</#list>
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for<#if switchField.getDiscriminatorExpressions()?has_content> parameters [<#list switchField.getDiscriminatorExpressions() as discriminatorExpression>${discriminatorExpression.stringRepresentation()}=%v<#sep>, </#sep></#list>]</#if>"<#if switchField.getDiscriminatorExpressions()?has_content>, <#list switchField.getDiscriminatorExpressions() as discriminatorExpression>${helper.toParseExpression(null, null, discriminatorExpression, parserArguments)}<#sep>, </#sep></#list></#if>)<@emitImport import="github.com/pkg/errors" />
@@ -1433,7 +1438,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
 					return nil, errors.Wrap(pullErr, "Error pulling for ${peekField.name}")<@emitImport import="github.com/pkg/errors" />
 				}
-				${peekField.name}, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(readBuffer)
+				${peekField.name}, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(ctx, readBuffer)
 				if _err != nil {
 					return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 				}
@@ -1464,7 +1469,7 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
                                 </#list>
                             </#if>
                         </#assign>
-				${peekField.name}, _ := ${typeName}ParseWithBuffer(readBuffer${refParams})
+				${peekField.name}, _ := ${typeName}ParseWithBuffer(ctx, readBuffer${refParams})
                     </@compress>
                 </#if>
 
@@ -1531,20 +1536,20 @@ func ${type.name}ParseWithBuffer(readBuffer utils.ReadBuffer<#if hasParserArgume
 }
 
 <#if type.isDiscriminatedParentTypeDefinition()>
-func (pm *_${type.name}) SerializeParent(writeBuffer utils.WriteBuffer, child ${type.name}, serializeChildFunction func() error) error {
+func (pm *_${type.name}) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child ${type.name}, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
 <#else>
 func (m *_${type.name}) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes()))${helper.getEndiannessOptions(false, true)})
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background())))${helper.getEndiannessOptions(false, true)})
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 </#if>
 	positionAware := writeBuffer
 	_ = positionAware
@@ -1563,7 +1568,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	${key}ArraySizeInBytes := func(items ${typeName}) uint32 {
 		var sizeInBytes uint32 = 0
 		for _, v := range items {
-			sizeInBytes += uint32(v.GetLengthInBytes())
+			sizeInBytes += uint32(v.GetLengthInBytes(ctx))
 		}
 		return sizeInBytes
 	}
@@ -1596,16 +1601,18 @@ func (m *_${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	itemCount := uint16(len(m.Get${arrayField.name?cap_first}()))
 	var curItem uint16 = 0
 					</#if>
-	for _, _element := range m.Get${arrayField.name?cap_first}() {
+	for _curItem, _element := range m.Get${arrayField.name?cap_first}() {
+	                <#-- TODO: find a way to do this nicer -->
+		_ = _curItem
 						<#if arrayElementType.isSimpleTypeReference()>
 							<#assign simpleTypeReference = arrayElementType.asSimpleTypeReference().orElseThrow()>
 		_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", arrayField)}
 						<#else>
 						<#assign complexTypeReference = arrayElementType>
-						<#if helper.needsVariable(arrayField, "lastItem", true)>
-		var lastItem bool = curItem == (itemCount - 1)
-						</#if>
-		_elementErr := writeBuffer.WriteSerializable(_element)
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Get${arrayField.name?cap_first}()), _curItem)<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+        <#-- TODO: find a way to do this nicer -->
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 					</#if>
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
@@ -1650,7 +1657,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
                         <#else>
 	// Const field (${constField.name})
 	${constField.name} := Cast${helper.getLanguageTypeNameForField(field)}(${type.name}_${constField.name?upper_case})
-	_${constField.name}Err := writeBuffer.WriteSerializable(${constField.name})
+	_${constField.name}Err := writeBuffer.WriteSerializable(ctx, ${constField.name})
 	if _${constField.name}Err != nil {
 		return errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1673,7 +1680,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	if pushErr := writeBuffer.PushContext("${namedField.name}"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
-	_${discriminatorField.name}Err := writeBuffer.WriteSerializable(${discriminatorField.name})
+	_${discriminatorField.name}Err := writeBuffer.WriteSerializable(ctx, ${discriminatorField.name})
 	if popErr := writeBuffer.PopContext("${namedField.name}"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1754,7 +1761,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 			return errors.Wrap(pushErr, "Error pushing for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		${optionalField.name} = m.Get${optionalField.name?cap_first}()
-		_${optionalField.name}Err := writeBuffer.WriteSerializable(${optionalField.name})
+		_${optionalField.name}Err := writeBuffer.WriteSerializable(ctx, ${optionalField.name})
 		if popErr := writeBuffer.PopContext("${optionalField.name}"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
 		}
@@ -1824,7 +1831,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 	if pushErr := writeBuffer.PushContext("${simpleField.name}"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
-	_${simpleField.name}Err := writeBuffer.WriteSerializable(m.Get${simpleField.name?cap_first}())
+	_${simpleField.name}Err := writeBuffer.WriteSerializable(ctx, m.Get${simpleField.name?cap_first}())
 	if popErr := writeBuffer.PopContext("${simpleField.name}"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1846,7 +1853,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
                 	<#assign typedField = field.asTypedField().orElseThrow()>
                 	<#assign namedField = field.asNamedField().orElseThrow()>
 	// Virtual field
-	if _${namedField.name}Err := writeBuffer.WriteVirtual("${namedField.name}", m.Get${namedField.name?cap_first}()); _${namedField.name}Err != nil {
+	if _${namedField.name}Err := writeBuffer.WriteVirtual(ctx, "${namedField.name}", m.Get${namedField.name?cap_first}()); _${namedField.name}Err != nil {
 		return errors.Wrap(_${namedField.name}Err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#break>
@@ -1859,7 +1866,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 		<#else>
 	if popErr := writeBuffer.PopContext("${type.name}"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for ${type.name}")<@emitImport import="github.com/pkg/errors" />
@@ -1892,7 +1899,7 @@ func (m *_${type.name}) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

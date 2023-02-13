@@ -78,6 +78,7 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataVendorName");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataVendorName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (vendorName)
     lengthInBits += vendorName.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataVendorNameBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString vendorName =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataVendorName");
     // Create the instance
-    return new BACnetConstructedDataVendorNameBuilder(vendorName, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataVendorNameBuilderImpl(
+        vendorName, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataVendorNameBuilder
+  public static class BACnetConstructedDataVendorNameBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString vendorName;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataVendorNameBuilder(
+    public BACnetConstructedDataVendorNameBuilderImpl(
         BACnetApplicationTagCharacterString vendorName,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.vendorName = vendorName;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

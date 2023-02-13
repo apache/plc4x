@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueDate extends BACnetTimerStateChangeValue
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueDate");
 
@@ -81,6 +82,7 @@ public class BACnetTimerStateChangeValueDate extends BACnetTimerStateChangeValue
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueDate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dateValue)
     lengthInBits += dateValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetTimerStateChangeValueDate extends BACnetTimerStateChangeValue
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueDateBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueDate");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDate dateValue =
         readSimpleField(
@@ -104,17 +107,16 @@ public class BACnetTimerStateChangeValueDate extends BACnetTimerStateChangeValue
 
     readBuffer.closeContext("BACnetTimerStateChangeValueDate");
     // Create the instance
-    return new BACnetTimerStateChangeValueDateBuilder(dateValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueDateBuilderImpl(dateValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueDateBuilder
+  public static class BACnetTimerStateChangeValueDateBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagDate dateValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueDateBuilder(
+    public BACnetTimerStateChangeValueDateBuilderImpl(
         BACnetApplicationTagDate dateValue, BACnetObjectType objectTypeArgument) {
-
       this.dateValue = dateValue;
       this.objectTypeArgument = objectTypeArgument;
     }

@@ -47,8 +47,6 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
   protected final boolean includeSubTypes;
   protected final int noOfDataToReturn;
   protected final List<ExtensionObjectDefinition> dataToReturn;
-  // Reserved Fields
-  private Short reservedField0;
 
   public NodeTypeDescription(
       ExpandedNodeId typeDefinitionNode,
@@ -82,6 +80,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NodeTypeDescription");
 
@@ -90,10 +89,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
         "typeDefinitionNode", typeDefinitionNode, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (includeSubTypes)
     writeSimpleField("includeSubTypes", includeSubTypes, writeBoolean(writeBuffer));
@@ -116,6 +112,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NodeTypeDescription _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (typeDefinitionNode)
     lengthInBits += typeDefinitionNode.getLengthInBits();
@@ -133,7 +130,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     if (dataToReturn != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : dataToReturn) {
-        boolean last = ++i >= dataToReturn.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataToReturn.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -141,12 +138,13 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static NodeTypeDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NodeTypeDescription");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExpandedNodeId typeDefinitionNode =
         readSimpleField(
@@ -171,36 +169,32 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("NodeTypeDescription");
     // Create the instance
-    return new NodeTypeDescriptionBuilder(
-        typeDefinitionNode, includeSubTypes, noOfDataToReturn, dataToReturn, reservedField0);
+    return new NodeTypeDescriptionBuilderImpl(
+        typeDefinitionNode, includeSubTypes, noOfDataToReturn, dataToReturn);
   }
 
-  public static class NodeTypeDescriptionBuilder
+  public static class NodeTypeDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExpandedNodeId typeDefinitionNode;
     private final boolean includeSubTypes;
     private final int noOfDataToReturn;
     private final List<ExtensionObjectDefinition> dataToReturn;
-    private final Short reservedField0;
 
-    public NodeTypeDescriptionBuilder(
+    public NodeTypeDescriptionBuilderImpl(
         ExpandedNodeId typeDefinitionNode,
         boolean includeSubTypes,
         int noOfDataToReturn,
-        List<ExtensionObjectDefinition> dataToReturn,
-        Short reservedField0) {
+        List<ExtensionObjectDefinition> dataToReturn) {
       this.typeDefinitionNode = typeDefinitionNode;
       this.includeSubTypes = includeSubTypes;
       this.noOfDataToReturn = noOfDataToReturn;
       this.dataToReturn = dataToReturn;
-      this.reservedField0 = reservedField0;
     }
 
     public NodeTypeDescription build() {
       NodeTypeDescription nodeTypeDescription =
           new NodeTypeDescription(
               typeDefinitionNode, includeSubTypes, noOfDataToReturn, dataToReturn);
-      nodeTypeDescription.reservedField0 = reservedField0;
       return nodeTypeDescription;
     }
   }

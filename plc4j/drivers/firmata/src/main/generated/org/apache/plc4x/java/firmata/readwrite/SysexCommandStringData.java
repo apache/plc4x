@@ -53,6 +53,7 @@ public class SysexCommandStringData extends SysexCommand implements Message {
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandStringData");
 
@@ -68,25 +69,28 @@ public class SysexCommandStringData extends SysexCommand implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandStringData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SysexCommandStringDataBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandStringData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SysexCommandStringData");
     // Create the instance
-    return new SysexCommandStringDataBuilder();
+    return new SysexCommandStringDataBuilderImpl();
   }
 
-  public static class SysexCommandStringDataBuilder implements SysexCommand.SysexCommandBuilder {
+  public static class SysexCommandStringDataBuilderImpl
+      implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandStringDataBuilder() {}
+    public SysexCommandStringDataBuilderImpl() {}
 
     public SysexCommandStringData build() {
       SysexCommandStringData sysexCommandStringData = new SysexCommandStringData();

@@ -79,6 +79,7 @@ public class BACnetConstructedDataCredentialStatus extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCredentialStatus");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataCredentialStatus extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCredentialStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (binaryPv)
     lengthInBits += binaryPv.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataCredentialStatus extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCredentialStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataCredentialStatus extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBinaryPVTagged binaryPv =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataCredentialStatus extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataCredentialStatus");
     // Create the instance
-    return new BACnetConstructedDataCredentialStatusBuilder(
+    return new BACnetConstructedDataCredentialStatusBuilderImpl(
         binaryPv, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCredentialStatusBuilder
+  public static class BACnetConstructedDataCredentialStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBinaryPVTagged binaryPv;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCredentialStatusBuilder(
+    public BACnetConstructedDataCredentialStatusBuilderImpl(
         BACnetBinaryPVTagged binaryPv,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.binaryPv = binaryPv;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

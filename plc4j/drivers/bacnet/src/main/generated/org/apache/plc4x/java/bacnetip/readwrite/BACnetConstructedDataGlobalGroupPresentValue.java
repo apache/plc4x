@@ -89,6 +89,7 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataGlobalGroupPresentValue");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataGlobalGroupPresentValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,7 +138,7 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataGlobalGroupPresentValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -147,6 +149,7 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -171,23 +174,22 @@ public class BACnetConstructedDataGlobalGroupPresentValue extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataGlobalGroupPresentValue");
     // Create the instance
-    return new BACnetConstructedDataGlobalGroupPresentValueBuilder(
+    return new BACnetConstructedDataGlobalGroupPresentValueBuilderImpl(
         numberOfDataElements, presentValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataGlobalGroupPresentValueBuilder
+  public static class BACnetConstructedDataGlobalGroupPresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetPropertyAccessResult> presentValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataGlobalGroupPresentValueBuilder(
+    public BACnetConstructedDataGlobalGroupPresentValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetPropertyAccessResult> presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;

@@ -64,6 +64,7 @@ public class ChangeListRemoveError extends BACnetError implements Message {
   @Override
   protected void serializeBACnetErrorChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ChangeListRemoveError");
 
@@ -88,6 +89,7 @@ public class ChangeListRemoveError extends BACnetError implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ChangeListRemoveError _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (errorType)
     lengthInBits += errorType.getLengthInBits();
@@ -98,12 +100,13 @@ public class ChangeListRemoveError extends BACnetError implements Message {
     return lengthInBits;
   }
 
-  public static ChangeListRemoveErrorBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("ChangeListRemoveError");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed errorType =
         readSimpleField(
@@ -125,16 +128,15 @@ public class ChangeListRemoveError extends BACnetError implements Message {
 
     readBuffer.closeContext("ChangeListRemoveError");
     // Create the instance
-    return new ChangeListRemoveErrorBuilder(errorType, firstFailedElementNumber);
+    return new ChangeListRemoveErrorBuilderImpl(errorType, firstFailedElementNumber);
   }
 
-  public static class ChangeListRemoveErrorBuilder implements BACnetError.BACnetErrorBuilder {
+  public static class ChangeListRemoveErrorBuilderImpl implements BACnetError.BACnetErrorBuilder {
     private final ErrorEnclosed errorType;
     private final BACnetContextTagUnsignedInteger firstFailedElementNumber;
 
-    public ChangeListRemoveErrorBuilder(
+    public ChangeListRemoveErrorBuilderImpl(
         ErrorEnclosed errorType, BACnetContextTagUnsignedInteger firstFailedElementNumber) {
-
       this.errorType = errorType;
       this.firstFailedElementNumber = firstFailedElementNumber;
     }

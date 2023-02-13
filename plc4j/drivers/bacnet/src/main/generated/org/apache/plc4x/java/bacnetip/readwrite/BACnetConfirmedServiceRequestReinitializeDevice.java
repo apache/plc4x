@@ -75,6 +75,7 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReinitializeDevice");
 
@@ -99,6 +100,7 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestReinitializeDevice _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reinitializedStateOfDevice)
     lengthInBits += reinitializedStateOfDevice.getLengthInBits();
@@ -111,12 +113,14 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestReinitializeDeviceBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReinitializeDevice");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
         reinitializedStateOfDevice =
@@ -145,23 +149,22 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestReinitializeDevice");
     // Create the instance
-    return new BACnetConfirmedServiceRequestReinitializeDeviceBuilder(
+    return new BACnetConfirmedServiceRequestReinitializeDeviceBuilderImpl(
         reinitializedStateOfDevice, password, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestReinitializeDeviceBuilder
+  public static class BACnetConfirmedServiceRequestReinitializeDeviceBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
         reinitializedStateOfDevice;
     private final BACnetContextTagCharacterString password;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestReinitializeDeviceBuilder(
+    public BACnetConfirmedServiceRequestReinitializeDeviceBuilderImpl(
         BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
             reinitializedStateOfDevice,
         BACnetContextTagCharacterString password,
         Long serviceRequestLength) {
-
       this.reinitializedStateOfDevice = reinitializedStateOfDevice;
       this.password = password;
       this.serviceRequestLength = serviceRequestLength;

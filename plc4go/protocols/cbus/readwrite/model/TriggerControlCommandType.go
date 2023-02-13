@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -143,19 +144,19 @@ func CastTriggerControlCommandType(structType interface{}) TriggerControlCommand
 	return castFunc(structType)
 }
 
-func (m TriggerControlCommandType) GetLengthInBits() uint16 {
+func (m TriggerControlCommandType) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m TriggerControlCommandType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m TriggerControlCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func TriggerControlCommandTypeParse(theBytes []byte) (TriggerControlCommandType, error) {
-	return TriggerControlCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func TriggerControlCommandTypeParse(ctx context.Context, theBytes []byte) (TriggerControlCommandType, error) {
+	return TriggerControlCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func TriggerControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlCommandType, error) {
+func TriggerControlCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlCommandType, error) {
 	val, err := readBuffer.ReadUint8("TriggerControlCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TriggerControlCommandType")
@@ -170,13 +171,13 @@ func TriggerControlCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Trig
 
 func (e TriggerControlCommandType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e TriggerControlCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e TriggerControlCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("TriggerControlCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

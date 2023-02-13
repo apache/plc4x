@@ -79,6 +79,7 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOperationDirection");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataOperationDirection _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (operationDirection)
     lengthInBits += operationDirection.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOperationDirectionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEscalatorOperationDirectionTagged operationDirection =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataOperationDirection");
     // Create the instance
-    return new BACnetConstructedDataOperationDirectionBuilder(
+    return new BACnetConstructedDataOperationDirectionBuilderImpl(
         operationDirection, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOperationDirectionBuilder
+  public static class BACnetConstructedDataOperationDirectionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEscalatorOperationDirectionTagged operationDirection;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOperationDirectionBuilder(
+    public BACnetConstructedDataOperationDirectionBuilderImpl(
         BACnetEscalatorOperationDirectionTagged operationDirection,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.operationDirection = operationDirection;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

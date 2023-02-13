@@ -64,6 +64,7 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumAnyValue");
 
@@ -82,6 +83,7 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumAnyValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (anyValue)
     if (anyValue != null) {
@@ -91,12 +93,13 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumAnyValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumAnyValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConstructedData anyValue =
         readOptionalField(
@@ -114,16 +117,16 @@ public class BACnetLogRecordLogDatumAnyValue extends BACnetLogRecordLogDatum imp
 
     readBuffer.closeContext("BACnetLogRecordLogDatumAnyValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumAnyValueBuilder(anyValue, tagNumber);
+    return new BACnetLogRecordLogDatumAnyValueBuilderImpl(anyValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumAnyValueBuilder
+  public static class BACnetLogRecordLogDatumAnyValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetConstructedData anyValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumAnyValueBuilder(BACnetConstructedData anyValue, Short tagNumber) {
-
+    public BACnetLogRecordLogDatumAnyValueBuilderImpl(
+        BACnetConstructedData anyValue, Short tagNumber) {
       this.anyValue = anyValue;
       this.tagNumber = tagNumber;
     }

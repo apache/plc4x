@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -108,12 +109,8 @@ func (m *_BVLCRegisterForeignDevice) GetTypeName() string {
 	return "BVLCRegisterForeignDevice"
 }
 
-func (m *_BVLCRegisterForeignDevice) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BVLCRegisterForeignDevice) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BVLCRegisterForeignDevice) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ttl)
 	lengthInBits += 16
@@ -121,15 +118,15 @@ func (m *_BVLCRegisterForeignDevice) GetLengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *_BVLCRegisterForeignDevice) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BVLCRegisterForeignDevice) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BVLCRegisterForeignDeviceParse(theBytes []byte) (BVLCRegisterForeignDevice, error) {
-	return BVLCRegisterForeignDeviceParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return BVLCRegisterForeignDeviceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func BVLCRegisterForeignDeviceParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCRegisterForeignDevice, error) {
+func BVLCRegisterForeignDeviceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCRegisterForeignDevice, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCRegisterForeignDevice"); pullErr != nil {
@@ -159,14 +156,14 @@ func BVLCRegisterForeignDeviceParseWithBuffer(readBuffer utils.ReadBuffer) (BVLC
 }
 
 func (m *_BVLCRegisterForeignDevice) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -186,7 +183,7 @@ func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BVLCRegisterForeignDevice) isBVLCRegisterForeignDevice() bool {
@@ -198,7 +195,7 @@ func (m *_BVLCRegisterForeignDevice) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -61,6 +61,7 @@ public class S7ParameterUserData extends S7Parameter implements Message {
   @Override
   protected void serializeS7ParameterChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7ParameterUserData");
 
@@ -84,6 +85,7 @@ public class S7ParameterUserData extends S7Parameter implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7ParameterUserData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (numItems)
     lengthInBits += 8;
@@ -92,7 +94,7 @@ public class S7ParameterUserData extends S7Parameter implements Message {
     if (items != null) {
       int i = 0;
       for (S7ParameterUserDataItem element : items) {
-        boolean last = ++i >= items.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= items.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -100,12 +102,13 @@ public class S7ParameterUserData extends S7Parameter implements Message {
     return lengthInBits;
   }
 
-  public static S7ParameterUserDataBuilder staticParseBuilder(
+  public static S7ParameterBuilder staticParseS7ParameterBuilder(
       ReadBuffer readBuffer, Short messageType) throws ParseException {
     readBuffer.pullContext("S7ParameterUserData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numItems = readImplicitField("numItems", readUnsignedShort(readBuffer, 8));
 
@@ -118,14 +121,13 @@ public class S7ParameterUserData extends S7Parameter implements Message {
 
     readBuffer.closeContext("S7ParameterUserData");
     // Create the instance
-    return new S7ParameterUserDataBuilder(items);
+    return new S7ParameterUserDataBuilderImpl(items);
   }
 
-  public static class S7ParameterUserDataBuilder implements S7Parameter.S7ParameterBuilder {
+  public static class S7ParameterUserDataBuilderImpl implements S7Parameter.S7ParameterBuilder {
     private final List<S7ParameterUserDataItem> items;
 
-    public S7ParameterUserDataBuilder(List<S7ParameterUserDataItem> items) {
-
+    public S7ParameterUserDataBuilderImpl(List<S7ParameterUserDataItem> items) {
       this.items = items;
     }
 

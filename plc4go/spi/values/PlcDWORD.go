@@ -20,6 +20,7 @@
 package values
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 	"math"
@@ -192,13 +193,13 @@ func (m PlcDWORD) GetPlcValueType() apiValues.PlcValueType {
 
 func (m PlcDWORD) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m PlcDWORD) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m PlcDWORD) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("PlcDINT", 32, m.value)
 }
 

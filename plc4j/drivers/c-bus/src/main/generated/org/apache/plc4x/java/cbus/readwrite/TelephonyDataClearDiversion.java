@@ -48,6 +48,7 @@ public class TelephonyDataClearDiversion extends TelephonyData implements Messag
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataClearDiversion");
 
@@ -63,26 +64,28 @@ public class TelephonyDataClearDiversion extends TelephonyData implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataClearDiversion _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static TelephonyDataClearDiversionBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataClearDiversion");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TelephonyDataClearDiversion");
     // Create the instance
-    return new TelephonyDataClearDiversionBuilder();
+    return new TelephonyDataClearDiversionBuilderImpl();
   }
 
-  public static class TelephonyDataClearDiversionBuilder
+  public static class TelephonyDataClearDiversionBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
 
-    public TelephonyDataClearDiversionBuilder() {}
+    public TelephonyDataClearDiversionBuilderImpl() {}
 
     public TelephonyDataClearDiversion build(
         TelephonyCommandTypeContainer commandTypeContainer, byte argument) {

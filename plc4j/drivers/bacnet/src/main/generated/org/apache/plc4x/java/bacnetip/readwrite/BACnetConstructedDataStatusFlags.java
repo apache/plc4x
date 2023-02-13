@@ -78,6 +78,7 @@ public class BACnetConstructedDataStatusFlags extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataStatusFlags");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataStatusFlags extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataStatusFlags _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusFlags)
     lengthInBits += statusFlags.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataStatusFlags extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataStatusFlagsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataStatusFlags extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataStatusFlags extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataStatusFlags");
     // Create the instance
-    return new BACnetConstructedDataStatusFlagsBuilder(statusFlags, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataStatusFlagsBuilderImpl(
+        statusFlags, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataStatusFlagsBuilder
+  public static class BACnetConstructedDataStatusFlagsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetStatusFlagsTagged statusFlags;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStatusFlagsBuilder(
+    public BACnetConstructedDataStatusFlagsBuilderImpl(
         BACnetStatusFlagsTagged statusFlags,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.statusFlags = statusFlags;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

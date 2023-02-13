@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,19 +118,19 @@ func CastBACnetAuthorizationMode(structType interface{}) BACnetAuthorizationMode
 	return castFunc(structType)
 }
 
-func (m BACnetAuthorizationMode) GetLengthInBits() uint16 {
+func (m BACnetAuthorizationMode) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetAuthorizationMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetAuthorizationMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetAuthorizationModeParse(theBytes []byte) (BACnetAuthorizationMode, error) {
-	return BACnetAuthorizationModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetAuthorizationModeParse(ctx context.Context, theBytes []byte) (BACnetAuthorizationMode, error) {
+	return BACnetAuthorizationModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAuthorizationModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthorizationMode, error) {
+func BACnetAuthorizationModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthorizationMode, error) {
 	val, err := readBuffer.ReadUint16("BACnetAuthorizationMode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAuthorizationMode")
@@ -144,13 +145,13 @@ func BACnetAuthorizationModeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 
 func (e BACnetAuthorizationMode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetAuthorizationMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetAuthorizationMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetAuthorizationMode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

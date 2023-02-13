@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataWriteStatus) GetWriteStatus() BACnetWriteStatusTa
 ///////////////////////
 
 func (m *_BACnetConstructedDataWriteStatus) GetActualValue() BACnetWriteStatusTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetWriteStatusTagged(m.GetWriteStatus())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataWriteStatus) GetTypeName() string {
 	return "BACnetConstructedDataWriteStatus"
 }
 
-func (m *_BACnetConstructedDataWriteStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataWriteStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataWriteStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (writeStatus)
-	lengthInBits += m.WriteStatus.GetLengthInBits()
+	lengthInBits += m.WriteStatus.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataWriteStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataWriteStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataWriteStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWriteStatus, error) {
-	return BACnetConstructedDataWriteStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataWriteStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataWriteStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWriteStatus, error) {
+func BACnetConstructedDataWriteStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWriteStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataWriteStatus"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataWriteStatusParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("writeStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for writeStatus")
 	}
-	_writeStatus, _writeStatusErr := BACnetWriteStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_writeStatus, _writeStatusErr := BACnetWriteStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _writeStatusErr != nil {
 		return nil, errors.Wrap(_writeStatusErr, "Error parsing 'writeStatus' field of BACnetConstructedDataWriteStatus")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataWriteStatusParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataWriteStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataWriteStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataWriteStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataWriteStatus) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("writeStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for writeStatus")
 		}
-		_writeStatusErr := writeBuffer.WriteSerializable(m.GetWriteStatus())
+		_writeStatusErr := writeBuffer.WriteSerializable(ctx, m.GetWriteStatus())
 		if popErr := writeBuffer.PopContext("writeStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for writeStatus")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataWriteStatus) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_writeStatusErr, "Error serializing 'writeStatus' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataWriteStatus) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataWriteStatus) isBACnetConstructedDataWriteStatus() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataWriteStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

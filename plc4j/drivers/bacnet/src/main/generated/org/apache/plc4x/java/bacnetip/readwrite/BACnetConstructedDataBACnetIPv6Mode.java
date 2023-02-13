@@ -78,6 +78,7 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPv6Mode");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBACnetIPv6Mode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bacnetIpv6Mode)
     lengthInBits += bacnetIpv6Mode.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBACnetIPv6ModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetIPModeTagged bacnetIpv6Mode =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPv6Mode");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPv6ModeBuilder(
+    return new BACnetConstructedDataBACnetIPv6ModeBuilderImpl(
         bacnetIpv6Mode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBACnetIPv6ModeBuilder
+  public static class BACnetConstructedDataBACnetIPv6ModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetIPModeTagged bacnetIpv6Mode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBACnetIPv6ModeBuilder(
+    public BACnetConstructedDataBACnetIPv6ModeBuilderImpl(
         BACnetIPModeTagged bacnetIpv6Mode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bacnetIpv6Mode = bacnetIpv6Mode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

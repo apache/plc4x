@@ -78,6 +78,7 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDoNotHide");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDoNotHide _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doNotHide)
     lengthInBits += doNotHide.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDoNotHideBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean doNotHide =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataDoNotHide");
     // Create the instance
-    return new BACnetConstructedDataDoNotHideBuilder(doNotHide, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDoNotHideBuilderImpl(doNotHide, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDoNotHideBuilder
+  public static class BACnetConstructedDataDoNotHideBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean doNotHide;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDoNotHideBuilder(
+    public BACnetConstructedDataDoNotHideBuilderImpl(
         BACnetApplicationTagBoolean doNotHide,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.doNotHide = doNotHide;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

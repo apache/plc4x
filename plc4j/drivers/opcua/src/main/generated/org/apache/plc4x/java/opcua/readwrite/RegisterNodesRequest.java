@@ -73,6 +73,7 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisterNodesRequest");
 
@@ -97,6 +98,7 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RegisterNodesRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -108,7 +110,7 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
     if (nodesToRegister != null) {
       int i = 0;
       for (NodeId element : nodesToRegister) {
-        boolean last = ++i >= nodesToRegister.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToRegister.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -116,12 +118,13 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static RegisterNodesRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterNodesRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -140,20 +143,19 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("RegisterNodesRequest");
     // Create the instance
-    return new RegisterNodesRequestBuilder(requestHeader, noOfNodesToRegister, nodesToRegister);
+    return new RegisterNodesRequestBuilderImpl(requestHeader, noOfNodesToRegister, nodesToRegister);
   }
 
-  public static class RegisterNodesRequestBuilder
+  public static class RegisterNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfNodesToRegister;
     private final List<NodeId> nodesToRegister;
 
-    public RegisterNodesRequestBuilder(
+    public RegisterNodesRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToRegister,
         List<NodeId> nodesToRegister) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToRegister = noOfNodesToRegister;
       this.nodesToRegister = nodesToRegister;

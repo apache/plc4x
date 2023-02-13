@@ -85,6 +85,7 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterUnsignedRange");
 
@@ -115,6 +116,7 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterUnsignedRange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -134,12 +136,13 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
     return lengthInBits;
   }
 
-  public static BACnetEventParameterUnsignedRangeBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterUnsignedRange");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -191,11 +194,11 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
 
     readBuffer.closeContext("BACnetEventParameterUnsignedRange");
     // Create the instance
-    return new BACnetEventParameterUnsignedRangeBuilder(
+    return new BACnetEventParameterUnsignedRangeBuilderImpl(
         openingTag, timeDelay, lowLimit, highLimit, closingTag);
   }
 
-  public static class BACnetEventParameterUnsignedRangeBuilder
+  public static class BACnetEventParameterUnsignedRangeBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
@@ -203,13 +206,12 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
     private final BACnetContextTagUnsignedInteger highLimit;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterUnsignedRangeBuilder(
+    public BACnetEventParameterUnsignedRangeBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetContextTagUnsignedInteger lowLimit,
         BACnetContextTagUnsignedInteger highLimit,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.lowLimit = lowLimit;

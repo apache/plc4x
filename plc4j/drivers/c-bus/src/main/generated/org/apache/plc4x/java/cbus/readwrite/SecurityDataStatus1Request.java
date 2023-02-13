@@ -47,6 +47,7 @@ public class SecurityDataStatus1Request extends SecurityData implements Message 
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataStatus1Request");
 
@@ -62,26 +63,28 @@ public class SecurityDataStatus1Request extends SecurityData implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataStatus1Request _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SecurityDataStatus1RequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataStatus1Request");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataStatus1Request");
     // Create the instance
-    return new SecurityDataStatus1RequestBuilder();
+    return new SecurityDataStatus1RequestBuilderImpl();
   }
 
-  public static class SecurityDataStatus1RequestBuilder
+  public static class SecurityDataStatus1RequestBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataStatus1RequestBuilder() {}
+    public SecurityDataStatus1RequestBuilderImpl() {}
 
     public SecurityDataStatus1Request build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

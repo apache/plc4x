@@ -78,6 +78,7 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDoorStatus");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDoorStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doorStatus)
     lengthInBits += doorStatus.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDoorStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDoorStatusTagged doorStatus =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataDoorStatus");
     // Create the instance
-    return new BACnetConstructedDataDoorStatusBuilder(doorStatus, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDoorStatusBuilderImpl(
+        doorStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDoorStatusBuilder
+  public static class BACnetConstructedDataDoorStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDoorStatusTagged doorStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDoorStatusBuilder(
+    public BACnetConstructedDataDoorStatusBuilderImpl(
         BACnetDoorStatusTagged doorStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.doorStatus = doorStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

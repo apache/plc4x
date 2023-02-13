@@ -51,6 +51,7 @@ public class ConnectionRequestInformationDeviceManagement extends ConnectionRequ
   protected void serializeConnectionRequestInformationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionRequestInformationDeviceManagement");
 
@@ -66,26 +67,28 @@ public class ConnectionRequestInformationDeviceManagement extends ConnectionRequ
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConnectionRequestInformationDeviceManagement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ConnectionRequestInformationDeviceManagementBuilder staticParseBuilder(
+  public static ConnectionRequestInformationBuilder staticParseConnectionRequestInformationBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ConnectionRequestInformationDeviceManagement");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ConnectionRequestInformationDeviceManagement");
     // Create the instance
-    return new ConnectionRequestInformationDeviceManagementBuilder();
+    return new ConnectionRequestInformationDeviceManagementBuilderImpl();
   }
 
-  public static class ConnectionRequestInformationDeviceManagementBuilder
+  public static class ConnectionRequestInformationDeviceManagementBuilderImpl
       implements ConnectionRequestInformation.ConnectionRequestInformationBuilder {
 
-    public ConnectionRequestInformationDeviceManagementBuilder() {}
+    public ConnectionRequestInformationDeviceManagementBuilderImpl() {}
 
     public ConnectionRequestInformationDeviceManagement build() {
       ConnectionRequestInformationDeviceManagement connectionRequestInformationDeviceManagement =

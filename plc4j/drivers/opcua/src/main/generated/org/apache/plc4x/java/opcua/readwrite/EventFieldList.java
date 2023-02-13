@@ -70,6 +70,7 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EventFieldList");
 
@@ -94,6 +95,7 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EventFieldList _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (clientHandle)
     lengthInBits += 32;
@@ -105,7 +107,7 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
     if (eventFields != null) {
       int i = 0;
       for (Variant element : eventFields) {
-        boolean last = ++i >= eventFields.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= eventFields.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -113,12 +115,13 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static EventFieldListBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EventFieldList");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long clientHandle = readSimpleField("clientHandle", readUnsignedLong(readBuffer, 32));
 
@@ -132,18 +135,17 @@ public class EventFieldList extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("EventFieldList");
     // Create the instance
-    return new EventFieldListBuilder(clientHandle, noOfEventFields, eventFields);
+    return new EventFieldListBuilderImpl(clientHandle, noOfEventFields, eventFields);
   }
 
-  public static class EventFieldListBuilder
+  public static class EventFieldListBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long clientHandle;
     private final int noOfEventFields;
     private final List<Variant> eventFields;
 
-    public EventFieldListBuilder(
+    public EventFieldListBuilderImpl(
         long clientHandle, int noOfEventFields, List<Variant> eventFields) {
-
       this.clientHandle = clientHandle;
       this.noOfEventFields = noOfEventFields;
       this.eventFields = eventFields;

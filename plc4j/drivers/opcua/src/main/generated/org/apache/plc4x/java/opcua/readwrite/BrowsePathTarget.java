@@ -64,6 +64,7 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BrowsePathTarget");
 
@@ -85,6 +86,7 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BrowsePathTarget _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (targetId)
     lengthInBits += targetId.getLengthInBits();
@@ -95,12 +97,13 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static BrowsePathTargetBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BrowsePathTarget");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExpandedNodeId targetId =
         readSimpleField(
@@ -113,16 +116,15 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("BrowsePathTarget");
     // Create the instance
-    return new BrowsePathTargetBuilder(targetId, remainingPathIndex);
+    return new BrowsePathTargetBuilderImpl(targetId, remainingPathIndex);
   }
 
-  public static class BrowsePathTargetBuilder
+  public static class BrowsePathTargetBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExpandedNodeId targetId;
     private final long remainingPathIndex;
 
-    public BrowsePathTargetBuilder(ExpandedNodeId targetId, long remainingPathIndex) {
-
+    public BrowsePathTargetBuilderImpl(ExpandedNodeId targetId, long remainingPathIndex) {
       this.targetId = targetId;
       this.remainingPathIndex = remainingPathIndex;
     }

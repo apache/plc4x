@@ -68,6 +68,7 @@ public class AdsWriteControlResponse extends AmsPacket implements Message {
   @Override
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsWriteControlResponse");
 
@@ -91,6 +92,7 @@ public class AdsWriteControlResponse extends AmsPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsWriteControlResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (result)
     lengthInBits += 32;
@@ -98,12 +100,13 @@ public class AdsWriteControlResponse extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsWriteControlResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsWriteControlResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ReturnCode result =
         readEnumField(
@@ -114,14 +117,13 @@ public class AdsWriteControlResponse extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsWriteControlResponse");
     // Create the instance
-    return new AdsWriteControlResponseBuilder(result);
+    return new AdsWriteControlResponseBuilderImpl(result);
   }
 
-  public static class AdsWriteControlResponseBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsWriteControlResponseBuilderImpl implements AmsPacket.AmsPacketBuilder {
     private final ReturnCode result;
 
-    public AdsWriteControlResponseBuilder(ReturnCode result) {
-
+    public AdsWriteControlResponseBuilderImpl(ReturnCode result) {
       this.result = result;
     }
 

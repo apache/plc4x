@@ -62,6 +62,7 @@ public class ParameterValueRaw extends ParameterValue implements Message {
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueRaw");
 
@@ -80,6 +81,7 @@ public class ParameterValueRaw extends ParameterValue implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueRaw _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (data != null) {
@@ -89,26 +91,26 @@ public class ParameterValueRaw extends ParameterValue implements Message {
     return lengthInBits;
   }
 
-  public static ParameterValueRawBuilder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueRaw");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact(numBytes));
 
     readBuffer.closeContext("ParameterValueRaw");
     // Create the instance
-    return new ParameterValueRawBuilder(data, numBytes);
+    return new ParameterValueRawBuilderImpl(data, numBytes);
   }
 
-  public static class ParameterValueRawBuilder implements ParameterValue.ParameterValueBuilder {
+  public static class ParameterValueRawBuilderImpl implements ParameterValue.ParameterValueBuilder {
     private final byte[] data;
     private final Short numBytes;
 
-    public ParameterValueRawBuilder(byte[] data, Short numBytes) {
-
+    public ParameterValueRawBuilderImpl(byte[] data, Short numBytes) {
       this.data = data;
       this.numBytes = numBytes;
     }

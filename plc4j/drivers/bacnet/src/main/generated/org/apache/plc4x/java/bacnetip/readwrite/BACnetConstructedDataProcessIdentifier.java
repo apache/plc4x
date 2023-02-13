@@ -79,6 +79,7 @@ public class BACnetConstructedDataProcessIdentifier extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProcessIdentifier");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataProcessIdentifier extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataProcessIdentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (processIdentifier)
     lengthInBits += processIdentifier.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataProcessIdentifier extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProcessIdentifierBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataProcessIdentifier extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger processIdentifier =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataProcessIdentifier extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataProcessIdentifier");
     // Create the instance
-    return new BACnetConstructedDataProcessIdentifierBuilder(
+    return new BACnetConstructedDataProcessIdentifierBuilderImpl(
         processIdentifier, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProcessIdentifierBuilder
+  public static class BACnetConstructedDataProcessIdentifierBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger processIdentifier;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProcessIdentifierBuilder(
+    public BACnetConstructedDataProcessIdentifierBuilderImpl(
         BACnetApplicationTagUnsignedInteger processIdentifier,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.processIdentifier = processIdentifier;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

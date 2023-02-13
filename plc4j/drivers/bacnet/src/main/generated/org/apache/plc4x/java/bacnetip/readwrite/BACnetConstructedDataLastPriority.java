@@ -78,6 +78,7 @@ public class BACnetConstructedDataLastPriority extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLastPriority");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLastPriority extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLastPriority _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lastPriority)
     lengthInBits += lastPriority.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLastPriority extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastPriorityBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLastPriority extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger lastPriority =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataLastPriority extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataLastPriority");
     // Create the instance
-    return new BACnetConstructedDataLastPriorityBuilder(
+    return new BACnetConstructedDataLastPriorityBuilderImpl(
         lastPriority, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastPriorityBuilder
+  public static class BACnetConstructedDataLastPriorityBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger lastPriority;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastPriorityBuilder(
+    public BACnetConstructedDataLastPriorityBuilderImpl(
         BACnetApplicationTagUnsignedInteger lastPriority,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastPriority = lastPriority;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

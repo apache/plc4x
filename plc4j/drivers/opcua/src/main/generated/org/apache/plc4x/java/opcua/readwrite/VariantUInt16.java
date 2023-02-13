@@ -69,12 +69,12 @@ public class VariantUInt16 extends Variant implements Message {
   @Override
   protected void serializeVariantChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("VariantUInt16");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeSimpleTypeArrayField("value", value, writeUnsignedInt(writeBuffer, 16));
@@ -91,6 +91,7 @@ public class VariantUInt16 extends Variant implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     VariantUInt16 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (arrayLength)
     if (arrayLength != null) {
@@ -105,12 +106,13 @@ public class VariantUInt16 extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantUInt16Builder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantUInt16");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer arrayLength =
         readOptionalField("arrayLength", readSignedInt(readBuffer, 32), arrayLengthSpecified);
@@ -123,15 +125,14 @@ public class VariantUInt16 extends Variant implements Message {
 
     readBuffer.closeContext("VariantUInt16");
     // Create the instance
-    return new VariantUInt16Builder(arrayLength, value);
+    return new VariantUInt16BuilderImpl(arrayLength, value);
   }
 
-  public static class VariantUInt16Builder implements Variant.VariantBuilder {
+  public static class VariantUInt16BuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<Integer> value;
 
-    public VariantUInt16Builder(Integer arrayLength, List<Integer> value) {
-
+    public VariantUInt16BuilderImpl(Integer arrayLength, List<Integer> value) {
       this.arrayLength = arrayLength;
       this.value = value;
     }

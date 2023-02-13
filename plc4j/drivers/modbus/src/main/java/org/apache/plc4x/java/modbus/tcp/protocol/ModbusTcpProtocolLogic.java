@@ -81,7 +81,7 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
             if (transactionIdentifierGenerator.get() == 0xFFFF) {
                 transactionIdentifierGenerator.set(1);
             }
-            ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, requestPdu, false);
+            ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusTcpADU)
                 .expectResponse(ModbusTcpADU.class, requestTimeout)
@@ -146,7 +146,7 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
             if (transactionIdentifierGenerator.get() == 0xFFFF) {
                 transactionIdentifierGenerator.set(1);
             }
-            ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, requestPdu, false);
+            ModbusTcpADU modbusTcpADU = new ModbusTcpADU(transactionIdentifier, unitIdentifier, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> context.sendRequest(modbusTcpADU)
                 .expectResponse(ModbusTcpADU.class, requestTimeout)

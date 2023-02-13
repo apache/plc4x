@@ -56,6 +56,7 @@ public class BACnetPropertyStatesPolarity extends BACnetPropertyStates implement
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesPolarity");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesPolarity extends BACnetPropertyStates implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesPolarity _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (polarity)
     lengthInBits += polarity.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesPolarity extends BACnetPropertyStates implement
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesPolarityBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesPolarity");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetPolarityTagged polarity =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesPolarity extends BACnetPropertyStates implement
 
     readBuffer.closeContext("BACnetPropertyStatesPolarity");
     // Create the instance
-    return new BACnetPropertyStatesPolarityBuilder(polarity);
+    return new BACnetPropertyStatesPolarityBuilderImpl(polarity);
   }
 
-  public static class BACnetPropertyStatesPolarityBuilder
+  public static class BACnetPropertyStatesPolarityBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetPolarityTagged polarity;
 
-    public BACnetPropertyStatesPolarityBuilder(BACnetPolarityTagged polarity) {
-
+    public BACnetPropertyStatesPolarityBuilderImpl(BACnetPolarityTagged polarity) {
       this.polarity = polarity;
     }
 

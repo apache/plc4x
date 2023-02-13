@@ -55,6 +55,7 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
   @Override
   protected void serializeBACnetScaleChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetScaleIntegerScale");
 
@@ -73,6 +74,7 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetScaleIntegerScale _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (integerScale)
     lengthInBits += integerScale.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
     return lengthInBits;
   }
 
-  public static BACnetScaleIntegerScaleBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetScaleBuilder staticParseBACnetScaleBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetScaleIntegerScale");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagSignedInteger integerScale =
         readSimpleField(
@@ -101,14 +104,13 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
 
     readBuffer.closeContext("BACnetScaleIntegerScale");
     // Create the instance
-    return new BACnetScaleIntegerScaleBuilder(integerScale);
+    return new BACnetScaleIntegerScaleBuilderImpl(integerScale);
   }
 
-  public static class BACnetScaleIntegerScaleBuilder implements BACnetScale.BACnetScaleBuilder {
+  public static class BACnetScaleIntegerScaleBuilderImpl implements BACnetScale.BACnetScaleBuilder {
     private final BACnetContextTagSignedInteger integerScale;
 
-    public BACnetScaleIntegerScaleBuilder(BACnetContextTagSignedInteger integerScale) {
-
+    public BACnetScaleIntegerScaleBuilderImpl(BACnetContextTagSignedInteger integerScale) {
       this.integerScale = integerScale;
     }
 

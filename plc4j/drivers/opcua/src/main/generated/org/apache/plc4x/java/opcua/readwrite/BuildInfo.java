@@ -94,6 +94,7 @@ public class BuildInfo extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BuildInfo");
 
@@ -129,6 +130,7 @@ public class BuildInfo extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BuildInfo _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (productUri)
     lengthInBits += productUri.getLengthInBits();
@@ -151,12 +153,13 @@ public class BuildInfo extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static BuildInfoBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BuildInfo");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString productUri =
         readSimpleField(
@@ -187,11 +190,11 @@ public class BuildInfo extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("BuildInfo");
     // Create the instance
-    return new BuildInfoBuilder(
+    return new BuildInfoBuilderImpl(
         productUri, manufacturerName, productName, softwareVersion, buildNumber, buildDate);
   }
 
-  public static class BuildInfoBuilder
+  public static class BuildInfoBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString productUri;
     private final PascalString manufacturerName;
@@ -200,14 +203,13 @@ public class BuildInfo extends ExtensionObjectDefinition implements Message {
     private final PascalString buildNumber;
     private final long buildDate;
 
-    public BuildInfoBuilder(
+    public BuildInfoBuilderImpl(
         PascalString productUri,
         PascalString manufacturerName,
         PascalString productName,
         PascalString softwareVersion,
         PascalString buildNumber,
         long buildDate) {
-
       this.productUri = productUri;
       this.manufacturerName = manufacturerName;
       this.productName = productName;

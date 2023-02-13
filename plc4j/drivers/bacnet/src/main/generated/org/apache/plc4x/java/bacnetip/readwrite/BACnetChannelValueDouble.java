@@ -56,6 +56,7 @@ public class BACnetChannelValueDouble extends BACnetChannelValue implements Mess
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueDouble");
 
@@ -74,6 +75,7 @@ public class BACnetChannelValueDouble extends BACnetChannelValue implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueDouble _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doubleValue)
     lengthInBits += doubleValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetChannelValueDouble extends BACnetChannelValue implements Mess
     return lengthInBits;
   }
 
-  public static BACnetChannelValueDoubleBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueDouble");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble doubleValue =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetChannelValueDouble extends BACnetChannelValue implements Mess
 
     readBuffer.closeContext("BACnetChannelValueDouble");
     // Create the instance
-    return new BACnetChannelValueDoubleBuilder(doubleValue);
+    return new BACnetChannelValueDoubleBuilderImpl(doubleValue);
   }
 
-  public static class BACnetChannelValueDoubleBuilder
+  public static class BACnetChannelValueDoubleBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagDouble doubleValue;
 
-    public BACnetChannelValueDoubleBuilder(BACnetApplicationTagDouble doubleValue) {
-
+    public BACnetChannelValueDoubleBuilderImpl(BACnetApplicationTagDouble doubleValue) {
       this.doubleValue = doubleValue;
     }
 

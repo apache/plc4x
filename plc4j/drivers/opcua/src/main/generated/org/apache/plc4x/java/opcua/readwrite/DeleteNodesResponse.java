@@ -87,6 +87,7 @@ public class DeleteNodesResponse extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DeleteNodesResponse");
 
@@ -117,6 +118,7 @@ public class DeleteNodesResponse extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DeleteNodesResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -128,7 +130,7 @@ public class DeleteNodesResponse extends ExtensionObjectDefinition implements Me
     if (results != null) {
       int i = 0;
       for (StatusCode element : results) {
-        boolean last = ++i >= results.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= results.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -140,7 +142,7 @@ public class DeleteNodesResponse extends ExtensionObjectDefinition implements Me
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -148,12 +150,13 @@ public class DeleteNodesResponse extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static DeleteNodesResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteNodesResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -181,11 +184,11 @@ public class DeleteNodesResponse extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("DeleteNodesResponse");
     // Create the instance
-    return new DeleteNodesResponseBuilder(
+    return new DeleteNodesResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class DeleteNodesResponseBuilder
+  public static class DeleteNodesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -193,13 +196,12 @@ public class DeleteNodesResponse extends ExtensionObjectDefinition implements Me
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public DeleteNodesResponseBuilder(
+    public DeleteNodesResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<StatusCode> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

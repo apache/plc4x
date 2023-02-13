@@ -87,6 +87,7 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryUpdateResponse");
 
@@ -117,6 +118,7 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     HistoryUpdateResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -128,7 +130,7 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
     if (results != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : results) {
-        boolean last = ++i >= results.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= results.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -140,7 +142,7 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -148,12 +150,13 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static HistoryUpdateResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryUpdateResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -183,11 +186,11 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("HistoryUpdateResponse");
     // Create the instance
-    return new HistoryUpdateResponseBuilder(
+    return new HistoryUpdateResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class HistoryUpdateResponseBuilder
+  public static class HistoryUpdateResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -195,13 +198,12 @@ public class HistoryUpdateResponse extends ExtensionObjectDefinition implements 
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public HistoryUpdateResponseBuilder(
+    public HistoryUpdateResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<ExtensionObjectDefinition> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

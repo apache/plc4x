@@ -75,6 +75,7 @@ public class BACnetConstructedDataTrendLogMultipleLogBuffer extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrendLogMultipleLogBuffer");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataTrendLogMultipleLogBuffer extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTrendLogMultipleLogBuffer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (floorText != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataTrendLogMultipleLogBuffer extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTrendLogMultipleLogBufferBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataTrendLogMultipleLogBuffer extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLogMultipleRecord> floorText =
         readTerminatedArrayField(
@@ -128,21 +131,20 @@ public class BACnetConstructedDataTrendLogMultipleLogBuffer extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataTrendLogMultipleLogBuffer");
     // Create the instance
-    return new BACnetConstructedDataTrendLogMultipleLogBufferBuilder(
+    return new BACnetConstructedDataTrendLogMultipleLogBufferBuilderImpl(
         floorText, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+  public static class BACnetConstructedDataTrendLogMultipleLogBufferBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLogMultipleRecord> floorText;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTrendLogMultipleLogBufferBuilder(
+    public BACnetConstructedDataTrendLogMultipleLogBufferBuilderImpl(
         List<BACnetLogMultipleRecord> floorText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.floorText = floorText;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

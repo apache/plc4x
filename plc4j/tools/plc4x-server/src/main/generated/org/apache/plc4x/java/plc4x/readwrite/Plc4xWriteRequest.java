@@ -63,6 +63,7 @@ public class Plc4xWriteRequest extends Plc4xMessage implements Message {
   @Override
   protected void serializePlc4xMessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Plc4xWriteRequest");
 
@@ -76,10 +77,15 @@ public class Plc4xWriteRequest extends Plc4xMessage implements Message {
     // Implicit Field (numTags) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     short numTags = (short) (COUNT(getTags()));
-    writeImplicitField("numTags", numTags, writeUnsignedShort(writeBuffer, 8));
+    writeImplicitField(
+        "numTags",
+        numTags,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (tags)
-    writeComplexTypeArrayField("tags", tags, writeBuffer);
+    writeComplexTypeArrayField(
+        "tags", tags, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("Plc4xWriteRequest");
   }
@@ -93,6 +99,7 @@ public class Plc4xWriteRequest extends Plc4xMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     Plc4xWriteRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (connectionId)
     lengthInBits += 16;
@@ -104,7 +111,7 @@ public class Plc4xWriteRequest extends Plc4xMessage implements Message {
     if (tags != null) {
       int i = 0;
       for (Plc4xTagValueRequest element : tags) {
-        boolean last = ++i >= tags.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= tags.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -112,12 +119,13 @@ public class Plc4xWriteRequest extends Plc4xMessage implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xWriteRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static Plc4xMessageBuilder staticParsePlc4xMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("Plc4xWriteRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int connectionId =
         readSimpleField(
@@ -141,15 +149,14 @@ public class Plc4xWriteRequest extends Plc4xMessage implements Message {
 
     readBuffer.closeContext("Plc4xWriteRequest");
     // Create the instance
-    return new Plc4xWriteRequestBuilder(connectionId, tags);
+    return new Plc4xWriteRequestBuilderImpl(connectionId, tags);
   }
 
-  public static class Plc4xWriteRequestBuilder implements Plc4xMessage.Plc4xMessageBuilder {
+  public static class Plc4xWriteRequestBuilderImpl implements Plc4xMessage.Plc4xMessageBuilder {
     private final int connectionId;
     private final List<Plc4xTagValueRequest> tags;
 
-    public Plc4xWriteRequestBuilder(int connectionId, List<Plc4xTagValueRequest> tags) {
-
+    public Plc4xWriteRequestBuilderImpl(int connectionId, List<Plc4xTagValueRequest> tags) {
       this.connectionId = connectionId;
       this.tags = tags;
     }

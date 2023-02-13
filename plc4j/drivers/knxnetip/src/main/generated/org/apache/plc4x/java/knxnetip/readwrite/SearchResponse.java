@@ -73,6 +73,7 @@ public class SearchResponse extends KnxNetIpMessage implements Message {
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SearchResponse");
 
@@ -109,6 +110,7 @@ public class SearchResponse extends KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SearchResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (hpaiControlEndpoint)
     lengthInBits += hpaiControlEndpoint.getLengthInBits();
@@ -122,12 +124,13 @@ public class SearchResponse extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static SearchResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SearchResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     HPAIControlEndpoint hpaiControlEndpoint =
         readSimpleField(
@@ -151,19 +154,18 @@ public class SearchResponse extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("SearchResponse");
     // Create the instance
-    return new SearchResponseBuilder(hpaiControlEndpoint, dibDeviceInfo, dibSuppSvcFamilies);
+    return new SearchResponseBuilderImpl(hpaiControlEndpoint, dibDeviceInfo, dibSuppSvcFamilies);
   }
 
-  public static class SearchResponseBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class SearchResponseBuilderImpl implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final HPAIControlEndpoint hpaiControlEndpoint;
     private final DIBDeviceInfo dibDeviceInfo;
     private final DIBSuppSvcFamilies dibSuppSvcFamilies;
 
-    public SearchResponseBuilder(
+    public SearchResponseBuilderImpl(
         HPAIControlEndpoint hpaiControlEndpoint,
         DIBDeviceInfo dibDeviceInfo,
         DIBSuppSvcFamilies dibSuppSvcFamilies) {
-
       this.hpaiControlEndpoint = hpaiControlEndpoint;
       this.dibDeviceInfo = dibDeviceInfo;
       this.dibSuppSvcFamilies = dibSuppSvcFamilies;

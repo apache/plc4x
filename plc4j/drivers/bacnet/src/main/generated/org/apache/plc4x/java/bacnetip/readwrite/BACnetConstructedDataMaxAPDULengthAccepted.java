@@ -79,6 +79,7 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaxAPDULengthAccepted");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMaxAPDULengthAccepted _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxApduLengthAccepted)
     lengthInBits += maxApduLengthAccepted.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMaxAPDULengthAcceptedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxApduLengthAccepted =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataMaxAPDULengthAccepted");
     // Create the instance
-    return new BACnetConstructedDataMaxAPDULengthAcceptedBuilder(
+    return new BACnetConstructedDataMaxAPDULengthAcceptedBuilderImpl(
         maxApduLengthAccepted, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMaxAPDULengthAcceptedBuilder
+  public static class BACnetConstructedDataMaxAPDULengthAcceptedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxApduLengthAccepted;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMaxAPDULengthAcceptedBuilder(
+    public BACnetConstructedDataMaxAPDULengthAcceptedBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxApduLengthAccepted,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxApduLengthAccepted = maxApduLengthAccepted;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

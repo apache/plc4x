@@ -64,6 +64,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("GenericAttributeValue");
 
@@ -85,6 +86,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     GenericAttributeValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (attributeId)
     lengthInBits += 32;
@@ -95,12 +97,13 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static GenericAttributeValueBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("GenericAttributeValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
 
@@ -111,16 +114,15 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("GenericAttributeValue");
     // Create the instance
-    return new GenericAttributeValueBuilder(attributeId, value);
+    return new GenericAttributeValueBuilderImpl(attributeId, value);
   }
 
-  public static class GenericAttributeValueBuilder
+  public static class GenericAttributeValueBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long attributeId;
     private final Variant value;
 
-    public GenericAttributeValueBuilder(long attributeId, Variant value) {
-
+    public GenericAttributeValueBuilderImpl(long attributeId, Variant value) {
       this.attributeId = attributeId;
       this.value = value;
     }

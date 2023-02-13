@@ -73,6 +73,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DeleteReferencesRequest");
 
@@ -98,6 +99,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DeleteReferencesRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -109,7 +111,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
     if (referencesToDelete != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : referencesToDelete) {
-        boolean last = ++i >= referencesToDelete.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= referencesToDelete.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -117,12 +119,13 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static DeleteReferencesRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteReferencesRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -144,21 +147,20 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("DeleteReferencesRequest");
     // Create the instance
-    return new DeleteReferencesRequestBuilder(
+    return new DeleteReferencesRequestBuilderImpl(
         requestHeader, noOfReferencesToDelete, referencesToDelete);
   }
 
-  public static class DeleteReferencesRequestBuilder
+  public static class DeleteReferencesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfReferencesToDelete;
     private final List<ExtensionObjectDefinition> referencesToDelete;
 
-    public DeleteReferencesRequestBuilder(
+    public DeleteReferencesRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfReferencesToDelete,
         List<ExtensionObjectDefinition> referencesToDelete) {
-
       this.requestHeader = requestHeader;
       this.noOfReferencesToDelete = noOfReferencesToDelete;
       this.referencesToDelete = referencesToDelete;

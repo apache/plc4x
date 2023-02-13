@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_plc4x_static.h>
 
@@ -33,7 +34,7 @@ uint16_t PLC4C_PLC4X_READ_WRITE_PLC4X_CONSTANTS_PLC4X_TCP_DEFAULT_PORT() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_plc4x_read_write_plc4x_constants_parse(plc4c_spi_read_buffer* readBuffer, plc4c_plc4x_read_write_plc4x_constants** _message) {
+plc4c_return_code plc4c_plc4x_read_write_plc4x_constants_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_plc4x_read_write_plc4x_constants** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -57,7 +58,7 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_constants_parse(plc4c_spi_read_bu
   return OK;
 }
 
-plc4c_return_code plc4c_plc4x_read_write_plc4x_constants_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_plc4x_read_write_plc4x_constants* _message) {
+plc4c_return_code plc4c_plc4x_read_write_plc4x_constants_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_plc4x_read_write_plc4x_constants* _message) {
   plc4c_return_code _res = OK;
 
   // Const Field (plc4xTcpDefaultPort)
@@ -66,11 +67,11 @@ plc4c_return_code plc4c_plc4x_read_write_plc4x_constants_serialize(plc4c_spi_wri
   return OK;
 }
 
-uint16_t plc4c_plc4x_read_write_plc4x_constants_length_in_bytes(plc4c_plc4x_read_write_plc4x_constants* _message) {
-  return plc4c_plc4x_read_write_plc4x_constants_length_in_bits(_message) / 8;
+uint16_t plc4c_plc4x_read_write_plc4x_constants_length_in_bytes(plc4x_spi_context ctx, plc4c_plc4x_read_write_plc4x_constants* _message) {
+  return plc4c_plc4x_read_write_plc4x_constants_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_plc4x_read_write_plc4x_constants_length_in_bits(plc4c_plc4x_read_write_plc4x_constants* _message) {
+uint16_t plc4c_plc4x_read_write_plc4x_constants_length_in_bits(plc4x_spi_context ctx, plc4c_plc4x_read_write_plc4x_constants* _message) {
   uint16_t lengthInBits = 0;
 
   // Const Field (plc4xTcpDefaultPort)

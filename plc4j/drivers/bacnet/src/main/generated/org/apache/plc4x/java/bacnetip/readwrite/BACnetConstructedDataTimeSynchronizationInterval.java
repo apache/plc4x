@@ -79,6 +79,7 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimeSynchronizationInterval");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimeSynchronizationInterval _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeSynchronization)
     lengthInBits += timeSynchronization.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimeSynchronizationIntervalBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger timeSynchronization =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
 
     readBuffer.closeContext("BACnetConstructedDataTimeSynchronizationInterval");
     // Create the instance
-    return new BACnetConstructedDataTimeSynchronizationIntervalBuilder(
+    return new BACnetConstructedDataTimeSynchronizationIntervalBuilderImpl(
         timeSynchronization, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimeSynchronizationIntervalBuilder
+  public static class BACnetConstructedDataTimeSynchronizationIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger timeSynchronization;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimeSynchronizationIntervalBuilder(
+    public BACnetConstructedDataTimeSynchronizationIntervalBuilderImpl(
         BACnetApplicationTagUnsignedInteger timeSynchronization,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timeSynchronization = timeSynchronization;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

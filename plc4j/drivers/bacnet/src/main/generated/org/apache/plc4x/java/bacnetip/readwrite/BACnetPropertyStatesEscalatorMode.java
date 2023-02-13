@@ -56,6 +56,7 @@ public class BACnetPropertyStatesEscalatorMode extends BACnetPropertyStates impl
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesEscalatorMode");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesEscalatorMode extends BACnetPropertyStates impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesEscalatorMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (escalatorMode)
     lengthInBits += escalatorMode.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesEscalatorMode extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesEscalatorModeBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesEscalatorMode");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEscalatorModeTagged escalatorMode =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesEscalatorMode extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesEscalatorMode");
     // Create the instance
-    return new BACnetPropertyStatesEscalatorModeBuilder(escalatorMode);
+    return new BACnetPropertyStatesEscalatorModeBuilderImpl(escalatorMode);
   }
 
-  public static class BACnetPropertyStatesEscalatorModeBuilder
+  public static class BACnetPropertyStatesEscalatorModeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetEscalatorModeTagged escalatorMode;
 
-    public BACnetPropertyStatesEscalatorModeBuilder(BACnetEscalatorModeTagged escalatorMode) {
-
+    public BACnetPropertyStatesEscalatorModeBuilderImpl(BACnetEscalatorModeTagged escalatorMode) {
       this.escalatorMode = escalatorMode;
     }
 

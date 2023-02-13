@@ -47,19 +47,14 @@ public class LDataCon extends CEMI implements Message {
   protected final List<CEMIAdditionalInformation> additionalInformation;
   protected final LDataFrame dataFrame;
 
-  // Arguments.
-  protected final Integer size;
-
   public LDataCon(
       short additionalInformationLength,
       List<CEMIAdditionalInformation> additionalInformation,
-      LDataFrame dataFrame,
-      Integer size) {
-    super(size);
+      LDataFrame dataFrame) {
+    super();
     this.additionalInformationLength = additionalInformationLength;
     this.additionalInformation = additionalInformation;
     this.dataFrame = dataFrame;
-    this.size = size;
   }
 
   public short getAdditionalInformationLength() {
@@ -77,6 +72,7 @@ public class LDataCon extends CEMI implements Message {
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LDataCon");
 
@@ -104,6 +100,7 @@ public class LDataCon extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LDataCon _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (additionalInformationLength)
     lengthInBits += 8;
@@ -121,12 +118,13 @@ public class LDataCon extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static LDataConBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LDataCon");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short additionalInformationLength =
         readSimpleField("additionalInformationLength", readUnsignedShort(readBuffer, 8));
@@ -145,31 +143,26 @@ public class LDataCon extends CEMI implements Message {
 
     readBuffer.closeContext("LDataCon");
     // Create the instance
-    return new LDataConBuilder(additionalInformationLength, additionalInformation, dataFrame, size);
+    return new LDataConBuilderImpl(additionalInformationLength, additionalInformation, dataFrame);
   }
 
-  public static class LDataConBuilder implements CEMI.CEMIBuilder {
+  public static class LDataConBuilderImpl implements CEMI.CEMIBuilder {
     private final short additionalInformationLength;
     private final List<CEMIAdditionalInformation> additionalInformation;
     private final LDataFrame dataFrame;
-    private final Integer size;
 
-    public LDataConBuilder(
+    public LDataConBuilderImpl(
         short additionalInformationLength,
         List<CEMIAdditionalInformation> additionalInformation,
-        LDataFrame dataFrame,
-        Integer size) {
-
+        LDataFrame dataFrame) {
       this.additionalInformationLength = additionalInformationLength;
       this.additionalInformation = additionalInformation;
       this.dataFrame = dataFrame;
-      this.size = size;
     }
 
-    public LDataCon build(Integer size) {
-
+    public LDataCon build() {
       LDataCon lDataCon =
-          new LDataCon(additionalInformationLength, additionalInformation, dataFrame, size);
+          new LDataCon(additionalInformationLength, additionalInformation, dataFrame);
       return lDataCon;
     }
   }

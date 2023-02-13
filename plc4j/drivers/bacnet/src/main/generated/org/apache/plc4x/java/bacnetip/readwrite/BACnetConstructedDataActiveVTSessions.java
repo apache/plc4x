@@ -75,6 +75,7 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataActiveVTSessions");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataActiveVTSessions _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (activeVTSession != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataActiveVTSessionsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetVTSession> activeVTSession =
         readTerminatedArrayField(
@@ -128,21 +131,20 @@ public class BACnetConstructedDataActiveVTSessions extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataActiveVTSessions");
     // Create the instance
-    return new BACnetConstructedDataActiveVTSessionsBuilder(
+    return new BACnetConstructedDataActiveVTSessionsBuilderImpl(
         activeVTSession, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataActiveVTSessionsBuilder
+  public static class BACnetConstructedDataActiveVTSessionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetVTSession> activeVTSession;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataActiveVTSessionsBuilder(
+    public BACnetConstructedDataActiveVTSessionsBuilderImpl(
         List<BACnetVTSession> activeVTSession,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activeVTSession = activeVTSession;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

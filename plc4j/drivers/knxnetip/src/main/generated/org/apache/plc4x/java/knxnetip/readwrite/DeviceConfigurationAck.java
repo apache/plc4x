@@ -58,6 +58,7 @@ public class DeviceConfigurationAck extends KnxNetIpMessage implements Message {
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DeviceConfigurationAck");
 
@@ -80,6 +81,7 @@ public class DeviceConfigurationAck extends KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DeviceConfigurationAck _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (deviceConfigurationAckDataBlock)
     lengthInBits += deviceConfigurationAckDataBlock.getLengthInBits();
@@ -87,12 +89,13 @@ public class DeviceConfigurationAck extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static DeviceConfigurationAckBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DeviceConfigurationAck");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DeviceConfigurationAckDataBlock deviceConfigurationAckDataBlock =
         readSimpleField(
@@ -103,16 +106,15 @@ public class DeviceConfigurationAck extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("DeviceConfigurationAck");
     // Create the instance
-    return new DeviceConfigurationAckBuilder(deviceConfigurationAckDataBlock);
+    return new DeviceConfigurationAckBuilderImpl(deviceConfigurationAckDataBlock);
   }
 
-  public static class DeviceConfigurationAckBuilder
+  public static class DeviceConfigurationAckBuilderImpl
       implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final DeviceConfigurationAckDataBlock deviceConfigurationAckDataBlock;
 
-    public DeviceConfigurationAckBuilder(
+    public DeviceConfigurationAckBuilderImpl(
         DeviceConfigurationAckDataBlock deviceConfigurationAckDataBlock) {
-
       this.deviceConfigurationAckDataBlock = deviceConfigurationAckDataBlock;
     }
 

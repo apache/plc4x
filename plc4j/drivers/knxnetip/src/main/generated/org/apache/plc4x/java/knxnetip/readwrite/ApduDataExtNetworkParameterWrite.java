@@ -42,17 +42,14 @@ public class ApduDataExtNetworkParameterWrite extends ApduDataExt implements Mes
     return (short) 0x24;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtNetworkParameterWrite(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtNetworkParameterWrite() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtNetworkParameterWrite");
 
@@ -68,35 +65,32 @@ public class ApduDataExtNetworkParameterWrite extends ApduDataExt implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtNetworkParameterWrite _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtNetworkParameterWriteBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtNetworkParameterWrite");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtNetworkParameterWrite");
     // Create the instance
-    return new ApduDataExtNetworkParameterWriteBuilder(length);
+    return new ApduDataExtNetworkParameterWriteBuilderImpl();
   }
 
-  public static class ApduDataExtNetworkParameterWriteBuilder
+  public static class ApduDataExtNetworkParameterWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtNetworkParameterWriteBuilder(Short length) {
+    public ApduDataExtNetworkParameterWriteBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtNetworkParameterWrite build(Short length) {
-
+    public ApduDataExtNetworkParameterWrite build() {
       ApduDataExtNetworkParameterWrite apduDataExtNetworkParameterWrite =
-          new ApduDataExtNetworkParameterWrite(length);
+          new ApduDataExtNetworkParameterWrite();
       return apduDataExtNetworkParameterWrite;
     }
   }

@@ -56,6 +56,7 @@ public class BACnetChannelValueBoolean extends BACnetChannelValue implements Mes
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueBoolean");
 
@@ -74,6 +75,7 @@ public class BACnetChannelValueBoolean extends BACnetChannelValue implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueBoolean _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (booleanValue)
     lengthInBits += booleanValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetChannelValueBoolean extends BACnetChannelValue implements Mes
     return lengthInBits;
   }
 
-  public static BACnetChannelValueBooleanBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueBoolean");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean booleanValue =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetChannelValueBoolean extends BACnetChannelValue implements Mes
 
     readBuffer.closeContext("BACnetChannelValueBoolean");
     // Create the instance
-    return new BACnetChannelValueBooleanBuilder(booleanValue);
+    return new BACnetChannelValueBooleanBuilderImpl(booleanValue);
   }
 
-  public static class BACnetChannelValueBooleanBuilder
+  public static class BACnetChannelValueBooleanBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagBoolean booleanValue;
 
-    public BACnetChannelValueBooleanBuilder(BACnetApplicationTagBoolean booleanValue) {
-
+    public BACnetChannelValueBooleanBuilderImpl(BACnetApplicationTagBoolean booleanValue) {
       this.booleanValue = booleanValue;
     }
 

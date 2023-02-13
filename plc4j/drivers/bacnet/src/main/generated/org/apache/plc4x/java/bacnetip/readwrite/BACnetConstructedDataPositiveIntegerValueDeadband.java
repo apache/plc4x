@@ -79,6 +79,7 @@ public class BACnetConstructedDataPositiveIntegerValueDeadband extends BACnetCon
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPositiveIntegerValueDeadband");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataPositiveIntegerValueDeadband extends BACnetCon
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPositiveIntegerValueDeadband _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (deadband)
     lengthInBits += deadband.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataPositiveIntegerValueDeadband extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPositiveIntegerValueDeadbandBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataPositiveIntegerValueDeadband extends BACnetCon
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger deadband =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataPositiveIntegerValueDeadband extends BACnetCon
 
     readBuffer.closeContext("BACnetConstructedDataPositiveIntegerValueDeadband");
     // Create the instance
-    return new BACnetConstructedDataPositiveIntegerValueDeadbandBuilder(
+    return new BACnetConstructedDataPositiveIntegerValueDeadbandBuilderImpl(
         deadband, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPositiveIntegerValueDeadbandBuilder
+  public static class BACnetConstructedDataPositiveIntegerValueDeadbandBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger deadband;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPositiveIntegerValueDeadbandBuilder(
+    public BACnetConstructedDataPositiveIntegerValueDeadbandBuilderImpl(
         BACnetApplicationTagUnsignedInteger deadband,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.deadband = deadband;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

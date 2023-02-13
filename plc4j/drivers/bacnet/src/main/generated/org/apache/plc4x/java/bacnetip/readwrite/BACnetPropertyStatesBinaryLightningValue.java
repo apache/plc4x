@@ -57,6 +57,7 @@ public class BACnetPropertyStatesBinaryLightningValue extends BACnetPropertyStat
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesBinaryLightningValue");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesBinaryLightningValue extends BACnetPropertyStat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesBinaryLightningValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (binaryLightningValue)
     lengthInBits += binaryLightningValue.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetPropertyStatesBinaryLightningValue extends BACnetPropertyStat
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesBinaryLightningValueBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesBinaryLightningValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBinaryLightingPVTagged binaryLightningValue =
         readSimpleField(
@@ -103,16 +106,15 @@ public class BACnetPropertyStatesBinaryLightningValue extends BACnetPropertyStat
 
     readBuffer.closeContext("BACnetPropertyStatesBinaryLightningValue");
     // Create the instance
-    return new BACnetPropertyStatesBinaryLightningValueBuilder(binaryLightningValue);
+    return new BACnetPropertyStatesBinaryLightningValueBuilderImpl(binaryLightningValue);
   }
 
-  public static class BACnetPropertyStatesBinaryLightningValueBuilder
+  public static class BACnetPropertyStatesBinaryLightningValueBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetBinaryLightingPVTagged binaryLightningValue;
 
-    public BACnetPropertyStatesBinaryLightningValueBuilder(
+    public BACnetPropertyStatesBinaryLightningValueBuilderImpl(
         BACnetBinaryLightingPVTagged binaryLightningValue) {
-
       this.binaryLightningValue = binaryLightningValue;
     }
 

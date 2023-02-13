@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetAuthorizationMode() BACnetA
 ///////////////////////
 
 func (m *_BACnetConstructedDataAuthorizationMode) GetActualValue() BACnetAuthorizationModeTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetAuthorizationModeTagged(m.GetAuthorizationMode())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAuthorizationMode) GetTypeName() string {
 	return "BACnetConstructedDataAuthorizationMode"
 }
 
-func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (authorizationMode)
-	lengthInBits += m.AuthorizationMode.GetLengthInBits()
+	lengthInBits += m.AuthorizationMode.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAuthorizationMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAuthorizationModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationMode, error) {
-	return BACnetConstructedDataAuthorizationModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAuthorizationModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAuthorizationModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationMode, error) {
+func BACnetConstructedDataAuthorizationModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthorizationMode"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAuthorizationModeParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("authorizationMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for authorizationMode")
 	}
-	_authorizationMode, _authorizationModeErr := BACnetAuthorizationModeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_authorizationMode, _authorizationModeErr := BACnetAuthorizationModeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _authorizationModeErr != nil {
 		return nil, errors.Wrap(_authorizationModeErr, "Error parsing 'authorizationMode' field of BACnetConstructedDataAuthorizationMode")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAuthorizationModeParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetConstructedDataAuthorizationMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAuthorizationMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAuthorizationMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAuthorizationMode) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("authorizationMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for authorizationMode")
 		}
-		_authorizationModeErr := writeBuffer.WriteSerializable(m.GetAuthorizationMode())
+		_authorizationModeErr := writeBuffer.WriteSerializable(ctx, m.GetAuthorizationMode())
 		if popErr := writeBuffer.PopContext("authorizationMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for authorizationMode")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAuthorizationMode) SerializeWithWriteBuffer(write
 			return errors.Wrap(_authorizationModeErr, "Error serializing 'authorizationMode' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAuthorizationMode) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAuthorizationMode) isBACnetConstructedDataAuthorizationMode() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAuthorizationMode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

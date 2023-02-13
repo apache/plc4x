@@ -78,6 +78,7 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMinimumOutput");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMinimumOutput _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (minimumOutput)
     lengthInBits += minimumOutput.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMinimumOutputBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal minimumOutput =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataMinimumOutput");
     // Create the instance
-    return new BACnetConstructedDataMinimumOutputBuilder(
+    return new BACnetConstructedDataMinimumOutputBuilderImpl(
         minimumOutput, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMinimumOutputBuilder
+  public static class BACnetConstructedDataMinimumOutputBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal minimumOutput;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMinimumOutputBuilder(
+    public BACnetConstructedDataMinimumOutputBuilderImpl(
         BACnetApplicationTagReal minimumOutput,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minimumOutput = minimumOutput;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

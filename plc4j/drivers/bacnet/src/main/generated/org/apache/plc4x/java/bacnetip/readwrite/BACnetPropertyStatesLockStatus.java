@@ -56,6 +56,7 @@ public class BACnetPropertyStatesLockStatus extends BACnetPropertyStates impleme
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLockStatus");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesLockStatus extends BACnetPropertyStates impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLockStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lockStatus)
     lengthInBits += lockStatus.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesLockStatus extends BACnetPropertyStates impleme
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLockStatusBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLockStatus");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLockStatusTagged lockStatus =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesLockStatus extends BACnetPropertyStates impleme
 
     readBuffer.closeContext("BACnetPropertyStatesLockStatus");
     // Create the instance
-    return new BACnetPropertyStatesLockStatusBuilder(lockStatus);
+    return new BACnetPropertyStatesLockStatusBuilderImpl(lockStatus);
   }
 
-  public static class BACnetPropertyStatesLockStatusBuilder
+  public static class BACnetPropertyStatesLockStatusBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLockStatusTagged lockStatus;
 
-    public BACnetPropertyStatesLockStatusBuilder(BACnetLockStatusTagged lockStatus) {
-
+    public BACnetPropertyStatesLockStatusBuilderImpl(BACnetLockStatusTagged lockStatus) {
       this.lockStatus = lockStatus;
     }
 

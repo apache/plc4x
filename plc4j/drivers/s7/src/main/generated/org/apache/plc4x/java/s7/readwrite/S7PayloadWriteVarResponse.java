@@ -49,13 +49,9 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
   // Properties.
   protected final List<S7VarPayloadStatusItem> items;
 
-  // Arguments.
-  protected final S7Parameter parameter;
-
-  public S7PayloadWriteVarResponse(List<S7VarPayloadStatusItem> items, S7Parameter parameter) {
-    super(parameter);
+  public S7PayloadWriteVarResponse(List<S7VarPayloadStatusItem> items) {
+    super();
     this.items = items;
-    this.parameter = parameter;
   }
 
   public List<S7VarPayloadStatusItem> getItems() {
@@ -65,6 +61,7 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
   @Override
   protected void serializeS7PayloadChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadWriteVarResponse");
 
@@ -83,12 +80,13 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadWriteVarResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (items != null) {
       int i = 0;
       for (S7VarPayloadStatusItem element : items) {
-        boolean last = ++i >= items.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= items.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -96,12 +94,13 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
     return lengthInBits;
   }
 
-  public static S7PayloadWriteVarResponseBuilder staticParseBuilder(
+  public static S7PayloadBuilder staticParseS7PayloadBuilder(
       ReadBuffer readBuffer, Short messageType, S7Parameter parameter) throws ParseException {
     readBuffer.pullContext("S7PayloadWriteVarResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<S7VarPayloadStatusItem> items =
         readCountArrayField(
@@ -112,24 +111,18 @@ public class S7PayloadWriteVarResponse extends S7Payload implements Message {
 
     readBuffer.closeContext("S7PayloadWriteVarResponse");
     // Create the instance
-    return new S7PayloadWriteVarResponseBuilder(items, parameter);
+    return new S7PayloadWriteVarResponseBuilderImpl(items);
   }
 
-  public static class S7PayloadWriteVarResponseBuilder implements S7Payload.S7PayloadBuilder {
+  public static class S7PayloadWriteVarResponseBuilderImpl implements S7Payload.S7PayloadBuilder {
     private final List<S7VarPayloadStatusItem> items;
-    private final S7Parameter parameter;
 
-    public S7PayloadWriteVarResponseBuilder(
-        List<S7VarPayloadStatusItem> items, S7Parameter parameter) {
-
+    public S7PayloadWriteVarResponseBuilderImpl(List<S7VarPayloadStatusItem> items) {
       this.items = items;
-      this.parameter = parameter;
     }
 
-    public S7PayloadWriteVarResponse build(S7Parameter parameter) {
-
-      S7PayloadWriteVarResponse s7PayloadWriteVarResponse =
-          new S7PayloadWriteVarResponse(items, parameter);
+    public S7PayloadWriteVarResponse build() {
+      S7PayloadWriteVarResponse s7PayloadWriteVarResponse = new S7PayloadWriteVarResponse(items);
       return s7PayloadWriteVarResponse;
     }
   }

@@ -80,6 +80,7 @@ public abstract class BACnetFaultParameterFaultOutOfRangeMaxNormalValue implemen
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValue");
 
@@ -108,6 +109,7 @@ public abstract class BACnetFaultParameterFaultOutOfRangeMaxNormalValue implemen
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetFaultParameterFaultOutOfRangeMaxNormalValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -148,6 +150,7 @@ public abstract class BACnetFaultParameterFaultOutOfRangeMaxNormalValue implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -171,20 +174,24 @@ public abstract class BACnetFaultParameterFaultOutOfRangeMaxNormalValue implemen
     BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x4)) {
       builder =
-          BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
+              .staticParseBACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x2)) {
       builder =
-          BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned
+              .staticParseBACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x5)) {
       builder =
-          BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetFaultParameterFaultOutOfRangeMaxNormalValueDouble
+              .staticParseBACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder(
+                  readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x3)) {
       builder =
-          BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger.staticParseBuilder(
-              readBuffer, tagNumber);
+          BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
+              .staticParseBACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder(
+                  readBuffer, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -209,7 +216,7 @@ public abstract class BACnetFaultParameterFaultOutOfRangeMaxNormalValue implemen
     return _bACnetFaultParameterFaultOutOfRangeMaxNormalValue;
   }
 
-  public static interface BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder {
+  public interface BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder {
     BACnetFaultParameterFaultOutOfRangeMaxNormalValue build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

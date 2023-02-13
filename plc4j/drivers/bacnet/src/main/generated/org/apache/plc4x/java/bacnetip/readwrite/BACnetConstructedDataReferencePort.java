@@ -78,6 +78,7 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataReferencePort");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataReferencePort _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (referencePort)
     lengthInBits += referencePort.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataReferencePortBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger referencePort =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataReferencePort");
     // Create the instance
-    return new BACnetConstructedDataReferencePortBuilder(
+    return new BACnetConstructedDataReferencePortBuilderImpl(
         referencePort, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataReferencePortBuilder
+  public static class BACnetConstructedDataReferencePortBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger referencePort;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataReferencePortBuilder(
+    public BACnetConstructedDataReferencePortBuilderImpl(
         BACnetApplicationTagUnsignedInteger referencePort,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.referencePort = referencePort;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

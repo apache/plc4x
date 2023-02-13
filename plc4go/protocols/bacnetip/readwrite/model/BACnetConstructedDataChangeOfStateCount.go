@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataChangeOfStateCount) GetChangeIfStateCount() BACne
 ///////////////////////
 
 func (m *_BACnetConstructedDataChangeOfStateCount) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetChangeIfStateCount())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataChangeOfStateCount) GetTypeName() string {
 	return "BACnetConstructedDataChangeOfStateCount"
 }
 
-func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (changeIfStateCount)
-	lengthInBits += m.ChangeIfStateCount.GetLengthInBits()
+	lengthInBits += m.ChangeIfStateCount.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataChangeOfStateCount) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataChangeOfStateCountParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateCount, error) {
-	return BACnetConstructedDataChangeOfStateCountParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataChangeOfStateCountParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataChangeOfStateCountParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateCount, error) {
+func BACnetConstructedDataChangeOfStateCountParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataChangeOfStateCount"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataChangeOfStateCountParseWithBuffer(readBuffer utils.Rea
 	if pullErr := readBuffer.PullContext("changeIfStateCount"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for changeIfStateCount")
 	}
-	_changeIfStateCount, _changeIfStateCountErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_changeIfStateCount, _changeIfStateCountErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _changeIfStateCountErr != nil {
 		return nil, errors.Wrap(_changeIfStateCountErr, "Error parsing 'changeIfStateCount' field of BACnetConstructedDataChangeOfStateCount")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataChangeOfStateCountParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConstructedDataChangeOfStateCount) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataChangeOfStateCount) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataChangeOfStateCount) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataChangeOfStateCount) SerializeWithWriteBuffer(writ
 		if pushErr := writeBuffer.PushContext("changeIfStateCount"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for changeIfStateCount")
 		}
-		_changeIfStateCountErr := writeBuffer.WriteSerializable(m.GetChangeIfStateCount())
+		_changeIfStateCountErr := writeBuffer.WriteSerializable(ctx, m.GetChangeIfStateCount())
 		if popErr := writeBuffer.PopContext("changeIfStateCount"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for changeIfStateCount")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataChangeOfStateCount) SerializeWithWriteBuffer(writ
 			return errors.Wrap(_changeIfStateCountErr, "Error serializing 'changeIfStateCount' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataChangeOfStateCount) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataChangeOfStateCount) isBACnetConstructedDataChangeOfStateCount() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataChangeOfStateCount) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -57,6 +57,7 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesNetworkNumberQuality");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesNetworkNumberQuality _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (networkNumberQuality)
     lengthInBits += networkNumberQuality.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesNetworkNumberQualityBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNetworkNumberQuality");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNetworkNumberQualityTagged networkNumberQuality =
         readSimpleField(
@@ -103,16 +106,15 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
 
     readBuffer.closeContext("BACnetPropertyStatesNetworkNumberQuality");
     // Create the instance
-    return new BACnetPropertyStatesNetworkNumberQualityBuilder(networkNumberQuality);
+    return new BACnetPropertyStatesNetworkNumberQualityBuilderImpl(networkNumberQuality);
   }
 
-  public static class BACnetPropertyStatesNetworkNumberQualityBuilder
+  public static class BACnetPropertyStatesNetworkNumberQualityBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetNetworkNumberQualityTagged networkNumberQuality;
 
-    public BACnetPropertyStatesNetworkNumberQualityBuilder(
+    public BACnetPropertyStatesNetworkNumberQualityBuilderImpl(
         BACnetNetworkNumberQualityTagged networkNumberQuality) {
-
       this.networkNumberQuality = networkNumberQuality;
     }
 

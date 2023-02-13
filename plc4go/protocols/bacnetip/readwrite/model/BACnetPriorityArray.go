@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -116,114 +118,152 @@ func (m *_BACnetPriorityArray) GetData() []BACnetPriorityValue {
 ///////////////////////
 
 func (m *_BACnetPriorityArray) GetZero() uint64 {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return uint64(uint64(0))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue01() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (0)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[0]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue02() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (1)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[1]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue03() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (2)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[2]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue04() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (3)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[3]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue05() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (4)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[4]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue06() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (5)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[5]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue07() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (6)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[6]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue08() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (7)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[7]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue09() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (8)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[8]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue10() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (9)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[9]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue11() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (10)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[10]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue12() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (11)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[11]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue13() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (12)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[12]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue14() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (13)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[13]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue15() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (14)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[14]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetPriorityValue16() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(CastBACnetPriorityValue(utils.InlineIf(bool((len(m.GetData())) > (15)), func() interface{} { return CastBACnetPriorityValue(m.GetData()[15]) }, func() interface{} { return CastBACnetPriorityValue(nil) })))
 }
 
 func (m *_BACnetPriorityArray) GetIsIndexedAccess() bool {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return bool(bool((len(m.GetData())) == (1)))
 }
 
 func (m *_BACnetPriorityArray) GetIndexEntry() BACnetPriorityValue {
+	ctx := context.Background()
+	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
 	return CastBACnetPriorityValue(m.GetPriorityValue01())
@@ -254,24 +294,20 @@ func (m *_BACnetPriorityArray) GetTypeName() string {
 	return "BACnetPriorityArray"
 }
 
-func (m *_BACnetPriorityArray) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPriorityArray) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetPriorityArray) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
 
 	// Optional Field (numberOfDataElements)
 	if m.NumberOfDataElements != nil {
-		lengthInBits += m.NumberOfDataElements.GetLengthInBits()
+		lengthInBits += m.NumberOfDataElements.GetLengthInBits(ctx)
 	}
 
 	// Array field
 	if len(m.Data) > 0 {
 		for _, element := range m.Data {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
@@ -314,15 +350,15 @@ func (m *_BACnetPriorityArray) GetLengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityArray) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPriorityArray) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPriorityArrayParse(theBytes []byte, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPriorityArray, error) {
-	return BACnetPriorityArrayParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument, tagNumber, arrayIndexArgument)
+	return BACnetPriorityArrayParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument, tagNumber, arrayIndexArgument)
 }
 
-func BACnetPriorityArrayParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPriorityArray, error) {
+func BACnetPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPriorityArray, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityArray"); pullErr != nil {
@@ -343,7 +379,7 @@ func BACnetPriorityArrayParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 		if pullErr := readBuffer.PullContext("numberOfDataElements"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for numberOfDataElements")
 		}
-		_val, _err := BACnetApplicationTagParseWithBuffer(readBuffer)
+		_val, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -366,7 +402,7 @@ func BACnetPriorityArrayParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 	var data []BACnetPriorityValue
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetPriorityValueParseWithBuffer(readBuffer, objectTypeArgument)
+			_item, _err := BACnetPriorityValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetPriorityArray")
 			}
@@ -487,21 +523,21 @@ func BACnetPriorityArrayParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeA
 }
 
 func (m *_BACnetPriorityArray) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPriorityArray) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityArray) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPriorityArray"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for BACnetPriorityArray")
 	}
 	// Virtual field
-	if _zeroErr := writeBuffer.WriteVirtual("zero", m.GetZero()); _zeroErr != nil {
+	if _zeroErr := writeBuffer.WriteVirtual(ctx, "zero", m.GetZero()); _zeroErr != nil {
 		return errors.Wrap(_zeroErr, "Error serializing 'zero' field")
 	}
 
@@ -512,7 +548,7 @@ func (m *_BACnetPriorityArray) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 			return errors.Wrap(pushErr, "Error pushing for numberOfDataElements")
 		}
 		numberOfDataElements = m.GetNumberOfDataElements()
-		_numberOfDataElementsErr := writeBuffer.WriteSerializable(numberOfDataElements)
+		_numberOfDataElementsErr := writeBuffer.WriteSerializable(ctx, numberOfDataElements)
 		if popErr := writeBuffer.PopContext("numberOfDataElements"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for numberOfDataElements")
 		}
@@ -525,8 +561,11 @@ func (m *_BACnetPriorityArray) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 	if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for data")
 	}
-	for _, _element := range m.GetData() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
+	for _curItem, _element := range m.GetData() {
+		_ = _curItem
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetData()), _curItem)
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'data' field")
 		}
@@ -535,75 +574,75 @@ func (m *_BACnetPriorityArray) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		return errors.Wrap(popErr, "Error popping for data")
 	}
 	// Virtual field
-	if _priorityValue01Err := writeBuffer.WriteVirtual("priorityValue01", m.GetPriorityValue01()); _priorityValue01Err != nil {
+	if _priorityValue01Err := writeBuffer.WriteVirtual(ctx, "priorityValue01", m.GetPriorityValue01()); _priorityValue01Err != nil {
 		return errors.Wrap(_priorityValue01Err, "Error serializing 'priorityValue01' field")
 	}
 	// Virtual field
-	if _priorityValue02Err := writeBuffer.WriteVirtual("priorityValue02", m.GetPriorityValue02()); _priorityValue02Err != nil {
+	if _priorityValue02Err := writeBuffer.WriteVirtual(ctx, "priorityValue02", m.GetPriorityValue02()); _priorityValue02Err != nil {
 		return errors.Wrap(_priorityValue02Err, "Error serializing 'priorityValue02' field")
 	}
 	// Virtual field
-	if _priorityValue03Err := writeBuffer.WriteVirtual("priorityValue03", m.GetPriorityValue03()); _priorityValue03Err != nil {
+	if _priorityValue03Err := writeBuffer.WriteVirtual(ctx, "priorityValue03", m.GetPriorityValue03()); _priorityValue03Err != nil {
 		return errors.Wrap(_priorityValue03Err, "Error serializing 'priorityValue03' field")
 	}
 	// Virtual field
-	if _priorityValue04Err := writeBuffer.WriteVirtual("priorityValue04", m.GetPriorityValue04()); _priorityValue04Err != nil {
+	if _priorityValue04Err := writeBuffer.WriteVirtual(ctx, "priorityValue04", m.GetPriorityValue04()); _priorityValue04Err != nil {
 		return errors.Wrap(_priorityValue04Err, "Error serializing 'priorityValue04' field")
 	}
 	// Virtual field
-	if _priorityValue05Err := writeBuffer.WriteVirtual("priorityValue05", m.GetPriorityValue05()); _priorityValue05Err != nil {
+	if _priorityValue05Err := writeBuffer.WriteVirtual(ctx, "priorityValue05", m.GetPriorityValue05()); _priorityValue05Err != nil {
 		return errors.Wrap(_priorityValue05Err, "Error serializing 'priorityValue05' field")
 	}
 	// Virtual field
-	if _priorityValue06Err := writeBuffer.WriteVirtual("priorityValue06", m.GetPriorityValue06()); _priorityValue06Err != nil {
+	if _priorityValue06Err := writeBuffer.WriteVirtual(ctx, "priorityValue06", m.GetPriorityValue06()); _priorityValue06Err != nil {
 		return errors.Wrap(_priorityValue06Err, "Error serializing 'priorityValue06' field")
 	}
 	// Virtual field
-	if _priorityValue07Err := writeBuffer.WriteVirtual("priorityValue07", m.GetPriorityValue07()); _priorityValue07Err != nil {
+	if _priorityValue07Err := writeBuffer.WriteVirtual(ctx, "priorityValue07", m.GetPriorityValue07()); _priorityValue07Err != nil {
 		return errors.Wrap(_priorityValue07Err, "Error serializing 'priorityValue07' field")
 	}
 	// Virtual field
-	if _priorityValue08Err := writeBuffer.WriteVirtual("priorityValue08", m.GetPriorityValue08()); _priorityValue08Err != nil {
+	if _priorityValue08Err := writeBuffer.WriteVirtual(ctx, "priorityValue08", m.GetPriorityValue08()); _priorityValue08Err != nil {
 		return errors.Wrap(_priorityValue08Err, "Error serializing 'priorityValue08' field")
 	}
 	// Virtual field
-	if _priorityValue09Err := writeBuffer.WriteVirtual("priorityValue09", m.GetPriorityValue09()); _priorityValue09Err != nil {
+	if _priorityValue09Err := writeBuffer.WriteVirtual(ctx, "priorityValue09", m.GetPriorityValue09()); _priorityValue09Err != nil {
 		return errors.Wrap(_priorityValue09Err, "Error serializing 'priorityValue09' field")
 	}
 	// Virtual field
-	if _priorityValue10Err := writeBuffer.WriteVirtual("priorityValue10", m.GetPriorityValue10()); _priorityValue10Err != nil {
+	if _priorityValue10Err := writeBuffer.WriteVirtual(ctx, "priorityValue10", m.GetPriorityValue10()); _priorityValue10Err != nil {
 		return errors.Wrap(_priorityValue10Err, "Error serializing 'priorityValue10' field")
 	}
 	// Virtual field
-	if _priorityValue11Err := writeBuffer.WriteVirtual("priorityValue11", m.GetPriorityValue11()); _priorityValue11Err != nil {
+	if _priorityValue11Err := writeBuffer.WriteVirtual(ctx, "priorityValue11", m.GetPriorityValue11()); _priorityValue11Err != nil {
 		return errors.Wrap(_priorityValue11Err, "Error serializing 'priorityValue11' field")
 	}
 	// Virtual field
-	if _priorityValue12Err := writeBuffer.WriteVirtual("priorityValue12", m.GetPriorityValue12()); _priorityValue12Err != nil {
+	if _priorityValue12Err := writeBuffer.WriteVirtual(ctx, "priorityValue12", m.GetPriorityValue12()); _priorityValue12Err != nil {
 		return errors.Wrap(_priorityValue12Err, "Error serializing 'priorityValue12' field")
 	}
 	// Virtual field
-	if _priorityValue13Err := writeBuffer.WriteVirtual("priorityValue13", m.GetPriorityValue13()); _priorityValue13Err != nil {
+	if _priorityValue13Err := writeBuffer.WriteVirtual(ctx, "priorityValue13", m.GetPriorityValue13()); _priorityValue13Err != nil {
 		return errors.Wrap(_priorityValue13Err, "Error serializing 'priorityValue13' field")
 	}
 	// Virtual field
-	if _priorityValue14Err := writeBuffer.WriteVirtual("priorityValue14", m.GetPriorityValue14()); _priorityValue14Err != nil {
+	if _priorityValue14Err := writeBuffer.WriteVirtual(ctx, "priorityValue14", m.GetPriorityValue14()); _priorityValue14Err != nil {
 		return errors.Wrap(_priorityValue14Err, "Error serializing 'priorityValue14' field")
 	}
 	// Virtual field
-	if _priorityValue15Err := writeBuffer.WriteVirtual("priorityValue15", m.GetPriorityValue15()); _priorityValue15Err != nil {
+	if _priorityValue15Err := writeBuffer.WriteVirtual(ctx, "priorityValue15", m.GetPriorityValue15()); _priorityValue15Err != nil {
 		return errors.Wrap(_priorityValue15Err, "Error serializing 'priorityValue15' field")
 	}
 	// Virtual field
-	if _priorityValue16Err := writeBuffer.WriteVirtual("priorityValue16", m.GetPriorityValue16()); _priorityValue16Err != nil {
+	if _priorityValue16Err := writeBuffer.WriteVirtual(ctx, "priorityValue16", m.GetPriorityValue16()); _priorityValue16Err != nil {
 		return errors.Wrap(_priorityValue16Err, "Error serializing 'priorityValue16' field")
 	}
 	// Virtual field
-	if _isIndexedAccessErr := writeBuffer.WriteVirtual("isIndexedAccess", m.GetIsIndexedAccess()); _isIndexedAccessErr != nil {
+	if _isIndexedAccessErr := writeBuffer.WriteVirtual(ctx, "isIndexedAccess", m.GetIsIndexedAccess()); _isIndexedAccessErr != nil {
 		return errors.Wrap(_isIndexedAccessErr, "Error serializing 'isIndexedAccess' field")
 	}
 	// Virtual field
-	if _indexEntryErr := writeBuffer.WriteVirtual("indexEntry", m.GetIndexEntry()); _indexEntryErr != nil {
+	if _indexEntryErr := writeBuffer.WriteVirtual(ctx, "indexEntry", m.GetIndexEntry()); _indexEntryErr != nil {
 		return errors.Wrap(_indexEntryErr, "Error serializing 'indexEntry' field")
 	}
 
@@ -638,7 +677,7 @@ func (m *_BACnetPriorityArray) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

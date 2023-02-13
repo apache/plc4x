@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -95,36 +96,32 @@ func (m *_BACnetGroupChannelValue) GetTypeName() string {
 	return "BACnetGroupChannelValue"
 }
 
-func (m *_BACnetGroupChannelValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetGroupChannelValue) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetGroupChannelValue) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (channel)
-	lengthInBits += m.Channel.GetLengthInBits()
+	lengthInBits += m.Channel.GetLengthInBits(ctx)
 
 	// Optional Field (overridingPriority)
 	if m.OverridingPriority != nil {
-		lengthInBits += m.OverridingPriority.GetLengthInBits()
+		lengthInBits += m.OverridingPriority.GetLengthInBits(ctx)
 	}
 
 	// Simple field (value)
-	lengthInBits += m.Value.GetLengthInBits()
+	lengthInBits += m.Value.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetGroupChannelValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetGroupChannelValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetGroupChannelValueParse(theBytes []byte) (BACnetGroupChannelValue, error) {
-	return BACnetGroupChannelValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetGroupChannelValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetGroupChannelValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetGroupChannelValue, error) {
+func BACnetGroupChannelValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetGroupChannelValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetGroupChannelValue"); pullErr != nil {
@@ -137,7 +134,7 @@ func BACnetGroupChannelValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("channel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for channel")
 	}
-	_channel, _channelErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_channel, _channelErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _channelErr != nil {
 		return nil, errors.Wrap(_channelErr, "Error parsing 'channel' field of BACnetGroupChannelValue")
 	}
@@ -153,7 +150,7 @@ func BACnetGroupChannelValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 		if pullErr := readBuffer.PullContext("overridingPriority"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for overridingPriority")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -172,7 +169,7 @@ func BACnetGroupChannelValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for value")
 	}
-	_value, _valueErr := BACnetChannelValueParseWithBuffer(readBuffer)
+	_value, _valueErr := BACnetChannelValueParseWithBuffer(ctx, readBuffer)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetGroupChannelValue")
 	}
@@ -194,14 +191,14 @@ func BACnetGroupChannelValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (m *_BACnetGroupChannelValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetGroupChannelValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetGroupChannelValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetGroupChannelValue"); pushErr != nil {
@@ -212,7 +209,7 @@ func (m *_BACnetGroupChannelValue) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("channel"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for channel")
 	}
-	_channelErr := writeBuffer.WriteSerializable(m.GetChannel())
+	_channelErr := writeBuffer.WriteSerializable(ctx, m.GetChannel())
 	if popErr := writeBuffer.PopContext("channel"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for channel")
 	}
@@ -227,7 +224,7 @@ func (m *_BACnetGroupChannelValue) SerializeWithWriteBuffer(writeBuffer utils.Wr
 			return errors.Wrap(pushErr, "Error pushing for overridingPriority")
 		}
 		overridingPriority = m.GetOverridingPriority()
-		_overridingPriorityErr := writeBuffer.WriteSerializable(overridingPriority)
+		_overridingPriorityErr := writeBuffer.WriteSerializable(ctx, overridingPriority)
 		if popErr := writeBuffer.PopContext("overridingPriority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for overridingPriority")
 		}
@@ -240,7 +237,7 @@ func (m *_BACnetGroupChannelValue) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("value"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for value")
 	}
-	_valueErr := writeBuffer.WriteSerializable(m.GetValue())
+	_valueErr := writeBuffer.WriteSerializable(ctx, m.GetValue())
 	if popErr := writeBuffer.PopContext("value"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for value")
 	}
@@ -263,7 +260,7 @@ func (m *_BACnetGroupChannelValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

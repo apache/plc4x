@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetScaleFloatScale) GetTypeName() string {
 	return "BACnetScaleFloatScale"
 }
 
-func (m *_BACnetScaleFloatScale) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetScaleFloatScale) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetScaleFloatScale) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (floatScale)
-	lengthInBits += m.FloatScale.GetLengthInBits()
+	lengthInBits += m.FloatScale.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetScaleFloatScale) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetScaleFloatScale) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetScaleFloatScaleParse(theBytes []byte) (BACnetScaleFloatScale, error) {
-	return BACnetScaleFloatScaleParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetScaleFloatScaleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetScaleFloatScaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {
+func BACnetScaleFloatScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetScaleFloatScale"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetScaleFloatScaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSc
 	if pullErr := readBuffer.PullContext("floatScale"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for floatScale")
 	}
-	_floatScale, _floatScaleErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
+	_floatScale, _floatScaleErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
 	if _floatScaleErr != nil {
 		return nil, errors.Wrap(_floatScaleErr, "Error parsing 'floatScale' field of BACnetScaleFloatScale")
 	}
@@ -162,14 +159,14 @@ func BACnetScaleFloatScaleParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSc
 }
 
 func (m *_BACnetScaleFloatScale) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetScaleFloatScale) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetScaleFloatScale) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetScaleFloatScale) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("floatScale"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for floatScale")
 		}
-		_floatScaleErr := writeBuffer.WriteSerializable(m.GetFloatScale())
+		_floatScaleErr := writeBuffer.WriteSerializable(ctx, m.GetFloatScale())
 		if popErr := writeBuffer.PopContext("floatScale"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for floatScale")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetScaleFloatScale) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetScaleFloatScale) isBACnetScaleFloatScale() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetScaleFloatScale) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

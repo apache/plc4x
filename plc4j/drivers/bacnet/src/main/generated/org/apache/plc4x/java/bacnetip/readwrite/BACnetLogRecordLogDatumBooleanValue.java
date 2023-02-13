@@ -65,6 +65,7 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumBooleanValue");
 
@@ -83,6 +84,7 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumBooleanValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (booleanValue)
     lengthInBits += booleanValue.getLengthInBits();
@@ -90,12 +92,13 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumBooleanValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumBooleanValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagBoolean booleanValue =
         readSimpleField(
@@ -109,17 +112,16 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
 
     readBuffer.closeContext("BACnetLogRecordLogDatumBooleanValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumBooleanValueBuilder(booleanValue, tagNumber);
+    return new BACnetLogRecordLogDatumBooleanValueBuilderImpl(booleanValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumBooleanValueBuilder
+  public static class BACnetLogRecordLogDatumBooleanValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagBoolean booleanValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumBooleanValueBuilder(
+    public BACnetLogRecordLogDatumBooleanValueBuilderImpl(
         BACnetContextTagBoolean booleanValue, Short tagNumber) {
-
       this.booleanValue = booleanValue;
       this.tagNumber = tagNumber;
     }

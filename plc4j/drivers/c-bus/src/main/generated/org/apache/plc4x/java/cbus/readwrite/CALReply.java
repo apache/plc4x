@@ -69,6 +69,7 @@ public abstract class CALReply implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALReply");
 
@@ -90,6 +91,7 @@ public abstract class CALReply implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CALReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -131,15 +133,16 @@ public abstract class CALReply implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte calType = readPeekField("calType", readByte(readBuffer, 8));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     CALReplyBuilder builder = null;
     if (EvaluationHelper.equals(calType, (byte) 0x86)) {
-      builder = CALReplyLong.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder = CALReplyLong.staticParseCALReplyBuilder(readBuffer, cBusOptions, requestContext);
     } else {
-      builder = CALReplyShort.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder = CALReplyShort.staticParseCALReplyBuilder(readBuffer, cBusOptions, requestContext);
     }
     if (builder == null) {
       throw new ParseException(
@@ -159,7 +162,7 @@ public abstract class CALReply implements Message {
     return _cALReply;
   }
 
-  public static interface CALReplyBuilder {
+  public interface CALReplyBuilder {
     CALReply build(
         byte calType, CALData calData, CBusOptions cBusOptions, RequestContext requestContext);
   }

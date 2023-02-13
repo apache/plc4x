@@ -321,7 +321,7 @@ public enum KnxManufacturer {
   M_GUANGZHOU_SEAWIN_ELECTRICAL_TECHNOLOGIES_CO___LTD_(
       (int) 278, (int) 331, (String) "Guangzhou SeaWin Electrical Technologies Co., Ltd."),
   M_ACREL((int) 279, (int) 332, (String) "Acrel"),
-  M_FRANKE_AQUAROTTER_GMBH((int) 280, (int) 333, (String) "Franke Aquarotter GmbH"),
+  M_KWC_AQUAROTTER_GMBH((int) 280, (int) 333, (String) "KWC Aquarotter GmbH"),
   M_ORION_SYSTEMS((int) 281, (int) 334, (String) "Orion Systems"),
   M_SCHRACK_TECHNIK_GMBH((int) 282, (int) 335, (String) "Schrack Technik GmbH"),
   M_INSPRID((int) 283, (int) 336, (String) "INSPRID"),
@@ -439,7 +439,7 @@ public enum KnxManufacturer {
   M_CODESYS_GMBH((int) 387, (int) 440, (String) "CODESYS GmbH"),
   M_MOORGEN_DEUTSCHLAND_GMBH((int) 388, (int) 441, (String) "Moorgen Deutschland GmbH"),
   M_CULLMANN_TECH((int) 389, (int) 442, (String) "CULLMANN TECH"),
-  M_MERCK_WINDOW_TECHNOLOGIES_B_V_((int) 390, (int) 443, (String) "Merck Window Technologies B.V."),
+  M_EYRISE_B_V((int) 390, (int) 443, (String) "eyrise B.V"),
   M_ABEGO((int) 391, (int) 444, (String) "ABEGO"),
   M_MYGEKKO((int) 392, (int) 445, (String) "myGEKKO"),
   M_ERGO3_SARL((int) 393, (int) 446, (String) "Ergo3 Sarl"),
@@ -698,9 +698,15 @@ public enum KnxManufacturer {
   M_GAIMEX((int) 605, (int) 664, (String) "Gaimex"),
   M_B3_INTERNATIONAL_S_R_L((int) 606, (int) 665, (String) "B3 International S.R.L"),
   M_MM_ELECTRO((int) 607, (int) 666, (String) "MM Electro"),
-  M_ABB___RESERVED((int) 608, (int) 43954, (String) "ABB - reserved"),
+  M_CASCODA((int) 608, (int) 667, (String) "CASCODA"),
+  M_XIAMEN_INTRETECH_INC_((int) 609, (int) 668, (String) "Xiamen Intretech Inc."),
+  M_KILOELEC_TECHNOLOGY((int) 610, (int) 669, (String) "KiloElec Technology"),
+  M_INYX((int) 611, (int) 670, (String) "Inyx"),
+  M_SMART_BUILDING_SERVICES_GMBH((int) 612, (int) 671, (String) "Smart Building Services GmbH"),
+  M_BSS_GMBH((int) 613, (int) 672, (String) "BSS GmbH"),
+  M_ABB___RESERVED((int) 614, (int) 43954, (String) "ABB - reserved"),
   M_BUSCH_JAEGER_ELEKTRO___RESERVED(
-      (int) 609, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
+      (int) 615, (int) 43959, (String) "Busch-Jaeger Elektro - reserved");
   private static final Map<Integer, KnxManufacturer> map;
 
   static {
@@ -753,7 +759,7 @@ public enum KnxManufacturer {
 
   public static KnxManufacturer firstEnumForFieldName(String fieldValue) {
     for (KnxManufacturer _val : KnxManufacturer.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         return _val;
       }
     }
@@ -763,7 +769,7 @@ public enum KnxManufacturer {
   public static List<KnxManufacturer> enumsForFieldName(String fieldValue) {
     List<KnxManufacturer> _values = new ArrayList();
     for (KnxManufacturer _val : KnxManufacturer.values()) {
-      if (_val.getName() == fieldValue) {
+      if (_val.getName().equals(fieldValue)) {
         _values.add(_val);
       }
     }

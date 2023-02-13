@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueBitString extends BACnetTimerStateChange
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueBitString");
 
@@ -81,6 +82,7 @@ public class BACnetTimerStateChangeValueBitString extends BACnetTimerStateChange
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueBitString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bitStringValue)
     lengthInBits += bitStringValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetTimerStateChangeValueBitString extends BACnetTimerStateChange
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueBitStringBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueBitString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBitString bitStringValue =
         readSimpleField(
@@ -104,17 +107,16 @@ public class BACnetTimerStateChangeValueBitString extends BACnetTimerStateChange
 
     readBuffer.closeContext("BACnetTimerStateChangeValueBitString");
     // Create the instance
-    return new BACnetTimerStateChangeValueBitStringBuilder(bitStringValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueBitStringBuilderImpl(bitStringValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueBitStringBuilder
+  public static class BACnetTimerStateChangeValueBitStringBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagBitString bitStringValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueBitStringBuilder(
+    public BACnetTimerStateChangeValueBitStringBuilderImpl(
         BACnetApplicationTagBitString bitStringValue, BACnetObjectType objectTypeArgument) {
-
       this.bitStringValue = bitStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

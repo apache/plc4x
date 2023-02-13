@@ -64,16 +64,25 @@ public abstract class Plc4xMessage implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Plc4xMessage");
 
     // Const Field (version)
-    writeConstField("version", VERSION, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "version",
+        VERSION,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (packetLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int packetLength = (int) (getLengthInBytes());
-    writeImplicitField("packetLength", packetLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "packetLength",
+        packetLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (requestId)
     writeSimpleField(
@@ -88,9 +97,8 @@ public abstract class Plc4xMessage implements Message {
         "Plc4xRequestType",
         getRequestType(),
         new DataWriterEnumDefault<>(
-            Plc4xRequestType::getValue,
-            Plc4xRequestType::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            Plc4xRequestType::getValue, Plc4xRequestType::name, writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializePlc4xMessageChild(writeBuffer);
@@ -107,6 +115,7 @@ public abstract class Plc4xMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     Plc4xMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (version)
     lengthInBits += 8;
@@ -136,6 +145,7 @@ public abstract class Plc4xMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short version =
         readConstField(
@@ -166,17 +176,17 @@ public abstract class Plc4xMessage implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     Plc4xMessageBuilder builder = null;
     if (EvaluationHelper.equals(requestType, Plc4xRequestType.CONNECT_REQUEST)) {
-      builder = Plc4xConnectRequest.staticParseBuilder(readBuffer);
+      builder = Plc4xConnectRequest.staticParsePlc4xMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(requestType, Plc4xRequestType.CONNECT_RESPONSE)) {
-      builder = Plc4xConnectResponse.staticParseBuilder(readBuffer);
+      builder = Plc4xConnectResponse.staticParsePlc4xMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(requestType, Plc4xRequestType.READ_REQUEST)) {
-      builder = Plc4xReadRequest.staticParseBuilder(readBuffer);
+      builder = Plc4xReadRequest.staticParsePlc4xMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(requestType, Plc4xRequestType.READ_RESPONSE)) {
-      builder = Plc4xReadResponse.staticParseBuilder(readBuffer);
+      builder = Plc4xReadResponse.staticParsePlc4xMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(requestType, Plc4xRequestType.WRITE_REQUEST)) {
-      builder = Plc4xWriteRequest.staticParseBuilder(readBuffer);
+      builder = Plc4xWriteRequest.staticParsePlc4xMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(requestType, Plc4xRequestType.WRITE_RESPONSE)) {
-      builder = Plc4xWriteResponse.staticParseBuilder(readBuffer);
+      builder = Plc4xWriteResponse.staticParsePlc4xMessageBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -193,7 +203,7 @@ public abstract class Plc4xMessage implements Message {
     return _plc4xMessage;
   }
 
-  public static interface Plc4xMessageBuilder {
+  public interface Plc4xMessageBuilder {
     Plc4xMessage build(int requestId);
   }
 

@@ -79,6 +79,7 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBaseDeviceSecurityPolicy");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBaseDeviceSecurityPolicy _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (baseDeviceSecurityPolicy)
     lengthInBits += baseDeviceSecurityPolicy.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBaseDeviceSecurityPolicyBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetSecurityLevelTagged baseDeviceSecurityPolicy =
         readSimpleField(
@@ -138,21 +141,20 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataBaseDeviceSecurityPolicy");
     // Create the instance
-    return new BACnetConstructedDataBaseDeviceSecurityPolicyBuilder(
+    return new BACnetConstructedDataBaseDeviceSecurityPolicyBuilderImpl(
         baseDeviceSecurityPolicy, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBaseDeviceSecurityPolicyBuilder
+  public static class BACnetConstructedDataBaseDeviceSecurityPolicyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetSecurityLevelTagged baseDeviceSecurityPolicy;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBaseDeviceSecurityPolicyBuilder(
+    public BACnetConstructedDataBaseDeviceSecurityPolicyBuilderImpl(
         BACnetSecurityLevelTagged baseDeviceSecurityPolicy,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.baseDeviceSecurityPolicy = baseDeviceSecurityPolicy;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

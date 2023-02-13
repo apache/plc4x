@@ -68,6 +68,7 @@ public abstract class BACnetPriorityValue implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValue");
 
@@ -94,6 +95,7 @@ public abstract class BACnetPriorityValue implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetPriorityValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -131,6 +133,7 @@ public abstract class BACnetPriorityValue implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -155,52 +158,79 @@ public abstract class BACnetPriorityValue implements Message {
     BACnetPriorityValueBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x0)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetPriorityValueNull.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueNull.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x4)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetPriorityValueReal.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueReal.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x9)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetPriorityValueEnumerated.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueEnumerated.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x2)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetPriorityValueUnsigned.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueUnsigned.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x1)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetPriorityValueBoolean.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueBoolean.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x3)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetPriorityValueInteger.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueInteger.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x5)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetPriorityValueDouble.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueDouble.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xB)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetPriorityValueTime.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueTime.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x7)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetPriorityValueCharacterString.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetPriorityValueCharacterString.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x6)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetPriorityValueOctetString.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueOctetString.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x8)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetPriorityValueBitString.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueBitString.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xA)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetPriorityValueDate.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueDate.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xC)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetPriorityValueObjectidentifier.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetPriorityValueObjectidentifier.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) true)) {
       builder =
-          BACnetPriorityValueConstructedValue.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetPriorityValueConstructedValue.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) true)) {
-      builder = BACnetPriorityValueDateTime.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetPriorityValueDateTime.staticParseBACnetPriorityValueBuilder(
+              readBuffer, objectTypeArgument);
     }
     if (builder == null) {
       throw new ParseException(
@@ -220,7 +250,7 @@ public abstract class BACnetPriorityValue implements Message {
     return _bACnetPriorityValue;
   }
 
-  public static interface BACnetPriorityValueBuilder {
+  public interface BACnetPriorityValueBuilder {
     BACnetPriorityValue build(BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument);
   }
 

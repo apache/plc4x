@@ -71,6 +71,7 @@ public class ModbusPDUReadDiscreteInputsRequest extends ModbusPDU implements Mes
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadDiscreteInputsRequest");
 
@@ -92,6 +93,7 @@ public class ModbusPDUReadDiscreteInputsRequest extends ModbusPDU implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadDiscreteInputsRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (startingAddress)
     lengthInBits += 16;
@@ -102,12 +104,13 @@ public class ModbusPDUReadDiscreteInputsRequest extends ModbusPDU implements Mes
     return lengthInBits;
   }
 
-  public static ModbusPDUReadDiscreteInputsRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadDiscreteInputsRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int startingAddress = readSimpleField("startingAddress", readUnsignedInt(readBuffer, 16));
 
@@ -115,16 +118,15 @@ public class ModbusPDUReadDiscreteInputsRequest extends ModbusPDU implements Mes
 
     readBuffer.closeContext("ModbusPDUReadDiscreteInputsRequest");
     // Create the instance
-    return new ModbusPDUReadDiscreteInputsRequestBuilder(startingAddress, quantity);
+    return new ModbusPDUReadDiscreteInputsRequestBuilderImpl(startingAddress, quantity);
   }
 
-  public static class ModbusPDUReadDiscreteInputsRequestBuilder
+  public static class ModbusPDUReadDiscreteInputsRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int startingAddress;
     private final int quantity;
 
-    public ModbusPDUReadDiscreteInputsRequestBuilder(int startingAddress, int quantity) {
-
+    public ModbusPDUReadDiscreteInputsRequestBuilderImpl(int startingAddress, int quantity) {
       this.startingAddress = startingAddress;
       this.quantity = quantity;
     }

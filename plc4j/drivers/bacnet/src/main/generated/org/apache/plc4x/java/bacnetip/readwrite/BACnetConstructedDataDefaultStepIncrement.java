@@ -79,6 +79,7 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDefaultStepIncrement");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDefaultStepIncrement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (defaultStepIncrement)
     lengthInBits += defaultStepIncrement.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDefaultStepIncrementBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal defaultStepIncrement =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataDefaultStepIncrement");
     // Create the instance
-    return new BACnetConstructedDataDefaultStepIncrementBuilder(
+    return new BACnetConstructedDataDefaultStepIncrementBuilderImpl(
         defaultStepIncrement, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDefaultStepIncrementBuilder
+  public static class BACnetConstructedDataDefaultStepIncrementBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal defaultStepIncrement;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDefaultStepIncrementBuilder(
+    public BACnetConstructedDataDefaultStepIncrementBuilderImpl(
         BACnetApplicationTagReal defaultStepIncrement,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.defaultStepIncrement = defaultStepIncrement;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

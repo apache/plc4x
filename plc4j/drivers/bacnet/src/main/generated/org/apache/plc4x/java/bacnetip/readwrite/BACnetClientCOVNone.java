@@ -56,6 +56,7 @@ public class BACnetClientCOVNone extends BACnetClientCOV implements Message {
   protected void serializeBACnetClientCOVChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetClientCOVNone");
 
@@ -75,6 +76,7 @@ public class BACnetClientCOVNone extends BACnetClientCOV implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetClientCOVNone _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (defaultIncrement)
     lengthInBits += defaultIncrement.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetClientCOVNone extends BACnetClientCOV implements Message {
     return lengthInBits;
   }
 
-  public static BACnetClientCOVNoneBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetClientCOVBuilder staticParseBACnetClientCOVBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetClientCOVNone");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull defaultIncrement =
         readSimpleField(
@@ -98,14 +101,14 @@ public class BACnetClientCOVNone extends BACnetClientCOV implements Message {
 
     readBuffer.closeContext("BACnetClientCOVNone");
     // Create the instance
-    return new BACnetClientCOVNoneBuilder(defaultIncrement);
+    return new BACnetClientCOVNoneBuilderImpl(defaultIncrement);
   }
 
-  public static class BACnetClientCOVNoneBuilder implements BACnetClientCOV.BACnetClientCOVBuilder {
+  public static class BACnetClientCOVNoneBuilderImpl
+      implements BACnetClientCOV.BACnetClientCOVBuilder {
     private final BACnetApplicationTagNull defaultIncrement;
 
-    public BACnetClientCOVNoneBuilder(BACnetApplicationTagNull defaultIncrement) {
-
+    public BACnetClientCOVNoneBuilderImpl(BACnetApplicationTagNull defaultIncrement) {
       this.defaultIncrement = defaultIncrement;
     }
 

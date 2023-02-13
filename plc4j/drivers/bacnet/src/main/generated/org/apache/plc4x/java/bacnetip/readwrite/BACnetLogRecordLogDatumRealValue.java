@@ -64,6 +64,7 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumRealValue");
 
@@ -82,6 +83,7 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumRealValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (realValue)
     lengthInBits += realValue.getLengthInBits();
@@ -89,12 +91,13 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumRealValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumRealValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagReal realValue =
         readSimpleField(
@@ -108,17 +111,16 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
 
     readBuffer.closeContext("BACnetLogRecordLogDatumRealValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumRealValueBuilder(realValue, tagNumber);
+    return new BACnetLogRecordLogDatumRealValueBuilderImpl(realValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumRealValueBuilder
+  public static class BACnetLogRecordLogDatumRealValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagReal realValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumRealValueBuilder(
+    public BACnetLogRecordLogDatumRealValueBuilderImpl(
         BACnetContextTagReal realValue, Short tagNumber) {
-
       this.realValue = realValue;
       this.tagNumber = tagNumber;
     }

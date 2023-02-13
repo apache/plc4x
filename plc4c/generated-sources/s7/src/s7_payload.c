@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_s7_static.h>
 
@@ -54,7 +55,7 @@ plc4c_s7_read_write_s7_payload plc4c_s7_read_write_s7_payload_null() {
 
 
 // Parse function.
-plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4c_spi_read_buffer* readBuffer, uint8_t messageType, plc4c_s7_read_write_s7_parameter* parameter, plc4c_s7_read_write_s7_payload** _message) {
+plc4c_return_code plc4c_s7_read_write_s7_payload_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, uint8_t messageType, plc4c_s7_read_write_s7_parameter* parameter, plc4c_s7_read_write_s7_payload** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -78,9 +79,8 @@ if( ( plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).param
     // Count array
     uint16_t itemCount = (uint16_t) ((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_read_var_response_num_items;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_var_payload_data_item* _value = NULL;
-      _res = plc4c_s7_read_write_s7_var_payload_data_item_parse(readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -102,9 +102,8 @@ if( ( plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).param
     // Count array
     uint16_t itemCount = (uint16_t) plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_write_var_request_items);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_var_payload_data_item* _value = NULL;
-      _res = plc4c_s7_read_write_s7_var_payload_data_item_parse(readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_s7_var_payload_data_item_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -126,9 +125,8 @@ if( ( plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).param
     // Count array
     uint16_t itemCount = (uint16_t) ((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_write_var_response_num_items;
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_var_payload_status_item* _value = NULL;
-      _res = plc4c_s7_read_write_s7_var_payload_status_item_parse(readBuffer, (void*) &_value);
+      _res = plc4c_s7_read_write_s7_var_payload_status_item_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -150,9 +148,8 @@ if( ( plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).param
     // Count array
     uint16_t itemCount = (uint16_t) plc4c_spi_evaluation_helper_count(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_user_data_items);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_payload_user_data_item* _value = NULL;
-      _res = plc4c_s7_read_write_s7_payload_user_data_item_parse(readBuffer, ((plc4c_s7_read_write_s7_parameter_user_data_item*) (plc4c_utils_list_get_value(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_user_data_items, 0)))->s7_parameter_user_data_item_cpu_functions_cpu_function_type, ((plc4c_s7_read_write_s7_parameter_user_data_item*) (plc4c_utils_list_get_value(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_user_data_items, 0)))->s7_parameter_user_data_item_cpu_functions_cpu_subfunction, (void*) &_value);
+      _res = plc4c_s7_read_write_s7_payload_user_data_item_parse(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), readBuffer, ((plc4c_s7_read_write_s7_parameter_user_data_item*) (plc4c_utils_list_get_value(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_user_data_items, 0)))->s7_parameter_user_data_item_cpu_functions_cpu_function_type, ((plc4c_s7_read_write_s7_parameter_user_data_item*) (plc4c_utils_list_get_value(((plc4c_s7_read_write_s7_parameter*) (parameter))->s7_parameter_user_data_items, 0)))->s7_parameter_user_data_item_cpu_functions_cpu_subfunction, (void*) &_value);
       if(_res != OK) {
         return _res;
       }
@@ -165,7 +162,7 @@ if( ( plc4c_s7_read_write_s7_parameter_get_discriminator(parameter->_type).param
   return OK;
 }
 
-plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_payload* _message) {
+plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_s7_read_write_s7_payload* _message) {
   plc4c_return_code _res = OK;
 
   // Switch Field (Depending on the current type, serialize the subtype elements)
@@ -176,9 +173,8 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_read_var_response_items);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_var_payload_data_item* _value = (plc4c_s7_read_write_s7_var_payload_data_item*) plc4c_utils_list_get_value(_message->s7_payload_read_var_response_items, curItem);
-      _res = plc4c_s7_read_write_s7_var_payload_data_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -193,9 +189,8 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_write_var_request_items);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_var_payload_data_item* _value = (plc4c_s7_read_write_s7_var_payload_data_item*) plc4c_utils_list_get_value(_message->s7_payload_write_var_request_items, curItem);
-      _res = plc4c_s7_read_write_s7_var_payload_data_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_s7_var_payload_data_item_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -210,9 +205,8 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_write_var_response_items);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_var_payload_status_item* _value = (plc4c_s7_read_write_s7_var_payload_status_item*) plc4c_utils_list_get_value(_message->s7_payload_write_var_response_items, curItem);
-      _res = plc4c_s7_read_write_s7_var_payload_status_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_s7_var_payload_status_item_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -227,9 +221,8 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
   {
     uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_items);
     for(int curItem = 0; curItem < itemCount; curItem++) {
-      bool lastItem = curItem == (itemCount - 1);
       plc4c_s7_read_write_s7_payload_user_data_item* _value = (plc4c_s7_read_write_s7_payload_user_data_item*) plc4c_utils_list_get_value(_message->s7_payload_user_data_items, curItem);
-      _res = plc4c_s7_read_write_s7_payload_user_data_item_serialize(writeBuffer, (void*) _value);
+      _res = plc4c_s7_read_write_s7_payload_user_data_item_serialize(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), writeBuffer, (void*) _value);
       if(_res != OK) {
         return _res;
       }
@@ -243,11 +236,11 @@ plc4c_return_code plc4c_s7_read_write_s7_payload_serialize(plc4c_spi_write_buffe
   return OK;
 }
 
-uint16_t plc4c_s7_read_write_s7_payload_length_in_bytes(plc4c_s7_read_write_s7_payload* _message) {
-  return plc4c_s7_read_write_s7_payload_length_in_bits(_message) / 8;
+uint16_t plc4c_s7_read_write_s7_payload_length_in_bytes(plc4x_spi_context ctx, plc4c_s7_read_write_s7_payload* _message) {
+  return plc4c_s7_read_write_s7_payload_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_payload* _message) {
+uint16_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4x_spi_context ctx, plc4c_s7_read_write_s7_payload* _message) {
   uint16_t lengthInBits = 0;
 
   // Depending on the current type, add the length of sub-type elements ...
@@ -256,10 +249,10 @@ uint16_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pa
 
   // Array field
   if(_message->s7_payload_read_var_response_items != NULL) {
-    plc4c_list_element* curElement = _message->s7_payload_read_var_response_items->tail;
-    while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits((plc4c_s7_read_write_s7_var_payload_data_item*) curElement->value);
-      curElement = curElement->next;
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_read_var_response_items);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_read_var_response_items, curItem);
+      lengthInBits += plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_s7_var_payload_data_item*) curElement);
     }
   }
 
@@ -269,10 +262,10 @@ uint16_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pa
 
   // Array field
   if(_message->s7_payload_write_var_request_items != NULL) {
-    plc4c_list_element* curElement = _message->s7_payload_write_var_request_items->tail;
-    while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits((plc4c_s7_read_write_s7_var_payload_data_item*) curElement->value);
-      curElement = curElement->next;
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_write_var_request_items);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_write_var_request_items, curItem);
+      lengthInBits += plc4c_s7_read_write_s7_var_payload_data_item_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_s7_var_payload_data_item*) curElement);
     }
   }
 
@@ -282,10 +275,10 @@ uint16_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pa
 
   // Array field
   if(_message->s7_payload_write_var_response_items != NULL) {
-    plc4c_list_element* curElement = _message->s7_payload_write_var_response_items->tail;
-    while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_s7_var_payload_status_item_length_in_bits((plc4c_s7_read_write_s7_var_payload_status_item*) curElement->value);
-      curElement = curElement->next;
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_write_var_response_items);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_write_var_response_items, curItem);
+      lengthInBits += plc4c_s7_read_write_s7_var_payload_status_item_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_s7_var_payload_status_item*) curElement);
     }
   }
 
@@ -295,10 +288,10 @@ uint16_t plc4c_s7_read_write_s7_payload_length_in_bits(plc4c_s7_read_write_s7_pa
 
   // Array field
   if(_message->s7_payload_user_data_items != NULL) {
-    plc4c_list_element* curElement = _message->s7_payload_user_data_items->tail;
-    while (curElement != NULL) {
-      lengthInBits += plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits((plc4c_s7_read_write_s7_payload_user_data_item*) curElement->value);
-      curElement = curElement->next;
+   uint8_t itemCount = plc4c_utils_list_size(_message->s7_payload_user_data_items);
+   for(int curItem = 0; curItem < itemCount; curItem++) {
+      plc4c_list_element* curElement = plc4c_utils_list_get_value(_message->s7_payload_user_data_items, curItem);
+      lengthInBits += plc4c_s7_read_write_s7_payload_user_data_item_length_in_bits(plc4x_spi_context_create_array_context(ctx, itemCount, curItem), (plc4c_s7_read_write_s7_payload_user_data_item*) curElement);
     }
   }
 

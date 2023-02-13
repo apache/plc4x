@@ -79,6 +79,7 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataElapsedActiveTime");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataElapsedActiveTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (elapsedActiveTime)
     lengthInBits += elapsedActiveTime.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataElapsedActiveTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger elapsedActiveTime =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataElapsedActiveTime");
     // Create the instance
-    return new BACnetConstructedDataElapsedActiveTimeBuilder(
+    return new BACnetConstructedDataElapsedActiveTimeBuilderImpl(
         elapsedActiveTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataElapsedActiveTimeBuilder
+  public static class BACnetConstructedDataElapsedActiveTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger elapsedActiveTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataElapsedActiveTimeBuilder(
+    public BACnetConstructedDataElapsedActiveTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger elapsedActiveTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.elapsedActiveTime = elapsedActiveTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

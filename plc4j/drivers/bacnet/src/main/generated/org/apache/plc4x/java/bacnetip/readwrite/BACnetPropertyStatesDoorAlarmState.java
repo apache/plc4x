@@ -56,6 +56,7 @@ public class BACnetPropertyStatesDoorAlarmState extends BACnetPropertyStates imp
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesDoorAlarmState");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesDoorAlarmState extends BACnetPropertyStates imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesDoorAlarmState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doorAlarmState)
     lengthInBits += doorAlarmState.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesDoorAlarmState extends BACnetPropertyStates imp
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesDoorAlarmStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesDoorAlarmState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDoorAlarmStateTagged doorAlarmState =
         readSimpleField(
@@ -101,15 +104,15 @@ public class BACnetPropertyStatesDoorAlarmState extends BACnetPropertyStates imp
 
     readBuffer.closeContext("BACnetPropertyStatesDoorAlarmState");
     // Create the instance
-    return new BACnetPropertyStatesDoorAlarmStateBuilder(doorAlarmState);
+    return new BACnetPropertyStatesDoorAlarmStateBuilderImpl(doorAlarmState);
   }
 
-  public static class BACnetPropertyStatesDoorAlarmStateBuilder
+  public static class BACnetPropertyStatesDoorAlarmStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetDoorAlarmStateTagged doorAlarmState;
 
-    public BACnetPropertyStatesDoorAlarmStateBuilder(BACnetDoorAlarmStateTagged doorAlarmState) {
-
+    public BACnetPropertyStatesDoorAlarmStateBuilderImpl(
+        BACnetDoorAlarmStateTagged doorAlarmState) {
       this.doorAlarmState = doorAlarmState;
     }
 

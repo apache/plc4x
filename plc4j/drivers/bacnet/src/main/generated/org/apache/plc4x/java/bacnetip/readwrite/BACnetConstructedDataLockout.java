@@ -78,6 +78,7 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLockout");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLockout _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lockout)
     lengthInBits += lockout.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLockoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean lockout =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataLockout");
     // Create the instance
-    return new BACnetConstructedDataLockoutBuilder(lockout, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLockoutBuilderImpl(lockout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLockoutBuilder
+  public static class BACnetConstructedDataLockoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean lockout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLockoutBuilder(
+    public BACnetConstructedDataLockoutBuilderImpl(
         BACnetApplicationTagBoolean lockout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lockout = lockout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

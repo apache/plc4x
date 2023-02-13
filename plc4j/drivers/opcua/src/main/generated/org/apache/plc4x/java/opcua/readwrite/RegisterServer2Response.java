@@ -87,6 +87,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisterServer2Response");
 
@@ -118,6 +119,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RegisterServer2Response _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -129,7 +131,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     if (configurationResults != null) {
       int i = 0;
       for (StatusCode element : configurationResults) {
-        boolean last = ++i >= configurationResults.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= configurationResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -141,7 +143,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -149,12 +151,13 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static RegisterServer2ResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterServer2Response");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -183,7 +186,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("RegisterServer2Response");
     // Create the instance
-    return new RegisterServer2ResponseBuilder(
+    return new RegisterServer2ResponseBuilderImpl(
         responseHeader,
         noOfConfigurationResults,
         configurationResults,
@@ -191,7 +194,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
         diagnosticInfos);
   }
 
-  public static class RegisterServer2ResponseBuilder
+  public static class RegisterServer2ResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfConfigurationResults;
@@ -199,13 +202,12 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public RegisterServer2ResponseBuilder(
+    public RegisterServer2ResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfConfigurationResults,
         List<StatusCode> configurationResults,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfConfigurationResults = noOfConfigurationResults;
       this.configurationResults = configurationResults;

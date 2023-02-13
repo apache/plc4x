@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -53,12 +54,11 @@ type _Reply struct {
 
 type _ReplyChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type ReplyParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child Reply, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child Reply, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -105,21 +105,21 @@ func (m *_Reply) GetTypeName() string {
 	return "Reply"
 }
 
-func (m *_Reply) GetParentLengthInBits() uint16 {
+func (m *_Reply) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_Reply) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_Reply) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (Reply, error) {
-	return ReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return ReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func ReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (Reply, error) {
+func ReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (Reply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Reply"); pullErr != nil {
@@ -148,11 +148,11 @@ func ReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, 
 	var typeSwitchError error
 	switch {
 	case peekedByte == 0x2B: // PowerUpReply
-		_childTemp, typeSwitchError = PowerUpReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = PowerUpReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	case peekedByte == 0x3D: // ParameterChangeReply
-		_childTemp, typeSwitchError = ParameterChangeReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = ParameterChangeReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	case 0 == 0: // ReplyEncodedReply
-		_childTemp, typeSwitchError = ReplyEncodedReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = ReplyEncodedReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedByte=%v]", peekedByte)
 	}
@@ -170,7 +170,7 @@ func ReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, 
 	return _child, nil
 }
 
-func (pm *_Reply) SerializeParent(writeBuffer utils.WriteBuffer, child Reply, serializeChildFunction func() error) error {
+func (pm *_Reply) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child Reply, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -213,7 +213,7 @@ func (m *_Reply) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

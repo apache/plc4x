@@ -64,6 +64,7 @@ public class MonitoredSALReply extends EncodedReply implements Message {
   @Override
   protected void serializeEncodedReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredSALReply");
 
@@ -82,6 +83,7 @@ public class MonitoredSALReply extends EncodedReply implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MonitoredSALReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (monitoredSAL)
     lengthInBits += monitoredSAL.getLengthInBits();
@@ -89,13 +91,14 @@ public class MonitoredSALReply extends EncodedReply implements Message {
     return lengthInBits;
   }
 
-  public static MonitoredSALReplyBuilder staticParseBuilder(
+  public static EncodedReplyBuilder staticParseEncodedReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("MonitoredSALReply");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     MonitoredSAL monitoredSAL =
         readSimpleField(
@@ -106,17 +109,16 @@ public class MonitoredSALReply extends EncodedReply implements Message {
 
     readBuffer.closeContext("MonitoredSALReply");
     // Create the instance
-    return new MonitoredSALReplyBuilder(monitoredSAL, cBusOptions, requestContext);
+    return new MonitoredSALReplyBuilderImpl(monitoredSAL, cBusOptions, requestContext);
   }
 
-  public static class MonitoredSALReplyBuilder implements EncodedReply.EncodedReplyBuilder {
+  public static class MonitoredSALReplyBuilderImpl implements EncodedReply.EncodedReplyBuilder {
     private final MonitoredSAL monitoredSAL;
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public MonitoredSALReplyBuilder(
+    public MonitoredSALReplyBuilderImpl(
         MonitoredSAL monitoredSAL, CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.monitoredSAL = monitoredSAL;
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;

@@ -48,6 +48,7 @@ public class AccessControlDataAccessPointClosed extends AccessControlData implem
   protected void serializeAccessControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataAccessPointClosed");
 
@@ -63,26 +64,28 @@ public class AccessControlDataAccessPointClosed extends AccessControlData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AccessControlDataAccessPointClosed _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static AccessControlDataAccessPointClosedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AccessControlDataBuilder staticParseAccessControlDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AccessControlDataAccessPointClosed");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("AccessControlDataAccessPointClosed");
     // Create the instance
-    return new AccessControlDataAccessPointClosedBuilder();
+    return new AccessControlDataAccessPointClosedBuilderImpl();
   }
 
-  public static class AccessControlDataAccessPointClosedBuilder
+  public static class AccessControlDataAccessPointClosedBuilderImpl
       implements AccessControlData.AccessControlDataBuilder {
 
-    public AccessControlDataAccessPointClosedBuilder() {}
+    public AccessControlDataAccessPointClosedBuilderImpl() {}
 
     public AccessControlDataAccessPointClosed build(
         AccessControlCommandTypeContainer commandTypeContainer,

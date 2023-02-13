@@ -58,6 +58,7 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NetworkAddressDataType");
 
@@ -77,6 +78,7 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NetworkAddressDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (networkInterface)
     lengthInBits += networkInterface.getLengthInBits();
@@ -84,12 +86,13 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static NetworkAddressDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NetworkAddressDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString networkInterface =
         readSimpleField(
@@ -98,15 +101,14 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("NetworkAddressDataType");
     // Create the instance
-    return new NetworkAddressDataTypeBuilder(networkInterface);
+    return new NetworkAddressDataTypeBuilderImpl(networkInterface);
   }
 
-  public static class NetworkAddressDataTypeBuilder
+  public static class NetworkAddressDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString networkInterface;
 
-    public NetworkAddressDataTypeBuilder(PascalString networkInterface) {
-
+    public NetworkAddressDataTypeBuilderImpl(PascalString networkInterface) {
       this.networkInterface = networkInterface;
     }
 

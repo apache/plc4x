@@ -84,6 +84,7 @@ public class NLMSecurityResponse extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMSecurityResponse");
 
@@ -118,6 +119,7 @@ public class NLMSecurityResponse extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMSecurityResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseCode)
     lengthInBits += 8;
@@ -136,12 +138,13 @@ public class NLMSecurityResponse extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMSecurityResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMSecurityResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SecurityResponseCode responseCode =
         readEnumField(
@@ -160,24 +163,23 @@ public class NLMSecurityResponse extends NLM implements Message {
 
     readBuffer.closeContext("NLMSecurityResponse");
     // Create the instance
-    return new NLMSecurityResponseBuilder(
+    return new NLMSecurityResponseBuilderImpl(
         responseCode, originalMessageId, originalTimestamp, variableParameters, apduLength);
   }
 
-  public static class NLMSecurityResponseBuilder implements NLM.NLMBuilder {
+  public static class NLMSecurityResponseBuilderImpl implements NLM.NLMBuilder {
     private final SecurityResponseCode responseCode;
     private final long originalMessageId;
     private final long originalTimestamp;
     private final byte[] variableParameters;
     private final Integer apduLength;
 
-    public NLMSecurityResponseBuilder(
+    public NLMSecurityResponseBuilderImpl(
         SecurityResponseCode responseCode,
         long originalMessageId,
         long originalTimestamp,
         byte[] variableParameters,
         Integer apduLength) {
-
       this.responseCode = responseCode;
       this.originalMessageId = originalMessageId;
       this.originalTimestamp = originalTimestamp;

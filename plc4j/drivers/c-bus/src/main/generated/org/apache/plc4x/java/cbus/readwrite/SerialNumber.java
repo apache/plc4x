@@ -69,6 +69,7 @@ public class SerialNumber implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SerialNumber");
 
@@ -96,6 +97,7 @@ public class SerialNumber implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     SerialNumber _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (octet1)
     lengthInBits += 8;
@@ -123,6 +125,7 @@ public class SerialNumber implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte octet1 = readSimpleField("octet1", readByte(readBuffer, 8));
 

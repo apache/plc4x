@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastCpuSubscribeEvents(structType interface{}) CpuSubscribeEvents {
 	return castFunc(structType)
 }
 
-func (m CpuSubscribeEvents) GetLengthInBits() uint16 {
+func (m CpuSubscribeEvents) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m CpuSubscribeEvents) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m CpuSubscribeEvents) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func CpuSubscribeEventsParse(theBytes []byte) (CpuSubscribeEvents, error) {
-	return CpuSubscribeEventsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func CpuSubscribeEventsParse(ctx context.Context, theBytes []byte) (CpuSubscribeEvents, error) {
+	return CpuSubscribeEventsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func CpuSubscribeEventsParseWithBuffer(readBuffer utils.ReadBuffer) (CpuSubscribeEvents, error) {
+func CpuSubscribeEventsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CpuSubscribeEvents, error) {
 	val, err := readBuffer.ReadUint8("CpuSubscribeEvents", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CpuSubscribeEvents")
@@ -126,13 +127,13 @@ func CpuSubscribeEventsParseWithBuffer(readBuffer utils.ReadBuffer) (CpuSubscrib
 
 func (e CpuSubscribeEvents) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e CpuSubscribeEvents) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e CpuSubscribeEvents) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("CpuSubscribeEvents", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

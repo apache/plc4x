@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataTelephonyStatusAndControl) GetTypeName() string {
 	return "SALDataTelephonyStatusAndControl"
 }
 
-func (m *_SALDataTelephonyStatusAndControl) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataTelephonyStatusAndControl) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataTelephonyStatusAndControl) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (telephonyData)
-	lengthInBits += m.TelephonyData.GetLengthInBits()
+	lengthInBits += m.TelephonyData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataTelephonyStatusAndControl) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataTelephonyStatusAndControl) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataTelephonyStatusAndControlParse(theBytes []byte, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
-	return SALDataTelephonyStatusAndControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataTelephonyStatusAndControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataTelephonyStatusAndControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
+func SALDataTelephonyStatusAndControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataTelephonyStatusAndControl"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataTelephonyStatusAndControlParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("telephonyData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for telephonyData")
 	}
-	_telephonyData, _telephonyDataErr := TelephonyDataParseWithBuffer(readBuffer)
+	_telephonyData, _telephonyDataErr := TelephonyDataParseWithBuffer(ctx, readBuffer)
 	if _telephonyDataErr != nil {
 		return nil, errors.Wrap(_telephonyDataErr, "Error parsing 'telephonyData' field of SALDataTelephonyStatusAndControl")
 	}
@@ -166,14 +163,14 @@ func SALDataTelephonyStatusAndControlParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_SALDataTelephonyStatusAndControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataTelephonyStatusAndControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataTelephonyStatusAndControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataTelephonyStatusAndControl) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("telephonyData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for telephonyData")
 		}
-		_telephonyDataErr := writeBuffer.WriteSerializable(m.GetTelephonyData())
+		_telephonyDataErr := writeBuffer.WriteSerializable(ctx, m.GetTelephonyData())
 		if popErr := writeBuffer.PopContext("telephonyData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for telephonyData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataTelephonyStatusAndControl) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataTelephonyStatusAndControl) isSALDataTelephonyStatusAndControl() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataTelephonyStatusAndControl) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

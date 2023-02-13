@@ -63,6 +63,7 @@ public class BACnetApplicationTagUnsignedInteger extends BACnetApplicationTag im
   protected void serializeBACnetApplicationTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagUnsignedInteger");
 
@@ -85,6 +86,7 @@ public class BACnetApplicationTagUnsignedInteger extends BACnetApplicationTag im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetApplicationTagUnsignedInteger _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -94,12 +96,13 @@ public class BACnetApplicationTagUnsignedInteger extends BACnetApplicationTag im
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagUnsignedIntegerBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagUnsignedInteger");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadUnsignedInteger payload =
         readSimpleField(
@@ -114,15 +117,14 @@ public class BACnetApplicationTagUnsignedInteger extends BACnetApplicationTag im
 
     readBuffer.closeContext("BACnetApplicationTagUnsignedInteger");
     // Create the instance
-    return new BACnetApplicationTagUnsignedIntegerBuilder(payload);
+    return new BACnetApplicationTagUnsignedIntegerBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagUnsignedIntegerBuilder
+  public static class BACnetApplicationTagUnsignedIntegerBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadUnsignedInteger payload;
 
-    public BACnetApplicationTagUnsignedIntegerBuilder(BACnetTagPayloadUnsignedInteger payload) {
-
+    public BACnetApplicationTagUnsignedIntegerBuilderImpl(BACnetTagPayloadUnsignedInteger payload) {
       this.payload = payload;
     }
 

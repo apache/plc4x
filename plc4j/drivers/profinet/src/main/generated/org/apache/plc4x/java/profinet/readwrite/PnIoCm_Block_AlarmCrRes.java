@@ -43,6 +43,8 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
   }
 
   // Properties.
+  protected final short blockVersionHigh;
+  protected final short blockVersionLow;
   protected final PnIoCm_AlarmCrType alarmType;
   protected final int localAlarmReference;
   protected final int maxAlarmDataLength;
@@ -53,10 +55,20 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
       PnIoCm_AlarmCrType alarmType,
       int localAlarmReference,
       int maxAlarmDataLength) {
-    super(blockVersionHigh, blockVersionLow);
+    super();
+    this.blockVersionHigh = blockVersionHigh;
+    this.blockVersionLow = blockVersionLow;
     this.alarmType = alarmType;
     this.localAlarmReference = localAlarmReference;
     this.maxAlarmDataLength = maxAlarmDataLength;
+  }
+
+  public short getBlockVersionHigh() {
+    return blockVersionHigh;
+  }
+
+  public short getBlockVersionLow() {
+    return blockVersionLow;
   }
 
   public PnIoCm_AlarmCrType getAlarmType() {
@@ -74,8 +86,32 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
   @Override
   protected void serializePnIoCm_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block_AlarmCrRes");
+
+    // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int blockLength = (int) ((getLengthInBytes()) - (4));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionHigh)
+    writeSimpleField(
+        "blockVersionHigh",
+        blockVersionHigh,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionLow)
+    writeSimpleField(
+        "blockVersionLow",
+        blockVersionLow,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (alarmType)
     writeSimpleEnumField(
@@ -85,7 +121,8 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
         new DataWriterEnumDefault<>(
             PnIoCm_AlarmCrType::getValue,
             PnIoCm_AlarmCrType::name,
-            writeUnsignedInt(writeBuffer, 16)));
+            writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (localAlarmReference)
     writeSimpleField(
@@ -113,6 +150,16 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Block_AlarmCrRes _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    // Implicit Field (blockLength)
+    lengthInBits += 16;
+
+    // Simple field (blockVersionHigh)
+    lengthInBits += 8;
+
+    // Simple field (blockVersionLow)
+    lengthInBits += 8;
 
     // Simple field (alarmType)
     lengthInBits += 16;
@@ -126,12 +173,31 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_AlarmCrResBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_AlarmCrRes");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    int blockLength =
+        readImplicitField(
+            "blockLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionHigh =
+        readSimpleField(
+            "blockVersionHigh",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionLow =
+        readSimpleField(
+            "blockVersionLow",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_AlarmCrType alarmType =
         readEnumField(
@@ -155,23 +221,32 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block_AlarmCrRes");
     // Create the instance
-    return new PnIoCm_Block_AlarmCrResBuilder(alarmType, localAlarmReference, maxAlarmDataLength);
+    return new PnIoCm_Block_AlarmCrResBuilderImpl(
+        blockVersionHigh, blockVersionLow, alarmType, localAlarmReference, maxAlarmDataLength);
   }
 
-  public static class PnIoCm_Block_AlarmCrResBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCm_Block_AlarmCrResBuilderImpl
+      implements PnIoCm_Block.PnIoCm_BlockBuilder {
+    private final short blockVersionHigh;
+    private final short blockVersionLow;
     private final PnIoCm_AlarmCrType alarmType;
     private final int localAlarmReference;
     private final int maxAlarmDataLength;
 
-    public PnIoCm_Block_AlarmCrResBuilder(
-        PnIoCm_AlarmCrType alarmType, int localAlarmReference, int maxAlarmDataLength) {
-
+    public PnIoCm_Block_AlarmCrResBuilderImpl(
+        short blockVersionHigh,
+        short blockVersionLow,
+        PnIoCm_AlarmCrType alarmType,
+        int localAlarmReference,
+        int maxAlarmDataLength) {
+      this.blockVersionHigh = blockVersionHigh;
+      this.blockVersionLow = blockVersionLow;
       this.alarmType = alarmType;
       this.localAlarmReference = localAlarmReference;
       this.maxAlarmDataLength = maxAlarmDataLength;
     }
 
-    public PnIoCm_Block_AlarmCrRes build(short blockVersionHigh, short blockVersionLow) {
+    public PnIoCm_Block_AlarmCrRes build() {
       PnIoCm_Block_AlarmCrRes pnIoCm_Block_AlarmCrRes =
           new PnIoCm_Block_AlarmCrRes(
               blockVersionHigh,
@@ -192,7 +267,9 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
       return false;
     }
     PnIoCm_Block_AlarmCrRes that = (PnIoCm_Block_AlarmCrRes) o;
-    return (getAlarmType() == that.getAlarmType())
+    return (getBlockVersionHigh() == that.getBlockVersionHigh())
+        && (getBlockVersionLow() == that.getBlockVersionLow())
+        && (getAlarmType() == that.getAlarmType())
         && (getLocalAlarmReference() == that.getLocalAlarmReference())
         && (getMaxAlarmDataLength() == that.getMaxAlarmDataLength())
         && super.equals(that)
@@ -202,7 +279,12 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
   @Override
   public int hashCode() {
     return Objects.hash(
-        super.hashCode(), getAlarmType(), getLocalAlarmReference(), getMaxAlarmDataLength());
+        super.hashCode(),
+        getBlockVersionHigh(),
+        getBlockVersionLow(),
+        getAlarmType(),
+        getLocalAlarmReference(),
+        getMaxAlarmDataLength());
   }
 
   @Override

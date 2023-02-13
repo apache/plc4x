@@ -78,6 +78,7 @@ public class BACnetConstructedDataGroupMode extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataGroupMode");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataGroupMode extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataGroupMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (groupMode)
     lengthInBits += groupMode.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataGroupMode extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataGroupModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataGroupMode extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftGroupModeTagged groupMode =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataGroupMode extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataGroupMode");
     // Create the instance
-    return new BACnetConstructedDataGroupModeBuilder(groupMode, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataGroupModeBuilderImpl(groupMode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataGroupModeBuilder
+  public static class BACnetConstructedDataGroupModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLiftGroupModeTagged groupMode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataGroupModeBuilder(
+    public BACnetConstructedDataGroupModeBuilderImpl(
         BACnetLiftGroupModeTagged groupMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.groupMode = groupMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

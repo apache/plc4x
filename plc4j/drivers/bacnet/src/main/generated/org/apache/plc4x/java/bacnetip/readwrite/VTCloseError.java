@@ -64,6 +64,7 @@ public class VTCloseError extends BACnetError implements Message {
   @Override
   protected void serializeBACnetErrorChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("VTCloseError");
 
@@ -88,6 +89,7 @@ public class VTCloseError extends BACnetError implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     VTCloseError _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (errorType)
     lengthInBits += errorType.getLengthInBits();
@@ -100,12 +102,13 @@ public class VTCloseError extends BACnetError implements Message {
     return lengthInBits;
   }
 
-  public static VTCloseErrorBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("VTCloseError");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed errorType =
         readSimpleField(
@@ -122,17 +125,16 @@ public class VTCloseError extends BACnetError implements Message {
 
     readBuffer.closeContext("VTCloseError");
     // Create the instance
-    return new VTCloseErrorBuilder(errorType, listOfVtSessionIdentifiers);
+    return new VTCloseErrorBuilderImpl(errorType, listOfVtSessionIdentifiers);
   }
 
-  public static class VTCloseErrorBuilder implements BACnetError.BACnetErrorBuilder {
+  public static class VTCloseErrorBuilderImpl implements BACnetError.BACnetErrorBuilder {
     private final ErrorEnclosed errorType;
     private final VTCloseErrorListOfVTSessionIdentifiers listOfVtSessionIdentifiers;
 
-    public VTCloseErrorBuilder(
+    public VTCloseErrorBuilderImpl(
         ErrorEnclosed errorType,
         VTCloseErrorListOfVTSessionIdentifiers listOfVtSessionIdentifiers) {
-
       this.errorType = errorType;
       this.listOfVtSessionIdentifiers = listOfVtSessionIdentifiers;
     }

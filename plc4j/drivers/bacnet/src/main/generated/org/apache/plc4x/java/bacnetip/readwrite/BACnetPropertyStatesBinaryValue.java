@@ -56,6 +56,7 @@ public class BACnetPropertyStatesBinaryValue extends BACnetPropertyStates implem
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesBinaryValue");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesBinaryValue extends BACnetPropertyStates implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesBinaryValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (binaryValue)
     lengthInBits += binaryValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesBinaryValue extends BACnetPropertyStates implem
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesBinaryValueBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesBinaryValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBinaryPVTagged binaryValue =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesBinaryValue extends BACnetPropertyStates implem
 
     readBuffer.closeContext("BACnetPropertyStatesBinaryValue");
     // Create the instance
-    return new BACnetPropertyStatesBinaryValueBuilder(binaryValue);
+    return new BACnetPropertyStatesBinaryValueBuilderImpl(binaryValue);
   }
 
-  public static class BACnetPropertyStatesBinaryValueBuilder
+  public static class BACnetPropertyStatesBinaryValueBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetBinaryPVTagged binaryValue;
 
-    public BACnetPropertyStatesBinaryValueBuilder(BACnetBinaryPVTagged binaryValue) {
-
+    public BACnetPropertyStatesBinaryValueBuilderImpl(BACnetBinaryPVTagged binaryValue) {
       this.binaryValue = binaryValue;
     }
 

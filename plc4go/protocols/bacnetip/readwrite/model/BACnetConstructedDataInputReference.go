@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataInputReference) GetInputReference() BACnetObjectP
 ///////////////////////
 
 func (m *_BACnetConstructedDataInputReference) GetActualValue() BACnetObjectPropertyReference {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetObjectPropertyReference(m.GetInputReference())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataInputReference) GetTypeName() string {
 	return "BACnetConstructedDataInputReference"
 }
 
-func (m *_BACnetConstructedDataInputReference) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataInputReference) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataInputReference) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (inputReference)
-	lengthInBits += m.InputReference.GetLengthInBits()
+	lengthInBits += m.InputReference.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataInputReference) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataInputReference) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataInputReferenceParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInputReference, error) {
-	return BACnetConstructedDataInputReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataInputReferenceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataInputReferenceParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInputReference, error) {
+func BACnetConstructedDataInputReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInputReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInputReference"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataInputReferenceParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("inputReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for inputReference")
 	}
-	_inputReference, _inputReferenceErr := BACnetObjectPropertyReferenceParseWithBuffer(readBuffer)
+	_inputReference, _inputReferenceErr := BACnetObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
 	if _inputReferenceErr != nil {
 		return nil, errors.Wrap(_inputReferenceErr, "Error parsing 'inputReference' field of BACnetConstructedDataInputReference")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataInputReferenceParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConstructedDataInputReference) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataInputReference) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataInputReference) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataInputReference) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("inputReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for inputReference")
 		}
-		_inputReferenceErr := writeBuffer.WriteSerializable(m.GetInputReference())
+		_inputReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetInputReference())
 		if popErr := writeBuffer.PopContext("inputReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for inputReference")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataInputReference) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_inputReferenceErr, "Error serializing 'inputReference' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataInputReference) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataInputReference) isBACnetConstructedDataInputReference() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataInputReference) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

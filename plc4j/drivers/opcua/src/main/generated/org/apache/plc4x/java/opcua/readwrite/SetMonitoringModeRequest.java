@@ -87,6 +87,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SetMonitoringModeRequest");
 
@@ -123,6 +124,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SetMonitoringModeRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -144,12 +146,13 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
     return lengthInBits;
   }
 
-  public static SetMonitoringModeRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SetMonitoringModeRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -176,11 +179,11 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("SetMonitoringModeRequest");
     // Create the instance
-    return new SetMonitoringModeRequestBuilder(
+    return new SetMonitoringModeRequestBuilderImpl(
         requestHeader, subscriptionId, monitoringMode, noOfMonitoredItemIds, monitoredItemIds);
   }
 
-  public static class SetMonitoringModeRequestBuilder
+  public static class SetMonitoringModeRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long subscriptionId;
@@ -188,13 +191,12 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
     private final int noOfMonitoredItemIds;
     private final List<Long> monitoredItemIds;
 
-    public SetMonitoringModeRequestBuilder(
+    public SetMonitoringModeRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long subscriptionId,
         MonitoringMode monitoringMode,
         int noOfMonitoredItemIds,
         List<Long> monitoredItemIds) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.monitoringMode = monitoringMode;

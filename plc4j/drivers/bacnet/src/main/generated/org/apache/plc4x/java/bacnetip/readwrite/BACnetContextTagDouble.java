@@ -67,6 +67,7 @@ public class BACnetContextTagDouble extends BACnetContextTag implements Message 
   protected void serializeBACnetContextTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagDouble");
 
@@ -89,6 +90,7 @@ public class BACnetContextTagDouble extends BACnetContextTag implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetContextTagDouble _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -98,13 +100,14 @@ public class BACnetContextTagDouble extends BACnetContextTag implements Message 
     return lengthInBits;
   }
 
-  public static BACnetContextTagDoubleBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer, Short tagNumberArgument, BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagDouble");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadDouble payload =
         readSimpleField(
@@ -115,16 +118,16 @@ public class BACnetContextTagDouble extends BACnetContextTag implements Message 
 
     readBuffer.closeContext("BACnetContextTagDouble");
     // Create the instance
-    return new BACnetContextTagDoubleBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagDoubleBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagDoubleBuilder
+  public static class BACnetContextTagDoubleBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadDouble payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagDoubleBuilder(BACnetTagPayloadDouble payload, Short tagNumberArgument) {
-
+    public BACnetContextTagDoubleBuilderImpl(
+        BACnetTagPayloadDouble payload, Short tagNumberArgument) {
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

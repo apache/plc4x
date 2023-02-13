@@ -77,6 +77,7 @@ public class EUInformation extends ExtensionObjectDefinition implements Message 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EUInformation");
 
@@ -104,6 +105,7 @@ public class EUInformation extends ExtensionObjectDefinition implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EUInformation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (namespaceUri)
     lengthInBits += namespaceUri.getLengthInBits();
@@ -120,12 +122,13 @@ public class EUInformation extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static EUInformationBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EUInformation");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString namespaceUri =
         readSimpleField(
@@ -148,22 +151,21 @@ public class EUInformation extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("EUInformation");
     // Create the instance
-    return new EUInformationBuilder(namespaceUri, unitId, displayName, description);
+    return new EUInformationBuilderImpl(namespaceUri, unitId, displayName, description);
   }
 
-  public static class EUInformationBuilder
+  public static class EUInformationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString namespaceUri;
     private final int unitId;
     private final LocalizedText displayName;
     private final LocalizedText description;
 
-    public EUInformationBuilder(
+    public EUInformationBuilderImpl(
         PascalString namespaceUri,
         int unitId,
         LocalizedText displayName,
         LocalizedText description) {
-
       this.namespaceUri = namespaceUri;
       this.unitId = unitId;
       this.displayName = displayName;

@@ -75,6 +75,7 @@ public class SecurityDataPasswordEntryStatus extends SecurityData implements Mes
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataPasswordEntryStatus");
 
@@ -113,6 +114,7 @@ public class SecurityDataPasswordEntryStatus extends SecurityData implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataPasswordEntryStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (code)
     lengthInBits += 8;
@@ -130,12 +132,13 @@ public class SecurityDataPasswordEntryStatus extends SecurityData implements Mes
     return lengthInBits;
   }
 
-  public static SecurityDataPasswordEntryStatusBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataPasswordEntryStatus");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte code = readSimpleField("code", readByte(readBuffer, 8));
     boolean isPasswordEntrySucceeded =
@@ -150,15 +153,14 @@ public class SecurityDataPasswordEntryStatus extends SecurityData implements Mes
 
     readBuffer.closeContext("SecurityDataPasswordEntryStatus");
     // Create the instance
-    return new SecurityDataPasswordEntryStatusBuilder(code);
+    return new SecurityDataPasswordEntryStatusBuilderImpl(code);
   }
 
-  public static class SecurityDataPasswordEntryStatusBuilder
+  public static class SecurityDataPasswordEntryStatusBuilderImpl
       implements SecurityData.SecurityDataBuilder {
     private final byte code;
 
-    public SecurityDataPasswordEntryStatusBuilder(byte code) {
-
+    public SecurityDataPasswordEntryStatusBuilderImpl(byte code) {
       this.code = code;
     }
 

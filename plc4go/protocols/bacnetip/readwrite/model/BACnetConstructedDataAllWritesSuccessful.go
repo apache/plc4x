@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) GetAllWritesSuccessful() BAC
 ///////////////////////
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetAllWritesSuccessful())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) GetTypeName() string {
 	return "BACnetConstructedDataAllWritesSuccessful"
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (allWritesSuccessful)
-	lengthInBits += m.AllWritesSuccessful.GetLengthInBits()
+	lengthInBits += m.AllWritesSuccessful.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAllWritesSuccessful) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAllWritesSuccessfulParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllWritesSuccessful, error) {
-	return BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllWritesSuccessful, error) {
+func BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllWritesSuccessful, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAllWritesSuccessful"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("allWritesSuccessful"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for allWritesSuccessful")
 	}
-	_allWritesSuccessful, _allWritesSuccessfulErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_allWritesSuccessful, _allWritesSuccessfulErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _allWritesSuccessfulErr != nil {
 		return nil, errors.Wrap(_allWritesSuccessfulErr, "Error parsing 'allWritesSuccessful' field of BACnetConstructedDataAllWritesSuccessful")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAllWritesSuccessful) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAllWritesSuccessful) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("allWritesSuccessful"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for allWritesSuccessful")
 		}
-		_allWritesSuccessfulErr := writeBuffer.WriteSerializable(m.GetAllWritesSuccessful())
+		_allWritesSuccessfulErr := writeBuffer.WriteSerializable(ctx, m.GetAllWritesSuccessful())
 		if popErr := writeBuffer.PopContext("allWritesSuccessful"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for allWritesSuccessful")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) SerializeWithWriteBuffer(wri
 			return errors.Wrap(_allWritesSuccessfulErr, "Error serializing 'allWritesSuccessful' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) isBACnetConstructedDataAllWritesSuccessful() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

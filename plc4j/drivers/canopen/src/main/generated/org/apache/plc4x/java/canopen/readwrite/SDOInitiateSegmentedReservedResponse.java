@@ -47,28 +47,20 @@ public class SDOInitiateSegmentedReservedResponse extends SDOInitiateUploadRespo
     return (boolean) false;
   }
 
-  // Arguments.
-  protected final Byte size;
-  // Reserved Fields
-  private Integer reservedField0;
-
-  public SDOInitiateSegmentedReservedResponse(Byte size) {
-    super(size);
-    this.size = size;
+  public SDOInitiateSegmentedReservedResponse() {
+    super();
   }
 
   @Override
   protected void serializeSDOInitiateUploadResponsePayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateSegmentedReservedResponse");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x00,
-        writeSignedInt(writeBuffer, 32));
+    writeReservedField("reserved", (int) 0x00, writeSignedInt(writeBuffer, 32));
 
     writeBuffer.popContext("SDOInitiateSegmentedReservedResponse");
   }
@@ -82,6 +74,7 @@ public class SDOInitiateSegmentedReservedResponse extends SDOInitiateUploadRespo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOInitiateSegmentedReservedResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 32;
@@ -89,37 +82,32 @@ public class SDOInitiateSegmentedReservedResponse extends SDOInitiateUploadRespo
     return lengthInBits;
   }
 
-  public static SDOInitiateSegmentedReservedResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Boolean expedited, Boolean indicated, Byte size)
-      throws ParseException {
+  public static SDOInitiateUploadResponsePayloadBuilder
+      staticParseSDOInitiateUploadResponsePayloadBuilder(
+          ReadBuffer readBuffer, Boolean expedited, Boolean indicated, Byte size)
+          throws ParseException {
     readBuffer.pullContext("SDOInitiateSegmentedReservedResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
         readReservedField("reserved", readSignedInt(readBuffer, 32), (int) 0x00);
 
     readBuffer.closeContext("SDOInitiateSegmentedReservedResponse");
     // Create the instance
-    return new SDOInitiateSegmentedReservedResponseBuilder(size, reservedField0);
+    return new SDOInitiateSegmentedReservedResponseBuilderImpl();
   }
 
-  public static class SDOInitiateSegmentedReservedResponseBuilder
+  public static class SDOInitiateSegmentedReservedResponseBuilderImpl
       implements SDOInitiateUploadResponsePayload.SDOInitiateUploadResponsePayloadBuilder {
-    private final Byte size;
-    private final Integer reservedField0;
 
-    public SDOInitiateSegmentedReservedResponseBuilder(Byte size, Integer reservedField0) {
-      this.size = size;
-      this.reservedField0 = reservedField0;
-    }
+    public SDOInitiateSegmentedReservedResponseBuilderImpl() {}
 
-    public SDOInitiateSegmentedReservedResponse build(Byte size) {
-
+    public SDOInitiateSegmentedReservedResponse build() {
       SDOInitiateSegmentedReservedResponse sDOInitiateSegmentedReservedResponse =
-          new SDOInitiateSegmentedReservedResponse(size);
-      sDOInitiateSegmentedReservedResponse.reservedField0 = reservedField0;
+          new SDOInitiateSegmentedReservedResponse();
       return sDOInitiateSegmentedReservedResponse;
     }
   }

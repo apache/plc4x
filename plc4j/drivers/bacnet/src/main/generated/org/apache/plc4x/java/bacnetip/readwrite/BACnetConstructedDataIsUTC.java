@@ -78,6 +78,7 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIsUTC");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIsUTC _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (isUtc)
     lengthInBits += isUtc.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIsUTCBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean isUtc =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
 
     readBuffer.closeContext("BACnetConstructedDataIsUTC");
     // Create the instance
-    return new BACnetConstructedDataIsUTCBuilder(isUtc, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIsUTCBuilderImpl(isUtc, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIsUTCBuilder
+  public static class BACnetConstructedDataIsUTCBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean isUtc;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIsUTCBuilder(
+    public BACnetConstructedDataIsUTCBuilderImpl(
         BACnetApplicationTagBoolean isUtc,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.isUtc = isUtc;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

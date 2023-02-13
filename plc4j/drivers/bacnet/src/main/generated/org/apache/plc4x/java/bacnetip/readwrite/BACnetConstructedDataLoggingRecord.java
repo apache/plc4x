@@ -78,6 +78,7 @@ public class BACnetConstructedDataLoggingRecord extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLoggingRecord");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLoggingRecord extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLoggingRecord _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (loggingRecord)
     lengthInBits += loggingRecord.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLoggingRecord extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLoggingRecordBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLoggingRecord extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccumulatorRecord loggingRecord =
         readSimpleField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataLoggingRecord extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataLoggingRecord");
     // Create the instance
-    return new BACnetConstructedDataLoggingRecordBuilder(
+    return new BACnetConstructedDataLoggingRecordBuilderImpl(
         loggingRecord, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLoggingRecordBuilder
+  public static class BACnetConstructedDataLoggingRecordBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccumulatorRecord loggingRecord;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLoggingRecordBuilder(
+    public BACnetConstructedDataLoggingRecordBuilderImpl(
         BACnetAccumulatorRecord loggingRecord,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.loggingRecord = loggingRecord;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

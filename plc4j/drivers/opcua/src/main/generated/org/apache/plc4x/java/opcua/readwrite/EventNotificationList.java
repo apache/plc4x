@@ -64,6 +64,7 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EventNotificationList");
 
@@ -90,6 +91,7 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EventNotificationList _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (notificationLength)
     lengthInBits += 32;
@@ -101,7 +103,7 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
     if (events != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : events) {
-        boolean last = ++i >= events.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= events.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -109,12 +111,13 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static EventNotificationListBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EventNotificationList");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int notificationLength = readImplicitField("notificationLength", readSignedInt(readBuffer, 32));
 
@@ -130,16 +133,16 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("EventNotificationList");
     // Create the instance
-    return new EventNotificationListBuilder(noOfEvents, events);
+    return new EventNotificationListBuilderImpl(noOfEvents, events);
   }
 
-  public static class EventNotificationListBuilder
+  public static class EventNotificationListBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfEvents;
     private final List<ExtensionObjectDefinition> events;
 
-    public EventNotificationListBuilder(int noOfEvents, List<ExtensionObjectDefinition> events) {
-
+    public EventNotificationListBuilderImpl(
+        int noOfEvents, List<ExtensionObjectDefinition> events) {
       this.noOfEvents = noOfEvents;
       this.events = events;
     }

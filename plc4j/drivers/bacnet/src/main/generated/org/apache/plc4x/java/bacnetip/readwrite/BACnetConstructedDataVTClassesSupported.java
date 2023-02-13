@@ -75,6 +75,7 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataVTClassesSupported");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataVTClassesSupported _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (vtClassesSupported != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataVTClassesSupportedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetVTClassTagged> vtClassesSupported =
         readTerminatedArrayField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataVTClassesSupported extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataVTClassesSupported");
     // Create the instance
-    return new BACnetConstructedDataVTClassesSupportedBuilder(
+    return new BACnetConstructedDataVTClassesSupportedBuilderImpl(
         vtClassesSupported, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataVTClassesSupportedBuilder
+  public static class BACnetConstructedDataVTClassesSupportedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetVTClassTagged> vtClassesSupported;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataVTClassesSupportedBuilder(
+    public BACnetConstructedDataVTClassesSupportedBuilderImpl(
         List<BACnetVTClassTagged> vtClassesSupported,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.vtClassesSupported = vtClassesSupported;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

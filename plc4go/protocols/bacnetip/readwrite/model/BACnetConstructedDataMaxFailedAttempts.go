@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) GetMaxFailedAttempts() BACnetA
 ///////////////////////
 
 func (m *_BACnetConstructedDataMaxFailedAttempts) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetMaxFailedAttempts())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) GetTypeName() string {
 	return "BACnetConstructedDataMaxFailedAttempts"
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (maxFailedAttempts)
-	lengthInBits += m.MaxFailedAttempts.GetLengthInBits()
+	lengthInBits += m.MaxFailedAttempts.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataMaxFailedAttempts) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataMaxFailedAttemptsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxFailedAttempts, error) {
-	return BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxFailedAttempts, error) {
+func BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxFailedAttempts, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxFailedAttempts"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(readBuffer utils.Read
 	if pullErr := readBuffer.PullContext("maxFailedAttempts"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxFailedAttempts")
 	}
-	_maxFailedAttempts, _maxFailedAttemptsErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_maxFailedAttempts, _maxFailedAttemptsErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _maxFailedAttemptsErr != nil {
 		return nil, errors.Wrap(_maxFailedAttemptsErr, "Error parsing 'maxFailedAttempts' field of BACnetConstructedDataMaxFailedAttempts")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(readBuffer utils.Read
 }
 
 func (m *_BACnetConstructedDataMaxFailedAttempts) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataMaxFailedAttempts) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMaxFailedAttempts) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) SerializeWithWriteBuffer(write
 		if pushErr := writeBuffer.PushContext("maxFailedAttempts"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxFailedAttempts")
 		}
-		_maxFailedAttemptsErr := writeBuffer.WriteSerializable(m.GetMaxFailedAttempts())
+		_maxFailedAttemptsErr := writeBuffer.WriteSerializable(ctx, m.GetMaxFailedAttempts())
 		if popErr := writeBuffer.PopContext("maxFailedAttempts"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxFailedAttempts")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) SerializeWithWriteBuffer(write
 			return errors.Wrap(_maxFailedAttemptsErr, "Error serializing 'maxFailedAttempts' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) SerializeWithWriteBuffer(write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataMaxFailedAttempts) isBACnetConstructedDataMaxFailedAttempts() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataMaxFailedAttempts) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

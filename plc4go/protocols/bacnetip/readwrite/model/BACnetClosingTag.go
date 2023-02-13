@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -83,28 +84,24 @@ func (m *_BACnetClosingTag) GetTypeName() string {
 	return "BACnetClosingTag"
 }
 
-func (m *_BACnetClosingTag) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetClosingTag) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetClosingTag) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetClosingTag) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetClosingTag) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetClosingTagParse(theBytes []byte, tagNumberArgument uint8) (BACnetClosingTag, error) {
-	return BACnetClosingTagParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument)
+	return BACnetClosingTagParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumberArgument)
 }
 
-func BACnetClosingTagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetClosingTag, error) {
+func BACnetClosingTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetClosingTag, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetClosingTag"); pullErr != nil {
@@ -117,7 +114,7 @@ func BACnetClosingTagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgum
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetClosingTag")
 	}
@@ -153,14 +150,14 @@ func BACnetClosingTagParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgum
 }
 
 func (m *_BACnetClosingTag) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetClosingTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetClosingTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetClosingTag"); pushErr != nil {
@@ -171,7 +168,7 @@ func (m *_BACnetClosingTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuff
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -204,7 +201,7 @@ func (m *_BACnetClosingTag) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

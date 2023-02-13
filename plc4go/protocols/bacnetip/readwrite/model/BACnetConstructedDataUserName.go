@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataUserName) GetUserName() BACnetApplicationTagChara
 ///////////////////////
 
 func (m *_BACnetConstructedDataUserName) GetActualValue() BACnetApplicationTagCharacterString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagCharacterString(m.GetUserName())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataUserName) GetTypeName() string {
 	return "BACnetConstructedDataUserName"
 }
 
-func (m *_BACnetConstructedDataUserName) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataUserName) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataUserName) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (userName)
-	lengthInBits += m.UserName.GetLengthInBits()
+	lengthInBits += m.UserName.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataUserName) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataUserName) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataUserNameParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserName, error) {
-	return BACnetConstructedDataUserNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataUserNameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataUserNameParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserName, error) {
+func BACnetConstructedDataUserNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataUserName"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataUserNameParseWithBuffer(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("userName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for userName")
 	}
-	_userName, _userNameErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_userName, _userNameErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _userNameErr != nil {
 		return nil, errors.Wrap(_userNameErr, "Error parsing 'userName' field of BACnetConstructedDataUserName")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataUserNameParseWithBuffer(readBuffer utils.ReadBuffer, t
 }
 
 func (m *_BACnetConstructedDataUserName) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataUserName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataUserName) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataUserName) SerializeWithWriteBuffer(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("userName"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for userName")
 		}
-		_userNameErr := writeBuffer.WriteSerializable(m.GetUserName())
+		_userNameErr := writeBuffer.WriteSerializable(ctx, m.GetUserName())
 		if popErr := writeBuffer.PopContext("userName"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for userName")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataUserName) SerializeWithWriteBuffer(writeBuffer ut
 			return errors.Wrap(_userNameErr, "Error serializing 'userName' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataUserName) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataUserName) isBACnetConstructedDataUserName() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataUserName) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

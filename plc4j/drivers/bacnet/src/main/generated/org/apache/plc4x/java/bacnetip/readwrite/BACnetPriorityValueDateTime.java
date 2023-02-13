@@ -62,6 +62,7 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueDateTime");
 
@@ -80,6 +81,7 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueDateTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dateTimeValue)
     lengthInBits += dateTimeValue.getLengthInBits();
@@ -87,12 +89,13 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueDateTimeBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueDateTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTimeEnclosed dateTimeValue =
         readSimpleField(
@@ -102,17 +105,16 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
 
     readBuffer.closeContext("BACnetPriorityValueDateTime");
     // Create the instance
-    return new BACnetPriorityValueDateTimeBuilder(dateTimeValue, objectTypeArgument);
+    return new BACnetPriorityValueDateTimeBuilderImpl(dateTimeValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueDateTimeBuilder
+  public static class BACnetPriorityValueDateTimeBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetDateTimeEnclosed dateTimeValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueDateTimeBuilder(
+    public BACnetPriorityValueDateTimeBuilderImpl(
         BACnetDateTimeEnclosed dateTimeValue, BACnetObjectType objectTypeArgument) {
-
       this.dateTimeValue = dateTimeValue;
       this.objectTypeArgument = objectTypeArgument;
     }

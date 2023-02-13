@@ -49,6 +49,7 @@ public abstract class SDOResponse implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOResponse");
 
@@ -67,6 +68,7 @@ public abstract class SDOResponse implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     SDOResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -100,21 +102,22 @@ public abstract class SDOResponse implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     SDOResponseBuilder builder = null;
     if (EvaluationHelper.equals(command, SDOResponseCommand.SEGMENT_UPLOAD)) {
-      builder = SDOSegmentUploadResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOSegmentUploadResponse.staticParseSDOResponseBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDOResponseCommand.SEGMENT_DOWNLOAD)) {
-      builder = SDOSegmentDownloadResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOSegmentDownloadResponse.staticParseSDOResponseBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDOResponseCommand.INITIATE_UPLOAD)) {
-      builder = SDOInitiateUploadResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOInitiateUploadResponse.staticParseSDOResponseBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDOResponseCommand.INITIATE_DOWNLOAD)) {
-      builder = SDOInitiateDownloadResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOInitiateDownloadResponse.staticParseSDOResponseBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDOResponseCommand.ABORT)) {
-      builder = SDOAbortResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOAbortResponse.staticParseSDOResponseBuilder(readBuffer, command);
     } else if (EvaluationHelper.equals(command, SDOResponseCommand.BLOCK)) {
-      builder = SDOBlockResponse.staticParseBuilder(readBuffer, command);
+      builder = SDOBlockResponse.staticParseSDOResponseBuilder(readBuffer, command);
     }
     if (builder == null) {
       throw new ParseException(
@@ -127,7 +130,7 @@ public abstract class SDOResponse implements Message {
     return _sDOResponse;
   }
 
-  public static interface SDOResponseBuilder {
+  public interface SDOResponseBuilder {
     SDOResponse build();
   }
 

@@ -73,6 +73,7 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PublishRequest");
 
@@ -101,6 +102,7 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PublishRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -112,7 +114,7 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
     if (subscriptionAcknowledgements != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : subscriptionAcknowledgements) {
-        boolean last = ++i >= subscriptionAcknowledgements.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= subscriptionAcknowledgements.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -120,12 +122,13 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static PublishRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PublishRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -147,21 +150,20 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("PublishRequest");
     // Create the instance
-    return new PublishRequestBuilder(
+    return new PublishRequestBuilderImpl(
         requestHeader, noOfSubscriptionAcknowledgements, subscriptionAcknowledgements);
   }
 
-  public static class PublishRequestBuilder
+  public static class PublishRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfSubscriptionAcknowledgements;
     private final List<ExtensionObjectDefinition> subscriptionAcknowledgements;
 
-    public PublishRequestBuilder(
+    public PublishRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfSubscriptionAcknowledgements,
         List<ExtensionObjectDefinition> subscriptionAcknowledgements) {
-
       this.requestHeader = requestHeader;
       this.noOfSubscriptionAcknowledgements = noOfSubscriptionAcknowledgements;
       this.subscriptionAcknowledgements = subscriptionAcknowledgements;

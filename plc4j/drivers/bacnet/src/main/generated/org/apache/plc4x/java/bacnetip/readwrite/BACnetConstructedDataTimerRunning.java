@@ -78,6 +78,7 @@ public class BACnetConstructedDataTimerRunning extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimerRunning");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataTimerRunning extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimerRunning _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timerRunning)
     lengthInBits += timerRunning.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataTimerRunning extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimerRunningBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataTimerRunning extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean timerRunning =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataTimerRunning extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataTimerRunning");
     // Create the instance
-    return new BACnetConstructedDataTimerRunningBuilder(
+    return new BACnetConstructedDataTimerRunningBuilderImpl(
         timerRunning, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimerRunningBuilder
+  public static class BACnetConstructedDataTimerRunningBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean timerRunning;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimerRunningBuilder(
+    public BACnetConstructedDataTimerRunningBuilderImpl(
         BACnetApplicationTagBoolean timerRunning,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timerRunning = timerRunning;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

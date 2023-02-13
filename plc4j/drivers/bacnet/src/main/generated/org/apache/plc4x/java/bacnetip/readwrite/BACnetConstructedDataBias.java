@@ -78,6 +78,7 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBias");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBias _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bias)
     lengthInBits += bias.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBiasBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal bias =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
 
     readBuffer.closeContext("BACnetConstructedDataBias");
     // Create the instance
-    return new BACnetConstructedDataBiasBuilder(bias, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBiasBuilderImpl(bias, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBiasBuilder
+  public static class BACnetConstructedDataBiasBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal bias;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBiasBuilder(
+    public BACnetConstructedDataBiasBuilderImpl(
         BACnetApplicationTagReal bias,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bias = bias;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

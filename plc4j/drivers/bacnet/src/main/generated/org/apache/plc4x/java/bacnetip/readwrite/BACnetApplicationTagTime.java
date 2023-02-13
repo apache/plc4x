@@ -55,6 +55,7 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
   protected void serializeBACnetApplicationTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagTime");
 
@@ -73,6 +74,7 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetApplicationTagTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagTimeBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadTime payload =
         readSimpleField(
@@ -95,15 +98,14 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
 
     readBuffer.closeContext("BACnetApplicationTagTime");
     // Create the instance
-    return new BACnetApplicationTagTimeBuilder(payload);
+    return new BACnetApplicationTagTimeBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagTimeBuilder
+  public static class BACnetApplicationTagTimeBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadTime payload;
 
-    public BACnetApplicationTagTimeBuilder(BACnetTagPayloadTime payload) {
-
+    public BACnetApplicationTagTimeBuilderImpl(BACnetTagPayloadTime payload) {
       this.payload = payload;
     }
 

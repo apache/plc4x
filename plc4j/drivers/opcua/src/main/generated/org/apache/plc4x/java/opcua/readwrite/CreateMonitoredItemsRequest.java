@@ -87,6 +87,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CreateMonitoredItemsRequest");
 
@@ -124,6 +125,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CreateMonitoredItemsRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -141,7 +143,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     if (itemsToCreate != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : itemsToCreate) {
-        boolean last = ++i >= itemsToCreate.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= itemsToCreate.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -149,12 +151,13 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static CreateMonitoredItemsRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CreateMonitoredItemsRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -184,11 +187,11 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("CreateMonitoredItemsRequest");
     // Create the instance
-    return new CreateMonitoredItemsRequestBuilder(
+    return new CreateMonitoredItemsRequestBuilderImpl(
         requestHeader, subscriptionId, timestampsToReturn, noOfItemsToCreate, itemsToCreate);
   }
 
-  public static class CreateMonitoredItemsRequestBuilder
+  public static class CreateMonitoredItemsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long subscriptionId;
@@ -196,13 +199,12 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     private final int noOfItemsToCreate;
     private final List<ExtensionObjectDefinition> itemsToCreate;
 
-    public CreateMonitoredItemsRequestBuilder(
+    public CreateMonitoredItemsRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long subscriptionId,
         TimestampsToReturn timestampsToReturn,
         int noOfItemsToCreate,
         List<ExtensionObjectDefinition> itemsToCreate) {
-
       this.requestHeader = requestHeader;
       this.subscriptionId = subscriptionId;
       this.timestampsToReturn = timestampsToReturn;

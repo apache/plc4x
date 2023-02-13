@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesIntegerValue) GetTypeName() string {
 	return "BACnetPropertyStatesIntegerValue"
 }
 
-func (m *_BACnetPropertyStatesIntegerValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesIntegerValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesIntegerValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (integerValue)
-	lengthInBits += m.IntegerValue.GetLengthInBits()
+	lengthInBits += m.IntegerValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesIntegerValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesIntegerValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesIntegerValueParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesIntegerValue, error) {
-	return BACnetPropertyStatesIntegerValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesIntegerValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesIntegerValueParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesIntegerValue, error) {
+func BACnetPropertyStatesIntegerValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesIntegerValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesIntegerValue"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesIntegerValueParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("integerValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for integerValue")
 	}
-	_integerValue, _integerValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
+	_integerValue, _integerValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
 	if _integerValueErr != nil {
 		return nil, errors.Wrap(_integerValueErr, "Error parsing 'integerValue' field of BACnetPropertyStatesIntegerValue")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesIntegerValueParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetPropertyStatesIntegerValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesIntegerValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesIntegerValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesIntegerValue) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("integerValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for integerValue")
 		}
-		_integerValueErr := writeBuffer.WriteSerializable(m.GetIntegerValue())
+		_integerValueErr := writeBuffer.WriteSerializable(ctx, m.GetIntegerValue())
 		if popErr := writeBuffer.PopContext("integerValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for integerValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesIntegerValue) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesIntegerValue) isBACnetPropertyStatesIntegerValue() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesIntegerValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -72,6 +72,7 @@ public class BACnetUnconfirmedServiceRequestUTCTimeSynchronization
   protected void serializeBACnetUnconfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization");
 
@@ -95,6 +96,7 @@ public class BACnetUnconfirmedServiceRequestUTCTimeSynchronization
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestUTCTimeSynchronization _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (synchronizedDate)
     lengthInBits += synchronizedDate.getLengthInBits();
@@ -105,12 +107,14 @@ public class BACnetUnconfirmedServiceRequestUTCTimeSynchronization
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDate synchronizedDate =
         readSimpleField(
@@ -128,21 +132,20 @@ public class BACnetUnconfirmedServiceRequestUTCTimeSynchronization
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilder(
+    return new BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilderImpl(
         synchronizedDate, synchronizedTime, serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilder
+  public static class BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetApplicationTagDate synchronizedDate;
     private final BACnetApplicationTagTime synchronizedTime;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilder(
+    public BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilderImpl(
         BACnetApplicationTagDate synchronizedDate,
         BACnetApplicationTagTime synchronizedTime,
         Integer serviceRequestLength) {
-
       this.synchronizedDate = synchronizedDate;
       this.synchronizedTime = synchronizedTime;
       this.serviceRequestLength = serviceRequestLength;

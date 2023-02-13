@@ -80,6 +80,7 @@ public abstract class BACnetEventLogRecordLogDatum implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventLogRecordLogDatum");
 
@@ -108,6 +109,7 @@ public abstract class BACnetEventLogRecordLogDatum implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetEventLogRecordLogDatum _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -148,6 +150,7 @@ public abstract class BACnetEventLogRecordLogDatum implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -166,11 +169,17 @@ public abstract class BACnetEventLogRecordLogDatum implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetEventLogRecordLogDatumBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetEventLogRecordLogDatumLogStatus.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetEventLogRecordLogDatumLogStatus.staticParseBACnetEventLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetEventLogRecordLogDatumNotification.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetEventLogRecordLogDatumNotification.staticParseBACnetEventLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetEventLogRecordLogDatumTimeChange.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetEventLogRecordLogDatumTimeChange.staticParseBACnetEventLogRecordLogDatumBuilder(
+              readBuffer, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -194,7 +203,7 @@ public abstract class BACnetEventLogRecordLogDatum implements Message {
     return _bACnetEventLogRecordLogDatum;
   }
 
-  public static interface BACnetEventLogRecordLogDatumBuilder {
+  public interface BACnetEventLogRecordLogDatumBuilder {
     BACnetEventLogRecordLogDatum build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

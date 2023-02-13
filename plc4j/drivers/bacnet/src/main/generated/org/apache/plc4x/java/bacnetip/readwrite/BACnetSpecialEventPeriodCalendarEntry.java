@@ -57,6 +57,7 @@ public class BACnetSpecialEventPeriodCalendarEntry extends BACnetSpecialEventPer
   protected void serializeBACnetSpecialEventPeriodChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetSpecialEventPeriodCalendarEntry");
 
@@ -75,6 +76,7 @@ public class BACnetSpecialEventPeriodCalendarEntry extends BACnetSpecialEventPer
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetSpecialEventPeriodCalendarEntry _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (calendarEntry)
     lengthInBits += calendarEntry.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetSpecialEventPeriodCalendarEntry extends BACnetSpecialEventPer
     return lengthInBits;
   }
 
-  public static BACnetSpecialEventPeriodCalendarEntryBuilder staticParseBuilder(
+  public static BACnetSpecialEventPeriodBuilder staticParseBACnetSpecialEventPeriodBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetSpecialEventPeriodCalendarEntry");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetCalendarEntryEnclosed calendarEntry =
         readSimpleField(
@@ -98,15 +101,15 @@ public class BACnetSpecialEventPeriodCalendarEntry extends BACnetSpecialEventPer
 
     readBuffer.closeContext("BACnetSpecialEventPeriodCalendarEntry");
     // Create the instance
-    return new BACnetSpecialEventPeriodCalendarEntryBuilder(calendarEntry);
+    return new BACnetSpecialEventPeriodCalendarEntryBuilderImpl(calendarEntry);
   }
 
-  public static class BACnetSpecialEventPeriodCalendarEntryBuilder
+  public static class BACnetSpecialEventPeriodCalendarEntryBuilderImpl
       implements BACnetSpecialEventPeriod.BACnetSpecialEventPeriodBuilder {
     private final BACnetCalendarEntryEnclosed calendarEntry;
 
-    public BACnetSpecialEventPeriodCalendarEntryBuilder(BACnetCalendarEntryEnclosed calendarEntry) {
-
+    public BACnetSpecialEventPeriodCalendarEntryBuilderImpl(
+        BACnetCalendarEntryEnclosed calendarEntry) {
       this.calendarEntry = calendarEntry;
     }
 

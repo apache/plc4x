@@ -57,6 +57,7 @@ public class BACnetLogDataLogDataEntryIntegerValue extends BACnetLogDataLogDataE
   protected void serializeBACnetLogDataLogDataEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryIntegerValue");
 
@@ -75,6 +76,7 @@ public class BACnetLogDataLogDataEntryIntegerValue extends BACnetLogDataLogDataE
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogDataLogDataEntryIntegerValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (integerValue)
     lengthInBits += integerValue.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetLogDataLogDataEntryIntegerValue extends BACnetLogDataLogDataE
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryIntegerValueBuilder staticParseBuilder(
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryIntegerValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagSignedInteger integerValue =
         readSimpleField(
@@ -103,16 +106,15 @@ public class BACnetLogDataLogDataEntryIntegerValue extends BACnetLogDataLogDataE
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryIntegerValue");
     // Create the instance
-    return new BACnetLogDataLogDataEntryIntegerValueBuilder(integerValue);
+    return new BACnetLogDataLogDataEntryIntegerValueBuilderImpl(integerValue);
   }
 
-  public static class BACnetLogDataLogDataEntryIntegerValueBuilder
+  public static class BACnetLogDataLogDataEntryIntegerValueBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final BACnetContextTagSignedInteger integerValue;
 
-    public BACnetLogDataLogDataEntryIntegerValueBuilder(
+    public BACnetLogDataLogDataEntryIntegerValueBuilderImpl(
         BACnetContextTagSignedInteger integerValue) {
-
       this.integerValue = integerValue;
     }
 

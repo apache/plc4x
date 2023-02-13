@@ -92,6 +92,7 @@ public class BACnetEventParameterSignedOutOfRange extends BACnetEventParameter i
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterSignedOutOfRange");
 
@@ -125,6 +126,7 @@ public class BACnetEventParameterSignedOutOfRange extends BACnetEventParameter i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterSignedOutOfRange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -147,12 +149,13 @@ public class BACnetEventParameterSignedOutOfRange extends BACnetEventParameter i
     return lengthInBits;
   }
 
-  public static BACnetEventParameterSignedOutOfRangeBuilder staticParseBuilder(
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterSignedOutOfRange");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -216,11 +219,11 @@ public class BACnetEventParameterSignedOutOfRange extends BACnetEventParameter i
 
     readBuffer.closeContext("BACnetEventParameterSignedOutOfRange");
     // Create the instance
-    return new BACnetEventParameterSignedOutOfRangeBuilder(
+    return new BACnetEventParameterSignedOutOfRangeBuilderImpl(
         openingTag, timeDelay, lowLimit, highLimit, deadband, closingTag);
   }
 
-  public static class BACnetEventParameterSignedOutOfRangeBuilder
+  public static class BACnetEventParameterSignedOutOfRangeBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
@@ -229,14 +232,13 @@ public class BACnetEventParameterSignedOutOfRange extends BACnetEventParameter i
     private final BACnetContextTagUnsignedInteger deadband;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterSignedOutOfRangeBuilder(
+    public BACnetEventParameterSignedOutOfRangeBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetContextTagSignedInteger lowLimit,
         BACnetContextTagSignedInteger highLimit,
         BACnetContextTagUnsignedInteger deadband,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.lowLimit = lowLimit;

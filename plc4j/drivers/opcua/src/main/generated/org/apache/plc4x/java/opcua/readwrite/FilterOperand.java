@@ -50,6 +50,7 @@ public class FilterOperand extends ExtensionObjectDefinition implements Message 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FilterOperand");
 
@@ -65,26 +66,28 @@ public class FilterOperand extends ExtensionObjectDefinition implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FilterOperand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static FilterOperandBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FilterOperand");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("FilterOperand");
     // Create the instance
-    return new FilterOperandBuilder();
+    return new FilterOperandBuilderImpl();
   }
 
-  public static class FilterOperandBuilder
+  public static class FilterOperandBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public FilterOperandBuilder() {}
+    public FilterOperandBuilderImpl() {}
 
     public FilterOperand build() {
       FilterOperand filterOperand = new FilterOperand();

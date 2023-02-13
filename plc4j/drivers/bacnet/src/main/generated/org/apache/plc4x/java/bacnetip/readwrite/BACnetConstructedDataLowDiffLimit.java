@@ -78,6 +78,7 @@ public class BACnetConstructedDataLowDiffLimit extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLowDiffLimit");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLowDiffLimit extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLowDiffLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lowDiffLimit)
     lengthInBits += lowDiffLimit.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLowDiffLimit extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLowDiffLimitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLowDiffLimit extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOptionalREAL lowDiffLimit =
         readSimpleField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataLowDiffLimit extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataLowDiffLimit");
     // Create the instance
-    return new BACnetConstructedDataLowDiffLimitBuilder(
+    return new BACnetConstructedDataLowDiffLimitBuilderImpl(
         lowDiffLimit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLowDiffLimitBuilder
+  public static class BACnetConstructedDataLowDiffLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetOptionalREAL lowDiffLimit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLowDiffLimitBuilder(
+    public BACnetConstructedDataLowDiffLimitBuilderImpl(
         BACnetOptionalREAL lowDiffLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lowDiffLimit = lowDiffLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

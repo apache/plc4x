@@ -46,14 +46,10 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
   protected final short address;
   protected final ModbusPDU pdu;
 
-  // Arguments.
-  protected final Boolean response;
-
-  public ModbusAsciiADU(short address, ModbusPDU pdu, Boolean response) {
-    super(response);
+  public ModbusAsciiADU(short address, ModbusPDU pdu) {
+    super();
     this.address = address;
     this.pdu = pdu;
-    this.response = response;
   }
 
   public short getAddress() {
@@ -67,6 +63,7 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
   @Override
   protected void serializeModbusADUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusAsciiADU");
 
@@ -89,7 +86,8 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
         "crc",
         (short)
             (org.apache.plc4x.java.modbus.readwrite.utils.StaticHelper.asciiLrcCheck(address, pdu)),
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ModbusAsciiADU");
   }
@@ -103,6 +101,7 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusAsciiADU _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (address)
     lengthInBits += 8;
@@ -116,12 +115,13 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusAsciiADUBuilder staticParseBuilder(
+  public static ModbusADUBuilder staticParseModbusADUBuilder(
       ReadBuffer readBuffer, DriverType driverType, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusAsciiADU");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short address =
         readSimpleField(
@@ -147,24 +147,20 @@ public class ModbusAsciiADU extends ModbusADU implements Message {
 
     readBuffer.closeContext("ModbusAsciiADU");
     // Create the instance
-    return new ModbusAsciiADUBuilder(address, pdu, response);
+    return new ModbusAsciiADUBuilderImpl(address, pdu);
   }
 
-  public static class ModbusAsciiADUBuilder implements ModbusADU.ModbusADUBuilder {
+  public static class ModbusAsciiADUBuilderImpl implements ModbusADU.ModbusADUBuilder {
     private final short address;
     private final ModbusPDU pdu;
-    private final Boolean response;
 
-    public ModbusAsciiADUBuilder(short address, ModbusPDU pdu, Boolean response) {
-
+    public ModbusAsciiADUBuilderImpl(short address, ModbusPDU pdu) {
       this.address = address;
       this.pdu = pdu;
-      this.response = response;
     }
 
-    public ModbusAsciiADU build(Boolean response) {
-
-      ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(address, pdu, response);
+    public ModbusAsciiADU build() {
+      ModbusAsciiADU modbusAsciiADU = new ModbusAsciiADU(address, pdu);
       return modbusAsciiADU;
     }
   }

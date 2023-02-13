@@ -64,6 +64,7 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RolePermissionType");
 
@@ -90,6 +91,7 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RolePermissionType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (roleId)
     lengthInBits += roleId.getLengthInBits();
@@ -100,12 +102,13 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
     return lengthInBits;
   }
 
-  public static RolePermissionTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RolePermissionType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId roleId =
         readSimpleField(
@@ -121,16 +124,15 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
 
     readBuffer.closeContext("RolePermissionType");
     // Create the instance
-    return new RolePermissionTypeBuilder(roleId, permissions);
+    return new RolePermissionTypeBuilderImpl(roleId, permissions);
   }
 
-  public static class RolePermissionTypeBuilder
+  public static class RolePermissionTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId roleId;
     private final PermissionType permissions;
 
-    public RolePermissionTypeBuilder(NodeId roleId, PermissionType permissions) {
-
+    public RolePermissionTypeBuilderImpl(NodeId roleId, PermissionType permissions) {
       this.roleId = roleId;
       this.permissions = permissions;
     }

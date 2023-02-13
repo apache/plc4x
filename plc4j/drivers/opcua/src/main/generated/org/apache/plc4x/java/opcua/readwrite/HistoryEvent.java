@@ -64,6 +64,7 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryEvent");
 
@@ -85,6 +86,7 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     HistoryEvent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfEvents)
     lengthInBits += 32;
@@ -93,7 +95,7 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
     if (events != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : events) {
-        boolean last = ++i >= events.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= events.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -101,12 +103,13 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static HistoryEventBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryEvent");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfEvents = readSimpleField("noOfEvents", readSignedInt(readBuffer, 32));
 
@@ -120,16 +123,15 @@ public class HistoryEvent extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("HistoryEvent");
     // Create the instance
-    return new HistoryEventBuilder(noOfEvents, events);
+    return new HistoryEventBuilderImpl(noOfEvents, events);
   }
 
-  public static class HistoryEventBuilder
+  public static class HistoryEventBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfEvents;
     private final List<ExtensionObjectDefinition> events;
 
-    public HistoryEventBuilder(int noOfEvents, List<ExtensionObjectDefinition> events) {
-
+    public HistoryEventBuilderImpl(int noOfEvents, List<ExtensionObjectDefinition> events) {
       this.noOfEvents = noOfEvents;
       this.events = events;
     }

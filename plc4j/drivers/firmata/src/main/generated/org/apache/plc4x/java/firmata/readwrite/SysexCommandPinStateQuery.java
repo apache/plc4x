@@ -61,6 +61,7 @@ public class SysexCommandPinStateQuery extends SysexCommand implements Message {
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandPinStateQuery");
 
@@ -79,6 +80,7 @@ public class SysexCommandPinStateQuery extends SysexCommand implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandPinStateQuery _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pin)
     lengthInBits += 8;
@@ -86,25 +88,26 @@ public class SysexCommandPinStateQuery extends SysexCommand implements Message {
     return lengthInBits;
   }
 
-  public static SysexCommandPinStateQueryBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandPinStateQuery");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short pin = readSimpleField("pin", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("SysexCommandPinStateQuery");
     // Create the instance
-    return new SysexCommandPinStateQueryBuilder(pin);
+    return new SysexCommandPinStateQueryBuilderImpl(pin);
   }
 
-  public static class SysexCommandPinStateQueryBuilder implements SysexCommand.SysexCommandBuilder {
+  public static class SysexCommandPinStateQueryBuilderImpl
+      implements SysexCommand.SysexCommandBuilder {
     private final short pin;
 
-    public SysexCommandPinStateQueryBuilder(short pin) {
-
+    public SysexCommandPinStateQueryBuilderImpl(short pin) {
       this.pin = pin;
     }
 

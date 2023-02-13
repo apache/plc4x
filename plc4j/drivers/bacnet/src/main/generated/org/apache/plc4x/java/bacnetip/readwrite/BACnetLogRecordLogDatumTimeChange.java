@@ -64,6 +64,7 @@ public class BACnetLogRecordLogDatumTimeChange extends BACnetLogRecordLogDatum i
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumTimeChange");
 
@@ -82,6 +83,7 @@ public class BACnetLogRecordLogDatumTimeChange extends BACnetLogRecordLogDatum i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumTimeChange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeChange)
     lengthInBits += timeChange.getLengthInBits();
@@ -89,12 +91,13 @@ public class BACnetLogRecordLogDatumTimeChange extends BACnetLogRecordLogDatum i
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumTimeChangeBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumTimeChange");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagReal timeChange =
         readSimpleField(
@@ -108,17 +111,16 @@ public class BACnetLogRecordLogDatumTimeChange extends BACnetLogRecordLogDatum i
 
     readBuffer.closeContext("BACnetLogRecordLogDatumTimeChange");
     // Create the instance
-    return new BACnetLogRecordLogDatumTimeChangeBuilder(timeChange, tagNumber);
+    return new BACnetLogRecordLogDatumTimeChangeBuilderImpl(timeChange, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumTimeChangeBuilder
+  public static class BACnetLogRecordLogDatumTimeChangeBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagReal timeChange;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumTimeChangeBuilder(
+    public BACnetLogRecordLogDatumTimeChangeBuilderImpl(
         BACnetContextTagReal timeChange, Short tagNumber) {
-
       this.timeChange = timeChange;
       this.tagNumber = tagNumber;
     }

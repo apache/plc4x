@@ -68,6 +68,7 @@ public class NodeIdByteString extends NodeIdTypeDefinition implements Message {
   protected void serializeNodeIdTypeDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NodeIdByteString");
 
@@ -93,6 +94,7 @@ public class NodeIdByteString extends NodeIdTypeDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NodeIdByteString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (namespaceIndex)
     lengthInBits += 16;
@@ -105,12 +107,13 @@ public class NodeIdByteString extends NodeIdTypeDefinition implements Message {
     return lengthInBits;
   }
 
-  public static NodeIdByteStringBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static NodeIdTypeDefinitionBuilder staticParseNodeIdTypeDefinitionBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NodeIdByteString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int namespaceIndex = readSimpleField("namespaceIndex", readUnsignedInt(readBuffer, 16));
 
@@ -123,16 +126,15 @@ public class NodeIdByteString extends NodeIdTypeDefinition implements Message {
 
     readBuffer.closeContext("NodeIdByteString");
     // Create the instance
-    return new NodeIdByteStringBuilder(namespaceIndex, id);
+    return new NodeIdByteStringBuilderImpl(namespaceIndex, id);
   }
 
-  public static class NodeIdByteStringBuilder
+  public static class NodeIdByteStringBuilderImpl
       implements NodeIdTypeDefinition.NodeIdTypeDefinitionBuilder {
     private final int namespaceIndex;
     private final PascalByteString id;
 
-    public NodeIdByteStringBuilder(int namespaceIndex, PascalByteString id) {
-
+    public NodeIdByteStringBuilderImpl(int namespaceIndex, PascalByteString id) {
       this.namespaceIndex = namespaceIndex;
       this.id = id;
     }

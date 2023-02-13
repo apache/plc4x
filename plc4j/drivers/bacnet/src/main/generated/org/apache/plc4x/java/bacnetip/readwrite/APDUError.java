@@ -79,6 +79,7 @@ public class APDUError extends APDU implements Message {
   @Override
   protected void serializeAPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("APDUError");
 
@@ -116,6 +117,7 @@ public class APDUError extends APDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     APDUError _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 4;
@@ -132,12 +134,13 @@ public class APDUError extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUErrorBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUError");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 4), (byte) 0x00);
@@ -162,17 +165,18 @@ public class APDUError extends APDU implements Message {
 
     readBuffer.closeContext("APDUError");
     // Create the instance
-    return new APDUErrorBuilder(originalInvokeId, errorChoice, error, apduLength, reservedField0);
+    return new APDUErrorBuilderImpl(
+        originalInvokeId, errorChoice, error, apduLength, reservedField0);
   }
 
-  public static class APDUErrorBuilder implements APDU.APDUBuilder {
+  public static class APDUErrorBuilderImpl implements APDU.APDUBuilder {
     private final short originalInvokeId;
     private final BACnetConfirmedServiceChoice errorChoice;
     private final BACnetError error;
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDUErrorBuilder(
+    public APDUErrorBuilderImpl(
         short originalInvokeId,
         BACnetConfirmedServiceChoice errorChoice,
         BACnetError error,

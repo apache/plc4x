@@ -57,6 +57,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryTime
   protected void serializeBACnetFaultParameterFaultExtendedParametersEntryChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryTime");
 
@@ -75,6 +76,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryTime
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultExtendedParametersEntryTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeValue)
     lengthInBits += timeValue.getLengthInBits();
@@ -82,12 +84,14 @@ public class BACnetFaultParameterFaultExtendedParametersEntryTime
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagTime timeValue =
         readSimpleField(
@@ -98,17 +102,16 @@ public class BACnetFaultParameterFaultExtendedParametersEntryTime
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryTime");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder(timeValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryTimeBuilderImpl(timeValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryTimeBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagTime timeValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryTimeBuilderImpl(
         BACnetApplicationTagTime timeValue) {
-
       this.timeValue = timeValue;
     }
 

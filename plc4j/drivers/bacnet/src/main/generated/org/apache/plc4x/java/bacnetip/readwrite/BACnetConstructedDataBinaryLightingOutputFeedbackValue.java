@@ -79,6 +79,7 @@ public class BACnetConstructedDataBinaryLightingOutputFeedbackValue extends BACn
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBinaryLightingOutputFeedbackValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataBinaryLightingOutputFeedbackValue extends BACn
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBinaryLightingOutputFeedbackValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (feedbackValue)
     lengthInBits += feedbackValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataBinaryLightingOutputFeedbackValue extends BACn
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBinaryLightingOutputFeedbackValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataBinaryLightingOutputFeedbackValue extends BACn
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBinaryLightingPVTagged feedbackValue =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataBinaryLightingOutputFeedbackValue extends BACn
 
     readBuffer.closeContext("BACnetConstructedDataBinaryLightingOutputFeedbackValue");
     // Create the instance
-    return new BACnetConstructedDataBinaryLightingOutputFeedbackValueBuilder(
+    return new BACnetConstructedDataBinaryLightingOutputFeedbackValueBuilderImpl(
         feedbackValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBinaryLightingOutputFeedbackValueBuilder
+  public static class BACnetConstructedDataBinaryLightingOutputFeedbackValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBinaryLightingPVTagged feedbackValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBinaryLightingOutputFeedbackValueBuilder(
+    public BACnetConstructedDataBinaryLightingOutputFeedbackValueBuilderImpl(
         BACnetBinaryLightingPVTagged feedbackValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.feedbackValue = feedbackValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

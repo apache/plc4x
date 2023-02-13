@@ -45,8 +45,6 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
   // Properties.
   protected final NodeId nodeId;
   protected final boolean deleteTargetReferences;
-  // Reserved Fields
-  private Short reservedField0;
 
   public DeleteNodesItem(NodeId nodeId, boolean deleteTargetReferences) {
     super();
@@ -66,6 +64,7 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DeleteNodesItem");
 
@@ -73,10 +72,7 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
     writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (deleteTargetReferences)
     writeSimpleField("deleteTargetReferences", deleteTargetReferences, writeBoolean(writeBuffer));
@@ -93,6 +89,7 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DeleteNodesItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nodeId)
     lengthInBits += nodeId.getLengthInBits();
@@ -106,12 +103,13 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static DeleteNodesItemBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DeleteNodesItem");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
         readSimpleField(
@@ -126,25 +124,21 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("DeleteNodesItem");
     // Create the instance
-    return new DeleteNodesItemBuilder(nodeId, deleteTargetReferences, reservedField0);
+    return new DeleteNodesItemBuilderImpl(nodeId, deleteTargetReferences);
   }
 
-  public static class DeleteNodesItemBuilder
+  public static class DeleteNodesItemBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId nodeId;
     private final boolean deleteTargetReferences;
-    private final Short reservedField0;
 
-    public DeleteNodesItemBuilder(
-        NodeId nodeId, boolean deleteTargetReferences, Short reservedField0) {
+    public DeleteNodesItemBuilderImpl(NodeId nodeId, boolean deleteTargetReferences) {
       this.nodeId = nodeId;
       this.deleteTargetReferences = deleteTargetReferences;
-      this.reservedField0 = reservedField0;
     }
 
     public DeleteNodesItem build() {
       DeleteNodesItem deleteNodesItem = new DeleteNodesItem(nodeId, deleteTargetReferences);
-      deleteNodesItem.reservedField0 = reservedField0;
       return deleteNodesItem;
     }
   }

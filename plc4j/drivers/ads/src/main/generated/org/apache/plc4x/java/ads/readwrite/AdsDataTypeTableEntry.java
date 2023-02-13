@@ -174,6 +174,7 @@ public class AdsDataTypeTableEntry implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDataTypeTableEntry");
 
@@ -236,18 +237,29 @@ public class AdsDataTypeTableEntry implements Message {
     // Implicit Field (dataTypeNameLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int dataTypeNameLength = (int) (STR_LEN(getDataTypeName()));
-    writeImplicitField("dataTypeNameLength", dataTypeNameLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "dataTypeNameLength",
+        dataTypeNameLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Implicit Field (simpleTypeNameLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int simpleTypeNameLength = (int) (STR_LEN(getSimpleTypeName()));
     writeImplicitField(
-        "simpleTypeNameLength", simpleTypeNameLength, writeUnsignedInt(writeBuffer, 16));
+        "simpleTypeNameLength",
+        simpleTypeNameLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Implicit Field (commentLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int commentLength = (int) (STR_LEN(getComment()));
-    writeImplicitField("commentLength", commentLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "commentLength",
+        commentLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (arrayDimensions)
     writeSimpleField(
@@ -272,7 +284,10 @@ public class AdsDataTypeTableEntry implements Message {
 
     // Const Field (dataTypeNameTerminator)
     writeConstField(
-        "dataTypeNameTerminator", DATATYPENAMETERMINATOR, writeUnsignedShort(writeBuffer, 8));
+        "dataTypeNameTerminator",
+        DATATYPENAMETERMINATOR,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (simpleTypeName)
     writeSimpleField(
@@ -283,7 +298,10 @@ public class AdsDataTypeTableEntry implements Message {
 
     // Const Field (simpleTypeNameTerminator)
     writeConstField(
-        "simpleTypeNameTerminator", SIMPLETYPENAMETERMINATOR, writeUnsignedShort(writeBuffer, 8));
+        "simpleTypeNameTerminator",
+        SIMPLETYPENAMETERMINATOR,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (comment)
     writeSimpleField(
@@ -293,16 +311,26 @@ public class AdsDataTypeTableEntry implements Message {
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Const Field (commentTerminator)
-    writeConstField("commentTerminator", COMMENTTERMINATOR, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "commentTerminator",
+        COMMENTTERMINATOR,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Array Field (arrayInfo)
-    writeComplexTypeArrayField("arrayInfo", arrayInfo, writeBuffer);
+    writeComplexTypeArrayField(
+        "arrayInfo", arrayInfo, writeBuffer, WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Array Field (children)
-    writeComplexTypeArrayField("children", children, writeBuffer);
+    writeComplexTypeArrayField(
+        "children", children, writeBuffer, WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Array Field (rest)
-    writeByteArrayField("rest", rest, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "rest",
+        rest,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("AdsDataTypeTableEntry");
   }
@@ -316,6 +344,7 @@ public class AdsDataTypeTableEntry implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     AdsDataTypeTableEntry _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (entryLength)
     lengthInBits += 32;
@@ -378,7 +407,7 @@ public class AdsDataTypeTableEntry implements Message {
     if (arrayInfo != null) {
       int i = 0;
       for (AdsDataTypeArrayInfo element : arrayInfo) {
-        boolean last = ++i >= arrayInfo.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= arrayInfo.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -387,7 +416,7 @@ public class AdsDataTypeTableEntry implements Message {
     if (children != null) {
       int i = 0;
       for (AdsDataTypeTableChildEntry element : children) {
-        boolean last = ++i >= children.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= children.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -411,6 +440,7 @@ public class AdsDataTypeTableEntry implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long entryLength =
         readSimpleField(

@@ -117,6 +117,7 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
   protected void serializeBACnetNotificationParametersChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfTimer");
 
@@ -161,6 +162,7 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersChangeOfTimer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (innerOpeningTag)
     lengthInBits += innerOpeningTag.getLengthInBits();
@@ -195,16 +197,17 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfTimerBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfTimer");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
@@ -273,7 +276,7 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfTimer");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfTimerBuilder(
+    return new BACnetNotificationParametersChangeOfTimerBuilderImpl(
         innerOpeningTag,
         newValue,
         statusFlags,
@@ -286,7 +289,7 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersChangeOfTimerBuilder
+  public static class BACnetNotificationParametersChangeOfTimerBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetTimerStateTagged newValue;
@@ -299,7 +302,7 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersChangeOfTimerBuilder(
+    public BACnetNotificationParametersChangeOfTimerBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetTimerStateTagged newValue,
         BACnetStatusFlagsTagged statusFlags,
@@ -310,7 +313,6 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.newValue = newValue;
       this.statusFlags = statusFlags;

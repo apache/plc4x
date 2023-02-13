@@ -57,6 +57,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDouble
   protected void serializeBACnetFaultParameterFaultExtendedParametersEntryChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryDouble");
 
@@ -75,6 +76,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDouble
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultExtendedParametersEntryDouble _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doubleValue)
     lengthInBits += doubleValue.getLengthInBits();
@@ -82,12 +84,14 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDouble
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryDouble");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble doubleValue =
         readSimpleField(
@@ -98,17 +102,16 @@ public class BACnetFaultParameterFaultExtendedParametersEntryDouble
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryDouble");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder(doubleValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilderImpl(doubleValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagDouble doubleValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilderImpl(
         BACnetApplicationTagDouble doubleValue) {
-
       this.doubleValue = doubleValue;
     }
 

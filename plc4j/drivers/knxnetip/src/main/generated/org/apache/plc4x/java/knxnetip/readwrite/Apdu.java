@@ -44,14 +44,10 @@ public abstract class Apdu implements Message {
   protected final boolean numbered;
   protected final byte counter;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public Apdu(boolean numbered, byte counter, Short dataLength) {
+  public Apdu(boolean numbered, byte counter) {
     super();
     this.numbered = numbered;
     this.counter = counter;
-    this.dataLength = dataLength;
   }
 
   public boolean getNumbered() {
@@ -66,6 +62,7 @@ public abstract class Apdu implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Apdu");
 
@@ -93,6 +90,7 @@ public abstract class Apdu implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     Apdu _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (control)
     lengthInBits += 1;
@@ -132,6 +130,7 @@ public abstract class Apdu implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte control = readDiscriminatorField("control", readUnsignedByte(readBuffer, 1));
 
@@ -142,9 +141,9 @@ public abstract class Apdu implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ApduBuilder builder = null;
     if (EvaluationHelper.equals(control, (byte) 1)) {
-      builder = ApduControlContainer.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduControlContainer.staticParseApduBuilder(readBuffer, dataLength);
     } else if (EvaluationHelper.equals(control, (byte) 0)) {
-      builder = ApduDataContainer.staticParseBuilder(readBuffer, dataLength);
+      builder = ApduDataContainer.staticParseApduBuilder(readBuffer, dataLength);
     }
     if (builder == null) {
       throw new ParseException(
@@ -153,12 +152,12 @@ public abstract class Apdu implements Message {
 
     readBuffer.closeContext("Apdu");
     // Create the instance
-    Apdu _apdu = builder.build(numbered, counter, dataLength);
+    Apdu _apdu = builder.build(numbered, counter);
     return _apdu;
   }
 
-  public static interface ApduBuilder {
-    Apdu build(boolean numbered, byte counter, Short dataLength);
+  public interface ApduBuilder {
+    Apdu build(boolean numbered, byte counter);
   }
 
   @Override

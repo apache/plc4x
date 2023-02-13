@@ -88,6 +88,7 @@ public class BACnetConstructedDataPortFilter extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPortFilter");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataPortFilter extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPortFilter _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataPortFilter extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPortFilterBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataPortFilter extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -170,23 +173,22 @@ public class BACnetConstructedDataPortFilter extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataPortFilter");
     // Create the instance
-    return new BACnetConstructedDataPortFilterBuilder(
+    return new BACnetConstructedDataPortFilterBuilderImpl(
         numberOfDataElements, portFilter, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPortFilterBuilder
+  public static class BACnetConstructedDataPortFilterBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetPortPermission> portFilter;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPortFilterBuilder(
+    public BACnetConstructedDataPortFilterBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetPortPermission> portFilter,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.portFilter = portFilter;
       this.tagNumber = tagNumber;

@@ -79,6 +79,7 @@ public class BACnetEventParameterChangeOfCharacterString extends BACnetEventPara
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterChangeOfCharacterString");
 
@@ -107,6 +108,7 @@ public class BACnetEventParameterChangeOfCharacterString extends BACnetEventPara
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterChangeOfCharacterString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -123,12 +125,13 @@ public class BACnetEventParameterChangeOfCharacterString extends BACnetEventPara
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfCharacterStringBuilder staticParseBuilder(
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfCharacterString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -165,23 +168,22 @@ public class BACnetEventParameterChangeOfCharacterString extends BACnetEventPara
 
     readBuffer.closeContext("BACnetEventParameterChangeOfCharacterString");
     // Create the instance
-    return new BACnetEventParameterChangeOfCharacterStringBuilder(
+    return new BACnetEventParameterChangeOfCharacterStringBuilderImpl(
         openingTag, timeDelay, listOfAlarmValues, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfCharacterStringBuilder
+  public static class BACnetEventParameterChangeOfCharacterStringBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
     private final BACnetEventParameterChangeOfCharacterStringListOfAlarmValues listOfAlarmValues;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfCharacterStringBuilder(
+    public BACnetEventParameterChangeOfCharacterStringBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetEventParameterChangeOfCharacterStringListOfAlarmValues listOfAlarmValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.listOfAlarmValues = listOfAlarmValues;

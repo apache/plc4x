@@ -62,6 +62,7 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueEnumerated");
 
@@ -81,6 +82,7 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueEnumerated _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (enumeratedValue)
     lengthInBits += enumeratedValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueEnumeratedBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueEnumerated");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagEnumerated enumeratedValue =
         readSimpleField(
@@ -104,17 +107,16 @@ public class BACnetPriorityValueEnumerated extends BACnetPriorityValue implement
 
     readBuffer.closeContext("BACnetPriorityValueEnumerated");
     // Create the instance
-    return new BACnetPriorityValueEnumeratedBuilder(enumeratedValue, objectTypeArgument);
+    return new BACnetPriorityValueEnumeratedBuilderImpl(enumeratedValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueEnumeratedBuilder
+  public static class BACnetPriorityValueEnumeratedBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagEnumerated enumeratedValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueEnumeratedBuilder(
+    public BACnetPriorityValueEnumeratedBuilderImpl(
         BACnetApplicationTagEnumerated enumeratedValue, BACnetObjectType objectTypeArgument) {
-
       this.enumeratedValue = enumeratedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

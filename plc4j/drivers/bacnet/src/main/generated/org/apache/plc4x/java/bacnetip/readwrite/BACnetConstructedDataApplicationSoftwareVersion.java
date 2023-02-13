@@ -79,6 +79,7 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataApplicationSoftwareVersion");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataApplicationSoftwareVersion _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (applicationSoftwareVersion)
     lengthInBits += applicationSoftwareVersion.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataApplicationSoftwareVersionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString applicationSoftwareVersion =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataApplicationSoftwareVersion");
     // Create the instance
-    return new BACnetConstructedDataApplicationSoftwareVersionBuilder(
+    return new BACnetConstructedDataApplicationSoftwareVersionBuilderImpl(
         applicationSoftwareVersion, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataApplicationSoftwareVersionBuilder
+  public static class BACnetConstructedDataApplicationSoftwareVersionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString applicationSoftwareVersion;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataApplicationSoftwareVersionBuilder(
+    public BACnetConstructedDataApplicationSoftwareVersionBuilderImpl(
         BACnetApplicationTagCharacterString applicationSoftwareVersion,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.applicationSoftwareVersion = applicationSoftwareVersion;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

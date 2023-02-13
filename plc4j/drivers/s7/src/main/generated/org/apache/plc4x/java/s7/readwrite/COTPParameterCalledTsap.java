@@ -45,13 +45,9 @@ public class COTPParameterCalledTsap extends COTPParameter implements Message {
   // Properties.
   protected final int tsapId;
 
-  // Arguments.
-  protected final Short rest;
-
-  public COTPParameterCalledTsap(int tsapId, Short rest) {
-    super(rest);
+  public COTPParameterCalledTsap(int tsapId) {
+    super();
     this.tsapId = tsapId;
-    this.rest = rest;
   }
 
   public int getTsapId() {
@@ -62,6 +58,7 @@ public class COTPParameterCalledTsap extends COTPParameter implements Message {
   protected void serializeCOTPParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("COTPParameterCalledTsap");
 
@@ -80,6 +77,7 @@ public class COTPParameterCalledTsap extends COTPParameter implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     COTPParameterCalledTsap _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (tsapId)
     lengthInBits += 16;
@@ -87,33 +85,31 @@ public class COTPParameterCalledTsap extends COTPParameter implements Message {
     return lengthInBits;
   }
 
-  public static COTPParameterCalledTsapBuilder staticParseBuilder(ReadBuffer readBuffer, Short rest)
-      throws ParseException {
+  public static COTPParameterBuilder staticParseCOTPParameterBuilder(
+      ReadBuffer readBuffer, Short rest) throws ParseException {
     readBuffer.pullContext("COTPParameterCalledTsap");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int tsapId = readSimpleField("tsapId", readUnsignedInt(readBuffer, 16));
 
     readBuffer.closeContext("COTPParameterCalledTsap");
     // Create the instance
-    return new COTPParameterCalledTsapBuilder(tsapId, rest);
+    return new COTPParameterCalledTsapBuilderImpl(tsapId);
   }
 
-  public static class COTPParameterCalledTsapBuilder implements COTPParameter.COTPParameterBuilder {
+  public static class COTPParameterCalledTsapBuilderImpl
+      implements COTPParameter.COTPParameterBuilder {
     private final int tsapId;
-    private final Short rest;
 
-    public COTPParameterCalledTsapBuilder(int tsapId, Short rest) {
-
+    public COTPParameterCalledTsapBuilderImpl(int tsapId) {
       this.tsapId = tsapId;
-      this.rest = rest;
     }
 
-    public COTPParameterCalledTsap build(Short rest) {
-
-      COTPParameterCalledTsap cOTPParameterCalledTsap = new COTPParameterCalledTsap(tsapId, rest);
+    public COTPParameterCalledTsap build() {
+      COTPParameterCalledTsap cOTPParameterCalledTsap = new COTPParameterCalledTsap(tsapId);
       return cOTPParameterCalledTsap;
     }
   }

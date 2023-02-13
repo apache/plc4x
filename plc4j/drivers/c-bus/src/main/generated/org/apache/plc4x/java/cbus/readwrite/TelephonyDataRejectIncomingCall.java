@@ -48,6 +48,7 @@ public class TelephonyDataRejectIncomingCall extends TelephonyData implements Me
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataRejectIncomingCall");
 
@@ -63,26 +64,28 @@ public class TelephonyDataRejectIncomingCall extends TelephonyData implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataRejectIncomingCall _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static TelephonyDataRejectIncomingCallBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataRejectIncomingCall");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TelephonyDataRejectIncomingCall");
     // Create the instance
-    return new TelephonyDataRejectIncomingCallBuilder();
+    return new TelephonyDataRejectIncomingCallBuilderImpl();
   }
 
-  public static class TelephonyDataRejectIncomingCallBuilder
+  public static class TelephonyDataRejectIncomingCallBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
 
-    public TelephonyDataRejectIncomingCallBuilder() {}
+    public TelephonyDataRejectIncomingCallBuilderImpl() {}
 
     public TelephonyDataRejectIncomingCall build(
         TelephonyCommandTypeContainer commandTypeContainer, byte argument) {

@@ -78,6 +78,7 @@ public class BACnetConstructedDataTrigger extends BACnetConstructedData implemen
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrigger");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataTrigger extends BACnetConstructedData implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTrigger _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (trigger)
     lengthInBits += trigger.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataTrigger extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTriggerBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataTrigger extends BACnetConstructedData implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean trigger =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataTrigger extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataTrigger");
     // Create the instance
-    return new BACnetConstructedDataTriggerBuilder(trigger, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTriggerBuilderImpl(trigger, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTriggerBuilder
+  public static class BACnetConstructedDataTriggerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean trigger;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTriggerBuilder(
+    public BACnetConstructedDataTriggerBuilderImpl(
         BACnetApplicationTagBoolean trigger,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.trigger = trigger;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

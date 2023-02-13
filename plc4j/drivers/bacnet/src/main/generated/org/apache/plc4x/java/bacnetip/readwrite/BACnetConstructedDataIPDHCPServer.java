@@ -78,6 +78,7 @@ public class BACnetConstructedDataIPDHCPServer extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPDHCPServer");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataIPDHCPServer extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIPDHCPServer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dhcpServer)
     lengthInBits += dhcpServer.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataIPDHCPServer extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPDHCPServerBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataIPDHCPServer extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString dhcpServer =
         readSimpleField(
@@ -133,20 +136,20 @@ public class BACnetConstructedDataIPDHCPServer extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataIPDHCPServer");
     // Create the instance
-    return new BACnetConstructedDataIPDHCPServerBuilder(dhcpServer, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPDHCPServerBuilderImpl(
+        dhcpServer, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPDHCPServerBuilder
+  public static class BACnetConstructedDataIPDHCPServerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString dhcpServer;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPDHCPServerBuilder(
+    public BACnetConstructedDataIPDHCPServerBuilderImpl(
         BACnetApplicationTagOctetString dhcpServer,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.dhcpServer = dhcpServer;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

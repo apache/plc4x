@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueBoolean extends BACnetTimerStateChangeVa
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueBoolean");
 
@@ -81,6 +82,7 @@ public class BACnetTimerStateChangeValueBoolean extends BACnetTimerStateChangeVa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueBoolean _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (booleanValue)
     lengthInBits += booleanValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetTimerStateChangeValueBoolean extends BACnetTimerStateChangeVa
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueBooleanBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueBoolean");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean booleanValue =
         readSimpleField(
@@ -104,17 +107,16 @@ public class BACnetTimerStateChangeValueBoolean extends BACnetTimerStateChangeVa
 
     readBuffer.closeContext("BACnetTimerStateChangeValueBoolean");
     // Create the instance
-    return new BACnetTimerStateChangeValueBooleanBuilder(booleanValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueBooleanBuilderImpl(booleanValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueBooleanBuilder
+  public static class BACnetTimerStateChangeValueBooleanBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagBoolean booleanValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueBooleanBuilder(
+    public BACnetTimerStateChangeValueBooleanBuilderImpl(
         BACnetApplicationTagBoolean booleanValue, BACnetObjectType objectTypeArgument) {
-
       this.booleanValue = booleanValue;
       this.objectTypeArgument = objectTypeArgument;
     }

@@ -73,6 +73,7 @@ public abstract class AccessControlData implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlData");
 
@@ -111,6 +112,7 @@ public abstract class AccessControlData implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     AccessControlData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (commandTypeContainer)
     lengthInBits += 8;
@@ -139,6 +141,7 @@ public abstract class AccessControlData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!(org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper
         .knowsAccessControlCommandTypeContainer(readBuffer))) {
@@ -163,25 +166,28 @@ public abstract class AccessControlData implements Message {
     AccessControlDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, AccessControlCommandType.VALID_ACCESS)) {
       builder =
-          AccessControlDataValidAccessRequest.staticParseBuilder(readBuffer, commandTypeContainer);
+          AccessControlDataValidAccessRequest.staticParseAccessControlDataBuilder(
+              readBuffer, commandTypeContainer);
     } else if (EvaluationHelper.equals(commandType, AccessControlCommandType.INVALID_ACCESS)) {
       builder =
-          AccessControlDataInvalidAccessRequest.staticParseBuilder(
+          AccessControlDataInvalidAccessRequest.staticParseAccessControlDataBuilder(
               readBuffer, commandTypeContainer);
     } else if (EvaluationHelper.equals(
         commandType, AccessControlCommandType.ACCESS_POINT_LEFT_OPEN)) {
-      builder = AccessControlDataAccessPointLeftOpen.staticParseBuilder(readBuffer);
+      builder =
+          AccessControlDataAccessPointLeftOpen.staticParseAccessControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AccessControlCommandType.ACCESS_POINT_FORCED_OPEN)) {
-      builder = AccessControlDataAccessPointForcedOpen.staticParseBuilder(readBuffer);
+      builder =
+          AccessControlDataAccessPointForcedOpen.staticParseAccessControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, AccessControlCommandType.ACCESS_POINT_CLOSED)) {
-      builder = AccessControlDataAccessPointClosed.staticParseBuilder(readBuffer);
+      builder = AccessControlDataAccessPointClosed.staticParseAccessControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, AccessControlCommandType.REQUEST_TO_EXIT)) {
-      builder = AccessControlDataRequestToExit.staticParseBuilder(readBuffer);
+      builder = AccessControlDataRequestToExit.staticParseAccessControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, AccessControlCommandType.CLOSE_ACCESS_POINT)) {
-      builder = AccessControlDataCloseAccessPoint.staticParseBuilder(readBuffer);
+      builder = AccessControlDataCloseAccessPoint.staticParseAccessControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, AccessControlCommandType.LOCK_ACCESS_POINT)) {
-      builder = AccessControlDataLockAccessPoint.staticParseBuilder(readBuffer);
+      builder = AccessControlDataLockAccessPoint.staticParseAccessControlDataBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -199,7 +205,7 @@ public abstract class AccessControlData implements Message {
     return _accessControlData;
   }
 
-  public static interface AccessControlDataBuilder {
+  public interface AccessControlDataBuilder {
     AccessControlData build(
         AccessControlCommandTypeContainer commandTypeContainer, byte networkId, byte accessPointId);
   }

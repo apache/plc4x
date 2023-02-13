@@ -58,19 +58,29 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_ModuleDiffBlockApi");
 
     // Const Field (api)
-    writeConstField("api", API, writeUnsignedLong(writeBuffer, 32));
+    writeConstField(
+        "api",
+        API,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (numModules) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int numModules = (int) (COUNT(getModules()));
-    writeImplicitField("numModules", numModules, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "numModules",
+        numModules,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (modules)
-    writeComplexTypeArrayField("modules", modules, writeBuffer);
+    writeComplexTypeArrayField(
+        "modules", modules, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_ModuleDiffBlockApi");
   }
@@ -84,6 +94,7 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnIoCm_ModuleDiffBlockApi _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (api)
     lengthInBits += 32;
@@ -95,7 +106,7 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
     if (modules != null) {
       int i = 0;
       for (PnIoCm_ModuleDiffBlockApi_Module element : modules) {
-        boolean last = ++i >= modules.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= modules.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -114,18 +125,28 @@ public class PnIoCm_ModuleDiffBlockApi implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long api =
-        readConstField("api", readUnsignedLong(readBuffer, 32), PnIoCm_ModuleDiffBlockApi.API);
+        readConstField(
+            "api",
+            readUnsignedLong(readBuffer, 32),
+            PnIoCm_ModuleDiffBlockApi.API,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int numModules = readImplicitField("numModules", readUnsignedInt(readBuffer, 16));
+    int numModules =
+        readImplicitField(
+            "numModules",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     List<PnIoCm_ModuleDiffBlockApi_Module> modules =
         readCountArrayField(
             "modules",
             new DataReaderComplexDefault<>(
                 () -> PnIoCm_ModuleDiffBlockApi_Module.staticParse(readBuffer), readBuffer),
-            numModules);
+            numModules,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_ModuleDiffBlockApi");
     // Create the instance

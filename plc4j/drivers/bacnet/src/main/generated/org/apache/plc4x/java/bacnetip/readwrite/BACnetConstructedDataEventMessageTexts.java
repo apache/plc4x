@@ -104,6 +104,7 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEventMessageTexts");
 
@@ -145,6 +146,7 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEventMessageTexts _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -169,7 +171,7 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEventMessageTextsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -180,6 +182,7 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -223,23 +226,22 @@ public class BACnetConstructedDataEventMessageTexts extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataEventMessageTexts");
     // Create the instance
-    return new BACnetConstructedDataEventMessageTextsBuilder(
+    return new BACnetConstructedDataEventMessageTextsBuilderImpl(
         numberOfDataElements, eventMessageTexts, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEventMessageTextsBuilder
+  public static class BACnetConstructedDataEventMessageTextsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetOptionalCharacterString> eventMessageTexts;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventMessageTextsBuilder(
+    public BACnetConstructedDataEventMessageTextsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetOptionalCharacterString> eventMessageTexts,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.eventMessageTexts = eventMessageTexts;
       this.tagNumber = tagNumber;

@@ -53,6 +53,7 @@ public class SysexCommandReportFirmwareRequest extends SysexCommand implements M
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandReportFirmwareRequest");
 
@@ -68,26 +69,28 @@ public class SysexCommandReportFirmwareRequest extends SysexCommand implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandReportFirmwareRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SysexCommandReportFirmwareRequestBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandReportFirmwareRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SysexCommandReportFirmwareRequest");
     // Create the instance
-    return new SysexCommandReportFirmwareRequestBuilder();
+    return new SysexCommandReportFirmwareRequestBuilderImpl();
   }
 
-  public static class SysexCommandReportFirmwareRequestBuilder
+  public static class SysexCommandReportFirmwareRequestBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandReportFirmwareRequestBuilder() {}
+    public SysexCommandReportFirmwareRequestBuilderImpl() {}
 
     public SysexCommandReportFirmwareRequest build() {
       SysexCommandReportFirmwareRequest sysexCommandReportFirmwareRequest =

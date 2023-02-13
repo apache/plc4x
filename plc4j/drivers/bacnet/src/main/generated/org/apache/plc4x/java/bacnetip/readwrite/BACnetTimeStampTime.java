@@ -55,6 +55,7 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
   protected void serializeBACnetTimeStampChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimeStampTime");
 
@@ -73,6 +74,7 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimeStampTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeValue)
     lengthInBits += timeValue.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
     return lengthInBits;
   }
 
-  public static BACnetTimeStampTimeBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetTimeStampBuilder staticParseBACnetTimeStampBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetTimeStampTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagTime timeValue =
         readSimpleField(
@@ -99,14 +102,14 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
 
     readBuffer.closeContext("BACnetTimeStampTime");
     // Create the instance
-    return new BACnetTimeStampTimeBuilder(timeValue);
+    return new BACnetTimeStampTimeBuilderImpl(timeValue);
   }
 
-  public static class BACnetTimeStampTimeBuilder implements BACnetTimeStamp.BACnetTimeStampBuilder {
+  public static class BACnetTimeStampTimeBuilderImpl
+      implements BACnetTimeStamp.BACnetTimeStampBuilder {
     private final BACnetContextTagTime timeValue;
 
-    public BACnetTimeStampTimeBuilder(BACnetContextTagTime timeValue) {
-
+    public BACnetTimeStampTimeBuilderImpl(BACnetContextTagTime timeValue) {
       this.timeValue = timeValue;
     }
 

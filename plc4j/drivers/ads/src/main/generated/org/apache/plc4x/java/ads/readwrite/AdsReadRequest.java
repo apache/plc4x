@@ -82,6 +82,7 @@ public class AdsReadRequest extends AmsPacket implements Message {
   @Override
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsReadRequest");
 
@@ -106,6 +107,7 @@ public class AdsReadRequest extends AmsPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsReadRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (indexGroup)
     lengthInBits += 32;
@@ -119,12 +121,13 @@ public class AdsReadRequest extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsReadRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsReadRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long indexGroup = readSimpleField("indexGroup", readUnsignedLong(readBuffer, 32));
 
@@ -134,16 +137,15 @@ public class AdsReadRequest extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsReadRequest");
     // Create the instance
-    return new AdsReadRequestBuilder(indexGroup, indexOffset, length);
+    return new AdsReadRequestBuilderImpl(indexGroup, indexOffset, length);
   }
 
-  public static class AdsReadRequestBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsReadRequestBuilderImpl implements AmsPacket.AmsPacketBuilder {
     private final long indexGroup;
     private final long indexOffset;
     private final long length;
 
-    public AdsReadRequestBuilder(long indexGroup, long indexOffset, long length) {
-
+    public AdsReadRequestBuilderImpl(long indexGroup, long indexOffset, long length) {
       this.indexGroup = indexGroup;
       this.indexOffset = indexOffset;
       this.length = length;

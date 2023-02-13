@@ -63,11 +63,16 @@ public class BVLCDeleteForeignDeviceTableEntry extends BVLC implements Message {
   @Override
   protected void serializeBVLCChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BVLCDeleteForeignDeviceTableEntry");
 
     // Array Field (ip)
-    writeSimpleTypeArrayField("ip", ip, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleTypeArrayField(
+        "ip",
+        ip,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (port)
     writeSimpleField(
@@ -88,6 +93,7 @@ public class BVLCDeleteForeignDeviceTableEntry extends BVLC implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BVLCDeleteForeignDeviceTableEntry _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (ip != null) {
@@ -100,12 +106,12 @@ public class BVLCDeleteForeignDeviceTableEntry extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCDeleteForeignDeviceTableEntryBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BVLCDeleteForeignDeviceTableEntry");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<Short> ip =
         readCountArrayField(
@@ -122,15 +128,14 @@ public class BVLCDeleteForeignDeviceTableEntry extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCDeleteForeignDeviceTableEntry");
     // Create the instance
-    return new BVLCDeleteForeignDeviceTableEntryBuilder(ip, port);
+    return new BVLCDeleteForeignDeviceTableEntryBuilderImpl(ip, port);
   }
 
-  public static class BVLCDeleteForeignDeviceTableEntryBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCDeleteForeignDeviceTableEntryBuilderImpl implements BVLC.BVLCBuilder {
     private final List<Short> ip;
     private final int port;
 
-    public BVLCDeleteForeignDeviceTableEntryBuilder(List<Short> ip, int port) {
-
+    public BVLCDeleteForeignDeviceTableEntryBuilderImpl(List<Short> ip, int port) {
       this.ip = ip;
       this.port = port;
     }

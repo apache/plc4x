@@ -61,6 +61,7 @@ public class NLMSetMasterKey extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMSetMasterKey");
 
@@ -79,6 +80,7 @@ public class NLMSetMasterKey extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMSetMasterKey _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (key)
     lengthInBits += key.getLengthInBits();
@@ -86,12 +88,13 @@ public class NLMSetMasterKey extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMSetMasterKeyBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("NLMSetMasterKey");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NLMUpdateKeyUpdateKeyEntry key =
         readSimpleField(
@@ -101,15 +104,14 @@ public class NLMSetMasterKey extends NLM implements Message {
 
     readBuffer.closeContext("NLMSetMasterKey");
     // Create the instance
-    return new NLMSetMasterKeyBuilder(key, apduLength);
+    return new NLMSetMasterKeyBuilderImpl(key, apduLength);
   }
 
-  public static class NLMSetMasterKeyBuilder implements NLM.NLMBuilder {
+  public static class NLMSetMasterKeyBuilderImpl implements NLM.NLMBuilder {
     private final NLMUpdateKeyUpdateKeyEntry key;
     private final Integer apduLength;
 
-    public NLMSetMasterKeyBuilder(NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
-
+    public NLMSetMasterKeyBuilderImpl(NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
       this.key = key;
       this.apduLength = apduLength;
     }

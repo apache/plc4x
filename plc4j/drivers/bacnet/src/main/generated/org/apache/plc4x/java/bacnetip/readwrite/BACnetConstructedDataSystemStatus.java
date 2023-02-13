@@ -78,6 +78,7 @@ public class BACnetConstructedDataSystemStatus extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSystemStatus");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataSystemStatus extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSystemStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (systemStatus)
     lengthInBits += systemStatus.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataSystemStatus extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSystemStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataSystemStatus extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceStatusTagged systemStatus =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataSystemStatus extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataSystemStatus");
     // Create the instance
-    return new BACnetConstructedDataSystemStatusBuilder(
+    return new BACnetConstructedDataSystemStatusBuilderImpl(
         systemStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSystemStatusBuilder
+  public static class BACnetConstructedDataSystemStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceStatusTagged systemStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSystemStatusBuilder(
+    public BACnetConstructedDataSystemStatusBuilderImpl(
         BACnetDeviceStatusTagged systemStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.systemStatus = systemStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

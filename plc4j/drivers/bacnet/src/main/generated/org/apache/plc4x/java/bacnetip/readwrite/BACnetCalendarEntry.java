@@ -60,6 +60,7 @@ public abstract class BACnetCalendarEntry implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCalendarEntry");
 
@@ -82,6 +83,7 @@ public abstract class BACnetCalendarEntry implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetCalendarEntry _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -101,6 +103,7 @@ public abstract class BACnetCalendarEntry implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -117,11 +120,11 @@ public abstract class BACnetCalendarEntry implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetCalendarEntryBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetCalendarEntryDate.staticParseBuilder(readBuffer);
+      builder = BACnetCalendarEntryDate.staticParseBACnetCalendarEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetCalendarEntryDateRange.staticParseBuilder(readBuffer);
+      builder = BACnetCalendarEntryDateRange.staticParseBACnetCalendarEntryBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetCalendarEntryWeekNDay.staticParseBuilder(readBuffer);
+      builder = BACnetCalendarEntryWeekNDay.staticParseBACnetCalendarEntryBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -138,7 +141,7 @@ public abstract class BACnetCalendarEntry implements Message {
     return _bACnetCalendarEntry;
   }
 
-  public static interface BACnetCalendarEntryBuilder {
+  public interface BACnetCalendarEntryBuilder {
     BACnetCalendarEntry build(BACnetTagHeader peekedTagHeader);
   }
 

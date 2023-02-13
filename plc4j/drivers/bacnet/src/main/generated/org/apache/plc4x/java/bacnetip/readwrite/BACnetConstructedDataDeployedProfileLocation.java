@@ -79,6 +79,7 @@ public class BACnetConstructedDataDeployedProfileLocation extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDeployedProfileLocation");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataDeployedProfileLocation extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDeployedProfileLocation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (deployedProfileLocation)
     lengthInBits += deployedProfileLocation.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataDeployedProfileLocation extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDeployedProfileLocationBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataDeployedProfileLocation extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString deployedProfileLocation =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataDeployedProfileLocation extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataDeployedProfileLocation");
     // Create the instance
-    return new BACnetConstructedDataDeployedProfileLocationBuilder(
+    return new BACnetConstructedDataDeployedProfileLocationBuilderImpl(
         deployedProfileLocation, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDeployedProfileLocationBuilder
+  public static class BACnetConstructedDataDeployedProfileLocationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString deployedProfileLocation;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDeployedProfileLocationBuilder(
+    public BACnetConstructedDataDeployedProfileLocationBuilderImpl(
         BACnetApplicationTagCharacterString deployedProfileLocation,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.deployedProfileLocation = deployedProfileLocation;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -57,6 +57,7 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName
   protected void serializeBACnetUnconfirmedServiceRequestWhoHasObjectChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestWhoHasObjectName");
 
@@ -75,6 +76,7 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestWhoHasObjectName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectName)
     lengthInBits += objectName.getLengthInBits();
@@ -82,12 +84,14 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+      staticParseBACnetUnconfirmedServiceRequestWhoHasObjectBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestWhoHasObjectName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagCharacterString objectName =
         readSimpleField(
@@ -103,17 +107,16 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestWhoHasObjectName");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder(objectName);
+    return new BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilderImpl(objectName);
   }
 
-  public static class BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
+  public static class BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilderImpl
       implements BACnetUnconfirmedServiceRequestWhoHasObject
           .BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
     private final BACnetContextTagCharacterString objectName;
 
-    public BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder(
+    public BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilderImpl(
         BACnetContextTagCharacterString objectName) {
-
       this.objectName = objectName;
     }
 

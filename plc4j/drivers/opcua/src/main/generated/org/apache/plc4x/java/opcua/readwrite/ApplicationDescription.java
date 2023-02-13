@@ -108,6 +108,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApplicationDescription");
 
@@ -155,6 +156,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApplicationDescription _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (applicationUri)
     lengthInBits += applicationUri.getLengthInBits();
@@ -181,7 +183,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     if (discoveryUrls != null) {
       int i = 0;
       for (PascalString element : discoveryUrls) {
-        boolean last = ++i >= discoveryUrls.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= discoveryUrls.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -189,12 +191,13 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static ApplicationDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ApplicationDescription");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString applicationUri =
         readSimpleField(
@@ -239,7 +242,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("ApplicationDescription");
     // Create the instance
-    return new ApplicationDescriptionBuilder(
+    return new ApplicationDescriptionBuilderImpl(
         applicationUri,
         productUri,
         applicationName,
@@ -250,7 +253,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
         discoveryUrls);
   }
 
-  public static class ApplicationDescriptionBuilder
+  public static class ApplicationDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString applicationUri;
     private final PascalString productUri;
@@ -261,7 +264,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     private final int noOfDiscoveryUrls;
     private final List<PascalString> discoveryUrls;
 
-    public ApplicationDescriptionBuilder(
+    public ApplicationDescriptionBuilderImpl(
         PascalString applicationUri,
         PascalString productUri,
         LocalizedText applicationName,
@@ -270,7 +273,6 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
         PascalString discoveryProfileUri,
         int noOfDiscoveryUrls,
         List<PascalString> discoveryUrls) {
-
       this.applicationUri = applicationUri;
       this.productUri = productUri;
       this.applicationName = applicationName;

@@ -89,6 +89,7 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSupportedFormatClasses");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSupportedFormatClasses _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,7 +138,7 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSupportedFormatClassesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -147,6 +149,7 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -174,23 +177,22 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataSupportedFormatClasses");
     // Create the instance
-    return new BACnetConstructedDataSupportedFormatClassesBuilder(
+    return new BACnetConstructedDataSupportedFormatClassesBuilderImpl(
         numberOfDataElements, supportedFormats, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSupportedFormatClassesBuilder
+  public static class BACnetConstructedDataSupportedFormatClassesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagUnsignedInteger> supportedFormats;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSupportedFormatClassesBuilder(
+    public BACnetConstructedDataSupportedFormatClassesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagUnsignedInteger> supportedFormats,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.supportedFormats = supportedFormats;
       this.tagNumber = tagNumber;

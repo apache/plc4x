@@ -65,6 +65,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
   protected void serializeBACnetNotificationParametersChangeOfDiscreteValueNewValueChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger");
 
@@ -83,6 +84,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (integerValue)
     lengthInBits += integerValue.getLengthInBits();
@@ -90,12 +92,14 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+      staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger integerValue =
         readSimpleField(
@@ -108,19 +112,18 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder(
+    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilderImpl(
         integerValue, tagNumber);
   }
 
-  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder
+  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagSignedInteger integerValue;
     private final Short tagNumber;
 
-    public BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilder(
+    public BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerBuilderImpl(
         BACnetApplicationTagSignedInteger integerValue, Short tagNumber) {
-
       this.integerValue = integerValue;
       this.tagNumber = tagNumber;
     }

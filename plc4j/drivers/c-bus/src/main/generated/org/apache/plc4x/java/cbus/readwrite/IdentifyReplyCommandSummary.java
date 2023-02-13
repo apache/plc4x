@@ -75,6 +75,7 @@ public class IdentifyReplyCommandSummary extends IdentifyReplyCommand implements
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandSummary");
 
@@ -99,6 +100,7 @@ public class IdentifyReplyCommandSummary extends IdentifyReplyCommand implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandSummary _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (partName)
     lengthInBits += 48;
@@ -112,12 +114,13 @@ public class IdentifyReplyCommandSummary extends IdentifyReplyCommand implements
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandSummaryBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandSummary");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String partName = readSimpleField("partName", readString(readBuffer, 48));
 
@@ -127,19 +130,18 @@ public class IdentifyReplyCommandSummary extends IdentifyReplyCommand implements
 
     readBuffer.closeContext("IdentifyReplyCommandSummary");
     // Create the instance
-    return new IdentifyReplyCommandSummaryBuilder(partName, unitServiceType, version, numBytes);
+    return new IdentifyReplyCommandSummaryBuilderImpl(partName, unitServiceType, version, numBytes);
   }
 
-  public static class IdentifyReplyCommandSummaryBuilder
+  public static class IdentifyReplyCommandSummaryBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final String partName;
     private final byte unitServiceType;
     private final String version;
     private final Short numBytes;
 
-    public IdentifyReplyCommandSummaryBuilder(
+    public IdentifyReplyCommandSummaryBuilderImpl(
         String partName, byte unitServiceType, String version, Short numBytes) {
-
       this.partName = partName;
       this.unitServiceType = unitServiceType;
       this.version = version;

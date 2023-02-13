@@ -99,6 +99,7 @@ public class SecurityDataEmulatedKeypad extends SecurityData implements Message 
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataEmulatedKeypad");
 
@@ -161,6 +162,7 @@ public class SecurityDataEmulatedKeypad extends SecurityData implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataEmulatedKeypad _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (key)
     lengthInBits += 8;
@@ -190,12 +192,13 @@ public class SecurityDataEmulatedKeypad extends SecurityData implements Message 
     return lengthInBits;
   }
 
-  public static SecurityDataEmulatedKeypadBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataEmulatedKeypad");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte key = readSimpleField("key", readByte(readBuffer, 8));
     boolean isAscii =
@@ -213,15 +216,14 @@ public class SecurityDataEmulatedKeypad extends SecurityData implements Message 
 
     readBuffer.closeContext("SecurityDataEmulatedKeypad");
     // Create the instance
-    return new SecurityDataEmulatedKeypadBuilder(key);
+    return new SecurityDataEmulatedKeypadBuilderImpl(key);
   }
 
-  public static class SecurityDataEmulatedKeypadBuilder
+  public static class SecurityDataEmulatedKeypadBuilderImpl
       implements SecurityData.SecurityDataBuilder {
     private final byte key;
 
-    public SecurityDataEmulatedKeypadBuilder(byte key) {
-
+    public SecurityDataEmulatedKeypadBuilderImpl(byte key) {
       this.key = key;
     }
 

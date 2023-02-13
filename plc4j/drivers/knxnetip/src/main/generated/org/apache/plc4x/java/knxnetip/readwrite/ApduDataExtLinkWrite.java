@@ -42,17 +42,14 @@ public class ApduDataExtLinkWrite extends ApduDataExt implements Message {
     return (short) 0x27;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtLinkWrite(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtLinkWrite() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtLinkWrite");
 
@@ -68,34 +65,30 @@ public class ApduDataExtLinkWrite extends ApduDataExt implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtLinkWrite _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtLinkWriteBuilder staticParseBuilder(ReadBuffer readBuffer, Short length)
-      throws ParseException {
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
+      ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtLinkWrite");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtLinkWrite");
     // Create the instance
-    return new ApduDataExtLinkWriteBuilder(length);
+    return new ApduDataExtLinkWriteBuilderImpl();
   }
 
-  public static class ApduDataExtLinkWriteBuilder implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
+  public static class ApduDataExtLinkWriteBuilderImpl implements ApduDataExt.ApduDataExtBuilder {
 
-    public ApduDataExtLinkWriteBuilder(Short length) {
+    public ApduDataExtLinkWriteBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtLinkWrite build(Short length) {
-
-      ApduDataExtLinkWrite apduDataExtLinkWrite = new ApduDataExtLinkWrite(length);
-
+    public ApduDataExtLinkWrite build() {
+      ApduDataExtLinkWrite apduDataExtLinkWrite = new ApduDataExtLinkWrite();
       return apduDataExtLinkWrite;
     }
   }

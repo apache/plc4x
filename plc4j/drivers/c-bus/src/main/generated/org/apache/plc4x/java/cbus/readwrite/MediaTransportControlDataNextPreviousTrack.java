@@ -67,6 +67,7 @@ public class MediaTransportControlDataNextPreviousTrack extends MediaTransportCo
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataNextPreviousTrack");
 
@@ -93,6 +94,7 @@ public class MediaTransportControlDataNextPreviousTrack extends MediaTransportCo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataNextPreviousTrack _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (operation)
     lengthInBits += 8;
@@ -104,12 +106,13 @@ public class MediaTransportControlDataNextPreviousTrack extends MediaTransportCo
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataNextPreviousTrackBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataNextPreviousTrack");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte operation = readSimpleField("operation", readByte(readBuffer, 8));
     boolean isSetThePreviousTrack =
@@ -119,15 +122,14 @@ public class MediaTransportControlDataNextPreviousTrack extends MediaTransportCo
 
     readBuffer.closeContext("MediaTransportControlDataNextPreviousTrack");
     // Create the instance
-    return new MediaTransportControlDataNextPreviousTrackBuilder(operation);
+    return new MediaTransportControlDataNextPreviousTrackBuilderImpl(operation);
   }
 
-  public static class MediaTransportControlDataNextPreviousTrackBuilder
+  public static class MediaTransportControlDataNextPreviousTrackBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte operation;
 
-    public MediaTransportControlDataNextPreviousTrackBuilder(byte operation) {
-
+    public MediaTransportControlDataNextPreviousTrackBuilderImpl(byte operation) {
       this.operation = operation;
     }
 

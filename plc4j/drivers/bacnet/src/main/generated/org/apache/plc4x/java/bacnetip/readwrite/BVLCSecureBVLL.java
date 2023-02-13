@@ -61,11 +61,16 @@ public class BVLCSecureBVLL extends BVLC implements Message {
   @Override
   protected void serializeBVLCChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BVLCSecureBVLL");
 
     // Array Field (securityWrapper)
-    writeByteArrayField("securityWrapper", securityWrapper, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "securityWrapper",
+        securityWrapper,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("BVLCSecureBVLL");
   }
@@ -79,6 +84,7 @@ public class BVLCSecureBVLL extends BVLC implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BVLCSecureBVLL _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (securityWrapper != null) {
@@ -88,12 +94,13 @@ public class BVLCSecureBVLL extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCSecureBVLLBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer bvlcPayloadLength) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer, Integer bvlcPayloadLength)
+      throws ParseException {
     readBuffer.pullContext("BVLCSecureBVLL");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] securityWrapper =
         readBuffer.readByteArray(
@@ -103,15 +110,14 @@ public class BVLCSecureBVLL extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCSecureBVLL");
     // Create the instance
-    return new BVLCSecureBVLLBuilder(securityWrapper, bvlcPayloadLength);
+    return new BVLCSecureBVLLBuilderImpl(securityWrapper, bvlcPayloadLength);
   }
 
-  public static class BVLCSecureBVLLBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCSecureBVLLBuilderImpl implements BVLC.BVLCBuilder {
     private final byte[] securityWrapper;
     private final Integer bvlcPayloadLength;
 
-    public BVLCSecureBVLLBuilder(byte[] securityWrapper, Integer bvlcPayloadLength) {
-
+    public BVLCSecureBVLLBuilderImpl(byte[] securityWrapper, Integer bvlcPayloadLength) {
       this.securityWrapper = securityWrapper;
       this.bvlcPayloadLength = bvlcPayloadLength;
     }

@@ -58,6 +58,7 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataPoolsSpasPondsFountainsControl");
 
@@ -79,6 +80,7 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataPoolsSpasPondsFountainsControl _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (poolsSpaPondsFountainsData)
     lengthInBits += poolsSpaPondsFountainsData.getLengthInBits();
@@ -86,12 +88,13 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
     return lengthInBits;
   }
 
-  public static SALDataPoolsSpasPondsFountainsControlBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataPoolsSpasPondsFountainsControl");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     LightingData poolsSpaPondsFountainsData =
         readSimpleField(
@@ -100,15 +103,15 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
 
     readBuffer.closeContext("SALDataPoolsSpasPondsFountainsControl");
     // Create the instance
-    return new SALDataPoolsSpasPondsFountainsControlBuilder(poolsSpaPondsFountainsData);
+    return new SALDataPoolsSpasPondsFountainsControlBuilderImpl(poolsSpaPondsFountainsData);
   }
 
-  public static class SALDataPoolsSpasPondsFountainsControlBuilder
+  public static class SALDataPoolsSpasPondsFountainsControlBuilderImpl
       implements SALData.SALDataBuilder {
     private final LightingData poolsSpaPondsFountainsData;
 
-    public SALDataPoolsSpasPondsFountainsControlBuilder(LightingData poolsSpaPondsFountainsData) {
-
+    public SALDataPoolsSpasPondsFountainsControlBuilderImpl(
+        LightingData poolsSpaPondsFountainsData) {
       this.poolsSpaPondsFountainsData = poolsSpaPondsFountainsData;
     }
 

@@ -47,6 +47,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
   protected final boolean notSupported;
   protected final long xid;
   protected final List<PnDcp_Block> blocks;
+
   // Reserved Fields
   private Short reservedField0;
   private Byte reservedField1;
@@ -83,46 +84,71 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
   @Override
   protected void serializePnDcp_PduChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu_IdentifyRes");
 
     // Const Field (serviceId)
-    writeConstField("serviceId", SERVICEID, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "serviceId",
+        SERVICEID,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5));
+        writeUnsignedShort(writeBuffer, 5),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (notSupported)
-    writeSimpleField("notSupported", notSupported, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "notSupported",
+        notSupported,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 1));
+        writeUnsignedByte(writeBuffer, 1),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (response)
-    writeConstField("response", RESPONSE, writeBoolean(writeBuffer));
+    writeConstField(
+        "response",
+        RESPONSE,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (xid)
-    writeSimpleField("xid", xid, writeUnsignedLong(writeBuffer, 32));
+    writeSimpleField(
+        "xid",
+        xid,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField2 != null ? reservedField2 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (dcpDataLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int dcpDataLength = (int) ((getLengthInBytes()) - (12));
-    writeImplicitField("dcpDataLength", dcpDataLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "dcpDataLength",
+        dcpDataLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (blocks)
-    writeComplexTypeArrayField("blocks", blocks, writeBuffer);
+    writeComplexTypeArrayField(
+        "blocks", blocks, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Pdu_IdentifyRes");
   }
@@ -136,6 +162,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Pdu_IdentifyRes _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (serviceId)
     lengthInBits += 8;
@@ -171,48 +198,81 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Pdu_IdentifyResBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_PduBuilder staticParsePnDcp_PduBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu_IdentifyRes");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short serviceId =
         readConstField(
-            "serviceId", readUnsignedShort(readBuffer, 8), PnDcp_Pdu_IdentifyRes.SERVICEID);
+            "serviceId",
+            readUnsignedShort(readBuffer, 8),
+            PnDcp_Pdu_IdentifyRes.SERVICEID,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 5), (short) 0x00);
+        readReservedField(
+            "reserved",
+            readUnsignedShort(readBuffer, 5),
+            (short) 0x00,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean notSupported = readSimpleField("notSupported", readBoolean(readBuffer));
+    boolean notSupported =
+        readSimpleField(
+            "notSupported",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Byte reservedField1 =
-        readReservedField("reserved", readUnsignedByte(readBuffer, 1), (byte) 0x00);
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 1),
+            (byte) 0x00,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean response =
-        readConstField("response", readBoolean(readBuffer), PnDcp_Pdu_IdentifyRes.RESPONSE);
+        readConstField(
+            "response",
+            readBoolean(readBuffer),
+            PnDcp_Pdu_IdentifyRes.RESPONSE,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    long xid = readSimpleField("xid", readUnsignedLong(readBuffer, 32));
+    long xid =
+        readSimpleField(
+            "xid",
+            readUnsignedLong(readBuffer, 32),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Integer reservedField2 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
+        readReservedField(
+            "reserved",
+            readUnsignedInt(readBuffer, 16),
+            (int) 0x0000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int dcpDataLength = readImplicitField("dcpDataLength", readUnsignedInt(readBuffer, 16));
+    int dcpDataLength =
+        readImplicitField(
+            "dcpDataLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     List<PnDcp_Block> blocks =
         readLengthArrayField(
             "blocks",
             new DataReaderComplexDefault<>(() -> PnDcp_Block.staticParse(readBuffer), readBuffer),
-            dcpDataLength);
+            dcpDataLength,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Pdu_IdentifyRes");
     // Create the instance
-    return new PnDcp_Pdu_IdentifyResBuilder(
+    return new PnDcp_Pdu_IdentifyResBuilderImpl(
         notSupported, xid, blocks, reservedField0, reservedField1, reservedField2);
   }
 
-  public static class PnDcp_Pdu_IdentifyResBuilder implements PnDcp_Pdu.PnDcp_PduBuilder {
+  public static class PnDcp_Pdu_IdentifyResBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
     private final boolean notSupported;
     private final long xid;
     private final List<PnDcp_Block> blocks;
@@ -220,7 +280,7 @@ public class PnDcp_Pdu_IdentifyRes extends PnDcp_Pdu implements Message {
     private final Byte reservedField1;
     private final Integer reservedField2;
 
-    public PnDcp_Pdu_IdentifyResBuilder(
+    public PnDcp_Pdu_IdentifyResBuilderImpl(
         boolean notSupported,
         long xid,
         List<PnDcp_Block> blocks,

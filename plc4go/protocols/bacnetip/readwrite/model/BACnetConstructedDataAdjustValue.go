@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAdjustValue) GetAdjustValue() BACnetApplicationTa
 ///////////////////////
 
 func (m *_BACnetConstructedDataAdjustValue) GetActualValue() BACnetApplicationTagSignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagSignedInteger(m.GetAdjustValue())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAdjustValue) GetTypeName() string {
 	return "BACnetConstructedDataAdjustValue"
 }
 
-func (m *_BACnetConstructedDataAdjustValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAdjustValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAdjustValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (adjustValue)
-	lengthInBits += m.AdjustValue.GetLengthInBits()
+	lengthInBits += m.AdjustValue.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAdjustValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAdjustValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAdjustValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAdjustValue, error) {
-	return BACnetConstructedDataAdjustValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAdjustValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAdjustValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAdjustValue, error) {
+func BACnetConstructedDataAdjustValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAdjustValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAdjustValue"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAdjustValueParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("adjustValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for adjustValue")
 	}
-	_adjustValue, _adjustValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_adjustValue, _adjustValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _adjustValueErr != nil {
 		return nil, errors.Wrap(_adjustValueErr, "Error parsing 'adjustValue' field of BACnetConstructedDataAdjustValue")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAdjustValueParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataAdjustValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAdjustValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAdjustValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAdjustValue) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("adjustValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for adjustValue")
 		}
-		_adjustValueErr := writeBuffer.WriteSerializable(m.GetAdjustValue())
+		_adjustValueErr := writeBuffer.WriteSerializable(ctx, m.GetAdjustValue())
 		if popErr := writeBuffer.PopContext("adjustValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for adjustValue")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAdjustValue) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_adjustValueErr, "Error serializing 'adjustValue' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAdjustValue) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAdjustValue) isBACnetConstructedDataAdjustValue() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAdjustValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

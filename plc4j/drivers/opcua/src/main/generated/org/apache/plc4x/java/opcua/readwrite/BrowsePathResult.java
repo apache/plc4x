@@ -71,6 +71,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BrowsePathResult");
 
@@ -95,6 +96,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BrowsePathResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -106,7 +108,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
     if (targets != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : targets) {
-        boolean last = ++i >= targets.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= targets.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -114,12 +116,13 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static BrowsePathResultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("BrowsePathResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(
@@ -138,18 +141,17 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("BrowsePathResult");
     // Create the instance
-    return new BrowsePathResultBuilder(statusCode, noOfTargets, targets);
+    return new BrowsePathResultBuilderImpl(statusCode, noOfTargets, targets);
   }
 
-  public static class BrowsePathResultBuilder
+  public static class BrowsePathResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final int noOfTargets;
     private final List<ExtensionObjectDefinition> targets;
 
-    public BrowsePathResultBuilder(
+    public BrowsePathResultBuilderImpl(
         StatusCode statusCode, int noOfTargets, List<ExtensionObjectDefinition> targets) {
-
       this.statusCode = statusCode;
       this.noOfTargets = noOfTargets;
       this.targets = targets;

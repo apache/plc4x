@@ -57,6 +57,7 @@ public class KnxNetIpRouting extends ServiceId implements Message {
   @Override
   protected void serializeServiceIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("KnxNetIpRouting");
 
@@ -75,6 +76,7 @@ public class KnxNetIpRouting extends ServiceId implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     KnxNetIpRouting _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (version)
     lengthInBits += 8;
@@ -82,25 +84,25 @@ public class KnxNetIpRouting extends ServiceId implements Message {
     return lengthInBits;
   }
 
-  public static KnxNetIpRoutingBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ServiceIdBuilder staticParseServiceIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("KnxNetIpRouting");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short version = readSimpleField("version", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("KnxNetIpRouting");
     // Create the instance
-    return new KnxNetIpRoutingBuilder(version);
+    return new KnxNetIpRoutingBuilderImpl(version);
   }
 
-  public static class KnxNetIpRoutingBuilder implements ServiceId.ServiceIdBuilder {
+  public static class KnxNetIpRoutingBuilderImpl implements ServiceId.ServiceIdBuilder {
     private final short version;
 
-    public KnxNetIpRoutingBuilder(short version) {
-
+    public KnxNetIpRoutingBuilderImpl(short version) {
       this.version = version;
     }
 

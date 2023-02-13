@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataObjectPropertyReference) GetPropertyReference() B
 ///////////////////////
 
 func (m *_BACnetConstructedDataObjectPropertyReference) GetActualValue() BACnetDeviceObjectPropertyReference {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDeviceObjectPropertyReference(m.GetPropertyReference())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataObjectPropertyReference) GetTypeName() string {
 	return "BACnetConstructedDataObjectPropertyReference"
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReference) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataObjectPropertyReference) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataObjectPropertyReference) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (propertyReference)
-	lengthInBits += m.PropertyReference.GetLengthInBits()
+	lengthInBits += m.PropertyReference.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReference) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataObjectPropertyReference) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataObjectPropertyReferenceParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectPropertyReference, error) {
-	return BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectPropertyReference, error) {
+func BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectPropertyReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataObjectPropertyReference"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(readBuffer util
 	if pullErr := readBuffer.PullContext("propertyReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyReference")
 	}
-	_propertyReference, _propertyReferenceErr := BACnetDeviceObjectPropertyReferenceParseWithBuffer(readBuffer)
+	_propertyReference, _propertyReferenceErr := BACnetDeviceObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
 	if _propertyReferenceErr != nil {
 		return nil, errors.Wrap(_propertyReferenceErr, "Error parsing 'propertyReference' field of BACnetConstructedDataObjectPropertyReference")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(readBuffer util
 }
 
 func (m *_BACnetConstructedDataObjectPropertyReference) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataObjectPropertyReference) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataObjectPropertyReference) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataObjectPropertyReference) SerializeWithWriteBuffer
 		if pushErr := writeBuffer.PushContext("propertyReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for propertyReference")
 		}
-		_propertyReferenceErr := writeBuffer.WriteSerializable(m.GetPropertyReference())
+		_propertyReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyReference())
 		if popErr := writeBuffer.PopContext("propertyReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for propertyReference")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataObjectPropertyReference) SerializeWithWriteBuffer
 			return errors.Wrap(_propertyReferenceErr, "Error serializing 'propertyReference' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataObjectPropertyReference) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataObjectPropertyReference) isBACnetConstructedDataObjectPropertyReference() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataObjectPropertyReference) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

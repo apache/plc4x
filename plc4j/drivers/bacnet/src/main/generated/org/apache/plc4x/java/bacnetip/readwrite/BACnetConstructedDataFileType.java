@@ -78,6 +78,7 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFileType");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFileType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileType)
     lengthInBits += fileType.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFileTypeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString fileType =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataFileType");
     // Create the instance
-    return new BACnetConstructedDataFileTypeBuilder(fileType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFileTypeBuilderImpl(fileType, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFileTypeBuilder
+  public static class BACnetConstructedDataFileTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString fileType;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFileTypeBuilder(
+    public BACnetConstructedDataFileTypeBuilderImpl(
         BACnetApplicationTagCharacterString fileType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fileType = fileType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

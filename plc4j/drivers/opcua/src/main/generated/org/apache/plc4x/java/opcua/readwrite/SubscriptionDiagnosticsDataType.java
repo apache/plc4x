@@ -74,8 +74,6 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
   protected final long monitoringQueueOverflowCount;
   protected final long nextSequenceNumber;
   protected final long eventQueueOverFlowCount;
-  // Reserved Fields
-  private Short reservedField0;
 
   public SubscriptionDiagnosticsDataType(
       NodeId sessionId,
@@ -271,6 +269,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SubscriptionDiagnosticsDataType");
 
@@ -299,10 +298,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (publishingEnabled)
     writeSimpleField("publishingEnabled", publishingEnabled, writeBoolean(writeBuffer));
@@ -419,6 +415,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SubscriptionDiagnosticsDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (sessionId)
     lengthInBits += sessionId.getLengthInBits();
@@ -519,12 +516,13 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     return lengthInBits;
   }
 
-  public static SubscriptionDiagnosticsDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SubscriptionDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =
         readSimpleField(
@@ -617,7 +615,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
 
     readBuffer.closeContext("SubscriptionDiagnosticsDataType");
     // Create the instance
-    return new SubscriptionDiagnosticsDataTypeBuilder(
+    return new SubscriptionDiagnosticsDataTypeBuilderImpl(
         sessionId,
         subscriptionId,
         priority,
@@ -648,11 +646,10 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         disabledMonitoredItemCount,
         monitoringQueueOverflowCount,
         nextSequenceNumber,
-        eventQueueOverFlowCount,
-        reservedField0);
+        eventQueueOverFlowCount);
   }
 
-  public static class SubscriptionDiagnosticsDataTypeBuilder
+  public static class SubscriptionDiagnosticsDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId sessionId;
     private final long subscriptionId;
@@ -685,9 +682,8 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
     private final long monitoringQueueOverflowCount;
     private final long nextSequenceNumber;
     private final long eventQueueOverFlowCount;
-    private final Short reservedField0;
 
-    public SubscriptionDiagnosticsDataTypeBuilder(
+    public SubscriptionDiagnosticsDataTypeBuilderImpl(
         NodeId sessionId,
         long subscriptionId,
         short priority,
@@ -718,8 +714,7 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
         long disabledMonitoredItemCount,
         long monitoringQueueOverflowCount,
         long nextSequenceNumber,
-        long eventQueueOverFlowCount,
-        Short reservedField0) {
+        long eventQueueOverFlowCount) {
       this.sessionId = sessionId;
       this.subscriptionId = subscriptionId;
       this.priority = priority;
@@ -751,7 +746,6 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
       this.monitoringQueueOverflowCount = monitoringQueueOverflowCount;
       this.nextSequenceNumber = nextSequenceNumber;
       this.eventQueueOverFlowCount = eventQueueOverFlowCount;
-      this.reservedField0 = reservedField0;
     }
 
     public SubscriptionDiagnosticsDataType build() {
@@ -788,7 +782,6 @@ public class SubscriptionDiagnosticsDataType extends ExtensionObjectDefinition i
               monitoringQueueOverflowCount,
               nextSequenceNumber,
               eventQueueOverFlowCount);
-      subscriptionDiagnosticsDataType.reservedField0 = reservedField0;
       return subscriptionDiagnosticsDataType;
     }
   }

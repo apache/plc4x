@@ -47,6 +47,7 @@ public class MeteringDataMeasureOtherWater extends MeteringData implements Messa
   @Override
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataMeasureOtherWater");
 
@@ -62,26 +63,28 @@ public class MeteringDataMeasureOtherWater extends MeteringData implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MeteringDataMeasureOtherWater _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static MeteringDataMeasureOtherWaterBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataMeasureOtherWater");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MeteringDataMeasureOtherWater");
     // Create the instance
-    return new MeteringDataMeasureOtherWaterBuilder();
+    return new MeteringDataMeasureOtherWaterBuilderImpl();
   }
 
-  public static class MeteringDataMeasureOtherWaterBuilder
+  public static class MeteringDataMeasureOtherWaterBuilderImpl
       implements MeteringData.MeteringDataBuilder {
 
-    public MeteringDataMeasureOtherWaterBuilder() {}
+    public MeteringDataMeasureOtherWaterBuilderImpl() {}
 
     public MeteringDataMeasureOtherWater build(
         MeteringCommandTypeContainer commandTypeContainer, byte argument) {

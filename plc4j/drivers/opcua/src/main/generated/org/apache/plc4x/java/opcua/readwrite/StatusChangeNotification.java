@@ -64,6 +64,7 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusChangeNotification");
 
@@ -90,6 +91,7 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     StatusChangeNotification _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (notificationLength)
     lengthInBits += 32;
@@ -103,12 +105,13 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
     return lengthInBits;
   }
 
-  public static StatusChangeNotificationBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("StatusChangeNotification");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int notificationLength = readImplicitField("notificationLength", readSignedInt(readBuffer, 32));
 
@@ -125,16 +128,15 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("StatusChangeNotification");
     // Create the instance
-    return new StatusChangeNotificationBuilder(status, diagnosticInfo);
+    return new StatusChangeNotificationBuilderImpl(status, diagnosticInfo);
   }
 
-  public static class StatusChangeNotificationBuilder
+  public static class StatusChangeNotificationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode status;
     private final DiagnosticInfo diagnosticInfo;
 
-    public StatusChangeNotificationBuilder(StatusCode status, DiagnosticInfo diagnosticInfo) {
-
+    public StatusChangeNotificationBuilderImpl(StatusCode status, DiagnosticInfo diagnosticInfo) {
       this.status = status;
       this.diagnosticInfo = diagnosticInfo;
     }

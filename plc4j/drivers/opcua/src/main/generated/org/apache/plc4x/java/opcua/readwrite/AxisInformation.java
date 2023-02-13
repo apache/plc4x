@@ -94,6 +94,7 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AxisInformation");
 
@@ -135,6 +136,7 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AxisInformation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (engineeringUnits)
     lengthInBits += engineeringUnits.getLengthInBits();
@@ -159,12 +161,13 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static AxisInformationBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AxisInformation");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition engineeringUnits =
         readSimpleField(
@@ -200,11 +203,11 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("AxisInformation");
     // Create the instance
-    return new AxisInformationBuilder(
+    return new AxisInformationBuilderImpl(
         engineeringUnits, eURange, title, axisScaleType, noOfAxisSteps, axisSteps);
   }
 
-  public static class AxisInformationBuilder
+  public static class AxisInformationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition engineeringUnits;
     private final ExtensionObjectDefinition eURange;
@@ -213,14 +216,13 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
     private final int noOfAxisSteps;
     private final List<Double> axisSteps;
 
-    public AxisInformationBuilder(
+    public AxisInformationBuilderImpl(
         ExtensionObjectDefinition engineeringUnits,
         ExtensionObjectDefinition eURange,
         LocalizedText title,
         AxisScaleEnumeration axisScaleType,
         int noOfAxisSteps,
         List<Double> axisSteps) {
-
       this.engineeringUnits = engineeringUnits;
       this.eURange = eURange;
       this.title = title;

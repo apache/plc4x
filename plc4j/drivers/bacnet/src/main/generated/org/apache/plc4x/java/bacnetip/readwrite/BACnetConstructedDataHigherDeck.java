@@ -78,6 +78,7 @@ public class BACnetConstructedDataHigherDeck extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataHigherDeck");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataHigherDeck extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataHigherDeck _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (higherDeck)
     lengthInBits += higherDeck.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataHigherDeck extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataHigherDeckBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataHigherDeck extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier higherDeck =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataHigherDeck extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataHigherDeck");
     // Create the instance
-    return new BACnetConstructedDataHigherDeckBuilder(higherDeck, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataHigherDeckBuilderImpl(
+        higherDeck, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataHigherDeckBuilder
+  public static class BACnetConstructedDataHigherDeckBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier higherDeck;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataHigherDeckBuilder(
+    public BACnetConstructedDataHigherDeckBuilderImpl(
         BACnetApplicationTagObjectIdentifier higherDeck,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.higherDeck = higherDeck;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

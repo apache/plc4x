@@ -72,6 +72,7 @@ public class BACnetFaultParameterFaultCharacterString extends BACnetFaultParamet
   protected void serializeBACnetFaultParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultCharacterString");
 
@@ -97,6 +98,7 @@ public class BACnetFaultParameterFaultCharacterString extends BACnetFaultParamet
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultCharacterString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -110,12 +112,13 @@ public class BACnetFaultParameterFaultCharacterString extends BACnetFaultParamet
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultCharacterStringBuilder staticParseBuilder(
+  public static BACnetFaultParameterBuilder staticParseBACnetFaultParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultCharacterString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -140,21 +143,20 @@ public class BACnetFaultParameterFaultCharacterString extends BACnetFaultParamet
 
     readBuffer.closeContext("BACnetFaultParameterFaultCharacterString");
     // Create the instance
-    return new BACnetFaultParameterFaultCharacterStringBuilder(
+    return new BACnetFaultParameterFaultCharacterStringBuilderImpl(
         openingTag, listOfFaultValues, closingTag);
   }
 
-  public static class BACnetFaultParameterFaultCharacterStringBuilder
+  public static class BACnetFaultParameterFaultCharacterStringBuilderImpl
       implements BACnetFaultParameter.BACnetFaultParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetFaultParameterFaultCharacterStringListOfFaultValues listOfFaultValues;
     private final BACnetClosingTag closingTag;
 
-    public BACnetFaultParameterFaultCharacterStringBuilder(
+    public BACnetFaultParameterFaultCharacterStringBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetFaultParameterFaultCharacterStringListOfFaultValues listOfFaultValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.listOfFaultValues = listOfFaultValues;
       this.closingTag = closingTag;

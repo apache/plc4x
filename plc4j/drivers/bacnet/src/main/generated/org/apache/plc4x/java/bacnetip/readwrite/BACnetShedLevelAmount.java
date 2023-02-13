@@ -55,6 +55,7 @@ public class BACnetShedLevelAmount extends BACnetShedLevel implements Message {
   protected void serializeBACnetShedLevelChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetShedLevelAmount");
 
@@ -73,6 +74,7 @@ public class BACnetShedLevelAmount extends BACnetShedLevel implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetShedLevelAmount _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (amount)
     lengthInBits += amount.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetShedLevelAmount extends BACnetShedLevel implements Message {
     return lengthInBits;
   }
 
-  public static BACnetShedLevelAmountBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetShedLevelBuilder staticParseBACnetShedLevelBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetShedLevelAmount");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagReal amount =
         readSimpleField(
@@ -99,15 +102,14 @@ public class BACnetShedLevelAmount extends BACnetShedLevel implements Message {
 
     readBuffer.closeContext("BACnetShedLevelAmount");
     // Create the instance
-    return new BACnetShedLevelAmountBuilder(amount);
+    return new BACnetShedLevelAmountBuilderImpl(amount);
   }
 
-  public static class BACnetShedLevelAmountBuilder
+  public static class BACnetShedLevelAmountBuilderImpl
       implements BACnetShedLevel.BACnetShedLevelBuilder {
     private final BACnetContextTagReal amount;
 
-    public BACnetShedLevelAmountBuilder(BACnetContextTagReal amount) {
-
+    public BACnetShedLevelAmountBuilderImpl(BACnetContextTagReal amount) {
       this.amount = amount;
     }
 

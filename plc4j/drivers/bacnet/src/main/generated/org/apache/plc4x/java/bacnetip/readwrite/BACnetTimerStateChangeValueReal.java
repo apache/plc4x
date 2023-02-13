@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueReal extends BACnetTimerStateChangeValue
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueReal");
 
@@ -81,6 +82,7 @@ public class BACnetTimerStateChangeValueReal extends BACnetTimerStateChangeValue
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueReal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (realValue)
     lengthInBits += realValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetTimerStateChangeValueReal extends BACnetTimerStateChangeValue
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueRealBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueReal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal realValue =
         readSimpleField(
@@ -104,17 +107,16 @@ public class BACnetTimerStateChangeValueReal extends BACnetTimerStateChangeValue
 
     readBuffer.closeContext("BACnetTimerStateChangeValueReal");
     // Create the instance
-    return new BACnetTimerStateChangeValueRealBuilder(realValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueRealBuilderImpl(realValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueRealBuilder
+  public static class BACnetTimerStateChangeValueRealBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagReal realValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueRealBuilder(
+    public BACnetTimerStateChangeValueRealBuilderImpl(
         BACnetApplicationTagReal realValue, BACnetObjectType objectTypeArgument) {
-
       this.realValue = realValue;
       this.objectTypeArgument = objectTypeArgument;
     }

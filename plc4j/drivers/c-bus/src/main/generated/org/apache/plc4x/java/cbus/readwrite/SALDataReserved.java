@@ -49,6 +49,7 @@ public class SALDataReserved extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataReserved");
 
@@ -64,16 +65,18 @@ public class SALDataReserved extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataReserved _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SALDataReservedBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataReserved");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {
       throw new ParseValidationException("RESERVED Not yet implemented");
@@ -81,12 +84,12 @@ public class SALDataReserved extends SALData implements Message {
 
     readBuffer.closeContext("SALDataReserved");
     // Create the instance
-    return new SALDataReservedBuilder();
+    return new SALDataReservedBuilderImpl();
   }
 
-  public static class SALDataReservedBuilder implements SALData.SALDataBuilder {
+  public static class SALDataReservedBuilderImpl implements SALData.SALDataBuilder {
 
-    public SALDataReservedBuilder() {}
+    public SALDataReservedBuilderImpl() {}
 
     public SALDataReserved build(SALData salData) {
       SALDataReserved sALDataReserved = new SALDataReserved(salData);

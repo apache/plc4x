@@ -49,6 +49,7 @@ public abstract class BACnetError implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetError");
 
@@ -67,6 +68,7 @@ public abstract class BACnetError implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetError _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -100,30 +102,33 @@ public abstract class BACnetError implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetErrorBuilder builder = null;
     if (EvaluationHelper.equals(
         errorChoice, BACnetConfirmedServiceChoice.SUBSCRIBE_COV_PROPERTY_MULTIPLE)) {
-      builder = SubscribeCOVPropertyMultipleError.staticParseBuilder(readBuffer, errorChoice);
+      builder =
+          SubscribeCOVPropertyMultipleError.staticParseBACnetErrorBuilder(readBuffer, errorChoice);
     } else if (EvaluationHelper.equals(
         errorChoice, BACnetConfirmedServiceChoice.ADD_LIST_ELEMENT)) {
-      builder = ChangeListAddError.staticParseBuilder(readBuffer, errorChoice);
+      builder = ChangeListAddError.staticParseBACnetErrorBuilder(readBuffer, errorChoice);
     } else if (EvaluationHelper.equals(
         errorChoice, BACnetConfirmedServiceChoice.REMOVE_LIST_ELEMENT)) {
-      builder = ChangeListRemoveError.staticParseBuilder(readBuffer, errorChoice);
+      builder = ChangeListRemoveError.staticParseBACnetErrorBuilder(readBuffer, errorChoice);
     } else if (EvaluationHelper.equals(errorChoice, BACnetConfirmedServiceChoice.CREATE_OBJECT)) {
-      builder = CreateObjectError.staticParseBuilder(readBuffer, errorChoice);
+      builder = CreateObjectError.staticParseBACnetErrorBuilder(readBuffer, errorChoice);
     } else if (EvaluationHelper.equals(
         errorChoice, BACnetConfirmedServiceChoice.WRITE_PROPERTY_MULTIPLE)) {
-      builder = WritePropertyMultipleError.staticParseBuilder(readBuffer, errorChoice);
+      builder = WritePropertyMultipleError.staticParseBACnetErrorBuilder(readBuffer, errorChoice);
     } else if (EvaluationHelper.equals(
         errorChoice, BACnetConfirmedServiceChoice.CONFIRMED_PRIVATE_TRANSFER)) {
-      builder = ConfirmedPrivateTransferError.staticParseBuilder(readBuffer, errorChoice);
+      builder =
+          ConfirmedPrivateTransferError.staticParseBACnetErrorBuilder(readBuffer, errorChoice);
     } else if (EvaluationHelper.equals(errorChoice, BACnetConfirmedServiceChoice.VT_CLOSE)) {
-      builder = VTCloseError.staticParseBuilder(readBuffer, errorChoice);
+      builder = VTCloseError.staticParseBACnetErrorBuilder(readBuffer, errorChoice);
     } else if (true) {
-      builder = BACnetErrorGeneral.staticParseBuilder(readBuffer, errorChoice);
+      builder = BACnetErrorGeneral.staticParseBACnetErrorBuilder(readBuffer, errorChoice);
     }
     if (builder == null) {
       throw new ParseException(
@@ -140,7 +145,7 @@ public abstract class BACnetError implements Message {
     return _bACnetError;
   }
 
-  public static interface BACnetErrorBuilder {
+  public interface BACnetErrorBuilder {
     BACnetError build();
   }
 

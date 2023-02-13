@@ -78,6 +78,7 @@ public class BACnetConstructedDataInputReference extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataInputReference");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataInputReference extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataInputReference _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (inputReference)
     lengthInBits += inputReference.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataInputReference extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataInputReferenceBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataInputReference extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetObjectPropertyReference inputReference =
         readSimpleField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataInputReference extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataInputReference");
     // Create the instance
-    return new BACnetConstructedDataInputReferenceBuilder(
+    return new BACnetConstructedDataInputReferenceBuilderImpl(
         inputReference, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataInputReferenceBuilder
+  public static class BACnetConstructedDataInputReferenceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetObjectPropertyReference inputReference;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataInputReferenceBuilder(
+    public BACnetConstructedDataInputReferenceBuilderImpl(
         BACnetObjectPropertyReference inputReference,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.inputReference = inputReference;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

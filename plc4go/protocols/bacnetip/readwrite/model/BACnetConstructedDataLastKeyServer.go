@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataLastKeyServer) GetLastKeyServer() BACnetAddressBi
 ///////////////////////
 
 func (m *_BACnetConstructedDataLastKeyServer) GetActualValue() BACnetAddressBinding {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetAddressBinding(m.GetLastKeyServer())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataLastKeyServer) GetTypeName() string {
 	return "BACnetConstructedDataLastKeyServer"
 }
 
-func (m *_BACnetConstructedDataLastKeyServer) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLastKeyServer) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLastKeyServer) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lastKeyServer)
-	lengthInBits += m.LastKeyServer.GetLengthInBits()
+	lengthInBits += m.LastKeyServer.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLastKeyServer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLastKeyServer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLastKeyServerParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastKeyServer, error) {
-	return BACnetConstructedDataLastKeyServerParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLastKeyServerParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLastKeyServerParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastKeyServer, error) {
+func BACnetConstructedDataLastKeyServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastKeyServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLastKeyServer"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataLastKeyServerParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("lastKeyServer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lastKeyServer")
 	}
-	_lastKeyServer, _lastKeyServerErr := BACnetAddressBindingParseWithBuffer(readBuffer)
+	_lastKeyServer, _lastKeyServerErr := BACnetAddressBindingParseWithBuffer(ctx, readBuffer)
 	if _lastKeyServerErr != nil {
 		return nil, errors.Wrap(_lastKeyServerErr, "Error parsing 'lastKeyServer' field of BACnetConstructedDataLastKeyServer")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataLastKeyServerParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataLastKeyServer) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLastKeyServer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLastKeyServer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataLastKeyServer) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("lastKeyServer"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lastKeyServer")
 		}
-		_lastKeyServerErr := writeBuffer.WriteSerializable(m.GetLastKeyServer())
+		_lastKeyServerErr := writeBuffer.WriteSerializable(ctx, m.GetLastKeyServer())
 		if popErr := writeBuffer.PopContext("lastKeyServer"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lastKeyServer")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataLastKeyServer) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_lastKeyServerErr, "Error serializing 'lastKeyServer' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataLastKeyServer) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLastKeyServer) isBACnetConstructedDataLastKeyServer() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataLastKeyServer) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

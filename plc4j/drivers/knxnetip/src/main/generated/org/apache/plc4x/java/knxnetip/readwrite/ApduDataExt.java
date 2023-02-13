@@ -40,12 +40,8 @@ public abstract class ApduDataExt implements Message {
   // Abstract accessors for discriminator values.
   public abstract Short getExtApciType();
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExt(Short length) {
+  public ApduDataExt() {
     super();
-    this.length = length;
   }
 
   protected abstract void serializeApduDataExtChild(WriteBuffer writeBuffer)
@@ -53,6 +49,7 @@ public abstract class ApduDataExt implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExt");
 
@@ -74,6 +71,7 @@ public abstract class ApduDataExt implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ApduDataExt _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (extApciType)
     lengthInBits += 6;
@@ -108,95 +106,123 @@ public abstract class ApduDataExt implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short extApciType = readDiscriminatorField("extApciType", readUnsignedShort(readBuffer, 6));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ApduDataExtBuilder builder = null;
     if (EvaluationHelper.equals(extApciType, (short) 0x00)) {
-      builder = ApduDataExtOpenRoutingTableRequest.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtOpenRoutingTableRequest.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x01)) {
-      builder = ApduDataExtReadRoutingTableRequest.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtReadRoutingTableRequest.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x02)) {
-      builder = ApduDataExtReadRoutingTableResponse.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtReadRoutingTableResponse.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x03)) {
-      builder = ApduDataExtWriteRoutingTableRequest.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtWriteRoutingTableRequest.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x08)) {
-      builder = ApduDataExtReadRouterMemoryRequest.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtReadRouterMemoryRequest.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x09)) {
-      builder = ApduDataExtReadRouterMemoryResponse.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtReadRouterMemoryResponse.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x0A)) {
-      builder = ApduDataExtWriteRouterMemoryRequest.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtWriteRouterMemoryRequest.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x0D)) {
-      builder = ApduDataExtReadRouterStatusRequest.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtReadRouterStatusRequest.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x0E)) {
-      builder = ApduDataExtReadRouterStatusResponse.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtReadRouterStatusResponse.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x0F)) {
-      builder = ApduDataExtWriteRouterStatusRequest.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtWriteRouterStatusRequest.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x10)) {
-      builder = ApduDataExtMemoryBitWrite.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtMemoryBitWrite.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x11)) {
-      builder = ApduDataExtAuthorizeRequest.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtAuthorizeRequest.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x12)) {
-      builder = ApduDataExtAuthorizeResponse.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtAuthorizeResponse.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x13)) {
-      builder = ApduDataExtKeyWrite.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtKeyWrite.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x14)) {
-      builder = ApduDataExtKeyResponse.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtKeyResponse.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x15)) {
-      builder = ApduDataExtPropertyValueRead.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtPropertyValueRead.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x16)) {
-      builder = ApduDataExtPropertyValueResponse.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtPropertyValueResponse.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x17)) {
-      builder = ApduDataExtPropertyValueWrite.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtPropertyValueWrite.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x18)) {
-      builder = ApduDataExtPropertyDescriptionRead.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtPropertyDescriptionRead.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x19)) {
-      builder = ApduDataExtPropertyDescriptionResponse.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtPropertyDescriptionResponse.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x1A)) {
-      builder = ApduDataExtNetworkParameterRead.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtNetworkParameterRead.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x1B)) {
-      builder = ApduDataExtNetworkParameterResponse.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtNetworkParameterResponse.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x1C)) {
-      builder = ApduDataExtIndividualAddressSerialNumberRead.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtIndividualAddressSerialNumberRead.staticParseApduDataExtBuilder(
+              readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x1D)) {
       builder =
-          ApduDataExtIndividualAddressSerialNumberResponse.staticParseBuilder(readBuffer, length);
+          ApduDataExtIndividualAddressSerialNumberResponse.staticParseApduDataExtBuilder(
+              readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x1E)) {
       builder =
-          ApduDataExtIndividualAddressSerialNumberWrite.staticParseBuilder(readBuffer, length);
+          ApduDataExtIndividualAddressSerialNumberWrite.staticParseApduDataExtBuilder(
+              readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x20)) {
-      builder = ApduDataExtDomainAddressWrite.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtDomainAddressWrite.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x21)) {
-      builder = ApduDataExtDomainAddressRead.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtDomainAddressRead.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x22)) {
-      builder = ApduDataExtDomainAddressResponse.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtDomainAddressResponse.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x23)) {
-      builder = ApduDataExtDomainAddressSelectiveRead.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtDomainAddressSelectiveRead.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x24)) {
-      builder = ApduDataExtNetworkParameterWrite.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtNetworkParameterWrite.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x25)) {
-      builder = ApduDataExtLinkRead.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtLinkRead.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x26)) {
-      builder = ApduDataExtLinkResponse.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtLinkResponse.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x27)) {
-      builder = ApduDataExtLinkWrite.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtLinkWrite.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x28)) {
-      builder = ApduDataExtGroupPropertyValueRead.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtGroupPropertyValueRead.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x29)) {
-      builder = ApduDataExtGroupPropertyValueResponse.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtGroupPropertyValueResponse.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x2A)) {
-      builder = ApduDataExtGroupPropertyValueWrite.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtGroupPropertyValueWrite.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x2B)) {
-      builder = ApduDataExtGroupPropertyValueInfoReport.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtGroupPropertyValueInfoReport.staticParseApduDataExtBuilder(readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x2C)) {
-      builder = ApduDataExtDomainAddressSerialNumberRead.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtDomainAddressSerialNumberRead.staticParseApduDataExtBuilder(
+              readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x2D)) {
-      builder = ApduDataExtDomainAddressSerialNumberResponse.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtDomainAddressSerialNumberResponse.staticParseApduDataExtBuilder(
+              readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x2E)) {
-      builder = ApduDataExtDomainAddressSerialNumberWrite.staticParseBuilder(readBuffer, length);
+      builder =
+          ApduDataExtDomainAddressSerialNumberWrite.staticParseApduDataExtBuilder(
+              readBuffer, length);
     } else if (EvaluationHelper.equals(extApciType, (short) 0x30)) {
-      builder = ApduDataExtFileStreamInfoReport.staticParseBuilder(readBuffer, length);
+      builder = ApduDataExtFileStreamInfoReport.staticParseApduDataExtBuilder(readBuffer, length);
     }
     if (builder == null) {
       throw new ParseException(
@@ -209,13 +235,12 @@ public abstract class ApduDataExt implements Message {
 
     readBuffer.closeContext("ApduDataExt");
     // Create the instance
-    ApduDataExt _apduDataExt = builder.build(length);
-
+    ApduDataExt _apduDataExt = builder.build();
     return _apduDataExt;
   }
 
-  public static interface ApduDataExtBuilder {
-    ApduDataExt build(Short length);
+  public interface ApduDataExtBuilder {
+    ApduDataExt build();
   }
 
   @Override

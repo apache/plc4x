@@ -49,6 +49,7 @@ public abstract class S7VarRequestParameterItem implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7VarRequestParameterItem");
 
@@ -70,6 +71,7 @@ public abstract class S7VarRequestParameterItem implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     S7VarRequestParameterItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (itemType)
     lengthInBits += 8;
@@ -90,13 +92,15 @@ public abstract class S7VarRequestParameterItem implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short itemType = readDiscriminatorField("itemType", readUnsignedShort(readBuffer, 8));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     S7VarRequestParameterItemBuilder builder = null;
     if (EvaluationHelper.equals(itemType, (short) 0x12)) {
-      builder = S7VarRequestParameterItemAddress.staticParseBuilder(readBuffer);
+      builder =
+          S7VarRequestParameterItemAddress.staticParseS7VarRequestParameterItemBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -113,7 +117,7 @@ public abstract class S7VarRequestParameterItem implements Message {
     return _s7VarRequestParameterItem;
   }
 
-  public static interface S7VarRequestParameterItemBuilder {
+  public interface S7VarRequestParameterItemBuilder {
     S7VarRequestParameterItem build();
   }
 

@@ -70,6 +70,7 @@ public class CANOpenFrame implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenFrame");
 
@@ -86,10 +87,15 @@ public class CANOpenFrame implements Message {
         "CANOpenService",
         service,
         new DataWriterEnumDefault<>(
-            CANOpenService::getValue, CANOpenService::name, writeUnsignedByte(writeBuffer, 4)));
+            CANOpenService::getValue, CANOpenService::name, writeUnsignedByte(writeBuffer, 4)),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Const Field (alignment)
-    writeConstField("alignment", ALIGNMENT, writeUnsignedByte(writeBuffer, 4));
+    writeConstField(
+        "alignment",
+        ALIGNMENT,
+        writeUnsignedByte(writeBuffer, 4),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (payload)
     writeSimpleField(
@@ -103,7 +109,8 @@ public class CANOpenFrame implements Message {
         "padding",
         (int) ((8) - ((payload.getLengthInBytes()))),
         (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("CANOpenFrame");
   }
@@ -117,6 +124,7 @@ public class CANOpenFrame implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CANOpenFrame _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nodeId)
     lengthInBits += 8;
@@ -150,6 +158,7 @@ public class CANOpenFrame implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short nodeId =
         readSimpleField(

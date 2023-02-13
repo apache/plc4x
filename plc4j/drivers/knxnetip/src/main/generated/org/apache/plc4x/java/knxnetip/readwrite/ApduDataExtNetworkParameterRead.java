@@ -42,17 +42,14 @@ public class ApduDataExtNetworkParameterRead extends ApduDataExt implements Mess
     return (short) 0x1A;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtNetworkParameterRead(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtNetworkParameterRead() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtNetworkParameterRead");
 
@@ -68,35 +65,32 @@ public class ApduDataExtNetworkParameterRead extends ApduDataExt implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtNetworkParameterRead _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtNetworkParameterReadBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtNetworkParameterRead");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtNetworkParameterRead");
     // Create the instance
-    return new ApduDataExtNetworkParameterReadBuilder(length);
+    return new ApduDataExtNetworkParameterReadBuilderImpl();
   }
 
-  public static class ApduDataExtNetworkParameterReadBuilder
+  public static class ApduDataExtNetworkParameterReadBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtNetworkParameterReadBuilder(Short length) {
+    public ApduDataExtNetworkParameterReadBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtNetworkParameterRead build(Short length) {
-
+    public ApduDataExtNetworkParameterRead build() {
       ApduDataExtNetworkParameterRead apduDataExtNetworkParameterRead =
-          new ApduDataExtNetworkParameterRead(length);
+          new ApduDataExtNetworkParameterRead();
       return apduDataExtNetworkParameterRead;
     }
   }

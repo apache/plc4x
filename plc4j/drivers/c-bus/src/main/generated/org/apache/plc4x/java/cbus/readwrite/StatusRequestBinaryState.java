@@ -41,6 +41,7 @@ public class StatusRequestBinaryState extends StatusRequest implements Message {
 
   // Properties.
   protected final ApplicationIdContainer application;
+
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;
@@ -58,6 +59,7 @@ public class StatusRequestBinaryState extends StatusRequest implements Message {
   protected void serializeStatusRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusRequestBinaryState");
 
@@ -95,6 +97,7 @@ public class StatusRequestBinaryState extends StatusRequest implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     StatusRequestBinaryState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -108,12 +111,13 @@ public class StatusRequestBinaryState extends StatusRequest implements Message {
     return lengthInBits;
   }
 
-  public static StatusRequestBinaryStateBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static StatusRequestBuilder staticParseStatusRequestBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("StatusRequestBinaryState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x7A);
 
@@ -128,16 +132,16 @@ public class StatusRequestBinaryState extends StatusRequest implements Message {
 
     readBuffer.closeContext("StatusRequestBinaryState");
     // Create the instance
-    return new StatusRequestBinaryStateBuilder(application, reservedField0, reservedField1);
+    return new StatusRequestBinaryStateBuilderImpl(application, reservedField0, reservedField1);
   }
 
-  public static class StatusRequestBinaryStateBuilder
+  public static class StatusRequestBinaryStateBuilderImpl
       implements StatusRequest.StatusRequestBuilder {
     private final ApplicationIdContainer application;
     private final Byte reservedField0;
     private final Byte reservedField1;
 
-    public StatusRequestBinaryStateBuilder(
+    public StatusRequestBinaryStateBuilderImpl(
         ApplicationIdContainer application, Byte reservedField0, Byte reservedField1) {
       this.application = application;
       this.reservedField0 = reservedField0;

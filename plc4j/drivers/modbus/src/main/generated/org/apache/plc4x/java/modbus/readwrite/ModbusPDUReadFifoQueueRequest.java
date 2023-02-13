@@ -65,6 +65,7 @@ public class ModbusPDUReadFifoQueueRequest extends ModbusPDU implements Message 
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadFifoQueueRequest");
 
@@ -83,6 +84,7 @@ public class ModbusPDUReadFifoQueueRequest extends ModbusPDU implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadFifoQueueRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fifoPointerAddress)
     lengthInBits += 16;
@@ -90,25 +92,26 @@ public class ModbusPDUReadFifoQueueRequest extends ModbusPDU implements Message 
     return lengthInBits;
   }
 
-  public static ModbusPDUReadFifoQueueRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadFifoQueueRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int fifoPointerAddress = readSimpleField("fifoPointerAddress", readUnsignedInt(readBuffer, 16));
 
     readBuffer.closeContext("ModbusPDUReadFifoQueueRequest");
     // Create the instance
-    return new ModbusPDUReadFifoQueueRequestBuilder(fifoPointerAddress);
+    return new ModbusPDUReadFifoQueueRequestBuilderImpl(fifoPointerAddress);
   }
 
-  public static class ModbusPDUReadFifoQueueRequestBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUReadFifoQueueRequestBuilderImpl
+      implements ModbusPDU.ModbusPDUBuilder {
     private final int fifoPointerAddress;
 
-    public ModbusPDUReadFifoQueueRequestBuilder(int fifoPointerAddress) {
-
+    public ModbusPDUReadFifoQueueRequestBuilderImpl(int fifoPointerAddress) {
       this.fifoPointerAddress = fifoPointerAddress;
     }
 

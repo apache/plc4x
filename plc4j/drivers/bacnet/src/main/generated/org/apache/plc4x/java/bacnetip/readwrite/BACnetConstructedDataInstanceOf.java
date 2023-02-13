@@ -78,6 +78,7 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataInstanceOf");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataInstanceOf _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (instanceOf)
     lengthInBits += instanceOf.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataInstanceOfBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString instanceOf =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataInstanceOf");
     // Create the instance
-    return new BACnetConstructedDataInstanceOfBuilder(instanceOf, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataInstanceOfBuilderImpl(
+        instanceOf, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataInstanceOfBuilder
+  public static class BACnetConstructedDataInstanceOfBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString instanceOf;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataInstanceOfBuilder(
+    public BACnetConstructedDataInstanceOfBuilderImpl(
         BACnetApplicationTagCharacterString instanceOf,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.instanceOf = instanceOf;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

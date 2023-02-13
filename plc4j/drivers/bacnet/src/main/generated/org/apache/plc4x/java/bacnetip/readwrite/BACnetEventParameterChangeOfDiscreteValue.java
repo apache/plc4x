@@ -72,6 +72,7 @@ public class BACnetEventParameterChangeOfDiscreteValue extends BACnetEventParame
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterChangeOfDiscreteValue");
 
@@ -96,6 +97,7 @@ public class BACnetEventParameterChangeOfDiscreteValue extends BACnetEventParame
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterChangeOfDiscreteValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -109,12 +111,13 @@ public class BACnetEventParameterChangeOfDiscreteValue extends BACnetEventParame
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfDiscreteValueBuilder staticParseBuilder(
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfDiscreteValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -142,20 +145,20 @@ public class BACnetEventParameterChangeOfDiscreteValue extends BACnetEventParame
 
     readBuffer.closeContext("BACnetEventParameterChangeOfDiscreteValue");
     // Create the instance
-    return new BACnetEventParameterChangeOfDiscreteValueBuilder(openingTag, timeDelay, closingTag);
+    return new BACnetEventParameterChangeOfDiscreteValueBuilderImpl(
+        openingTag, timeDelay, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfDiscreteValueBuilder
+  public static class BACnetEventParameterChangeOfDiscreteValueBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfDiscreteValueBuilder(
+    public BACnetEventParameterChangeOfDiscreteValueBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.closingTag = closingTag;

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataTransition) GetTransition() BACnetLightingTransit
 ///////////////////////
 
 func (m *_BACnetConstructedDataTransition) GetActualValue() BACnetLightingTransitionTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetLightingTransitionTagged(m.GetTransition())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataTransition) GetTypeName() string {
 	return "BACnetConstructedDataTransition"
 }
 
-func (m *_BACnetConstructedDataTransition) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataTransition) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataTransition) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (transition)
-	lengthInBits += m.Transition.GetLengthInBits()
+	lengthInBits += m.Transition.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataTransition) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataTransition) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataTransitionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTransition, error) {
-	return BACnetConstructedDataTransitionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataTransitionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataTransitionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTransition, error) {
+func BACnetConstructedDataTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTransition, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTransition"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataTransitionParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("transition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for transition")
 	}
-	_transition, _transitionErr := BACnetLightingTransitionTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_transition, _transitionErr := BACnetLightingTransitionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _transitionErr != nil {
 		return nil, errors.Wrap(_transitionErr, "Error parsing 'transition' field of BACnetConstructedDataTransition")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataTransitionParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetConstructedDataTransition) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataTransition) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataTransition) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataTransition) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("transition"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for transition")
 		}
-		_transitionErr := writeBuffer.WriteSerializable(m.GetTransition())
+		_transitionErr := writeBuffer.WriteSerializable(ctx, m.GetTransition())
 		if popErr := writeBuffer.PopContext("transition"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for transition")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataTransition) SerializeWithWriteBuffer(writeBuffer 
 			return errors.Wrap(_transitionErr, "Error serializing 'transition' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataTransition) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataTransition) isBACnetConstructedDataTransition() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataTransition) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

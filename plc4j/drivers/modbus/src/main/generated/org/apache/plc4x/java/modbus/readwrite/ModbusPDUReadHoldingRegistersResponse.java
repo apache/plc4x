@@ -65,6 +65,7 @@ public class ModbusPDUReadHoldingRegistersResponse extends ModbusPDU implements 
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadHoldingRegistersResponse");
 
@@ -88,6 +89,7 @@ public class ModbusPDUReadHoldingRegistersResponse extends ModbusPDU implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadHoldingRegistersResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (byteCount)
     lengthInBits += 8;
@@ -100,12 +102,13 @@ public class ModbusPDUReadHoldingRegistersResponse extends ModbusPDU implements 
     return lengthInBits;
   }
 
-  public static ModbusPDUReadHoldingRegistersResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadHoldingRegistersResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short byteCount = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8));
 
@@ -113,15 +116,14 @@ public class ModbusPDUReadHoldingRegistersResponse extends ModbusPDU implements 
 
     readBuffer.closeContext("ModbusPDUReadHoldingRegistersResponse");
     // Create the instance
-    return new ModbusPDUReadHoldingRegistersResponseBuilder(value);
+    return new ModbusPDUReadHoldingRegistersResponseBuilderImpl(value);
   }
 
-  public static class ModbusPDUReadHoldingRegistersResponseBuilder
+  public static class ModbusPDUReadHoldingRegistersResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final byte[] value;
 
-    public ModbusPDUReadHoldingRegistersResponseBuilder(byte[] value) {
-
+    public ModbusPDUReadHoldingRegistersResponseBuilderImpl(byte[] value) {
       this.value = value;
     }
 

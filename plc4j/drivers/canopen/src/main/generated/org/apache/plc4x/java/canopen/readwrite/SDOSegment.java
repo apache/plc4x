@@ -42,8 +42,6 @@ public class SDOSegment implements Message {
   protected final boolean indicated;
   protected final IndexAddress address;
   protected final byte[] data;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public SDOSegment(boolean expedited, boolean indicated, IndexAddress address, byte[] data) {
     super();
@@ -71,14 +69,12 @@ public class SDOSegment implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOSegment");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 1));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 1));
 
     // Implicit Field (size) (Used for parsing, but its value is not stored as it's implicitly given
     // by the objects content)
@@ -113,6 +109,7 @@ public class SDOSegment implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     SDOSegment _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 1;
@@ -154,6 +151,7 @@ public class SDOSegment implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 1), (byte) 0x00);
@@ -179,7 +177,6 @@ public class SDOSegment implements Message {
     // Create the instance
     SDOSegment _sDOSegment;
     _sDOSegment = new SDOSegment(expedited, indicated, address, data);
-    _sDOSegment.reservedField0 = reservedField0;
     return _sDOSegment;
   }
 

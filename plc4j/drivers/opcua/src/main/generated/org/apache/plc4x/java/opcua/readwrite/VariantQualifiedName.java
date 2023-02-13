@@ -69,12 +69,12 @@ public class VariantQualifiedName extends Variant implements Message {
   @Override
   protected void serializeVariantChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("VariantQualifiedName");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeComplexTypeArrayField("value", value, writeBuffer);
@@ -91,6 +91,7 @@ public class VariantQualifiedName extends Variant implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     VariantQualifiedName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (arrayLength)
     if (arrayLength != null) {
@@ -101,7 +102,7 @@ public class VariantQualifiedName extends Variant implements Message {
     if (value != null) {
       int i = 0;
       for (QualifiedName element : value) {
-        boolean last = ++i >= value.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= value.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -109,12 +110,13 @@ public class VariantQualifiedName extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantQualifiedNameBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantQualifiedName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer arrayLength =
         readOptionalField("arrayLength", readSignedInt(readBuffer, 32), arrayLengthSpecified);
@@ -127,15 +129,14 @@ public class VariantQualifiedName extends Variant implements Message {
 
     readBuffer.closeContext("VariantQualifiedName");
     // Create the instance
-    return new VariantQualifiedNameBuilder(arrayLength, value);
+    return new VariantQualifiedNameBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantQualifiedNameBuilder implements Variant.VariantBuilder {
+  public static class VariantQualifiedNameBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<QualifiedName> value;
 
-    public VariantQualifiedNameBuilder(Integer arrayLength, List<QualifiedName> value) {
-
+    public VariantQualifiedNameBuilderImpl(Integer arrayLength, List<QualifiedName> value) {
       this.arrayLength = arrayLength;
       this.value = value;
     }

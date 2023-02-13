@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -86,7 +87,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetBytesOfRemovedService() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckReadPropertyConditional factory function for _BACnetServiceAckReadPropertyConditional
-func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) *_BACnetServiceAckReadPropertyConditional {
+func NewBACnetServiceAckReadPropertyConditional(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckReadPropertyConditional {
 	_result := &_BACnetServiceAckReadPropertyConditional{
 		BytesOfRemovedService: bytesOfRemovedService,
 		_BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
@@ -110,12 +111,8 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetTypeName() string {
 	return "BACnetServiceAckReadPropertyConditional"
 }
 
-func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.BytesOfRemovedService) > 0 {
@@ -125,15 +122,15 @@ func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBitsConditional(la
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetServiceAckReadPropertyConditional) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckReadPropertyConditionalParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
-	return BACnetServiceAckReadPropertyConditionalParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength, serviceAckPayloadLength)
+func BACnetServiceAckReadPropertyConditionalParse(theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
+	return BACnetServiceAckReadPropertyConditionalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
-func BACnetServiceAckReadPropertyConditionalParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
+func BACnetServiceAckReadPropertyConditionalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadPropertyConditional"); pullErr != nil {
@@ -164,14 +161,14 @@ func BACnetServiceAckReadPropertyConditionalParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetServiceAckReadPropertyConditional) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetServiceAckReadPropertyConditional) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckReadPropertyConditional) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -190,7 +187,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -212,7 +209,7 @@ func (m *_BACnetServiceAckReadPropertyConditional) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

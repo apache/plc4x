@@ -79,6 +79,7 @@ public class BACnetConstructedDataLargeAnalogValueHighLimit extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueHighLimit");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataLargeAnalogValueHighLimit extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLargeAnalogValueHighLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (highLimit)
     lengthInBits += highLimit.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataLargeAnalogValueHighLimit extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLargeAnalogValueHighLimitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataLargeAnalogValueHighLimit extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble highLimit =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataLargeAnalogValueHighLimit extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataLargeAnalogValueHighLimit");
     // Create the instance
-    return new BACnetConstructedDataLargeAnalogValueHighLimitBuilder(
+    return new BACnetConstructedDataLargeAnalogValueHighLimitBuilderImpl(
         highLimit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLargeAnalogValueHighLimitBuilder
+  public static class BACnetConstructedDataLargeAnalogValueHighLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDouble highLimit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLargeAnalogValueHighLimitBuilder(
+    public BACnetConstructedDataLargeAnalogValueHighLimitBuilderImpl(
         BACnetApplicationTagDouble highLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.highLimit = highLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

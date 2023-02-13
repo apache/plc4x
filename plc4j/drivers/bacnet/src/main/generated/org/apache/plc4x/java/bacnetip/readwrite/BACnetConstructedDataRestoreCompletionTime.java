@@ -79,6 +79,7 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRestoreCompletionTime");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataRestoreCompletionTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (completionTime)
     lengthInBits += completionTime.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataRestoreCompletionTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger completionTime =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataRestoreCompletionTime");
     // Create the instance
-    return new BACnetConstructedDataRestoreCompletionTimeBuilder(
+    return new BACnetConstructedDataRestoreCompletionTimeBuilderImpl(
         completionTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataRestoreCompletionTimeBuilder
+  public static class BACnetConstructedDataRestoreCompletionTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger completionTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRestoreCompletionTimeBuilder(
+    public BACnetConstructedDataRestoreCompletionTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger completionTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.completionTime = completionTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

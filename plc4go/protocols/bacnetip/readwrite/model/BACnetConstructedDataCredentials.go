@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,32 +117,28 @@ func (m *_BACnetConstructedDataCredentials) GetTypeName() string {
 	return "BACnetConstructedDataCredentials"
 }
 
-func (m *_BACnetConstructedDataCredentials) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataCredentials) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataCredentials) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.Credentials) > 0 {
 		for _, element := range m.Credentials {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCredentials) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataCredentials) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataCredentialsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentials, error) {
-	return BACnetConstructedDataCredentialsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataCredentialsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataCredentialsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentials, error) {
+func BACnetConstructedDataCredentialsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentials, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentials"); pullErr != nil {
@@ -157,7 +155,7 @@ func BACnetConstructedDataCredentialsParseWithBuffer(readBuffer utils.ReadBuffer
 	var credentials []BACnetDeviceObjectReference
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDeviceObjectReferenceParseWithBuffer(readBuffer)
+			_item, _err := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'credentials' field of BACnetConstructedDataCredentials")
 			}
@@ -185,14 +183,14 @@ func BACnetConstructedDataCredentialsParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataCredentials) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataCredentials) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCredentials) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -204,8 +202,11 @@ func (m *_BACnetConstructedDataCredentials) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("credentials", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for credentials")
 		}
-		for _, _element := range m.GetCredentials() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetCredentials() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetCredentials()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'credentials' field")
 			}
@@ -219,7 +220,7 @@ func (m *_BACnetConstructedDataCredentials) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataCredentials) isBACnetConstructedDataCredentials() bool {
@@ -231,7 +232,7 @@ func (m *_BACnetConstructedDataCredentials) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

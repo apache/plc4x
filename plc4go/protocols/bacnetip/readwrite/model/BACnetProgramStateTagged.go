@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -91,15 +92,11 @@ func (m *_BACnetProgramStateTagged) GetTypeName() string {
 	return "BACnetProgramStateTagged"
 }
 
-func (m *_BACnetProgramStateTagged) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetProgramStateTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetProgramStateTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
 	lengthInBits += uint16(int32(m.GetHeader().GetActualLength()) * int32(int32(8)))
@@ -107,15 +104,15 @@ func (m *_BACnetProgramStateTagged) GetLengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *_BACnetProgramStateTagged) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetProgramStateTagged) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetProgramStateTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetProgramStateTagged, error) {
-	return BACnetProgramStateTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+	return BACnetProgramStateTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
-func BACnetProgramStateTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetProgramStateTagged, error) {
+func BACnetProgramStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetProgramStateTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetProgramStateTagged"); pullErr != nil {
@@ -128,7 +125,7 @@ func BACnetProgramStateTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNum
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetProgramStateTagged")
 	}
@@ -171,14 +168,14 @@ func BACnetProgramStateTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNum
 }
 
 func (m *_BACnetProgramStateTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetProgramStateTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetProgramStateTagged) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetProgramStateTagged"); pushErr != nil {
@@ -189,7 +186,7 @@ func (m *_BACnetProgramStateTagged) SerializeWithWriteBuffer(writeBuffer utils.W
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -231,7 +228,7 @@ func (m *_BACnetProgramStateTagged) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

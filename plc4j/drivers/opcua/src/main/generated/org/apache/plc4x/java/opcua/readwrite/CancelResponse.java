@@ -64,6 +64,7 @@ public class CancelResponse extends ExtensionObjectDefinition implements Message
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CancelResponse");
 
@@ -85,6 +86,7 @@ public class CancelResponse extends ExtensionObjectDefinition implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CancelResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -95,12 +97,13 @@ public class CancelResponse extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static CancelResponseBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CancelResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -113,16 +116,15 @@ public class CancelResponse extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("CancelResponse");
     // Create the instance
-    return new CancelResponseBuilder(responseHeader, cancelCount);
+    return new CancelResponseBuilderImpl(responseHeader, cancelCount);
   }
 
-  public static class CancelResponseBuilder
+  public static class CancelResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final long cancelCount;
 
-    public CancelResponseBuilder(ExtensionObjectDefinition responseHeader, long cancelCount) {
-
+    public CancelResponseBuilderImpl(ExtensionObjectDefinition responseHeader, long cancelCount) {
       this.responseHeader = responseHeader;
       this.cancelCount = cancelCount;
     }

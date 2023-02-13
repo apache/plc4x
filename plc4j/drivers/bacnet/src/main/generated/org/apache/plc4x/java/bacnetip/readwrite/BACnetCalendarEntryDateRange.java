@@ -56,6 +56,7 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
   protected void serializeBACnetCalendarEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCalendarEntryDateRange");
 
@@ -74,6 +75,7 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetCalendarEntryDateRange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dateRange)
     lengthInBits += dateRange.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
     return lengthInBits;
   }
 
-  public static BACnetCalendarEntryDateRangeBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetCalendarEntryBuilder staticParseBACnetCalendarEntryBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCalendarEntryDateRange");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateRangeEnclosed dateRange =
         readSimpleField(
@@ -96,15 +99,14 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
 
     readBuffer.closeContext("BACnetCalendarEntryDateRange");
     // Create the instance
-    return new BACnetCalendarEntryDateRangeBuilder(dateRange);
+    return new BACnetCalendarEntryDateRangeBuilderImpl(dateRange);
   }
 
-  public static class BACnetCalendarEntryDateRangeBuilder
+  public static class BACnetCalendarEntryDateRangeBuilderImpl
       implements BACnetCalendarEntry.BACnetCalendarEntryBuilder {
     private final BACnetDateRangeEnclosed dateRange;
 
-    public BACnetCalendarEntryDateRangeBuilder(BACnetDateRangeEnclosed dateRange) {
-
+    public BACnetCalendarEntryDateRangeBuilderImpl(BACnetDateRangeEnclosed dateRange) {
       this.dateRange = dateRange;
     }
 

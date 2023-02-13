@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataEscalatorMode) GetEscalatorMode() BACnetEscalator
 ///////////////////////
 
 func (m *_BACnetConstructedDataEscalatorMode) GetActualValue() BACnetEscalatorModeTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetEscalatorModeTagged(m.GetEscalatorMode())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataEscalatorMode) GetTypeName() string {
 	return "BACnetConstructedDataEscalatorMode"
 }
 
-func (m *_BACnetConstructedDataEscalatorMode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataEscalatorMode) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataEscalatorMode) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (escalatorMode)
-	lengthInBits += m.EscalatorMode.GetLengthInBits()
+	lengthInBits += m.EscalatorMode.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEscalatorMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataEscalatorMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataEscalatorModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEscalatorMode, error) {
-	return BACnetConstructedDataEscalatorModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataEscalatorModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataEscalatorModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEscalatorMode, error) {
+func BACnetConstructedDataEscalatorModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEscalatorMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEscalatorMode"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataEscalatorModeParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("escalatorMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for escalatorMode")
 	}
-	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_escalatorMode, _escalatorModeErr := BACnetEscalatorModeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _escalatorModeErr != nil {
 		return nil, errors.Wrap(_escalatorModeErr, "Error parsing 'escalatorMode' field of BACnetConstructedDataEscalatorMode")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataEscalatorModeParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataEscalatorMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataEscalatorMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataEscalatorMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataEscalatorMode) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("escalatorMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for escalatorMode")
 		}
-		_escalatorModeErr := writeBuffer.WriteSerializable(m.GetEscalatorMode())
+		_escalatorModeErr := writeBuffer.WriteSerializable(ctx, m.GetEscalatorMode())
 		if popErr := writeBuffer.PopContext("escalatorMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for escalatorMode")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataEscalatorMode) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_escalatorModeErr, "Error serializing 'escalatorMode' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataEscalatorMode) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataEscalatorMode) isBACnetConstructedDataEscalatorMode() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataEscalatorMode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

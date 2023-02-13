@@ -39,8 +39,6 @@ public class NodeId implements Message {
 
   // Properties.
   protected final NodeIdTypeDefinition nodeId;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public NodeId(NodeIdTypeDefinition nodeId) {
     super();
@@ -57,14 +55,12 @@ public class NodeId implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NodeId");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeSignedByte(writeBuffer, 2));
+    writeReservedField("reserved", (byte) 0x00, writeSignedByte(writeBuffer, 2));
 
     // Simple Field (nodeId)
     writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
@@ -85,6 +81,7 @@ public class NodeId implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     NodeId _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 2;
@@ -107,6 +104,7 @@ public class NodeId implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readSignedByte(readBuffer, 2), (byte) 0x00);
 
@@ -121,7 +119,6 @@ public class NodeId implements Message {
     // Create the instance
     NodeId _nodeId;
     _nodeId = new NodeId(nodeId);
-    _nodeId.reservedField0 = reservedField0;
     return _nodeId;
   }
 

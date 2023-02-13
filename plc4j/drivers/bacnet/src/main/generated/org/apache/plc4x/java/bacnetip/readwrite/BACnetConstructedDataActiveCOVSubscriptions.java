@@ -75,6 +75,7 @@ public class BACnetConstructedDataActiveCOVSubscriptions extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataActiveCOVSubscriptions");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataActiveCOVSubscriptions extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataActiveCOVSubscriptions _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (activeCOVSubscriptions != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataActiveCOVSubscriptions extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataActiveCOVSubscriptionsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataActiveCOVSubscriptions extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetCOVSubscription> activeCOVSubscriptions =
         readTerminatedArrayField(
@@ -128,21 +131,20 @@ public class BACnetConstructedDataActiveCOVSubscriptions extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataActiveCOVSubscriptions");
     // Create the instance
-    return new BACnetConstructedDataActiveCOVSubscriptionsBuilder(
+    return new BACnetConstructedDataActiveCOVSubscriptionsBuilderImpl(
         activeCOVSubscriptions, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataActiveCOVSubscriptionsBuilder
+  public static class BACnetConstructedDataActiveCOVSubscriptionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetCOVSubscription> activeCOVSubscriptions;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataActiveCOVSubscriptionsBuilder(
+    public BACnetConstructedDataActiveCOVSubscriptionsBuilderImpl(
         List<BACnetCOVSubscription> activeCOVSubscriptions,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activeCOVSubscriptions = activeCOVSubscriptions;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

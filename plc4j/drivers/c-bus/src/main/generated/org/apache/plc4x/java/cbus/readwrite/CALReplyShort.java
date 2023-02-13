@@ -53,6 +53,7 @@ public class CALReplyShort extends CALReply implements Message {
   @Override
   protected void serializeCALReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALReplyShort");
 
@@ -68,29 +69,30 @@ public class CALReplyShort extends CALReply implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CALReplyShort _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static CALReplyShortBuilder staticParseBuilder(
+  public static CALReplyBuilder staticParseCALReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALReplyShort");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("CALReplyShort");
     // Create the instance
-    return new CALReplyShortBuilder(cBusOptions, requestContext);
+    return new CALReplyShortBuilderImpl(cBusOptions, requestContext);
   }
 
-  public static class CALReplyShortBuilder implements CALReply.CALReplyBuilder {
+  public static class CALReplyShortBuilderImpl implements CALReply.CALReplyBuilder {
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public CALReplyShortBuilder(CBusOptions cBusOptions, RequestContext requestContext) {
-
+    public CALReplyShortBuilderImpl(CBusOptions cBusOptions, RequestContext requestContext) {
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;
     }

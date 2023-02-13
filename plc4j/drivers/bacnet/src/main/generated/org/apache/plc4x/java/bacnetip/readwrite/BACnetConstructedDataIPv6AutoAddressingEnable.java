@@ -79,6 +79,7 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPv6AutoAddressingEnable");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIPv6AutoAddressingEnable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (autoAddressingEnable)
     lengthInBits += autoAddressingEnable.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPv6AutoAddressingEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean autoAddressingEnable =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataIPv6AutoAddressingEnable");
     // Create the instance
-    return new BACnetConstructedDataIPv6AutoAddressingEnableBuilder(
+    return new BACnetConstructedDataIPv6AutoAddressingEnableBuilderImpl(
         autoAddressingEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPv6AutoAddressingEnableBuilder
+  public static class BACnetConstructedDataIPv6AutoAddressingEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean autoAddressingEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPv6AutoAddressingEnableBuilder(
+    public BACnetConstructedDataIPv6AutoAddressingEnableBuilderImpl(
         BACnetApplicationTagBoolean autoAddressingEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.autoAddressingEnable = autoAddressingEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -20,12 +20,12 @@
 package bacnetip
 
 import (
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/local"
+	"time"
+
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"time"
 )
 
 type SSMState uint8
@@ -76,7 +76,7 @@ type SSMSAPRequirements interface {
 	_ServiceAccessPoint
 	_Client
 	GetDeviceInfoCache() *DeviceInfoCache
-	GetLocalDevice() *local.LocalDeviceObject
+	GetLocalDevice() *LocalDeviceObject
 	GetProposedWindowSize() uint8
 	GetClientTransactions() []*ClientSSM
 	RemoveClientTransaction(*ClientSSM)
@@ -90,9 +90,14 @@ type SSMSAPRequirements interface {
 	GetDefaultMaximumApduLengthAccepted() readWriteModel.MaxApduLengthAccepted
 }
 
+type SSMProcessingRequirements interface {
+	processTask() error
+}
+
 // SSM - Segmentation State Machine
 type SSM struct {
-	OneShotTask
+	*OneShotTask
+	SSMProcessingRequirements
 
 	ssmSAP SSMSAPRequirements
 
@@ -121,7 +126,10 @@ type SSM struct {
 	maxApduLengthAccepted readWriteModel.MaxApduLengthAccepted
 }
 
-func NewSSM(sap SSMSAPRequirements, pduAddress *Address) (SSM, error) {
+func NewSSM(sap interface {
+	SSMSAPRequirements
+	SSMProcessingRequirements
+}, pduAddress *Address) (*SSM, error) {
 	log.Debug().Interface("sap", sap).Interface("pdu_address", pduAddress).Msg("init")
 	var deviceInfo *DeviceInfo
 	deviceInfoTemp, ok := sap.GetDeviceInfoCache().GetDeviceInfo(DeviceInfoCacheKey{PduSource: pduAddress})
@@ -163,7 +171,7 @@ func NewSSM(sap SSMSAPRequirements, pduAddress *Address) (SSM, error) {
 	} else {
 		maxApduLengthAccepted = sap.GetDefaultMaximumApduLengthAccepted()
 	}
-	return SSM{
+	ssm := &SSM{
 		ssmSAP:                sap,
 		pduAddress:            pduAddress,
 		deviceInfo:            deviceInfo,
@@ -174,7 +182,10 @@ func NewSSM(sap SSMSAPRequirements, pduAddress *Address) (SSM, error) {
 		segmentTimeout:        segmentTimeout,
 		maxSegmentsAccepted:   maxSegmentsAccepted,
 		maxApduLengthAccepted: maxApduLengthAccepted,
-	}, nil
+	}
+	ssm.OneShotTask = NewOneShotTask(ssm, nil)
+	ssm.SSMProcessingRequirements = sap
+	return ssm, nil
 }
 
 func (s *SSM) StartTimer(millis uint) {
@@ -259,7 +270,8 @@ func (s *SSM) setSegmentationContext(apdu readWriteModel.APDU) error {
 }
 
 // getSegment This function returns an APDU coorisponding to a particular segment of a confirmed request or complex ack.
-//         The segmentAPDU is the context
+//
+//	The segmentAPDU is the context
 func (s *SSM) getSegment(index uint8) (segmentAPDU _PDU, moreFollows bool, err error) {
 	log.Debug().Msgf("Get segment %d", index)
 	if s.segmentAPDU == nil {
@@ -323,7 +335,8 @@ func (s *SSM) getSegment(index uint8) (segmentAPDU _PDU, moreFollows bool, err e
 
 // TODO: check that function. looks a bit wonky to just append the payloads like that
 // appendSegment This function appends the apdu content to the end of the current APDU being built.  The segmentAPDU is
-//        the context
+//
+//	the context
 func (s *SSM) appendSegment(apdu _PDU) error {
 	log.Debug().Msgf("appendSegment\n%s", apdu)
 	switch apdu := apdu.GetMessage().(type) {
@@ -363,7 +376,7 @@ func (s *SSM) fillWindow(sequenceNumber uint8) error {
 		if err != nil {
 			return errors.Wrapf(err, "Error sending out segment %d", i)
 		}
-		if err := s.ssmSAP.Request(NewPDU(apdu, WithPDUDestination(s.pduAddress))); err != nil {
+		if err := s.ssmSAP.Request(NewPDU(apdu.GetMessage(), WithPDUDestination(s.pduAddress))); err != nil {
 			log.Debug().Err(err).Msg("error sending request")
 		}
 		if moreFollows {
@@ -374,12 +387,16 @@ func (s *SSM) fillWindow(sequenceNumber uint8) error {
 }
 
 type ClientSSM struct {
-	SSM
+	*SSM
 }
 
 func NewClientSSM(sap SSMSAPRequirements, pduAddress *Address) (*ClientSSM, error) {
 	log.Debug().Interface("sap", sap).Interface("pduAddress", pduAddress).Msg("init")
-	ssm, err := NewSSM(sap, pduAddress)
+	c := &ClientSSM{}
+	ssm, err := NewSSM(struct {
+		SSMSAPRequirements
+		SSMProcessingRequirements
+	}{sap, c}, pduAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -388,14 +405,13 @@ func NewClientSSM(sap SSMSAPRequirements, pduAddress *Address) (*ClientSSM, erro
 		// TODO: get entry for device, store it in inventory
 		log.Debug().Msg("Accquire device information")
 	}
-	return &ClientSSM{
-		SSM: ssm,
-	}, nil
+	c.SSM = ssm
+	return c, nil
 }
 
 // setState This function is called when the client wants to change state
 func (c *ClientSSM) setState(newState SSMState, timer *uint) error {
-	log.Debug().Msgf("setState %c timer=%d", newState, timer)
+	log.Debug().Msgf("setState %s timer=%d", newState, timer)
 	// do the regular state change
 	if err := c.SSM.setState(newState, timer); err != nil {
 		return errors.Wrap(err, "error during SSM state transition")
@@ -424,7 +440,8 @@ func (c *ClientSSM) Request(apdu _PDU) error {
 }
 
 // Indication This function is called after the device has bound a new transaction and wants to start the process
-//        rolling
+//
+//	rolling
 func (c *ClientSSM) Indication(apdu _PDU) error {
 	log.Debug().Msgf("indication\n%s", apdu)
 	// make sure we're getting confirmed requests
@@ -556,7 +573,7 @@ func (c *ClientSSM) Confirmation(apdu _PDU) error {
 
 // processTask This function is called when something has taken too long
 func (c *ClientSSM) processTask() error {
-	log.Debug().Msg("processTask")
+	log.Debug().Msgf("processTask (currentState: %s)", c.state)
 	switch c.state {
 	case SSMState_SEGMENTED_REQUEST:
 		return c.segmentedRequestTimeout()
@@ -826,7 +843,7 @@ func (c *ClientSSM) awaitConfirmationTimeout() error {
 		}
 		c.retryCount = saveCount
 	} else {
-		log.Debug().Msg("retry count exceeded")
+		log.Debug().Msgf("retry count exceeded: %d >= %d", c.retryCount, c.numberOfApduRetries)
 
 		abort, err := c.abort(readWriteModel.BACnetAbortReason(65)) // Note: this is a proprietary code used by bacpypes for no response. We just use that here too to keep consistent
 		if err != nil {
@@ -945,13 +962,19 @@ func (c *ClientSSM) segmentedConfirmationTimeout() error {
 }
 
 type ServerSSM struct {
-	SSM
+	*SSM
 	segmentedResponseAccepted bool
 }
 
 func NewServerSSM(sap SSMSAPRequirements, pduAddress *Address) (*ServerSSM, error) {
 	log.Debug().Interface("sap", sap).Interface("pduAddress", pduAddress).Msg("init")
-	ssm, err := NewSSM(sap, pduAddress)
+	s := &ServerSSM{
+		segmentedResponseAccepted: true,
+	}
+	ssm, err := NewSSM(struct {
+		SSMSAPRequirements
+		SSMProcessingRequirements
+	}{sap, s}, pduAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -960,10 +983,8 @@ func NewServerSSM(sap SSMSAPRequirements, pduAddress *Address) (*ServerSSM, erro
 		// TODO: get entry for device, store it in inventory
 		log.Debug().Msg("Accquire device information")
 	}
-	return &ServerSSM{
-		SSM:                       ssm,
-		segmentedResponseAccepted: true,
-	}, nil
+	s.SSM = ssm
+	return s, nil
 }
 
 // setState This function is called when the client wants to change state
@@ -994,7 +1015,8 @@ func (s *ServerSSM) Request(apdu _PDU) error {
 }
 
 // Indication This function is called for each downstream packet related to
-//        the transaction
+//
+//	the transaction
 func (s *ServerSSM) Indication(apdu _PDU) error { // TODO: maybe use another name for that
 	log.Debug().Msgf("indication\n%s", apdu)
 	// make sure we're getting confirmed requests
@@ -1025,7 +1047,8 @@ func (s *ServerSSM) Response(apdu _PDU) error {
 }
 
 // Confirmation This function is called when the application has provided a response and needs it to be sent to the
-//        client.
+//
+//	client.
 func (s *ServerSSM) Confirmation(apdu _PDU) error {
 	log.Debug().Msgf("confirmation\n%s", apdu)
 
@@ -1155,8 +1178,9 @@ func (s *ServerSSM) Confirmation(apdu _PDU) error {
 }
 
 // processTask This function is called when the client has failed to send all the segments of a segmented request,
-//        the application has taken too long to complete the request, or the client failed to ack the segments of a
-//        segmented response
+//
+//	the application has taken too long to complete the request, or the client failed to ack the segments of a
+//	segmented response
 func (s *ServerSSM) processTask() error {
 	log.Debug().Msg("processTask")
 	switch s.state {
@@ -1425,7 +1449,8 @@ func (s *ServerSSM) awaitResponse(apdu _PDU) error {
 }
 
 // awaitResponseTimeout This function is called when the application has taken too long to respond to a clients request.
-//         The client has probably long since given up
+//
+//	The client has probably long since given up
 func (s *ServerSSM) awaitResponseTimeout() error {
 	log.Debug().Msg("awaitResponseTimeout")
 
@@ -1510,8 +1535,8 @@ type StateMachineAccessPoint struct {
 	*Client
 	*ServiceAccessPoint
 
-	localDevice           *local.LocalDeviceObject
-	deviceInventory       *DeviceInfoCache
+	localDevice           *LocalDeviceObject
+	deviceInfoCache       *DeviceInfoCache
 	nextInvokeId          uint8
 	clientTransactions    []*ClientSSM
 	serverTransactions    []*ServerSSM
@@ -1526,13 +1551,13 @@ type StateMachineAccessPoint struct {
 	applicationTimeout    uint
 }
 
-func NewStateMachineAccessPoint(localDevice *local.LocalDeviceObject, deviceInventory *DeviceInfoCache, sapID *int, cid *int) (*StateMachineAccessPoint, error) {
-	log.Debug().Msgf("NewStateMachineAccessPoint localDevice=%v deviceInventory=%v sap=%v cid=%v", localDevice, deviceInventory, sapID, cid)
+func NewStateMachineAccessPoint(localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoCache, sapID *int, cid *int) (*StateMachineAccessPoint, error) {
+	log.Debug().Msgf("NewStateMachineAccessPoint localDevice=%v deviceInventory=%v sap=%v cid=%v", localDevice, deviceInfoCache, sapID, cid)
 
 	s := &StateMachineAccessPoint{
 		// save a reference to the device information cache
 		localDevice:     localDevice,
-		deviceInventory: deviceInventory,
+		deviceInfoCache: deviceInfoCache,
 
 		// client settings
 		nextInvokeId:       1,
@@ -1685,8 +1710,9 @@ func (s *StateMachineAccessPoint) Confirmation(apdu _PDU) error { // TODO: note 
 	case readWriteModel.APDUSimpleAckExactly, readWriteModel.APDUComplexAckExactly, readWriteModel.APDUErrorExactly, readWriteModel.APDURejectExactly:
 		// find the client transaction this is acking
 		var tr *ClientSSM
-		for _, tr := range s.clientTransactions {
-			if apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == tr.invokeId && pduSource.Equals(tr.pduAddress) {
+		for _, _tr := range s.clientTransactions {
+			if _apdu.(interface{ GetOriginalInvokeId() uint8 }).GetOriginalInvokeId() == _tr.invokeId && pduSource.Equals(_tr.pduAddress) {
+				tr = _tr
 				break
 			}
 		}
@@ -1841,7 +1867,8 @@ func (s *StateMachineAccessPoint) SapIndication(apdu _PDU) error {
 }
 
 // SapConfirmation This function is called when the application is responding to a request, the apdu may be a simple
-//        ack, complex ack, error, reject or abort
+//
+//	ack, complex ack, error, reject or abort
 func (s *StateMachineAccessPoint) SapConfirmation(apdu _PDU) error {
 	log.Debug().Msgf("sapConfirmation\n%s", apdu)
 	pduDestination := apdu.GetPDUDestination()
@@ -1870,10 +1897,10 @@ func (s *StateMachineAccessPoint) SapConfirmation(apdu _PDU) error {
 }
 
 func (s *StateMachineAccessPoint) GetDeviceInfoCache() *DeviceInfoCache {
-	return s.deviceInventory
+	return s.deviceInfoCache
 }
 
-func (s *StateMachineAccessPoint) GetLocalDevice() *local.LocalDeviceObject {
+func (s *StateMachineAccessPoint) GetLocalDevice() *LocalDeviceObject {
 	return s.localDevice
 }
 
@@ -1943,7 +1970,7 @@ func NewApplicationServiceAccessPoint(aseID *int, sapID *int) (*ApplicationServi
 func (a *ApplicationServiceAccessPoint) Indication(apdu _PDU) error {
 	log.Debug().Msgf("Indication\n%s", apdu)
 
-	switch _apdu := apdu.(type) {
+	switch _apdu := apdu.GetMessage().(type) {
 	case readWriteModel.APDUConfirmedRequestExactly:
 		//assume no errors found
 		var errorFound error
@@ -2007,6 +2034,7 @@ func (a *ApplicationServiceAccessPoint) Confirmation(apdu _PDU) error {
 
 	// TODO: check if we need to check apdu here
 
+	// forward the decoded packet
 	return a.SapResponse(apdu)
 }
 

@@ -78,6 +78,7 @@ public class BACnetConstructedDataMinimumValue extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMinimumValue");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataMinimumValue extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMinimumValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (minimumValue)
     lengthInBits += minimumValue.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataMinimumValue extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMinimumValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataMinimumValue extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal minimumValue =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataMinimumValue extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataMinimumValue");
     // Create the instance
-    return new BACnetConstructedDataMinimumValueBuilder(
+    return new BACnetConstructedDataMinimumValueBuilderImpl(
         minimumValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMinimumValueBuilder
+  public static class BACnetConstructedDataMinimumValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal minimumValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMinimumValueBuilder(
+    public BACnetConstructedDataMinimumValueBuilderImpl(
         BACnetApplicationTagReal minimumValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minimumValue = minimumValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

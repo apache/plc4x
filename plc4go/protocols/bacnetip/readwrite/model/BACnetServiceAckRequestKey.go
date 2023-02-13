@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -86,7 +87,7 @@ func (m *_BACnetServiceAckRequestKey) GetBytesOfRemovedService() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewBACnetServiceAckRequestKey factory function for _BACnetServiceAckRequestKey
-func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) *_BACnetServiceAckRequestKey {
+func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckRequestKey {
 	_result := &_BACnetServiceAckRequestKey{
 		BytesOfRemovedService: bytesOfRemovedService,
 		_BACnetServiceAck:     NewBACnetServiceAck(serviceAckLength),
@@ -110,12 +111,8 @@ func (m *_BACnetServiceAckRequestKey) GetTypeName() string {
 	return "BACnetServiceAckRequestKey"
 }
 
-func (m *_BACnetServiceAckRequestKey) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetServiceAckRequestKey) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetServiceAckRequestKey) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.BytesOfRemovedService) > 0 {
@@ -125,15 +122,15 @@ func (m *_BACnetServiceAckRequestKey) GetLengthInBitsConditional(lastItem bool) 
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckRequestKey) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetServiceAckRequestKey) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetServiceAckRequestKeyParse(theBytes []byte, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckRequestKey, error) {
-	return BACnetServiceAckRequestKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength, serviceAckPayloadLength)
+func BACnetServiceAckRequestKeyParse(theBytes []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckRequestKey, error) {
+	return BACnetServiceAckRequestKeyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
-func BACnetServiceAckRequestKeyParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32, serviceAckPayloadLength uint32) (BACnetServiceAckRequestKey, error) {
+func BACnetServiceAckRequestKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckRequestKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckRequestKey"); pullErr != nil {
@@ -164,14 +161,14 @@ func BACnetServiceAckRequestKeyParseWithBuffer(readBuffer utils.ReadBuffer, serv
 }
 
 func (m *_BACnetServiceAckRequestKey) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetServiceAckRequestKey) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckRequestKey) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -190,7 +187,7 @@ func (m *_BACnetServiceAckRequestKey) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -212,7 +209,7 @@ func (m *_BACnetServiceAckRequestKey) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

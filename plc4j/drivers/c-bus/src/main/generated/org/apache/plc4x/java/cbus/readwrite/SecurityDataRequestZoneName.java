@@ -55,6 +55,7 @@ public class SecurityDataRequestZoneName extends SecurityData implements Message
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataRequestZoneName");
 
@@ -73,6 +74,7 @@ public class SecurityDataRequestZoneName extends SecurityData implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataRequestZoneName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneNumber)
     lengthInBits += 8;
@@ -80,26 +82,26 @@ public class SecurityDataRequestZoneName extends SecurityData implements Message
     return lengthInBits;
   }
 
-  public static SecurityDataRequestZoneNameBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataRequestZoneName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short zoneNumber = readSimpleField("zoneNumber", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("SecurityDataRequestZoneName");
     // Create the instance
-    return new SecurityDataRequestZoneNameBuilder(zoneNumber);
+    return new SecurityDataRequestZoneNameBuilderImpl(zoneNumber);
   }
 
-  public static class SecurityDataRequestZoneNameBuilder
+  public static class SecurityDataRequestZoneNameBuilderImpl
       implements SecurityData.SecurityDataBuilder {
     private final short zoneNumber;
 
-    public SecurityDataRequestZoneNameBuilder(short zoneNumber) {
-
+    public SecurityDataRequestZoneNameBuilderImpl(short zoneNumber) {
       this.zoneNumber = zoneNumber;
     }
 

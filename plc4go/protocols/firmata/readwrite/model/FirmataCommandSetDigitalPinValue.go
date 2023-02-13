@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,12 +118,8 @@ func (m *_FirmataCommandSetDigitalPinValue) GetTypeName() string {
 	return "FirmataCommandSetDigitalPinValue"
 }
 
-func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -136,15 +133,15 @@ func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBitsConditional(lastItem 
 	return lengthInBits
 }
 
-func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_FirmataCommandSetDigitalPinValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func FirmataCommandSetDigitalPinValueParse(theBytes []byte, response bool) (FirmataCommandSetDigitalPinValue, error) {
-	return FirmataCommandSetDigitalPinValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return FirmataCommandSetDigitalPinValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func FirmataCommandSetDigitalPinValueParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetDigitalPinValue, error) {
+func FirmataCommandSetDigitalPinValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetDigitalPinValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataCommandSetDigitalPinValue"); pullErr != nil {
@@ -202,14 +199,14 @@ func FirmataCommandSetDigitalPinValueParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_FirmataCommandSetDigitalPinValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -252,7 +249,7 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_FirmataCommandSetDigitalPinValue) isFirmataCommandSetDigitalPinValue() bool {
@@ -264,7 +261,7 @@ func (m *_FirmataCommandSetDigitalPinValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

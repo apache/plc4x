@@ -63,6 +63,7 @@ public class CIPEncapsulationReadRequest extends CIPEncapsulationPacket implemen
   protected void serializeCIPEncapsulationPacketChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CIPEncapsulationReadRequest");
 
@@ -85,6 +86,7 @@ public class CIPEncapsulationReadRequest extends CIPEncapsulationPacket implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CIPEncapsulationReadRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (request)
     lengthInBits += request.getLengthInBits();
@@ -92,12 +94,13 @@ public class CIPEncapsulationReadRequest extends CIPEncapsulationPacket implemen
     return lengthInBits;
   }
 
-  public static CIPEncapsulationReadRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static CIPEncapsulationPacketBuilder staticParseCIPEncapsulationPacketBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CIPEncapsulationReadRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DF1RequestMessage request =
         readSimpleField(
@@ -108,15 +111,14 @@ public class CIPEncapsulationReadRequest extends CIPEncapsulationPacket implemen
 
     readBuffer.closeContext("CIPEncapsulationReadRequest");
     // Create the instance
-    return new CIPEncapsulationReadRequestBuilder(request);
+    return new CIPEncapsulationReadRequestBuilderImpl(request);
   }
 
-  public static class CIPEncapsulationReadRequestBuilder
+  public static class CIPEncapsulationReadRequestBuilderImpl
       implements CIPEncapsulationPacket.CIPEncapsulationPacketBuilder {
     private final DF1RequestMessage request;
 
-    public CIPEncapsulationReadRequestBuilder(DF1RequestMessage request) {
-
+    public CIPEncapsulationReadRequestBuilderImpl(DF1RequestMessage request) {
       this.request = request;
     }
 

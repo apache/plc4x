@@ -79,6 +79,7 @@ public class BACnetConstructedDataModificationDate extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataModificationDate");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataModificationDate extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataModificationDate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (modificationDate)
     lengthInBits += modificationDate.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataModificationDate extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataModificationDateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataModificationDate extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime modificationDate =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataModificationDate extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataModificationDate");
     // Create the instance
-    return new BACnetConstructedDataModificationDateBuilder(
+    return new BACnetConstructedDataModificationDateBuilderImpl(
         modificationDate, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataModificationDateBuilder
+  public static class BACnetConstructedDataModificationDateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime modificationDate;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataModificationDateBuilder(
+    public BACnetConstructedDataModificationDateBuilderImpl(
         BACnetDateTime modificationDate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.modificationDate = modificationDate;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -57,6 +57,7 @@ public class SALDataIrrigationControl extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataIrrigationControl");
 
@@ -78,6 +79,7 @@ public class SALDataIrrigationControl extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataIrrigationControl _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (irrigationControlData)
     lengthInBits += irrigationControlData.getLengthInBits();
@@ -85,12 +87,13 @@ public class SALDataIrrigationControl extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataIrrigationControlBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataIrrigationControl");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     LightingData irrigationControlData =
         readSimpleField(
@@ -99,14 +102,13 @@ public class SALDataIrrigationControl extends SALData implements Message {
 
     readBuffer.closeContext("SALDataIrrigationControl");
     // Create the instance
-    return new SALDataIrrigationControlBuilder(irrigationControlData);
+    return new SALDataIrrigationControlBuilderImpl(irrigationControlData);
   }
 
-  public static class SALDataIrrigationControlBuilder implements SALData.SALDataBuilder {
+  public static class SALDataIrrigationControlBuilderImpl implements SALData.SALDataBuilder {
     private final LightingData irrigationControlData;
 
-    public SALDataIrrigationControlBuilder(LightingData irrigationControlData) {
-
+    public SALDataIrrigationControlBuilderImpl(LightingData irrigationControlData) {
       this.irrigationControlData = irrigationControlData;
     }
 

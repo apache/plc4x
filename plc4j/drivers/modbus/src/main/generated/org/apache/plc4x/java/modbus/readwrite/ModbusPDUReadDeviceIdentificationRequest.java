@@ -79,6 +79,7 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadDeviceIdentificationRequest");
 
@@ -110,6 +111,7 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadDeviceIdentificationRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (meiType)
     lengthInBits += 8;
@@ -123,12 +125,13 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
     return lengthInBits;
   }
 
-  public static ModbusPDUReadDeviceIdentificationRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadDeviceIdentificationRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short meiType =
         readConstField(
@@ -147,17 +150,16 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
 
     readBuffer.closeContext("ModbusPDUReadDeviceIdentificationRequest");
     // Create the instance
-    return new ModbusPDUReadDeviceIdentificationRequestBuilder(level, objectId);
+    return new ModbusPDUReadDeviceIdentificationRequestBuilderImpl(level, objectId);
   }
 
-  public static class ModbusPDUReadDeviceIdentificationRequestBuilder
+  public static class ModbusPDUReadDeviceIdentificationRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final ModbusDeviceInformationLevel level;
     private final short objectId;
 
-    public ModbusPDUReadDeviceIdentificationRequestBuilder(
+    public ModbusPDUReadDeviceIdentificationRequestBuilderImpl(
         ModbusDeviceInformationLevel level, short objectId) {
-
       this.level = level;
       this.objectId = objectId;
     }

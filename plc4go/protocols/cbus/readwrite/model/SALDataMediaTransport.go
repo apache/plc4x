@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataMediaTransport) GetTypeName() string {
 	return "SALDataMediaTransport"
 }
 
-func (m *_SALDataMediaTransport) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataMediaTransport) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataMediaTransport) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (mediaTransportControlData)
-	lengthInBits += m.MediaTransportControlData.GetLengthInBits()
+	lengthInBits += m.MediaTransportControlData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataMediaTransport) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataMediaTransport) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataMediaTransportParse(theBytes []byte, applicationId ApplicationId) (SALDataMediaTransport, error) {
-	return SALDataMediaTransportParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataMediaTransportParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataMediaTransportParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMediaTransport, error) {
+func SALDataMediaTransportParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMediaTransport, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataMediaTransport"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataMediaTransportParseWithBuffer(readBuffer utils.ReadBuffer, applicati
 	if pullErr := readBuffer.PullContext("mediaTransportControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for mediaTransportControlData")
 	}
-	_mediaTransportControlData, _mediaTransportControlDataErr := MediaTransportControlDataParseWithBuffer(readBuffer)
+	_mediaTransportControlData, _mediaTransportControlDataErr := MediaTransportControlDataParseWithBuffer(ctx, readBuffer)
 	if _mediaTransportControlDataErr != nil {
 		return nil, errors.Wrap(_mediaTransportControlDataErr, "Error parsing 'mediaTransportControlData' field of SALDataMediaTransport")
 	}
@@ -166,14 +163,14 @@ func SALDataMediaTransportParseWithBuffer(readBuffer utils.ReadBuffer, applicati
 }
 
 func (m *_SALDataMediaTransport) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataMediaTransport) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataMediaTransport) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataMediaTransport) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("mediaTransportControlData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for mediaTransportControlData")
 		}
-		_mediaTransportControlDataErr := writeBuffer.WriteSerializable(m.GetMediaTransportControlData())
+		_mediaTransportControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetMediaTransportControlData())
 		if popErr := writeBuffer.PopContext("mediaTransportControlData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for mediaTransportControlData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataMediaTransport) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataMediaTransport) isSALDataMediaTransport() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataMediaTransport) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

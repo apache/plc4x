@@ -83,6 +83,7 @@ public class RequestDirectCommandAccess extends Request implements Message {
   @Override
   protected void serializeRequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RequestDirectCommandAccess");
 
@@ -116,6 +117,7 @@ public class RequestDirectCommandAccess extends Request implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RequestDirectCommandAccess _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (at)
     lengthInBits += 8;
@@ -133,12 +135,13 @@ public class RequestDirectCommandAccess extends Request implements Message {
     return lengthInBits;
   }
 
-  public static RequestDirectCommandAccessBuilder staticParseBuilder(
+  public static RequestBuilder staticParseRequestBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestDirectCommandAccess");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte at = readConstField("at", readByte(readBuffer, 8), RequestDirectCommandAccess.AT);
 
@@ -159,17 +162,16 @@ public class RequestDirectCommandAccess extends Request implements Message {
 
     readBuffer.closeContext("RequestDirectCommandAccess");
     // Create the instance
-    return new RequestDirectCommandAccessBuilder(calData, alpha, cBusOptions);
+    return new RequestDirectCommandAccessBuilderImpl(calData, alpha, cBusOptions);
   }
 
-  public static class RequestDirectCommandAccessBuilder implements Request.RequestBuilder {
+  public static class RequestDirectCommandAccessBuilderImpl implements Request.RequestBuilder {
     private final CALData calData;
     private final Alpha alpha;
     private final CBusOptions cBusOptions;
 
-    public RequestDirectCommandAccessBuilder(
+    public RequestDirectCommandAccessBuilderImpl(
         CALData calData, Alpha alpha, CBusOptions cBusOptions) {
-
       this.calData = calData;
       this.alpha = alpha;
       this.cBusOptions = cBusOptions;

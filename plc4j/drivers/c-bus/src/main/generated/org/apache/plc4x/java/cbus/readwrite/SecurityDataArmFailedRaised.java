@@ -47,6 +47,7 @@ public class SecurityDataArmFailedRaised extends SecurityData implements Message
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataArmFailedRaised");
 
@@ -62,26 +63,28 @@ public class SecurityDataArmFailedRaised extends SecurityData implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataArmFailedRaised _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SecurityDataArmFailedRaisedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataArmFailedRaised");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataArmFailedRaised");
     // Create the instance
-    return new SecurityDataArmFailedRaisedBuilder();
+    return new SecurityDataArmFailedRaisedBuilderImpl();
   }
 
-  public static class SecurityDataArmFailedRaisedBuilder
+  public static class SecurityDataArmFailedRaisedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataArmFailedRaisedBuilder() {}
+    public SecurityDataArmFailedRaisedBuilderImpl() {}
 
     public SecurityDataArmFailedRaised build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

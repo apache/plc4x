@@ -78,6 +78,7 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataStatusReport1");
 
@@ -105,6 +106,7 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataStatusReport1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (armCodeType)
     lengthInBits += armCodeType.getLengthInBits();
@@ -119,7 +121,7 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
     if (zoneStatus != null) {
       int i = 0;
       for (ZoneStatus element : zoneStatus) {
-        boolean last = ++i >= zoneStatus.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= zoneStatus.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -127,12 +129,13 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataStatusReport1Builder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataStatusReport1");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SecurityArmCode armCodeType =
         readSimpleField(
@@ -158,21 +161,22 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataStatusReport1");
     // Create the instance
-    return new SecurityDataStatusReport1Builder(armCodeType, tamperStatus, panicStatus, zoneStatus);
+    return new SecurityDataStatusReport1BuilderImpl(
+        armCodeType, tamperStatus, panicStatus, zoneStatus);
   }
 
-  public static class SecurityDataStatusReport1Builder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataStatusReport1BuilderImpl
+      implements SecurityData.SecurityDataBuilder {
     private final SecurityArmCode armCodeType;
     private final TamperStatus tamperStatus;
     private final PanicStatus panicStatus;
     private final List<ZoneStatus> zoneStatus;
 
-    public SecurityDataStatusReport1Builder(
+    public SecurityDataStatusReport1BuilderImpl(
         SecurityArmCode armCodeType,
         TamperStatus tamperStatus,
         PanicStatus panicStatus,
         List<ZoneStatus> zoneStatus) {
-
       this.armCodeType = armCodeType;
       this.tamperStatus = tamperStatus;
       this.panicStatus = panicStatus;

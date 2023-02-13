@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataGroupMode) GetGroupMode() BACnetLiftGroupModeTagg
 ///////////////////////
 
 func (m *_BACnetConstructedDataGroupMode) GetActualValue() BACnetLiftGroupModeTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetLiftGroupModeTagged(m.GetGroupMode())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataGroupMode) GetTypeName() string {
 	return "BACnetConstructedDataGroupMode"
 }
 
-func (m *_BACnetConstructedDataGroupMode) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataGroupMode) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataGroupMode) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (groupMode)
-	lengthInBits += m.GroupMode.GetLengthInBits()
+	lengthInBits += m.GroupMode.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataGroupMode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataGroupMode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataGroupModeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupMode, error) {
-	return BACnetConstructedDataGroupModeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataGroupModeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataGroupModeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupMode, error) {
+func BACnetConstructedDataGroupModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGroupMode"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataGroupModeParseWithBuffer(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("groupMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for groupMode")
 	}
-	_groupMode, _groupModeErr := BACnetLiftGroupModeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_groupMode, _groupModeErr := BACnetLiftGroupModeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _groupModeErr != nil {
 		return nil, errors.Wrap(_groupModeErr, "Error parsing 'groupMode' field of BACnetConstructedDataGroupMode")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataGroupModeParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_BACnetConstructedDataGroupMode) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataGroupMode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataGroupMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataGroupMode) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("groupMode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for groupMode")
 		}
-		_groupModeErr := writeBuffer.WriteSerializable(m.GetGroupMode())
+		_groupModeErr := writeBuffer.WriteSerializable(ctx, m.GetGroupMode())
 		if popErr := writeBuffer.PopContext("groupMode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for groupMode")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataGroupMode) SerializeWithWriteBuffer(writeBuffer u
 			return errors.Wrap(_groupModeErr, "Error serializing 'groupMode' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataGroupMode) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataGroupMode) isBACnetConstructedDataGroupMode() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataGroupMode) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

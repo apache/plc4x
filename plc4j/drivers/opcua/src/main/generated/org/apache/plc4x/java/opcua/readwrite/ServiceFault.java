@@ -58,6 +58,7 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServiceFault");
 
@@ -76,6 +77,7 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ServiceFault _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -83,12 +85,13 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static ServiceFaultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ServiceFault");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -99,15 +102,14 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("ServiceFault");
     // Create the instance
-    return new ServiceFaultBuilder(responseHeader);
+    return new ServiceFaultBuilderImpl(responseHeader);
   }
 
-  public static class ServiceFaultBuilder
+  public static class ServiceFaultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
 
-    public ServiceFaultBuilder(ExtensionObjectDefinition responseHeader) {
-
+    public ServiceFaultBuilderImpl(ExtensionObjectDefinition responseHeader) {
       this.responseHeader = responseHeader;
     }
 

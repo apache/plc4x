@@ -64,6 +64,7 @@ public class Range extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Range");
 
@@ -85,6 +86,7 @@ public class Range extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     Range _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (low)
     lengthInBits += 64;
@@ -95,12 +97,13 @@ public class Range extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static RangeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("Range");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     double low = readSimpleField("low", readDouble(readBuffer, 64));
 
@@ -108,16 +111,15 @@ public class Range extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("Range");
     // Create the instance
-    return new RangeBuilder(low, high);
+    return new RangeBuilderImpl(low, high);
   }
 
-  public static class RangeBuilder
+  public static class RangeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final double low;
     private final double high;
 
-    public RangeBuilder(double low, double high) {
-
+    public RangeBuilderImpl(double low, double high) {
       this.low = low;
       this.high = high;
     }

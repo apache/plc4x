@@ -74,6 +74,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TranslateBrowsePathsToNodeIdsRequest");
 
@@ -98,6 +99,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TranslateBrowsePathsToNodeIdsRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -109,7 +111,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     if (browsePaths != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : browsePaths) {
-        boolean last = ++i >= browsePaths.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= browsePaths.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -117,12 +119,13 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     return lengthInBits;
   }
 
-  public static TranslateBrowsePathsToNodeIdsRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TranslateBrowsePathsToNodeIdsRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -143,21 +146,20 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
 
     readBuffer.closeContext("TranslateBrowsePathsToNodeIdsRequest");
     // Create the instance
-    return new TranslateBrowsePathsToNodeIdsRequestBuilder(
+    return new TranslateBrowsePathsToNodeIdsRequestBuilderImpl(
         requestHeader, noOfBrowsePaths, browsePaths);
   }
 
-  public static class TranslateBrowsePathsToNodeIdsRequestBuilder
+  public static class TranslateBrowsePathsToNodeIdsRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfBrowsePaths;
     private final List<ExtensionObjectDefinition> browsePaths;
 
-    public TranslateBrowsePathsToNodeIdsRequestBuilder(
+    public TranslateBrowsePathsToNodeIdsRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfBrowsePaths,
         List<ExtensionObjectDefinition> browsePaths) {
-
       this.requestHeader = requestHeader;
       this.noOfBrowsePaths = noOfBrowsePaths;
       this.browsePaths = browsePaths;

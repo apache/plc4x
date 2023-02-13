@@ -59,6 +59,7 @@ public class BACnetApplicationTagDouble extends BACnetApplicationTag implements 
   protected void serializeBACnetApplicationTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagDouble");
 
@@ -81,6 +82,7 @@ public class BACnetApplicationTagDouble extends BACnetApplicationTag implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetApplicationTagDouble _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -90,12 +92,13 @@ public class BACnetApplicationTagDouble extends BACnetApplicationTag implements 
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagDoubleBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagDouble");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadDouble payload =
         readSimpleField(
@@ -106,15 +109,14 @@ public class BACnetApplicationTagDouble extends BACnetApplicationTag implements 
 
     readBuffer.closeContext("BACnetApplicationTagDouble");
     // Create the instance
-    return new BACnetApplicationTagDoubleBuilder(payload);
+    return new BACnetApplicationTagDoubleBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagDoubleBuilder
+  public static class BACnetApplicationTagDoubleBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadDouble payload;
 
-    public BACnetApplicationTagDoubleBuilder(BACnetTagPayloadDouble payload) {
-
+    public BACnetApplicationTagDoubleBuilderImpl(BACnetTagPayloadDouble payload) {
       this.payload = payload;
     }
 

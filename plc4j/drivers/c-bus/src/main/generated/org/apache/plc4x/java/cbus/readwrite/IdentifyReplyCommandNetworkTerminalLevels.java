@@ -63,6 +63,7 @@ public class IdentifyReplyCommandNetworkTerminalLevels extends IdentifyReplyComm
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandNetworkTerminalLevels");
 
@@ -82,6 +83,7 @@ public class IdentifyReplyCommandNetworkTerminalLevels extends IdentifyReplyComm
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandNetworkTerminalLevels _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (networkTerminalLevels != null) {
@@ -91,29 +93,30 @@ public class IdentifyReplyCommandNetworkTerminalLevels extends IdentifyReplyComm
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandNetworkTerminalLevelsBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandNetworkTerminalLevels");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] networkTerminalLevels =
         readBuffer.readByteArray("networkTerminalLevels", Math.toIntExact(numBytes));
 
     readBuffer.closeContext("IdentifyReplyCommandNetworkTerminalLevels");
     // Create the instance
-    return new IdentifyReplyCommandNetworkTerminalLevelsBuilder(networkTerminalLevels, numBytes);
+    return new IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl(
+        networkTerminalLevels, numBytes);
   }
 
-  public static class IdentifyReplyCommandNetworkTerminalLevelsBuilder
+  public static class IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] networkTerminalLevels;
     private final Short numBytes;
 
-    public IdentifyReplyCommandNetworkTerminalLevelsBuilder(
+    public IdentifyReplyCommandNetworkTerminalLevelsBuilderImpl(
         byte[] networkTerminalLevels, Short numBytes) {
-
       this.networkTerminalLevels = networkTerminalLevels;
       this.numBytes = numBytes;
     }

@@ -48,9 +48,6 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
   protected final short percentDataBad;
   protected final short percentDataGood;
   protected final boolean useSlopedExtrapolation;
-  // Reserved Fields
-  private Short reservedField0;
-  private Short reservedField1;
 
   public AggregateConfiguration(
       boolean treatUncertainAsBad,
@@ -90,14 +87,12 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AggregateConfiguration");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 6));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 6));
 
     // Simple Field (treatUncertainAsBad)
     writeSimpleField("treatUncertainAsBad", treatUncertainAsBad, writeBoolean(writeBuffer));
@@ -113,10 +108,7 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
     writeSimpleField("percentDataGood", percentDataGood, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (useSlopedExtrapolation)
     writeSimpleField("useSlopedExtrapolation", useSlopedExtrapolation, writeBoolean(writeBuffer));
@@ -133,6 +125,7 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AggregateConfiguration _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 6;
@@ -158,12 +151,13 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static AggregateConfigurationBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AggregateConfiguration");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 6), (short) 0x00);
@@ -185,41 +179,33 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("AggregateConfiguration");
     // Create the instance
-    return new AggregateConfigurationBuilder(
+    return new AggregateConfigurationBuilderImpl(
         treatUncertainAsBad,
         useServerCapabilitiesDefaults,
         percentDataBad,
         percentDataGood,
-        useSlopedExtrapolation,
-        reservedField0,
-        reservedField1);
+        useSlopedExtrapolation);
   }
 
-  public static class AggregateConfigurationBuilder
+  public static class AggregateConfigurationBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final boolean treatUncertainAsBad;
     private final boolean useServerCapabilitiesDefaults;
     private final short percentDataBad;
     private final short percentDataGood;
     private final boolean useSlopedExtrapolation;
-    private final Short reservedField0;
-    private final Short reservedField1;
 
-    public AggregateConfigurationBuilder(
+    public AggregateConfigurationBuilderImpl(
         boolean treatUncertainAsBad,
         boolean useServerCapabilitiesDefaults,
         short percentDataBad,
         short percentDataGood,
-        boolean useSlopedExtrapolation,
-        Short reservedField0,
-        Short reservedField1) {
+        boolean useSlopedExtrapolation) {
       this.treatUncertainAsBad = treatUncertainAsBad;
       this.useServerCapabilitiesDefaults = useServerCapabilitiesDefaults;
       this.percentDataBad = percentDataBad;
       this.percentDataGood = percentDataGood;
       this.useSlopedExtrapolation = useSlopedExtrapolation;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public AggregateConfiguration build() {
@@ -230,8 +216,6 @@ public class AggregateConfiguration extends ExtensionObjectDefinition implements
               percentDataBad,
               percentDataGood,
               useSlopedExtrapolation);
-      aggregateConfiguration.reservedField0 = reservedField0;
-      aggregateConfiguration.reservedField1 = reservedField1;
       return aggregateConfiguration;
     }
   }

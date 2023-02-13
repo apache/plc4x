@@ -56,6 +56,7 @@ public class BACnetShedLevelLevel extends BACnetShedLevel implements Message {
   protected void serializeBACnetShedLevelChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetShedLevelLevel");
 
@@ -74,6 +75,7 @@ public class BACnetShedLevelLevel extends BACnetShedLevel implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetShedLevelLevel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (level)
     lengthInBits += level.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetShedLevelLevel extends BACnetShedLevel implements Message {
     return lengthInBits;
   }
 
-  public static BACnetShedLevelLevelBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetShedLevelBuilder staticParseBACnetShedLevelBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetShedLevelLevel");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger level =
         readSimpleField(
@@ -102,15 +105,14 @@ public class BACnetShedLevelLevel extends BACnetShedLevel implements Message {
 
     readBuffer.closeContext("BACnetShedLevelLevel");
     // Create the instance
-    return new BACnetShedLevelLevelBuilder(level);
+    return new BACnetShedLevelLevelBuilderImpl(level);
   }
 
-  public static class BACnetShedLevelLevelBuilder
+  public static class BACnetShedLevelLevelBuilderImpl
       implements BACnetShedLevel.BACnetShedLevelBuilder {
     private final BACnetContextTagUnsignedInteger level;
 
-    public BACnetShedLevelLevelBuilder(BACnetContextTagUnsignedInteger level) {
-
+    public BACnetShedLevelLevelBuilderImpl(BACnetContextTagUnsignedInteger level) {
       this.level = level;
     }
 

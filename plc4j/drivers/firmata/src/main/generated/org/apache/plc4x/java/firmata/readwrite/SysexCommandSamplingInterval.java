@@ -53,6 +53,7 @@ public class SysexCommandSamplingInterval extends SysexCommand implements Messag
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandSamplingInterval");
 
@@ -68,26 +69,28 @@ public class SysexCommandSamplingInterval extends SysexCommand implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandSamplingInterval _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SysexCommandSamplingIntervalBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandSamplingInterval");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SysexCommandSamplingInterval");
     // Create the instance
-    return new SysexCommandSamplingIntervalBuilder();
+    return new SysexCommandSamplingIntervalBuilderImpl();
   }
 
-  public static class SysexCommandSamplingIntervalBuilder
+  public static class SysexCommandSamplingIntervalBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandSamplingIntervalBuilder() {}
+    public SysexCommandSamplingIntervalBuilderImpl() {}
 
     public SysexCommandSamplingInterval build() {
       SysexCommandSamplingInterval sysexCommandSamplingInterval =

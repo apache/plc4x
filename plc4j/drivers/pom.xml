@@ -44,6 +44,7 @@
     <module>firmata</module>
     <module>knxnetip</module>
     <module>mock</module>
+    <module>open-protocol</module>
     <module>modbus</module>
     <module>opcua</module>
     <module>plc4x</module>

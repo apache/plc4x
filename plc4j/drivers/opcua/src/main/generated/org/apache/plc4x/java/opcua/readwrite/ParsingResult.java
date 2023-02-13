@@ -87,6 +87,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParsingResult");
 
@@ -118,6 +119,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParsingResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -129,7 +131,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     if (dataStatusCodes != null) {
       int i = 0;
       for (StatusCode element : dataStatusCodes) {
-        boolean last = ++i >= dataStatusCodes.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataStatusCodes.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -141,7 +143,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     if (dataDiagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : dataDiagnosticInfos) {
-        boolean last = ++i >= dataDiagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= dataDiagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -149,12 +151,13 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static ParsingResultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ParsingResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(
@@ -181,7 +184,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("ParsingResult");
     // Create the instance
-    return new ParsingResultBuilder(
+    return new ParsingResultBuilderImpl(
         statusCode,
         noOfDataStatusCodes,
         dataStatusCodes,
@@ -189,7 +192,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
         dataDiagnosticInfos);
   }
 
-  public static class ParsingResultBuilder
+  public static class ParsingResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final int noOfDataStatusCodes;
@@ -197,13 +200,12 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     private final int noOfDataDiagnosticInfos;
     private final List<DiagnosticInfo> dataDiagnosticInfos;
 
-    public ParsingResultBuilder(
+    public ParsingResultBuilderImpl(
         StatusCode statusCode,
         int noOfDataStatusCodes,
         List<StatusCode> dataStatusCodes,
         int noOfDataDiagnosticInfos,
         List<DiagnosticInfo> dataDiagnosticInfos) {
-
       this.statusCode = statusCode;
       this.noOfDataStatusCodes = noOfDataStatusCodes;
       this.dataStatusCodes = dataStatusCodes;

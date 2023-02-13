@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,11 +102,7 @@ func (m *_NLMInitalizeRoutingTablePortMapping) GetTypeName() string {
 	return "NLMInitalizeRoutingTablePortMapping"
 }
 
-func (m *_NLMInitalizeRoutingTablePortMapping) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NLMInitalizeRoutingTablePortMapping) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_NLMInitalizeRoutingTablePortMapping) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (destinationNetworkAddress)
@@ -125,15 +122,15 @@ func (m *_NLMInitalizeRoutingTablePortMapping) GetLengthInBitsConditional(lastIt
 	return lengthInBits
 }
 
-func (m *_NLMInitalizeRoutingTablePortMapping) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NLMInitalizeRoutingTablePortMapping) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NLMInitalizeRoutingTablePortMappingParse(theBytes []byte) (NLMInitalizeRoutingTablePortMapping, error) {
-	return NLMInitalizeRoutingTablePortMappingParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return NLMInitalizeRoutingTablePortMappingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func NLMInitalizeRoutingTablePortMappingParseWithBuffer(readBuffer utils.ReadBuffer) (NLMInitalizeRoutingTablePortMapping, error) {
+func NLMInitalizeRoutingTablePortMappingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMInitalizeRoutingTablePortMapping, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMInitalizeRoutingTablePortMapping"); pullErr != nil {
@@ -183,14 +180,14 @@ func NLMInitalizeRoutingTablePortMappingParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_NLMInitalizeRoutingTablePortMapping) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NLMInitalizeRoutingTablePortMapping) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMInitalizeRoutingTablePortMapping) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NLMInitalizeRoutingTablePortMapping"); pushErr != nil {
@@ -239,7 +236,7 @@ func (m *_NLMInitalizeRoutingTablePortMapping) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

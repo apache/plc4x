@@ -67,6 +67,7 @@ public class MediaTransportControlDataNextPreviousCategory extends MediaTranspor
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataNextPreviousCategory");
 
@@ -93,6 +94,7 @@ public class MediaTransportControlDataNextPreviousCategory extends MediaTranspor
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataNextPreviousCategory _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (operation)
     lengthInBits += 8;
@@ -104,12 +106,13 @@ public class MediaTransportControlDataNextPreviousCategory extends MediaTranspor
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataNextPreviousCategoryBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataNextPreviousCategory");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte operation = readSimpleField("operation", readByte(readBuffer, 8));
     boolean isSetThePreviousCategory =
@@ -119,15 +122,14 @@ public class MediaTransportControlDataNextPreviousCategory extends MediaTranspor
 
     readBuffer.closeContext("MediaTransportControlDataNextPreviousCategory");
     // Create the instance
-    return new MediaTransportControlDataNextPreviousCategoryBuilder(operation);
+    return new MediaTransportControlDataNextPreviousCategoryBuilderImpl(operation);
   }
 
-  public static class MediaTransportControlDataNextPreviousCategoryBuilder
+  public static class MediaTransportControlDataNextPreviousCategoryBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte operation;
 
-    public MediaTransportControlDataNextPreviousCategoryBuilder(byte operation) {
-
+    public MediaTransportControlDataNextPreviousCategoryBuilderImpl(byte operation) {
       this.operation = operation;
     }
 

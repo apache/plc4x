@@ -71,6 +71,7 @@ public class ModbusPDUDiagnosticRequest extends ModbusPDU implements Message {
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUDiagnosticRequest");
 
@@ -92,6 +93,7 @@ public class ModbusPDUDiagnosticRequest extends ModbusPDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUDiagnosticRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (subFunction)
     lengthInBits += 16;
@@ -102,12 +104,13 @@ public class ModbusPDUDiagnosticRequest extends ModbusPDU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusPDUDiagnosticRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUDiagnosticRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int subFunction = readSimpleField("subFunction", readUnsignedInt(readBuffer, 16));
 
@@ -115,15 +118,14 @@ public class ModbusPDUDiagnosticRequest extends ModbusPDU implements Message {
 
     readBuffer.closeContext("ModbusPDUDiagnosticRequest");
     // Create the instance
-    return new ModbusPDUDiagnosticRequestBuilder(subFunction, data);
+    return new ModbusPDUDiagnosticRequestBuilderImpl(subFunction, data);
   }
 
-  public static class ModbusPDUDiagnosticRequestBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUDiagnosticRequestBuilderImpl implements ModbusPDU.ModbusPDUBuilder {
     private final int subFunction;
     private final int data;
 
-    public ModbusPDUDiagnosticRequestBuilder(int subFunction, int data) {
-
+    public ModbusPDUDiagnosticRequestBuilderImpl(int subFunction, int data) {
       this.subFunction = subFunction;
       this.data = data;
     }

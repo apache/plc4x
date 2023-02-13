@@ -76,6 +76,7 @@ public class WriteValue extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("WriteValue");
 
@@ -103,6 +104,7 @@ public class WriteValue extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     WriteValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nodeId)
     lengthInBits += nodeId.getLengthInBits();
@@ -119,12 +121,13 @@ public class WriteValue extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static WriteValueBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("WriteValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
         readSimpleField(
@@ -145,19 +148,18 @@ public class WriteValue extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("WriteValue");
     // Create the instance
-    return new WriteValueBuilder(nodeId, attributeId, indexRange, value);
+    return new WriteValueBuilderImpl(nodeId, attributeId, indexRange, value);
   }
 
-  public static class WriteValueBuilder
+  public static class WriteValueBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId nodeId;
     private final long attributeId;
     private final PascalString indexRange;
     private final DataValue value;
 
-    public WriteValueBuilder(
+    public WriteValueBuilderImpl(
         NodeId nodeId, long attributeId, PascalString indexRange, DataValue value) {
-
       this.nodeId = nodeId;
       this.attributeId = attributeId;
       this.indexRange = indexRange;

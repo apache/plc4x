@@ -57,6 +57,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
   protected void serializeBACnetFaultParameterFaultExtendedParametersEntryChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier");
 
@@ -78,6 +79,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectidentifierValue)
     lengthInBits += objectidentifierValue.getLengthInBits();
@@ -85,12 +87,14 @@ public class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectidentifierValue =
         readSimpleField(
@@ -103,18 +107,17 @@ public class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder(
+    return new BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilderImpl(
         objectidentifierValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagObjectIdentifier objectidentifierValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue) {
-
       this.objectidentifierValue = objectidentifierValue;
     }
 

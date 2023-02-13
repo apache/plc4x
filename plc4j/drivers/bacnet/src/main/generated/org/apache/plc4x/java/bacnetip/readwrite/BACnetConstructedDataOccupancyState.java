@@ -78,6 +78,7 @@ public class BACnetConstructedDataOccupancyState extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOccupancyState");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataOccupancyState extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataOccupancyState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (occupancyState)
     lengthInBits += occupancyState.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataOccupancyState extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOccupancyStateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataOccupancyState extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessZoneOccupancyStateTagged occupancyState =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataOccupancyState extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataOccupancyState");
     // Create the instance
-    return new BACnetConstructedDataOccupancyStateBuilder(
+    return new BACnetConstructedDataOccupancyStateBuilderImpl(
         occupancyState, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOccupancyStateBuilder
+  public static class BACnetConstructedDataOccupancyStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessZoneOccupancyStateTagged occupancyState;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOccupancyStateBuilder(
+    public BACnetConstructedDataOccupancyStateBuilderImpl(
         BACnetAccessZoneOccupancyStateTagged occupancyState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.occupancyState = occupancyState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

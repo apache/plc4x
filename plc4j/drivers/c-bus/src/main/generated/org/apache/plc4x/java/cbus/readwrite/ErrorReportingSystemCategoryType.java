@@ -49,6 +49,7 @@ public abstract class ErrorReportingSystemCategoryType implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingSystemCategoryType");
 
@@ -67,6 +68,7 @@ public abstract class ErrorReportingSystemCategoryType implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ErrorReportingSystemCategoryType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -102,39 +104,46 @@ public abstract class ErrorReportingSystemCategoryType implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ErrorReportingSystemCategoryTypeBuilder builder = null;
     if (EvaluationHelper.equals(
         errorReportingSystemCategoryClass, ErrorReportingSystemCategoryClass.INPUT_UNITS)) {
       builder =
-          ErrorReportingSystemCategoryTypeInputUnits.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeInputUnits
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     } else if (EvaluationHelper.equals(
         errorReportingSystemCategoryClass, ErrorReportingSystemCategoryClass.SUPPORT_UNITS)) {
       builder =
-          ErrorReportingSystemCategoryTypeSupportUnits.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeSupportUnits
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     } else if (EvaluationHelper.equals(
         errorReportingSystemCategoryClass,
         ErrorReportingSystemCategoryClass.BUILDING_MANAGEMENT_SYSTEMS)) {
       builder =
-          ErrorReportingSystemCategoryTypeBuildingManagementSystems.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeBuildingManagementSystems
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     } else if (EvaluationHelper.equals(
         errorReportingSystemCategoryClass, ErrorReportingSystemCategoryClass.OUTPUT_UNITS)) {
       builder =
-          ErrorReportingSystemCategoryTypeOutputUnits.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeOutputUnits
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     } else if (EvaluationHelper.equals(
         errorReportingSystemCategoryClass, ErrorReportingSystemCategoryClass.CLIMATE_CONTROLLERS)) {
       builder =
-          ErrorReportingSystemCategoryTypeClimateControllers.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeClimateControllers
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     } else if (true) {
       builder =
-          ErrorReportingSystemCategoryTypeReserved.staticParseBuilder(
-              readBuffer, errorReportingSystemCategoryClass);
+          ErrorReportingSystemCategoryTypeReserved
+              .staticParseErrorReportingSystemCategoryTypeBuilder(
+                  readBuffer, errorReportingSystemCategoryClass);
     }
     if (builder == null) {
       throw new ParseException(
@@ -151,7 +160,7 @@ public abstract class ErrorReportingSystemCategoryType implements Message {
     return _errorReportingSystemCategoryType;
   }
 
-  public static interface ErrorReportingSystemCategoryTypeBuilder {
+  public interface ErrorReportingSystemCategoryTypeBuilder {
     ErrorReportingSystemCategoryType build();
   }
 

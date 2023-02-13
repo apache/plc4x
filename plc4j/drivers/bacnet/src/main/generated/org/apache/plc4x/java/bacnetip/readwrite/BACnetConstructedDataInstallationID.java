@@ -78,6 +78,7 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataInstallationID");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataInstallationID _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (installationId)
     lengthInBits += installationId.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataInstallationIDBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger installationId =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataInstallationID");
     // Create the instance
-    return new BACnetConstructedDataInstallationIDBuilder(
+    return new BACnetConstructedDataInstallationIDBuilderImpl(
         installationId, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataInstallationIDBuilder
+  public static class BACnetConstructedDataInstallationIDBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger installationId;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataInstallationIDBuilder(
+    public BACnetConstructedDataInstallationIDBuilderImpl(
         BACnetApplicationTagUnsignedInteger installationId,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.installationId = installationId;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

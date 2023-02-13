@@ -72,6 +72,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu_IdentifyRes_Payload");
 
@@ -81,24 +82,38 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
         "PnDcp_ServiceId",
         getServiceId(),
         new DataWriterEnumDefault<>(
-            PnDcp_ServiceId::getValue, PnDcp_ServiceId::name, writeUnsignedShort(writeBuffer, 8)));
+            PnDcp_ServiceId::getValue, PnDcp_ServiceId::name, writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (serviceType)
-    writeSimpleField("serviceType", serviceType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField(
+        "serviceType",
+        serviceType,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (xid)
-    writeSimpleField("xid", xid, writeUnsignedLong(writeBuffer, 32));
+    writeSimpleField(
+        "xid",
+        xid,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (responseDelayFactorOrPadding)
     writeSimpleField(
         "responseDelayFactorOrPadding",
         responseDelayFactorOrPadding,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (dcpDataLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int dcpDataLength = (int) ((getLengthInBytes()) - (12));
-    writeImplicitField("dcpDataLength", dcpDataLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "dcpDataLength",
+        dcpDataLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializePnDcp_Pdu_IdentifyRes_PayloadChild(writeBuffer);
@@ -115,6 +130,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnDcp_Pdu_IdentifyRes_Payload _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (serviceId)
     lengthInBits += 8;
@@ -148,25 +164,39 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_ServiceId serviceId =
         readDiscriminatorField(
             "serviceId",
             new DataReaderEnumDefault<>(
-                PnDcp_ServiceId::enumForValue, readUnsignedShort(readBuffer, 8)));
+                PnDcp_ServiceId::enumForValue, readUnsignedShort(readBuffer, 8)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnDcp_ServiceType serviceType =
         readSimpleField(
             "serviceType",
             new DataReaderComplexDefault<>(
-                () -> PnDcp_ServiceType.staticParse(readBuffer), readBuffer));
+                () -> PnDcp_ServiceType.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    long xid = readSimpleField("xid", readUnsignedLong(readBuffer, 32));
+    long xid =
+        readSimpleField(
+            "xid",
+            readUnsignedLong(readBuffer, 32),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int responseDelayFactorOrPadding =
-        readSimpleField("responseDelayFactorOrPadding", readUnsignedInt(readBuffer, 16));
+        readSimpleField(
+            "responseDelayFactorOrPadding",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int dcpDataLength = readImplicitField("dcpDataLength", readUnsignedInt(readBuffer, 16));
+    int dcpDataLength =
+        readImplicitField(
+            "dcpDataLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnDcp_Pdu_IdentifyRes_PayloadBuilder builder = null;
@@ -189,7 +219,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
     return _pnDcp_Pdu_IdentifyRes_Payload;
   }
 
-  public static interface PnDcp_Pdu_IdentifyRes_PayloadBuilder {
+  public interface PnDcp_Pdu_IdentifyRes_PayloadBuilder {
     PnDcp_Pdu_IdentifyRes_Payload build(
         PnDcp_ServiceType serviceType, long xid, int responseDelayFactorOrPadding);
   }

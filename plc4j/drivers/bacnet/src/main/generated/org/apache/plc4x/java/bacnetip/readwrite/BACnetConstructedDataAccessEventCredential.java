@@ -79,6 +79,7 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessEventCredential");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessEventCredential _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessEventCredential)
     lengthInBits += accessEventCredential.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessEventCredentialBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference accessEventCredential =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAccessEventCredential");
     // Create the instance
-    return new BACnetConstructedDataAccessEventCredentialBuilder(
+    return new BACnetConstructedDataAccessEventCredentialBuilderImpl(
         accessEventCredential, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessEventCredentialBuilder
+  public static class BACnetConstructedDataAccessEventCredentialBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference accessEventCredential;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessEventCredentialBuilder(
+    public BACnetConstructedDataAccessEventCredentialBuilderImpl(
         BACnetDeviceObjectReference accessEventCredential,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessEventCredential = accessEventCredential;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

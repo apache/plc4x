@@ -78,6 +78,7 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataShedDuration");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataShedDuration _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (shedDuration)
     lengthInBits += shedDuration.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataShedDurationBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger shedDuration =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataShedDuration");
     // Create the instance
-    return new BACnetConstructedDataShedDurationBuilder(
+    return new BACnetConstructedDataShedDurationBuilderImpl(
         shedDuration, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataShedDurationBuilder
+  public static class BACnetConstructedDataShedDurationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger shedDuration;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataShedDurationBuilder(
+    public BACnetConstructedDataShedDurationBuilderImpl(
         BACnetApplicationTagUnsignedInteger shedDuration,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.shedDuration = shedDuration;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

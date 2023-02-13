@@ -68,6 +68,7 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
   @Override
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesDeviceOptions");
 
@@ -75,10 +76,15 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (supportedOptions)
-    writeComplexTypeArrayField("supportedOptions", supportedOptions, writeBuffer);
+    writeComplexTypeArrayField(
+        "supportedOptions",
+        supportedOptions,
+        writeBuffer,
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Block_DevicePropertiesDeviceOptions");
   }
@@ -92,6 +98,7 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Block_DevicePropertiesDeviceOptions _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 16;
@@ -106,36 +113,42 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesDeviceOptionsBuilder staticParseBuilder(
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(
       ReadBuffer readBuffer, Integer blockLength) throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesDeviceOptions");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
+        readReservedField(
+            "reserved",
+            readUnsignedInt(readBuffer, 16),
+            (int) 0x0000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     List<PnDcp_SupportedDeviceOption> supportedOptions =
         readLengthArrayField(
             "supportedOptions",
             new DataReaderComplexDefault<>(
                 () -> PnDcp_SupportedDeviceOption.staticParse(readBuffer), readBuffer),
-            (blockLength) - (2));
+            (blockLength) - (2),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceOptions");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesDeviceOptionsBuilder(
+    return new PnDcp_Block_DevicePropertiesDeviceOptionsBuilderImpl(
         supportedOptions, blockLength, reservedField0);
   }
 
-  public static class PnDcp_Block_DevicePropertiesDeviceOptionsBuilder
+  public static class PnDcp_Block_DevicePropertiesDeviceOptionsBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final List<PnDcp_SupportedDeviceOption> supportedOptions;
     private final Integer blockLength;
     private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesDeviceOptionsBuilder(
+    public PnDcp_Block_DevicePropertiesDeviceOptionsBuilderImpl(
         List<PnDcp_SupportedDeviceOption> supportedOptions,
         Integer blockLength,
         Integer reservedField0) {

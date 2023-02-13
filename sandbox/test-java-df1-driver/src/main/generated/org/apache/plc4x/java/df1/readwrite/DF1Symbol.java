@@ -56,14 +56,23 @@ public abstract class DF1Symbol implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1Symbol");
 
     // Const Field (messageStart)
-    writeConstField("messageStart", MESSAGESTART, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "messageStart",
+        MESSAGESTART,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Discriminator Field (symbolType) (Used as input to a switch field)
-    writeDiscriminatorField("symbolType", getSymbolType(), writeUnsignedShort(writeBuffer, 8));
+    writeDiscriminatorField(
+        "symbolType",
+        getSymbolType(),
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializeDF1SymbolChild(writeBuffer);
@@ -80,6 +89,7 @@ public abstract class DF1Symbol implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     DF1Symbol _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (messageStart)
     lengthInBits += 8;
@@ -102,6 +112,7 @@ public abstract class DF1Symbol implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short messageStart =
         readConstField(
@@ -119,11 +130,11 @@ public abstract class DF1Symbol implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     DF1SymbolBuilder builder = null;
     if (EvaluationHelper.equals(symbolType, (short) 0x02)) {
-      builder = DF1SymbolMessageFrame.staticParseBuilder(readBuffer);
+      builder = DF1SymbolMessageFrame.staticParseDF1SymbolBuilder(readBuffer);
     } else if (EvaluationHelper.equals(symbolType, (short) 0x06)) {
-      builder = DF1SymbolMessageFrameACK.staticParseBuilder(readBuffer);
+      builder = DF1SymbolMessageFrameACK.staticParseDF1SymbolBuilder(readBuffer);
     } else if (EvaluationHelper.equals(symbolType, (short) 0x15)) {
-      builder = DF1SymbolMessageFrameNAK.staticParseBuilder(readBuffer);
+      builder = DF1SymbolMessageFrameNAK.staticParseDF1SymbolBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -140,7 +151,7 @@ public abstract class DF1Symbol implements Message {
     return _dF1Symbol;
   }
 
-  public static interface DF1SymbolBuilder {
+  public interface DF1SymbolBuilder {
     DF1Symbol build();
   }
 

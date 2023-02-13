@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,19 +112,19 @@ func CastAlarmStateType(structType interface{}) AlarmStateType {
 	return castFunc(structType)
 }
 
-func (m AlarmStateType) GetLengthInBits() uint16 {
+func (m AlarmStateType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m AlarmStateType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m AlarmStateType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func AlarmStateTypeParse(theBytes []byte) (AlarmStateType, error) {
-	return AlarmStateTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func AlarmStateTypeParse(ctx context.Context, theBytes []byte) (AlarmStateType, error) {
+	return AlarmStateTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func AlarmStateTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmStateType, error) {
+func AlarmStateTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmStateType, error) {
 	val, err := readBuffer.ReadUint8("AlarmStateType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading AlarmStateType")
@@ -138,13 +139,13 @@ func AlarmStateTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmStateType,
 
 func (e AlarmStateType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e AlarmStateType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e AlarmStateType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("AlarmStateType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

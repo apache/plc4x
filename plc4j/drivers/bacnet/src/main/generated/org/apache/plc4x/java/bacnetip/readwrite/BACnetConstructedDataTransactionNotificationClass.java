@@ -79,6 +79,7 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTransactionNotificationClass");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTransactionNotificationClass _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (transactionNotificationClass)
     lengthInBits += transactionNotificationClass.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTransactionNotificationClassBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger transactionNotificationClass =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
 
     readBuffer.closeContext("BACnetConstructedDataTransactionNotificationClass");
     // Create the instance
-    return new BACnetConstructedDataTransactionNotificationClassBuilder(
+    return new BACnetConstructedDataTransactionNotificationClassBuilderImpl(
         transactionNotificationClass, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTransactionNotificationClassBuilder
+  public static class BACnetConstructedDataTransactionNotificationClassBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger transactionNotificationClass;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTransactionNotificationClassBuilder(
+    public BACnetConstructedDataTransactionNotificationClassBuilderImpl(
         BACnetApplicationTagUnsignedInteger transactionNotificationClass,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.transactionNotificationClass = transactionNotificationClass;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -95,6 +95,7 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersRequest extends ModbusPDU
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest");
 
@@ -131,6 +132,7 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersRequest extends ModbusPDU
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadWriteMultipleHoldingRegistersRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (readStartingAddress)
     lengthInBits += 16;
@@ -155,12 +157,13 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersRequest extends ModbusPDU
     return lengthInBits;
   }
 
-  public static ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int readStartingAddress =
         readSimpleField("readStartingAddress", readUnsignedInt(readBuffer, 16));
@@ -178,11 +181,11 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersRequest extends ModbusPDU
 
     readBuffer.closeContext("ModbusPDUReadWriteMultipleHoldingRegistersRequest");
     // Create the instance
-    return new ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder(
+    return new ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilderImpl(
         readStartingAddress, readQuantity, writeStartingAddress, writeQuantity, value);
   }
 
-  public static class ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder
+  public static class ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int readStartingAddress;
     private final int readQuantity;
@@ -190,13 +193,12 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersRequest extends ModbusPDU
     private final int writeQuantity;
     private final byte[] value;
 
-    public ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilder(
+    public ModbusPDUReadWriteMultipleHoldingRegistersRequestBuilderImpl(
         int readStartingAddress,
         int readQuantity,
         int writeStartingAddress,
         int writeQuantity,
         byte[] value) {
-
       this.readStartingAddress = readStartingAddress;
       this.readQuantity = readQuantity;
       this.writeStartingAddress = writeStartingAddress;

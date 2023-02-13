@@ -65,6 +65,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
   protected void serializeBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric");
 
@@ -83,6 +84,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (numericValue)
     lengthInBits += numericValue.getLengthInBits();
@@ -90,12 +92,14 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+      staticParseBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger numericValue =
         readSimpleField(
@@ -111,19 +115,19 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric");
     // Create the instance
-    return new BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder(
+    return new BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilderImpl(
         numericValue, tagNumber);
   }
 
-  public static class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder
+  public static
+  class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilderImpl
       implements BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
           .BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
     private final BACnetContextTagUnsignedInteger numericValue;
     private final Short tagNumber;
 
-    public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder(
+    public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilderImpl(
         BACnetContextTagUnsignedInteger numericValue, Short tagNumber) {
-
       this.numericValue = numericValue;
       this.tagNumber = tagNumber;
     }

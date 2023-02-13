@@ -49,6 +49,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -74,7 +75,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         return enumContexts;
     }
 
-    private String currentTypeName;
+    private Stack<String> currentTypeName = new Stack<>();
 
     public MessageFormatListener() {
         types = new HashMap<>();
@@ -94,7 +95,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     @Override
     public void enterComplexType(MSpecParser.ComplexTypeContext ctx) {
-        currentTypeName = getIdString(ctx.name);
+        currentTypeName.push(getIdString(ctx.name));
         // Set a map of attributes that should be set for all fields.
         Map<String, Term> curBatchSetAttributes = new HashMap<>();
         // Add all attributes defined in the current batchSet field.
@@ -164,12 +165,19 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
             dispatchType(typeName, type);
 
             // Set the parent type for all sub-types.
-            if (switchField != null) {
-                for (DiscriminatedComplexTypeDefinition subtype : switchField.getCases()) {
-                    if (subtype instanceof DefaultDiscriminatedComplexTypeDefinition) {
-                        LOGGER.debug("Setting parent {} for {}", type, subtype);
-                        ((DefaultDiscriminatedComplexTypeDefinition) subtype).setParentType(type);
-                    }
+            setParentRelationship(type);
+        }
+        currentTypeName.pop();
+    }
+
+    protected void setParentRelationship(DefaultComplexTypeDefinition type) {
+        Optional<SwitchField> switchField = type.getSwitchField();
+        if (switchField.isPresent()) {
+            for (DiscriminatedComplexTypeDefinition subtype : switchField.get().getCases()) {
+                if (subtype instanceof DefaultDiscriminatedComplexTypeDefinition) {
+                    LOGGER.debug("Setting parent {} for {}", type, subtype);
+                    ((DefaultDiscriminatedComplexTypeDefinition) subtype).setParentType(type);
+                    setParentRelationship((DefaultDiscriminatedComplexTypeDefinition) subtype);
                 }
             }
         }
@@ -512,17 +520,33 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
     @Override
     public void enterCaseStatement(MSpecParser.CaseStatementContext ctx) {
         List<Field> parserContext = new LinkedList<>();
+
+        // Calculate the name of the current type
+        String namePrefix = "";
+        if(ctx.nameWildcard != null) {
+            namePrefix = getCurrentTypeName();
+        }
+        String typeName = namePrefix + ctx.name.getText();
+
+        currentTypeName.push(typeName);
+        // For DataIo we don't generate types.
+        if (ctx.parent.parent instanceof MSpecParser.DataIoDefinitionContext) {
+            currentTypeName.pop();
+        }
+
         parserContexts.push(parserContext);
     }
 
     @Override
     public void exitCaseStatement(MSpecParser.CaseStatementContext ctx) {
-        String namePrefix = "";
-        // TODO: maybe name this prefix and suffix wildcard
-        if (ctx.nameWildcard != null) {
-            namePrefix = currentTypeName;
+        String typeName = currentTypeName.pop();
+        // For DataIo we don't generate types.
+        if (ctx.parent.parent instanceof MSpecParser.DataIoDefinitionContext) {
+            currentTypeName.push(typeName);
+            typeName = ctx.name.getText();
         }
-        String typeName = namePrefix + ctx.name.getText();
+
+        boolean abstractType = getSwitchField() != null;
 
         final Map<String, Term> attributes = batchSetAttributes.peek();
 
@@ -548,8 +572,8 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         }
         final List<Field> fields = parserContexts.pop();
         DefaultDiscriminatedComplexTypeDefinition type =
-            new DefaultDiscriminatedComplexTypeDefinition(typeName, attributes, parserArguments,
-                discriminatorValues, fields);
+            new DefaultDiscriminatedComplexTypeDefinition(typeName, attributes, parserArguments, abstractType,
+                fields, discriminatorValues);
         // Link the fields and the complex types.
         if (fields != null) {
             fields.forEach(field -> ((DefaultField) field).setOwner(type));
@@ -620,8 +644,8 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         Objects.requireNonNull(expressionString, "Expression string should not be null");
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
 
-        Objects.requireNonNull(currentTypeName, "expression term can only occur within a type");
-        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
+        Objects.requireNonNull(getCurrentTypeName(), "expression term can only occur within a type");
+        ExpressionStringParser parser = new ExpressionStringParser(this, getCurrentTypeName());
         try {
             return parser.parse(inputStream);
         } catch (Exception e) {
@@ -634,7 +658,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         // TODO: make nullsafe
         final String variableLiteral = variableLiteralContext.getText();
         InputStream inputStream = IOUtils.toInputStream(variableLiteral, Charset.defaultCharset());
-        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
+        ExpressionStringParser parser = new ExpressionStringParser(this, getCurrentTypeName());
         try {
             // As this come from a VariableLiteralContext we know that it is a VariableLiteral
             return (VariableLiteral) parser.parse(inputStream);
@@ -648,7 +672,7 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         // TODO: make nullsafe
         final String valueLiteralContextText = valueLiteralContext.getText();
         InputStream inputStream = IOUtils.toInputStream(valueLiteralContextText, Charset.defaultCharset());
-        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
+        ExpressionStringParser parser = new ExpressionStringParser(this, getCurrentTypeName());
         try {
             // As this come from a ValueLiteralContext we know that it is a Literal
             return (Literal) parser.parse(inputStream);
@@ -794,12 +818,19 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
     private Term parseExpression(String expressionString) {
         InputStream inputStream = IOUtils.toInputStream(expressionString, Charset.defaultCharset());
-        ExpressionStringParser parser = new ExpressionStringParser(this, currentTypeName);
+        ExpressionStringParser parser = new ExpressionStringParser(this, getCurrentTypeName());
         try {
             return parser.parse(inputStream);
         } catch (Exception e) {
             throw new RuntimeException("Error parsing expression: '" + expressionString + "'", e);
         }
+    }
+
+    private String getCurrentTypeName() {
+        if(currentTypeName.isEmpty()) {
+            return null;
+        }
+        return currentTypeName.peek();
     }
 
     private Map<String, Term> getAttributes(RuleContext ctx) {
@@ -850,16 +881,18 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
         types.put(typeName, type);
 
-        List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>());
+        // TODO:- Figure out why we need a write on copy array to get around a Concurrent Modification Exception being raised.
+        List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new CopyOnWriteArrayList<>());
         LOGGER.debug("{} waiting for {}", waitingConsumers.size(), typeName);
 
-        Iterator<Consumer<TypeDefinition>> consumerIterator = waitingConsumers.iterator();
-        while (consumerIterator.hasNext()) {
-            Consumer<TypeDefinition> setter = consumerIterator.next();
+        LinkedList<Consumer<TypeDefinition>> removeList = new LinkedList<>();
+        for (Consumer<TypeDefinition> setter : waitingConsumers) {
             LOGGER.debug("setting {} for {}", typeName, setter);
             setter.accept(type);
-            consumerIterator.remove();
+            removeList.add(setter);
         }
+
+        waitingConsumers.removeAll(removeList);
         typeDefinitionConsumers.remove(typeName);
     }
 
@@ -874,9 +907,9 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
         } else {
             // put up order
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("{} already waiting for {}", typeDefinitionConsumers.getOrDefault(typeRefName, new LinkedList<>()).size(), typeRefName);
+                LOGGER.debug("{} already waiting for {}", typeDefinitionConsumers.getOrDefault(typeRefName, new CopyOnWriteArrayList<>()).size(), typeRefName);
             }
-            typeDefinitionConsumers.putIfAbsent(typeRefName, new LinkedList<>());
+            typeDefinitionConsumers.putIfAbsent(typeRefName, new CopyOnWriteArrayList<>());
             typeDefinitionConsumers.get(typeRefName).add(setTypeDefinition);
         }
     }

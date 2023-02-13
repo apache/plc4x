@@ -82,6 +82,7 @@ public class AdsWriteControlRequest extends AmsPacket implements Message {
   @Override
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsWriteControlRequest");
 
@@ -111,6 +112,7 @@ public class AdsWriteControlRequest extends AmsPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsWriteControlRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (adsState)
     lengthInBits += 16;
@@ -129,12 +131,13 @@ public class AdsWriteControlRequest extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsWriteControlRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsWriteControlRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int adsState = readSimpleField("adsState", readUnsignedInt(readBuffer, 16));
 
@@ -146,16 +149,15 @@ public class AdsWriteControlRequest extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsWriteControlRequest");
     // Create the instance
-    return new AdsWriteControlRequestBuilder(adsState, deviceState, data);
+    return new AdsWriteControlRequestBuilderImpl(adsState, deviceState, data);
   }
 
-  public static class AdsWriteControlRequestBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsWriteControlRequestBuilderImpl implements AmsPacket.AmsPacketBuilder {
     private final int adsState;
     private final int deviceState;
     private final byte[] data;
 
-    public AdsWriteControlRequestBuilder(int adsState, int deviceState, byte[] data) {
-
+    public AdsWriteControlRequestBuilderImpl(int adsState, int deviceState, byte[] data) {
       this.adsState = adsState;
       this.deviceState = deviceState;
       this.data = data;

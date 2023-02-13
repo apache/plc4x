@@ -63,6 +63,7 @@ public class RequestNull extends Request implements Message {
   @Override
   protected void serializeRequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RequestNull");
 
@@ -81,6 +82,7 @@ public class RequestNull extends Request implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RequestNull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (nullIndicator)
     lengthInBits += 32;
@@ -88,12 +90,13 @@ public class RequestNull extends Request implements Message {
     return lengthInBits;
   }
 
-  public static RequestNullBuilder staticParseBuilder(
+  public static RequestBuilder staticParseRequestBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestNull");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long nullIndicator =
         readConstField(
@@ -101,14 +104,13 @@ public class RequestNull extends Request implements Message {
 
     readBuffer.closeContext("RequestNull");
     // Create the instance
-    return new RequestNullBuilder(cBusOptions);
+    return new RequestNullBuilderImpl(cBusOptions);
   }
 
-  public static class RequestNullBuilder implements Request.RequestBuilder {
+  public static class RequestNullBuilderImpl implements Request.RequestBuilder {
     private final CBusOptions cBusOptions;
 
-    public RequestNullBuilder(CBusOptions cBusOptions) {
-
+    public RequestNullBuilderImpl(CBusOptions cBusOptions) {
       this.cBusOptions = cBusOptions;
     }
 

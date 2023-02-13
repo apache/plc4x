@@ -87,6 +87,7 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("UserTokenPolicy");
 
@@ -125,6 +126,7 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     UserTokenPolicy _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (policyId)
     lengthInBits += policyId.getLengthInBits();
@@ -144,12 +146,13 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static UserTokenPolicyBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UserTokenPolicy");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString policyId =
         readSimpleField(
@@ -180,11 +183,11 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("UserTokenPolicy");
     // Create the instance
-    return new UserTokenPolicyBuilder(
+    return new UserTokenPolicyBuilderImpl(
         policyId, tokenType, issuedTokenType, issuerEndpointUrl, securityPolicyUri);
   }
 
-  public static class UserTokenPolicyBuilder
+  public static class UserTokenPolicyBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString policyId;
     private final UserTokenType tokenType;
@@ -192,13 +195,12 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
     private final PascalString issuerEndpointUrl;
     private final PascalString securityPolicyUri;
 
-    public UserTokenPolicyBuilder(
+    public UserTokenPolicyBuilderImpl(
         PascalString policyId,
         UserTokenType tokenType,
         PascalString issuedTokenType,
         PascalString issuerEndpointUrl,
         PascalString securityPolicyUri) {
-
       this.policyId = policyId;
       this.tokenType = tokenType;
       this.issuedTokenType = issuedTokenType;

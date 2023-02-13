@@ -47,8 +47,6 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
   protected final boolean indicated;
   protected final IndexAddress address;
   protected final SDOInitiateUploadResponsePayload payload;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public SDOInitiateDownloadRequest(
       boolean expedited,
@@ -81,14 +79,12 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
   @Override
   protected void serializeSDORequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateDownloadRequest");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 1));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 1));
 
     // Implicit Field (size) (Used for parsing, but its value is not stored as it's implicitly given
     // by the objects content)
@@ -122,6 +118,7 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOInitiateDownloadRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 1;
@@ -144,12 +141,13 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
     return lengthInBits;
   }
 
-  public static SDOInitiateDownloadRequestBuilder staticParseBuilder(
+  public static SDORequestBuilder staticParseSDORequestBuilder(
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOInitiateDownloadRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 1), (byte) 0x00);
@@ -176,34 +174,30 @@ public class SDOInitiateDownloadRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOInitiateDownloadRequest");
     // Create the instance
-    return new SDOInitiateDownloadRequestBuilder(
-        expedited, indicated, address, payload, reservedField0);
+    return new SDOInitiateDownloadRequestBuilderImpl(expedited, indicated, address, payload);
   }
 
-  public static class SDOInitiateDownloadRequestBuilder implements SDORequest.SDORequestBuilder {
+  public static class SDOInitiateDownloadRequestBuilderImpl
+      implements SDORequest.SDORequestBuilder {
     private final boolean expedited;
     private final boolean indicated;
     private final IndexAddress address;
     private final SDOInitiateUploadResponsePayload payload;
-    private final Byte reservedField0;
 
-    public SDOInitiateDownloadRequestBuilder(
+    public SDOInitiateDownloadRequestBuilderImpl(
         boolean expedited,
         boolean indicated,
         IndexAddress address,
-        SDOInitiateUploadResponsePayload payload,
-        Byte reservedField0) {
+        SDOInitiateUploadResponsePayload payload) {
       this.expedited = expedited;
       this.indicated = indicated;
       this.address = address;
       this.payload = payload;
-      this.reservedField0 = reservedField0;
     }
 
     public SDOInitiateDownloadRequest build() {
       SDOInitiateDownloadRequest sDOInitiateDownloadRequest =
           new SDOInitiateDownloadRequest(expedited, indicated, address, payload);
-      sDOInitiateDownloadRequest.reservedField0 = reservedField0;
       return sDOInitiateDownloadRequest;
     }
   }

@@ -61,6 +61,7 @@ public abstract class S7DataAlarmMessage implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7DataAlarmMessage");
 
@@ -85,6 +86,7 @@ public abstract class S7DataAlarmMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     S7DataAlarmMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (functionId)
     lengthInBits += 8;
@@ -123,6 +125,7 @@ public abstract class S7DataAlarmMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short functionId =
         readConstField(
@@ -137,9 +140,11 @@ public abstract class S7DataAlarmMessage implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     S7DataAlarmMessageBuilder builder = null;
     if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x04)) {
-      builder = S7MessageObjectRequest.staticParseBuilder(readBuffer, cpuFunctionType);
+      builder =
+          S7MessageObjectRequest.staticParseS7DataAlarmMessageBuilder(readBuffer, cpuFunctionType);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)) {
-      builder = S7MessageObjectResponse.staticParseBuilder(readBuffer, cpuFunctionType);
+      builder =
+          S7MessageObjectResponse.staticParseS7DataAlarmMessageBuilder(readBuffer, cpuFunctionType);
     }
     if (builder == null) {
       throw new ParseException(
@@ -156,7 +161,7 @@ public abstract class S7DataAlarmMessage implements Message {
     return _s7DataAlarmMessage;
   }
 
-  public static interface S7DataAlarmMessageBuilder {
+  public interface S7DataAlarmMessageBuilder {
     S7DataAlarmMessage build();
   }
 

@@ -60,6 +60,7 @@ public abstract class BACnetClientCOV implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetClientCOV");
 
@@ -82,6 +83,7 @@ public abstract class BACnetClientCOV implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetClientCOV _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -101,6 +103,7 @@ public abstract class BACnetClientCOV implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -113,9 +116,9 @@ public abstract class BACnetClientCOV implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetClientCOVBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x4)) {
-      builder = BACnetClientCOVObject.staticParseBuilder(readBuffer);
+      builder = BACnetClientCOVObject.staticParseBACnetClientCOVBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x0)) {
-      builder = BACnetClientCOVNone.staticParseBuilder(readBuffer);
+      builder = BACnetClientCOVNone.staticParseBACnetClientCOVBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -132,7 +135,7 @@ public abstract class BACnetClientCOV implements Message {
     return _bACnetClientCOV;
   }
 
-  public static interface BACnetClientCOVBuilder {
+  public interface BACnetClientCOVBuilder {
     BACnetClientCOV build(BACnetTagHeader peekedTagHeader);
   }
 

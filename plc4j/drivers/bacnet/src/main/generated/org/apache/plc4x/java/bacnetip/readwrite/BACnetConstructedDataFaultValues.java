@@ -88,6 +88,7 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFaultValues");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFaultValues _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFaultValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -173,23 +176,22 @@ public class BACnetConstructedDataFaultValues extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataFaultValues");
     // Create the instance
-    return new BACnetConstructedDataFaultValuesBuilder(
+    return new BACnetConstructedDataFaultValuesBuilderImpl(
         numberOfDataElements, faultValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFaultValuesBuilder
+  public static class BACnetConstructedDataFaultValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetLifeSafetyStateTagged> faultValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFaultValuesBuilder(
+    public BACnetConstructedDataFaultValuesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetLifeSafetyStateTagged> faultValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.faultValues = faultValues;
       this.tagNumber = tagNumber;

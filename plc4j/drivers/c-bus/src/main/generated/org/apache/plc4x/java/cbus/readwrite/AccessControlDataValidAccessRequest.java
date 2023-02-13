@@ -66,6 +66,7 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
   protected void serializeAccessControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataValidAccessRequest");
 
@@ -94,6 +95,7 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AccessControlDataValidAccessRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessControlDirection)
     lengthInBits += 8;
@@ -106,13 +108,14 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
     return lengthInBits;
   }
 
-  public static AccessControlDataValidAccessRequestBuilder staticParseBuilder(
+  public static AccessControlDataBuilder staticParseAccessControlDataBuilder(
       ReadBuffer readBuffer, AccessControlCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("AccessControlDataValidAccessRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AccessControlDirection accessControlDirection =
         readEnumField(
@@ -127,17 +130,16 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
 
     readBuffer.closeContext("AccessControlDataValidAccessRequest");
     // Create the instance
-    return new AccessControlDataValidAccessRequestBuilder(accessControlDirection, data);
+    return new AccessControlDataValidAccessRequestBuilderImpl(accessControlDirection, data);
   }
 
-  public static class AccessControlDataValidAccessRequestBuilder
+  public static class AccessControlDataValidAccessRequestBuilderImpl
       implements AccessControlData.AccessControlDataBuilder {
     private final AccessControlDirection accessControlDirection;
     private final byte[] data;
 
-    public AccessControlDataValidAccessRequestBuilder(
+    public AccessControlDataValidAccessRequestBuilderImpl(
         AccessControlDirection accessControlDirection, byte[] data) {
-
       this.accessControlDirection = accessControlDirection;
       this.data = data;
     }

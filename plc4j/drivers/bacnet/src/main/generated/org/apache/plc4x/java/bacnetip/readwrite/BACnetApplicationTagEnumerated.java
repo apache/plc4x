@@ -60,6 +60,7 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
   protected void serializeBACnetApplicationTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagEnumerated");
 
@@ -82,6 +83,7 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetApplicationTagEnumerated _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -91,12 +93,13 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagEnumeratedBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagEnumerated");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadEnumerated payload =
         readSimpleField(
@@ -110,15 +113,14 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
 
     readBuffer.closeContext("BACnetApplicationTagEnumerated");
     // Create the instance
-    return new BACnetApplicationTagEnumeratedBuilder(payload);
+    return new BACnetApplicationTagEnumeratedBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagEnumeratedBuilder
+  public static class BACnetApplicationTagEnumeratedBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadEnumerated payload;
 
-    public BACnetApplicationTagEnumeratedBuilder(BACnetTagPayloadEnumerated payload) {
-
+    public BACnetApplicationTagEnumeratedBuilderImpl(BACnetTagPayloadEnumerated payload) {
       this.payload = payload;
     }
 

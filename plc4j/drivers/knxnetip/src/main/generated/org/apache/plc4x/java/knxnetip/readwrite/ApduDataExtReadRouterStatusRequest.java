@@ -42,17 +42,14 @@ public class ApduDataExtReadRouterStatusRequest extends ApduDataExt implements M
     return (short) 0x0D;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtReadRouterStatusRequest(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtReadRouterStatusRequest() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtReadRouterStatusRequest");
 
@@ -68,35 +65,32 @@ public class ApduDataExtReadRouterStatusRequest extends ApduDataExt implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtReadRouterStatusRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtReadRouterStatusRequestBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtReadRouterStatusRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtReadRouterStatusRequest");
     // Create the instance
-    return new ApduDataExtReadRouterStatusRequestBuilder(length);
+    return new ApduDataExtReadRouterStatusRequestBuilderImpl();
   }
 
-  public static class ApduDataExtReadRouterStatusRequestBuilder
+  public static class ApduDataExtReadRouterStatusRequestBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtReadRouterStatusRequestBuilder(Short length) {
+    public ApduDataExtReadRouterStatusRequestBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtReadRouterStatusRequest build(Short length) {
-
+    public ApduDataExtReadRouterStatusRequest build() {
       ApduDataExtReadRouterStatusRequest apduDataExtReadRouterStatusRequest =
-          new ApduDataExtReadRouterStatusRequest(length);
+          new ApduDataExtReadRouterStatusRequest();
       return apduDataExtReadRouterStatusRequest;
     }
   }

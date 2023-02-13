@@ -74,6 +74,7 @@ public class BACnetServiceAckAtomicReadFileRecord
   protected void serializeBACnetServiceAckAtomicReadFileStreamOrRecordChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFileRecord");
 
@@ -100,6 +101,7 @@ public class BACnetServiceAckAtomicReadFileRecord
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckAtomicReadFileRecord _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileStartRecord)
     lengthInBits += fileStartRecord.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetServiceAckAtomicReadFileRecord
     if (fileRecordData != null) {
       int i = 0;
       for (BACnetApplicationTagOctetString element : fileRecordData) {
-        boolean last = ++i >= fileRecordData.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= fileRecordData.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -119,12 +121,14 @@ public class BACnetServiceAckAtomicReadFileRecord
     return lengthInBits;
   }
 
-  public static BACnetServiceAckAtomicReadFileRecordBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
+      staticParseBACnetServiceAckAtomicReadFileStreamOrRecordBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicReadFileRecord");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger fileStartRecord =
         readSimpleField(
@@ -155,22 +159,21 @@ public class BACnetServiceAckAtomicReadFileRecord
 
     readBuffer.closeContext("BACnetServiceAckAtomicReadFileRecord");
     // Create the instance
-    return new BACnetServiceAckAtomicReadFileRecordBuilder(
+    return new BACnetServiceAckAtomicReadFileRecordBuilderImpl(
         fileStartRecord, returnedRecordCount, fileRecordData);
   }
 
-  public static class BACnetServiceAckAtomicReadFileRecordBuilder
+  public static class BACnetServiceAckAtomicReadFileRecordBuilderImpl
       implements BACnetServiceAckAtomicReadFileStreamOrRecord
           .BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
     private final BACnetApplicationTagSignedInteger fileStartRecord;
     private final BACnetApplicationTagUnsignedInteger returnedRecordCount;
     private final List<BACnetApplicationTagOctetString> fileRecordData;
 
-    public BACnetServiceAckAtomicReadFileRecordBuilder(
+    public BACnetServiceAckAtomicReadFileRecordBuilderImpl(
         BACnetApplicationTagSignedInteger fileStartRecord,
         BACnetApplicationTagUnsignedInteger returnedRecordCount,
         List<BACnetApplicationTagOctetString> fileRecordData) {
-
       this.fileStartRecord = fileStartRecord;
       this.returnedRecordCount = returnedRecordCount;
       this.fileRecordData = fileRecordData;

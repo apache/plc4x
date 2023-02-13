@@ -39,8 +39,6 @@ public class AmsTCPPacket implements Message {
 
   // Properties.
   protected final AmsPacket userdata;
-  // Reserved Fields
-  private Integer reservedField0;
 
   public AmsTCPPacket(AmsPacket userdata) {
     super();
@@ -53,19 +51,25 @@ public class AmsTCPPacket implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AmsTCPPacket");
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        (int) 0x0000,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     long length = (long) (getUserdata().getLengthInBytes());
-    writeImplicitField("length", length, writeUnsignedLong(writeBuffer, 32));
+    writeImplicitField(
+        "length",
+        length,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (userdata)
     writeSimpleField(
@@ -86,6 +90,7 @@ public class AmsTCPPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     AmsTCPPacket _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 16;
@@ -110,6 +115,7 @@ public class AmsTCPPacket implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
         readReservedField(
@@ -134,7 +140,6 @@ public class AmsTCPPacket implements Message {
     // Create the instance
     AmsTCPPacket _amsTCPPacket;
     _amsTCPPacket = new AmsTCPPacket(userdata);
-    _amsTCPPacket.reservedField0 = reservedField0;
     return _amsTCPPacket;
   }
 

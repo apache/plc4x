@@ -56,6 +56,7 @@ public class BACnetPropertyStatesEscalatorFault extends BACnetPropertyStates imp
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesEscalatorFault");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesEscalatorFault extends BACnetPropertyStates imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesEscalatorFault _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (escalatorFault)
     lengthInBits += escalatorFault.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesEscalatorFault extends BACnetPropertyStates imp
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesEscalatorFaultBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesEscalatorFault");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEscalatorFaultTagged escalatorFault =
         readSimpleField(
@@ -101,15 +104,15 @@ public class BACnetPropertyStatesEscalatorFault extends BACnetPropertyStates imp
 
     readBuffer.closeContext("BACnetPropertyStatesEscalatorFault");
     // Create the instance
-    return new BACnetPropertyStatesEscalatorFaultBuilder(escalatorFault);
+    return new BACnetPropertyStatesEscalatorFaultBuilderImpl(escalatorFault);
   }
 
-  public static class BACnetPropertyStatesEscalatorFaultBuilder
+  public static class BACnetPropertyStatesEscalatorFaultBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetEscalatorFaultTagged escalatorFault;
 
-    public BACnetPropertyStatesEscalatorFaultBuilder(BACnetEscalatorFaultTagged escalatorFault) {
-
+    public BACnetPropertyStatesEscalatorFaultBuilderImpl(
+        BACnetEscalatorFaultTagged escalatorFault) {
       this.escalatorFault = escalatorFault;
     }
 

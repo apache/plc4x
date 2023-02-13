@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -95,25 +96,21 @@ func (m *_CIPEncapsulationConnectionRequest) GetTypeName() string {
 	return "CIPEncapsulationConnectionRequest"
 }
 
-func (m *_CIPEncapsulationConnectionRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CIPEncapsulationConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CIPEncapsulationConnectionRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_CIPEncapsulationConnectionRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CIPEncapsulationConnectionRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CIPEncapsulationConnectionRequestParse(theBytes []byte) (CIPEncapsulationConnectionRequest, error) {
-	return CIPEncapsulationConnectionRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return CIPEncapsulationConnectionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func CIPEncapsulationConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionRequest, error) {
+func CIPEncapsulationConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPEncapsulationConnectionRequest"); pullErr != nil {
@@ -135,14 +132,14 @@ func CIPEncapsulationConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_CIPEncapsulationConnectionRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CIPEncapsulationConnectionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CIPEncapsulationConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -155,7 +152,7 @@ func (m *_CIPEncapsulationConnectionRequest) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CIPEncapsulationConnectionRequest) isCIPEncapsulationConnectionRequest() bool {
@@ -167,7 +164,7 @@ func (m *_CIPEncapsulationConnectionRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

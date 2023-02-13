@@ -62,6 +62,7 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueConstructedValue");
 
@@ -81,6 +82,7 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueConstructedValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (constructedValue)
     lengthInBits += constructedValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueConstructedValueBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueConstructedValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConstructedData constructedValue =
         readSimpleField(
@@ -111,17 +114,16 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
 
     readBuffer.closeContext("BACnetPriorityValueConstructedValue");
     // Create the instance
-    return new BACnetPriorityValueConstructedValueBuilder(constructedValue, objectTypeArgument);
+    return new BACnetPriorityValueConstructedValueBuilderImpl(constructedValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueConstructedValueBuilder
+  public static class BACnetPriorityValueConstructedValueBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetConstructedData constructedValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueConstructedValueBuilder(
+    public BACnetPriorityValueConstructedValueBuilderImpl(
         BACnetConstructedData constructedValue, BACnetObjectType objectTypeArgument) {
-
       this.constructedValue = constructedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

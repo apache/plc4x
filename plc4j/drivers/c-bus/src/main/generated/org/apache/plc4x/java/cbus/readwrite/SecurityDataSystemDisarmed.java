@@ -47,6 +47,7 @@ public class SecurityDataSystemDisarmed extends SecurityData implements Message 
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataSystemDisarmed");
 
@@ -62,26 +63,28 @@ public class SecurityDataSystemDisarmed extends SecurityData implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataSystemDisarmed _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SecurityDataSystemDisarmedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataSystemDisarmed");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataSystemDisarmed");
     // Create the instance
-    return new SecurityDataSystemDisarmedBuilder();
+    return new SecurityDataSystemDisarmedBuilderImpl();
   }
 
-  public static class SecurityDataSystemDisarmedBuilder
+  public static class SecurityDataSystemDisarmedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataSystemDisarmedBuilder() {}
+    public SecurityDataSystemDisarmedBuilderImpl() {}
 
     public SecurityDataSystemDisarmed build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

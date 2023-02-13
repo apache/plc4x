@@ -56,6 +56,7 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
   protected void serializeBACnetOptionalBinaryPVChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalBinaryPVValue");
 
@@ -74,6 +75,7 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalBinaryPVValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (binaryPv)
     lengthInBits += binaryPv.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
     return lengthInBits;
   }
 
-  public static BACnetOptionalBinaryPVValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetOptionalBinaryPVBuilder staticParseBACnetOptionalBinaryPVBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalBinaryPVValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBinaryPVTagged binaryPv =
         readSimpleField(
@@ -99,15 +102,14 @@ public class BACnetOptionalBinaryPVValue extends BACnetOptionalBinaryPV implemen
 
     readBuffer.closeContext("BACnetOptionalBinaryPVValue");
     // Create the instance
-    return new BACnetOptionalBinaryPVValueBuilder(binaryPv);
+    return new BACnetOptionalBinaryPVValueBuilderImpl(binaryPv);
   }
 
-  public static class BACnetOptionalBinaryPVValueBuilder
+  public static class BACnetOptionalBinaryPVValueBuilderImpl
       implements BACnetOptionalBinaryPV.BACnetOptionalBinaryPVBuilder {
     private final BACnetBinaryPVTagged binaryPv;
 
-    public BACnetOptionalBinaryPVValueBuilder(BACnetBinaryPVTagged binaryPv) {
-
+    public BACnetOptionalBinaryPVValueBuilderImpl(BACnetBinaryPVTagged binaryPv) {
       this.binaryPv = binaryPv;
     }
 

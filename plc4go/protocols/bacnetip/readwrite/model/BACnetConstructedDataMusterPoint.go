@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataMusterPoint) GetMusterPoint() BACnetApplicationTa
 ///////////////////////
 
 func (m *_BACnetConstructedDataMusterPoint) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetMusterPoint())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataMusterPoint) GetTypeName() string {
 	return "BACnetConstructedDataMusterPoint"
 }
 
-func (m *_BACnetConstructedDataMusterPoint) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataMusterPoint) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataMusterPoint) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (musterPoint)
-	lengthInBits += m.MusterPoint.GetLengthInBits()
+	lengthInBits += m.MusterPoint.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMusterPoint) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataMusterPoint) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataMusterPointParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMusterPoint, error) {
-	return BACnetConstructedDataMusterPointParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataMusterPointParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataMusterPointParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMusterPoint, error) {
+func BACnetConstructedDataMusterPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMusterPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMusterPoint"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataMusterPointParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("musterPoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for musterPoint")
 	}
-	_musterPoint, _musterPointErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_musterPoint, _musterPointErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _musterPointErr != nil {
 		return nil, errors.Wrap(_musterPointErr, "Error parsing 'musterPoint' field of BACnetConstructedDataMusterPoint")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataMusterPointParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataMusterPoint) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataMusterPoint) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMusterPoint) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataMusterPoint) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("musterPoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for musterPoint")
 		}
-		_musterPointErr := writeBuffer.WriteSerializable(m.GetMusterPoint())
+		_musterPointErr := writeBuffer.WriteSerializable(ctx, m.GetMusterPoint())
 		if popErr := writeBuffer.PopContext("musterPoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for musterPoint")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataMusterPoint) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_musterPointErr, "Error serializing 'musterPoint' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataMusterPoint) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataMusterPoint) isBACnetConstructedDataMusterPoint() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataMusterPoint) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

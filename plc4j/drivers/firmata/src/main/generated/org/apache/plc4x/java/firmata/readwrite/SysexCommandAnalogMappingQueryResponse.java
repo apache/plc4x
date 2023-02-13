@@ -61,6 +61,7 @@ public class SysexCommandAnalogMappingQueryResponse extends SysexCommand impleme
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandAnalogMappingQueryResponse");
 
@@ -79,6 +80,7 @@ public class SysexCommandAnalogMappingQueryResponse extends SysexCommand impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandAnalogMappingQueryResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pin)
     lengthInBits += 8;
@@ -86,26 +88,26 @@ public class SysexCommandAnalogMappingQueryResponse extends SysexCommand impleme
     return lengthInBits;
   }
 
-  public static SysexCommandAnalogMappingQueryResponseBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandAnalogMappingQueryResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short pin = readSimpleField("pin", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("SysexCommandAnalogMappingQueryResponse");
     // Create the instance
-    return new SysexCommandAnalogMappingQueryResponseBuilder(pin);
+    return new SysexCommandAnalogMappingQueryResponseBuilderImpl(pin);
   }
 
-  public static class SysexCommandAnalogMappingQueryResponseBuilder
+  public static class SysexCommandAnalogMappingQueryResponseBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
     private final short pin;
 
-    public SysexCommandAnalogMappingQueryResponseBuilder(short pin) {
-
+    public SysexCommandAnalogMappingQueryResponseBuilderImpl(short pin) {
       this.pin = pin;
     }
 

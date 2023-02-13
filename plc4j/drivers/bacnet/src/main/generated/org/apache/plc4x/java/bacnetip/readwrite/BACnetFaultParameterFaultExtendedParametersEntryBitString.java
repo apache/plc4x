@@ -57,6 +57,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBitString
   protected void serializeBACnetFaultParameterFaultExtendedParametersEntryChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryBitString");
 
@@ -75,6 +76,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBitString
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultExtendedParametersEntryBitString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bitStringValue)
     lengthInBits += bitStringValue.getLengthInBits();
@@ -82,12 +84,14 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBitString
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryBitString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBitString bitStringValue =
         readSimpleField(
@@ -98,17 +102,16 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBitString
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryBitString");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder(bitStringValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilderImpl(bitStringValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagBitString bitStringValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilderImpl(
         BACnetApplicationTagBitString bitStringValue) {
-
       this.bitStringValue = bitStringValue;
     }
 

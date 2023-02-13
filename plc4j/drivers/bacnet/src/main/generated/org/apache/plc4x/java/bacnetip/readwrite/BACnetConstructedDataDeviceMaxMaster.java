@@ -78,6 +78,7 @@ public class BACnetConstructedDataDeviceMaxMaster extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDeviceMaxMaster");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataDeviceMaxMaster extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDeviceMaxMaster _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxMaster)
     lengthInBits += maxMaster.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataDeviceMaxMaster extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDeviceMaxMasterBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataDeviceMaxMaster extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxMaster =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataDeviceMaxMaster extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataDeviceMaxMaster");
     // Create the instance
-    return new BACnetConstructedDataDeviceMaxMasterBuilder(
+    return new BACnetConstructedDataDeviceMaxMasterBuilderImpl(
         maxMaster, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDeviceMaxMasterBuilder
+  public static class BACnetConstructedDataDeviceMaxMasterBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxMaster;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDeviceMaxMasterBuilder(
+    public BACnetConstructedDataDeviceMaxMasterBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxMaster,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxMaster = maxMaster;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

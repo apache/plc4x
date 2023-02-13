@@ -78,6 +78,7 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataZoneTo");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataZoneTo _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneTo)
     lengthInBits += zoneTo.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataZoneToBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference zoneTo =
         readSimpleField(
@@ -131,20 +134,19 @@ public class BACnetConstructedDataZoneTo extends BACnetConstructedData implement
 
     readBuffer.closeContext("BACnetConstructedDataZoneTo");
     // Create the instance
-    return new BACnetConstructedDataZoneToBuilder(zoneTo, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataZoneToBuilderImpl(zoneTo, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataZoneToBuilder
+  public static class BACnetConstructedDataZoneToBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference zoneTo;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataZoneToBuilder(
+    public BACnetConstructedDataZoneToBuilderImpl(
         BACnetDeviceObjectReference zoneTo,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.zoneTo = zoneTo;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

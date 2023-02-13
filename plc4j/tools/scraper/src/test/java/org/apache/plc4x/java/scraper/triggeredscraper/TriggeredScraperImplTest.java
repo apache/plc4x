@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.scraper.triggeredscraper;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.mock.connection.MockConnection;
 import org.apache.plc4x.java.mock.connection.MockDevice;
@@ -44,13 +44,13 @@ import static org.mockito.Mockito.when;
 
 class TriggeredScraperImplTest {
 
-    private PlcDriverManager driverManager;
+    private DefaultPlcDriverManager driverManager;
     private MockDevice mockDevice1;
     private MockDevice mockDevice2;
 
     @BeforeEach
     public void setUp() throws Exception {
-        driverManager = new PlcDriverManager();
+        driverManager = new DefaultPlcDriverManager();
         MockConnection mock1Connection = ((MockConnection) driverManager.getConnection("mock:1"));
         MockConnection mock2Connection = ((MockConnection) driverManager.getConnection("mock:2"));
 

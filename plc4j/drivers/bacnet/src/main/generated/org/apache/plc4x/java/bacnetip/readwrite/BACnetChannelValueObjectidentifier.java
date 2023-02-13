@@ -56,6 +56,7 @@ public class BACnetChannelValueObjectidentifier extends BACnetChannelValue imple
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueObjectidentifier");
 
@@ -77,6 +78,7 @@ public class BACnetChannelValueObjectidentifier extends BACnetChannelValue imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueObjectidentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectidentifierValue)
     lengthInBits += objectidentifierValue.getLengthInBits();
@@ -84,12 +86,13 @@ public class BACnetChannelValueObjectidentifier extends BACnetChannelValue imple
     return lengthInBits;
   }
 
-  public static BACnetChannelValueObjectidentifierBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueObjectidentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectidentifierValue =
         readSimpleField(
@@ -102,16 +105,15 @@ public class BACnetChannelValueObjectidentifier extends BACnetChannelValue imple
 
     readBuffer.closeContext("BACnetChannelValueObjectidentifier");
     // Create the instance
-    return new BACnetChannelValueObjectidentifierBuilder(objectidentifierValue);
+    return new BACnetChannelValueObjectidentifierBuilderImpl(objectidentifierValue);
   }
 
-  public static class BACnetChannelValueObjectidentifierBuilder
+  public static class BACnetChannelValueObjectidentifierBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagObjectIdentifier objectidentifierValue;
 
-    public BACnetChannelValueObjectidentifierBuilder(
+    public BACnetChannelValueObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue) {
-
       this.objectidentifierValue = objectidentifierValue;
     }
 

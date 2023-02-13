@@ -51,6 +51,7 @@ public class CIPEncapsulationConnectionRequest extends CIPEncapsulationPacket im
   protected void serializeCIPEncapsulationPacketChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CIPEncapsulationConnectionRequest");
 
@@ -66,26 +67,28 @@ public class CIPEncapsulationConnectionRequest extends CIPEncapsulationPacket im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CIPEncapsulationConnectionRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static CIPEncapsulationConnectionRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static CIPEncapsulationPacketBuilder staticParseCIPEncapsulationPacketBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CIPEncapsulationConnectionRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("CIPEncapsulationConnectionRequest");
     // Create the instance
-    return new CIPEncapsulationConnectionRequestBuilder();
+    return new CIPEncapsulationConnectionRequestBuilderImpl();
   }
 
-  public static class CIPEncapsulationConnectionRequestBuilder
+  public static class CIPEncapsulationConnectionRequestBuilderImpl
       implements CIPEncapsulationPacket.CIPEncapsulationPacketBuilder {
 
-    public CIPEncapsulationConnectionRequestBuilder() {}
+    public CIPEncapsulationConnectionRequestBuilderImpl() {}
 
     public CIPEncapsulationConnectionRequest build(
         long sessionHandle, long status, List<Short> senderContext, long options) {

@@ -88,6 +88,7 @@ public class BACnetConstructedDataSubordinateTags extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSubordinateTags");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataSubordinateTags extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSubordinateTags _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataSubordinateTags extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSubordinateTagsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataSubordinateTags extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -170,23 +173,22 @@ public class BACnetConstructedDataSubordinateTags extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataSubordinateTags");
     // Create the instance
-    return new BACnetConstructedDataSubordinateTagsBuilder(
+    return new BACnetConstructedDataSubordinateTagsBuilderImpl(
         numberOfDataElements, subordinateList, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSubordinateTagsBuilder
+  public static class BACnetConstructedDataSubordinateTagsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetNameValueCollection> subordinateList;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSubordinateTagsBuilder(
+    public BACnetConstructedDataSubordinateTagsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetNameValueCollection> subordinateList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.subordinateList = subordinateList;
       this.tagNumber = tagNumber;

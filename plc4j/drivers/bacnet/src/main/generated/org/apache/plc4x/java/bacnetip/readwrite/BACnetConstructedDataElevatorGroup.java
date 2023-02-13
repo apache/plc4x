@@ -78,6 +78,7 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataElevatorGroup");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataElevatorGroup _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (elevatorGroup)
     lengthInBits += elevatorGroup.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataElevatorGroupBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier elevatorGroup =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataElevatorGroup");
     // Create the instance
-    return new BACnetConstructedDataElevatorGroupBuilder(
+    return new BACnetConstructedDataElevatorGroupBuilderImpl(
         elevatorGroup, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataElevatorGroupBuilder
+  public static class BACnetConstructedDataElevatorGroupBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier elevatorGroup;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataElevatorGroupBuilder(
+    public BACnetConstructedDataElevatorGroupBuilderImpl(
         BACnetApplicationTagObjectIdentifier elevatorGroup,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.elevatorGroup = elevatorGroup;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

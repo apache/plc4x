@@ -82,6 +82,7 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext(
         "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications");
@@ -115,6 +116,7 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
     int lengthInBits = 0;
     BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications
         _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (monitoredObjectIdentifier)
     lengthInBits += monitoredObjectIdentifier.getLengthInBits();
@@ -150,6 +152,7 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier monitoredObjectIdentifier =
         readSimpleField(

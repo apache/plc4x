@@ -56,6 +56,7 @@ public class BACnetChannelValueUnsigned extends BACnetChannelValue implements Me
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueUnsigned");
 
@@ -74,6 +75,7 @@ public class BACnetChannelValueUnsigned extends BACnetChannelValue implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueUnsigned _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unsignedValue)
     lengthInBits += unsignedValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetChannelValueUnsigned extends BACnetChannelValue implements Me
     return lengthInBits;
   }
 
-  public static BACnetChannelValueUnsignedBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueUnsigned");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
@@ -99,15 +102,15 @@ public class BACnetChannelValueUnsigned extends BACnetChannelValue implements Me
 
     readBuffer.closeContext("BACnetChannelValueUnsigned");
     // Create the instance
-    return new BACnetChannelValueUnsignedBuilder(unsignedValue);
+    return new BACnetChannelValueUnsignedBuilderImpl(unsignedValue);
   }
 
-  public static class BACnetChannelValueUnsignedBuilder
+  public static class BACnetChannelValueUnsignedBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
 
-    public BACnetChannelValueUnsignedBuilder(BACnetApplicationTagUnsignedInteger unsignedValue) {
-
+    public BACnetChannelValueUnsignedBuilderImpl(
+        BACnetApplicationTagUnsignedInteger unsignedValue) {
       this.unsignedValue = unsignedValue;
     }
 

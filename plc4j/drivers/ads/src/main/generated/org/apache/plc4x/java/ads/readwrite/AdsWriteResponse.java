@@ -68,6 +68,7 @@ public class AdsWriteResponse extends AmsPacket implements Message {
   @Override
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsWriteResponse");
 
@@ -91,6 +92,7 @@ public class AdsWriteResponse extends AmsPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsWriteResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (result)
     lengthInBits += 32;
@@ -98,12 +100,13 @@ public class AdsWriteResponse extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsWriteResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsWriteResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ReturnCode result =
         readEnumField(
@@ -114,14 +117,13 @@ public class AdsWriteResponse extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsWriteResponse");
     // Create the instance
-    return new AdsWriteResponseBuilder(result);
+    return new AdsWriteResponseBuilderImpl(result);
   }
 
-  public static class AdsWriteResponseBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsWriteResponseBuilderImpl implements AmsPacket.AmsPacketBuilder {
     private final ReturnCode result;
 
-    public AdsWriteResponseBuilder(ReturnCode result) {
-
+    public AdsWriteResponseBuilderImpl(ReturnCode result) {
       this.result = result;
     }
 

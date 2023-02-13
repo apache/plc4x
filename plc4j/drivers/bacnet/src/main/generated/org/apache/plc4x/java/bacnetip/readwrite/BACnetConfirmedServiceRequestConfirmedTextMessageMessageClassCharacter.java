@@ -65,6 +65,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
   protected void serializeBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext(
         "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter");
@@ -85,6 +86,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (characterValue)
     lengthInBits += characterValue.getLengthInBits();
@@ -92,13 +94,15 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+      staticParseBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext(
         "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagCharacterString characterValue =
         readSimpleField(
@@ -115,19 +119,19 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
     readBuffer.closeContext(
         "BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter");
     // Create the instance
-    return new BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder(
+    return new BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilderImpl(
         characterValue, tagNumber);
   }
 
-  public static class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder
+  public static
+  class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilderImpl
       implements BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
           .BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
     private final BACnetContextTagCharacterString characterValue;
     private final Short tagNumber;
 
-    public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder(
+    public BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilderImpl(
         BACnetContextTagCharacterString characterValue, Short tagNumber) {
-
       this.characterValue = characterValue;
       this.tagNumber = tagNumber;
     }

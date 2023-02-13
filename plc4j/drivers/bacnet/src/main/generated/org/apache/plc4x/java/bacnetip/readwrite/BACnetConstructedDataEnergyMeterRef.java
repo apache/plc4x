@@ -78,6 +78,7 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEnergyMeterRef");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEnergyMeterRef _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (energyMeterRef)
     lengthInBits += energyMeterRef.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEnergyMeterRefBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference energyMeterRef =
         readSimpleField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataEnergyMeterRef");
     // Create the instance
-    return new BACnetConstructedDataEnergyMeterRefBuilder(
+    return new BACnetConstructedDataEnergyMeterRefBuilderImpl(
         energyMeterRef, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEnergyMeterRefBuilder
+  public static class BACnetConstructedDataEnergyMeterRefBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference energyMeterRef;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEnergyMeterRefBuilder(
+    public BACnetConstructedDataEnergyMeterRefBuilderImpl(
         BACnetDeviceObjectReference energyMeterRef,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.energyMeterRef = energyMeterRef;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

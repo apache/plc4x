@@ -78,6 +78,7 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProgramState");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataProgramState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (programState)
     lengthInBits += programState.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProgramStateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetProgramStateTagged programState =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataProgramState");
     // Create the instance
-    return new BACnetConstructedDataProgramStateBuilder(
+    return new BACnetConstructedDataProgramStateBuilderImpl(
         programState, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProgramStateBuilder
+  public static class BACnetConstructedDataProgramStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetProgramStateTagged programState;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProgramStateBuilder(
+    public BACnetConstructedDataProgramStateBuilderImpl(
         BACnetProgramStateTagged programState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.programState = programState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

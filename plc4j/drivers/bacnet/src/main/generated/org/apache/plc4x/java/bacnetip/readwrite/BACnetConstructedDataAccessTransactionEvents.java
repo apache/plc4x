@@ -75,6 +75,7 @@ public class BACnetConstructedDataAccessTransactionEvents extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessTransactionEvents");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataAccessTransactionEvents extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessTransactionEvents _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (accessTransactionEvents != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataAccessTransactionEvents extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessTransactionEventsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataAccessTransactionEvents extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetAccessEventTagged> accessTransactionEvents =
         readTerminatedArrayField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataAccessTransactionEvents extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataAccessTransactionEvents");
     // Create the instance
-    return new BACnetConstructedDataAccessTransactionEventsBuilder(
+    return new BACnetConstructedDataAccessTransactionEventsBuilderImpl(
         accessTransactionEvents, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessTransactionEventsBuilder
+  public static class BACnetConstructedDataAccessTransactionEventsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAccessEventTagged> accessTransactionEvents;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessTransactionEventsBuilder(
+    public BACnetConstructedDataAccessTransactionEventsBuilderImpl(
         List<BACnetAccessEventTagged> accessTransactionEvents,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessTransactionEvents = accessTransactionEvents;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

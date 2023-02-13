@@ -78,6 +78,7 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataUTCOffset");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataUTCOffset _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (utcOffset)
     lengthInBits += utcOffset.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataUTCOffsetBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger utcOffset =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataUTCOffset");
     // Create the instance
-    return new BACnetConstructedDataUTCOffsetBuilder(utcOffset, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataUTCOffsetBuilderImpl(utcOffset, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataUTCOffsetBuilder
+  public static class BACnetConstructedDataUTCOffsetBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger utcOffset;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUTCOffsetBuilder(
+    public BACnetConstructedDataUTCOffsetBuilderImpl(
         BACnetApplicationTagSignedInteger utcOffset,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.utcOffset = utcOffset;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

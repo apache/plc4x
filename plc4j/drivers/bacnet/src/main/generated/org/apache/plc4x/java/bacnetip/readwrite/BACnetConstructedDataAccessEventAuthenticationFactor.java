@@ -79,6 +79,7 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessEventAuthenticationFactor");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessEventAuthenticationFactor _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessEventAuthenticationFactor)
     lengthInBits += accessEventAuthenticationFactor.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessEventAuthenticationFactorBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAuthenticationFactor accessEventAuthenticationFactor =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
 
     readBuffer.closeContext("BACnetConstructedDataAccessEventAuthenticationFactor");
     // Create the instance
-    return new BACnetConstructedDataAccessEventAuthenticationFactorBuilder(
+    return new BACnetConstructedDataAccessEventAuthenticationFactorBuilderImpl(
         accessEventAuthenticationFactor, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessEventAuthenticationFactorBuilder
+  public static class BACnetConstructedDataAccessEventAuthenticationFactorBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAuthenticationFactor accessEventAuthenticationFactor;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessEventAuthenticationFactorBuilder(
+    public BACnetConstructedDataAccessEventAuthenticationFactorBuilderImpl(
         BACnetAuthenticationFactor accessEventAuthenticationFactor,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessEventAuthenticationFactor = accessEventAuthenticationFactor;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

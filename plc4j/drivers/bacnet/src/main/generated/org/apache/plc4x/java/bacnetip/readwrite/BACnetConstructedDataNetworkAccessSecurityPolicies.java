@@ -89,6 +89,7 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNetworkAccessSecurityPolicies");
 
@@ -119,6 +120,7 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNetworkAccessSecurityPolicies _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -137,7 +139,7 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -148,6 +150,7 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -172,23 +175,22 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
 
     readBuffer.closeContext("BACnetConstructedDataNetworkAccessSecurityPolicies");
     // Create the instance
-    return new BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder(
+    return new BACnetConstructedDataNetworkAccessSecurityPoliciesBuilderImpl(
         numberOfDataElements, networkAccessSecurityPolicies, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder
+  public static class BACnetConstructedDataNetworkAccessSecurityPoliciesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkAccessSecurityPoliciesBuilder(
+    public BACnetConstructedDataNetworkAccessSecurityPoliciesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.networkAccessSecurityPolicies = networkAccessSecurityPolicies;
       this.tagNumber = tagNumber;

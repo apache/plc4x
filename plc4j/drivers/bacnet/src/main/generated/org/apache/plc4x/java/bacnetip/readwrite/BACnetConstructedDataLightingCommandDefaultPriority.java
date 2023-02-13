@@ -79,6 +79,7 @@ public class BACnetConstructedDataLightingCommandDefaultPriority extends BACnetC
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLightingCommandDefaultPriority");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataLightingCommandDefaultPriority extends BACnetC
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLightingCommandDefaultPriority _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lightingCommandDefaultPriority)
     lengthInBits += lightingCommandDefaultPriority.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataLightingCommandDefaultPriority extends BACnetC
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLightingCommandDefaultPriorityBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataLightingCommandDefaultPriority extends BACnetC
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority =
         readSimpleField(
@@ -141,21 +144,20 @@ public class BACnetConstructedDataLightingCommandDefaultPriority extends BACnetC
 
     readBuffer.closeContext("BACnetConstructedDataLightingCommandDefaultPriority");
     // Create the instance
-    return new BACnetConstructedDataLightingCommandDefaultPriorityBuilder(
+    return new BACnetConstructedDataLightingCommandDefaultPriorityBuilderImpl(
         lightingCommandDefaultPriority, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLightingCommandDefaultPriorityBuilder
+  public static class BACnetConstructedDataLightingCommandDefaultPriorityBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLightingCommandDefaultPriorityBuilder(
+    public BACnetConstructedDataLightingCommandDefaultPriorityBuilderImpl(
         BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lightingCommandDefaultPriority = lightingCommandDefaultPriority;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

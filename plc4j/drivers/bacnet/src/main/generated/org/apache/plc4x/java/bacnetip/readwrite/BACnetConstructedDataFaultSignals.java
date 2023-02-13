@@ -74,6 +74,7 @@ public class BACnetConstructedDataFaultSignals extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFaultSignals");
 
@@ -92,6 +93,7 @@ public class BACnetConstructedDataFaultSignals extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFaultSignals _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (faultSignals != null) {
@@ -103,7 +105,7 @@ public class BACnetConstructedDataFaultSignals extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFaultSignalsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -114,6 +116,7 @@ public class BACnetConstructedDataFaultSignals extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLiftFaultTagged> faultSignals =
         readTerminatedArrayField(
@@ -130,21 +133,20 @@ public class BACnetConstructedDataFaultSignals extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataFaultSignals");
     // Create the instance
-    return new BACnetConstructedDataFaultSignalsBuilder(
+    return new BACnetConstructedDataFaultSignalsBuilderImpl(
         faultSignals, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFaultSignalsBuilder
+  public static class BACnetConstructedDataFaultSignalsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLiftFaultTagged> faultSignals;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFaultSignalsBuilder(
+    public BACnetConstructedDataFaultSignalsBuilderImpl(
         List<BACnetLiftFaultTagged> faultSignals,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultSignals = faultSignals;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

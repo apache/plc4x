@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -118,12 +119,8 @@ func (m *_COTPPacketData) GetTypeName() string {
 	return "COTPPacketData"
 }
 
-func (m *_COTPPacketData) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_COTPPacketData) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_COTPPacketData) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (eot)
 	lengthInBits += 1
@@ -134,15 +131,15 @@ func (m *_COTPPacketData) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_COTPPacketData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_COTPPacketData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func COTPPacketDataParse(theBytes []byte, cotpLen uint16) (COTPPacketData, error) {
-	return COTPPacketDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cotpLen)
+	return COTPPacketDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
-func COTPPacketDataParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketData, error) {
+func COTPPacketDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("COTPPacketData"); pullErr != nil {
@@ -182,14 +179,14 @@ func COTPPacketDataParseWithBuffer(readBuffer utils.ReadBuffer, cotpLen uint16) 
 }
 
 func (m *_COTPPacketData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_COTPPacketData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_COTPPacketData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +213,7 @@ func (m *_COTPPacketData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_COTPPacketData) isCOTPPacketData() bool {
@@ -228,7 +225,7 @@ func (m *_COTPPacketData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

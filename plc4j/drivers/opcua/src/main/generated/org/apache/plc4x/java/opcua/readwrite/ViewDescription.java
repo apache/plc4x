@@ -70,6 +70,7 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ViewDescription");
 
@@ -94,6 +95,7 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ViewDescription _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (viewId)
     lengthInBits += viewId.getLengthInBits();
@@ -107,12 +109,13 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static ViewDescriptionBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ViewDescription");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId viewId =
         readSimpleField(
@@ -125,17 +128,16 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("ViewDescription");
     // Create the instance
-    return new ViewDescriptionBuilder(viewId, timestamp, viewVersion);
+    return new ViewDescriptionBuilderImpl(viewId, timestamp, viewVersion);
   }
 
-  public static class ViewDescriptionBuilder
+  public static class ViewDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId viewId;
     private final long timestamp;
     private final long viewVersion;
 
-    public ViewDescriptionBuilder(NodeId viewId, long timestamp, long viewVersion) {
-
+    public ViewDescriptionBuilderImpl(NodeId viewId, long timestamp, long viewVersion) {
       this.viewId = viewId;
       this.timestamp = timestamp;
       this.viewVersion = viewVersion;

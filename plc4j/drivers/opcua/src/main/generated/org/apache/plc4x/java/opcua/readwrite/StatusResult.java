@@ -64,6 +64,7 @@ public class StatusResult extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusResult");
 
@@ -85,6 +86,7 @@ public class StatusResult extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     StatusResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -95,12 +97,13 @@ public class StatusResult extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static StatusResultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("StatusResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(
@@ -115,16 +118,15 @@ public class StatusResult extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("StatusResult");
     // Create the instance
-    return new StatusResultBuilder(statusCode, diagnosticInfo);
+    return new StatusResultBuilderImpl(statusCode, diagnosticInfo);
   }
 
-  public static class StatusResultBuilder
+  public static class StatusResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final DiagnosticInfo diagnosticInfo;
 
-    public StatusResultBuilder(StatusCode statusCode, DiagnosticInfo diagnosticInfo) {
-
+    public StatusResultBuilderImpl(StatusCode statusCode, DiagnosticInfo diagnosticInfo) {
       this.statusCode = statusCode;
       this.diagnosticInfo = diagnosticInfo;
     }

@@ -67,6 +67,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
   protected void serializeBACnetConfirmedServiceRequestReadRangeRangeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRangeByTime");
 
@@ -88,6 +89,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestReadRangeRangeByTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (referenceTime)
     lengthInBits += referenceTime.getLengthInBits();
@@ -98,12 +100,14 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetConfirmedServiceRequestReadRangeRangeBuilder
+      staticParseBACnetConfirmedServiceRequestReadRangeRangeBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReadRangeRangeByTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime referenceTime =
         readSimpleField(
@@ -122,18 +126,17 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestReadRangeRangeByTime");
     // Create the instance
-    return new BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder(referenceTime, count);
+    return new BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilderImpl(referenceTime, count);
   }
 
-  public static class BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder
+  public static class BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilderImpl
       implements BACnetConfirmedServiceRequestReadRangeRange
           .BACnetConfirmedServiceRequestReadRangeRangeBuilder {
     private final BACnetDateTime referenceTime;
     private final BACnetApplicationTagSignedInteger count;
 
-    public BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder(
+    public BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilderImpl(
         BACnetDateTime referenceTime, BACnetApplicationTagSignedInteger count) {
-
       this.referenceTime = referenceTime;
       this.count = count;
     }

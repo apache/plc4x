@@ -88,6 +88,7 @@ public class BACnetConstructedDataObjectList extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataObjectList");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataObjectList extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataObjectList _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataObjectList extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataObjectListBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataObjectList extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -173,23 +176,22 @@ public class BACnetConstructedDataObjectList extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataObjectList");
     // Create the instance
-    return new BACnetConstructedDataObjectListBuilder(
+    return new BACnetConstructedDataObjectListBuilderImpl(
         numberOfDataElements, objectList, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataObjectListBuilder
+  public static class BACnetConstructedDataObjectListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagObjectIdentifier> objectList;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataObjectListBuilder(
+    public BACnetConstructedDataObjectListBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagObjectIdentifier> objectList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.objectList = objectList;
       this.tagNumber = tagNumber;

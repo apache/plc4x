@@ -62,11 +62,13 @@ public class BVLCReadBroadcastDistributionTableAck extends BVLC implements Messa
   @Override
   protected void serializeBVLCChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BVLCReadBroadcastDistributionTableAck");
 
     // Array Field (table)
-    writeComplexTypeArrayField("table", table, writeBuffer);
+    writeComplexTypeArrayField(
+        "table", table, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("BVLCReadBroadcastDistributionTableAck");
   }
@@ -80,6 +82,7 @@ public class BVLCReadBroadcastDistributionTableAck extends BVLC implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BVLCReadBroadcastDistributionTableAck _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (table != null) {
@@ -91,12 +94,13 @@ public class BVLCReadBroadcastDistributionTableAck extends BVLC implements Messa
     return lengthInBits;
   }
 
-  public static BVLCReadBroadcastDistributionTableAckBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer bvlcPayloadLength) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer, Integer bvlcPayloadLength)
+      throws ParseException {
     readBuffer.pullContext("BVLCReadBroadcastDistributionTableAck");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BVLCBroadcastDistributionTableEntry> table =
         readLengthArrayField(
@@ -108,16 +112,15 @@ public class BVLCReadBroadcastDistributionTableAck extends BVLC implements Messa
 
     readBuffer.closeContext("BVLCReadBroadcastDistributionTableAck");
     // Create the instance
-    return new BVLCReadBroadcastDistributionTableAckBuilder(table, bvlcPayloadLength);
+    return new BVLCReadBroadcastDistributionTableAckBuilderImpl(table, bvlcPayloadLength);
   }
 
-  public static class BVLCReadBroadcastDistributionTableAckBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCReadBroadcastDistributionTableAckBuilderImpl implements BVLC.BVLCBuilder {
     private final List<BVLCBroadcastDistributionTableEntry> table;
     private final Integer bvlcPayloadLength;
 
-    public BVLCReadBroadcastDistributionTableAckBuilder(
+    public BVLCReadBroadcastDistributionTableAckBuilderImpl(
         List<BVLCBroadcastDistributionTableEntry> table, Integer bvlcPayloadLength) {
-
       this.table = table;
       this.bvlcPayloadLength = bvlcPayloadLength;
     }

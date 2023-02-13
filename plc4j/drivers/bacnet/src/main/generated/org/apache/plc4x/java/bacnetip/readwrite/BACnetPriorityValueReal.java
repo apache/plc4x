@@ -62,6 +62,7 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueReal");
 
@@ -80,6 +81,7 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueReal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (realValue)
     lengthInBits += realValue.getLengthInBits();
@@ -87,12 +89,13 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueRealBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueReal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal realValue =
         readSimpleField(
@@ -103,17 +106,16 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
 
     readBuffer.closeContext("BACnetPriorityValueReal");
     // Create the instance
-    return new BACnetPriorityValueRealBuilder(realValue, objectTypeArgument);
+    return new BACnetPriorityValueRealBuilderImpl(realValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueRealBuilder
+  public static class BACnetPriorityValueRealBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagReal realValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueRealBuilder(
+    public BACnetPriorityValueRealBuilderImpl(
         BACnetApplicationTagReal realValue, BACnetObjectType objectTypeArgument) {
-
       this.realValue = realValue;
       this.objectTypeArgument = objectTypeArgument;
     }

@@ -79,6 +79,7 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAckedTransitions");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAckedTransitions _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ackedTransitions)
     lengthInBits += ackedTransitions.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAckedTransitionsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEventTransitionBitsTagged ackedTransitions =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataAckedTransitions");
     // Create the instance
-    return new BACnetConstructedDataAckedTransitionsBuilder(
+    return new BACnetConstructedDataAckedTransitionsBuilderImpl(
         ackedTransitions, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAckedTransitionsBuilder
+  public static class BACnetConstructedDataAckedTransitionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEventTransitionBitsTagged ackedTransitions;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAckedTransitionsBuilder(
+    public BACnetConstructedDataAckedTransitionsBuilderImpl(
         BACnetEventTransitionBitsTagged ackedTransitions,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ackedTransitions = ackedTransitions;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

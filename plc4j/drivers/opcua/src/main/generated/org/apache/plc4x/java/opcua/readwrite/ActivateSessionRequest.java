@@ -108,6 +108,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ActivateSessionRequest");
 
@@ -154,6 +155,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ActivateSessionRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -168,7 +170,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     if (clientSoftwareCertificates != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : clientSoftwareCertificates) {
-        boolean last = ++i >= clientSoftwareCertificates.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= clientSoftwareCertificates.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -180,7 +182,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     if (localeIds != null) {
       int i = 0;
       for (PascalString element : localeIds) {
-        boolean last = ++i >= localeIds.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= localeIds.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -194,12 +196,13 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static ActivateSessionRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ActivateSessionRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -249,7 +252,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("ActivateSessionRequest");
     // Create the instance
-    return new ActivateSessionRequestBuilder(
+    return new ActivateSessionRequestBuilderImpl(
         requestHeader,
         clientSignature,
         noOfClientSoftwareCertificates,
@@ -260,7 +263,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
         userTokenSignature);
   }
 
-  public static class ActivateSessionRequestBuilder
+  public static class ActivateSessionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObjectDefinition clientSignature;
@@ -271,7 +274,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     private final ExtensionObject userIdentityToken;
     private final ExtensionObjectDefinition userTokenSignature;
 
-    public ActivateSessionRequestBuilder(
+    public ActivateSessionRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         ExtensionObjectDefinition clientSignature,
         int noOfClientSoftwareCertificates,
@@ -280,7 +283,6 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
         List<PascalString> localeIds,
         ExtensionObject userIdentityToken,
         ExtensionObjectDefinition userTokenSignature) {
-
       this.requestHeader = requestHeader;
       this.clientSignature = clientSignature;
       this.noOfClientSoftwareCertificates = noOfClientSoftwareCertificates;

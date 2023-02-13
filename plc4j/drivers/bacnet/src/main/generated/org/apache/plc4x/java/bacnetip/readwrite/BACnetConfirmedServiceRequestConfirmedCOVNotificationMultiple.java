@@ -93,6 +93,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple");
 
@@ -132,6 +133,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (subscriberProcessIdentifier)
     lengthInBits += subscriberProcessIdentifier.getLengthInBits();
@@ -153,12 +155,14 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger subscriberProcessIdentifier =
         readSimpleField(
@@ -210,7 +214,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple");
     // Create the instance
-    return new BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder(
+    return new BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilderImpl(
         subscriberProcessIdentifier,
         initiatingDeviceIdentifier,
         timeRemaining,
@@ -219,7 +223,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder
+  public static class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger subscriberProcessIdentifier;
     private final BACnetContextTagObjectIdentifier initiatingDeviceIdentifier;
@@ -228,14 +232,13 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
     private final ListOfCovNotificationsList listOfCovNotifications;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilder(
+    public BACnetConfirmedServiceRequestConfirmedCOVNotificationMultipleBuilderImpl(
         BACnetContextTagUnsignedInteger subscriberProcessIdentifier,
         BACnetContextTagObjectIdentifier initiatingDeviceIdentifier,
         BACnetContextTagUnsignedInteger timeRemaining,
         BACnetTimeStampEnclosed timestamp,
         ListOfCovNotificationsList listOfCovNotifications,
         Long serviceRequestLength) {
-
       this.subscriberProcessIdentifier = subscriberProcessIdentifier;
       this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
       this.timeRemaining = timeRemaining;

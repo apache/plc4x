@@ -67,6 +67,7 @@ public class MediaTransportControlDataNextPreviousSelection extends MediaTranspo
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataNextPreviousSelection");
 
@@ -93,6 +94,7 @@ public class MediaTransportControlDataNextPreviousSelection extends MediaTranspo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataNextPreviousSelection _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (operation)
     lengthInBits += 8;
@@ -104,12 +106,13 @@ public class MediaTransportControlDataNextPreviousSelection extends MediaTranspo
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataNextPreviousSelectionBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataNextPreviousSelection");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte operation = readSimpleField("operation", readByte(readBuffer, 8));
     boolean isSetThePreviousSelection =
@@ -119,15 +122,14 @@ public class MediaTransportControlDataNextPreviousSelection extends MediaTranspo
 
     readBuffer.closeContext("MediaTransportControlDataNextPreviousSelection");
     // Create the instance
-    return new MediaTransportControlDataNextPreviousSelectionBuilder(operation);
+    return new MediaTransportControlDataNextPreviousSelectionBuilderImpl(operation);
   }
 
-  public static class MediaTransportControlDataNextPreviousSelectionBuilder
+  public static class MediaTransportControlDataNextPreviousSelectionBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte operation;
 
-    public MediaTransportControlDataNextPreviousSelectionBuilder(byte operation) {
-
+    public MediaTransportControlDataNextPreviousSelectionBuilderImpl(byte operation) {
       this.operation = operation;
     }
 

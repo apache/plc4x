@@ -69,12 +69,12 @@ public class VariantSByte extends Variant implements Message {
   @Override
   protected void serializeVariantChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("VariantSByte");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeByteArrayField("value", value, writeByteArray(writeBuffer, 8));
@@ -91,6 +91,7 @@ public class VariantSByte extends Variant implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     VariantSByte _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (arrayLength)
     if (arrayLength != null) {
@@ -105,12 +106,13 @@ public class VariantSByte extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantSByteBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantSByte");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer arrayLength =
         readOptionalField("arrayLength", readSignedInt(readBuffer, 32), arrayLengthSpecified);
@@ -121,15 +123,14 @@ public class VariantSByte extends Variant implements Message {
 
     readBuffer.closeContext("VariantSByte");
     // Create the instance
-    return new VariantSByteBuilder(arrayLength, value);
+    return new VariantSByteBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantSByteBuilder implements Variant.VariantBuilder {
+  public static class VariantSByteBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final byte[] value;
 
-    public VariantSByteBuilder(Integer arrayLength, byte[] value) {
-
+    public VariantSByteBuilderImpl(Integer arrayLength, byte[] value) {
       this.arrayLength = arrayLength;
       this.value = value;
     }

@@ -60,6 +60,7 @@ public abstract class BACnetScale implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetScale");
 
@@ -82,6 +83,7 @@ public abstract class BACnetScale implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetScale _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -101,6 +103,7 @@ public abstract class BACnetScale implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -113,9 +116,9 @@ public abstract class BACnetScale implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetScaleBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetScaleFloatScale.staticParseBuilder(readBuffer);
+      builder = BACnetScaleFloatScale.staticParseBACnetScaleBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetScaleIntegerScale.staticParseBuilder(readBuffer);
+      builder = BACnetScaleIntegerScale.staticParseBACnetScaleBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -132,7 +135,7 @@ public abstract class BACnetScale implements Message {
     return _bACnetScale;
   }
 
-  public static interface BACnetScaleBuilder {
+  public interface BACnetScaleBuilder {
     BACnetScale build(BACnetTagHeader peekedTagHeader);
   }
 

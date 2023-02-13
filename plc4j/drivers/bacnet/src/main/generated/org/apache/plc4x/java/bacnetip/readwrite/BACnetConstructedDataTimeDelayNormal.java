@@ -78,6 +78,7 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimeDelayNormal");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimeDelayNormal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeDelayNormal)
     lengthInBits += timeDelayNormal.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimeDelayNormalBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger timeDelayNormal =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataTimeDelayNormal extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataTimeDelayNormal");
     // Create the instance
-    return new BACnetConstructedDataTimeDelayNormalBuilder(
+    return new BACnetConstructedDataTimeDelayNormalBuilderImpl(
         timeDelayNormal, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimeDelayNormalBuilder
+  public static class BACnetConstructedDataTimeDelayNormalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger timeDelayNormal;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimeDelayNormalBuilder(
+    public BACnetConstructedDataTimeDelayNormalBuilderImpl(
         BACnetApplicationTagUnsignedInteger timeDelayNormal,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timeDelayNormal = timeDelayNormal;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

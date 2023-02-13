@@ -79,6 +79,7 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLandingCallControl");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLandingCallControl _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (landingCallControl)
     lengthInBits += landingCallControl.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLandingCallControlBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLandingCallStatus landingCallControl =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataLandingCallControl");
     // Create the instance
-    return new BACnetConstructedDataLandingCallControlBuilder(
+    return new BACnetConstructedDataLandingCallControlBuilderImpl(
         landingCallControl, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLandingCallControlBuilder
+  public static class BACnetConstructedDataLandingCallControlBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLandingCallStatus landingCallControl;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLandingCallControlBuilder(
+    public BACnetConstructedDataLandingCallControlBuilderImpl(
         BACnetLandingCallStatus landingCallControl,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.landingCallControl = landingCallControl;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

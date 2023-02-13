@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -90,10 +91,14 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetOperation() byte {
 ///////////////////////
 
 func (m *_MediaTransportControlDataNextPreviousSelection) GetIsSetThePreviousSelection() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) == (0x00)))
 }
 
 func (m *_MediaTransportControlDataNextPreviousSelection) GetIsSetTheNextSelection() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) != (0x00)))
 }
 
@@ -127,12 +132,8 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetTypeName() string {
 	return "MediaTransportControlDataNextPreviousSelection"
 }
 
-func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (operation)
 	lengthInBits += 8
@@ -144,15 +145,15 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBitsConditi
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataNextPreviousSelection) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataNextPreviousSelectionParse(theBytes []byte) (MediaTransportControlDataNextPreviousSelection, error) {
-	return MediaTransportControlDataNextPreviousSelectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataNextPreviousSelectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataNextPreviousSelectionParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousSelection, error) {
+func MediaTransportControlDataNextPreviousSelectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousSelection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataNextPreviousSelection"); pullErr != nil {
@@ -192,14 +193,14 @@ func MediaTransportControlDataNextPreviousSelectionParseWithBuffer(readBuffer ut
 }
 
 func (m *_MediaTransportControlDataNextPreviousSelection) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataNextPreviousSelection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataNextPreviousSelection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -214,11 +215,11 @@ func (m *_MediaTransportControlDataNextPreviousSelection) SerializeWithWriteBuff
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}
 		// Virtual field
-		if _isSetThePreviousSelectionErr := writeBuffer.WriteVirtual("isSetThePreviousSelection", m.GetIsSetThePreviousSelection()); _isSetThePreviousSelectionErr != nil {
+		if _isSetThePreviousSelectionErr := writeBuffer.WriteVirtual(ctx, "isSetThePreviousSelection", m.GetIsSetThePreviousSelection()); _isSetThePreviousSelectionErr != nil {
 			return errors.Wrap(_isSetThePreviousSelectionErr, "Error serializing 'isSetThePreviousSelection' field")
 		}
 		// Virtual field
-		if _isSetTheNextSelectionErr := writeBuffer.WriteVirtual("isSetTheNextSelection", m.GetIsSetTheNextSelection()); _isSetTheNextSelectionErr != nil {
+		if _isSetTheNextSelectionErr := writeBuffer.WriteVirtual(ctx, "isSetTheNextSelection", m.GetIsSetTheNextSelection()); _isSetTheNextSelectionErr != nil {
 			return errors.Wrap(_isSetTheNextSelectionErr, "Error serializing 'isSetTheNextSelection' field")
 		}
 
@@ -227,7 +228,7 @@ func (m *_MediaTransportControlDataNextPreviousSelection) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataNextPreviousSelection) isMediaTransportControlDataNextPreviousSelection() bool {
@@ -239,7 +240,7 @@ func (m *_MediaTransportControlDataNextPreviousSelection) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

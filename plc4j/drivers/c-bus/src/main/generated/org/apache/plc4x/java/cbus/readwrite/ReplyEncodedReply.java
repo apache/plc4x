@@ -79,6 +79,7 @@ public class ReplyEncodedReply extends Reply implements Message {
   @Override
   protected void serializeReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReplyEncodedReply");
 
@@ -118,6 +119,7 @@ public class ReplyEncodedReply extends Reply implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ReplyEncodedReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Manual Field (encodedReply)
     lengthInBits += (((encodedReply.getLengthInBytes()) * (2))) * (8);
@@ -132,13 +134,14 @@ public class ReplyEncodedReply extends Reply implements Message {
     return lengthInBits;
   }
 
-  public static ReplyEncodedReplyBuilder staticParseBuilder(
+  public static ReplyBuilder staticParseReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("ReplyEncodedReply");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     EncodedReply encodedReply =
         readManualField(
@@ -164,21 +167,20 @@ public class ReplyEncodedReply extends Reply implements Message {
 
     readBuffer.closeContext("ReplyEncodedReply");
     // Create the instance
-    return new ReplyEncodedReplyBuilder(encodedReply, chksum, cBusOptions, requestContext);
+    return new ReplyEncodedReplyBuilderImpl(encodedReply, chksum, cBusOptions, requestContext);
   }
 
-  public static class ReplyEncodedReplyBuilder implements Reply.ReplyBuilder {
+  public static class ReplyEncodedReplyBuilderImpl implements Reply.ReplyBuilder {
     private final EncodedReply encodedReply;
     private final Checksum chksum;
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public ReplyEncodedReplyBuilder(
+    public ReplyEncodedReplyBuilderImpl(
         EncodedReply encodedReply,
         Checksum chksum,
         CBusOptions cBusOptions,
         RequestContext requestContext) {
-
       this.encodedReply = encodedReply;
       this.chksum = chksum;
       this.cBusOptions = cBusOptions;

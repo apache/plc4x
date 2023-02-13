@@ -65,6 +65,7 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
   protected void serializeBACnetFaultParameterFaultOutOfRangeMinNormalValueChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned");
 
@@ -83,6 +84,7 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unsignedValue)
     lengthInBits += unsignedValue.getLengthInBits();
@@ -90,12 +92,14 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder
+      staticParseBACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
@@ -108,19 +112,18 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsigned");
     // Create the instance
-    return new BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder(
+    return new BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilderImpl(
         unsignedValue, tagNumber);
   }
 
-  public static class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder
+  public static class BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilderImpl
       implements BACnetFaultParameterFaultOutOfRangeMinNormalValue
           .BACnetFaultParameterFaultOutOfRangeMinNormalValueBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
     private final Short tagNumber;
 
-    public BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilder(
+    public BACnetFaultParameterFaultOutOfRangeMinNormalValueUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue, Short tagNumber) {
-
       this.unsignedValue = unsignedValue;
       this.tagNumber = tagNumber;
     }

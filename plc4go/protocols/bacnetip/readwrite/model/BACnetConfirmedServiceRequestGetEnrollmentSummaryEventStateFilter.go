@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,19 +106,19 @@ func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter(struc
 	return castFunc(structType)
 }
 
-func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLengthInBits() uint16 {
+func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(theBytes []byte) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
-	return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParse(ctx context.Context, theBytes []byte) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
+	return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, error) {
 	val, err := readBuffer.ReadUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter")
@@ -132,13 +133,13 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterParseWithB
 
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

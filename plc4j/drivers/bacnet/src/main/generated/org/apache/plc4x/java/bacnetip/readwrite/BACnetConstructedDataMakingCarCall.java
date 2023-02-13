@@ -88,6 +88,7 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMakingCarCall");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMakingCarCall _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMakingCarCallBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -173,23 +176,22 @@ public class BACnetConstructedDataMakingCarCall extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataMakingCarCall");
     // Create the instance
-    return new BACnetConstructedDataMakingCarCallBuilder(
+    return new BACnetConstructedDataMakingCarCallBuilderImpl(
         numberOfDataElements, makingCarCall, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMakingCarCallBuilder
+  public static class BACnetConstructedDataMakingCarCallBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagUnsignedInteger> makingCarCall;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMakingCarCallBuilder(
+    public BACnetConstructedDataMakingCarCallBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagUnsignedInteger> makingCarCall,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.makingCarCall = makingCarCall;
       this.tagNumber = tagNumber;

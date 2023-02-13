@@ -79,6 +79,7 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNetworkPortMaxMaster");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNetworkPortMaxMaster _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxMaster)
     lengthInBits += maxMaster.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNetworkPortMaxMasterBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxMaster =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataNetworkPortMaxMaster extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataNetworkPortMaxMaster");
     // Create the instance
-    return new BACnetConstructedDataNetworkPortMaxMasterBuilder(
+    return new BACnetConstructedDataNetworkPortMaxMasterBuilderImpl(
         maxMaster, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNetworkPortMaxMasterBuilder
+  public static class BACnetConstructedDataNetworkPortMaxMasterBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxMaster;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkPortMaxMasterBuilder(
+    public BACnetConstructedDataNetworkPortMaxMasterBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxMaster,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxMaster = maxMaster;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

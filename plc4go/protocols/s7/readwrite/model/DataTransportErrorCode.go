@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,19 +112,19 @@ func CastDataTransportErrorCode(structType interface{}) DataTransportErrorCode {
 	return castFunc(structType)
 }
 
-func (m DataTransportErrorCode) GetLengthInBits() uint16 {
+func (m DataTransportErrorCode) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m DataTransportErrorCode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m DataTransportErrorCode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func DataTransportErrorCodeParse(theBytes []byte) (DataTransportErrorCode, error) {
-	return DataTransportErrorCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func DataTransportErrorCodeParse(ctx context.Context, theBytes []byte) (DataTransportErrorCode, error) {
+	return DataTransportErrorCodeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func DataTransportErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTransportErrorCode, error) {
+func DataTransportErrorCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataTransportErrorCode, error) {
 	val, err := readBuffer.ReadUint8("DataTransportErrorCode", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DataTransportErrorCode")
@@ -138,13 +139,13 @@ func DataTransportErrorCodeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTra
 
 func (e DataTransportErrorCode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e DataTransportErrorCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e DataTransportErrorCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("DataTransportErrorCode", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

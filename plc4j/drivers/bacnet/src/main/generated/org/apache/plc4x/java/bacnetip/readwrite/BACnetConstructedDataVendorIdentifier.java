@@ -79,6 +79,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataVendorIdentifier");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataVendorIdentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (vendorIdentifier)
     lengthInBits += vendorIdentifier.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataVendorIdentifierBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetVendorIdTagged vendorIdentifier =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataVendorIdentifier");
     // Create the instance
-    return new BACnetConstructedDataVendorIdentifierBuilder(
+    return new BACnetConstructedDataVendorIdentifierBuilderImpl(
         vendorIdentifier, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataVendorIdentifierBuilder
+  public static class BACnetConstructedDataVendorIdentifierBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetVendorIdTagged vendorIdentifier;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataVendorIdentifierBuilder(
+    public BACnetConstructedDataVendorIdentifierBuilderImpl(
         BACnetVendorIdTagged vendorIdentifier,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.vendorIdentifier = vendorIdentifier;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

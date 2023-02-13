@@ -53,8 +53,6 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
   protected final List<PascalString> discoveryUrls;
   protected final PascalString semaphoreFilePath;
   protected final boolean isOnline;
-  // Reserved Fields
-  private Short reservedField0;
 
   public RegisteredServer(
       PascalString serverUri,
@@ -124,6 +122,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisteredServer");
 
@@ -162,10 +161,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         "semaphoreFilePath", semaphoreFilePath, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (isOnline)
     writeSimpleField("isOnline", isOnline, writeBoolean(writeBuffer));
@@ -182,6 +178,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RegisteredServer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (serverUri)
     lengthInBits += serverUri.getLengthInBits();
@@ -196,7 +193,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     if (serverNames != null) {
       int i = 0;
       for (LocalizedText element : serverNames) {
-        boolean last = ++i >= serverNames.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverNames.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -214,7 +211,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     if (discoveryUrls != null) {
       int i = 0;
       for (PascalString element : discoveryUrls) {
-        boolean last = ++i >= discoveryUrls.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= discoveryUrls.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -231,12 +228,13 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static RegisteredServerBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisteredServer");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString serverUri =
         readSimpleField(
@@ -288,7 +286,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("RegisteredServer");
     // Create the instance
-    return new RegisteredServerBuilder(
+    return new RegisteredServerBuilderImpl(
         serverUri,
         productUri,
         noOfServerNames,
@@ -298,11 +296,10 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         noOfDiscoveryUrls,
         discoveryUrls,
         semaphoreFilePath,
-        isOnline,
-        reservedField0);
+        isOnline);
   }
 
-  public static class RegisteredServerBuilder
+  public static class RegisteredServerBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString serverUri;
     private final PascalString productUri;
@@ -314,9 +311,8 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     private final List<PascalString> discoveryUrls;
     private final PascalString semaphoreFilePath;
     private final boolean isOnline;
-    private final Short reservedField0;
 
-    public RegisteredServerBuilder(
+    public RegisteredServerBuilderImpl(
         PascalString serverUri,
         PascalString productUri,
         int noOfServerNames,
@@ -326,8 +322,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         int noOfDiscoveryUrls,
         List<PascalString> discoveryUrls,
         PascalString semaphoreFilePath,
-        boolean isOnline,
-        Short reservedField0) {
+        boolean isOnline) {
       this.serverUri = serverUri;
       this.productUri = productUri;
       this.noOfServerNames = noOfServerNames;
@@ -338,7 +333,6 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
       this.discoveryUrls = discoveryUrls;
       this.semaphoreFilePath = semaphoreFilePath;
       this.isOnline = isOnline;
-      this.reservedField0 = reservedField0;
     }
 
     public RegisteredServer build() {
@@ -354,7 +348,6 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
               discoveryUrls,
               semaphoreFilePath,
               isOnline);
-      registeredServer.reservedField0 = reservedField0;
       return registeredServer;
     }
   }

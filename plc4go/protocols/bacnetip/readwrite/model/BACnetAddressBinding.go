@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,31 +88,27 @@ func (m *_BACnetAddressBinding) GetTypeName() string {
 	return "BACnetAddressBinding"
 }
 
-func (m *_BACnetAddressBinding) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAddressBinding) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAddressBinding) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (deviceIdentifier)
-	lengthInBits += m.DeviceIdentifier.GetLengthInBits()
+	lengthInBits += m.DeviceIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (deviceAddress)
-	lengthInBits += m.DeviceAddress.GetLengthInBits()
+	lengthInBits += m.DeviceAddress.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetAddressBinding) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAddressBinding) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAddressBindingParse(theBytes []byte) (BACnetAddressBinding, error) {
-	return BACnetAddressBindingParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetAddressBindingParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAddressBindingParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
+func BACnetAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAddressBinding"); pullErr != nil {
@@ -124,7 +121,7 @@ func BACnetAddressBindingParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAdd
 	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
 	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _deviceIdentifierErr != nil {
 		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetAddressBinding")
 	}
@@ -137,7 +134,7 @@ func BACnetAddressBindingParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAdd
 	if pullErr := readBuffer.PullContext("deviceAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deviceAddress")
 	}
-	_deviceAddress, _deviceAddressErr := BACnetAddressParseWithBuffer(readBuffer)
+	_deviceAddress, _deviceAddressErr := BACnetAddressParseWithBuffer(ctx, readBuffer)
 	if _deviceAddressErr != nil {
 		return nil, errors.Wrap(_deviceAddressErr, "Error parsing 'deviceAddress' field of BACnetAddressBinding")
 	}
@@ -158,14 +155,14 @@ func BACnetAddressBindingParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAdd
 }
 
 func (m *_BACnetAddressBinding) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAddressBinding) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAddressBinding) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAddressBinding"); pushErr != nil {
@@ -176,7 +173,7 @@ func (m *_BACnetAddressBinding) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("deviceIdentifier"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for deviceIdentifier")
 	}
-	_deviceIdentifierErr := writeBuffer.WriteSerializable(m.GetDeviceIdentifier())
+	_deviceIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceIdentifier())
 	if popErr := writeBuffer.PopContext("deviceIdentifier"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for deviceIdentifier")
 	}
@@ -188,7 +185,7 @@ func (m *_BACnetAddressBinding) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("deviceAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for deviceAddress")
 	}
-	_deviceAddressErr := writeBuffer.WriteSerializable(m.GetDeviceAddress())
+	_deviceAddressErr := writeBuffer.WriteSerializable(ctx, m.GetDeviceAddress())
 	if popErr := writeBuffer.PopContext("deviceAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for deviceAddress")
 	}
@@ -211,7 +208,7 @@ func (m *_BACnetAddressBinding) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

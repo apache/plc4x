@@ -64,6 +64,7 @@ public class CreateObjectError extends BACnetError implements Message {
   @Override
   protected void serializeBACnetErrorChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CreateObjectError");
 
@@ -88,6 +89,7 @@ public class CreateObjectError extends BACnetError implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CreateObjectError _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (errorType)
     lengthInBits += errorType.getLengthInBits();
@@ -98,12 +100,13 @@ public class CreateObjectError extends BACnetError implements Message {
     return lengthInBits;
   }
 
-  public static CreateObjectErrorBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("CreateObjectError");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed errorType =
         readSimpleField(
@@ -125,16 +128,15 @@ public class CreateObjectError extends BACnetError implements Message {
 
     readBuffer.closeContext("CreateObjectError");
     // Create the instance
-    return new CreateObjectErrorBuilder(errorType, firstFailedElementNumber);
+    return new CreateObjectErrorBuilderImpl(errorType, firstFailedElementNumber);
   }
 
-  public static class CreateObjectErrorBuilder implements BACnetError.BACnetErrorBuilder {
+  public static class CreateObjectErrorBuilderImpl implements BACnetError.BACnetErrorBuilder {
     private final ErrorEnclosed errorType;
     private final BACnetContextTagUnsignedInteger firstFailedElementNumber;
 
-    public CreateObjectErrorBuilder(
+    public CreateObjectErrorBuilderImpl(
         ErrorEnclosed errorType, BACnetContextTagUnsignedInteger firstFailedElementNumber) {
-
       this.errorType = errorType;
       this.firstFailedElementNumber = firstFailedElementNumber;
     }

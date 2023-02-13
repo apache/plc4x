@@ -85,6 +85,7 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterChangeOfBitstring");
 
@@ -118,6 +119,7 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterChangeOfBitstring _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -137,12 +139,13 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfBitstringBuilder staticParseBuilder(
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfBitstring");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -189,11 +192,11 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
 
     readBuffer.closeContext("BACnetEventParameterChangeOfBitstring");
     // Create the instance
-    return new BACnetEventParameterChangeOfBitstringBuilder(
+    return new BACnetEventParameterChangeOfBitstringBuilderImpl(
         openingTag, timeDelay, bitmask, listOfBitstringValues, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfBitstringBuilder
+  public static class BACnetEventParameterChangeOfBitstringBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
@@ -201,13 +204,12 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
     private final BACnetEventParameterChangeOfBitstringListOfBitstringValues listOfBitstringValues;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfBitstringBuilder(
+    public BACnetEventParameterChangeOfBitstringBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetContextTagBitString bitmask,
         BACnetEventParameterChangeOfBitstringListOfBitstringValues listOfBitstringValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.bitmask = bitmask;

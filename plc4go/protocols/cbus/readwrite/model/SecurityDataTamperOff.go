@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -88,25 +89,21 @@ func (m *_SecurityDataTamperOff) GetTypeName() string {
 	return "SecurityDataTamperOff"
 }
 
-func (m *_SecurityDataTamperOff) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SecurityDataTamperOff) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SecurityDataTamperOff) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SecurityDataTamperOff) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SecurityDataTamperOff) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SecurityDataTamperOffParse(theBytes []byte) (SecurityDataTamperOff, error) {
-	return SecurityDataTamperOffParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return SecurityDataTamperOffParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityDataTamperOffParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityDataTamperOff, error) {
+func SecurityDataTamperOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataTamperOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataTamperOff"); pullErr != nil {
@@ -128,14 +125,14 @@ func SecurityDataTamperOffParseWithBuffer(readBuffer utils.ReadBuffer) (Security
 }
 
 func (m *_SecurityDataTamperOff) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SecurityDataTamperOff) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataTamperOff) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -148,7 +145,7 @@ func (m *_SecurityDataTamperOff) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SecurityDataTamperOff) isSecurityDataTamperOff() bool {
@@ -160,7 +157,7 @@ func (m *_SecurityDataTamperOff) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

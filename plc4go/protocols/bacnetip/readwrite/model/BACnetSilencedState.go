@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,19 +106,19 @@ func CastBACnetSilencedState(structType interface{}) BACnetSilencedState {
 	return castFunc(structType)
 }
 
-func (m BACnetSilencedState) GetLengthInBits() uint16 {
+func (m BACnetSilencedState) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetSilencedState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetSilencedState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetSilencedStateParse(theBytes []byte) (BACnetSilencedState, error) {
-	return BACnetSilencedStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetSilencedStateParse(ctx context.Context, theBytes []byte) (BACnetSilencedState, error) {
+	return BACnetSilencedStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetSilencedStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSilencedState, error) {
+func BACnetSilencedStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSilencedState, error) {
 	val, err := readBuffer.ReadUint16("BACnetSilencedState", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetSilencedState")
@@ -132,13 +133,13 @@ func BACnetSilencedStateParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSile
 
 func (e BACnetSilencedState) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetSilencedState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetSilencedState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetSilencedState", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

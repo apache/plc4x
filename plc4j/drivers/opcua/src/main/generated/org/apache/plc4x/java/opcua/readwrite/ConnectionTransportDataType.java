@@ -50,6 +50,7 @@ public class ConnectionTransportDataType extends ExtensionObjectDefinition imple
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionTransportDataType");
 
@@ -65,26 +66,28 @@ public class ConnectionTransportDataType extends ExtensionObjectDefinition imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConnectionTransportDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ConnectionTransportDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ConnectionTransportDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ConnectionTransportDataType");
     // Create the instance
-    return new ConnectionTransportDataTypeBuilder();
+    return new ConnectionTransportDataTypeBuilderImpl();
   }
 
-  public static class ConnectionTransportDataTypeBuilder
+  public static class ConnectionTransportDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public ConnectionTransportDataTypeBuilder() {}
+    public ConnectionTransportDataTypeBuilderImpl() {}
 
     public ConnectionTransportDataType build() {
       ConnectionTransportDataType connectionTransportDataType = new ConnectionTransportDataType();

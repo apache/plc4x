@@ -57,6 +57,7 @@ public class ModbusPDUGetComEventLogRequest extends ModbusPDU implements Message
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUGetComEventLogRequest");
 
@@ -72,25 +73,28 @@ public class ModbusPDUGetComEventLogRequest extends ModbusPDU implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUGetComEventLogRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ModbusPDUGetComEventLogRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUGetComEventLogRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ModbusPDUGetComEventLogRequest");
     // Create the instance
-    return new ModbusPDUGetComEventLogRequestBuilder();
+    return new ModbusPDUGetComEventLogRequestBuilderImpl();
   }
 
-  public static class ModbusPDUGetComEventLogRequestBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUGetComEventLogRequestBuilderImpl
+      implements ModbusPDU.ModbusPDUBuilder {
 
-    public ModbusPDUGetComEventLogRequestBuilder() {}
+    public ModbusPDUGetComEventLogRequestBuilderImpl() {}
 
     public ModbusPDUGetComEventLogRequest build() {
       ModbusPDUGetComEventLogRequest modbusPDUGetComEventLogRequest =

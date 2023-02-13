@@ -78,6 +78,7 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimerState");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimerState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timerState)
     lengthInBits += timerState.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimerStateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimerStateTagged timerState =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataTimerState");
     // Create the instance
-    return new BACnetConstructedDataTimerStateBuilder(timerState, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataTimerStateBuilderImpl(
+        timerState, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimerStateBuilder
+  public static class BACnetConstructedDataTimerStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimerStateTagged timerState;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimerStateBuilder(
+    public BACnetConstructedDataTimerStateBuilderImpl(
         BACnetTimerStateTagged timerState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timerState = timerState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

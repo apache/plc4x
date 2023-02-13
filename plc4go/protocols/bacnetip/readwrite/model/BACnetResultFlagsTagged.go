@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -82,14 +83,20 @@ func (m *_BACnetResultFlagsTagged) GetPayload() BACnetTagPayloadBitString {
 ///////////////////////
 
 func (m *_BACnetResultFlagsTagged) GetFirstItem() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetResultFlagsTagged) GetLastItem() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetResultFlagsTagged) GetMoreItems() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
@@ -118,18 +125,14 @@ func (m *_BACnetResultFlagsTagged) GetTypeName() string {
 	return "BACnetResultFlagsTagged"
 }
 
-func (m *_BACnetResultFlagsTagged) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetResultFlagsTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetResultFlagsTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.GetLengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -140,15 +143,15 @@ func (m *_BACnetResultFlagsTagged) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_BACnetResultFlagsTagged) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetResultFlagsTagged) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetResultFlagsTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetResultFlagsTagged, error) {
-	return BACnetResultFlagsTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+	return BACnetResultFlagsTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
-func BACnetResultFlagsTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetResultFlagsTagged, error) {
+func BACnetResultFlagsTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetResultFlagsTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetResultFlagsTagged"); pullErr != nil {
@@ -161,7 +164,7 @@ func BACnetResultFlagsTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetResultFlagsTagged")
 	}
@@ -184,7 +187,7 @@ func BACnetResultFlagsTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumb
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(readBuffer, uint32(header.GetActualLength()))
+	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetResultFlagsTagged")
 	}
@@ -222,14 +225,14 @@ func BACnetResultFlagsTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumb
 }
 
 func (m *_BACnetResultFlagsTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetResultFlagsTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetResultFlagsTagged) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetResultFlagsTagged"); pushErr != nil {
@@ -240,7 +243,7 @@ func (m *_BACnetResultFlagsTagged) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -252,7 +255,7 @@ func (m *_BACnetResultFlagsTagged) SerializeWithWriteBuffer(writeBuffer utils.Wr
 	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for payload")
 	}
-	_payloadErr := writeBuffer.WriteSerializable(m.GetPayload())
+	_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
 	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for payload")
 	}
@@ -260,15 +263,15 @@ func (m *_BACnetResultFlagsTagged) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
-	if _firstItemErr := writeBuffer.WriteVirtual("firstItem", m.GetFirstItem()); _firstItemErr != nil {
+	if _firstItemErr := writeBuffer.WriteVirtual(ctx, "firstItem", m.GetFirstItem()); _firstItemErr != nil {
 		return errors.Wrap(_firstItemErr, "Error serializing 'firstItem' field")
 	}
 	// Virtual field
-	if _lastItemErr := writeBuffer.WriteVirtual("lastItem", m.GetLastItem()); _lastItemErr != nil {
+	if _lastItemErr := writeBuffer.WriteVirtual(ctx, "lastItem", m.GetLastItem()); _lastItemErr != nil {
 		return errors.Wrap(_lastItemErr, "Error serializing 'lastItem' field")
 	}
 	// Virtual field
-	if _moreItemsErr := writeBuffer.WriteVirtual("moreItems", m.GetMoreItems()); _moreItemsErr != nil {
+	if _moreItemsErr := writeBuffer.WriteVirtual(ctx, "moreItems", m.GetMoreItems()); _moreItemsErr != nil {
 		return errors.Wrap(_moreItemsErr, "Error serializing 'moreItems' field")
 	}
 
@@ -300,7 +303,7 @@ func (m *_BACnetResultFlagsTagged) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

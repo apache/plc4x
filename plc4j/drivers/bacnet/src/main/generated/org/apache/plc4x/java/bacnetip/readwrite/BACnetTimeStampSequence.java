@@ -56,6 +56,7 @@ public class BACnetTimeStampSequence extends BACnetTimeStamp implements Message 
   protected void serializeBACnetTimeStampChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimeStampSequence");
 
@@ -74,6 +75,7 @@ public class BACnetTimeStampSequence extends BACnetTimeStamp implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimeStampSequence _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (sequenceNumber)
     lengthInBits += sequenceNumber.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetTimeStampSequence extends BACnetTimeStamp implements Message 
     return lengthInBits;
   }
 
-  public static BACnetTimeStampSequenceBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetTimeStampBuilder staticParseBACnetTimeStampBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetTimeStampSequence");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger sequenceNumber =
         readSimpleField(
@@ -102,15 +105,14 @@ public class BACnetTimeStampSequence extends BACnetTimeStamp implements Message 
 
     readBuffer.closeContext("BACnetTimeStampSequence");
     // Create the instance
-    return new BACnetTimeStampSequenceBuilder(sequenceNumber);
+    return new BACnetTimeStampSequenceBuilderImpl(sequenceNumber);
   }
 
-  public static class BACnetTimeStampSequenceBuilder
+  public static class BACnetTimeStampSequenceBuilderImpl
       implements BACnetTimeStamp.BACnetTimeStampBuilder {
     private final BACnetContextTagUnsignedInteger sequenceNumber;
 
-    public BACnetTimeStampSequenceBuilder(BACnetContextTagUnsignedInteger sequenceNumber) {
-
+    public BACnetTimeStampSequenceBuilderImpl(BACnetContextTagUnsignedInteger sequenceNumber) {
       this.sequenceNumber = sequenceNumber;
     }
 

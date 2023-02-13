@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,31 +88,27 @@ func (m *_BACnetDateRange) GetTypeName() string {
 	return "BACnetDateRange"
 }
 
-func (m *_BACnetDateRange) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetDateRange) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetDateRange) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (startDate)
-	lengthInBits += m.StartDate.GetLengthInBits()
+	lengthInBits += m.StartDate.GetLengthInBits(ctx)
 
 	// Simple field (endDate)
-	lengthInBits += m.EndDate.GetLengthInBits()
+	lengthInBits += m.EndDate.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetDateRange) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetDateRange) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetDateRangeParse(theBytes []byte) (BACnetDateRange, error) {
-	return BACnetDateRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetDateRangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetDateRangeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDateRange, error) {
+func BACnetDateRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDateRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetDateRange"); pullErr != nil {
@@ -124,7 +121,7 @@ func BACnetDateRangeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDateRang
 	if pullErr := readBuffer.PullContext("startDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for startDate")
 	}
-	_startDate, _startDateErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_startDate, _startDateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _startDateErr != nil {
 		return nil, errors.Wrap(_startDateErr, "Error parsing 'startDate' field of BACnetDateRange")
 	}
@@ -137,7 +134,7 @@ func BACnetDateRangeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDateRang
 	if pullErr := readBuffer.PullContext("endDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for endDate")
 	}
-	_endDate, _endDateErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_endDate, _endDateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _endDateErr != nil {
 		return nil, errors.Wrap(_endDateErr, "Error parsing 'endDate' field of BACnetDateRange")
 	}
@@ -158,14 +155,14 @@ func BACnetDateRangeParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDateRang
 }
 
 func (m *_BACnetDateRange) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetDateRange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetDateRange) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetDateRange"); pushErr != nil {
@@ -176,7 +173,7 @@ func (m *_BACnetDateRange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("startDate"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for startDate")
 	}
-	_startDateErr := writeBuffer.WriteSerializable(m.GetStartDate())
+	_startDateErr := writeBuffer.WriteSerializable(ctx, m.GetStartDate())
 	if popErr := writeBuffer.PopContext("startDate"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for startDate")
 	}
@@ -188,7 +185,7 @@ func (m *_BACnetDateRange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 	if pushErr := writeBuffer.PushContext("endDate"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for endDate")
 	}
-	_endDateErr := writeBuffer.WriteSerializable(m.GetEndDate())
+	_endDateErr := writeBuffer.WriteSerializable(ctx, m.GetEndDate())
 	if popErr := writeBuffer.PopContext("endDate"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for endDate")
 	}
@@ -211,7 +208,7 @@ func (m *_BACnetDateRange) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

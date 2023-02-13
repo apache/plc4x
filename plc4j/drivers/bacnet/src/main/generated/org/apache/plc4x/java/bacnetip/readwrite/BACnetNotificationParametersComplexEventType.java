@@ -68,6 +68,7 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
   protected void serializeBACnetNotificationParametersChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersComplexEventType");
 
@@ -86,6 +87,7 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersComplexEventType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (listOfValues)
     lengthInBits += listOfValues.getLengthInBits();
@@ -93,16 +95,17 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersComplexEventTypeBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersComplexEventType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetPropertyValues listOfValues =
         readSimpleField(
@@ -117,19 +120,18 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
 
     readBuffer.closeContext("BACnetNotificationParametersComplexEventType");
     // Create the instance
-    return new BACnetNotificationParametersComplexEventTypeBuilder(
+    return new BACnetNotificationParametersComplexEventTypeBuilderImpl(
         listOfValues, tagNumber, objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersComplexEventTypeBuilder
+  public static class BACnetNotificationParametersComplexEventTypeBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetPropertyValues listOfValues;
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersComplexEventTypeBuilder(
+    public BACnetNotificationParametersComplexEventTypeBuilderImpl(
         BACnetPropertyValues listOfValues, Short tagNumber, BACnetObjectType objectTypeArgument) {
-
       this.listOfValues = listOfValues;
       this.tagNumber = tagNumber;
       this.objectTypeArgument = objectTypeArgument;

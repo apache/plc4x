@@ -64,27 +64,45 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_IoCrBlockReqApi");
 
     // Const Field (api)
-    writeConstField("api", API, writeUnsignedLong(writeBuffer, 32));
+    writeConstField(
+        "api",
+        API,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (numIoDataObjects) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int numIoDataObjects = (int) (COUNT(getIoDataObjects()));
-    writeImplicitField("numIoDataObjects", numIoDataObjects, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "numIoDataObjects",
+        numIoDataObjects,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (ioDataObjects)
-    writeComplexTypeArrayField("ioDataObjects", ioDataObjects, writeBuffer);
+    writeComplexTypeArrayField(
+        "ioDataObjects",
+        ioDataObjects,
+        writeBuffer,
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (numIoCss) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int numIoCss = (int) (COUNT(getIoCss()));
-    writeImplicitField("numIoCss", numIoCss, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "numIoCss",
+        numIoCss,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (ioCss)
-    writeComplexTypeArrayField("ioCss", ioCss, writeBuffer);
+    writeComplexTypeArrayField(
+        "ioCss", ioCss, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_IoCrBlockReqApi");
   }
@@ -98,6 +116,7 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnIoCm_IoCrBlockReqApi _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (api)
     lengthInBits += 32;
@@ -109,7 +128,7 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
     if (ioDataObjects != null) {
       int i = 0;
       for (PnIoCm_IoDataObject element : ioDataObjects) {
-        boolean last = ++i >= ioDataObjects.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= ioDataObjects.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -121,7 +140,7 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
     if (ioCss != null) {
       int i = 0;
       for (PnIoCm_IoCs element : ioCss) {
-        boolean last = ++i >= ioCss.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= ioCss.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -140,25 +159,41 @@ public class PnIoCm_IoCrBlockReqApi implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    long api = readConstField("api", readUnsignedLong(readBuffer, 32), PnIoCm_IoCrBlockReqApi.API);
+    long api =
+        readConstField(
+            "api",
+            readUnsignedLong(readBuffer, 32),
+            PnIoCm_IoCrBlockReqApi.API,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int numIoDataObjects = readImplicitField("numIoDataObjects", readUnsignedInt(readBuffer, 16));
+    int numIoDataObjects =
+        readImplicitField(
+            "numIoDataObjects",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     List<PnIoCm_IoDataObject> ioDataObjects =
         readCountArrayField(
             "ioDataObjects",
             new DataReaderComplexDefault<>(
                 () -> PnIoCm_IoDataObject.staticParse(readBuffer), readBuffer),
-            numIoDataObjects);
+            numIoDataObjects,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int numIoCss = readImplicitField("numIoCss", readUnsignedInt(readBuffer, 16));
+    int numIoCss =
+        readImplicitField(
+            "numIoCss",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     List<PnIoCm_IoCs> ioCss =
         readCountArrayField(
             "ioCss",
             new DataReaderComplexDefault<>(() -> PnIoCm_IoCs.staticParse(readBuffer), readBuffer),
-            numIoCss);
+            numIoCss,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_IoCrBlockReqApi");
     // Create the instance

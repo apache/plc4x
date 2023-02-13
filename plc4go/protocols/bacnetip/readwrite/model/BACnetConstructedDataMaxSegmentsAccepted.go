@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetMaxSegmentsAccepted() BAC
 ///////////////////////
 
 func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetMaxSegmentsAccepted())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetTypeName() string {
 	return "BACnetConstructedDataMaxSegmentsAccepted"
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (maxSegmentsAccepted)
-	lengthInBits += m.MaxSegmentsAccepted.GetLengthInBits()
+	lengthInBits += m.MaxSegmentsAccepted.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataMaxSegmentsAcceptedParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxSegmentsAccepted, error) {
-	return BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxSegmentsAccepted, error) {
+func BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxSegmentsAccepted, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaxSegmentsAccepted"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("maxSegmentsAccepted"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maxSegmentsAccepted")
 	}
-	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _maxSegmentsAcceptedErr != nil {
 		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field of BACnetConstructedDataMaxSegmentsAccepted")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetConstructedDataMaxSegmentsAccepted) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataMaxSegmentsAccepted) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMaxSegmentsAccepted) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("maxSegmentsAccepted"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maxSegmentsAccepted")
 		}
-		_maxSegmentsAcceptedErr := writeBuffer.WriteSerializable(m.GetMaxSegmentsAccepted())
+		_maxSegmentsAcceptedErr := writeBuffer.WriteSerializable(ctx, m.GetMaxSegmentsAccepted())
 		if popErr := writeBuffer.PopContext("maxSegmentsAccepted"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maxSegmentsAccepted")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) SerializeWithWriteBuffer(wri
 			return errors.Wrap(_maxSegmentsAcceptedErr, "Error serializing 'maxSegmentsAccepted' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataMaxSegmentsAccepted) isBACnetConstructedDataMaxSegmentsAccepted() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataMaxSegmentsAccepted) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

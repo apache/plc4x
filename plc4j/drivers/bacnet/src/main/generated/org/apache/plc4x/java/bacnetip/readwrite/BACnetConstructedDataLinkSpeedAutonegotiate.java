@@ -79,6 +79,7 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLinkSpeedAutonegotiate");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLinkSpeedAutonegotiate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (linkSpeedAutonegotiate)
     lengthInBits += linkSpeedAutonegotiate.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLinkSpeedAutonegotiateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean linkSpeedAutonegotiate =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataLinkSpeedAutonegotiate");
     // Create the instance
-    return new BACnetConstructedDataLinkSpeedAutonegotiateBuilder(
+    return new BACnetConstructedDataLinkSpeedAutonegotiateBuilderImpl(
         linkSpeedAutonegotiate, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+  public static class BACnetConstructedDataLinkSpeedAutonegotiateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean linkSpeedAutonegotiate;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLinkSpeedAutonegotiateBuilder(
+    public BACnetConstructedDataLinkSpeedAutonegotiateBuilderImpl(
         BACnetApplicationTagBoolean linkSpeedAutonegotiate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.linkSpeedAutonegotiate = linkSpeedAutonegotiate;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -96,6 +96,7 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
   @Override
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsReadWriteRequest");
 
@@ -134,6 +135,7 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsReadWriteRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (indexGroup)
     lengthInBits += 32;
@@ -151,7 +153,7 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
     if (items != null) {
       int i = 0;
       for (AdsMultiRequestItem element : items) {
-        boolean last = ++i >= items.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= items.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -164,12 +166,13 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsReadWriteRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsReadWriteRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long indexGroup = readSimpleField("indexGroup", readUnsignedLong(readBuffer, 32));
 
@@ -195,23 +198,22 @@ public class AdsReadWriteRequest extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsReadWriteRequest");
     // Create the instance
-    return new AdsReadWriteRequestBuilder(indexGroup, indexOffset, readLength, items, data);
+    return new AdsReadWriteRequestBuilderImpl(indexGroup, indexOffset, readLength, items, data);
   }
 
-  public static class AdsReadWriteRequestBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsReadWriteRequestBuilderImpl implements AmsPacket.AmsPacketBuilder {
     private final long indexGroup;
     private final long indexOffset;
     private final long readLength;
     private final List<AdsMultiRequestItem> items;
     private final byte[] data;
 
-    public AdsReadWriteRequestBuilder(
+    public AdsReadWriteRequestBuilderImpl(
         long indexGroup,
         long indexOffset,
         long readLength,
         List<AdsMultiRequestItem> items,
         byte[] data) {
-
       this.indexGroup = indexGroup;
       this.indexOffset = indexOffset;
       this.readLength = readLength;

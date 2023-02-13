@@ -78,6 +78,7 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPDHCPEnable");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIPDHCPEnable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ipDhcpEnable)
     lengthInBits += ipDhcpEnable.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPDHCPEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean ipDhcpEnable =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataIPDHCPEnable");
     // Create the instance
-    return new BACnetConstructedDataIPDHCPEnableBuilder(
+    return new BACnetConstructedDataIPDHCPEnableBuilderImpl(
         ipDhcpEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPDHCPEnableBuilder
+  public static class BACnetConstructedDataIPDHCPEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean ipDhcpEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPDHCPEnableBuilder(
+    public BACnetConstructedDataIPDHCPEnableBuilderImpl(
         BACnetApplicationTagBoolean ipDhcpEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipDhcpEnable = ipDhcpEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

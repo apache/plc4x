@@ -46,14 +46,10 @@ public class ApduDataMemoryRead extends ApduData implements Message {
   protected final short numBytes;
   protected final int address;
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataMemoryRead(short numBytes, int address, Short dataLength) {
-    super(dataLength);
+  public ApduDataMemoryRead(short numBytes, int address) {
+    super();
     this.numBytes = numBytes;
     this.address = address;
-    this.dataLength = dataLength;
   }
 
   public short getNumBytes() {
@@ -67,6 +63,7 @@ public class ApduDataMemoryRead extends ApduData implements Message {
   @Override
   protected void serializeApduDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataMemoryRead");
 
@@ -88,6 +85,7 @@ public class ApduDataMemoryRead extends ApduData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataMemoryRead _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (numBytes)
     lengthInBits += 6;
@@ -98,12 +96,13 @@ public class ApduDataMemoryRead extends ApduData implements Message {
     return lengthInBits;
   }
 
-  public static ApduDataMemoryReadBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataMemoryRead");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numBytes = readSimpleField("numBytes", readUnsignedShort(readBuffer, 6));
 
@@ -111,24 +110,20 @@ public class ApduDataMemoryRead extends ApduData implements Message {
 
     readBuffer.closeContext("ApduDataMemoryRead");
     // Create the instance
-    return new ApduDataMemoryReadBuilder(numBytes, address, dataLength);
+    return new ApduDataMemoryReadBuilderImpl(numBytes, address);
   }
 
-  public static class ApduDataMemoryReadBuilder implements ApduData.ApduDataBuilder {
+  public static class ApduDataMemoryReadBuilderImpl implements ApduData.ApduDataBuilder {
     private final short numBytes;
     private final int address;
-    private final Short dataLength;
 
-    public ApduDataMemoryReadBuilder(short numBytes, int address, Short dataLength) {
-
+    public ApduDataMemoryReadBuilderImpl(short numBytes, int address) {
       this.numBytes = numBytes;
       this.address = address;
-      this.dataLength = dataLength;
     }
 
-    public ApduDataMemoryRead build(Short dataLength) {
-
-      ApduDataMemoryRead apduDataMemoryRead = new ApduDataMemoryRead(numBytes, address, dataLength);
+    public ApduDataMemoryRead build() {
+      ApduDataMemoryRead apduDataMemoryRead = new ApduDataMemoryRead(numBytes, address);
       return apduDataMemoryRead;
     }
   }

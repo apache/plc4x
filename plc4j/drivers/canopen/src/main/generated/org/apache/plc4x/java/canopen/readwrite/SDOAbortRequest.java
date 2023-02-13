@@ -57,6 +57,7 @@ public class SDOAbortRequest extends SDORequest implements Message {
   @Override
   protected void serializeSDORequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOAbortRequest");
 
@@ -75,6 +76,7 @@ public class SDOAbortRequest extends SDORequest implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOAbortRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (abort)
     lengthInBits += abort.getLengthInBits();
@@ -82,12 +84,13 @@ public class SDOAbortRequest extends SDORequest implements Message {
     return lengthInBits;
   }
 
-  public static SDOAbortRequestBuilder staticParseBuilder(
+  public static SDORequestBuilder staticParseSDORequestBuilder(
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOAbortRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SDOAbort abort =
         readSimpleField(
@@ -96,14 +99,13 @@ public class SDOAbortRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOAbortRequest");
     // Create the instance
-    return new SDOAbortRequestBuilder(abort);
+    return new SDOAbortRequestBuilderImpl(abort);
   }
 
-  public static class SDOAbortRequestBuilder implements SDORequest.SDORequestBuilder {
+  public static class SDOAbortRequestBuilderImpl implements SDORequest.SDORequestBuilder {
     private final SDOAbort abort;
 
-    public SDOAbortRequestBuilder(SDOAbort abort) {
-
+    public SDOAbortRequestBuilderImpl(SDOAbort abort) {
       this.abort = abort;
     }
 

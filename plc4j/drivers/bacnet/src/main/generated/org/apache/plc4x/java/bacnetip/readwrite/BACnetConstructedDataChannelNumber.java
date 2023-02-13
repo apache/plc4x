@@ -78,6 +78,7 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataChannelNumber");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataChannelNumber _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (channelNumber)
     lengthInBits += channelNumber.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataChannelNumberBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger channelNumber =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataChannelNumber extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataChannelNumber");
     // Create the instance
-    return new BACnetConstructedDataChannelNumberBuilder(
+    return new BACnetConstructedDataChannelNumberBuilderImpl(
         channelNumber, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataChannelNumberBuilder
+  public static class BACnetConstructedDataChannelNumberBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger channelNumber;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataChannelNumberBuilder(
+    public BACnetConstructedDataChannelNumberBuilderImpl(
         BACnetApplicationTagUnsignedInteger channelNumber,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.channelNumber = channelNumber;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -79,6 +79,7 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAuthorizationMode");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAuthorizationMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (authorizationMode)
     lengthInBits += authorizationMode.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAuthorizationModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAuthorizationModeTagged authorizationMode =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataAuthorizationMode");
     // Create the instance
-    return new BACnetConstructedDataAuthorizationModeBuilder(
+    return new BACnetConstructedDataAuthorizationModeBuilderImpl(
         authorizationMode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAuthorizationModeBuilder
+  public static class BACnetConstructedDataAuthorizationModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAuthorizationModeTagged authorizationMode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAuthorizationModeBuilder(
+    public BACnetConstructedDataAuthorizationModeBuilderImpl(
         BACnetAuthorizationModeTagged authorizationMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.authorizationMode = authorizationMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

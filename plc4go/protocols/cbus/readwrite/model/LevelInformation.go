@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -65,12 +66,11 @@ type _LevelInformation struct {
 
 type _LevelInformationChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type LevelInformationParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child LevelInformation, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LevelInformation, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -102,34 +102,50 @@ func (m *_LevelInformation) GetRaw() uint16 {
 ///////////////////////
 
 func (m *_LevelInformation) GetNibble1() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8((m.GetRaw() & 0xF000) >> uint8(12))
 }
 
 func (m *_LevelInformation) GetNibble2() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8((m.GetRaw() & 0x0F00) >> uint8(8))
 }
 
 func (m *_LevelInformation) GetNibble3() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8((m.GetRaw() & 0x00F0) >> uint8(4))
 }
 
 func (m *_LevelInformation) GetNibble4() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8((m.GetRaw() & 0x000F) >> uint8(0))
 }
 
 func (m *_LevelInformation) GetIsAbsent() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(bool(bool(bool((m.GetNibble1()) == (0x0))) && bool(bool((m.GetNibble2()) == (0x0)))) && bool(bool((m.GetNibble3()) == (0x0)))) && bool(bool((m.GetNibble4()) == (0x0))))
 }
 
 func (m *_LevelInformation) GetIsCorruptedByNoise() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(!(m.GetIsAbsent())) && bool((bool(bool(bool((bool(bool((bool((m.GetNibble1()) < (0x5)))) || bool((bool((m.GetNibble1()) == (0x8))))) || bool((bool((m.GetNibble1()) == (0xC)))))) || bool((bool(bool((bool((m.GetNibble2()) < (0x5)))) || bool((bool((m.GetNibble2()) == (0x8))))) || bool((bool((m.GetNibble2()) == (0xC))))))) || bool((bool(bool((bool((m.GetNibble3()) < (0x5)))) || bool((bool((m.GetNibble3()) == (0x8))))) || bool((bool((m.GetNibble3()) == (0xC))))))) || bool((bool(bool((bool((m.GetNibble4()) < (0x5)))) || bool((bool((m.GetNibble4()) == (0x8))))) || bool((bool((m.GetNibble4()) == (0xC)))))))))
 }
 
 func (m *_LevelInformation) GetIsCorruptedByNoiseOrLevelsDiffer() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(!(m.GetIsAbsent())) && bool((bool(bool(bool((bool(bool((bool((m.GetNibble1()) == (0x7)))) || bool((bool((m.GetNibble1()) == (0xB))))) || bool((bool((m.GetNibble1()) > (0xC)))))) || bool((bool(bool((bool((m.GetNibble2()) == (0x7)))) || bool((bool((m.GetNibble2()) == (0xB))))) || bool((bool((m.GetNibble2()) > (0xC))))))) || bool((bool(bool((bool((m.GetNibble3()) == (0x7)))) || bool((bool((m.GetNibble3()) == (0xB))))) || bool((bool((m.GetNibble3()) > (0xC))))))) || bool((bool(bool((bool((m.GetNibble4()) == (0x7)))) || bool((bool((m.GetNibble4()) == (0xB))))) || bool((bool((m.GetNibble4()) > (0xC)))))))))
 }
 
 func (m *_LevelInformation) GetIsCorrupted() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(m.GetIsCorruptedByNoise()) || bool(m.GetIsCorruptedByNoiseOrLevelsDiffer()))
 }
 
@@ -158,7 +174,7 @@ func (m *_LevelInformation) GetTypeName() string {
 	return "LevelInformation"
 }
 
-func (m *_LevelInformation) GetParentLengthInBits() uint16 {
+func (m *_LevelInformation) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// A virtual field doesn't have any in- or output.
@@ -180,15 +196,15 @@ func (m *_LevelInformation) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_LevelInformation) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_LevelInformation) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func LevelInformationParse(theBytes []byte) (LevelInformation, error) {
-	return LevelInformationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return LevelInformationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func LevelInformationParseWithBuffer(readBuffer utils.ReadBuffer) (LevelInformation, error) {
+func LevelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LevelInformation"); pullErr != nil {
@@ -257,11 +273,11 @@ func LevelInformationParseWithBuffer(readBuffer utils.ReadBuffer) (LevelInformat
 	var typeSwitchError error
 	switch {
 	case isAbsent == bool(true): // LevelInformationAbsent
-		_childTemp, typeSwitchError = LevelInformationAbsentParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = LevelInformationAbsentParseWithBuffer(ctx, readBuffer)
 	case 0 == 0 && isCorrupted == bool(true): // LevelInformationCorrupted
-		_childTemp, typeSwitchError = LevelInformationCorruptedParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = LevelInformationCorruptedParseWithBuffer(ctx, readBuffer)
 	case 0 == 0: // LevelInformationNormal
-		_childTemp, typeSwitchError = LevelInformationNormalParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = LevelInformationNormalParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [isAbsent=%v, isCorrupted=%v]", isAbsent, isCorrupted)
 	}
@@ -279,7 +295,7 @@ func LevelInformationParseWithBuffer(readBuffer utils.ReadBuffer) (LevelInformat
 	return _child, nil
 }
 
-func (pm *_LevelInformation) SerializeParent(writeBuffer utils.WriteBuffer, child LevelInformation, serializeChildFunction func() error) error {
+func (pm *_LevelInformation) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child LevelInformation, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -289,35 +305,35 @@ func (pm *_LevelInformation) SerializeParent(writeBuffer utils.WriteBuffer, chil
 		return errors.Wrap(pushErr, "Error pushing for LevelInformation")
 	}
 	// Virtual field
-	if _nibble1Err := writeBuffer.WriteVirtual("nibble1", m.GetNibble1()); _nibble1Err != nil {
+	if _nibble1Err := writeBuffer.WriteVirtual(ctx, "nibble1", m.GetNibble1()); _nibble1Err != nil {
 		return errors.Wrap(_nibble1Err, "Error serializing 'nibble1' field")
 	}
 	// Virtual field
-	if _nibble2Err := writeBuffer.WriteVirtual("nibble2", m.GetNibble2()); _nibble2Err != nil {
+	if _nibble2Err := writeBuffer.WriteVirtual(ctx, "nibble2", m.GetNibble2()); _nibble2Err != nil {
 		return errors.Wrap(_nibble2Err, "Error serializing 'nibble2' field")
 	}
 	// Virtual field
-	if _nibble3Err := writeBuffer.WriteVirtual("nibble3", m.GetNibble3()); _nibble3Err != nil {
+	if _nibble3Err := writeBuffer.WriteVirtual(ctx, "nibble3", m.GetNibble3()); _nibble3Err != nil {
 		return errors.Wrap(_nibble3Err, "Error serializing 'nibble3' field")
 	}
 	// Virtual field
-	if _nibble4Err := writeBuffer.WriteVirtual("nibble4", m.GetNibble4()); _nibble4Err != nil {
+	if _nibble4Err := writeBuffer.WriteVirtual(ctx, "nibble4", m.GetNibble4()); _nibble4Err != nil {
 		return errors.Wrap(_nibble4Err, "Error serializing 'nibble4' field")
 	}
 	// Virtual field
-	if _isAbsentErr := writeBuffer.WriteVirtual("isAbsent", m.GetIsAbsent()); _isAbsentErr != nil {
+	if _isAbsentErr := writeBuffer.WriteVirtual(ctx, "isAbsent", m.GetIsAbsent()); _isAbsentErr != nil {
 		return errors.Wrap(_isAbsentErr, "Error serializing 'isAbsent' field")
 	}
 	// Virtual field
-	if _isCorruptedByNoiseErr := writeBuffer.WriteVirtual("isCorruptedByNoise", m.GetIsCorruptedByNoise()); _isCorruptedByNoiseErr != nil {
+	if _isCorruptedByNoiseErr := writeBuffer.WriteVirtual(ctx, "isCorruptedByNoise", m.GetIsCorruptedByNoise()); _isCorruptedByNoiseErr != nil {
 		return errors.Wrap(_isCorruptedByNoiseErr, "Error serializing 'isCorruptedByNoise' field")
 	}
 	// Virtual field
-	if _isCorruptedByNoiseOrLevelsDifferErr := writeBuffer.WriteVirtual("isCorruptedByNoiseOrLevelsDiffer", m.GetIsCorruptedByNoiseOrLevelsDiffer()); _isCorruptedByNoiseOrLevelsDifferErr != nil {
+	if _isCorruptedByNoiseOrLevelsDifferErr := writeBuffer.WriteVirtual(ctx, "isCorruptedByNoiseOrLevelsDiffer", m.GetIsCorruptedByNoiseOrLevelsDiffer()); _isCorruptedByNoiseOrLevelsDifferErr != nil {
 		return errors.Wrap(_isCorruptedByNoiseOrLevelsDifferErr, "Error serializing 'isCorruptedByNoiseOrLevelsDiffer' field")
 	}
 	// Virtual field
-	if _isCorruptedErr := writeBuffer.WriteVirtual("isCorrupted", m.GetIsCorrupted()); _isCorruptedErr != nil {
+	if _isCorruptedErr := writeBuffer.WriteVirtual(ctx, "isCorrupted", m.GetIsCorrupted()); _isCorruptedErr != nil {
 		return errors.Wrap(_isCorruptedErr, "Error serializing 'isCorrupted' field")
 	}
 
@@ -341,7 +357,7 @@ func (m *_LevelInformation) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

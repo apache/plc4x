@@ -57,6 +57,7 @@ public class BACnetLogDataLogDataEntryRealValue extends BACnetLogDataLogDataEntr
   protected void serializeBACnetLogDataLogDataEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryRealValue");
 
@@ -75,6 +76,7 @@ public class BACnetLogDataLogDataEntryRealValue extends BACnetLogDataLogDataEntr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogDataLogDataEntryRealValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (realValue)
     lengthInBits += realValue.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetLogDataLogDataEntryRealValue extends BACnetLogDataLogDataEntr
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryRealValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryRealValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagReal realValue =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetLogDataLogDataEntryRealValue extends BACnetLogDataLogDataEntr
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryRealValue");
     // Create the instance
-    return new BACnetLogDataLogDataEntryRealValueBuilder(realValue);
+    return new BACnetLogDataLogDataEntryRealValueBuilderImpl(realValue);
   }
 
-  public static class BACnetLogDataLogDataEntryRealValueBuilder
+  public static class BACnetLogDataLogDataEntryRealValueBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final BACnetContextTagReal realValue;
 
-    public BACnetLogDataLogDataEntryRealValueBuilder(BACnetContextTagReal realValue) {
-
+    public BACnetLogDataLogDataEntryRealValueBuilderImpl(BACnetContextTagReal realValue) {
       this.realValue = realValue;
     }
 

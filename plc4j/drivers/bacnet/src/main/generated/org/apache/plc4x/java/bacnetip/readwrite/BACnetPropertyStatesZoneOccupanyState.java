@@ -56,6 +56,7 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesZoneOccupanyState");
 
@@ -75,6 +76,7 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesZoneOccupanyState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneOccupanyState)
     lengthInBits += zoneOccupanyState.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesZoneOccupanyStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesZoneOccupanyState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessZoneOccupancyStateTagged zoneOccupanyState =
         readSimpleField(
@@ -102,16 +105,15 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
 
     readBuffer.closeContext("BACnetPropertyStatesZoneOccupanyState");
     // Create the instance
-    return new BACnetPropertyStatesZoneOccupanyStateBuilder(zoneOccupanyState);
+    return new BACnetPropertyStatesZoneOccupanyStateBuilderImpl(zoneOccupanyState);
   }
 
-  public static class BACnetPropertyStatesZoneOccupanyStateBuilder
+  public static class BACnetPropertyStatesZoneOccupanyStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetAccessZoneOccupancyStateTagged zoneOccupanyState;
 
-    public BACnetPropertyStatesZoneOccupanyStateBuilder(
+    public BACnetPropertyStatesZoneOccupanyStateBuilderImpl(
         BACnetAccessZoneOccupancyStateTagged zoneOccupanyState) {
-
       this.zoneOccupanyState = zoneOccupanyState;
     }
 

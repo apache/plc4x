@@ -60,6 +60,7 @@ public abstract class BACnetSpecialEventPeriod implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetSpecialEventPeriod");
 
@@ -82,6 +83,7 @@ public abstract class BACnetSpecialEventPeriod implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetSpecialEventPeriod _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -101,6 +103,7 @@ public abstract class BACnetSpecialEventPeriod implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -117,9 +120,13 @@ public abstract class BACnetSpecialEventPeriod implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetSpecialEventPeriodBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetSpecialEventPeriodCalendarEntry.staticParseBuilder(readBuffer);
+      builder =
+          BACnetSpecialEventPeriodCalendarEntry.staticParseBACnetSpecialEventPeriodBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetSpecialEventPeriodCalendarReference.staticParseBuilder(readBuffer);
+      builder =
+          BACnetSpecialEventPeriodCalendarReference.staticParseBACnetSpecialEventPeriodBuilder(
+              readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -136,7 +143,7 @@ public abstract class BACnetSpecialEventPeriod implements Message {
     return _bACnetSpecialEventPeriod;
   }
 
-  public static interface BACnetSpecialEventPeriodBuilder {
+  public interface BACnetSpecialEventPeriodBuilder {
     BACnetSpecialEventPeriod build(BACnetTagHeader peekedTagHeader);
   }
 

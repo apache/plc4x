@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,32 +117,28 @@ func (m *_BACnetConstructedDataLandingCalls) GetTypeName() string {
 	return "BACnetConstructedDataLandingCalls"
 }
 
-func (m *_BACnetConstructedDataLandingCalls) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataLandingCalls) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataLandingCalls) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.LandingCallStatus) > 0 {
 		for _, element := range m.LandingCallStatus {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataLandingCalls) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataLandingCalls) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataLandingCallsParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCalls, error) {
-	return BACnetConstructedDataLandingCallsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataLandingCallsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataLandingCallsParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCalls, error) {
+func BACnetConstructedDataLandingCallsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCalls, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLandingCalls"); pullErr != nil {
@@ -157,7 +155,7 @@ func BACnetConstructedDataLandingCallsParseWithBuffer(readBuffer utils.ReadBuffe
 	var landingCallStatus []BACnetLandingCallStatus
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLandingCallStatusParseWithBuffer(readBuffer)
+			_item, _err := BACnetLandingCallStatusParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'landingCallStatus' field of BACnetConstructedDataLandingCalls")
 			}
@@ -185,14 +183,14 @@ func BACnetConstructedDataLandingCallsParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataLandingCalls) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataLandingCalls) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataLandingCalls) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -204,8 +202,11 @@ func (m *_BACnetConstructedDataLandingCalls) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("landingCallStatus", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for landingCallStatus")
 		}
-		for _, _element := range m.GetLandingCallStatus() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetLandingCallStatus() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetLandingCallStatus()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'landingCallStatus' field")
 			}
@@ -219,7 +220,7 @@ func (m *_BACnetConstructedDataLandingCalls) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataLandingCalls) isBACnetConstructedDataLandingCalls() bool {
@@ -231,7 +232,7 @@ func (m *_BACnetConstructedDataLandingCalls) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

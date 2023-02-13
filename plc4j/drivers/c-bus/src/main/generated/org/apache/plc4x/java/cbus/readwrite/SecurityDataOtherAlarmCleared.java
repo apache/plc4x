@@ -47,6 +47,7 @@ public class SecurityDataOtherAlarmCleared extends SecurityData implements Messa
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataOtherAlarmCleared");
 
@@ -62,26 +63,28 @@ public class SecurityDataOtherAlarmCleared extends SecurityData implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataOtherAlarmCleared _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SecurityDataOtherAlarmClearedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataOtherAlarmCleared");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataOtherAlarmCleared");
     // Create the instance
-    return new SecurityDataOtherAlarmClearedBuilder();
+    return new SecurityDataOtherAlarmClearedBuilderImpl();
   }
 
-  public static class SecurityDataOtherAlarmClearedBuilder
+  public static class SecurityDataOtherAlarmClearedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataOtherAlarmClearedBuilder() {}
+    public SecurityDataOtherAlarmClearedBuilderImpl() {}
 
     public SecurityDataOtherAlarmCleared build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

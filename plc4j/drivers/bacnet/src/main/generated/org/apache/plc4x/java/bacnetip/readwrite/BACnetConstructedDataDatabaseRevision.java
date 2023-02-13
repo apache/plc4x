@@ -79,6 +79,7 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDatabaseRevision");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDatabaseRevision _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (databaseRevision)
     lengthInBits += databaseRevision.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDatabaseRevisionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger databaseRevision =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataDatabaseRevision");
     // Create the instance
-    return new BACnetConstructedDataDatabaseRevisionBuilder(
+    return new BACnetConstructedDataDatabaseRevisionBuilderImpl(
         databaseRevision, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDatabaseRevisionBuilder
+  public static class BACnetConstructedDataDatabaseRevisionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger databaseRevision;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDatabaseRevisionBuilder(
+    public BACnetConstructedDataDatabaseRevisionBuilderImpl(
         BACnetApplicationTagUnsignedInteger databaseRevision,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.databaseRevision = databaseRevision;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

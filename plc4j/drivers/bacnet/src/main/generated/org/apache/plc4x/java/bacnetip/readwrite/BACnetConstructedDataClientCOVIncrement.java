@@ -79,6 +79,7 @@ public class BACnetConstructedDataClientCOVIncrement extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataClientCOVIncrement");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataClientCOVIncrement extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataClientCOVIncrement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (covIncrement)
     lengthInBits += covIncrement.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataClientCOVIncrement extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataClientCOVIncrementBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataClientCOVIncrement extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetClientCOV covIncrement =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataClientCOVIncrement extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataClientCOVIncrement");
     // Create the instance
-    return new BACnetConstructedDataClientCOVIncrementBuilder(
+    return new BACnetConstructedDataClientCOVIncrementBuilderImpl(
         covIncrement, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataClientCOVIncrementBuilder
+  public static class BACnetConstructedDataClientCOVIncrementBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetClientCOV covIncrement;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataClientCOVIncrementBuilder(
+    public BACnetConstructedDataClientCOVIncrementBuilderImpl(
         BACnetClientCOV covIncrement,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.covIncrement = covIncrement;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

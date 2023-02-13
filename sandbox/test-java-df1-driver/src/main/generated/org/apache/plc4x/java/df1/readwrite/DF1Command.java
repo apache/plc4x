@@ -63,6 +63,7 @@ public abstract class DF1Command implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1Command");
 
@@ -90,6 +91,7 @@ public abstract class DF1Command implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     DF1Command _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (commandCode)
     lengthInBits += 8;
@@ -116,6 +118,7 @@ public abstract class DF1Command implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short commandCode = readDiscriminatorField("commandCode", readUnsignedShort(readBuffer, 8));
 
@@ -126,9 +129,9 @@ public abstract class DF1Command implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     DF1CommandBuilder builder = null;
     if (EvaluationHelper.equals(commandCode, (short) 0x01)) {
-      builder = DF1UnprotectedReadRequest.staticParseBuilder(readBuffer);
+      builder = DF1UnprotectedReadRequest.staticParseDF1CommandBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandCode, (short) 0x41)) {
-      builder = DF1UnprotectedReadResponse.staticParseBuilder(readBuffer);
+      builder = DF1UnprotectedReadResponse.staticParseDF1CommandBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -145,7 +148,7 @@ public abstract class DF1Command implements Message {
     return _dF1Command;
   }
 
-  public static interface DF1CommandBuilder {
+  public interface DF1CommandBuilder {
     DF1Command build(short status, int transactionCounter);
   }
 

@@ -48,6 +48,7 @@ public class MediaTransportControlDataStop extends MediaTransportControlData imp
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataStop");
 
@@ -63,26 +64,28 @@ public class MediaTransportControlDataStop extends MediaTransportControlData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataStop _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataStopBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataStop");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MediaTransportControlDataStop");
     // Create the instance
-    return new MediaTransportControlDataStopBuilder();
+    return new MediaTransportControlDataStopBuilderImpl();
   }
 
-  public static class MediaTransportControlDataStopBuilder
+  public static class MediaTransportControlDataStopBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
 
-    public MediaTransportControlDataStopBuilder() {}
+    public MediaTransportControlDataStopBuilderImpl() {}
 
     public MediaTransportControlDataStop build(
         MediaTransportControlCommandTypeContainer commandTypeContainer, byte mediaLinkGroup) {

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,19 +124,19 @@ func CastLineOffHookReason(structType interface{}) LineOffHookReason {
 	return castFunc(structType)
 }
 
-func (m LineOffHookReason) GetLengthInBits() uint16 {
+func (m LineOffHookReason) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m LineOffHookReason) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m LineOffHookReason) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func LineOffHookReasonParse(theBytes []byte) (LineOffHookReason, error) {
-	return LineOffHookReasonParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func LineOffHookReasonParse(ctx context.Context, theBytes []byte) (LineOffHookReason, error) {
+	return LineOffHookReasonParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func LineOffHookReasonParseWithBuffer(readBuffer utils.ReadBuffer) (LineOffHookReason, error) {
+func LineOffHookReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LineOffHookReason, error) {
 	val, err := readBuffer.ReadUint8("LineOffHookReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading LineOffHookReason")
@@ -150,13 +151,13 @@ func LineOffHookReasonParseWithBuffer(readBuffer utils.ReadBuffer) (LineOffHookR
 
 func (e LineOffHookReason) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e LineOffHookReason) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e LineOffHookReason) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("LineOffHookReason", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

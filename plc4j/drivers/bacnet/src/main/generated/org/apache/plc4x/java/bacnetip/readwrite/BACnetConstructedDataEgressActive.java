@@ -78,6 +78,7 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEgressActive");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEgressActive _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (egressActive)
     lengthInBits += egressActive.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEgressActiveBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean egressActive =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataEgressActive");
     // Create the instance
-    return new BACnetConstructedDataEgressActiveBuilder(
+    return new BACnetConstructedDataEgressActiveBuilderImpl(
         egressActive, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEgressActiveBuilder
+  public static class BACnetConstructedDataEgressActiveBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean egressActive;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEgressActiveBuilder(
+    public BACnetConstructedDataEgressActiveBuilderImpl(
         BACnetApplicationTagBoolean egressActive,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.egressActive = egressActive;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

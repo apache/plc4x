@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -133,19 +134,19 @@ func CastErrorReportingCommandType(structType interface{}) ErrorReportingCommand
 	return castFunc(structType)
 }
 
-func (m ErrorReportingCommandType) GetLengthInBits() uint16 {
+func (m ErrorReportingCommandType) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m ErrorReportingCommandType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ErrorReportingCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ErrorReportingCommandTypeParse(theBytes []byte) (ErrorReportingCommandType, error) {
-	return ErrorReportingCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ErrorReportingCommandTypeParse(ctx context.Context, theBytes []byte) (ErrorReportingCommandType, error) {
+	return ErrorReportingCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ErrorReportingCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ErrorReportingCommandType, error) {
+func ErrorReportingCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingCommandType, error) {
 	val, err := readBuffer.ReadUint8("ErrorReportingCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ErrorReportingCommandType")
@@ -160,13 +161,13 @@ func ErrorReportingCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Erro
 
 func (e ErrorReportingCommandType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ErrorReportingCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ErrorReportingCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ErrorReportingCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

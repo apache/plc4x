@@ -87,6 +87,7 @@ public class TransferSubscriptionsResponse extends ExtensionObjectDefinition imp
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TransferSubscriptionsResponse");
 
@@ -117,6 +118,7 @@ public class TransferSubscriptionsResponse extends ExtensionObjectDefinition imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TransferSubscriptionsResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -128,7 +130,7 @@ public class TransferSubscriptionsResponse extends ExtensionObjectDefinition imp
     if (results != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : results) {
-        boolean last = ++i >= results.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= results.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -140,7 +142,7 @@ public class TransferSubscriptionsResponse extends ExtensionObjectDefinition imp
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -148,12 +150,13 @@ public class TransferSubscriptionsResponse extends ExtensionObjectDefinition imp
     return lengthInBits;
   }
 
-  public static TransferSubscriptionsResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TransferSubscriptionsResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -183,11 +186,11 @@ public class TransferSubscriptionsResponse extends ExtensionObjectDefinition imp
 
     readBuffer.closeContext("TransferSubscriptionsResponse");
     // Create the instance
-    return new TransferSubscriptionsResponseBuilder(
+    return new TransferSubscriptionsResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class TransferSubscriptionsResponseBuilder
+  public static class TransferSubscriptionsResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -195,13 +198,12 @@ public class TransferSubscriptionsResponse extends ExtensionObjectDefinition imp
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public TransferSubscriptionsResponseBuilder(
+    public TransferSubscriptionsResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<ExtensionObjectDefinition> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

@@ -105,6 +105,7 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMRequestKeyUpdate");
 
@@ -141,6 +142,7 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMRequestKeyUpdate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (set1KeyRevision)
     lengthInBits += 8;
@@ -166,12 +168,13 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMRequestKeyUpdateBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMRequestKeyUpdate");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte set1KeyRevision = readSimpleField("set1KeyRevision", readByte(readBuffer, 8));
 
@@ -194,7 +197,7 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
 
     readBuffer.closeContext("NLMRequestKeyUpdate");
     // Create the instance
-    return new NLMRequestKeyUpdateBuilder(
+    return new NLMRequestKeyUpdateBuilderImpl(
         set1KeyRevision,
         set1ActivationTime,
         set1ExpirationTime,
@@ -205,7 +208,7 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
         apduLength);
   }
 
-  public static class NLMRequestKeyUpdateBuilder implements NLM.NLMBuilder {
+  public static class NLMRequestKeyUpdateBuilderImpl implements NLM.NLMBuilder {
     private final byte set1KeyRevision;
     private final long set1ActivationTime;
     private final long set1ExpirationTime;
@@ -215,7 +218,7 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
     private final byte distributionKeyRevision;
     private final Integer apduLength;
 
-    public NLMRequestKeyUpdateBuilder(
+    public NLMRequestKeyUpdateBuilderImpl(
         byte set1KeyRevision,
         long set1ActivationTime,
         long set1ExpirationTime,
@@ -224,7 +227,6 @@ public class NLMRequestKeyUpdate extends NLM implements Message {
         long set2ExpirationTime,
         byte distributionKeyRevision,
         Integer apduLength) {
-
       this.set1KeyRevision = set1KeyRevision;
       this.set1ActivationTime = set1ActivationTime;
       this.set1ExpirationTime = set1ExpirationTime;

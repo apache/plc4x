@@ -149,6 +149,7 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedEventNotification");
 
@@ -211,6 +212,7 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestConfirmedEventNotification _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (processIdentifier)
     lengthInBits += processIdentifier.getLengthInBits();
@@ -262,12 +264,14 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedEventNotification");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger processIdentifier =
         readSimpleField(
@@ -406,7 +410,7 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedEventNotification");
     // Create the instance
-    return new BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder(
+    return new BACnetConfirmedServiceRequestConfirmedEventNotificationBuilderImpl(
         processIdentifier,
         initiatingDeviceIdentifier,
         eventObjectIdentifier,
@@ -423,7 +427,7 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder
+  public static class BACnetConfirmedServiceRequestConfirmedEventNotificationBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger processIdentifier;
     private final BACnetContextTagObjectIdentifier initiatingDeviceIdentifier;
@@ -440,7 +444,7 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
     private final BACnetNotificationParameters eventValues;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestConfirmedEventNotificationBuilder(
+    public BACnetConfirmedServiceRequestConfirmedEventNotificationBuilderImpl(
         BACnetContextTagUnsignedInteger processIdentifier,
         BACnetContextTagObjectIdentifier initiatingDeviceIdentifier,
         BACnetContextTagObjectIdentifier eventObjectIdentifier,
@@ -455,7 +459,6 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
         BACnetEventStateTagged toState,
         BACnetNotificationParameters eventValues,
         Long serviceRequestLength) {
-
       this.processIdentifier = processIdentifier;
       this.initiatingDeviceIdentifier = initiatingDeviceIdentifier;
       this.eventObjectIdentifier = eventObjectIdentifier;

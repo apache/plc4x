@@ -57,6 +57,7 @@ public class BACnetLogDataLogDataEntryAnyValue extends BACnetLogDataLogDataEntry
   protected void serializeBACnetLogDataLogDataEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryAnyValue");
 
@@ -75,6 +76,7 @@ public class BACnetLogDataLogDataEntryAnyValue extends BACnetLogDataLogDataEntry
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogDataLogDataEntryAnyValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (anyValue)
     if (anyValue != null) {
@@ -84,12 +86,13 @@ public class BACnetLogDataLogDataEntryAnyValue extends BACnetLogDataLogDataEntry
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryAnyValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryAnyValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConstructedData anyValue =
         readOptionalField(
@@ -107,15 +110,14 @@ public class BACnetLogDataLogDataEntryAnyValue extends BACnetLogDataLogDataEntry
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryAnyValue");
     // Create the instance
-    return new BACnetLogDataLogDataEntryAnyValueBuilder(anyValue);
+    return new BACnetLogDataLogDataEntryAnyValueBuilderImpl(anyValue);
   }
 
-  public static class BACnetLogDataLogDataEntryAnyValueBuilder
+  public static class BACnetLogDataLogDataEntryAnyValueBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final BACnetConstructedData anyValue;
 
-    public BACnetLogDataLogDataEntryAnyValueBuilder(BACnetConstructedData anyValue) {
-
+    public BACnetLogDataLogDataEntryAnyValueBuilderImpl(BACnetConstructedData anyValue) {
       this.anyValue = anyValue;
     }
 

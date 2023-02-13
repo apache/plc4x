@@ -77,6 +77,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CallMethodRequest");
 
@@ -104,6 +105,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CallMethodRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectId)
     lengthInBits += objectId.getLengthInBits();
@@ -118,7 +120,7 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     if (inputArguments != null) {
       int i = 0;
       for (Variant element : inputArguments) {
-        boolean last = ++i >= inputArguments.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= inputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -126,12 +128,13 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static CallMethodRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CallMethodRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId objectId =
         readSimpleField(
@@ -153,19 +156,18 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("CallMethodRequest");
     // Create the instance
-    return new CallMethodRequestBuilder(objectId, methodId, noOfInputArguments, inputArguments);
+    return new CallMethodRequestBuilderImpl(objectId, methodId, noOfInputArguments, inputArguments);
   }
 
-  public static class CallMethodRequestBuilder
+  public static class CallMethodRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId objectId;
     private final NodeId methodId;
     private final int noOfInputArguments;
     private final List<Variant> inputArguments;
 
-    public CallMethodRequestBuilder(
+    public CallMethodRequestBuilderImpl(
         NodeId objectId, NodeId methodId, int noOfInputArguments, List<Variant> inputArguments) {
-
       this.objectId = objectId;
       this.methodId = methodId;
       this.noOfInputArguments = noOfInputArguments;

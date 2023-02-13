@@ -56,6 +56,7 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLiftFault");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLiftFault _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (liftFault)
     lengthInBits += liftFault.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLiftFaultBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLiftFault");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftFaultTagged liftFault =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
 
     readBuffer.closeContext("BACnetPropertyStatesLiftFault");
     // Create the instance
-    return new BACnetPropertyStatesLiftFaultBuilder(liftFault);
+    return new BACnetPropertyStatesLiftFaultBuilderImpl(liftFault);
   }
 
-  public static class BACnetPropertyStatesLiftFaultBuilder
+  public static class BACnetPropertyStatesLiftFaultBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLiftFaultTagged liftFault;
 
-    public BACnetPropertyStatesLiftFaultBuilder(BACnetLiftFaultTagged liftFault) {
-
+    public BACnetPropertyStatesLiftFaultBuilderImpl(BACnetLiftFaultTagged liftFault) {
       this.liftFault = liftFault;
     }
 

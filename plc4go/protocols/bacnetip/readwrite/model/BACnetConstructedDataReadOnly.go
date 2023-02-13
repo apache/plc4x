@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataReadOnly) GetReadOnly() BACnetApplicationTagBoole
 ///////////////////////
 
 func (m *_BACnetConstructedDataReadOnly) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetReadOnly())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataReadOnly) GetTypeName() string {
 	return "BACnetConstructedDataReadOnly"
 }
 
-func (m *_BACnetConstructedDataReadOnly) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataReadOnly) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataReadOnly) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (readOnly)
-	lengthInBits += m.ReadOnly.GetLengthInBits()
+	lengthInBits += m.ReadOnly.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataReadOnly) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataReadOnly) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataReadOnlyParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReadOnly, error) {
-	return BACnetConstructedDataReadOnlyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataReadOnlyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataReadOnlyParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReadOnly, error) {
+func BACnetConstructedDataReadOnlyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReadOnly, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataReadOnly"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataReadOnlyParseWithBuffer(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("readOnly"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for readOnly")
 	}
-	_readOnly, _readOnlyErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_readOnly, _readOnlyErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _readOnlyErr != nil {
 		return nil, errors.Wrap(_readOnlyErr, "Error parsing 'readOnly' field of BACnetConstructedDataReadOnly")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataReadOnlyParseWithBuffer(readBuffer utils.ReadBuffer, t
 }
 
 func (m *_BACnetConstructedDataReadOnly) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataReadOnly) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataReadOnly) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataReadOnly) SerializeWithWriteBuffer(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("readOnly"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for readOnly")
 		}
-		_readOnlyErr := writeBuffer.WriteSerializable(m.GetReadOnly())
+		_readOnlyErr := writeBuffer.WriteSerializable(ctx, m.GetReadOnly())
 		if popErr := writeBuffer.PopContext("readOnly"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for readOnly")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataReadOnly) SerializeWithWriteBuffer(writeBuffer ut
 			return errors.Wrap(_readOnlyErr, "Error serializing 'readOnly' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataReadOnly) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataReadOnly) isBACnetConstructedDataReadOnly() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataReadOnly) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -79,6 +79,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAllWritesSuccessful");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAllWritesSuccessful _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (allWritesSuccessful)
     lengthInBits += allWritesSuccessful.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAllWritesSuccessfulBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean allWritesSuccessful =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataAllWritesSuccessful");
     // Create the instance
-    return new BACnetConstructedDataAllWritesSuccessfulBuilder(
+    return new BACnetConstructedDataAllWritesSuccessfulBuilderImpl(
         allWritesSuccessful, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAllWritesSuccessfulBuilder
+  public static class BACnetConstructedDataAllWritesSuccessfulBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean allWritesSuccessful;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAllWritesSuccessfulBuilder(
+    public BACnetConstructedDataAllWritesSuccessfulBuilderImpl(
         BACnetApplicationTagBoolean allWritesSuccessful,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.allWritesSuccessful = allWritesSuccessful;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

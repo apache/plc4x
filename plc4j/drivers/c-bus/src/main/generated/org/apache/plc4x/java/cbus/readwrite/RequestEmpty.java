@@ -56,6 +56,7 @@ public class RequestEmpty extends Request implements Message {
   @Override
   protected void serializeRequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RequestEmpty");
 
@@ -71,27 +72,28 @@ public class RequestEmpty extends Request implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RequestEmpty _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static RequestEmptyBuilder staticParseBuilder(
+  public static RequestBuilder staticParseRequestBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("RequestEmpty");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("RequestEmpty");
     // Create the instance
-    return new RequestEmptyBuilder(cBusOptions);
+    return new RequestEmptyBuilderImpl(cBusOptions);
   }
 
-  public static class RequestEmptyBuilder implements Request.RequestBuilder {
+  public static class RequestEmptyBuilderImpl implements Request.RequestBuilder {
     private final CBusOptions cBusOptions;
 
-    public RequestEmptyBuilder(CBusOptions cBusOptions) {
-
+    public RequestEmptyBuilderImpl(CBusOptions cBusOptions) {
       this.cBusOptions = cBusOptions;
     }
 

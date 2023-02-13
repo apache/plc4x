@@ -76,6 +76,7 @@ public class CALDataWrite extends CALData implements Message {
   @Override
   protected void serializeCALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALDataWrite");
 
@@ -105,6 +106,7 @@ public class CALDataWrite extends CALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CALDataWrite _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (paramNo)
     lengthInBits += 8;
@@ -118,15 +120,16 @@ public class CALDataWrite extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataWriteBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer,
-      RequestContext requestContext,
-      CALCommandTypeContainer commandTypeContainer)
+      CALCommandTypeContainer commandTypeContainer,
+      RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALDataWrite");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Parameter paramNo =
         readEnumField(
@@ -149,21 +152,20 @@ public class CALDataWrite extends CALData implements Message {
 
     readBuffer.closeContext("CALDataWrite");
     // Create the instance
-    return new CALDataWriteBuilder(paramNo, code, parameterValue, requestContext);
+    return new CALDataWriteBuilderImpl(paramNo, code, parameterValue, requestContext);
   }
 
-  public static class CALDataWriteBuilder implements CALData.CALDataBuilder {
+  public static class CALDataWriteBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final byte code;
     private final ParameterValue parameterValue;
     private final RequestContext requestContext;
 
-    public CALDataWriteBuilder(
+    public CALDataWriteBuilderImpl(
         Parameter paramNo,
         byte code,
         ParameterValue parameterValue,
         RequestContext requestContext) {
-
       this.paramNo = paramNo;
       this.code = code;
       this.parameterValue = parameterValue;

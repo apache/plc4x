@@ -79,6 +79,7 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOperationExpected");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataOperationExpected _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lifeSafetyOperations)
     lengthInBits += lifeSafetyOperations.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOperationExpectedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyOperationTagged lifeSafetyOperations =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataOperationExpected");
     // Create the instance
-    return new BACnetConstructedDataOperationExpectedBuilder(
+    return new BACnetConstructedDataOperationExpectedBuilderImpl(
         lifeSafetyOperations, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOperationExpectedBuilder
+  public static class BACnetConstructedDataOperationExpectedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLifeSafetyOperationTagged lifeSafetyOperations;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOperationExpectedBuilder(
+    public BACnetConstructedDataOperationExpectedBuilderImpl(
         BACnetLifeSafetyOperationTagged lifeSafetyOperations,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lifeSafetyOperations = lifeSafetyOperations;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

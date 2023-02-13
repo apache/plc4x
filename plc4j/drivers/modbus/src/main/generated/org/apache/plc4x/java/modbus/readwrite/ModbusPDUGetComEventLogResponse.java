@@ -84,6 +84,7 @@ public class ModbusPDUGetComEventLogResponse extends ModbusPDU implements Messag
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUGetComEventLogResponse");
 
@@ -116,6 +117,7 @@ public class ModbusPDUGetComEventLogResponse extends ModbusPDU implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUGetComEventLogResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (byteCount)
     lengthInBits += 8;
@@ -137,12 +139,13 @@ public class ModbusPDUGetComEventLogResponse extends ModbusPDU implements Messag
     return lengthInBits;
   }
 
-  public static ModbusPDUGetComEventLogResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUGetComEventLogResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short byteCount = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8));
 
@@ -156,18 +159,18 @@ public class ModbusPDUGetComEventLogResponse extends ModbusPDU implements Messag
 
     readBuffer.closeContext("ModbusPDUGetComEventLogResponse");
     // Create the instance
-    return new ModbusPDUGetComEventLogResponseBuilder(status, eventCount, messageCount, events);
+    return new ModbusPDUGetComEventLogResponseBuilderImpl(status, eventCount, messageCount, events);
   }
 
-  public static class ModbusPDUGetComEventLogResponseBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUGetComEventLogResponseBuilderImpl
+      implements ModbusPDU.ModbusPDUBuilder {
     private final int status;
     private final int eventCount;
     private final int messageCount;
     private final byte[] events;
 
-    public ModbusPDUGetComEventLogResponseBuilder(
+    public ModbusPDUGetComEventLogResponseBuilderImpl(
         int status, int eventCount, int messageCount, byte[] events) {
-
       this.status = status;
       this.eventCount = eventCount;
       this.messageCount = messageCount;

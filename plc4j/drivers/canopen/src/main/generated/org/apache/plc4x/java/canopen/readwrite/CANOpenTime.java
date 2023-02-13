@@ -40,8 +40,6 @@ public class CANOpenTime implements Message {
   // Properties.
   protected final long millis;
   protected final int days;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public CANOpenTime(long millis, int days) {
     super();
@@ -59,6 +57,7 @@ public class CANOpenTime implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenTime");
 
@@ -66,10 +65,7 @@ public class CANOpenTime implements Message {
     writeSimpleField("millis", millis, writeUnsignedLong(writeBuffer, 28));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeSignedByte(writeBuffer, 4));
+    writeReservedField("reserved", (byte) 0x00, writeSignedByte(writeBuffer, 4));
 
     // Simple Field (days)
     writeSimpleField("days", days, writeUnsignedInt(writeBuffer, 16));
@@ -86,6 +82,7 @@ public class CANOpenTime implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CANOpenTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (millis)
     lengthInBits += 28;
@@ -110,6 +107,7 @@ public class CANOpenTime implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long millis = readSimpleField("millis", readUnsignedLong(readBuffer, 28));
 
@@ -121,7 +119,6 @@ public class CANOpenTime implements Message {
     // Create the instance
     CANOpenTime _cANOpenTime;
     _cANOpenTime = new CANOpenTime(millis, days);
-    _cANOpenTime.reservedField0 = reservedField0;
     return _cANOpenTime;
   }
 

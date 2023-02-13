@@ -78,6 +78,7 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLoopAction");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLoopAction _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (action)
     lengthInBits += action.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLoopActionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetActionTagged action =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataLoopAction");
     // Create the instance
-    return new BACnetConstructedDataLoopActionBuilder(action, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLoopActionBuilderImpl(action, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLoopActionBuilder
+  public static class BACnetConstructedDataLoopActionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetActionTagged action;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLoopActionBuilder(
+    public BACnetConstructedDataLoopActionBuilderImpl(
         BACnetActionTagged action,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.action = action;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -79,6 +79,7 @@ public class BACnetConstructedDataIPv6DefaultGateway extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPv6DefaultGateway");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataIPv6DefaultGateway extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIPv6DefaultGateway _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ipv6DefaultGateway)
     lengthInBits += ipv6DefaultGateway.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataIPv6DefaultGateway extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPv6DefaultGatewayBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataIPv6DefaultGateway extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString ipv6DefaultGateway =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataIPv6DefaultGateway extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataIPv6DefaultGateway");
     // Create the instance
-    return new BACnetConstructedDataIPv6DefaultGatewayBuilder(
+    return new BACnetConstructedDataIPv6DefaultGatewayBuilderImpl(
         ipv6DefaultGateway, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPv6DefaultGatewayBuilder
+  public static class BACnetConstructedDataIPv6DefaultGatewayBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipv6DefaultGateway;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPv6DefaultGatewayBuilder(
+    public BACnetConstructedDataIPv6DefaultGatewayBuilderImpl(
         BACnetApplicationTagOctetString ipv6DefaultGateway,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipv6DefaultGateway = ipv6DefaultGateway;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

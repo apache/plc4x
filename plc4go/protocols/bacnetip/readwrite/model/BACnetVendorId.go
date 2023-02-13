@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -1425,6 +1426,14 @@ const (
 	BACnetVendorId_EM_FIRST_CO_LTD                                                              BACnetVendorId = 1393
 	BACnetVendorId_IION_SYSTEMS_APS                                                             BACnetVendorId = 1394
 	BACnetVendorId_SAF_TEHNIKAJSC                                                               BACnetVendorId = 1396
+	BACnetVendorId_KOMFORTIQ_INC                                                                BACnetVendorId = 1397
+	BACnetVendorId_COOL_TERA_LIMITED                                                            BACnetVendorId = 1398
+	BACnetVendorId_HADRON_SOLUTIONS_SRLS                                                        BACnetVendorId = 1399
+	BACnetVendorId_BITPOOL                                                                      BACnetVendorId = 1401
+	BACnetVendorId_SONICULLC                                                                    BACnetVendorId = 1402
+	BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED                                                  BACnetVendorId = 1403
+	BACnetVendorId_THING_WAREHOUSELLC                                                           BACnetVendorId = 1404
+	BACnetVendorId_INNOFRIENDS_GMBH                                                             BACnetVendorId = 1405
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2822,6 +2831,14 @@ func init() {
 		BACnetVendorId_EM_FIRST_CO_LTD,
 		BACnetVendorId_IION_SYSTEMS_APS,
 		BACnetVendorId_SAF_TEHNIKAJSC,
+		BACnetVendorId_KOMFORTIQ_INC,
+		BACnetVendorId_COOL_TERA_LIMITED,
+		BACnetVendorId_HADRON_SOLUTIONS_SRLS,
+		BACnetVendorId_BITPOOL,
+		BACnetVendorId_SONICULLC,
+		BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED,
+		BACnetVendorId_THING_WAREHOUSELLC,
+		BACnetVendorId_INNOFRIENDS_GMBH,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4596,6 +4613,18 @@ func (e BACnetVendorId) VendorId() uint16 {
 		{ /* '1396' */
 			return 1396
 		}
+	case 1397:
+		{ /* '1397' */
+			return 1397
+		}
+	case 1398:
+		{ /* '1398' */
+			return 1398
+		}
+	case 1399:
+		{ /* '1399' */
+			return 1399
+		}
 	case 14:
 		{ /* '14' */
 			return 14
@@ -4603,6 +4632,26 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 140:
 		{ /* '140' */
 			return 140
+		}
+	case 1401:
+		{ /* '1401' */
+			return 1401
+		}
+	case 1402:
+		{ /* '1402' */
+			return 1402
+		}
+	case 1403:
+		{ /* '1403' */
+			return 1403
+		}
+	case 1404:
+		{ /* '1404' */
+			return 1404
+		}
+	case 1405:
+		{ /* '1405' */
+			return 1405
 		}
 	case 141:
 		{ /* '141' */
@@ -10174,6 +10223,18 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1396' */
 			return "SAF Tehnika JSC"
 		}
+	case 1397:
+		{ /* '1397' */
+			return "Komfort IQ, Inc."
+		}
+	case 1398:
+		{ /* '1398' */
+			return "CoolTera Limited"
+		}
+	case 1399:
+		{ /* '1399' */
+			return "Hadron Solutions S.r.l.s"
+		}
 	case 14:
 		{ /* '14' */
 			return "Cimetrics Technology"
@@ -10181,6 +10242,26 @@ func (e BACnetVendorId) VendorName() string {
 	case 140:
 		{ /* '140' */
 			return "Viconics Electronics, Inc."
+		}
+	case 1401:
+		{ /* '1401' */
+			return "Bitpool"
+		}
+	case 1402:
+		{ /* '1402' */
+			return "Sonicu, LLC"
+		}
+	case 1403:
+		{ /* '1403' */
+			return "Rishabh Instruments Limited"
+		}
+	case 1404:
+		{ /* '1404' */
+			return "Thing Warehouse LLC"
+		}
+	case 1405:
+		{ /* '1405' */
+			return "Innofriends GmbH"
 		}
 	case 141:
 		{ /* '141' */
@@ -14867,10 +14948,26 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_IION_SYSTEMS_APS, true
 	case 1396:
 		return BACnetVendorId_SAF_TEHNIKAJSC, true
+	case 1397:
+		return BACnetVendorId_KOMFORTIQ_INC, true
+	case 1398:
+		return BACnetVendorId_COOL_TERA_LIMITED, true
+	case 1399:
+		return BACnetVendorId_HADRON_SOLUTIONS_SRLS, true
 	case 14:
 		return BACnetVendorId_CIMETRICS_TECHNOLOGY, true
 	case 140:
 		return BACnetVendorId_VICONICS_ELECTRONICS_INC, true
+	case 1401:
+		return BACnetVendorId_BITPOOL, true
+	case 1402:
+		return BACnetVendorId_SONICULLC, true
+	case 1403:
+		return BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED, true
+	case 1404:
+		return BACnetVendorId_THING_WAREHOUSELLC, true
+	case 1405:
+		return BACnetVendorId_INNOFRIENDS_GMBH, true
 	case 141:
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
 	case 142:
@@ -17653,10 +17750,26 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_IION_SYSTEMS_APS, true
 	case "SAF_TEHNIKAJSC":
 		return BACnetVendorId_SAF_TEHNIKAJSC, true
+	case "KOMFORTIQ_INC":
+		return BACnetVendorId_KOMFORTIQ_INC, true
+	case "COOL_TERA_LIMITED":
+		return BACnetVendorId_COOL_TERA_LIMITED, true
+	case "HADRON_SOLUTIONS_SRLS":
+		return BACnetVendorId_HADRON_SOLUTIONS_SRLS, true
 	case "CIMETRICS_TECHNOLOGY":
 		return BACnetVendorId_CIMETRICS_TECHNOLOGY, true
 	case "VICONICS_ELECTRONICS_INC":
 		return BACnetVendorId_VICONICS_ELECTRONICS_INC, true
+	case "BITPOOL":
+		return BACnetVendorId_BITPOOL, true
+	case "SONICULLC":
+		return BACnetVendorId_SONICULLC, true
+	case "RISHABH_INSTRUMENTS_LIMITED":
+		return BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED, true
+	case "THING_WAREHOUSELLC":
+		return BACnetVendorId_THING_WAREHOUSELLC, true
+	case "INNOFRIENDS_GMBH":
+		return BACnetVendorId_INNOFRIENDS_GMBH, true
 	case "YASKAWA_AMERICA_INC":
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
 	case "DEO_SCONTROLSYSTEMS_GMBH":
@@ -19572,19 +19685,19 @@ func CastBACnetVendorId(structType interface{}) BACnetVendorId {
 	return castFunc(structType)
 }
 
-func (m BACnetVendorId) GetLengthInBits() uint16 {
+func (m BACnetVendorId) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m BACnetVendorId) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetVendorId) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetVendorIdParse(theBytes []byte) (BACnetVendorId, error) {
-	return BACnetVendorIdParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetVendorIdParse(ctx context.Context, theBytes []byte) (BACnetVendorId, error) {
+	return BACnetVendorIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetVendorIdParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVendorId, error) {
+func BACnetVendorIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVendorId, error) {
 	val, err := readBuffer.ReadUint16("BACnetVendorId", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetVendorId")
@@ -19599,13 +19712,13 @@ func BACnetVendorIdParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetVendorId,
 
 func (e BACnetVendorId) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetVendorId) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetVendorId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("BACnetVendorId", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
@@ -20496,10 +20609,26 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "IION_SYSTEMS_APS"
 	case BACnetVendorId_SAF_TEHNIKAJSC:
 		return "SAF_TEHNIKAJSC"
+	case BACnetVendorId_KOMFORTIQ_INC:
+		return "KOMFORTIQ_INC"
+	case BACnetVendorId_COOL_TERA_LIMITED:
+		return "COOL_TERA_LIMITED"
+	case BACnetVendorId_HADRON_SOLUTIONS_SRLS:
+		return "HADRON_SOLUTIONS_SRLS"
 	case BACnetVendorId_CIMETRICS_TECHNOLOGY:
 		return "CIMETRICS_TECHNOLOGY"
 	case BACnetVendorId_VICONICS_ELECTRONICS_INC:
 		return "VICONICS_ELECTRONICS_INC"
+	case BACnetVendorId_BITPOOL:
+		return "BITPOOL"
+	case BACnetVendorId_SONICULLC:
+		return "SONICULLC"
+	case BACnetVendorId_RISHABH_INSTRUMENTS_LIMITED:
+		return "RISHABH_INSTRUMENTS_LIMITED"
+	case BACnetVendorId_THING_WAREHOUSELLC:
+		return "THING_WAREHOUSELLC"
+	case BACnetVendorId_INNOFRIENDS_GMBH:
+		return "INNOFRIENDS_GMBH"
 	case BACnetVendorId_YASKAWA_AMERICA_INC:
 		return "YASKAWA_AMERICA_INC"
 	case BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH:

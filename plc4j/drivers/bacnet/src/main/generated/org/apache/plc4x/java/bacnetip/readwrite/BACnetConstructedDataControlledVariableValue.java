@@ -79,6 +79,7 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataControlledVariableValue");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataControlledVariableValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (controlledVariableValue)
     lengthInBits += controlledVariableValue.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataControlledVariableValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal controlledVariableValue =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataControlledVariableValue");
     // Create the instance
-    return new BACnetConstructedDataControlledVariableValueBuilder(
+    return new BACnetConstructedDataControlledVariableValueBuilderImpl(
         controlledVariableValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataControlledVariableValueBuilder
+  public static class BACnetConstructedDataControlledVariableValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal controlledVariableValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataControlledVariableValueBuilder(
+    public BACnetConstructedDataControlledVariableValueBuilderImpl(
         BACnetApplicationTagReal controlledVariableValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.controlledVariableValue = controlledVariableValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

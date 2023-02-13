@@ -81,6 +81,7 @@ public class SecurityDataArmSystem extends SecurityData implements Message {
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataArmSystem");
 
@@ -123,6 +124,7 @@ public class SecurityDataArmSystem extends SecurityData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataArmSystem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (armMode)
     lengthInBits += 8;
@@ -142,12 +144,13 @@ public class SecurityDataArmSystem extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataArmSystemBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataArmSystem");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte armMode = readSimpleField("armMode", readByte(readBuffer, 8));
     boolean isReserved =
@@ -167,14 +170,13 @@ public class SecurityDataArmSystem extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataArmSystem");
     // Create the instance
-    return new SecurityDataArmSystemBuilder(armMode);
+    return new SecurityDataArmSystemBuilderImpl(armMode);
   }
 
-  public static class SecurityDataArmSystemBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataArmSystemBuilderImpl implements SecurityData.SecurityDataBuilder {
     private final byte armMode;
 
-    public SecurityDataArmSystemBuilder(byte armMode) {
-
+    public SecurityDataArmSystemBuilderImpl(byte armMode) {
       this.armMode = armMode;
     }
 

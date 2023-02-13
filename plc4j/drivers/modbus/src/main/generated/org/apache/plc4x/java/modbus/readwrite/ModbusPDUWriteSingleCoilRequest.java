@@ -71,6 +71,7 @@ public class ModbusPDUWriteSingleCoilRequest extends ModbusPDU implements Messag
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUWriteSingleCoilRequest");
 
@@ -92,6 +93,7 @@ public class ModbusPDUWriteSingleCoilRequest extends ModbusPDU implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUWriteSingleCoilRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (address)
     lengthInBits += 16;
@@ -102,12 +104,13 @@ public class ModbusPDUWriteSingleCoilRequest extends ModbusPDU implements Messag
     return lengthInBits;
   }
 
-  public static ModbusPDUWriteSingleCoilRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUWriteSingleCoilRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int address = readSimpleField("address", readUnsignedInt(readBuffer, 16));
 
@@ -115,15 +118,15 @@ public class ModbusPDUWriteSingleCoilRequest extends ModbusPDU implements Messag
 
     readBuffer.closeContext("ModbusPDUWriteSingleCoilRequest");
     // Create the instance
-    return new ModbusPDUWriteSingleCoilRequestBuilder(address, value);
+    return new ModbusPDUWriteSingleCoilRequestBuilderImpl(address, value);
   }
 
-  public static class ModbusPDUWriteSingleCoilRequestBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUWriteSingleCoilRequestBuilderImpl
+      implements ModbusPDU.ModbusPDUBuilder {
     private final int address;
     private final int value;
 
-    public ModbusPDUWriteSingleCoilRequestBuilder(int address, int value) {
-
+    public ModbusPDUWriteSingleCoilRequestBuilderImpl(int address, int value) {
       this.address = address;
       this.value = value;
     }

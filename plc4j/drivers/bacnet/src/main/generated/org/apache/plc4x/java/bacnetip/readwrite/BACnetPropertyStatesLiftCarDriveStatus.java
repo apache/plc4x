@@ -57,6 +57,7 @@ public class BACnetPropertyStatesLiftCarDriveStatus extends BACnetPropertyStates
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarDriveStatus");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesLiftCarDriveStatus extends BACnetPropertyStates
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLiftCarDriveStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (liftCarDriveStatus)
     lengthInBits += liftCarDriveStatus.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetPropertyStatesLiftCarDriveStatus extends BACnetPropertyStates
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLiftCarDriveStatusBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLiftCarDriveStatus");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDriveStatusTagged liftCarDriveStatus =
         readSimpleField(
@@ -103,16 +106,15 @@ public class BACnetPropertyStatesLiftCarDriveStatus extends BACnetPropertyStates
 
     readBuffer.closeContext("BACnetPropertyStatesLiftCarDriveStatus");
     // Create the instance
-    return new BACnetPropertyStatesLiftCarDriveStatusBuilder(liftCarDriveStatus);
+    return new BACnetPropertyStatesLiftCarDriveStatusBuilderImpl(liftCarDriveStatus);
   }
 
-  public static class BACnetPropertyStatesLiftCarDriveStatusBuilder
+  public static class BACnetPropertyStatesLiftCarDriveStatusBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLiftCarDriveStatusTagged liftCarDriveStatus;
 
-    public BACnetPropertyStatesLiftCarDriveStatusBuilder(
+    public BACnetPropertyStatesLiftCarDriveStatusBuilderImpl(
         BACnetLiftCarDriveStatusTagged liftCarDriveStatus) {
-
       this.liftCarDriveStatus = liftCarDriveStatus;
     }
 

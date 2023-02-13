@@ -65,6 +65,7 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("UserIdentityToken");
 
@@ -97,6 +98,7 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     UserIdentityToken _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (policyLength)
     lengthInBits += 32;
@@ -110,12 +112,13 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static UserIdentityTokenBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UserIdentityToken");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int policyLength = readImplicitField("policyLength", readSignedInt(readBuffer, 32));
 
@@ -135,17 +138,16 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("UserIdentityToken");
     // Create the instance
-    return new UserIdentityTokenBuilder(policyId, userIdentityTokenDefinition);
+    return new UserIdentityTokenBuilderImpl(policyId, userIdentityTokenDefinition);
   }
 
-  public static class UserIdentityTokenBuilder
+  public static class UserIdentityTokenBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString policyId;
     private final UserIdentityTokenDefinition userIdentityTokenDefinition;
 
-    public UserIdentityTokenBuilder(
+    public UserIdentityTokenBuilderImpl(
         PascalString policyId, UserIdentityTokenDefinition userIdentityTokenDefinition) {
-
       this.policyId = policyId;
       this.userIdentityTokenDefinition = userIdentityTokenDefinition;
     }

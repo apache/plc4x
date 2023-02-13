@@ -81,6 +81,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestDeviceCommunicationControl");
 
@@ -105,6 +106,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestDeviceCommunicationControl _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (timeDuration)
     if (timeDuration != null) {
@@ -122,12 +124,14 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestDeviceCommunicationControl");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger timeDuration =
         readOptionalField(
@@ -165,11 +169,11 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestDeviceCommunicationControl");
     // Create the instance
-    return new BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder(
+    return new BACnetConfirmedServiceRequestDeviceCommunicationControlBuilderImpl(
         timeDuration, enableDisable, password, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder
+  public static class BACnetConfirmedServiceRequestDeviceCommunicationControlBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagUnsignedInteger timeDuration;
     private final BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
@@ -177,12 +181,11 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     private final BACnetContextTagCharacterString password;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestDeviceCommunicationControlBuilder(
+    public BACnetConfirmedServiceRequestDeviceCommunicationControlBuilderImpl(
         BACnetContextTagUnsignedInteger timeDuration,
         BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged enableDisable,
         BACnetContextTagCharacterString password,
         Long serviceRequestLength) {
-
       this.timeDuration = timeDuration;
       this.enableDisable = enableDisable;
       this.password = password;

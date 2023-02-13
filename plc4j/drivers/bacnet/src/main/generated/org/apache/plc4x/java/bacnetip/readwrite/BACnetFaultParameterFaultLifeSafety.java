@@ -78,6 +78,7 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
   protected void serializeBACnetFaultParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultLifeSafety");
 
@@ -109,6 +110,7 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultLifeSafety _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -125,12 +127,13 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultLifeSafetyBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetFaultParameterBuilder staticParseBACnetFaultParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultLifeSafety");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -164,23 +167,22 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
 
     readBuffer.closeContext("BACnetFaultParameterFaultLifeSafety");
     // Create the instance
-    return new BACnetFaultParameterFaultLifeSafetyBuilder(
+    return new BACnetFaultParameterFaultLifeSafetyBuilderImpl(
         openingTag, listOfFaultValues, modePropertyReference, closingTag);
   }
 
-  public static class BACnetFaultParameterFaultLifeSafetyBuilder
+  public static class BACnetFaultParameterFaultLifeSafetyBuilderImpl
       implements BACnetFaultParameter.BACnetFaultParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetFaultParameterFaultLifeSafetyListOfFaultValues listOfFaultValues;
     private final BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference;
     private final BACnetClosingTag closingTag;
 
-    public BACnetFaultParameterFaultLifeSafetyBuilder(
+    public BACnetFaultParameterFaultLifeSafetyBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetFaultParameterFaultLifeSafetyListOfFaultValues listOfFaultValues,
         BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.listOfFaultValues = listOfFaultValues;
       this.modePropertyReference = modePropertyReference;

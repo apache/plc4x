@@ -79,6 +79,7 @@ public class BACnetConstructedDataCurrentCommandPriority extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCurrentCommandPriority");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataCurrentCommandPriority extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCurrentCommandPriority _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (currentCommandPriority)
     lengthInBits += currentCommandPriority.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataCurrentCommandPriority extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCurrentCommandPriorityBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataCurrentCommandPriority extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOptionalUnsigned currentCommandPriority =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataCurrentCommandPriority extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataCurrentCommandPriority");
     // Create the instance
-    return new BACnetConstructedDataCurrentCommandPriorityBuilder(
+    return new BACnetConstructedDataCurrentCommandPriorityBuilderImpl(
         currentCommandPriority, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCurrentCommandPriorityBuilder
+  public static class BACnetConstructedDataCurrentCommandPriorityBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetOptionalUnsigned currentCommandPriority;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCurrentCommandPriorityBuilder(
+    public BACnetConstructedDataCurrentCommandPriorityBuilderImpl(
         BACnetOptionalUnsigned currentCommandPriority,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.currentCommandPriority = currentCommandPriority;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

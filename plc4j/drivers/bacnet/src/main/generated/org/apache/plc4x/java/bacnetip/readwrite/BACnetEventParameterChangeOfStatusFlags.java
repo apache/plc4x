@@ -79,6 +79,7 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterChangeOfStatusFlags");
 
@@ -106,6 +107,7 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterChangeOfStatusFlags _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -122,12 +124,13 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfStatusFlagsBuilder staticParseBuilder(
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfStatusFlags");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -164,23 +167,22 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
 
     readBuffer.closeContext("BACnetEventParameterChangeOfStatusFlags");
     // Create the instance
-    return new BACnetEventParameterChangeOfStatusFlagsBuilder(
+    return new BACnetEventParameterChangeOfStatusFlagsBuilderImpl(
         openingTag, timeDelay, selectedFlags, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfStatusFlagsBuilder
+  public static class BACnetEventParameterChangeOfStatusFlagsBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
     private final BACnetStatusFlagsTagged selectedFlags;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfStatusFlagsBuilder(
+    public BACnetEventParameterChangeOfStatusFlagsBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetStatusFlagsTagged selectedFlags,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.selectedFlags = selectedFlags;

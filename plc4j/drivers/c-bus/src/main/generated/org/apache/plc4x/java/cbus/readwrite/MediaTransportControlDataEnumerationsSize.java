@@ -90,6 +90,7 @@ public class MediaTransportControlDataEnumerationsSize extends MediaTransportCon
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataEnumerationsSize");
 
@@ -130,6 +131,7 @@ public class MediaTransportControlDataEnumerationsSize extends MediaTransportCon
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataEnumerationsSize _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (sizeType)
     lengthInBits += 8;
@@ -151,12 +153,13 @@ public class MediaTransportControlDataEnumerationsSize extends MediaTransportCon
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataEnumerationsSizeBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataEnumerationsSize");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte sizeType = readSimpleField("sizeType", readByte(readBuffer, 8));
     boolean isListCategories =
@@ -176,18 +179,17 @@ public class MediaTransportControlDataEnumerationsSize extends MediaTransportCon
 
     readBuffer.closeContext("MediaTransportControlDataEnumerationsSize");
     // Create the instance
-    return new MediaTransportControlDataEnumerationsSizeBuilder(sizeType, start, size);
+    return new MediaTransportControlDataEnumerationsSizeBuilderImpl(sizeType, start, size);
   }
 
-  public static class MediaTransportControlDataEnumerationsSizeBuilder
+  public static class MediaTransportControlDataEnumerationsSizeBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte sizeType;
     private final short start;
     private final short size;
 
-    public MediaTransportControlDataEnumerationsSizeBuilder(
+    public MediaTransportControlDataEnumerationsSizeBuilderImpl(
         byte sizeType, short start, short size) {
-
       this.sizeType = sizeType;
       this.start = start;
       this.size = size;

@@ -57,6 +57,7 @@ public class BACnetLandingCallStatusCommandDestination extends BACnetLandingCall
   protected void serializeBACnetLandingCallStatusCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLandingCallStatusCommandDestination");
 
@@ -75,6 +76,7 @@ public class BACnetLandingCallStatusCommandDestination extends BACnetLandingCall
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLandingCallStatusCommandDestination _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (destination)
     lengthInBits += destination.getLengthInBits();
@@ -82,12 +84,14 @@ public class BACnetLandingCallStatusCommandDestination extends BACnetLandingCall
     return lengthInBits;
   }
 
-  public static BACnetLandingCallStatusCommandDestinationBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetLandingCallStatusCommandBuilder
+      staticParseBACnetLandingCallStatusCommandBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetLandingCallStatusCommandDestination");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger destination =
         readSimpleField(
@@ -103,16 +107,15 @@ public class BACnetLandingCallStatusCommandDestination extends BACnetLandingCall
 
     readBuffer.closeContext("BACnetLandingCallStatusCommandDestination");
     // Create the instance
-    return new BACnetLandingCallStatusCommandDestinationBuilder(destination);
+    return new BACnetLandingCallStatusCommandDestinationBuilderImpl(destination);
   }
 
-  public static class BACnetLandingCallStatusCommandDestinationBuilder
+  public static class BACnetLandingCallStatusCommandDestinationBuilderImpl
       implements BACnetLandingCallStatusCommand.BACnetLandingCallStatusCommandBuilder {
     private final BACnetContextTagUnsignedInteger destination;
 
-    public BACnetLandingCallStatusCommandDestinationBuilder(
+    public BACnetLandingCallStatusCommandDestinationBuilderImpl(
         BACnetContextTagUnsignedInteger destination) {
-
       this.destination = destination;
     }
 

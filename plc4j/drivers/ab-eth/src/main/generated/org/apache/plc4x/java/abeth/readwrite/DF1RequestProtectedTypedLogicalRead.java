@@ -87,6 +87,7 @@ public class DF1RequestProtectedTypedLogicalRead extends DF1RequestCommand imple
   protected void serializeDF1RequestCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1RequestProtectedTypedLogicalRead");
 
@@ -117,6 +118,7 @@ public class DF1RequestProtectedTypedLogicalRead extends DF1RequestCommand imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DF1RequestProtectedTypedLogicalRead _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (byteSize)
     lengthInBits += 8;
@@ -136,12 +138,13 @@ public class DF1RequestProtectedTypedLogicalRead extends DF1RequestCommand imple
     return lengthInBits;
   }
 
-  public static DF1RequestProtectedTypedLogicalReadBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static DF1RequestCommandBuilder staticParseDF1RequestCommandBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DF1RequestProtectedTypedLogicalRead");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short byteSize = readSimpleField("byteSize", readUnsignedShort(readBuffer, 8));
 
@@ -155,11 +158,11 @@ public class DF1RequestProtectedTypedLogicalRead extends DF1RequestCommand imple
 
     readBuffer.closeContext("DF1RequestProtectedTypedLogicalRead");
     // Create the instance
-    return new DF1RequestProtectedTypedLogicalReadBuilder(
+    return new DF1RequestProtectedTypedLogicalReadBuilderImpl(
         byteSize, fileNumber, fileType, elementNumber, subElementNumber);
   }
 
-  public static class DF1RequestProtectedTypedLogicalReadBuilder
+  public static class DF1RequestProtectedTypedLogicalReadBuilderImpl
       implements DF1RequestCommand.DF1RequestCommandBuilder {
     private final short byteSize;
     private final short fileNumber;
@@ -167,13 +170,12 @@ public class DF1RequestProtectedTypedLogicalRead extends DF1RequestCommand imple
     private final short elementNumber;
     private final short subElementNumber;
 
-    public DF1RequestProtectedTypedLogicalReadBuilder(
+    public DF1RequestProtectedTypedLogicalReadBuilderImpl(
         short byteSize,
         short fileNumber,
         short fileType,
         short elementNumber,
         short subElementNumber) {
-
       this.byteSize = byteSize;
       this.fileNumber = fileNumber;
       this.fileType = fileType;

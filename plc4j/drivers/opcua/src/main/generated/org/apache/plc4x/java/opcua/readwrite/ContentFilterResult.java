@@ -80,6 +80,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ContentFilterResult");
 
@@ -108,6 +109,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ContentFilterResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfElementResults)
     lengthInBits += 32;
@@ -116,7 +118,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
     if (elementResults != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : elementResults) {
-        boolean last = ++i >= elementResults.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= elementResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -128,7 +130,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
     if (elementDiagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : elementDiagnosticInfos) {
-        boolean last = ++i >= elementDiagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= elementDiagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -136,12 +138,13 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static ContentFilterResultBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ContentFilterResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfElementResults = readSimpleField("noOfElementResults", readSignedInt(readBuffer, 32));
 
@@ -165,23 +168,22 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("ContentFilterResult");
     // Create the instance
-    return new ContentFilterResultBuilder(
+    return new ContentFilterResultBuilderImpl(
         noOfElementResults, elementResults, noOfElementDiagnosticInfos, elementDiagnosticInfos);
   }
 
-  public static class ContentFilterResultBuilder
+  public static class ContentFilterResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfElementResults;
     private final List<ExtensionObjectDefinition> elementResults;
     private final int noOfElementDiagnosticInfos;
     private final List<DiagnosticInfo> elementDiagnosticInfos;
 
-    public ContentFilterResultBuilder(
+    public ContentFilterResultBuilderImpl(
         int noOfElementResults,
         List<ExtensionObjectDefinition> elementResults,
         int noOfElementDiagnosticInfos,
         List<DiagnosticInfo> elementDiagnosticInfos) {
-
       this.noOfElementResults = noOfElementResults;
       this.elementResults = elementResults;
       this.noOfElementDiagnosticInfos = noOfElementDiagnosticInfos;

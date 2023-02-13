@@ -78,6 +78,7 @@ public class BACnetConstructedDataInProcess extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataInProcess");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataInProcess extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataInProcess _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (inProcess)
     lengthInBits += inProcess.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataInProcess extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataInProcessBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataInProcess extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean inProcess =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataInProcess extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataInProcess");
     // Create the instance
-    return new BACnetConstructedDataInProcessBuilder(inProcess, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataInProcessBuilderImpl(inProcess, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataInProcessBuilder
+  public static class BACnetConstructedDataInProcessBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean inProcess;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataInProcessBuilder(
+    public BACnetConstructedDataInProcessBuilderImpl(
         BACnetApplicationTagBoolean inProcess,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.inProcess = inProcess;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

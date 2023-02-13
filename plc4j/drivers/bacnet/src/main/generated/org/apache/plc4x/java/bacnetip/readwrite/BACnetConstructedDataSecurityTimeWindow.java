@@ -79,6 +79,7 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSecurityTimeWindow");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSecurityTimeWindow _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (securityTimeWindow)
     lengthInBits += securityTimeWindow.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSecurityTimeWindowBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger securityTimeWindow =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataSecurityTimeWindow");
     // Create the instance
-    return new BACnetConstructedDataSecurityTimeWindowBuilder(
+    return new BACnetConstructedDataSecurityTimeWindowBuilderImpl(
         securityTimeWindow, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSecurityTimeWindowBuilder
+  public static class BACnetConstructedDataSecurityTimeWindowBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger securityTimeWindow;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSecurityTimeWindowBuilder(
+    public BACnetConstructedDataSecurityTimeWindowBuilderImpl(
         BACnetApplicationTagUnsignedInteger securityTimeWindow,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.securityTimeWindow = securityTimeWindow;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

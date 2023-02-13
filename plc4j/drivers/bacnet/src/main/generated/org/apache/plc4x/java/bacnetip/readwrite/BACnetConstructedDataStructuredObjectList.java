@@ -89,6 +89,7 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataStructuredObjectList");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataStructuredObjectList _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,7 +138,7 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataStructuredObjectListBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -147,6 +149,7 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -174,23 +177,22 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataStructuredObjectList");
     // Create the instance
-    return new BACnetConstructedDataStructuredObjectListBuilder(
+    return new BACnetConstructedDataStructuredObjectListBuilderImpl(
         numberOfDataElements, structuredObjectList, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataStructuredObjectListBuilder
+  public static class BACnetConstructedDataStructuredObjectListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagObjectIdentifier> structuredObjectList;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStructuredObjectListBuilder(
+    public BACnetConstructedDataStructuredObjectListBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagObjectIdentifier> structuredObjectList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.structuredObjectList = structuredObjectList;
       this.tagNumber = tagNumber;

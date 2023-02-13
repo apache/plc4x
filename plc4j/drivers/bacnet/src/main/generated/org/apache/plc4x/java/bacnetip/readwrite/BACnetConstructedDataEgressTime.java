@@ -78,6 +78,7 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEgressTime");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEgressTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (egressTime)
     lengthInBits += egressTime.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEgressTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger egressTime =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataEgressTime");
     // Create the instance
-    return new BACnetConstructedDataEgressTimeBuilder(egressTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEgressTimeBuilderImpl(
+        egressTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEgressTimeBuilder
+  public static class BACnetConstructedDataEgressTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger egressTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEgressTimeBuilder(
+    public BACnetConstructedDataEgressTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger egressTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.egressTime = egressTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

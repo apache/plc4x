@@ -55,6 +55,7 @@ public class SecurityDataZoneShort extends SecurityData implements Message {
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataZoneShort");
 
@@ -73,6 +74,7 @@ public class SecurityDataZoneShort extends SecurityData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataZoneShort _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneNumber)
     lengthInBits += 8;
@@ -80,25 +82,25 @@ public class SecurityDataZoneShort extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataZoneShortBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataZoneShort");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short zoneNumber = readSimpleField("zoneNumber", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("SecurityDataZoneShort");
     // Create the instance
-    return new SecurityDataZoneShortBuilder(zoneNumber);
+    return new SecurityDataZoneShortBuilderImpl(zoneNumber);
   }
 
-  public static class SecurityDataZoneShortBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataZoneShortBuilderImpl implements SecurityData.SecurityDataBuilder {
     private final short zoneNumber;
 
-    public SecurityDataZoneShortBuilder(short zoneNumber) {
-
+    public SecurityDataZoneShortBuilderImpl(short zoneNumber) {
       this.zoneNumber = zoneNumber;
     }
 

@@ -18,6 +18,7 @@
  */
 
 #include <stdio.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/evaluation_helper.h>
 #include <plc4c/driver_modbus_static.h>
 
@@ -58,7 +59,7 @@ uint16_t PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER() {
 }
 
 // Parse function.
-plc4c_return_code plc4c_modbus_read_write_modbus_adu_parse(plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_driver_type driverType, bool response, plc4c_modbus_read_write_modbus_adu** _message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_adu_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_driver_type driverType, bool response, plc4c_modbus_read_write_modbus_adu** _message) {
   uint16_t startPos = plc4c_spi_read_get_pos(readBuffer);
   plc4c_return_code _res = OK;
 
@@ -112,7 +113,7 @@ if( driverType == plc4c_modbus_read_write_driver_type_MODBUS_TCP ) { /* ModbusTc
 
   // Simple Field (pdu)
   plc4c_modbus_read_write_modbus_pdu* pdu;
-  _res = plc4c_modbus_read_write_modbus_pdu_parse(readBuffer, response, (void*) &pdu);
+  _res = plc4c_modbus_read_write_modbus_pdu_parse(ctx, readBuffer, response, (void*) &pdu);
   if(_res != OK) {
     return _res;
   }
@@ -132,7 +133,7 @@ if( driverType == plc4c_modbus_read_write_driver_type_MODBUS_RTU ) { /* ModbusRt
 
   // Simple Field (pdu)
   plc4c_modbus_read_write_modbus_pdu* pdu;
-  _res = plc4c_modbus_read_write_modbus_pdu_parse(readBuffer, response, (void*) &pdu);
+  _res = plc4c_modbus_read_write_modbus_pdu_parse(ctx, readBuffer, response, (void*) &pdu);
   if(_res != OK) {
     return _res;
   }
@@ -168,7 +169,7 @@ if( driverType == plc4c_modbus_read_write_driver_type_MODBUS_ASCII ) { /* Modbus
 
   // Simple Field (pdu)
   plc4c_modbus_read_write_modbus_pdu* pdu;
-  _res = plc4c_modbus_read_write_modbus_pdu_parse(readBuffer, response, (void*) &pdu);
+  _res = plc4c_modbus_read_write_modbus_pdu_parse(ctx, readBuffer, response, (void*) &pdu);
   if(_res != OK) {
     return _res;
   }
@@ -194,7 +195,7 @@ if( driverType == plc4c_modbus_read_write_driver_type_MODBUS_ASCII ) { /* Modbus
   return OK;
 }
 
-plc4c_return_code plc4c_modbus_read_write_modbus_adu_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_adu* _message) {
+plc4c_return_code plc4c_modbus_read_write_modbus_adu_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_modbus_adu* _message) {
   plc4c_return_code _res = OK;
 
   // Switch Field (Depending on the current type, serialize the subtype elements)
@@ -211,7 +212,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_adu_serialize(plc4c_spi_write_b
   plc4c_spi_write_unsigned_short(writeBuffer, 16, PLC4C_MODBUS_READ_WRITE_MODBUS_TCP_ADU_PROTOCOL_IDENTIFIER());
 
   // Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (plc4c_modbus_read_write_modbus_pdu_length_in_bytes(_message->modbus_tcp_adu_pdu)) + (1));
+  _res = plc4c_spi_write_unsigned_short(writeBuffer, 16, (plc4c_modbus_read_write_modbus_pdu_length_in_bytes(ctx, _message->modbus_tcp_adu_pdu)) + (1));
   if(_res != OK) {
     return _res;
   }
@@ -223,7 +224,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_adu_serialize(plc4c_spi_write_b
   }
 
   // Simple Field (pdu)
-  _res = plc4c_modbus_read_write_modbus_pdu_serialize(writeBuffer, _message->modbus_tcp_adu_pdu);
+  _res = plc4c_modbus_read_write_modbus_pdu_serialize(ctx, writeBuffer, _message->modbus_tcp_adu_pdu);
   if(_res != OK) {
     return _res;
   }
@@ -239,7 +240,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_adu_serialize(plc4c_spi_write_b
   }
 
   // Simple Field (pdu)
-  _res = plc4c_modbus_read_write_modbus_pdu_serialize(writeBuffer, _message->modbus_rtu_adu_pdu);
+  _res = plc4c_modbus_read_write_modbus_pdu_serialize(ctx, writeBuffer, _message->modbus_rtu_adu_pdu);
   if(_res != OK) {
     return _res;
   }
@@ -262,7 +263,7 @@ plc4c_return_code plc4c_modbus_read_write_modbus_adu_serialize(plc4c_spi_write_b
   }
 
   // Simple Field (pdu)
-  _res = plc4c_modbus_read_write_modbus_pdu_serialize(writeBuffer, _message->modbus_ascii_adu_pdu);
+  _res = plc4c_modbus_read_write_modbus_pdu_serialize(ctx, writeBuffer, _message->modbus_ascii_adu_pdu);
   if(_res != OK) {
     return _res;
   }
@@ -281,11 +282,11 @@ plc4c_return_code plc4c_modbus_read_write_modbus_adu_serialize(plc4c_spi_write_b
   return OK;
 }
 
-uint16_t plc4c_modbus_read_write_modbus_adu_length_in_bytes(plc4c_modbus_read_write_modbus_adu* _message) {
-  return plc4c_modbus_read_write_modbus_adu_length_in_bits(_message) / 8;
+uint16_t plc4c_modbus_read_write_modbus_adu_length_in_bytes(plc4x_spi_context ctx, plc4c_modbus_read_write_modbus_adu* _message) {
+  return plc4c_modbus_read_write_modbus_adu_length_in_bits(ctx, _message) / 8;
 }
 
-uint16_t plc4c_modbus_read_write_modbus_adu_length_in_bits(plc4c_modbus_read_write_modbus_adu* _message) {
+uint16_t plc4c_modbus_read_write_modbus_adu_length_in_bits(plc4x_spi_context ctx, plc4c_modbus_read_write_modbus_adu* _message) {
   uint16_t lengthInBits = 0;
 
   // Depending on the current type, add the length of sub-type elements ...
@@ -309,7 +310,7 @@ uint16_t plc4c_modbus_read_write_modbus_adu_length_in_bits(plc4c_modbus_read_wri
 
 
   // Simple field (pdu)
-  lengthInBits += plc4c_modbus_read_write_modbus_pdu_length_in_bits(_message->modbus_tcp_adu_pdu);
+  lengthInBits += plc4c_modbus_read_write_modbus_pdu_length_in_bits(ctx, _message->modbus_tcp_adu_pdu);
 
       break;
     }
@@ -320,7 +321,7 @@ uint16_t plc4c_modbus_read_write_modbus_adu_length_in_bits(plc4c_modbus_read_wri
 
 
   // Simple field (pdu)
-  lengthInBits += plc4c_modbus_read_write_modbus_pdu_length_in_bits(_message->modbus_rtu_adu_pdu);
+  lengthInBits += plc4c_modbus_read_write_modbus_pdu_length_in_bits(ctx, _message->modbus_rtu_adu_pdu);
 
 
   // Checksum Field (checksum)
@@ -335,7 +336,7 @@ uint16_t plc4c_modbus_read_write_modbus_adu_length_in_bits(plc4c_modbus_read_wri
 
 
   // Simple field (pdu)
-  lengthInBits += plc4c_modbus_read_write_modbus_pdu_length_in_bits(_message->modbus_ascii_adu_pdu);
+  lengthInBits += plc4c_modbus_read_write_modbus_pdu_length_in_bits(ctx, _message->modbus_ascii_adu_pdu);
 
 
   // Checksum Field (checksum)

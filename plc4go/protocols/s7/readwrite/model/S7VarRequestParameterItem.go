@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -48,13 +49,12 @@ type _S7VarRequestParameterItem struct {
 
 type _S7VarRequestParameterItemChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetItemType() uint8
 }
 
 type S7VarRequestParameterItemParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child S7VarRequestParameterItem, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7VarRequestParameterItem, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -87,7 +87,7 @@ func (m *_S7VarRequestParameterItem) GetTypeName() string {
 	return "S7VarRequestParameterItem"
 }
 
-func (m *_S7VarRequestParameterItem) GetParentLengthInBits() uint16 {
+func (m *_S7VarRequestParameterItem) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 	// Discriminator Field (itemType)
 	lengthInBits += 8
@@ -95,15 +95,15 @@ func (m *_S7VarRequestParameterItem) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_S7VarRequestParameterItem) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7VarRequestParameterItem) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7VarRequestParameterItemParse(theBytes []byte) (S7VarRequestParameterItem, error) {
-	return S7VarRequestParameterItemParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return S7VarRequestParameterItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func S7VarRequestParameterItemParseWithBuffer(readBuffer utils.ReadBuffer) (S7VarRequestParameterItem, error) {
+func S7VarRequestParameterItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarRequestParameterItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItem"); pullErr != nil {
@@ -129,7 +129,7 @@ func S7VarRequestParameterItemParseWithBuffer(readBuffer utils.ReadBuffer) (S7Va
 	var typeSwitchError error
 	switch {
 	case itemType == 0x12: // S7VarRequestParameterItemAddress
-		_childTemp, typeSwitchError = S7VarRequestParameterItemAddressParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = S7VarRequestParameterItemAddressParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [itemType=%v]", itemType)
 	}
@@ -147,7 +147,7 @@ func S7VarRequestParameterItemParseWithBuffer(readBuffer utils.ReadBuffer) (S7Va
 	return _child, nil
 }
 
-func (pm *_S7VarRequestParameterItem) SerializeParent(writeBuffer utils.WriteBuffer, child S7VarRequestParameterItem, serializeChildFunction func() error) error {
+func (pm *_S7VarRequestParameterItem) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child S7VarRequestParameterItem, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -185,7 +185,7 @@ func (m *_S7VarRequestParameterItem) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

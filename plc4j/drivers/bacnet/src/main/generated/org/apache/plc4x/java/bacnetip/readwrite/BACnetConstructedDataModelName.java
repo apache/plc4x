@@ -78,6 +78,7 @@ public class BACnetConstructedDataModelName extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataModelName");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataModelName extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataModelName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (modelName)
     lengthInBits += modelName.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataModelName extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataModelNameBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataModelName extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString modelName =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataModelName extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataModelName");
     // Create the instance
-    return new BACnetConstructedDataModelNameBuilder(modelName, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataModelNameBuilderImpl(modelName, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataModelNameBuilder
+  public static class BACnetConstructedDataModelNameBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString modelName;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataModelNameBuilder(
+    public BACnetConstructedDataModelNameBuilderImpl(
         BACnetApplicationTagCharacterString modelName,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.modelName = modelName;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

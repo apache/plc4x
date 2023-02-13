@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -108,28 +109,24 @@ func (m *_FirmataMessageCommand) GetTypeName() string {
 	return "FirmataMessageCommand"
 }
 
-func (m *_FirmataMessageCommand) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_FirmataMessageCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_FirmataMessageCommand) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (command)
-	lengthInBits += m.Command.GetLengthInBits()
+	lengthInBits += m.Command.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_FirmataMessageCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_FirmataMessageCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func FirmataMessageCommandParse(theBytes []byte, response bool) (FirmataMessageCommand, error) {
-	return FirmataMessageCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
+	return FirmataMessageCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
-func FirmataMessageCommandParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (FirmataMessageCommand, error) {
+func FirmataMessageCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("FirmataMessageCommand"); pullErr != nil {
@@ -142,7 +139,7 @@ func FirmataMessageCommandParseWithBuffer(readBuffer utils.ReadBuffer, response 
 	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for command")
 	}
-	_command, _commandErr := FirmataCommandParseWithBuffer(readBuffer, bool(response))
+	_command, _commandErr := FirmataCommandParseWithBuffer(ctx, readBuffer, bool(response))
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of FirmataMessageCommand")
 	}
@@ -167,14 +164,14 @@ func FirmataMessageCommandParseWithBuffer(readBuffer utils.ReadBuffer, response 
 }
 
 func (m *_FirmataMessageCommand) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_FirmataMessageCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_FirmataMessageCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -186,7 +183,7 @@ func (m *_FirmataMessageCommand) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		if pushErr := writeBuffer.PushContext("command"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for command")
 		}
-		_commandErr := writeBuffer.WriteSerializable(m.GetCommand())
+		_commandErr := writeBuffer.WriteSerializable(ctx, m.GetCommand())
 		if popErr := writeBuffer.PopContext("command"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for command")
 		}
@@ -199,7 +196,7 @@ func (m *_FirmataMessageCommand) SerializeWithWriteBuffer(writeBuffer utils.Writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_FirmataMessageCommand) isFirmataMessageCommand() bool {
@@ -211,7 +208,7 @@ func (m *_FirmataMessageCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

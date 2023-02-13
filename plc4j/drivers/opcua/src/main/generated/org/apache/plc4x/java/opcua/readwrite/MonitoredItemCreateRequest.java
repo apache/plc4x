@@ -73,6 +73,7 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredItemCreateRequest");
 
@@ -103,6 +104,7 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MonitoredItemCreateRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (itemToMonitor)
     lengthInBits += itemToMonitor.getLengthInBits();
@@ -116,12 +118,13 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static MonitoredItemCreateRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoredItemCreateRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition itemToMonitor =
         readSimpleField(
@@ -146,21 +149,20 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("MonitoredItemCreateRequest");
     // Create the instance
-    return new MonitoredItemCreateRequestBuilder(
+    return new MonitoredItemCreateRequestBuilderImpl(
         itemToMonitor, monitoringMode, requestedParameters);
   }
 
-  public static class MonitoredItemCreateRequestBuilder
+  public static class MonitoredItemCreateRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition itemToMonitor;
     private final MonitoringMode monitoringMode;
     private final ExtensionObjectDefinition requestedParameters;
 
-    public MonitoredItemCreateRequestBuilder(
+    public MonitoredItemCreateRequestBuilderImpl(
         ExtensionObjectDefinition itemToMonitor,
         MonitoringMode monitoringMode,
         ExtensionObjectDefinition requestedParameters) {
-
       this.itemToMonitor = itemToMonitor;
       this.monitoringMode = monitoringMode;
       this.requestedParameters = requestedParameters;

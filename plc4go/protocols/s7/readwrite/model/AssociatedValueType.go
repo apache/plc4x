@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,11 +103,7 @@ func (m *_AssociatedValueType) GetTypeName() string {
 	return "AssociatedValueType"
 }
 
-func (m *_AssociatedValueType) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AssociatedValueType) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AssociatedValueType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (returnCode)
@@ -125,15 +123,15 @@ func (m *_AssociatedValueType) GetLengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *_AssociatedValueType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AssociatedValueType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AssociatedValueTypeParse(theBytes []byte) (AssociatedValueType, error) {
-	return AssociatedValueTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AssociatedValueTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AssociatedValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AssociatedValueType, error) {
+func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedValueType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AssociatedValueType"); pullErr != nil {
@@ -146,7 +144,7 @@ func AssociatedValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Associated
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(ctx, readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of AssociatedValueType")
 	}
@@ -159,7 +157,7 @@ func AssociatedValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Associated
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
-	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(readBuffer)
+	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(ctx, readBuffer)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of AssociatedValueType")
 	}
@@ -189,12 +187,16 @@ func AssociatedValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Associated
 		data = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(EventItemLength(readBuffer, valueLength)); curItem++ {
+		_numItems := uint16(EventItemLength(readBuffer, valueLength))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of AssociatedValueType")
 			}
-			data[curItem] = _item
+			data[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
@@ -215,14 +217,14 @@ func AssociatedValueTypeParseWithBuffer(readBuffer utils.ReadBuffer) (Associated
 }
 
 func (m *_AssociatedValueType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AssociatedValueType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AssociatedValueType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AssociatedValueType"); pushErr != nil {
@@ -233,7 +235,7 @@ func (m *_AssociatedValueType) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 	if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for returnCode")
 	}
-	_returnCodeErr := writeBuffer.WriteSerializable(m.GetReturnCode())
+	_returnCodeErr := writeBuffer.WriteSerializable(ctx, m.GetReturnCode())
 	if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for returnCode")
 	}
@@ -245,7 +247,7 @@ func (m *_AssociatedValueType) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 	if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for transportSize")
 	}
-	_transportSizeErr := writeBuffer.WriteSerializable(m.GetTransportSize())
+	_transportSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTransportSize())
 	if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for transportSize")
 	}
@@ -263,7 +265,8 @@ func (m *_AssociatedValueType) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 	if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for data")
 	}
-	for _, _element := range m.GetData() {
+	for _curItem, _element := range m.GetData() {
+		_ = _curItem
 		_elementErr := writeBuffer.WriteUint8("", 8, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'data' field")
@@ -288,7 +291,7 @@ func (m *_AssociatedValueType) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -54,12 +55,11 @@ type _MeteringData struct {
 
 type _MeteringDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type MeteringDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child MeteringData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MeteringData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -95,6 +95,8 @@ func (m *_MeteringData) GetArgument() byte {
 ///////////////////////
 
 func (m *_MeteringData) GetCommandType() MeteringCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastMeteringCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
@@ -123,7 +125,7 @@ func (m *_MeteringData) GetTypeName() string {
 	return "MeteringData"
 }
 
-func (m *_MeteringData) GetParentLengthInBits() uint16 {
+func (m *_MeteringData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -137,15 +139,15 @@ func (m *_MeteringData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_MeteringData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MeteringData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MeteringDataParse(theBytes []byte) (MeteringData, error) {
-	return MeteringDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MeteringDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MeteringDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringData, error) {
+func MeteringDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MeteringData"); pullErr != nil {
@@ -163,7 +165,7 @@ func MeteringDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringData, err
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := MeteringCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := MeteringCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of MeteringData")
 	}
@@ -195,25 +197,25 @@ func MeteringDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringData, err
 	var typeSwitchError error
 	switch {
 	case commandType == MeteringCommandType_EVENT && argument == 0x01: // MeteringDataMeasureElectricity
-		_childTemp, typeSwitchError = MeteringDataMeasureElectricityParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataMeasureElectricityParseWithBuffer(ctx, readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x02: // MeteringDataMeasureGas
-		_childTemp, typeSwitchError = MeteringDataMeasureGasParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataMeasureGasParseWithBuffer(ctx, readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x03: // MeteringDataMeasureDrinkingWater
-		_childTemp, typeSwitchError = MeteringDataMeasureDrinkingWaterParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataMeasureDrinkingWaterParseWithBuffer(ctx, readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x04: // MeteringDataMeasureOtherWater
-		_childTemp, typeSwitchError = MeteringDataMeasureOtherWaterParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataMeasureOtherWaterParseWithBuffer(ctx, readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x05: // MeteringDataMeasureOil
-		_childTemp, typeSwitchError = MeteringDataMeasureOilParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataMeasureOilParseWithBuffer(ctx, readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x81: // MeteringDataElectricityConsumption
-		_childTemp, typeSwitchError = MeteringDataElectricityConsumptionParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataElectricityConsumptionParseWithBuffer(ctx, readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x82: // MeteringDataGasConsumption
-		_childTemp, typeSwitchError = MeteringDataGasConsumptionParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataGasConsumptionParseWithBuffer(ctx, readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x83: // MeteringDataDrinkingWaterConsumption
-		_childTemp, typeSwitchError = MeteringDataDrinkingWaterConsumptionParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataDrinkingWaterConsumptionParseWithBuffer(ctx, readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x84: // MeteringDataOtherWaterConsumption
-		_childTemp, typeSwitchError = MeteringDataOtherWaterConsumptionParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataOtherWaterConsumptionParseWithBuffer(ctx, readBuffer)
 	case commandType == MeteringCommandType_EVENT && argument == 0x85: // MeteringDataOilConsumption
-		_childTemp, typeSwitchError = MeteringDataOilConsumptionParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = MeteringDataOilConsumptionParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v, argument=%v]", commandType, argument)
 	}
@@ -231,7 +233,7 @@ func MeteringDataParseWithBuffer(readBuffer utils.ReadBuffer) (MeteringData, err
 	return _child, nil
 }
 
-func (pm *_MeteringData) SerializeParent(writeBuffer utils.WriteBuffer, child MeteringData, serializeChildFunction func() error) error {
+func (pm *_MeteringData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child MeteringData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -245,7 +247,7 @@ func (pm *_MeteringData) SerializeParent(writeBuffer utils.WriteBuffer, child Me
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -253,7 +255,7 @@ func (pm *_MeteringData) SerializeParent(writeBuffer utils.WriteBuffer, child Me
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -284,7 +286,7 @@ func (m *_MeteringData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

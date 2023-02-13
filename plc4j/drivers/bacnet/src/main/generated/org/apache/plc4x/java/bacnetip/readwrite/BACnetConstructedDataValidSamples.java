@@ -78,6 +78,7 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataValidSamples");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataValidSamples _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (validSamples)
     lengthInBits += validSamples.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataValidSamplesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger validSamples =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataValidSamples");
     // Create the instance
-    return new BACnetConstructedDataValidSamplesBuilder(
+    return new BACnetConstructedDataValidSamplesBuilderImpl(
         validSamples, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataValidSamplesBuilder
+  public static class BACnetConstructedDataValidSamplesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger validSamples;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataValidSamplesBuilder(
+    public BACnetConstructedDataValidSamplesBuilderImpl(
         BACnetApplicationTagUnsignedInteger validSamples,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.validSamples = validSamples;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

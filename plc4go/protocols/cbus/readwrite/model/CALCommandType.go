@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,19 +130,19 @@ func CastCALCommandType(structType interface{}) CALCommandType {
 	return castFunc(structType)
 }
 
-func (m CALCommandType) GetLengthInBits() uint16 {
+func (m CALCommandType) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m CALCommandType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m CALCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALCommandTypeParse(theBytes []byte) (CALCommandType, error) {
-	return CALCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func CALCommandTypeParse(ctx context.Context, theBytes []byte) (CALCommandType, error) {
+	return CALCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func CALCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (CALCommandType, error) {
+func CALCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CALCommandType, error) {
 	val, err := readBuffer.ReadUint8("CALCommandType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CALCommandType")
@@ -156,13 +157,13 @@ func CALCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (CALCommandType,
 
 func (e CALCommandType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e CALCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e CALCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("CALCommandType", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

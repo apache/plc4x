@@ -75,6 +75,7 @@ public class BACnetConstructedDataMultiStateValueFaultValues extends BACnetConst
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMultiStateValueFaultValues");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataMultiStateValueFaultValues extends BACnetConst
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMultiStateValueFaultValues _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (faultValues != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataMultiStateValueFaultValues extends BACnetConst
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMultiStateValueFaultValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataMultiStateValueFaultValues extends BACnetConst
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetApplicationTagUnsignedInteger> faultValues =
         readTerminatedArrayField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataMultiStateValueFaultValues extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateValueFaultValues");
     // Create the instance
-    return new BACnetConstructedDataMultiStateValueFaultValuesBuilder(
+    return new BACnetConstructedDataMultiStateValueFaultValuesBuilderImpl(
         faultValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMultiStateValueFaultValuesBuilder
+  public static class BACnetConstructedDataMultiStateValueFaultValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetApplicationTagUnsignedInteger> faultValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMultiStateValueFaultValuesBuilder(
+    public BACnetConstructedDataMultiStateValueFaultValuesBuilderImpl(
         List<BACnetApplicationTagUnsignedInteger> faultValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultValues = faultValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

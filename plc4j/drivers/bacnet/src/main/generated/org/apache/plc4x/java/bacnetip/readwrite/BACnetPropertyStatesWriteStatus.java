@@ -56,6 +56,7 @@ public class BACnetPropertyStatesWriteStatus extends BACnetPropertyStates implem
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesWriteStatus");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesWriteStatus extends BACnetPropertyStates implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesWriteStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (writeStatus)
     lengthInBits += writeStatus.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesWriteStatus extends BACnetPropertyStates implem
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesWriteStatusBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesWriteStatus");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetWriteStatusTagged writeStatus =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesWriteStatus extends BACnetPropertyStates implem
 
     readBuffer.closeContext("BACnetPropertyStatesWriteStatus");
     // Create the instance
-    return new BACnetPropertyStatesWriteStatusBuilder(writeStatus);
+    return new BACnetPropertyStatesWriteStatusBuilderImpl(writeStatus);
   }
 
-  public static class BACnetPropertyStatesWriteStatusBuilder
+  public static class BACnetPropertyStatesWriteStatusBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetWriteStatusTagged writeStatus;
 
-    public BACnetPropertyStatesWriteStatusBuilder(BACnetWriteStatusTagged writeStatus) {
-
+    public BACnetPropertyStatesWriteStatusBuilderImpl(BACnetWriteStatusTagged writeStatus) {
       this.writeStatus = writeStatus;
     }
 

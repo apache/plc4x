@@ -78,6 +78,7 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPrescale");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPrescale _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (prescale)
     lengthInBits += prescale.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPrescaleBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetPrescale prescale =
         readSimpleField(
@@ -130,20 +133,19 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataPrescale");
     // Create the instance
-    return new BACnetConstructedDataPrescaleBuilder(prescale, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPrescaleBuilderImpl(prescale, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPrescaleBuilder
+  public static class BACnetConstructedDataPrescaleBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetPrescale prescale;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPrescaleBuilder(
+    public BACnetConstructedDataPrescaleBuilderImpl(
         BACnetPrescale prescale,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.prescale = prescale;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

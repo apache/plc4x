@@ -75,6 +75,7 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessAlarmEvents");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessAlarmEvents _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (accessAlarmEvents != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessAlarmEventsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetAccessEventTagged> accessAlarmEvents =
         readTerminatedArrayField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataAccessAlarmEvents extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataAccessAlarmEvents");
     // Create the instance
-    return new BACnetConstructedDataAccessAlarmEventsBuilder(
+    return new BACnetConstructedDataAccessAlarmEventsBuilderImpl(
         accessAlarmEvents, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessAlarmEventsBuilder
+  public static class BACnetConstructedDataAccessAlarmEventsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAccessEventTagged> accessAlarmEvents;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessAlarmEventsBuilder(
+    public BACnetConstructedDataAccessAlarmEventsBuilderImpl(
         List<BACnetAccessEventTagged> accessAlarmEvents,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessAlarmEvents = accessAlarmEvents;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

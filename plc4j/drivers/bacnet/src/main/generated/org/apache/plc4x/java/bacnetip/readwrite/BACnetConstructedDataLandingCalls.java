@@ -74,6 +74,7 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLandingCalls");
 
@@ -92,6 +93,7 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLandingCalls _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (landingCallStatus != null) {
@@ -103,7 +105,7 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLandingCallsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -114,6 +116,7 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLandingCallStatus> landingCallStatus =
         readTerminatedArrayField(
@@ -127,21 +130,20 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataLandingCalls");
     // Create the instance
-    return new BACnetConstructedDataLandingCallsBuilder(
+    return new BACnetConstructedDataLandingCallsBuilderImpl(
         landingCallStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLandingCallsBuilder
+  public static class BACnetConstructedDataLandingCallsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLandingCallStatus> landingCallStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLandingCallsBuilder(
+    public BACnetConstructedDataLandingCallsBuilderImpl(
         List<BACnetLandingCallStatus> landingCallStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.landingCallStatus = landingCallStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

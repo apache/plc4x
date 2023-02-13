@@ -80,6 +80,7 @@ public class MediaTransportControlDataTotalTracks extends MediaTransportControlD
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataTotalTracks");
 
@@ -107,6 +108,7 @@ public class MediaTransportControlDataTotalTracks extends MediaTransportControlD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataTotalTracks _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (totalTracksMSB)
     lengthInBits += 8;
@@ -123,12 +125,13 @@ public class MediaTransportControlDataTotalTracks extends MediaTransportControlD
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataTotalTracksBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataTotalTracks");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte totalTracksMSB = readSimpleField("totalTracksMSB", readByte(readBuffer, 8));
 
@@ -140,20 +143,19 @@ public class MediaTransportControlDataTotalTracks extends MediaTransportControlD
 
     readBuffer.closeContext("MediaTransportControlDataTotalTracks");
     // Create the instance
-    return new MediaTransportControlDataTotalTracksBuilder(
+    return new MediaTransportControlDataTotalTracksBuilderImpl(
         totalTracksMSB, totalTracksMMSB, totalTracksMLSB, totalTracksLSB);
   }
 
-  public static class MediaTransportControlDataTotalTracksBuilder
+  public static class MediaTransportControlDataTotalTracksBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte totalTracksMSB;
     private final byte totalTracksMMSB;
     private final byte totalTracksMLSB;
     private final byte totalTracksLSB;
 
-    public MediaTransportControlDataTotalTracksBuilder(
+    public MediaTransportControlDataTotalTracksBuilderImpl(
         byte totalTracksMSB, byte totalTracksMMSB, byte totalTracksMLSB, byte totalTracksLSB) {
-
       this.totalTracksMSB = totalTracksMSB;
       this.totalTracksMMSB = totalTracksMMSB;
       this.totalTracksMLSB = totalTracksMLSB;

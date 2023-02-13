@@ -56,6 +56,7 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesProgramChange");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesProgramChange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (programState)
     lengthInBits += programState.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesProgramChangeBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesProgramChange");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetProgramStateTagged programState =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesProgramChange");
     // Create the instance
-    return new BACnetPropertyStatesProgramChangeBuilder(programState);
+    return new BACnetPropertyStatesProgramChangeBuilderImpl(programState);
   }
 
-  public static class BACnetPropertyStatesProgramChangeBuilder
+  public static class BACnetPropertyStatesProgramChangeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetProgramStateTagged programState;
 
-    public BACnetPropertyStatesProgramChangeBuilder(BACnetProgramStateTagged programState) {
-
+    public BACnetPropertyStatesProgramChangeBuilderImpl(BACnetProgramStateTagged programState) {
       this.programState = programState;
     }
 

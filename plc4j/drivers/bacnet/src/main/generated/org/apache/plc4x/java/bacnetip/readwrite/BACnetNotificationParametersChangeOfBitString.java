@@ -89,6 +89,7 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
   protected void serializeBACnetNotificationParametersChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfBitString");
 
@@ -119,6 +120,7 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersChangeOfBitString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (innerOpeningTag)
     lengthInBits += innerOpeningTag.getLengthInBits();
@@ -135,16 +137,17 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfBitStringBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfBitString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
@@ -181,7 +184,7 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfBitString");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfBitStringBuilder(
+    return new BACnetNotificationParametersChangeOfBitStringBuilderImpl(
         innerOpeningTag,
         changeOfBitString,
         statusFlags,
@@ -190,7 +193,7 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersChangeOfBitStringBuilder
+  public static class BACnetNotificationParametersChangeOfBitStringBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetContextTagBitString changeOfBitString;
@@ -199,14 +202,13 @@ public class BACnetNotificationParametersChangeOfBitString extends BACnetNotific
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersChangeOfBitStringBuilder(
+    public BACnetNotificationParametersChangeOfBitStringBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetContextTagBitString changeOfBitString,
         BACnetStatusFlagsTagged statusFlags,
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.changeOfBitString = changeOfBitString;
       this.statusFlags = statusFlags;

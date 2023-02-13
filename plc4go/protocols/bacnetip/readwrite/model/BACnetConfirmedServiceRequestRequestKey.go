@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,7 +88,7 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetBytesOfRemovedService() []
 ///////////////////////////////////////////////////////////
 
 // NewBACnetConfirmedServiceRequestRequestKey factory function for _BACnetConfirmedServiceRequestRequestKey
-func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) *_BACnetConfirmedServiceRequestRequestKey {
+func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestRequestKey {
 	_result := &_BACnetConfirmedServiceRequestRequestKey{
 		BytesOfRemovedService:          bytesOfRemovedService,
 		_BACnetConfirmedServiceRequest: NewBACnetConfirmedServiceRequest(serviceRequestLength),
@@ -111,12 +112,8 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetTypeName() string {
 	return "BACnetConfirmedServiceRequestRequestKey"
 }
 
-func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.BytesOfRemovedService) > 0 {
@@ -126,15 +123,15 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBitsConditional(la
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestRequestKey) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetConfirmedServiceRequestRequestKeyParse(theBytes []byte, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
-	return BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceRequestLength, serviceRequestPayloadLength)
+func BACnetConfirmedServiceRequestRequestKeyParse(theBytes []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
+	return BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
-func BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(readBuffer utils.ReadBuffer, serviceRequestLength uint32, serviceRequestPayloadLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
+func BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestRequestKey"); pullErr != nil {
@@ -165,14 +162,14 @@ func BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(readBuffer utils.Rea
 }
 
 func (m *_BACnetConfirmedServiceRequestRequestKey) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestRequestKey) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestRequestKey) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -191,7 +188,7 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) SerializeWithWriteBuffer(writ
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -213,7 +210,7 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

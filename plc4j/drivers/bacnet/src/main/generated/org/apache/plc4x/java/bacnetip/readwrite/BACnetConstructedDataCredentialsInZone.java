@@ -75,6 +75,7 @@ public class BACnetConstructedDataCredentialsInZone extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCredentialsInZone");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataCredentialsInZone extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCredentialsInZone _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (credentialsInZone != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataCredentialsInZone extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCredentialsInZoneBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataCredentialsInZone extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetDeviceObjectReference> credentialsInZone =
         readTerminatedArrayField(
@@ -128,21 +131,20 @@ public class BACnetConstructedDataCredentialsInZone extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataCredentialsInZone");
     // Create the instance
-    return new BACnetConstructedDataCredentialsInZoneBuilder(
+    return new BACnetConstructedDataCredentialsInZoneBuilderImpl(
         credentialsInZone, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCredentialsInZoneBuilder
+  public static class BACnetConstructedDataCredentialsInZoneBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> credentialsInZone;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCredentialsInZoneBuilder(
+    public BACnetConstructedDataCredentialsInZoneBuilderImpl(
         List<BACnetDeviceObjectReference> credentialsInZone,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.credentialsInZone = credentialsInZone;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

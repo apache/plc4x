@@ -72,6 +72,7 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyAccessResultAccessResult");
 
@@ -94,6 +95,7 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetPropertyAccessResultAccessResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -154,6 +156,7 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -167,18 +170,20 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
     BACnetPropertyAccessResultAccessResultBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
       builder =
-          BACnetPropertyAccessResultAccessResultPropertyValue.staticParseBuilder(
-              readBuffer,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              propertyArrayIndexArgument);
+          BACnetPropertyAccessResultAccessResultPropertyValue
+              .staticParseBACnetPropertyAccessResultAccessResultBuilder(
+                  readBuffer,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  propertyArrayIndexArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
       builder =
-          BACnetPropertyAccessResultAccessResultPropertyAccessError.staticParseBuilder(
-              readBuffer,
-              objectTypeArgument,
-              propertyIdentifierArgument,
-              propertyArrayIndexArgument);
+          BACnetPropertyAccessResultAccessResultPropertyAccessError
+              .staticParseBACnetPropertyAccessResultAccessResultBuilder(
+                  readBuffer,
+                  objectTypeArgument,
+                  propertyIdentifierArgument,
+                  propertyArrayIndexArgument);
     }
     if (builder == null) {
       throw new ParseException(
@@ -200,7 +205,7 @@ public abstract class BACnetPropertyAccessResultAccessResult implements Message 
     return _bACnetPropertyAccessResultAccessResult;
   }
 
-  public static interface BACnetPropertyAccessResultAccessResultBuilder {
+  public interface BACnetPropertyAccessResultAccessResultBuilder {
     BACnetPropertyAccessResultAccessResult build(
         BACnetTagHeader peekedTagHeader,
         BACnetObjectType objectTypeArgument,

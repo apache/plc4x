@@ -78,6 +78,7 @@ public class BACnetConstructedDataBufferSize extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBufferSize");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataBufferSize extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBufferSize _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bufferSize)
     lengthInBits += bufferSize.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataBufferSize extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBufferSizeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataBufferSize extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger bufferSize =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataBufferSize extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataBufferSize");
     // Create the instance
-    return new BACnetConstructedDataBufferSizeBuilder(bufferSize, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBufferSizeBuilderImpl(
+        bufferSize, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBufferSizeBuilder
+  public static class BACnetConstructedDataBufferSizeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger bufferSize;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBufferSizeBuilder(
+    public BACnetConstructedDataBufferSizeBuilderImpl(
         BACnetApplicationTagUnsignedInteger bufferSize,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bufferSize = bufferSize;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

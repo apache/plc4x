@@ -79,6 +79,7 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBackupFailureTimeout");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBackupFailureTimeout _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (backupFailureTimeout)
     lengthInBits += backupFailureTimeout.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBackupFailureTimeoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger backupFailureTimeout =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataBackupFailureTimeout");
     // Create the instance
-    return new BACnetConstructedDataBackupFailureTimeoutBuilder(
+    return new BACnetConstructedDataBackupFailureTimeoutBuilderImpl(
         backupFailureTimeout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBackupFailureTimeoutBuilder
+  public static class BACnetConstructedDataBackupFailureTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger backupFailureTimeout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBackupFailureTimeoutBuilder(
+    public BACnetConstructedDataBackupFailureTimeoutBuilderImpl(
         BACnetApplicationTagUnsignedInteger backupFailureTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.backupFailureTimeout = backupFailureTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

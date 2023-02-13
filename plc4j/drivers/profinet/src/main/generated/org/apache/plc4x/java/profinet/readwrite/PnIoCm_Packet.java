@@ -49,6 +49,7 @@ public abstract class PnIoCm_Packet implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Packet");
 
@@ -67,6 +68,7 @@ public abstract class PnIoCm_Packet implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnIoCm_Packet _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -100,15 +102,22 @@ public abstract class PnIoCm_Packet implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnIoCm_PacketBuilder builder = null;
     if (EvaluationHelper.equals(packetType, DceRpc_PacketType.REQUEST)) {
-      builder = PnIoCm_Packet_Req.staticParseBuilder(readBuffer, packetType);
+      builder = PnIoCm_Packet_Req.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
+    } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.PING)) {
+      builder = PnIoCm_Packet_Ping.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
     } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.RESPONSE)) {
-      builder = PnIoCm_Packet_Res.staticParseBuilder(readBuffer, packetType);
+      builder = PnIoCm_Packet_Res.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
+    } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.FAULT)) {
+      builder = PnIoCm_Packet_Fault.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
+    } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.NO_CALL)) {
+      builder = PnIoCm_Packet_NoCall.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
     } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.REJECT)) {
-      builder = PnIoCm_Packet_Rej.staticParseBuilder(readBuffer, packetType);
+      builder = PnIoCm_Packet_Rej.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
     }
     if (builder == null) {
       throw new ParseException(
@@ -125,7 +134,7 @@ public abstract class PnIoCm_Packet implements Message {
     return _pnIoCm_Packet;
   }
 
-  public static interface PnIoCm_PacketBuilder {
+  public interface PnIoCm_PacketBuilder {
     PnIoCm_Packet build();
   }
 

@@ -78,6 +78,7 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLocalTime");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLocalTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (localTime)
     lengthInBits += localTime.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLocalTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagTime localTime =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataLocalTime");
     // Create the instance
-    return new BACnetConstructedDataLocalTimeBuilder(localTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLocalTimeBuilderImpl(localTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLocalTimeBuilder
+  public static class BACnetConstructedDataLocalTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagTime localTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLocalTimeBuilder(
+    public BACnetConstructedDataLocalTimeBuilderImpl(
         BACnetApplicationTagTime localTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.localTime = localTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

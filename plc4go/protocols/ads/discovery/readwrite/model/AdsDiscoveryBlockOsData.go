@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,12 +108,8 @@ func (m *_AdsDiscoveryBlockOsData) GetTypeName() string {
 	return "AdsDiscoveryBlockOsData"
 }
 
-func (m *_AdsDiscoveryBlockOsData) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsDiscoveryBlockOsData) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsDiscoveryBlockOsData) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Implicit Field (osDataLen)
 	lengthInBits += 16
@@ -125,15 +122,15 @@ func (m *_AdsDiscoveryBlockOsData) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_AdsDiscoveryBlockOsData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsDiscoveryBlockOsData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsDiscoveryBlockOsDataParse(theBytes []byte) (AdsDiscoveryBlockOsData, error) {
-	return AdsDiscoveryBlockOsDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsDiscoveryBlockOsDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsDiscoveryBlockOsDataParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDiscoveryBlockOsData, error) {
+func AdsDiscoveryBlockOsDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockOsData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockOsData"); pullErr != nil {
@@ -169,14 +166,14 @@ func AdsDiscoveryBlockOsDataParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDis
 }
 
 func (m *_AdsDiscoveryBlockOsData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsDiscoveryBlockOsData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDiscoveryBlockOsData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -202,7 +199,7 @@ func (m *_AdsDiscoveryBlockOsData) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsDiscoveryBlockOsData) isAdsDiscoveryBlockOsData() bool {
@@ -214,7 +211,7 @@ func (m *_AdsDiscoveryBlockOsData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

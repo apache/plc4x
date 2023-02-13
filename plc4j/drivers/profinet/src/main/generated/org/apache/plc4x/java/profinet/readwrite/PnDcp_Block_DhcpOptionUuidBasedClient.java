@@ -53,6 +53,7 @@ public class PnDcp_Block_DhcpOptionUuidBasedClient extends PnDcp_Block implement
   @Override
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DhcpOptionUuidBasedClient");
 
@@ -68,26 +69,28 @@ public class PnDcp_Block_DhcpOptionUuidBasedClient extends PnDcp_Block implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Block_DhcpOptionUuidBasedClient _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DhcpOptionUuidBasedClientBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DhcpOptionUuidBasedClient");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnDcp_Block_DhcpOptionUuidBasedClient");
     // Create the instance
-    return new PnDcp_Block_DhcpOptionUuidBasedClientBuilder();
+    return new PnDcp_Block_DhcpOptionUuidBasedClientBuilderImpl();
   }
 
-  public static class PnDcp_Block_DhcpOptionUuidBasedClientBuilder
+  public static class PnDcp_Block_DhcpOptionUuidBasedClientBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DhcpOptionUuidBasedClientBuilder() {}
+    public PnDcp_Block_DhcpOptionUuidBasedClientBuilderImpl() {}
 
     public PnDcp_Block_DhcpOptionUuidBasedClient build() {
       PnDcp_Block_DhcpOptionUuidBasedClient pnDcp_Block_DhcpOptionUuidBasedClient =

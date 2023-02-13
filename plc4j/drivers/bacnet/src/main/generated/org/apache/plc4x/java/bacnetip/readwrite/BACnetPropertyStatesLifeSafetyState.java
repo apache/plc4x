@@ -56,6 +56,7 @@ public class BACnetPropertyStatesLifeSafetyState extends BACnetPropertyStates im
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLifeSafetyState");
 
@@ -75,6 +76,7 @@ public class BACnetPropertyStatesLifeSafetyState extends BACnetPropertyStates im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLifeSafetyState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lifeSafetyState)
     lengthInBits += lifeSafetyState.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetPropertyStatesLifeSafetyState extends BACnetPropertyStates im
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLifeSafetyStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLifeSafetyState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyStateTagged lifeSafetyState =
         readSimpleField(
@@ -102,15 +105,15 @@ public class BACnetPropertyStatesLifeSafetyState extends BACnetPropertyStates im
 
     readBuffer.closeContext("BACnetPropertyStatesLifeSafetyState");
     // Create the instance
-    return new BACnetPropertyStatesLifeSafetyStateBuilder(lifeSafetyState);
+    return new BACnetPropertyStatesLifeSafetyStateBuilderImpl(lifeSafetyState);
   }
 
-  public static class BACnetPropertyStatesLifeSafetyStateBuilder
+  public static class BACnetPropertyStatesLifeSafetyStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLifeSafetyStateTagged lifeSafetyState;
 
-    public BACnetPropertyStatesLifeSafetyStateBuilder(BACnetLifeSafetyStateTagged lifeSafetyState) {
-
+    public BACnetPropertyStatesLifeSafetyStateBuilderImpl(
+        BACnetLifeSafetyStateTagged lifeSafetyState) {
       this.lifeSafetyState = lifeSafetyState;
     }
 

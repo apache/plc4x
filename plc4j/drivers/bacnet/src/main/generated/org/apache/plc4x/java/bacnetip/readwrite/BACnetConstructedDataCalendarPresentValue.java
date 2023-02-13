@@ -79,6 +79,7 @@ public class BACnetConstructedDataCalendarPresentValue extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCalendarPresentValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataCalendarPresentValue extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCalendarPresentValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (presentValue)
     lengthInBits += presentValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataCalendarPresentValue extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCalendarPresentValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataCalendarPresentValue extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean presentValue =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataCalendarPresentValue extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataCalendarPresentValue");
     // Create the instance
-    return new BACnetConstructedDataCalendarPresentValueBuilder(
+    return new BACnetConstructedDataCalendarPresentValueBuilderImpl(
         presentValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCalendarPresentValueBuilder
+  public static class BACnetConstructedDataCalendarPresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean presentValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCalendarPresentValueBuilder(
+    public BACnetConstructedDataCalendarPresentValueBuilderImpl(
         BACnetApplicationTagBoolean presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

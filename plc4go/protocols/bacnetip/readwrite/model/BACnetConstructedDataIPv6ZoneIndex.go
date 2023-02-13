@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) GetIpv6ZoneIndex() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataIPv6ZoneIndex) GetActualValue() BACnetApplicationTagCharacterString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagCharacterString(m.GetIpv6ZoneIndex())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) GetTypeName() string {
 	return "BACnetConstructedDataIPv6ZoneIndex"
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ipv6ZoneIndex)
-	lengthInBits += m.Ipv6ZoneIndex.GetLengthInBits()
+	lengthInBits += m.Ipv6ZoneIndex.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataIPv6ZoneIndex) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataIPv6ZoneIndexParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6ZoneIndex, error) {
-	return BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6ZoneIndex, error) {
+func BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6ZoneIndex, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6ZoneIndex"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("ipv6ZoneIndex"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ipv6ZoneIndex")
 	}
-	_ipv6ZoneIndex, _ipv6ZoneIndexErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_ipv6ZoneIndex, _ipv6ZoneIndexErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _ipv6ZoneIndexErr != nil {
 		return nil, errors.Wrap(_ipv6ZoneIndexErr, "Error parsing 'ipv6ZoneIndex' field of BACnetConstructedDataIPv6ZoneIndex")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataIPv6ZoneIndex) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataIPv6ZoneIndex) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataIPv6ZoneIndex) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("ipv6ZoneIndex"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ipv6ZoneIndex")
 		}
-		_ipv6ZoneIndexErr := writeBuffer.WriteSerializable(m.GetIpv6ZoneIndex())
+		_ipv6ZoneIndexErr := writeBuffer.WriteSerializable(ctx, m.GetIpv6ZoneIndex())
 		if popErr := writeBuffer.PopContext("ipv6ZoneIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ipv6ZoneIndex")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_ipv6ZoneIndexErr, "Error serializing 'ipv6ZoneIndex' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataIPv6ZoneIndex) isBACnetConstructedDataIPv6ZoneIndex() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataIPv6ZoneIndex) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -56,6 +56,7 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesReliability");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesReliability _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reliability)
     lengthInBits += reliability.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesReliabilityBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesReliability");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetReliabilityTagged reliability =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
 
     readBuffer.closeContext("BACnetPropertyStatesReliability");
     // Create the instance
-    return new BACnetPropertyStatesReliabilityBuilder(reliability);
+    return new BACnetPropertyStatesReliabilityBuilderImpl(reliability);
   }
 
-  public static class BACnetPropertyStatesReliabilityBuilder
+  public static class BACnetPropertyStatesReliabilityBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetReliabilityTagged reliability;
 
-    public BACnetPropertyStatesReliabilityBuilder(BACnetReliabilityTagged reliability) {
-
+    public BACnetPropertyStatesReliabilityBuilderImpl(BACnetReliabilityTagged reliability) {
       this.reliability = reliability;
     }
 

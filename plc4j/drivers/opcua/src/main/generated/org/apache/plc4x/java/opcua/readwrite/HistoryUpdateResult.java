@@ -87,6 +87,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryUpdateResult");
 
@@ -117,6 +118,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     HistoryUpdateResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -128,7 +130,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     if (operationResults != null) {
       int i = 0;
       for (StatusCode element : operationResults) {
-        boolean last = ++i >= operationResults.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= operationResults.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -140,7 +142,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -148,12 +150,13 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static HistoryUpdateResultBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryUpdateResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(
@@ -180,11 +183,11 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("HistoryUpdateResult");
     // Create the instance
-    return new HistoryUpdateResultBuilder(
+    return new HistoryUpdateResultBuilderImpl(
         statusCode, noOfOperationResults, operationResults, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class HistoryUpdateResultBuilder
+  public static class HistoryUpdateResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final int noOfOperationResults;
@@ -192,13 +195,12 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public HistoryUpdateResultBuilder(
+    public HistoryUpdateResultBuilderImpl(
         StatusCode statusCode,
         int noOfOperationResults,
         List<StatusCode> operationResults,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.statusCode = statusCode;
       this.noOfOperationResults = noOfOperationResults;
       this.operationResults = operationResults;

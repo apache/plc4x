@@ -79,6 +79,7 @@ public class BACnetConstructedDataChangeOfStateCount extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataChangeOfStateCount");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataChangeOfStateCount extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataChangeOfStateCount _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (changeIfStateCount)
     lengthInBits += changeIfStateCount.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataChangeOfStateCount extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataChangeOfStateCountBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataChangeOfStateCount extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger changeIfStateCount =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataChangeOfStateCount extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataChangeOfStateCount");
     // Create the instance
-    return new BACnetConstructedDataChangeOfStateCountBuilder(
+    return new BACnetConstructedDataChangeOfStateCountBuilderImpl(
         changeIfStateCount, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataChangeOfStateCountBuilder
+  public static class BACnetConstructedDataChangeOfStateCountBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger changeIfStateCount;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataChangeOfStateCountBuilder(
+    public BACnetConstructedDataChangeOfStateCountBuilderImpl(
         BACnetApplicationTagUnsignedInteger changeIfStateCount,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.changeIfStateCount = changeIfStateCount;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -79,6 +79,7 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBackupPreparationTime");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBackupPreparationTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (backupPreparationTime)
     lengthInBits += backupPreparationTime.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBackupPreparationTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger backupPreparationTime =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataBackupPreparationTime");
     // Create the instance
-    return new BACnetConstructedDataBackupPreparationTimeBuilder(
+    return new BACnetConstructedDataBackupPreparationTimeBuilderImpl(
         backupPreparationTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBackupPreparationTimeBuilder
+  public static class BACnetConstructedDataBackupPreparationTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger backupPreparationTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBackupPreparationTimeBuilder(
+    public BACnetConstructedDataBackupPreparationTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger backupPreparationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.backupPreparationTime = backupPreparationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

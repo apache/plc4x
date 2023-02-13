@@ -51,6 +51,7 @@ public abstract class NodeIdTypeDefinition implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NodeIdTypeDefinition");
 
@@ -77,6 +78,7 @@ public abstract class NodeIdTypeDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     NodeIdTypeDefinition _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (nodeType)
     lengthInBits += 6;
@@ -97,6 +99,7 @@ public abstract class NodeIdTypeDefinition implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeIdType nodeType =
         readDiscriminatorField(
@@ -107,17 +110,17 @@ public abstract class NodeIdTypeDefinition implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     NodeIdTypeDefinitionBuilder builder = null;
     if (EvaluationHelper.equals(nodeType, NodeIdType.nodeIdTypeTwoByte)) {
-      builder = NodeIdTwoByte.staticParseBuilder(readBuffer);
+      builder = NodeIdTwoByte.staticParseNodeIdTypeDefinitionBuilder(readBuffer);
     } else if (EvaluationHelper.equals(nodeType, NodeIdType.nodeIdTypeFourByte)) {
-      builder = NodeIdFourByte.staticParseBuilder(readBuffer);
+      builder = NodeIdFourByte.staticParseNodeIdTypeDefinitionBuilder(readBuffer);
     } else if (EvaluationHelper.equals(nodeType, NodeIdType.nodeIdTypeNumeric)) {
-      builder = NodeIdNumeric.staticParseBuilder(readBuffer);
+      builder = NodeIdNumeric.staticParseNodeIdTypeDefinitionBuilder(readBuffer);
     } else if (EvaluationHelper.equals(nodeType, NodeIdType.nodeIdTypeString)) {
-      builder = NodeIdString.staticParseBuilder(readBuffer);
+      builder = NodeIdString.staticParseNodeIdTypeDefinitionBuilder(readBuffer);
     } else if (EvaluationHelper.equals(nodeType, NodeIdType.nodeIdTypeGuid)) {
-      builder = NodeIdGuid.staticParseBuilder(readBuffer);
+      builder = NodeIdGuid.staticParseNodeIdTypeDefinitionBuilder(readBuffer);
     } else if (EvaluationHelper.equals(nodeType, NodeIdType.nodeIdTypeByteString)) {
-      builder = NodeIdByteString.staticParseBuilder(readBuffer);
+      builder = NodeIdByteString.staticParseNodeIdTypeDefinitionBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -134,7 +137,7 @@ public abstract class NodeIdTypeDefinition implements Message {
     return _nodeIdTypeDefinition;
   }
 
-  public static interface NodeIdTypeDefinitionBuilder {
+  public interface NodeIdTypeDefinitionBuilder {
     NodeIdTypeDefinition build();
   }
 

@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,12 +125,8 @@ func (m *_ComObjectTableRealisationType2) GetTypeName() string {
 	return "ComObjectTableRealisationType2"
 }
 
-func (m *_ComObjectTableRealisationType2) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ComObjectTableRealisationType2) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ComObjectTableRealisationType2) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (numEntries)
 	lengthInBits += 8
@@ -138,24 +136,26 @@ func (m *_ComObjectTableRealisationType2) GetLengthInBitsConditional(lastItem bo
 
 	// Array field
 	if len(m.ComObjectDescriptors) > 0 {
-		for i, element := range m.ComObjectDescriptors {
-			last := i == len(m.ComObjectDescriptors)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.ComObjectDescriptors {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.ComObjectDescriptors), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_ComObjectTableRealisationType2) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ComObjectTableRealisationType2) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ComObjectTableRealisationType2Parse(theBytes []byte, firmwareType FirmwareType) (ComObjectTableRealisationType2, error) {
-	return ComObjectTableRealisationType2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes), firmwareType)
+	return ComObjectTableRealisationType2ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), firmwareType)
 }
 
-func ComObjectTableRealisationType2ParseWithBuffer(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType2, error) {
+func ComObjectTableRealisationType2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType2, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType2"); pullErr != nil {
@@ -189,12 +189,16 @@ func ComObjectTableRealisationType2ParseWithBuffer(readBuffer utils.ReadBuffer, 
 		comObjectDescriptors = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(numEntries); curItem++ {
-			_item, _err := GroupObjectDescriptorRealisationType2ParseWithBuffer(readBuffer)
+		_numItems := uint16(numEntries)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := GroupObjectDescriptorRealisationType2ParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'comObjectDescriptors' field of ComObjectTableRealisationType2")
 			}
-			comObjectDescriptors[curItem] = _item.(GroupObjectDescriptorRealisationType2)
+			comObjectDescriptors[_curItem] = _item.(GroupObjectDescriptorRealisationType2)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("comObjectDescriptors", utils.WithRenderAsList(true)); closeErr != nil {
@@ -217,14 +221,14 @@ func ComObjectTableRealisationType2ParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_ComObjectTableRealisationType2) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ComObjectTableRealisationType2) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ComObjectTableRealisationType2) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -250,8 +254,11 @@ func (m *_ComObjectTableRealisationType2) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("comObjectDescriptors", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for comObjectDescriptors")
 		}
-		for _, _element := range m.GetComObjectDescriptors() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetComObjectDescriptors() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetComObjectDescriptors()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
 			}
@@ -265,7 +272,7 @@ func (m *_ComObjectTableRealisationType2) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ComObjectTableRealisationType2) isComObjectTableRealisationType2() bool {
@@ -277,7 +284,7 @@ func (m *_ComObjectTableRealisationType2) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

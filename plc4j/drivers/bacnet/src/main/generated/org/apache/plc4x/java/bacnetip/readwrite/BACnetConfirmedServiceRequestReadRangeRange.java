@@ -73,6 +73,7 @@ public abstract class BACnetConfirmedServiceRequestReadRangeRange implements Mes
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRange");
 
@@ -101,6 +102,7 @@ public abstract class BACnetConfirmedServiceRequestReadRangeRange implements Mes
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetConfirmedServiceRequestReadRangeRange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -127,6 +129,7 @@ public abstract class BACnetConfirmedServiceRequestReadRangeRange implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -149,13 +152,16 @@ public abstract class BACnetConfirmedServiceRequestReadRangeRange implements Mes
     BACnetConfirmedServiceRequestReadRangeRangeBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x3)) {
       builder =
-          BACnetConfirmedServiceRequestReadRangeRangeByPosition.staticParseBuilder(readBuffer);
+          BACnetConfirmedServiceRequestReadRangeRangeByPosition
+              .staticParseBACnetConfirmedServiceRequestReadRangeRangeBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x6)) {
       builder =
-          BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber.staticParseBuilder(
-              readBuffer);
+          BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
+              .staticParseBACnetConfirmedServiceRequestReadRangeRangeBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x7)) {
-      builder = BACnetConfirmedServiceRequestReadRangeRangeByTime.staticParseBuilder(readBuffer);
+      builder =
+          BACnetConfirmedServiceRequestReadRangeRangeByTime
+              .staticParseBACnetConfirmedServiceRequestReadRangeRangeBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -182,7 +188,7 @@ public abstract class BACnetConfirmedServiceRequestReadRangeRange implements Mes
     return _bACnetConfirmedServiceRequestReadRangeRange;
   }
 
-  public static interface BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+  public interface BACnetConfirmedServiceRequestReadRangeRangeBuilder {
     BACnetConfirmedServiceRequestReadRangeRange build(
         BACnetTagHeader peekedTagHeader, BACnetOpeningTag openingTag, BACnetClosingTag closingTag);
   }

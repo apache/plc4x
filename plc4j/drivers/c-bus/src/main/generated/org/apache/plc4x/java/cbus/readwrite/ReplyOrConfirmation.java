@@ -67,6 +67,7 @@ public abstract class ReplyOrConfirmation implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReplyOrConfirmation");
 
@@ -89,6 +90,7 @@ public abstract class ReplyOrConfirmation implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ReplyOrConfirmation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -130,6 +132,7 @@ public abstract class ReplyOrConfirmation implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte peekedByte = readPeekField("peekedByte", readByte(readBuffer, 8));
     boolean isAlpha =
@@ -140,14 +143,17 @@ public abstract class ReplyOrConfirmation implements Message {
     ReplyOrConfirmationBuilder builder = null;
     if (EvaluationHelper.equals(isAlpha, (boolean) false)
         && EvaluationHelper.equals(peekedByte, (byte) 0x21)) {
-      builder = ServerErrorReply.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder =
+          ServerErrorReply.staticParseReplyOrConfirmationBuilder(
+              readBuffer, cBusOptions, requestContext);
     } else if (EvaluationHelper.equals(isAlpha, (boolean) true)) {
       builder =
-          ReplyOrConfirmationConfirmation.staticParseBuilder(
+          ReplyOrConfirmationConfirmation.staticParseReplyOrConfirmationBuilder(
               readBuffer, cBusOptions, requestContext);
     } else if (EvaluationHelper.equals(isAlpha, (boolean) false)) {
       builder =
-          ReplyOrConfirmationReply.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+          ReplyOrConfirmationReply.staticParseReplyOrConfirmationBuilder(
+              readBuffer, cBusOptions, requestContext);
     }
     if (builder == null) {
       throw new ParseException(
@@ -168,7 +174,7 @@ public abstract class ReplyOrConfirmation implements Message {
     return _replyOrConfirmation;
   }
 
-  public static interface ReplyOrConfirmationBuilder {
+  public interface ReplyOrConfirmationBuilder {
     ReplyOrConfirmation build(
         byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext);
   }

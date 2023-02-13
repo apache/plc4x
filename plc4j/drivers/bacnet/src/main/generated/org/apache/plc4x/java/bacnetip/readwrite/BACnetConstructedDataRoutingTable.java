@@ -74,6 +74,7 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRoutingTable");
 
@@ -92,6 +93,7 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataRoutingTable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (routingTable != null) {
@@ -103,7 +105,7 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataRoutingTableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -114,6 +116,7 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetRouterEntry> routingTable =
         readTerminatedArrayField(
@@ -127,21 +130,20 @@ public class BACnetConstructedDataRoutingTable extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataRoutingTable");
     // Create the instance
-    return new BACnetConstructedDataRoutingTableBuilder(
+    return new BACnetConstructedDataRoutingTableBuilderImpl(
         routingTable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataRoutingTableBuilder
+  public static class BACnetConstructedDataRoutingTableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetRouterEntry> routingTable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRoutingTableBuilder(
+    public BACnetConstructedDataRoutingTableBuilderImpl(
         List<BACnetRouterEntry> routingTable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.routingTable = routingTable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

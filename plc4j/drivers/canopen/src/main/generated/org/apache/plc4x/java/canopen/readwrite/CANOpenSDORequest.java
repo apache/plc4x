@@ -64,6 +64,7 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
   protected void serializeCANOpenPayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenSDORequest");
 
@@ -92,6 +93,7 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CANOpenSDORequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (command)
     lengthInBits += 3;
@@ -102,12 +104,13 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
     return lengthInBits;
   }
 
-  public static CANOpenSDORequestBuilder staticParseBuilder(
+  public static CANOpenPayloadBuilder staticParseCANOpenPayloadBuilder(
       ReadBuffer readBuffer, CANOpenService service) throws ParseException {
     readBuffer.pullContext("CANOpenSDORequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SDORequestCommand command =
         readEnumField(
@@ -125,15 +128,14 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
 
     readBuffer.closeContext("CANOpenSDORequest");
     // Create the instance
-    return new CANOpenSDORequestBuilder(command, request);
+    return new CANOpenSDORequestBuilderImpl(command, request);
   }
 
-  public static class CANOpenSDORequestBuilder implements CANOpenPayload.CANOpenPayloadBuilder {
+  public static class CANOpenSDORequestBuilderImpl implements CANOpenPayload.CANOpenPayloadBuilder {
     private final SDORequestCommand command;
     private final SDORequest request;
 
-    public CANOpenSDORequestBuilder(SDORequestCommand command, SDORequest request) {
-
+    public CANOpenSDORequestBuilderImpl(SDORequestCommand command, SDORequest request) {
       this.command = command;
       this.request = request;
     }

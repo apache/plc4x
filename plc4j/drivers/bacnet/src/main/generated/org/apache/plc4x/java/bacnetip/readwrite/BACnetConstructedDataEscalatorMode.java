@@ -78,6 +78,7 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEscalatorMode");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEscalatorMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (escalatorMode)
     lengthInBits += escalatorMode.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEscalatorModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEscalatorModeTagged escalatorMode =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataEscalatorMode");
     // Create the instance
-    return new BACnetConstructedDataEscalatorModeBuilder(
+    return new BACnetConstructedDataEscalatorModeBuilderImpl(
         escalatorMode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEscalatorModeBuilder
+  public static class BACnetConstructedDataEscalatorModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEscalatorModeTagged escalatorMode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEscalatorModeBuilder(
+    public BACnetConstructedDataEscalatorModeBuilderImpl(
         BACnetEscalatorModeTagged escalatorMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.escalatorMode = escalatorMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

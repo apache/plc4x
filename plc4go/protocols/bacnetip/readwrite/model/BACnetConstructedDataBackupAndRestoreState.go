@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) GetBackupAndRestoreState()
 ///////////////////////
 
 func (m *_BACnetConstructedDataBackupAndRestoreState) GetActualValue() BACnetBackupStateTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetBackupStateTagged(m.GetBackupAndRestoreState())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) GetTypeName() string {
 	return "BACnetConstructedDataBackupAndRestoreState"
 }
 
-func (m *_BACnetConstructedDataBackupAndRestoreState) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataBackupAndRestoreState) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataBackupAndRestoreState) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (backupAndRestoreState)
-	lengthInBits += m.BackupAndRestoreState.GetLengthInBits()
+	lengthInBits += m.BackupAndRestoreState.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataBackupAndRestoreState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataBackupAndRestoreState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataBackupAndRestoreStateParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupAndRestoreState, error) {
-	return BACnetConstructedDataBackupAndRestoreStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataBackupAndRestoreStateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataBackupAndRestoreStateParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupAndRestoreState, error) {
+func BACnetConstructedDataBackupAndRestoreStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupAndRestoreState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBackupAndRestoreState"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataBackupAndRestoreStateParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("backupAndRestoreState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for backupAndRestoreState")
 	}
-	_backupAndRestoreState, _backupAndRestoreStateErr := BACnetBackupStateTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_backupAndRestoreState, _backupAndRestoreStateErr := BACnetBackupStateTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _backupAndRestoreStateErr != nil {
 		return nil, errors.Wrap(_backupAndRestoreStateErr, "Error parsing 'backupAndRestoreState' field of BACnetConstructedDataBackupAndRestoreState")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataBackupAndRestoreStateParseWithBuffer(readBuffer utils.
 }
 
 func (m *_BACnetConstructedDataBackupAndRestoreState) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataBackupAndRestoreState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataBackupAndRestoreState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("backupAndRestoreState"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for backupAndRestoreState")
 		}
-		_backupAndRestoreStateErr := writeBuffer.WriteSerializable(m.GetBackupAndRestoreState())
+		_backupAndRestoreStateErr := writeBuffer.WriteSerializable(ctx, m.GetBackupAndRestoreState())
 		if popErr := writeBuffer.PopContext("backupAndRestoreState"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for backupAndRestoreState")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) SerializeWithWriteBuffer(w
 			return errors.Wrap(_backupAndRestoreStateErr, "Error serializing 'backupAndRestoreState' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataBackupAndRestoreState) isBACnetConstructedDataBackupAndRestoreState() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

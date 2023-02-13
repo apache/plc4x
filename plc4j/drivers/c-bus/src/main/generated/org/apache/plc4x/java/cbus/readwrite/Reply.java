@@ -62,6 +62,7 @@ public abstract class Reply implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Reply");
 
@@ -80,6 +81,7 @@ public abstract class Reply implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     Reply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -118,17 +120,19 @@ public abstract class Reply implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte peekedByte = readPeekField("peekedByte", readByte(readBuffer, 8));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ReplyBuilder builder = null;
     if (EvaluationHelper.equals(peekedByte, (byte) 0x2B)) {
-      builder = PowerUpReply.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder = PowerUpReply.staticParseReplyBuilder(readBuffer, cBusOptions, requestContext);
     } else if (EvaluationHelper.equals(peekedByte, (byte) 0x3D)) {
-      builder = ParameterChangeReply.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder =
+          ParameterChangeReply.staticParseReplyBuilder(readBuffer, cBusOptions, requestContext);
     } else if (true) {
-      builder = ReplyEncodedReply.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder = ReplyEncodedReply.staticParseReplyBuilder(readBuffer, cBusOptions, requestContext);
     }
     if (builder == null) {
       throw new ParseException(
@@ -145,7 +149,7 @@ public abstract class Reply implements Message {
     return _reply;
   }
 
-  public static interface ReplyBuilder {
+  public interface ReplyBuilder {
     Reply build(byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext);
   }
 

@@ -78,6 +78,7 @@ public class BACnetConstructedDataEnable extends BACnetConstructedData implement
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEnable");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataEnable extends BACnetConstructedData implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEnable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (enable)
     lengthInBits += enable.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataEnable extends BACnetConstructedData implement
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataEnable extends BACnetConstructedData implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean enable =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataEnable extends BACnetConstructedData implement
 
     readBuffer.closeContext("BACnetConstructedDataEnable");
     // Create the instance
-    return new BACnetConstructedDataEnableBuilder(enable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEnableBuilderImpl(enable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEnableBuilder
+  public static class BACnetConstructedDataEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean enable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEnableBuilder(
+    public BACnetConstructedDataEnableBuilderImpl(
         BACnetApplicationTagBoolean enable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.enable = enable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -18,7 +18,7 @@
  */
 package org.apache.plc4x.java.scraper.triggeredscraper.triggerhandler;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.model.PlcTag;
@@ -559,7 +559,7 @@ public class TriggerConfiguration{
         //I used this because the prepareField method is deprecated with generated drivers
         //So I need to create the tag using the connection string here
         private PlcTag parseTag(String tagAddress) throws PlcConnectionException {
-            PlcDriverManager driverManager = new PlcDriverManager();
+            DefaultPlcDriverManager driverManager = new DefaultPlcDriverManager();
             PlcDriver driver = driverManager.getDriverForUrl(plcConnectionString);
             return driver.prepareTag(tagAddress);
         }

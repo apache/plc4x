@@ -57,6 +57,7 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
   @Override
   protected void serializeBACnetErrorChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetErrorGeneral");
 
@@ -75,6 +76,7 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetErrorGeneral _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (error)
     lengthInBits += error.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
     return lengthInBits;
   }
 
-  public static BACnetErrorGeneralBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("BACnetErrorGeneral");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Error error =
         readSimpleField(
@@ -96,14 +99,13 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
 
     readBuffer.closeContext("BACnetErrorGeneral");
     // Create the instance
-    return new BACnetErrorGeneralBuilder(error);
+    return new BACnetErrorGeneralBuilderImpl(error);
   }
 
-  public static class BACnetErrorGeneralBuilder implements BACnetError.BACnetErrorBuilder {
+  public static class BACnetErrorGeneralBuilderImpl implements BACnetError.BACnetErrorBuilder {
     private final Error error;
 
-    public BACnetErrorGeneralBuilder(Error error) {
-
+    public BACnetErrorGeneralBuilderImpl(Error error) {
       this.error = error;
     }
 

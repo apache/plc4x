@@ -57,6 +57,7 @@ public class SDOBlockRequest extends SDORequest implements Message {
   @Override
   protected void serializeSDORequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOBlockRequest");
 
@@ -75,6 +76,7 @@ public class SDOBlockRequest extends SDORequest implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOBlockRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (block)
     lengthInBits += block.getLengthInBits();
@@ -82,12 +84,13 @@ public class SDOBlockRequest extends SDORequest implements Message {
     return lengthInBits;
   }
 
-  public static SDOBlockRequestBuilder staticParseBuilder(
+  public static SDORequestBuilder staticParseSDORequestBuilder(
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOBlockRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SDOBlockData block =
         readSimpleField(
@@ -96,14 +99,13 @@ public class SDOBlockRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOBlockRequest");
     // Create the instance
-    return new SDOBlockRequestBuilder(block);
+    return new SDOBlockRequestBuilderImpl(block);
   }
 
-  public static class SDOBlockRequestBuilder implements SDORequest.SDORequestBuilder {
+  public static class SDOBlockRequestBuilderImpl implements SDORequest.SDORequestBuilder {
     private final SDOBlockData block;
 
-    public SDOBlockRequestBuilder(SDOBlockData block) {
-
+    public SDOBlockRequestBuilderImpl(SDOBlockData block) {
       this.block = block;
     }
 

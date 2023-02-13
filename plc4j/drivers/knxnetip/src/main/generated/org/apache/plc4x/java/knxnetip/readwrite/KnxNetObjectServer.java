@@ -57,6 +57,7 @@ public class KnxNetObjectServer extends ServiceId implements Message {
   @Override
   protected void serializeServiceIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("KnxNetObjectServer");
 
@@ -75,6 +76,7 @@ public class KnxNetObjectServer extends ServiceId implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     KnxNetObjectServer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (version)
     lengthInBits += 8;
@@ -82,25 +84,25 @@ public class KnxNetObjectServer extends ServiceId implements Message {
     return lengthInBits;
   }
 
-  public static KnxNetObjectServerBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ServiceIdBuilder staticParseServiceIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("KnxNetObjectServer");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short version = readSimpleField("version", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("KnxNetObjectServer");
     // Create the instance
-    return new KnxNetObjectServerBuilder(version);
+    return new KnxNetObjectServerBuilderImpl(version);
   }
 
-  public static class KnxNetObjectServerBuilder implements ServiceId.ServiceIdBuilder {
+  public static class KnxNetObjectServerBuilderImpl implements ServiceId.ServiceIdBuilder {
     private final short version;
 
-    public KnxNetObjectServerBuilder(short version) {
-
+    public KnxNetObjectServerBuilderImpl(short version) {
       this.version = version;
     }
 

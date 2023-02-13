@@ -94,6 +94,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenSecureChannelRequest");
 
@@ -142,6 +143,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenSecureChannelRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -164,12 +166,13 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     return lengthInBits;
   }
 
-  public static OpenSecureChannelRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("OpenSecureChannelRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -205,7 +208,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("OpenSecureChannelRequest");
     // Create the instance
-    return new OpenSecureChannelRequestBuilder(
+    return new OpenSecureChannelRequestBuilderImpl(
         requestHeader,
         clientProtocolVersion,
         requestType,
@@ -214,7 +217,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         requestedLifetime);
   }
 
-  public static class OpenSecureChannelRequestBuilder
+  public static class OpenSecureChannelRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final long clientProtocolVersion;
@@ -223,14 +226,13 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     private final PascalByteString clientNonce;
     private final long requestedLifetime;
 
-    public OpenSecureChannelRequestBuilder(
+    public OpenSecureChannelRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         long clientProtocolVersion,
         SecurityTokenRequestType requestType,
         MessageSecurityMode securityMode,
         PascalByteString clientNonce,
         long requestedLifetime) {
-
       this.requestHeader = requestHeader;
       this.clientProtocolVersion = clientProtocolVersion;
       this.requestType = requestType;

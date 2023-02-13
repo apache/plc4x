@@ -70,6 +70,7 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
   protected void serializeBACnetContextTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagUnsignedInteger");
 
@@ -92,6 +93,7 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetContextTagUnsignedInteger _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -101,16 +103,17 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
     return lengthInBits;
   }
 
-  public static BACnetContextTagUnsignedIntegerBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagUnsignedInteger");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadUnsignedInteger payload =
         readSimpleField(
@@ -125,17 +128,16 @@ public class BACnetContextTagUnsignedInteger extends BACnetContextTag implements
 
     readBuffer.closeContext("BACnetContextTagUnsignedInteger");
     // Create the instance
-    return new BACnetContextTagUnsignedIntegerBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagUnsignedIntegerBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagUnsignedIntegerBuilder
+  public static class BACnetContextTagUnsignedIntegerBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadUnsignedInteger payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagUnsignedIntegerBuilder(
+    public BACnetContextTagUnsignedIntegerBuilderImpl(
         BACnetTagPayloadUnsignedInteger payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

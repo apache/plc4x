@@ -58,6 +58,7 @@ public class TunnelingResponse extends KnxNetIpMessage implements Message {
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TunnelingResponse");
 
@@ -80,6 +81,7 @@ public class TunnelingResponse extends KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TunnelingResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (tunnelingResponseDataBlock)
     lengthInBits += tunnelingResponseDataBlock.getLengthInBits();
@@ -87,12 +89,13 @@ public class TunnelingResponse extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static TunnelingResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TunnelingResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TunnelingResponseDataBlock tunnelingResponseDataBlock =
         readSimpleField(
@@ -103,14 +106,14 @@ public class TunnelingResponse extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("TunnelingResponse");
     // Create the instance
-    return new TunnelingResponseBuilder(tunnelingResponseDataBlock);
+    return new TunnelingResponseBuilderImpl(tunnelingResponseDataBlock);
   }
 
-  public static class TunnelingResponseBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class TunnelingResponseBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final TunnelingResponseDataBlock tunnelingResponseDataBlock;
 
-    public TunnelingResponseBuilder(TunnelingResponseDataBlock tunnelingResponseDataBlock) {
-
+    public TunnelingResponseBuilderImpl(TunnelingResponseDataBlock tunnelingResponseDataBlock) {
       this.tunnelingResponseDataBlock = tunnelingResponseDataBlock;
     }
 

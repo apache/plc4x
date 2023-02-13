@@ -50,8 +50,6 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
   protected final long maxNotificationsPerPublish;
   protected final boolean publishingEnabled;
   protected final short priority;
-  // Reserved Fields
-  private Short reservedField0;
 
   public CreateSubscriptionRequest(
       ExtensionObjectDefinition requestHeader,
@@ -103,6 +101,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CreateSubscriptionRequest");
 
@@ -130,10 +129,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
         writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (publishingEnabled)
     writeSimpleField("publishingEnabled", publishingEnabled, writeBoolean(writeBuffer));
@@ -153,6 +149,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CreateSubscriptionRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -181,12 +178,13 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static CreateSubscriptionRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CreateSubscriptionRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -216,18 +214,17 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("CreateSubscriptionRequest");
     // Create the instance
-    return new CreateSubscriptionRequestBuilder(
+    return new CreateSubscriptionRequestBuilderImpl(
         requestHeader,
         requestedPublishingInterval,
         requestedLifetimeCount,
         requestedMaxKeepAliveCount,
         maxNotificationsPerPublish,
         publishingEnabled,
-        priority,
-        reservedField0);
+        priority);
   }
 
-  public static class CreateSubscriptionRequestBuilder
+  public static class CreateSubscriptionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final double requestedPublishingInterval;
@@ -236,17 +233,15 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
     private final long maxNotificationsPerPublish;
     private final boolean publishingEnabled;
     private final short priority;
-    private final Short reservedField0;
 
-    public CreateSubscriptionRequestBuilder(
+    public CreateSubscriptionRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         double requestedPublishingInterval,
         long requestedLifetimeCount,
         long requestedMaxKeepAliveCount,
         long maxNotificationsPerPublish,
         boolean publishingEnabled,
-        short priority,
-        Short reservedField0) {
+        short priority) {
       this.requestHeader = requestHeader;
       this.requestedPublishingInterval = requestedPublishingInterval;
       this.requestedLifetimeCount = requestedLifetimeCount;
@@ -254,7 +249,6 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
       this.maxNotificationsPerPublish = maxNotificationsPerPublish;
       this.publishingEnabled = publishingEnabled;
       this.priority = priority;
-      this.reservedField0 = reservedField0;
     }
 
     public CreateSubscriptionRequest build() {
@@ -267,7 +261,6 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
               maxNotificationsPerPublish,
               publishingEnabled,
               priority);
-      createSubscriptionRequest.reservedField0 = reservedField0;
       return createSubscriptionRequest;
     }
   }

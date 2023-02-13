@@ -77,6 +77,7 @@ public class ModbusPDUMaskWriteHoldingRegisterResponse extends ModbusPDU impleme
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUMaskWriteHoldingRegisterResponse");
 
@@ -101,6 +102,7 @@ public class ModbusPDUMaskWriteHoldingRegisterResponse extends ModbusPDU impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUMaskWriteHoldingRegisterResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (referenceAddress)
     lengthInBits += 16;
@@ -114,12 +116,13 @@ public class ModbusPDUMaskWriteHoldingRegisterResponse extends ModbusPDU impleme
     return lengthInBits;
   }
 
-  public static ModbusPDUMaskWriteHoldingRegisterResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUMaskWriteHoldingRegisterResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int referenceAddress = readSimpleField("referenceAddress", readUnsignedInt(readBuffer, 16));
 
@@ -129,18 +132,18 @@ public class ModbusPDUMaskWriteHoldingRegisterResponse extends ModbusPDU impleme
 
     readBuffer.closeContext("ModbusPDUMaskWriteHoldingRegisterResponse");
     // Create the instance
-    return new ModbusPDUMaskWriteHoldingRegisterResponseBuilder(referenceAddress, andMask, orMask);
+    return new ModbusPDUMaskWriteHoldingRegisterResponseBuilderImpl(
+        referenceAddress, andMask, orMask);
   }
 
-  public static class ModbusPDUMaskWriteHoldingRegisterResponseBuilder
+  public static class ModbusPDUMaskWriteHoldingRegisterResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int referenceAddress;
     private final int andMask;
     private final int orMask;
 
-    public ModbusPDUMaskWriteHoldingRegisterResponseBuilder(
+    public ModbusPDUMaskWriteHoldingRegisterResponseBuilderImpl(
         int referenceAddress, int andMask, int orMask) {
-
       this.referenceAddress = referenceAddress;
       this.andMask = andMask;
       this.orMask = orMask;

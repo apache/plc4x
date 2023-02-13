@@ -71,6 +71,7 @@ public class HistoryReadResult extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HistoryReadResult");
 
@@ -96,6 +97,7 @@ public class HistoryReadResult extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     HistoryReadResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -109,12 +111,13 @@ public class HistoryReadResult extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static HistoryReadResultBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("HistoryReadResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(
@@ -135,18 +138,17 @@ public class HistoryReadResult extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("HistoryReadResult");
     // Create the instance
-    return new HistoryReadResultBuilder(statusCode, continuationPoint, historyData);
+    return new HistoryReadResultBuilderImpl(statusCode, continuationPoint, historyData);
   }
 
-  public static class HistoryReadResultBuilder
+  public static class HistoryReadResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final PascalByteString continuationPoint;
     private final ExtensionObject historyData;
 
-    public HistoryReadResultBuilder(
+    public HistoryReadResultBuilderImpl(
         StatusCode statusCode, PascalByteString continuationPoint, ExtensionObject historyData) {
-
       this.statusCode = statusCode;
       this.continuationPoint = continuationPoint;
       this.historyData = historyData;

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataSystemStatus) GetSystemStatus() BACnetDeviceStatu
 ///////////////////////
 
 func (m *_BACnetConstructedDataSystemStatus) GetActualValue() BACnetDeviceStatusTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDeviceStatusTagged(m.GetSystemStatus())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataSystemStatus) GetTypeName() string {
 	return "BACnetConstructedDataSystemStatus"
 }
 
-func (m *_BACnetConstructedDataSystemStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataSystemStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataSystemStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (systemStatus)
-	lengthInBits += m.SystemStatus.GetLengthInBits()
+	lengthInBits += m.SystemStatus.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataSystemStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataSystemStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataSystemStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSystemStatus, error) {
-	return BACnetConstructedDataSystemStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataSystemStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataSystemStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSystemStatus, error) {
+func BACnetConstructedDataSystemStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSystemStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSystemStatus"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataSystemStatusParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("systemStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for systemStatus")
 	}
-	_systemStatus, _systemStatusErr := BACnetDeviceStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_systemStatus, _systemStatusErr := BACnetDeviceStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _systemStatusErr != nil {
 		return nil, errors.Wrap(_systemStatusErr, "Error parsing 'systemStatus' field of BACnetConstructedDataSystemStatus")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataSystemStatusParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetConstructedDataSystemStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataSystemStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataSystemStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataSystemStatus) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("systemStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for systemStatus")
 		}
-		_systemStatusErr := writeBuffer.WriteSerializable(m.GetSystemStatus())
+		_systemStatusErr := writeBuffer.WriteSerializable(ctx, m.GetSystemStatus())
 		if popErr := writeBuffer.PopContext("systemStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for systemStatus")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataSystemStatus) SerializeWithWriteBuffer(writeBuffe
 			return errors.Wrap(_systemStatusErr, "Error serializing 'systemStatus' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataSystemStatus) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataSystemStatus) isBACnetConstructedDataSystemStatus() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataSystemStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

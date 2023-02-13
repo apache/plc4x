@@ -88,6 +88,7 @@ public class BACnetConstructedDataLinkSpeeds extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLinkSpeeds");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataLinkSpeeds extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLinkSpeeds _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataLinkSpeeds extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLinkSpeedsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataLinkSpeeds extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -171,23 +174,22 @@ public class BACnetConstructedDataLinkSpeeds extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataLinkSpeeds");
     // Create the instance
-    return new BACnetConstructedDataLinkSpeedsBuilder(
+    return new BACnetConstructedDataLinkSpeedsBuilderImpl(
         numberOfDataElements, linkSpeeds, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLinkSpeedsBuilder
+  public static class BACnetConstructedDataLinkSpeedsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagReal> linkSpeeds;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLinkSpeedsBuilder(
+    public BACnetConstructedDataLinkSpeedsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagReal> linkSpeeds,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.linkSpeeds = linkSpeeds;
       this.tagNumber = tagNumber;

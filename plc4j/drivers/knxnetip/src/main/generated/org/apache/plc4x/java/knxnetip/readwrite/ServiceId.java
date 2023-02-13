@@ -49,6 +49,7 @@ public abstract class ServiceId implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServiceId");
 
@@ -70,6 +71,7 @@ public abstract class ServiceId implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ServiceId _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (serviceType)
     lengthInBits += 8;
@@ -89,25 +91,26 @@ public abstract class ServiceId implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short serviceType = readDiscriminatorField("serviceType", readUnsignedShort(readBuffer, 8));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ServiceIdBuilder builder = null;
     if (EvaluationHelper.equals(serviceType, (short) 0x02)) {
-      builder = KnxNetIpCore.staticParseBuilder(readBuffer);
+      builder = KnxNetIpCore.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x03)) {
-      builder = KnxNetIpDeviceManagement.staticParseBuilder(readBuffer);
+      builder = KnxNetIpDeviceManagement.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x04)) {
-      builder = KnxNetIpTunneling.staticParseBuilder(readBuffer);
+      builder = KnxNetIpTunneling.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x05)) {
-      builder = KnxNetIpRouting.staticParseBuilder(readBuffer);
+      builder = KnxNetIpRouting.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x06)) {
-      builder = KnxNetRemoteLogging.staticParseBuilder(readBuffer);
+      builder = KnxNetRemoteLogging.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x07)) {
-      builder = KnxNetRemoteConfigurationAndDiagnosis.staticParseBuilder(readBuffer);
+      builder = KnxNetRemoteConfigurationAndDiagnosis.staticParseServiceIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(serviceType, (short) 0x08)) {
-      builder = KnxNetObjectServer.staticParseBuilder(readBuffer);
+      builder = KnxNetObjectServer.staticParseServiceIdBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -124,7 +127,7 @@ public abstract class ServiceId implements Message {
     return _serviceId;
   }
 
-  public static interface ServiceIdBuilder {
+  public interface ServiceIdBuilder {
     ServiceId build();
   }
 

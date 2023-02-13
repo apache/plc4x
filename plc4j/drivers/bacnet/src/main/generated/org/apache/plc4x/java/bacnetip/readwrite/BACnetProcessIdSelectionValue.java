@@ -56,6 +56,7 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
   protected void serializeBACnetProcessIdSelectionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetProcessIdSelectionValue");
 
@@ -75,6 +76,7 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetProcessIdSelectionValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (processIdentifier)
     lengthInBits += processIdentifier.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
     return lengthInBits;
   }
 
-  public static BACnetProcessIdSelectionValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetProcessIdSelectionBuilder staticParseBACnetProcessIdSelectionBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetProcessIdSelectionValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger processIdentifier =
         readSimpleField(
@@ -100,16 +103,15 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
 
     readBuffer.closeContext("BACnetProcessIdSelectionValue");
     // Create the instance
-    return new BACnetProcessIdSelectionValueBuilder(processIdentifier);
+    return new BACnetProcessIdSelectionValueBuilderImpl(processIdentifier);
   }
 
-  public static class BACnetProcessIdSelectionValueBuilder
+  public static class BACnetProcessIdSelectionValueBuilderImpl
       implements BACnetProcessIdSelection.BACnetProcessIdSelectionBuilder {
     private final BACnetApplicationTagUnsignedInteger processIdentifier;
 
-    public BACnetProcessIdSelectionValueBuilder(
+    public BACnetProcessIdSelectionValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger processIdentifier) {
-
       this.processIdentifier = processIdentifier;
     }
 

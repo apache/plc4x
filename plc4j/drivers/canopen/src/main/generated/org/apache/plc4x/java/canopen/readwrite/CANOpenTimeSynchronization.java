@@ -58,6 +58,7 @@ public class CANOpenTimeSynchronization extends CANOpenPayload implements Messag
   protected void serializeCANOpenPayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenTimeSynchronization");
 
@@ -76,6 +77,7 @@ public class CANOpenTimeSynchronization extends CANOpenPayload implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CANOpenTimeSynchronization _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeOfDay)
     lengthInBits += timeOfDay.getLengthInBits();
@@ -83,12 +85,13 @@ public class CANOpenTimeSynchronization extends CANOpenPayload implements Messag
     return lengthInBits;
   }
 
-  public static CANOpenTimeSynchronizationBuilder staticParseBuilder(
+  public static CANOpenPayloadBuilder staticParseCANOpenPayloadBuilder(
       ReadBuffer readBuffer, CANOpenService service) throws ParseException {
     readBuffer.pullContext("CANOpenTimeSynchronization");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CANOpenTime timeOfDay =
         readSimpleField(
@@ -97,15 +100,14 @@ public class CANOpenTimeSynchronization extends CANOpenPayload implements Messag
 
     readBuffer.closeContext("CANOpenTimeSynchronization");
     // Create the instance
-    return new CANOpenTimeSynchronizationBuilder(timeOfDay);
+    return new CANOpenTimeSynchronizationBuilderImpl(timeOfDay);
   }
 
-  public static class CANOpenTimeSynchronizationBuilder
+  public static class CANOpenTimeSynchronizationBuilderImpl
       implements CANOpenPayload.CANOpenPayloadBuilder {
     private final CANOpenTime timeOfDay;
 
-    public CANOpenTimeSynchronizationBuilder(CANOpenTime timeOfDay) {
-
+    public CANOpenTimeSynchronizationBuilderImpl(CANOpenTime timeOfDay) {
       this.timeOfDay = timeOfDay;
     }
 

@@ -56,24 +56,41 @@ public abstract class KnxNetIpMessage implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("KnxNetIpMessage");
 
     // Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     short headerLength = (short) (6);
-    writeImplicitField("headerLength", headerLength, writeUnsignedShort(writeBuffer, 8));
+    writeImplicitField(
+        "headerLength",
+        headerLength,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (protocolVersion)
-    writeConstField("protocolVersion", PROTOCOLVERSION, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "protocolVersion",
+        PROTOCOLVERSION,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Discriminator Field (msgType) (Used as input to a switch field)
-    writeDiscriminatorField("msgType", getMsgType(), writeUnsignedInt(writeBuffer, 16));
+    writeDiscriminatorField(
+        "msgType",
+        getMsgType(),
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int totalLength = (int) (getLengthInBytes());
-    writeImplicitField("totalLength", totalLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "totalLength",
+        totalLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializeKnxNetIpMessageChild(writeBuffer);
@@ -90,6 +107,7 @@ public abstract class KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     KnxNetIpMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (headerLength)
     lengthInBits += 8;
@@ -119,6 +137,7 @@ public abstract class KnxNetIpMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short headerLength =
         readImplicitField(
@@ -148,37 +167,38 @@ public abstract class KnxNetIpMessage implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     KnxNetIpMessageBuilder builder = null;
     if (EvaluationHelper.equals(msgType, (int) 0x0201)) {
-      builder = SearchRequest.staticParseBuilder(readBuffer);
+      builder = SearchRequest.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0202)) {
-      builder = SearchResponse.staticParseBuilder(readBuffer);
+      builder = SearchResponse.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0203)) {
-      builder = DescriptionRequest.staticParseBuilder(readBuffer);
+      builder = DescriptionRequest.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0204)) {
-      builder = DescriptionResponse.staticParseBuilder(readBuffer);
+      builder = DescriptionResponse.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0205)) {
-      builder = ConnectionRequest.staticParseBuilder(readBuffer);
+      builder = ConnectionRequest.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0206)) {
-      builder = ConnectionResponse.staticParseBuilder(readBuffer);
+      builder = ConnectionResponse.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0207)) {
-      builder = ConnectionStateRequest.staticParseBuilder(readBuffer);
+      builder = ConnectionStateRequest.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0208)) {
-      builder = ConnectionStateResponse.staticParseBuilder(readBuffer);
+      builder = ConnectionStateResponse.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0209)) {
-      builder = DisconnectRequest.staticParseBuilder(readBuffer);
+      builder = DisconnectRequest.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x020A)) {
-      builder = DisconnectResponse.staticParseBuilder(readBuffer);
+      builder = DisconnectResponse.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x020B)) {
-      builder = UnknownMessage.staticParseBuilder(readBuffer, totalLength);
+      builder = UnknownMessage.staticParseKnxNetIpMessageBuilder(readBuffer, totalLength);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0310)) {
-      builder = DeviceConfigurationRequest.staticParseBuilder(readBuffer, totalLength);
+      builder =
+          DeviceConfigurationRequest.staticParseKnxNetIpMessageBuilder(readBuffer, totalLength);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0311)) {
-      builder = DeviceConfigurationAck.staticParseBuilder(readBuffer);
+      builder = DeviceConfigurationAck.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0420)) {
-      builder = TunnelingRequest.staticParseBuilder(readBuffer, totalLength);
+      builder = TunnelingRequest.staticParseKnxNetIpMessageBuilder(readBuffer, totalLength);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0421)) {
-      builder = TunnelingResponse.staticParseBuilder(readBuffer);
+      builder = TunnelingResponse.staticParseKnxNetIpMessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(msgType, (int) 0x0530)) {
-      builder = RoutingIndication.staticParseBuilder(readBuffer);
+      builder = RoutingIndication.staticParseKnxNetIpMessageBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -191,7 +211,7 @@ public abstract class KnxNetIpMessage implements Message {
     return _knxNetIpMessage;
   }
 
-  public static interface KnxNetIpMessageBuilder {
+  public interface KnxNetIpMessageBuilder {
     KnxNetIpMessage build();
   }
 

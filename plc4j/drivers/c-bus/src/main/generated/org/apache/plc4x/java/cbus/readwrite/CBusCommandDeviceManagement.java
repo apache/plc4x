@@ -72,6 +72,7 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
   @Override
   protected void serializeCBusCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusCommandDeviceManagement");
 
@@ -101,6 +102,7 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusCommandDeviceManagement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (paramNo)
     lengthInBits += 8;
@@ -114,12 +116,13 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
     return lengthInBits;
   }
 
-  public static CBusCommandDeviceManagementBuilder staticParseBuilder(
+  public static CBusCommandBuilder staticParseCBusCommandBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusCommandDeviceManagement");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Parameter paramNo =
         readEnumField(
@@ -134,17 +137,17 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
 
     readBuffer.closeContext("CBusCommandDeviceManagement");
     // Create the instance
-    return new CBusCommandDeviceManagementBuilder(paramNo, parameterValue, cBusOptions);
+    return new CBusCommandDeviceManagementBuilderImpl(paramNo, parameterValue, cBusOptions);
   }
 
-  public static class CBusCommandDeviceManagementBuilder implements CBusCommand.CBusCommandBuilder {
+  public static class CBusCommandDeviceManagementBuilderImpl
+      implements CBusCommand.CBusCommandBuilder {
     private final Parameter paramNo;
     private final byte parameterValue;
     private final CBusOptions cBusOptions;
 
-    public CBusCommandDeviceManagementBuilder(
+    public CBusCommandDeviceManagementBuilderImpl(
         Parameter paramNo, byte parameterValue, CBusOptions cBusOptions) {
-
       this.paramNo = paramNo;
       this.parameterValue = parameterValue;
       this.cBusOptions = cBusOptions;

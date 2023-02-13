@@ -65,6 +65,7 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
   @Override
   protected void serializeBACnetErrorChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SubscribeCOVPropertyMultipleError");
 
@@ -89,6 +90,7 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SubscribeCOVPropertyMultipleError _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (errorType)
     lengthInBits += errorType.getLengthInBits();
@@ -99,12 +101,13 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
     return lengthInBits;
   }
 
-  public static SubscribeCOVPropertyMultipleErrorBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("SubscribeCOVPropertyMultipleError");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed errorType =
         readSimpleField(
@@ -123,18 +126,17 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
 
     readBuffer.closeContext("SubscribeCOVPropertyMultipleError");
     // Create the instance
-    return new SubscribeCOVPropertyMultipleErrorBuilder(errorType, firstFailedSubscription);
+    return new SubscribeCOVPropertyMultipleErrorBuilderImpl(errorType, firstFailedSubscription);
   }
 
-  public static class SubscribeCOVPropertyMultipleErrorBuilder
+  public static class SubscribeCOVPropertyMultipleErrorBuilderImpl
       implements BACnetError.BACnetErrorBuilder {
     private final ErrorEnclosed errorType;
     private final SubscribeCOVPropertyMultipleErrorFirstFailedSubscription firstFailedSubscription;
 
-    public SubscribeCOVPropertyMultipleErrorBuilder(
+    public SubscribeCOVPropertyMultipleErrorBuilderImpl(
         ErrorEnclosed errorType,
         SubscribeCOVPropertyMultipleErrorFirstFailedSubscription firstFailedSubscription) {
-
       this.errorType = errorType;
       this.firstFailedSubscription = firstFailedSubscription;
     }

@@ -115,6 +115,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TrustListDataType");
 
@@ -159,6 +160,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TrustListDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (specifiedLists)
     lengthInBits += 32;
@@ -170,7 +172,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     if (trustedCertificates != null) {
       int i = 0;
       for (PascalByteString element : trustedCertificates) {
-        boolean last = ++i >= trustedCertificates.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= trustedCertificates.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -182,7 +184,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     if (trustedCrls != null) {
       int i = 0;
       for (PascalByteString element : trustedCrls) {
-        boolean last = ++i >= trustedCrls.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= trustedCrls.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -194,7 +196,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     if (issuerCertificates != null) {
       int i = 0;
       for (PascalByteString element : issuerCertificates) {
-        boolean last = ++i >= issuerCertificates.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= issuerCertificates.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -206,7 +208,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     if (issuerCrls != null) {
       int i = 0;
       for (PascalByteString element : issuerCrls) {
-        boolean last = ++i >= issuerCrls.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= issuerCrls.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -214,12 +216,13 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static TrustListDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TrustListDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long specifiedLists = readSimpleField("specifiedLists", readUnsignedLong(readBuffer, 32));
 
@@ -263,7 +266,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("TrustListDataType");
     // Create the instance
-    return new TrustListDataTypeBuilder(
+    return new TrustListDataTypeBuilderImpl(
         specifiedLists,
         noOfTrustedCertificates,
         trustedCertificates,
@@ -275,7 +278,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
         issuerCrls);
   }
 
-  public static class TrustListDataTypeBuilder
+  public static class TrustListDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long specifiedLists;
     private final int noOfTrustedCertificates;
@@ -287,7 +290,7 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
     private final int noOfIssuerCrls;
     private final List<PascalByteString> issuerCrls;
 
-    public TrustListDataTypeBuilder(
+    public TrustListDataTypeBuilderImpl(
         long specifiedLists,
         int noOfTrustedCertificates,
         List<PascalByteString> trustedCertificates,
@@ -297,7 +300,6 @@ public class TrustListDataType extends ExtensionObjectDefinition implements Mess
         List<PascalByteString> issuerCertificates,
         int noOfIssuerCrls,
         List<PascalByteString> issuerCrls) {
-
       this.specifiedLists = specifiedLists;
       this.noOfTrustedCertificates = noOfTrustedCertificates;
       this.trustedCertificates = trustedCertificates;

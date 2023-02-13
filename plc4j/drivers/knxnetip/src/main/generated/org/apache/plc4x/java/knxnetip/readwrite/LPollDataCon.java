@@ -42,17 +42,14 @@ public class LPollDataCon extends CEMI implements Message {
     return (short) 0x25;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public LPollDataCon(Integer size) {
-    super(size);
-    this.size = size;
+  public LPollDataCon() {
+    super();
   }
 
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LPollDataCon");
 
@@ -68,34 +65,30 @@ public class LPollDataCon extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LPollDataCon _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static LPollDataConBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LPollDataCon");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("LPollDataCon");
     // Create the instance
-    return new LPollDataConBuilder(size);
+    return new LPollDataConBuilderImpl();
   }
 
-  public static class LPollDataConBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class LPollDataConBuilderImpl implements CEMI.CEMIBuilder {
 
-    public LPollDataConBuilder(Integer size) {
+    public LPollDataConBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public LPollDataCon build(Integer size) {
-
-      LPollDataCon lPollDataCon = new LPollDataCon(size);
-
+    public LPollDataCon build() {
+      LPollDataCon lPollDataCon = new LPollDataCon();
       return lPollDataCon;
     }
   }

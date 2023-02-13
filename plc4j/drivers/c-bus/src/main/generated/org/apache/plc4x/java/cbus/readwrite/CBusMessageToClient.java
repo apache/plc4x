@@ -64,6 +64,7 @@ public class CBusMessageToClient extends CBusMessage implements Message {
   @Override
   protected void serializeCBusMessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusMessageToClient");
 
@@ -82,6 +83,7 @@ public class CBusMessageToClient extends CBusMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusMessageToClient _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reply)
     lengthInBits += reply.getLengthInBits();
@@ -89,7 +91,7 @@ public class CBusMessageToClient extends CBusMessage implements Message {
     return lengthInBits;
   }
 
-  public static CBusMessageToClientBuilder staticParseBuilder(
+  public static CBusMessageBuilder staticParseCBusMessageBuilder(
       ReadBuffer readBuffer,
       Boolean isResponse,
       RequestContext requestContext,
@@ -99,6 +101,7 @@ public class CBusMessageToClient extends CBusMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ReplyOrConfirmation reply =
         readSimpleField(
@@ -111,17 +114,16 @@ public class CBusMessageToClient extends CBusMessage implements Message {
 
     readBuffer.closeContext("CBusMessageToClient");
     // Create the instance
-    return new CBusMessageToClientBuilder(reply, requestContext, cBusOptions);
+    return new CBusMessageToClientBuilderImpl(reply, requestContext, cBusOptions);
   }
 
-  public static class CBusMessageToClientBuilder implements CBusMessage.CBusMessageBuilder {
+  public static class CBusMessageToClientBuilderImpl implements CBusMessage.CBusMessageBuilder {
     private final ReplyOrConfirmation reply;
     private final RequestContext requestContext;
     private final CBusOptions cBusOptions;
 
-    public CBusMessageToClientBuilder(
+    public CBusMessageToClientBuilderImpl(
         ReplyOrConfirmation reply, RequestContext requestContext, CBusOptions cBusOptions) {
-
       this.reply = reply;
       this.requestContext = requestContext;
       this.cBusOptions = cBusOptions;

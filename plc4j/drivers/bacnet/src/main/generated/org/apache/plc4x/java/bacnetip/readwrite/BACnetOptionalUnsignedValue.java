@@ -56,6 +56,7 @@ public class BACnetOptionalUnsignedValue extends BACnetOptionalUnsigned implemen
   protected void serializeBACnetOptionalUnsignedChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalUnsignedValue");
 
@@ -74,6 +75,7 @@ public class BACnetOptionalUnsignedValue extends BACnetOptionalUnsigned implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalUnsignedValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unsignedValue)
     lengthInBits += unsignedValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetOptionalUnsignedValue extends BACnetOptionalUnsigned implemen
     return lengthInBits;
   }
 
-  public static BACnetOptionalUnsignedValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetOptionalUnsignedBuilder staticParseBACnetOptionalUnsignedBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalUnsignedValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
@@ -99,15 +102,15 @@ public class BACnetOptionalUnsignedValue extends BACnetOptionalUnsigned implemen
 
     readBuffer.closeContext("BACnetOptionalUnsignedValue");
     // Create the instance
-    return new BACnetOptionalUnsignedValueBuilder(unsignedValue);
+    return new BACnetOptionalUnsignedValueBuilderImpl(unsignedValue);
   }
 
-  public static class BACnetOptionalUnsignedValueBuilder
+  public static class BACnetOptionalUnsignedValueBuilderImpl
       implements BACnetOptionalUnsigned.BACnetOptionalUnsignedBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
 
-    public BACnetOptionalUnsignedValueBuilder(BACnetApplicationTagUnsignedInteger unsignedValue) {
-
+    public BACnetOptionalUnsignedValueBuilderImpl(
+        BACnetApplicationTagUnsignedInteger unsignedValue) {
       this.unsignedValue = unsignedValue;
     }
 

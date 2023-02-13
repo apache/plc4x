@@ -78,6 +78,7 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessEventTime");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessEventTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessEventTime)
     lengthInBits += accessEventTime.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessEventTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimeStamp accessEventTime =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataAccessEventTime");
     // Create the instance
-    return new BACnetConstructedDataAccessEventTimeBuilder(
+    return new BACnetConstructedDataAccessEventTimeBuilderImpl(
         accessEventTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessEventTimeBuilder
+  public static class BACnetConstructedDataAccessEventTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimeStamp accessEventTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessEventTimeBuilder(
+    public BACnetConstructedDataAccessEventTimeBuilderImpl(
         BACnetTimeStamp accessEventTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accessEventTime = accessEventTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

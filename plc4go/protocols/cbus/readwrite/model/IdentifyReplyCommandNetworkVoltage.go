@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -137,12 +138,8 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetTypeName() string {
 	return "IdentifyReplyCommandNetworkVoltage"
 }
 
-func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (volts)
 	lengthInBits += 16
@@ -159,15 +156,15 @@ func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBitsConditional(lastIte
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_IdentifyReplyCommandNetworkVoltage) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func IdentifyReplyCommandNetworkVoltageParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkVoltage, error) {
-	return IdentifyReplyCommandNetworkVoltageParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+	return IdentifyReplyCommandNetworkVoltageParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
-func IdentifyReplyCommandNetworkVoltageParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkVoltage, error) {
+func IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkVoltage, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandNetworkVoltage"); pullErr != nil {
@@ -225,14 +222,14 @@ func IdentifyReplyCommandNetworkVoltageParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_IdentifyReplyCommandNetworkVoltage) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_IdentifyReplyCommandNetworkVoltage) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandNetworkVoltage) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -271,7 +268,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_IdentifyReplyCommandNetworkVoltage) isIdentifyReplyCommandNetworkVoltage() bool {
@@ -283,7 +280,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

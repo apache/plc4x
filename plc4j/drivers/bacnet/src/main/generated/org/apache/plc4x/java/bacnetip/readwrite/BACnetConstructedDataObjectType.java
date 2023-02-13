@@ -78,6 +78,7 @@ public class BACnetConstructedDataObjectType extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataObjectType");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataObjectType extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataObjectType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectType)
     lengthInBits += objectType.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataObjectType extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataObjectTypeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataObjectType extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetObjectTypeTagged objectType =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataObjectType extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataObjectType");
     // Create the instance
-    return new BACnetConstructedDataObjectTypeBuilder(objectType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataObjectTypeBuilderImpl(
+        objectType, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataObjectTypeBuilder
+  public static class BACnetConstructedDataObjectTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetObjectTypeTagged objectType;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataObjectTypeBuilder(
+    public BACnetConstructedDataObjectTypeBuilderImpl(
         BACnetObjectTypeTagged objectType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.objectType = objectType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -75,6 +75,7 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSubscribedRecipients");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSubscribedRecipients _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (subscribedRecipients != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSubscribedRecipientsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetEventNotificationSubscription> subscribedRecipients =
         readTerminatedArrayField(
@@ -128,21 +131,20 @@ public class BACnetConstructedDataSubscribedRecipients extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataSubscribedRecipients");
     // Create the instance
-    return new BACnetConstructedDataSubscribedRecipientsBuilder(
+    return new BACnetConstructedDataSubscribedRecipientsBuilderImpl(
         subscribedRecipients, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSubscribedRecipientsBuilder
+  public static class BACnetConstructedDataSubscribedRecipientsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetEventNotificationSubscription> subscribedRecipients;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSubscribedRecipientsBuilder(
+    public BACnetConstructedDataSubscribedRecipientsBuilderImpl(
         List<BACnetEventNotificationSubscription> subscribedRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.subscribedRecipients = subscribedRecipients;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

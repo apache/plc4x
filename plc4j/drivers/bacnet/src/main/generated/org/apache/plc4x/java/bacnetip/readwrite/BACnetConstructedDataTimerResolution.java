@@ -78,6 +78,7 @@ public class BACnetConstructedDataTimerResolution extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimerResolution");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataTimerResolution extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimerResolution _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (resolution)
     lengthInBits += resolution.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataTimerResolution extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimerResolutionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataTimerResolution extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger resolution =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataTimerResolution extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataTimerResolution");
     // Create the instance
-    return new BACnetConstructedDataTimerResolutionBuilder(
+    return new BACnetConstructedDataTimerResolutionBuilderImpl(
         resolution, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimerResolutionBuilder
+  public static class BACnetConstructedDataTimerResolutionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger resolution;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimerResolutionBuilder(
+    public BACnetConstructedDataTimerResolutionBuilderImpl(
         BACnetApplicationTagUnsignedInteger resolution,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.resolution = resolution;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

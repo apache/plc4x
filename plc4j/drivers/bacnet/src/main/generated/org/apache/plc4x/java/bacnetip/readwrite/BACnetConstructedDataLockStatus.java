@@ -78,6 +78,7 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLockStatus");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLockStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lockStatus)
     lengthInBits += lockStatus.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLockStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLockStatusTagged lockStatus =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataLockStatus");
     // Create the instance
-    return new BACnetConstructedDataLockStatusBuilder(lockStatus, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLockStatusBuilderImpl(
+        lockStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLockStatusBuilder
+  public static class BACnetConstructedDataLockStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLockStatusTagged lockStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLockStatusBuilder(
+    public BACnetConstructedDataLockStatusBuilderImpl(
         BACnetLockStatusTagged lockStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lockStatus = lockStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

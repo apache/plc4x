@@ -40,8 +40,6 @@ public class ExtensionHeader implements Message {
   // Properties.
   protected final boolean xmlbody;
   protected final boolean binaryBody;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public ExtensionHeader(boolean xmlbody, boolean binaryBody) {
     super();
@@ -59,14 +57,12 @@ public class ExtensionHeader implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ExtensionHeader");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeSignedByte(writeBuffer, 5));
+    writeReservedField("reserved", (byte) 0x00, writeSignedByte(writeBuffer, 5));
 
     // Simple Field (xmlbody)
     writeSimpleField("xmlbody", xmlbody, writeBoolean(writeBuffer));
@@ -86,6 +82,7 @@ public class ExtensionHeader implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ExtensionHeader _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 5;
@@ -110,6 +107,7 @@ public class ExtensionHeader implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readSignedByte(readBuffer, 5), (byte) 0x00);
 
@@ -121,7 +119,6 @@ public class ExtensionHeader implements Message {
     // Create the instance
     ExtensionHeader _extensionHeader;
     _extensionHeader = new ExtensionHeader(xmlbody, binaryBody);
-    _extensionHeader.reservedField0 = reservedField0;
     return _extensionHeader;
   }
 

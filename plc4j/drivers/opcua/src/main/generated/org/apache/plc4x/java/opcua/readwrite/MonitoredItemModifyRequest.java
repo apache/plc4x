@@ -65,6 +65,7 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredItemModifyRequest");
 
@@ -87,6 +88,7 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MonitoredItemModifyRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (monitoredItemId)
     lengthInBits += 32;
@@ -97,12 +99,13 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static MonitoredItemModifyRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoredItemModifyRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long monitoredItemId = readSimpleField("monitoredItemId", readUnsignedLong(readBuffer, 32));
 
@@ -115,17 +118,16 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("MonitoredItemModifyRequest");
     // Create the instance
-    return new MonitoredItemModifyRequestBuilder(monitoredItemId, requestedParameters);
+    return new MonitoredItemModifyRequestBuilderImpl(monitoredItemId, requestedParameters);
   }
 
-  public static class MonitoredItemModifyRequestBuilder
+  public static class MonitoredItemModifyRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long monitoredItemId;
     private final ExtensionObjectDefinition requestedParameters;
 
-    public MonitoredItemModifyRequestBuilder(
+    public MonitoredItemModifyRequestBuilderImpl(
         long monitoredItemId, ExtensionObjectDefinition requestedParameters) {
-
       this.monitoredItemId = monitoredItemId;
       this.requestedParameters = requestedParameters;
     }

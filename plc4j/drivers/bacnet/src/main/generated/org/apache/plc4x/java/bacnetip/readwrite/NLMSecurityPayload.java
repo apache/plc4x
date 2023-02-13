@@ -67,6 +67,7 @@ public class NLMSecurityPayload extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMSecurityPayload");
 
@@ -88,6 +89,7 @@ public class NLMSecurityPayload extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMSecurityPayload _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payloadLength)
     lengthInBits += 16;
@@ -100,12 +102,13 @@ public class NLMSecurityPayload extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMSecurityPayloadBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMSecurityPayload");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int payloadLength = readSimpleField("payloadLength", readUnsignedInt(readBuffer, 16));
 
@@ -113,16 +116,15 @@ public class NLMSecurityPayload extends NLM implements Message {
 
     readBuffer.closeContext("NLMSecurityPayload");
     // Create the instance
-    return new NLMSecurityPayloadBuilder(payloadLength, payload, apduLength);
+    return new NLMSecurityPayloadBuilderImpl(payloadLength, payload, apduLength);
   }
 
-  public static class NLMSecurityPayloadBuilder implements NLM.NLMBuilder {
+  public static class NLMSecurityPayloadBuilderImpl implements NLM.NLMBuilder {
     private final int payloadLength;
     private final byte[] payload;
     private final Integer apduLength;
 
-    public NLMSecurityPayloadBuilder(int payloadLength, byte[] payload, Integer apduLength) {
-
+    public NLMSecurityPayloadBuilderImpl(int payloadLength, byte[] payload, Integer apduLength) {
       this.payloadLength = payloadLength;
       this.payload = payload;
       this.apduLength = apduLength;

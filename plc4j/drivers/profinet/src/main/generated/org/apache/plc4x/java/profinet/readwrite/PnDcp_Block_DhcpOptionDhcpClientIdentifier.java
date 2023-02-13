@@ -53,6 +53,7 @@ public class PnDcp_Block_DhcpOptionDhcpClientIdentifier extends PnDcp_Block impl
   @Override
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DhcpOptionDhcpClientIdentifier");
 
@@ -68,26 +69,28 @@ public class PnDcp_Block_DhcpOptionDhcpClientIdentifier extends PnDcp_Block impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Block_DhcpOptionDhcpClientIdentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DhcpOptionDhcpClientIdentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnDcp_Block_DhcpOptionDhcpClientIdentifier");
     // Create the instance
-    return new PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilder();
+    return new PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilderImpl();
   }
 
-  public static class PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilder
+  public static class PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilder() {}
+    public PnDcp_Block_DhcpOptionDhcpClientIdentifierBuilderImpl() {}
 
     public PnDcp_Block_DhcpOptionDhcpClientIdentifier build() {
       PnDcp_Block_DhcpOptionDhcpClientIdentifier pnDcp_Block_DhcpOptionDhcpClientIdentifier =

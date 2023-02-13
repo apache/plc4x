@@ -56,6 +56,7 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesFileAccessMethod");
 
@@ -75,6 +76,7 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesFileAccessMethod _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileAccessMethod)
     lengthInBits += fileAccessMethod.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesFileAccessMethodBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesFileAccessMethod");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetFileAccessMethodTagged fileAccessMethod =
         readSimpleField(
@@ -102,16 +105,15 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
 
     readBuffer.closeContext("BACnetPropertyStatesFileAccessMethod");
     // Create the instance
-    return new BACnetPropertyStatesFileAccessMethodBuilder(fileAccessMethod);
+    return new BACnetPropertyStatesFileAccessMethodBuilderImpl(fileAccessMethod);
   }
 
-  public static class BACnetPropertyStatesFileAccessMethodBuilder
+  public static class BACnetPropertyStatesFileAccessMethodBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetFileAccessMethodTagged fileAccessMethod;
 
-    public BACnetPropertyStatesFileAccessMethodBuilder(
+    public BACnetPropertyStatesFileAccessMethodBuilderImpl(
         BACnetFileAccessMethodTagged fileAccessMethod) {
-
       this.fileAccessMethod = fileAccessMethod;
     }
 

@@ -79,6 +79,7 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataObjectIdentifier");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataObjectIdentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectIdentifier)
     lengthInBits += objectIdentifier.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataObjectIdentifierBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataObjectIdentifier extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataObjectIdentifier");
     // Create the instance
-    return new BACnetConstructedDataObjectIdentifierBuilder(
+    return new BACnetConstructedDataObjectIdentifierBuilderImpl(
         objectIdentifier, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataObjectIdentifierBuilder
+  public static class BACnetConstructedDataObjectIdentifierBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataObjectIdentifierBuilder(
+    public BACnetConstructedDataObjectIdentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectIdentifier,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.objectIdentifier = objectIdentifier;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

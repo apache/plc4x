@@ -79,6 +79,7 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestVTData");
 
@@ -104,6 +105,7 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestVTData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (vtSessionIdentifier)
     lengthInBits += vtSessionIdentifier.getLengthInBits();
@@ -117,12 +119,14 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestVTDataBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestVTData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger vtSessionIdentifier =
         readSimpleField(
@@ -152,23 +156,22 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestVTData");
     // Create the instance
-    return new BACnetConfirmedServiceRequestVTDataBuilder(
+    return new BACnetConfirmedServiceRequestVTDataBuilderImpl(
         vtSessionIdentifier, vtNewData, vtDataFlag, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestVTDataBuilder
+  public static class BACnetConfirmedServiceRequestVTDataBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetApplicationTagUnsignedInteger vtSessionIdentifier;
     private final BACnetApplicationTagOctetString vtNewData;
     private final BACnetApplicationTagUnsignedInteger vtDataFlag;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestVTDataBuilder(
+    public BACnetConfirmedServiceRequestVTDataBuilderImpl(
         BACnetApplicationTagUnsignedInteger vtSessionIdentifier,
         BACnetApplicationTagOctetString vtNewData,
         BACnetApplicationTagUnsignedInteger vtDataFlag,
         Long serviceRequestLength) {
-
       this.vtSessionIdentifier = vtSessionIdentifier;
       this.vtNewData = vtNewData;
       this.vtDataFlag = vtDataFlag;

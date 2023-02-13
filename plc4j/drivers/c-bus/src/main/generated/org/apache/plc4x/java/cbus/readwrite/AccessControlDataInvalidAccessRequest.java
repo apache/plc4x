@@ -66,6 +66,7 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
   protected void serializeAccessControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataInvalidAccessRequest");
 
@@ -94,6 +95,7 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AccessControlDataInvalidAccessRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessControlDirection)
     lengthInBits += 8;
@@ -106,13 +108,14 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
     return lengthInBits;
   }
 
-  public static AccessControlDataInvalidAccessRequestBuilder staticParseBuilder(
+  public static AccessControlDataBuilder staticParseAccessControlDataBuilder(
       ReadBuffer readBuffer, AccessControlCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("AccessControlDataInvalidAccessRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AccessControlDirection accessControlDirection =
         readEnumField(
@@ -127,17 +130,16 @@ public class AccessControlDataInvalidAccessRequest extends AccessControlData imp
 
     readBuffer.closeContext("AccessControlDataInvalidAccessRequest");
     // Create the instance
-    return new AccessControlDataInvalidAccessRequestBuilder(accessControlDirection, data);
+    return new AccessControlDataInvalidAccessRequestBuilderImpl(accessControlDirection, data);
   }
 
-  public static class AccessControlDataInvalidAccessRequestBuilder
+  public static class AccessControlDataInvalidAccessRequestBuilderImpl
       implements AccessControlData.AccessControlDataBuilder {
     private final AccessControlDirection accessControlDirection;
     private final byte[] data;
 
-    public AccessControlDataInvalidAccessRequestBuilder(
+    public AccessControlDataInvalidAccessRequestBuilderImpl(
         AccessControlDirection accessControlDirection, byte[] data) {
-
       this.accessControlDirection = accessControlDirection;
       this.data = data;
     }

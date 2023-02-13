@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -88,33 +89,29 @@ func (m *_BACnetBDTEntry) GetTypeName() string {
 	return "BACnetBDTEntry"
 }
 
-func (m *_BACnetBDTEntry) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetBDTEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetBDTEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (bbmdAddress)
-	lengthInBits += m.BbmdAddress.GetLengthInBits()
+	lengthInBits += m.BbmdAddress.GetLengthInBits(ctx)
 
 	// Optional Field (broadcastMask)
 	if m.BroadcastMask != nil {
-		lengthInBits += m.BroadcastMask.GetLengthInBits()
+		lengthInBits += m.BroadcastMask.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetBDTEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetBDTEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetBDTEntryParse(theBytes []byte) (BACnetBDTEntry, error) {
-	return BACnetBDTEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetBDTEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetBDTEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
+func BACnetBDTEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetBDTEntry"); pullErr != nil {
@@ -127,7 +124,7 @@ func BACnetBDTEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBDTEntry,
 	if pullErr := readBuffer.PullContext("bbmdAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for bbmdAddress")
 	}
-	_bbmdAddress, _bbmdAddressErr := BACnetHostNPortEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_bbmdAddress, _bbmdAddressErr := BACnetHostNPortEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _bbmdAddressErr != nil {
 		return nil, errors.Wrap(_bbmdAddressErr, "Error parsing 'bbmdAddress' field of BACnetBDTEntry")
 	}
@@ -143,7 +140,7 @@ func BACnetBDTEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBDTEntry,
 		if pullErr := readBuffer.PullContext("broadcastMask"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for broadcastMask")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -170,14 +167,14 @@ func BACnetBDTEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetBDTEntry,
 }
 
 func (m *_BACnetBDTEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetBDTEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetBDTEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetBDTEntry"); pushErr != nil {
@@ -188,7 +185,7 @@ func (m *_BACnetBDTEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 	if pushErr := writeBuffer.PushContext("bbmdAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for bbmdAddress")
 	}
-	_bbmdAddressErr := writeBuffer.WriteSerializable(m.GetBbmdAddress())
+	_bbmdAddressErr := writeBuffer.WriteSerializable(ctx, m.GetBbmdAddress())
 	if popErr := writeBuffer.PopContext("bbmdAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for bbmdAddress")
 	}
@@ -203,7 +200,7 @@ func (m *_BACnetBDTEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for broadcastMask")
 		}
 		broadcastMask = m.GetBroadcastMask()
-		_broadcastMaskErr := writeBuffer.WriteSerializable(broadcastMask)
+		_broadcastMaskErr := writeBuffer.WriteSerializable(ctx, broadcastMask)
 		if popErr := writeBuffer.PopContext("broadcastMask"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for broadcastMask")
 		}
@@ -227,7 +224,7 @@ func (m *_BACnetBDTEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

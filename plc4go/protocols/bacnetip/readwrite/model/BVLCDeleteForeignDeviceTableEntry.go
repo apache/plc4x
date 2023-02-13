@@ -20,7 +20,9 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -116,12 +118,8 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetTypeName() string {
 	return "BVLCDeleteForeignDeviceTableEntry"
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.Ip) > 0 {
@@ -134,15 +132,15 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBitsConditional(lastItem
 	return lengthInBits
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BVLCDeleteForeignDeviceTableEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BVLCDeleteForeignDeviceTableEntryParse(theBytes []byte) (BVLCDeleteForeignDeviceTableEntry, error) {
-	return BVLCDeleteForeignDeviceTableEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return BVLCDeleteForeignDeviceTableEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BVLCDeleteForeignDeviceTableEntry, error) {
+func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCDeleteForeignDeviceTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCDeleteForeignDeviceTableEntry"); pullErr != nil {
@@ -162,12 +160,16 @@ func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(readBuffer utils.ReadBuffe
 		ip = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(uint16(4)); curItem++ {
+		_numItems := uint16(uint16(4))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
 			_item, _err := readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'ip' field of BVLCDeleteForeignDeviceTableEntry")
 			}
-			ip[curItem] = _item
+			ip[_curItem] = _item
 		}
 	}
 	if closeErr := readBuffer.CloseContext("ip", utils.WithRenderAsList(true)); closeErr != nil {
@@ -196,14 +198,14 @@ func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BVLCDeleteForeignDeviceTableEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCDeleteForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -215,7 +217,8 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ip")
 		}
-		for _, _element := range m.GetIp() {
+		for _curItem, _element := range m.GetIp() {
+			_ = _curItem
 			_elementErr := writeBuffer.WriteUint8("", 8, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'ip' field")
@@ -237,7 +240,7 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BVLCDeleteForeignDeviceTableEntry) isBVLCDeleteForeignDeviceTableEntry() bool {
@@ -249,7 +252,7 @@ func (m *_BVLCDeleteForeignDeviceTableEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

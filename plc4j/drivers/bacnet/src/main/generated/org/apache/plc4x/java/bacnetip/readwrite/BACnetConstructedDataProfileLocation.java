@@ -78,6 +78,7 @@ public class BACnetConstructedDataProfileLocation extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProfileLocation");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataProfileLocation extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataProfileLocation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (profileLocation)
     lengthInBits += profileLocation.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataProfileLocation extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProfileLocationBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataProfileLocation extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString profileLocation =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataProfileLocation extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataProfileLocation");
     // Create the instance
-    return new BACnetConstructedDataProfileLocationBuilder(
+    return new BACnetConstructedDataProfileLocationBuilderImpl(
         profileLocation, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProfileLocationBuilder
+  public static class BACnetConstructedDataProfileLocationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString profileLocation;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProfileLocationBuilder(
+    public BACnetConstructedDataProfileLocationBuilderImpl(
         BACnetApplicationTagCharacterString profileLocation,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.profileLocation = profileLocation;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

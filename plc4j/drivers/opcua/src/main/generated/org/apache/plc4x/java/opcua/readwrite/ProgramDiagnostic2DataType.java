@@ -164,6 +164,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ProgramDiagnostic2DataType");
 
@@ -242,6 +243,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ProgramDiagnostic2DataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (createSessionId)
     lengthInBits += createSessionId.getLengthInBits();
@@ -268,7 +270,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     if (lastMethodInputArguments != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : lastMethodInputArguments) {
-        boolean last = ++i >= lastMethodInputArguments.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodInputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -280,7 +282,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     if (lastMethodOutputArguments != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : lastMethodOutputArguments) {
-        boolean last = ++i >= lastMethodOutputArguments.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodOutputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -292,7 +294,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     if (lastMethodInputValues != null) {
       int i = 0;
       for (Variant element : lastMethodInputValues) {
-        boolean last = ++i >= lastMethodInputValues.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodInputValues.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -304,7 +306,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     if (lastMethodOutputValues != null) {
       int i = 0;
       for (Variant element : lastMethodOutputValues) {
-        boolean last = ++i >= lastMethodOutputValues.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodOutputValues.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -318,12 +320,13 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static ProgramDiagnostic2DataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ProgramDiagnostic2DataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId createSessionId =
         readSimpleField(
@@ -399,7 +402,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("ProgramDiagnostic2DataType");
     // Create the instance
-    return new ProgramDiagnostic2DataTypeBuilder(
+    return new ProgramDiagnostic2DataTypeBuilderImpl(
         createSessionId,
         createClientName,
         invocationCreationTime,
@@ -418,7 +421,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
         lastMethodReturnStatus);
   }
 
-  public static class ProgramDiagnostic2DataTypeBuilder
+  public static class ProgramDiagnostic2DataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId createSessionId;
     private final PascalString createClientName;
@@ -437,7 +440,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
     private final long lastMethodCallTime;
     private final StatusCode lastMethodReturnStatus;
 
-    public ProgramDiagnostic2DataTypeBuilder(
+    public ProgramDiagnostic2DataTypeBuilderImpl(
         NodeId createSessionId,
         PascalString createClientName,
         long invocationCreationTime,
@@ -454,7 +457,6 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
         List<Variant> lastMethodOutputValues,
         long lastMethodCallTime,
         StatusCode lastMethodReturnStatus) {
-
       this.createSessionId = createSessionId;
       this.createClientName = createClientName;
       this.invocationCreationTime = invocationCreationTime;

@@ -63,6 +63,7 @@ public class BACnetUnconfirmedServiceRequestUnknown extends BACnetUnconfirmedSer
   protected void serializeBACnetUnconfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestUnknown");
 
@@ -81,6 +82,7 @@ public class BACnetUnconfirmedServiceRequestUnknown extends BACnetUnconfirmedSer
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestUnknown _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (unknownBytes != null) {
@@ -90,12 +92,14 @@ public class BACnetUnconfirmedServiceRequestUnknown extends BACnetUnconfirmedSer
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestUnknownBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestUnknown");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] unknownBytes =
         readBuffer.readByteArray(
@@ -105,17 +109,17 @@ public class BACnetUnconfirmedServiceRequestUnknown extends BACnetUnconfirmedSer
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestUnknown");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestUnknownBuilder(unknownBytes, serviceRequestLength);
+    return new BACnetUnconfirmedServiceRequestUnknownBuilderImpl(
+        unknownBytes, serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestUnknownBuilder
+  public static class BACnetUnconfirmedServiceRequestUnknownBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final byte[] unknownBytes;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestUnknownBuilder(
+    public BACnetUnconfirmedServiceRequestUnknownBuilderImpl(
         byte[] unknownBytes, Integer serviceRequestLength) {
-
       this.unknownBytes = unknownBytes;
       this.serviceRequestLength = serviceRequestLength;
     }

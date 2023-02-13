@@ -94,6 +94,7 @@ public class MediaTransportControlDataRewind extends MediaTransportControlData i
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataRewind");
 
@@ -144,6 +145,7 @@ public class MediaTransportControlDataRewind extends MediaTransportControlData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataRewind _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (operation)
     lengthInBits += 8;
@@ -167,12 +169,13 @@ public class MediaTransportControlDataRewind extends MediaTransportControlData i
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataRewindBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataRewind");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte operation = readSimpleField("operation", readByte(readBuffer, 8));
     boolean isCeaseRewind = readVirtualField("isCeaseRewind", boolean.class, (operation) == (0x00));
@@ -192,15 +195,14 @@ public class MediaTransportControlDataRewind extends MediaTransportControlData i
 
     readBuffer.closeContext("MediaTransportControlDataRewind");
     // Create the instance
-    return new MediaTransportControlDataRewindBuilder(operation);
+    return new MediaTransportControlDataRewindBuilderImpl(operation);
   }
 
-  public static class MediaTransportControlDataRewindBuilder
+  public static class MediaTransportControlDataRewindBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte operation;
 
-    public MediaTransportControlDataRewindBuilder(byte operation) {
-
+    public MediaTransportControlDataRewindBuilderImpl(byte operation) {
       this.operation = operation;
     }
 

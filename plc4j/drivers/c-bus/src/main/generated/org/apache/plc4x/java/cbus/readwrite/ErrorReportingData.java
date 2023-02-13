@@ -60,6 +60,7 @@ public abstract class ErrorReportingData implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingData");
 
@@ -92,6 +93,7 @@ public abstract class ErrorReportingData implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ErrorReportingData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (commandTypeContainer)
     lengthInBits += 8;
@@ -114,6 +116,7 @@ public abstract class ErrorReportingData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!(org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper
         .knowsErrorReportingCommandTypeContainer(readBuffer))) {
@@ -134,7 +137,7 @@ public abstract class ErrorReportingData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ErrorReportingDataBuilder builder = null;
     if (true) {
-      builder = ErrorReportingDataGeneric.staticParseBuilder(readBuffer);
+      builder = ErrorReportingDataGeneric.staticParseErrorReportingDataBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -151,7 +154,7 @@ public abstract class ErrorReportingData implements Message {
     return _errorReportingData;
   }
 
-  public static interface ErrorReportingDataBuilder {
+  public interface ErrorReportingDataBuilder {
     ErrorReportingData build(ErrorReportingCommandTypeContainer commandTypeContainer);
   }
 

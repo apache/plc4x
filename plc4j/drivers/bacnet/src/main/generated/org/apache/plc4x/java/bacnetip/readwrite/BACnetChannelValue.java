@@ -64,6 +64,7 @@ public abstract class BACnetChannelValue implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValue");
 
@@ -90,6 +91,7 @@ public abstract class BACnetChannelValue implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetChannelValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -111,6 +113,7 @@ public abstract class BACnetChannelValue implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -135,46 +138,46 @@ public abstract class BACnetChannelValue implements Message {
     BACnetChannelValueBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x0)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueNull.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueNull.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x4)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueReal.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueReal.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x9)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueEnumerated.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueEnumerated.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x2)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueUnsigned.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueUnsigned.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x1)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueBoolean.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueBoolean.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x3)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueInteger.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueInteger.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x5)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueDouble.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueDouble.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xB)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueTime.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueTime.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x7)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueCharacterString.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueCharacterString.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x6)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueOctetString.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueOctetString.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x8)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueBitString.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueBitString.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xA)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueDate.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueDate.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xC)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetChannelValueObjectidentifier.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueObjectidentifier.staticParseBACnetChannelValueBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) true)) {
-      builder = BACnetChannelValueLightingCommand.staticParseBuilder(readBuffer);
+      builder = BACnetChannelValueLightingCommand.staticParseBACnetChannelValueBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -194,7 +197,7 @@ public abstract class BACnetChannelValue implements Message {
     return _bACnetChannelValue;
   }
 
-  public static interface BACnetChannelValueBuilder {
+  public interface BACnetChannelValueBuilder {
     BACnetChannelValue build(BACnetTagHeader peekedTagHeader);
   }
 

@@ -136,6 +136,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FieldMetaData");
 
@@ -195,6 +196,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FieldMetaData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
@@ -235,7 +237,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     if (properties != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : properties) {
-        boolean last = ++i >= properties.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= properties.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -243,12 +245,13 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static FieldMetaDataBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FieldMetaData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(
@@ -302,7 +305,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("FieldMetaData");
     // Create the instance
-    return new FieldMetaDataBuilder(
+    return new FieldMetaDataBuilderImpl(
         name,
         description,
         fieldFlags,
@@ -317,7 +320,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
         properties);
   }
 
-  public static class FieldMetaDataBuilder
+  public static class FieldMetaDataBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
     private final LocalizedText description;
@@ -332,7 +335,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     private final int noOfProperties;
     private final List<ExtensionObjectDefinition> properties;
 
-    public FieldMetaDataBuilder(
+    public FieldMetaDataBuilderImpl(
         PascalString name,
         LocalizedText description,
         DataSetFieldFlags fieldFlags,
@@ -345,7 +348,6 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
         GuidValue dataSetFieldId,
         int noOfProperties,
         List<ExtensionObjectDefinition> properties) {
-
       this.name = name;
       this.description = description;
       this.fieldFlags = fieldFlags;

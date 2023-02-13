@@ -55,6 +55,7 @@ public class MeteringDataGasConsumption extends MeteringData implements Message 
   @Override
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataGasConsumption");
 
@@ -73,6 +74,7 @@ public class MeteringDataGasConsumption extends MeteringData implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MeteringDataGasConsumption _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (mJ)
     lengthInBits += 32;
@@ -80,26 +82,26 @@ public class MeteringDataGasConsumption extends MeteringData implements Message 
     return lengthInBits;
   }
 
-  public static MeteringDataGasConsumptionBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataGasConsumption");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long mJ = readSimpleField("mJ", readUnsignedLong(readBuffer, 32));
 
     readBuffer.closeContext("MeteringDataGasConsumption");
     // Create the instance
-    return new MeteringDataGasConsumptionBuilder(mJ);
+    return new MeteringDataGasConsumptionBuilderImpl(mJ);
   }
 
-  public static class MeteringDataGasConsumptionBuilder
+  public static class MeteringDataGasConsumptionBuilderImpl
       implements MeteringData.MeteringDataBuilder {
     private final long mJ;
 
-    public MeteringDataGasConsumptionBuilder(long mJ) {
-
+    public MeteringDataGasConsumptionBuilderImpl(long mJ) {
       this.mJ = mJ;
     }
 

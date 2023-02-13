@@ -136,6 +136,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CreateSessionResponse");
 
@@ -195,6 +196,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CreateSessionResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -221,7 +223,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     if (serverEndpoints != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : serverEndpoints) {
-        boolean last = ++i >= serverEndpoints.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverEndpoints.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -233,7 +235,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     if (serverSoftwareCertificates != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : serverSoftwareCertificates) {
-        boolean last = ++i >= serverSoftwareCertificates.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= serverSoftwareCertificates.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -247,12 +249,13 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static CreateSessionResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CreateSessionResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -319,7 +322,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("CreateSessionResponse");
     // Create the instance
-    return new CreateSessionResponseBuilder(
+    return new CreateSessionResponseBuilderImpl(
         responseHeader,
         sessionId,
         authenticationToken,
@@ -334,7 +337,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
         maxRequestMessageSize);
   }
 
-  public static class CreateSessionResponseBuilder
+  public static class CreateSessionResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final NodeId sessionId;
@@ -349,7 +352,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     private final ExtensionObjectDefinition serverSignature;
     private final long maxRequestMessageSize;
 
-    public CreateSessionResponseBuilder(
+    public CreateSessionResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         NodeId sessionId,
         NodeId authenticationToken,
@@ -362,7 +365,6 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
         List<ExtensionObjectDefinition> serverSoftwareCertificates,
         ExtensionObjectDefinition serverSignature,
         long maxRequestMessageSize) {
-
       this.responseHeader = responseHeader;
       this.sessionId = sessionId;
       this.authenticationToken = authenticationToken;

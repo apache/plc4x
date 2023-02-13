@@ -75,6 +75,7 @@ public class BACnetConstructedDataLifeSafetyZoneFaultValues extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLifeSafetyZoneFaultValues");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataLifeSafetyZoneFaultValues extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLifeSafetyZoneFaultValues _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (faultValues != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataLifeSafetyZoneFaultValues extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLifeSafetyZoneFaultValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataLifeSafetyZoneFaultValues extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLifeSafetyStateTagged> faultValues =
         readTerminatedArrayField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataLifeSafetyZoneFaultValues extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataLifeSafetyZoneFaultValues");
     // Create the instance
-    return new BACnetConstructedDataLifeSafetyZoneFaultValuesBuilder(
+    return new BACnetConstructedDataLifeSafetyZoneFaultValuesBuilderImpl(
         faultValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLifeSafetyZoneFaultValuesBuilder
+  public static class BACnetConstructedDataLifeSafetyZoneFaultValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLifeSafetyStateTagged> faultValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLifeSafetyZoneFaultValuesBuilder(
+    public BACnetConstructedDataLifeSafetyZoneFaultValuesBuilderImpl(
         List<BACnetLifeSafetyStateTagged> faultValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultValues = faultValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

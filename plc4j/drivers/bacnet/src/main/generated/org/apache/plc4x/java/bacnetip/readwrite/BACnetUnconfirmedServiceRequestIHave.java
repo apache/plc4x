@@ -79,6 +79,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
   protected void serializeBACnetUnconfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestIHave");
 
@@ -105,6 +106,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestIHave _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (deviceIdentifier)
     lengthInBits += deviceIdentifier.getLengthInBits();
@@ -118,12 +120,14 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestIHaveBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestIHave");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier deviceIdentifier =
         readSimpleField(
@@ -154,23 +158,22 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestIHave");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestIHaveBuilder(
+    return new BACnetUnconfirmedServiceRequestIHaveBuilderImpl(
         deviceIdentifier, objectIdentifier, objectName, serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestIHaveBuilder
+  public static class BACnetUnconfirmedServiceRequestIHaveBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetApplicationTagObjectIdentifier deviceIdentifier;
     private final BACnetApplicationTagObjectIdentifier objectIdentifier;
     private final BACnetApplicationTagCharacterString objectName;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestIHaveBuilder(
+    public BACnetUnconfirmedServiceRequestIHaveBuilderImpl(
         BACnetApplicationTagObjectIdentifier deviceIdentifier,
         BACnetApplicationTagObjectIdentifier objectIdentifier,
         BACnetApplicationTagCharacterString objectName,
         Integer serviceRequestLength) {
-
       this.deviceIdentifier = deviceIdentifier;
       this.objectIdentifier = objectIdentifier;
       this.objectName = objectName;

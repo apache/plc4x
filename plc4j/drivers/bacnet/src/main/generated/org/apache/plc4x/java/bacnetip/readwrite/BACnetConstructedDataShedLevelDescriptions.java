@@ -89,6 +89,7 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataShedLevelDescriptions");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataShedLevelDescriptions _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,7 +138,7 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataShedLevelDescriptionsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -147,6 +149,7 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -174,23 +177,22 @@ public class BACnetConstructedDataShedLevelDescriptions extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataShedLevelDescriptions");
     // Create the instance
-    return new BACnetConstructedDataShedLevelDescriptionsBuilder(
+    return new BACnetConstructedDataShedLevelDescriptionsBuilderImpl(
         numberOfDataElements, shedLevelDescriptions, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataShedLevelDescriptionsBuilder
+  public static class BACnetConstructedDataShedLevelDescriptionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagCharacterString> shedLevelDescriptions;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataShedLevelDescriptionsBuilder(
+    public BACnetConstructedDataShedLevelDescriptionsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagCharacterString> shedLevelDescriptions,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.shedLevelDescriptions = shedLevelDescriptions;
       this.tagNumber = tagNumber;

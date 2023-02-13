@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -124,34 +125,30 @@ func (m *_ConnectionRequest) GetTypeName() string {
 	return "ConnectionRequest"
 }
 
-func (m *_ConnectionRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ConnectionRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ConnectionRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (hpaiDiscoveryEndpoint)
-	lengthInBits += m.HpaiDiscoveryEndpoint.GetLengthInBits()
+	lengthInBits += m.HpaiDiscoveryEndpoint.GetLengthInBits(ctx)
 
 	// Simple field (hpaiDataEndpoint)
-	lengthInBits += m.HpaiDataEndpoint.GetLengthInBits()
+	lengthInBits += m.HpaiDataEndpoint.GetLengthInBits(ctx)
 
 	// Simple field (connectionRequestInformation)
-	lengthInBits += m.ConnectionRequestInformation.GetLengthInBits()
+	lengthInBits += m.ConnectionRequestInformation.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_ConnectionRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ConnectionRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ConnectionRequestParse(theBytes []byte) (ConnectionRequest, error) {
-	return ConnectionRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return ConnectionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func ConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRequest, error) {
+func ConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionRequest"); pullErr != nil {
@@ -164,7 +161,7 @@ func ConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRe
 	if pullErr := readBuffer.PullContext("hpaiDiscoveryEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiDiscoveryEndpoint")
 	}
-	_hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParseWithBuffer(readBuffer)
+	_hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParseWithBuffer(ctx, readBuffer)
 	if _hpaiDiscoveryEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDiscoveryEndpointErr, "Error parsing 'hpaiDiscoveryEndpoint' field of ConnectionRequest")
 	}
@@ -177,7 +174,7 @@ func ConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRe
 	if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiDataEndpoint")
 	}
-	_hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParseWithBuffer(readBuffer)
+	_hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParseWithBuffer(ctx, readBuffer)
 	if _hpaiDataEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiDataEndpointErr, "Error parsing 'hpaiDataEndpoint' field of ConnectionRequest")
 	}
@@ -190,7 +187,7 @@ func ConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRe
 	if pullErr := readBuffer.PullContext("connectionRequestInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for connectionRequestInformation")
 	}
-	_connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParseWithBuffer(readBuffer)
+	_connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParseWithBuffer(ctx, readBuffer)
 	if _connectionRequestInformationErr != nil {
 		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field of ConnectionRequest")
 	}
@@ -215,14 +212,14 @@ func ConnectionRequestParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionRe
 }
 
 func (m *_ConnectionRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ConnectionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -234,7 +231,7 @@ func (m *_ConnectionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("hpaiDiscoveryEndpoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hpaiDiscoveryEndpoint")
 		}
-		_hpaiDiscoveryEndpointErr := writeBuffer.WriteSerializable(m.GetHpaiDiscoveryEndpoint())
+		_hpaiDiscoveryEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiDiscoveryEndpoint())
 		if popErr := writeBuffer.PopContext("hpaiDiscoveryEndpoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hpaiDiscoveryEndpoint")
 		}
@@ -246,7 +243,7 @@ func (m *_ConnectionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("hpaiDataEndpoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hpaiDataEndpoint")
 		}
-		_hpaiDataEndpointErr := writeBuffer.WriteSerializable(m.GetHpaiDataEndpoint())
+		_hpaiDataEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiDataEndpoint())
 		if popErr := writeBuffer.PopContext("hpaiDataEndpoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hpaiDataEndpoint")
 		}
@@ -258,7 +255,7 @@ func (m *_ConnectionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("connectionRequestInformation"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for connectionRequestInformation")
 		}
-		_connectionRequestInformationErr := writeBuffer.WriteSerializable(m.GetConnectionRequestInformation())
+		_connectionRequestInformationErr := writeBuffer.WriteSerializable(ctx, m.GetConnectionRequestInformation())
 		if popErr := writeBuffer.PopContext("connectionRequestInformation"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for connectionRequestInformation")
 		}
@@ -271,7 +268,7 @@ func (m *_ConnectionRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ConnectionRequest) isConnectionRequest() bool {
@@ -283,7 +280,7 @@ func (m *_ConnectionRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

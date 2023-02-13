@@ -68,6 +68,7 @@ public class NLMEstablishConnectionToNetwork extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMEstablishConnectionToNetwork");
 
@@ -90,6 +91,7 @@ public class NLMEstablishConnectionToNetwork extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMEstablishConnectionToNetwork _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (destinationNetworkAddress)
     lengthInBits += 16;
@@ -100,12 +102,13 @@ public class NLMEstablishConnectionToNetwork extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMEstablishConnectionToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMEstablishConnectionToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int destinationNetworkAddress =
         readSimpleField("destinationNetworkAddress", readUnsignedInt(readBuffer, 16));
@@ -114,18 +117,17 @@ public class NLMEstablishConnectionToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMEstablishConnectionToNetwork");
     // Create the instance
-    return new NLMEstablishConnectionToNetworkBuilder(
+    return new NLMEstablishConnectionToNetworkBuilderImpl(
         destinationNetworkAddress, terminationTime, apduLength);
   }
 
-  public static class NLMEstablishConnectionToNetworkBuilder implements NLM.NLMBuilder {
+  public static class NLMEstablishConnectionToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final int destinationNetworkAddress;
     private final short terminationTime;
     private final Integer apduLength;
 
-    public NLMEstablishConnectionToNetworkBuilder(
+    public NLMEstablishConnectionToNetworkBuilderImpl(
         int destinationNetworkAddress, short terminationTime, Integer apduLength) {
-
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.terminationTime = terminationTime;
       this.apduLength = apduLength;

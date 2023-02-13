@@ -77,6 +77,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse");
 
@@ -98,6 +99,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (result)
     lengthInBits += 8;
@@ -108,13 +110,13 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction)
-          throws ParseException {
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
+      ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short result = readSimpleField("result", readUnsignedShort(readBuffer, 8));
 
@@ -122,18 +124,17 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder(
+    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilderImpl(
         result, reserved01);
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final short result;
     private final short reserved01;
 
-    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder(
+    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilderImpl(
         short result, short reserved01) {
-
       this.result = result;
       this.reserved01 = reserved01;
     }

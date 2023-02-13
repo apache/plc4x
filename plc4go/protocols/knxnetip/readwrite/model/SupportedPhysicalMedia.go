@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -406,19 +407,19 @@ func CastSupportedPhysicalMedia(structType interface{}) SupportedPhysicalMedia {
 	return castFunc(structType)
 }
 
-func (m SupportedPhysicalMedia) GetLengthInBits() uint16 {
+func (m SupportedPhysicalMedia) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m SupportedPhysicalMedia) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m SupportedPhysicalMedia) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func SupportedPhysicalMediaParse(theBytes []byte) (SupportedPhysicalMedia, error) {
-	return SupportedPhysicalMediaParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func SupportedPhysicalMediaParse(ctx context.Context, theBytes []byte) (SupportedPhysicalMedia, error) {
+	return SupportedPhysicalMediaParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func SupportedPhysicalMediaParseWithBuffer(readBuffer utils.ReadBuffer) (SupportedPhysicalMedia, error) {
+func SupportedPhysicalMediaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SupportedPhysicalMedia, error) {
 	val, err := readBuffer.ReadUint8("SupportedPhysicalMedia", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SupportedPhysicalMedia")
@@ -433,13 +434,13 @@ func SupportedPhysicalMediaParseWithBuffer(readBuffer utils.ReadBuffer) (Support
 
 func (e SupportedPhysicalMedia) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e SupportedPhysicalMedia) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e SupportedPhysicalMedia) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SupportedPhysicalMedia", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

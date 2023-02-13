@@ -89,6 +89,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
   protected void serializeBACnetNotificationParametersChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValue");
 
@@ -118,6 +119,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersChangeOfDiscreteValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (innerOpeningTag)
     lengthInBits += innerOpeningTag.getLengthInBits();
@@ -134,16 +136,17 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfDiscreteValueBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
@@ -179,11 +182,11 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValue");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfDiscreteValueBuilder(
+    return new BACnetNotificationParametersChangeOfDiscreteValueBuilderImpl(
         innerOpeningTag, newValue, statusFlags, innerClosingTag, tagNumber, objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersChangeOfDiscreteValueBuilder
+  public static class BACnetNotificationParametersChangeOfDiscreteValueBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetNotificationParametersChangeOfDiscreteValueNewValue newValue;
@@ -192,14 +195,13 @@ public class BACnetNotificationParametersChangeOfDiscreteValue extends BACnetNot
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersChangeOfDiscreteValueBuilder(
+    public BACnetNotificationParametersChangeOfDiscreteValueBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetNotificationParametersChangeOfDiscreteValueNewValue newValue,
         BACnetStatusFlagsTagged statusFlags,
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.newValue = newValue;
       this.statusFlags = statusFlags;

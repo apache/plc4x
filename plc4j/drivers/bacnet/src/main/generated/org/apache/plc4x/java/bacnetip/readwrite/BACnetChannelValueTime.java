@@ -56,6 +56,7 @@ public class BACnetChannelValueTime extends BACnetChannelValue implements Messag
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueTime");
 
@@ -74,6 +75,7 @@ public class BACnetChannelValueTime extends BACnetChannelValue implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timeValue)
     lengthInBits += timeValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetChannelValueTime extends BACnetChannelValue implements Messag
     return lengthInBits;
   }
 
-  public static BACnetChannelValueTimeBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagTime timeValue =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetChannelValueTime extends BACnetChannelValue implements Messag
 
     readBuffer.closeContext("BACnetChannelValueTime");
     // Create the instance
-    return new BACnetChannelValueTimeBuilder(timeValue);
+    return new BACnetChannelValueTimeBuilderImpl(timeValue);
   }
 
-  public static class BACnetChannelValueTimeBuilder
+  public static class BACnetChannelValueTimeBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagTime timeValue;
 
-    public BACnetChannelValueTimeBuilder(BACnetApplicationTagTime timeValue) {
-
+    public BACnetChannelValueTimeBuilderImpl(BACnetApplicationTagTime timeValue) {
       this.timeValue = timeValue;
     }
 

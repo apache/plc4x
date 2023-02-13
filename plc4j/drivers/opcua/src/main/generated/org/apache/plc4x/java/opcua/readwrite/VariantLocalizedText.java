@@ -69,12 +69,12 @@ public class VariantLocalizedText extends Variant implements Message {
   @Override
   protected void serializeVariantChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("VariantLocalizedText");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeComplexTypeArrayField("value", value, writeBuffer);
@@ -91,6 +91,7 @@ public class VariantLocalizedText extends Variant implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     VariantLocalizedText _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (arrayLength)
     if (arrayLength != null) {
@@ -101,7 +102,7 @@ public class VariantLocalizedText extends Variant implements Message {
     if (value != null) {
       int i = 0;
       for (LocalizedText element : value) {
-        boolean last = ++i >= value.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= value.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -109,12 +110,13 @@ public class VariantLocalizedText extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantLocalizedTextBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantLocalizedText");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer arrayLength =
         readOptionalField("arrayLength", readSignedInt(readBuffer, 32), arrayLengthSpecified);
@@ -127,15 +129,14 @@ public class VariantLocalizedText extends Variant implements Message {
 
     readBuffer.closeContext("VariantLocalizedText");
     // Create the instance
-    return new VariantLocalizedTextBuilder(arrayLength, value);
+    return new VariantLocalizedTextBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantLocalizedTextBuilder implements Variant.VariantBuilder {
+  public static class VariantLocalizedTextBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<LocalizedText> value;
 
-    public VariantLocalizedTextBuilder(Integer arrayLength, List<LocalizedText> value) {
-
+    public VariantLocalizedTextBuilderImpl(Integer arrayLength, List<LocalizedText> value) {
       this.arrayLength = arrayLength;
       this.value = value;
     }

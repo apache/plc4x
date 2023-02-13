@@ -57,6 +57,7 @@ public class KnxNetRemoteLogging extends ServiceId implements Message {
   @Override
   protected void serializeServiceIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("KnxNetRemoteLogging");
 
@@ -75,6 +76,7 @@ public class KnxNetRemoteLogging extends ServiceId implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     KnxNetRemoteLogging _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (version)
     lengthInBits += 8;
@@ -82,25 +84,25 @@ public class KnxNetRemoteLogging extends ServiceId implements Message {
     return lengthInBits;
   }
 
-  public static KnxNetRemoteLoggingBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ServiceIdBuilder staticParseServiceIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("KnxNetRemoteLogging");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short version = readSimpleField("version", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("KnxNetRemoteLogging");
     // Create the instance
-    return new KnxNetRemoteLoggingBuilder(version);
+    return new KnxNetRemoteLoggingBuilderImpl(version);
   }
 
-  public static class KnxNetRemoteLoggingBuilder implements ServiceId.ServiceIdBuilder {
+  public static class KnxNetRemoteLoggingBuilderImpl implements ServiceId.ServiceIdBuilder {
     private final short version;
 
-    public KnxNetRemoteLoggingBuilder(short version) {
-
+    public KnxNetRemoteLoggingBuilderImpl(short version) {
       this.version = version;
     }
 

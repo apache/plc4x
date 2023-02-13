@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -90,10 +91,14 @@ func (m *_MediaTransportControlDataPauseResume) GetOperation() byte {
 ///////////////////////
 
 func (m *_MediaTransportControlDataPauseResume) GetIsPause() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) == (0x00)))
 }
 
 func (m *_MediaTransportControlDataPauseResume) GetIsResume() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) > (0xFE)))
 }
 
@@ -127,12 +132,8 @@ func (m *_MediaTransportControlDataPauseResume) GetTypeName() string {
 	return "MediaTransportControlDataPauseResume"
 }
 
-func (m *_MediaTransportControlDataPauseResume) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataPauseResume) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataPauseResume) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (operation)
 	lengthInBits += 8
@@ -144,15 +145,15 @@ func (m *_MediaTransportControlDataPauseResume) GetLengthInBitsConditional(lastI
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataPauseResume) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataPauseResume) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataPauseResumeParse(theBytes []byte) (MediaTransportControlDataPauseResume, error) {
-	return MediaTransportControlDataPauseResumeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataPauseResumeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataPauseResumeParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataPauseResume, error) {
+func MediaTransportControlDataPauseResumeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataPauseResume, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataPauseResume"); pullErr != nil {
@@ -192,14 +193,14 @@ func MediaTransportControlDataPauseResumeParseWithBuffer(readBuffer utils.ReadBu
 }
 
 func (m *_MediaTransportControlDataPauseResume) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataPauseResume) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataPauseResume) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -214,11 +215,11 @@ func (m *_MediaTransportControlDataPauseResume) SerializeWithWriteBuffer(writeBu
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}
 		// Virtual field
-		if _isPauseErr := writeBuffer.WriteVirtual("isPause", m.GetIsPause()); _isPauseErr != nil {
+		if _isPauseErr := writeBuffer.WriteVirtual(ctx, "isPause", m.GetIsPause()); _isPauseErr != nil {
 			return errors.Wrap(_isPauseErr, "Error serializing 'isPause' field")
 		}
 		// Virtual field
-		if _isResumeErr := writeBuffer.WriteVirtual("isResume", m.GetIsResume()); _isResumeErr != nil {
+		if _isResumeErr := writeBuffer.WriteVirtual(ctx, "isResume", m.GetIsResume()); _isResumeErr != nil {
 			return errors.Wrap(_isResumeErr, "Error serializing 'isResume' field")
 		}
 
@@ -227,7 +228,7 @@ func (m *_MediaTransportControlDataPauseResume) SerializeWithWriteBuffer(writeBu
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataPauseResume) isMediaTransportControlDataPauseResume() bool {
@@ -239,7 +240,7 @@ func (m *_MediaTransportControlDataPauseResume) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

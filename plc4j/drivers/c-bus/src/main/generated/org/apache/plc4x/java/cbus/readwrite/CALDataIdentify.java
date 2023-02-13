@@ -62,6 +62,7 @@ public class CALDataIdentify extends CALData implements Message {
   @Override
   protected void serializeCALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALDataIdentify");
 
@@ -85,6 +86,7 @@ public class CALDataIdentify extends CALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CALDataIdentify _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (attribute)
     lengthInBits += 8;
@@ -92,12 +94,13 @@ public class CALDataIdentify extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataIdentifyBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer, RequestContext requestContext) throws ParseException {
     readBuffer.pullContext("CALDataIdentify");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Attribute attribute =
         readEnumField(
@@ -107,15 +110,14 @@ public class CALDataIdentify extends CALData implements Message {
 
     readBuffer.closeContext("CALDataIdentify");
     // Create the instance
-    return new CALDataIdentifyBuilder(attribute, requestContext);
+    return new CALDataIdentifyBuilderImpl(attribute, requestContext);
   }
 
-  public static class CALDataIdentifyBuilder implements CALData.CALDataBuilder {
+  public static class CALDataIdentifyBuilderImpl implements CALData.CALDataBuilder {
     private final Attribute attribute;
     private final RequestContext requestContext;
 
-    public CALDataIdentifyBuilder(Attribute attribute, RequestContext requestContext) {
-
+    public CALDataIdentifyBuilderImpl(Attribute attribute, RequestContext requestContext) {
       this.attribute = attribute;
       this.requestContext = requestContext;
     }

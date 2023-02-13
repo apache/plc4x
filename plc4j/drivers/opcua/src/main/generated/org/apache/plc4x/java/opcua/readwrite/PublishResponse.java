@@ -53,8 +53,6 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
   protected final List<StatusCode> results;
   protected final int noOfDiagnosticInfos;
   protected final List<DiagnosticInfo> diagnosticInfos;
-  // Reserved Fields
-  private Short reservedField0;
 
   public PublishResponse(
       ExtensionObjectDefinition responseHeader,
@@ -124,6 +122,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PublishResponse");
 
@@ -144,10 +143,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
         "availableSequenceNumbers", availableSequenceNumbers, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (moreNotifications)
     writeSimpleField("moreNotifications", moreNotifications, writeBoolean(writeBuffer));
@@ -180,6 +176,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PublishResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -211,7 +208,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     if (results != null) {
       int i = 0;
       for (StatusCode element : results) {
-        boolean last = ++i >= results.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= results.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -223,7 +220,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -231,12 +228,13 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static PublishResponseBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PublishResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -287,7 +285,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("PublishResponse");
     // Create the instance
-    return new PublishResponseBuilder(
+    return new PublishResponseBuilderImpl(
         responseHeader,
         subscriptionId,
         noOfAvailableSequenceNumbers,
@@ -297,11 +295,10 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
         noOfResults,
         results,
         noOfDiagnosticInfos,
-        diagnosticInfos,
-        reservedField0);
+        diagnosticInfos);
   }
 
-  public static class PublishResponseBuilder
+  public static class PublishResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final long subscriptionId;
@@ -313,9 +310,8 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
     private final List<StatusCode> results;
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
-    private final Short reservedField0;
 
-    public PublishResponseBuilder(
+    public PublishResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         long subscriptionId,
         int noOfAvailableSequenceNumbers,
@@ -325,8 +321,7 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
         int noOfResults,
         List<StatusCode> results,
         int noOfDiagnosticInfos,
-        List<DiagnosticInfo> diagnosticInfos,
-        Short reservedField0) {
+        List<DiagnosticInfo> diagnosticInfos) {
       this.responseHeader = responseHeader;
       this.subscriptionId = subscriptionId;
       this.noOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers;
@@ -337,7 +332,6 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
       this.results = results;
       this.noOfDiagnosticInfos = noOfDiagnosticInfos;
       this.diagnosticInfos = diagnosticInfos;
-      this.reservedField0 = reservedField0;
     }
 
     public PublishResponse build() {
@@ -353,7 +347,6 @@ public class PublishResponse extends ExtensionObjectDefinition implements Messag
               results,
               noOfDiagnosticInfos,
               diagnosticInfos);
-      publishResponse.reservedField0 = reservedField0;
       return publishResponse;
     }
   }

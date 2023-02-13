@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,15 +103,11 @@ func (m *_AlarmMessagePushType) GetTypeName() string {
 	return "AlarmMessagePushType"
 }
 
-func (m *_AlarmMessagePushType) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AlarmMessagePushType) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_AlarmMessagePushType) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (TimeStamp)
-	lengthInBits += m.TimeStamp.GetLengthInBits()
+	lengthInBits += m.TimeStamp.GetLengthInBits(ctx)
 
 	// Simple field (functionId)
 	lengthInBits += 8
@@ -119,24 +117,26 @@ func (m *_AlarmMessagePushType) GetLengthInBitsConditional(lastItem bool) uint16
 
 	// Array field
 	if len(m.MessageObjects) > 0 {
-		for i, element := range m.MessageObjects {
-			last := i == len(m.MessageObjects)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.MessageObjects {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.MessageObjects), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
 	return lengthInBits
 }
 
-func (m *_AlarmMessagePushType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AlarmMessagePushType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AlarmMessagePushTypeParse(theBytes []byte) (AlarmMessagePushType, error) {
-	return AlarmMessagePushTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AlarmMessagePushTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AlarmMessagePushTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMessagePushType, error) {
+func AlarmMessagePushTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessagePushType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AlarmMessagePushType"); pullErr != nil {
@@ -149,7 +149,7 @@ func AlarmMessagePushTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMess
 	if pullErr := readBuffer.PullContext("TimeStamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TimeStamp")
 	}
-	_TimeStamp, _TimeStampErr := DateAndTimeParseWithBuffer(readBuffer)
+	_TimeStamp, _TimeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
 	if _TimeStampErr != nil {
 		return nil, errors.Wrap(_TimeStampErr, "Error parsing 'TimeStamp' field of AlarmMessagePushType")
 	}
@@ -183,12 +183,16 @@ func AlarmMessagePushTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMess
 		messageObjects = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(numberOfObjects); curItem++ {
-			_item, _err := AlarmMessageObjectPushTypeParseWithBuffer(readBuffer)
+		_numItems := uint16(numberOfObjects)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := AlarmMessageObjectPushTypeParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of AlarmMessagePushType")
 			}
-			messageObjects[curItem] = _item.(AlarmMessageObjectPushType)
+			messageObjects[_curItem] = _item.(AlarmMessageObjectPushType)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
@@ -209,14 +213,14 @@ func AlarmMessagePushTypeParseWithBuffer(readBuffer utils.ReadBuffer) (AlarmMess
 }
 
 func (m *_AlarmMessagePushType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AlarmMessagePushType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AlarmMessagePushType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("AlarmMessagePushType"); pushErr != nil {
@@ -227,7 +231,7 @@ func (m *_AlarmMessagePushType) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("TimeStamp"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for TimeStamp")
 	}
-	_TimeStampErr := writeBuffer.WriteSerializable(m.GetTimeStamp())
+	_TimeStampErr := writeBuffer.WriteSerializable(ctx, m.GetTimeStamp())
 	if popErr := writeBuffer.PopContext("TimeStamp"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for TimeStamp")
 	}
@@ -253,8 +257,11 @@ func (m *_AlarmMessagePushType) SerializeWithWriteBuffer(writeBuffer utils.Write
 	if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for messageObjects")
 	}
-	for _, _element := range m.GetMessageObjects() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
+	for _curItem, _element := range m.GetMessageObjects() {
+		_ = _curItem
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetMessageObjects()), _curItem)
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
 		}
@@ -278,7 +285,7 @@ func (m *_AlarmMessagePushType) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

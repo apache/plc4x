@@ -70,6 +70,7 @@ public class LevelInformationNormal extends LevelInformation implements Message 
   protected void serializeLevelInformationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LevelInformationNormal");
 
@@ -113,6 +114,7 @@ public class LevelInformationNormal extends LevelInformation implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LevelInformationNormal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pair1)
     lengthInBits += 8;
@@ -127,12 +129,13 @@ public class LevelInformationNormal extends LevelInformation implements Message 
     return lengthInBits;
   }
 
-  public static LevelInformationNormalBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LevelInformationBuilder staticParseLevelInformationBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LevelInformationNormal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     LevelInformationNibblePair pair1 =
         readEnumField(
@@ -158,17 +161,16 @@ public class LevelInformationNormal extends LevelInformation implements Message 
 
     readBuffer.closeContext("LevelInformationNormal");
     // Create the instance
-    return new LevelInformationNormalBuilder(pair1, pair2);
+    return new LevelInformationNormalBuilderImpl(pair1, pair2);
   }
 
-  public static class LevelInformationNormalBuilder
+  public static class LevelInformationNormalBuilderImpl
       implements LevelInformation.LevelInformationBuilder {
     private final LevelInformationNibblePair pair1;
     private final LevelInformationNibblePair pair2;
 
-    public LevelInformationNormalBuilder(
+    public LevelInformationNormalBuilderImpl(
         LevelInformationNibblePair pair1, LevelInformationNibblePair pair2) {
-
       this.pair1 = pair1;
       this.pair2 = pair2;
     }

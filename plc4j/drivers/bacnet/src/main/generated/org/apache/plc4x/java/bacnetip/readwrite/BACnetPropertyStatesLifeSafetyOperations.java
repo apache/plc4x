@@ -57,6 +57,7 @@ public class BACnetPropertyStatesLifeSafetyOperations extends BACnetPropertyStat
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLifeSafetyOperations");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesLifeSafetyOperations extends BACnetPropertyStat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLifeSafetyOperations _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lifeSafetyOperations)
     lengthInBits += lifeSafetyOperations.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetPropertyStatesLifeSafetyOperations extends BACnetPropertyStat
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLifeSafetyOperationsBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLifeSafetyOperations");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyOperationTagged lifeSafetyOperations =
         readSimpleField(
@@ -103,16 +106,15 @@ public class BACnetPropertyStatesLifeSafetyOperations extends BACnetPropertyStat
 
     readBuffer.closeContext("BACnetPropertyStatesLifeSafetyOperations");
     // Create the instance
-    return new BACnetPropertyStatesLifeSafetyOperationsBuilder(lifeSafetyOperations);
+    return new BACnetPropertyStatesLifeSafetyOperationsBuilderImpl(lifeSafetyOperations);
   }
 
-  public static class BACnetPropertyStatesLifeSafetyOperationsBuilder
+  public static class BACnetPropertyStatesLifeSafetyOperationsBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLifeSafetyOperationTagged lifeSafetyOperations;
 
-    public BACnetPropertyStatesLifeSafetyOperationsBuilder(
+    public BACnetPropertyStatesLifeSafetyOperationsBuilderImpl(
         BACnetLifeSafetyOperationTagged lifeSafetyOperations) {
-
       this.lifeSafetyOperations = lifeSafetyOperations;
     }
 

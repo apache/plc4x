@@ -57,6 +57,7 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataTelephonyStatusAndControl");
 
@@ -75,6 +76,7 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataTelephonyStatusAndControl _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (telephonyData)
     lengthInBits += telephonyData.getLengthInBits();
@@ -82,12 +84,13 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
     return lengthInBits;
   }
 
-  public static SALDataTelephonyStatusAndControlBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataTelephonyStatusAndControl");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TelephonyData telephonyData =
         readSimpleField(
@@ -97,14 +100,14 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
 
     readBuffer.closeContext("SALDataTelephonyStatusAndControl");
     // Create the instance
-    return new SALDataTelephonyStatusAndControlBuilder(telephonyData);
+    return new SALDataTelephonyStatusAndControlBuilderImpl(telephonyData);
   }
 
-  public static class SALDataTelephonyStatusAndControlBuilder implements SALData.SALDataBuilder {
+  public static class SALDataTelephonyStatusAndControlBuilderImpl
+      implements SALData.SALDataBuilder {
     private final TelephonyData telephonyData;
 
-    public SALDataTelephonyStatusAndControlBuilder(TelephonyData telephonyData) {
-
+    public SALDataTelephonyStatusAndControlBuilderImpl(TelephonyData telephonyData) {
       this.telephonyData = telephonyData;
     }
 

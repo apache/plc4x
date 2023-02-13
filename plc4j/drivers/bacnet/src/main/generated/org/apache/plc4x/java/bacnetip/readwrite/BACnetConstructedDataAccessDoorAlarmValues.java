@@ -75,6 +75,7 @@ public class BACnetConstructedDataAccessDoorAlarmValues extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccessDoorAlarmValues");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataAccessDoorAlarmValues extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccessDoorAlarmValues _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (alarmValues != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataAccessDoorAlarmValues extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccessDoorAlarmValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataAccessDoorAlarmValues extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetDoorAlarmStateTagged> alarmValues =
         readTerminatedArrayField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataAccessDoorAlarmValues extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataAccessDoorAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataAccessDoorAlarmValuesBuilder(
+    return new BACnetConstructedDataAccessDoorAlarmValuesBuilderImpl(
         alarmValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccessDoorAlarmValuesBuilder
+  public static class BACnetConstructedDataAccessDoorAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDoorAlarmStateTagged> alarmValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccessDoorAlarmValuesBuilder(
+    public BACnetConstructedDataAccessDoorAlarmValuesBuilderImpl(
         List<BACnetDoorAlarmStateTagged> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

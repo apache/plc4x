@@ -78,6 +78,7 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPulseRate");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPulseRate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pulseRate)
     lengthInBits += pulseRate.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPulseRateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger pulseRate =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataPulseRate");
     // Create the instance
-    return new BACnetConstructedDataPulseRateBuilder(pulseRate, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPulseRateBuilderImpl(pulseRate, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPulseRateBuilder
+  public static class BACnetConstructedDataPulseRateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger pulseRate;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPulseRateBuilder(
+    public BACnetConstructedDataPulseRateBuilderImpl(
         BACnetApplicationTagUnsignedInteger pulseRate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.pulseRate = pulseRate;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

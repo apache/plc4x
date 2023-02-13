@@ -61,6 +61,7 @@ public class BVLCDistributeBroadcastToNetwork extends BVLC implements Message {
   @Override
   protected void serializeBVLCChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BVLCDistributeBroadcastToNetwork");
 
@@ -83,6 +84,7 @@ public class BVLCDistributeBroadcastToNetwork extends BVLC implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BVLCDistributeBroadcastToNetwork _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (npdu)
     lengthInBits += npdu.getLengthInBits();
@@ -90,12 +92,13 @@ public class BVLCDistributeBroadcastToNetwork extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCDistributeBroadcastToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer bvlcPayloadLength) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer, Integer bvlcPayloadLength)
+      throws ParseException {
     readBuffer.pullContext("BVLCDistributeBroadcastToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NPDU npdu =
         readSimpleField(
@@ -106,15 +109,14 @@ public class BVLCDistributeBroadcastToNetwork extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCDistributeBroadcastToNetwork");
     // Create the instance
-    return new BVLCDistributeBroadcastToNetworkBuilder(npdu, bvlcPayloadLength);
+    return new BVLCDistributeBroadcastToNetworkBuilderImpl(npdu, bvlcPayloadLength);
   }
 
-  public static class BVLCDistributeBroadcastToNetworkBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCDistributeBroadcastToNetworkBuilderImpl implements BVLC.BVLCBuilder {
     private final NPDU npdu;
     private final Integer bvlcPayloadLength;
 
-    public BVLCDistributeBroadcastToNetworkBuilder(NPDU npdu, Integer bvlcPayloadLength) {
-
+    public BVLCDistributeBroadcastToNetworkBuilderImpl(NPDU npdu, Integer bvlcPayloadLength) {
       this.npdu = npdu;
       this.bvlcPayloadLength = bvlcPayloadLength;
     }

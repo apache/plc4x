@@ -106,6 +106,7 @@ public class CALReplyLong extends CALReply implements Message {
   @Override
   protected void serializeCALReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALReplyLong");
 
@@ -161,6 +162,7 @@ public class CALReplyLong extends CALReply implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CALReplyLong _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -193,13 +195,14 @@ public class CALReplyLong extends CALReply implements Message {
     return lengthInBits;
   }
 
-  public static CALReplyLongBuilder staticParseBuilder(
+  public static CALReplyBuilder staticParseCALReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALReplyLong");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x86);
 
@@ -239,7 +242,7 @@ public class CALReplyLong extends CALReply implements Message {
 
     readBuffer.closeContext("CALReplyLong");
     // Create the instance
-    return new CALReplyLongBuilder(
+    return new CALReplyLongBuilderImpl(
         terminatingByte,
         unitAddress,
         bridgeAddress,
@@ -251,7 +254,7 @@ public class CALReplyLong extends CALReply implements Message {
         reservedField0);
   }
 
-  public static class CALReplyLongBuilder implements CALReply.CALReplyBuilder {
+  public static class CALReplyLongBuilderImpl implements CALReply.CALReplyBuilder {
     private final long terminatingByte;
     private final UnitAddress unitAddress;
     private final BridgeAddress bridgeAddress;
@@ -262,7 +265,7 @@ public class CALReplyLong extends CALReply implements Message {
     private final RequestContext requestContext;
     private final Byte reservedField0;
 
-    public CALReplyLongBuilder(
+    public CALReplyLongBuilderImpl(
         long terminatingByte,
         UnitAddress unitAddress,
         BridgeAddress bridgeAddress,

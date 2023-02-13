@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataMetering) GetTypeName() string {
 	return "SALDataMetering"
 }
 
-func (m *_SALDataMetering) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataMetering) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataMetering) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (meteringData)
-	lengthInBits += m.MeteringData.GetLengthInBits()
+	lengthInBits += m.MeteringData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataMetering) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataMetering) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataMeteringParse(theBytes []byte, applicationId ApplicationId) (SALDataMetering, error) {
-	return SALDataMeteringParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataMeteringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataMeteringParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMetering, error) {
+func SALDataMeteringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMetering, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataMetering"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataMeteringParseWithBuffer(readBuffer utils.ReadBuffer, applicationId A
 	if pullErr := readBuffer.PullContext("meteringData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for meteringData")
 	}
-	_meteringData, _meteringDataErr := MeteringDataParseWithBuffer(readBuffer)
+	_meteringData, _meteringDataErr := MeteringDataParseWithBuffer(ctx, readBuffer)
 	if _meteringDataErr != nil {
 		return nil, errors.Wrap(_meteringDataErr, "Error parsing 'meteringData' field of SALDataMetering")
 	}
@@ -166,14 +163,14 @@ func SALDataMeteringParseWithBuffer(readBuffer utils.ReadBuffer, applicationId A
 }
 
 func (m *_SALDataMetering) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataMetering) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataMetering) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataMetering) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		if pushErr := writeBuffer.PushContext("meteringData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for meteringData")
 		}
-		_meteringDataErr := writeBuffer.WriteSerializable(m.GetMeteringData())
+		_meteringDataErr := writeBuffer.WriteSerializable(ctx, m.GetMeteringData())
 		if popErr := writeBuffer.PopContext("meteringData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for meteringData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataMetering) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataMetering) isSALDataMetering() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataMetering) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

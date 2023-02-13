@@ -79,6 +79,7 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAuthenticationStatus");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAuthenticationStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (authenticationStatus)
     lengthInBits += authenticationStatus.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAuthenticationStatusBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAuthenticationStatusTagged authenticationStatus =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataAuthenticationStatus");
     // Create the instance
-    return new BACnetConstructedDataAuthenticationStatusBuilder(
+    return new BACnetConstructedDataAuthenticationStatusBuilderImpl(
         authenticationStatus, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAuthenticationStatusBuilder
+  public static class BACnetConstructedDataAuthenticationStatusBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAuthenticationStatusTagged authenticationStatus;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAuthenticationStatusBuilder(
+    public BACnetConstructedDataAuthenticationStatusBuilderImpl(
         BACnetAuthenticationStatusTagged authenticationStatus,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.authenticationStatus = authenticationStatus;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataEnergyMeter) GetEnergyMeter() BACnetApplicationTa
 ///////////////////////
 
 func (m *_BACnetConstructedDataEnergyMeter) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetEnergyMeter())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataEnergyMeter) GetTypeName() string {
 	return "BACnetConstructedDataEnergyMeter"
 }
 
-func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (energyMeter)
-	lengthInBits += m.EnergyMeter.GetLengthInBits()
+	lengthInBits += m.EnergyMeter.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataEnergyMeter) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataEnergyMeterParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnergyMeter, error) {
-	return BACnetConstructedDataEnergyMeterParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataEnergyMeterParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataEnergyMeterParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnergyMeter, error) {
+func BACnetConstructedDataEnergyMeterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnergyMeter, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEnergyMeter"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataEnergyMeterParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("energyMeter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for energyMeter")
 	}
-	_energyMeter, _energyMeterErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_energyMeter, _energyMeterErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _energyMeterErr != nil {
 		return nil, errors.Wrap(_energyMeterErr, "Error parsing 'energyMeter' field of BACnetConstructedDataEnergyMeter")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataEnergyMeterParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataEnergyMeter) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataEnergyMeter) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataEnergyMeter) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataEnergyMeter) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("energyMeter"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for energyMeter")
 		}
-		_energyMeterErr := writeBuffer.WriteSerializable(m.GetEnergyMeter())
+		_energyMeterErr := writeBuffer.WriteSerializable(ctx, m.GetEnergyMeter())
 		if popErr := writeBuffer.PopContext("energyMeter"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for energyMeter")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataEnergyMeter) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_energyMeterErr, "Error serializing 'energyMeter' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataEnergyMeter) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataEnergyMeter) isBACnetConstructedDataEnergyMeter() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataEnergyMeter) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

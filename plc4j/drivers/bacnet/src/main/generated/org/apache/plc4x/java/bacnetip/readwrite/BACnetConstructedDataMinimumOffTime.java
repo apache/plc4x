@@ -78,6 +78,7 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMinimumOffTime");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMinimumOffTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (minimumOffTime)
     lengthInBits += minimumOffTime.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMinimumOffTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger minimumOffTime =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataMinimumOffTime");
     // Create the instance
-    return new BACnetConstructedDataMinimumOffTimeBuilder(
+    return new BACnetConstructedDataMinimumOffTimeBuilderImpl(
         minimumOffTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMinimumOffTimeBuilder
+  public static class BACnetConstructedDataMinimumOffTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger minimumOffTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMinimumOffTimeBuilder(
+    public BACnetConstructedDataMinimumOffTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger minimumOffTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minimumOffTime = minimumOffTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

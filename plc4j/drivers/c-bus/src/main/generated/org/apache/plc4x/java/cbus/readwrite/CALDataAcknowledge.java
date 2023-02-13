@@ -69,6 +69,7 @@ public class CALDataAcknowledge extends CALData implements Message {
   @Override
   protected void serializeCALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALDataAcknowledge");
 
@@ -95,6 +96,7 @@ public class CALDataAcknowledge extends CALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CALDataAcknowledge _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (paramNo)
     lengthInBits += 8;
@@ -105,12 +107,13 @@ public class CALDataAcknowledge extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataAcknowledgeBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer, RequestContext requestContext) throws ParseException {
     readBuffer.pullContext("CALDataAcknowledge");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Parameter paramNo =
         readEnumField(
@@ -122,16 +125,16 @@ public class CALDataAcknowledge extends CALData implements Message {
 
     readBuffer.closeContext("CALDataAcknowledge");
     // Create the instance
-    return new CALDataAcknowledgeBuilder(paramNo, code, requestContext);
+    return new CALDataAcknowledgeBuilderImpl(paramNo, code, requestContext);
   }
 
-  public static class CALDataAcknowledgeBuilder implements CALData.CALDataBuilder {
+  public static class CALDataAcknowledgeBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final short code;
     private final RequestContext requestContext;
 
-    public CALDataAcknowledgeBuilder(Parameter paramNo, short code, RequestContext requestContext) {
-
+    public CALDataAcknowledgeBuilderImpl(
+        Parameter paramNo, short code, RequestContext requestContext) {
       this.paramNo = paramNo;
       this.code = code;
       this.requestContext = requestContext;

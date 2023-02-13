@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -96,6 +97,8 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetClosingTa
 ///////////////////////
 
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetIsObjectType() bool {
+	ctx := context.Background()
+	_ = ctx
 	rawObjectType := m.RawObjectType
 	_ = rawObjectType
 	objectIdentifier := m.ObjectIdentifier
@@ -104,6 +107,8 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetIsObjectT
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetObjectType() BACnetObjectType {
+	ctx := context.Background()
+	_ = ctx
 	rawObjectType := m.RawObjectType
 	_ = rawObjectType
 	objectIdentifier := m.ObjectIdentifier
@@ -112,6 +117,8 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetObjectTyp
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetIsObjectIdentifier() bool {
+	ctx := context.Background()
+	_ = ctx
 	rawObjectType := m.RawObjectType
 	_ = rawObjectType
 	objectIdentifier := m.ObjectIdentifier
@@ -144,19 +151,15 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetTypeName(
 	return "BACnetConfirmedServiceRequestCreateObjectObjectSpecifier"
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// Optional Field (rawObjectType)
 	if m.RawObjectType != nil {
-		lengthInBits += m.RawObjectType.GetLengthInBits()
+		lengthInBits += m.RawObjectType.GetLengthInBits(ctx)
 	}
 
 	// A virtual field doesn't have any in- or output.
@@ -165,26 +168,26 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetLengthInB
 
 	// Optional Field (objectIdentifier)
 	if m.ObjectIdentifier != nil {
-		lengthInBits += m.ObjectIdentifier.GetLengthInBits()
+		lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
 	}
 
 	// A virtual field doesn't have any in- or output.
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParse(theBytes []byte, tagNumber uint8) (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, error) {
-	return BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, error) {
+func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestCreateObjectObjectSpecifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestCreateObjectObjectSpecifier"); pullErr != nil {
@@ -197,7 +200,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(rea
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier")
 	}
@@ -213,7 +216,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(rea
 		if pullErr := readBuffer.PullContext("rawObjectType"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for rawObjectType")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(0), BACnetDataType_ENUMERATED)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(0), BACnetDataType_ENUMERATED)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -245,7 +248,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(rea
 		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(1), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -274,7 +277,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(rea
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier")
 	}
@@ -298,14 +301,14 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(rea
 }
 
 func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetConfirmedServiceRequestCreateObjectObjectSpecifier"); pushErr != nil {
@@ -316,7 +319,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -331,7 +334,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 			return errors.Wrap(pushErr, "Error pushing for rawObjectType")
 		}
 		rawObjectType = m.GetRawObjectType()
-		_rawObjectTypeErr := writeBuffer.WriteSerializable(rawObjectType)
+		_rawObjectTypeErr := writeBuffer.WriteSerializable(ctx, rawObjectType)
 		if popErr := writeBuffer.PopContext("rawObjectType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for rawObjectType")
 		}
@@ -340,11 +343,11 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 		}
 	}
 	// Virtual field
-	if _isObjectTypeErr := writeBuffer.WriteVirtual("isObjectType", m.GetIsObjectType()); _isObjectTypeErr != nil {
+	if _isObjectTypeErr := writeBuffer.WriteVirtual(ctx, "isObjectType", m.GetIsObjectType()); _isObjectTypeErr != nil {
 		return errors.Wrap(_isObjectTypeErr, "Error serializing 'isObjectType' field")
 	}
 	// Virtual field
-	if _objectTypeErr := writeBuffer.WriteVirtual("objectType", m.GetObjectType()); _objectTypeErr != nil {
+	if _objectTypeErr := writeBuffer.WriteVirtual(ctx, "objectType", m.GetObjectType()); _objectTypeErr != nil {
 		return errors.Wrap(_objectTypeErr, "Error serializing 'objectType' field")
 	}
 
@@ -355,7 +358,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
 		objectIdentifier = m.GetObjectIdentifier()
-		_objectIdentifierErr := writeBuffer.WriteSerializable(objectIdentifier)
+		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, objectIdentifier)
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
@@ -364,7 +367,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 		}
 	}
 	// Virtual field
-	if _isObjectIdentifierErr := writeBuffer.WriteVirtual("isObjectIdentifier", m.GetIsObjectIdentifier()); _isObjectIdentifierErr != nil {
+	if _isObjectIdentifierErr := writeBuffer.WriteVirtual(ctx, "isObjectIdentifier", m.GetIsObjectIdentifier()); _isObjectIdentifierErr != nil {
 		return errors.Wrap(_isObjectIdentifierErr, "Error serializing 'isObjectIdentifier' field")
 	}
 
@@ -372,7 +375,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) SerializeWit
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -405,7 +408,7 @@ func (m *_BACnetConfirmedServiceRequestCreateObjectObjectSpecifier) String() str
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

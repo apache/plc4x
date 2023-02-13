@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -18853,19 +18854,19 @@ func CastComObjectTableAddresses(structType interface{}) ComObjectTableAddresses
 	return castFunc(structType)
 }
 
-func (m ComObjectTableAddresses) GetLengthInBits() uint16 {
+func (m ComObjectTableAddresses) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m ComObjectTableAddresses) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ComObjectTableAddresses) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ComObjectTableAddressesParse(theBytes []byte) (ComObjectTableAddresses, error) {
-	return ComObjectTableAddressesParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ComObjectTableAddressesParse(ctx context.Context, theBytes []byte) (ComObjectTableAddresses, error) {
+	return ComObjectTableAddressesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ComObjectTableAddressesParseWithBuffer(readBuffer utils.ReadBuffer) (ComObjectTableAddresses, error) {
+func ComObjectTableAddressesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ComObjectTableAddresses, error) {
 	val, err := readBuffer.ReadUint16("ComObjectTableAddresses", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ComObjectTableAddresses")
@@ -18880,13 +18881,13 @@ func ComObjectTableAddressesParseWithBuffer(readBuffer utils.ReadBuffer) (ComObj
 
 func (e ComObjectTableAddresses) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ComObjectTableAddresses) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ComObjectTableAddresses) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("ComObjectTableAddresses", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

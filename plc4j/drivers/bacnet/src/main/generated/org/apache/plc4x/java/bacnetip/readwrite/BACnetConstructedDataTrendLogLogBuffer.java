@@ -75,6 +75,7 @@ public class BACnetConstructedDataTrendLogLogBuffer extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrendLogLogBuffer");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataTrendLogLogBuffer extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTrendLogLogBuffer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (floorText != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataTrendLogLogBuffer extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTrendLogLogBufferBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataTrendLogLogBuffer extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLogRecord> floorText =
         readTerminatedArrayField(
@@ -128,21 +131,20 @@ public class BACnetConstructedDataTrendLogLogBuffer extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataTrendLogLogBuffer");
     // Create the instance
-    return new BACnetConstructedDataTrendLogLogBufferBuilder(
+    return new BACnetConstructedDataTrendLogLogBufferBuilderImpl(
         floorText, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTrendLogLogBufferBuilder
+  public static class BACnetConstructedDataTrendLogLogBufferBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLogRecord> floorText;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTrendLogLogBufferBuilder(
+    public BACnetConstructedDataTrendLogLogBufferBuilderImpl(
         List<BACnetLogRecord> floorText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.floorText = floorText;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

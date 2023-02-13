@@ -103,6 +103,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
   protected void serializeBACnetNotificationParametersChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfLifeSafety");
 
@@ -139,6 +140,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersChangeOfLifeSafety _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (innerOpeningTag)
     lengthInBits += innerOpeningTag.getLengthInBits();
@@ -161,16 +163,17 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfLifeSafetyBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfLifeSafety");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
@@ -224,7 +227,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfLifeSafety");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfLifeSafetyBuilder(
+    return new BACnetNotificationParametersChangeOfLifeSafetyBuilderImpl(
         innerOpeningTag,
         newState,
         newMode,
@@ -235,7 +238,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersChangeOfLifeSafetyBuilder
+  public static class BACnetNotificationParametersChangeOfLifeSafetyBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetLifeSafetyStateTagged newState;
@@ -246,7 +249,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersChangeOfLifeSafetyBuilder(
+    public BACnetNotificationParametersChangeOfLifeSafetyBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetLifeSafetyStateTagged newState,
         BACnetLifeSafetyModeTagged newMode,
@@ -255,7 +258,6 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.newState = newState;
       this.newMode = newMode;

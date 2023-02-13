@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -89,25 +90,21 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) GetTypeName() string {
 	return "ApduDataExtDomainAddressSelectiveRead"
 }
 
-func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApduDataExtDomainAddressSelectiveRead) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApduDataExtDomainAddressSelectiveReadParse(theBytes []byte, length uint8) (ApduDataExtDomainAddressSelectiveRead, error) {
-	return ApduDataExtDomainAddressSelectiveReadParseWithBuffer(utils.NewReadBufferByteBased(theBytes), length)
+	return ApduDataExtDomainAddressSelectiveReadParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), length)
 }
 
-func ApduDataExtDomainAddressSelectiveReadParseWithBuffer(readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressSelectiveRead, error) {
+func ApduDataExtDomainAddressSelectiveReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressSelectiveRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressSelectiveRead"); pullErr != nil {
@@ -131,14 +128,14 @@ func ApduDataExtDomainAddressSelectiveReadParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_ApduDataExtDomainAddressSelectiveRead) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ApduDataExtDomainAddressSelectiveRead) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ApduDataExtDomainAddressSelectiveRead) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -151,7 +148,7 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ApduDataExtDomainAddressSelectiveRead) isApduDataExtDomainAddressSelectiveRead() bool {
@@ -163,7 +160,7 @@ func (m *_ApduDataExtDomainAddressSelectiveRead) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -66,6 +66,7 @@ public abstract class TelephonyData implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyData");
 
@@ -101,6 +102,7 @@ public abstract class TelephonyData implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     TelephonyData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (commandTypeContainer)
     lengthInBits += 8;
@@ -126,6 +128,7 @@ public abstract class TelephonyData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!(org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper
         .knowsTelephonyCommandTypeContainer(readBuffer))) {
@@ -148,40 +151,47 @@ public abstract class TelephonyData implements Message {
     TelephonyDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x01)) {
-      builder = TelephonyDataLineOnHook.staticParseBuilder(readBuffer);
+      builder = TelephonyDataLineOnHook.staticParseTelephonyDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x02)) {
-      builder = TelephonyDataLineOffHook.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder =
+          TelephonyDataLineOffHook.staticParseTelephonyDataBuilder(
+              readBuffer, commandTypeContainer);
     } else if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x03)) {
-      builder = TelephonyDataDialOutFailure.staticParseBuilder(readBuffer);
+      builder = TelephonyDataDialOutFailure.staticParseTelephonyDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x04)) {
-      builder = TelephonyDataDialInFailure.staticParseBuilder(readBuffer);
+      builder = TelephonyDataDialInFailure.staticParseTelephonyDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x05)) {
-      builder = TelephonyDataRinging.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder =
+          TelephonyDataRinging.staticParseTelephonyDataBuilder(readBuffer, commandTypeContainer);
     } else if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x06)) {
-      builder = TelephonyDataRecallLastNumber.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder =
+          TelephonyDataRecallLastNumber.staticParseTelephonyDataBuilder(
+              readBuffer, commandTypeContainer);
     } else if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x07)) {
-      builder = TelephonyDataInternetConnectionRequestMade.staticParseBuilder(readBuffer);
+      builder =
+          TelephonyDataInternetConnectionRequestMade.staticParseTelephonyDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x80)) {
-      builder = TelephonyDataIsolateSecondaryOutlet.staticParseBuilder(readBuffer);
+      builder = TelephonyDataIsolateSecondaryOutlet.staticParseTelephonyDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x81)) {
-      builder = TelephonyDataRecallLastNumberRequest.staticParseBuilder(readBuffer);
+      builder = TelephonyDataRecallLastNumberRequest.staticParseTelephonyDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x82)) {
-      builder = TelephonyDataRejectIncomingCall.staticParseBuilder(readBuffer);
+      builder = TelephonyDataRejectIncomingCall.staticParseTelephonyDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x83)) {
-      builder = TelephonyDataDivert.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder =
+          TelephonyDataDivert.staticParseTelephonyDataBuilder(readBuffer, commandTypeContainer);
     } else if (EvaluationHelper.equals(commandType, TelephonyCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x84)) {
-      builder = TelephonyDataClearDiversion.staticParseBuilder(readBuffer);
+      builder = TelephonyDataClearDiversion.staticParseTelephonyDataBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -201,7 +211,7 @@ public abstract class TelephonyData implements Message {
     return _telephonyData;
   }
 
-  public static interface TelephonyDataBuilder {
+  public interface TelephonyDataBuilder {
     TelephonyData build(TelephonyCommandTypeContainer commandTypeContainer, byte argument);
   }
 

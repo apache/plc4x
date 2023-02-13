@@ -57,6 +57,7 @@ public class PnDcp_SupportedDeviceOption implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_SupportedDeviceOption");
 
@@ -68,10 +69,15 @@ public class PnDcp_SupportedDeviceOption implements Message {
         new DataWriterEnumDefault<>(
             PnDcp_BlockOptions::getValue,
             PnDcp_BlockOptions::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (suboption)
-    writeSimpleField("suboption", suboption, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "suboption",
+        suboption,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_SupportedDeviceOption");
   }
@@ -85,6 +91,7 @@ public class PnDcp_SupportedDeviceOption implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnDcp_SupportedDeviceOption _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (option)
     lengthInBits += 8;
@@ -107,15 +114,21 @@ public class PnDcp_SupportedDeviceOption implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_BlockOptions option =
         readEnumField(
             "option",
             "PnDcp_BlockOptions",
             new DataReaderEnumDefault<>(
-                PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)));
+                PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short suboption = readSimpleField("suboption", readUnsignedShort(readBuffer, 8));
+    short suboption =
+        readSimpleField(
+            "suboption",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_SupportedDeviceOption");
     // Create the instance

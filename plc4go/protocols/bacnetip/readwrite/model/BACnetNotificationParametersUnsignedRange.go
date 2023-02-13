@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -139,40 +140,36 @@ func (m *_BACnetNotificationParametersUnsignedRange) GetTypeName() string {
 	return "BACnetNotificationParametersUnsignedRange"
 }
 
-func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (innerOpeningTag)
-	lengthInBits += m.InnerOpeningTag.GetLengthInBits()
+	lengthInBits += m.InnerOpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (sequenceNumber)
-	lengthInBits += m.SequenceNumber.GetLengthInBits()
+	lengthInBits += m.SequenceNumber.GetLengthInBits(ctx)
 
 	// Simple field (statusFlags)
-	lengthInBits += m.StatusFlags.GetLengthInBits()
+	lengthInBits += m.StatusFlags.GetLengthInBits(ctx)
 
 	// Simple field (exceededLimit)
-	lengthInBits += m.ExceededLimit.GetLengthInBits()
+	lengthInBits += m.ExceededLimit.GetLengthInBits(ctx)
 
 	// Simple field (innerClosingTag)
-	lengthInBits += m.InnerClosingTag.GetLengthInBits()
+	lengthInBits += m.InnerClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetNotificationParametersUnsignedRange) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetNotificationParametersUnsignedRangeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersUnsignedRange, error) {
-	return BACnetNotificationParametersUnsignedRangeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, peekedTagNumber)
+func BACnetNotificationParametersUnsignedRangeParse(theBytes []byte, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersUnsignedRange, error) {
+	return BACnetNotificationParametersUnsignedRangeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
-func BACnetNotificationParametersUnsignedRangeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, peekedTagNumber uint8) (BACnetNotificationParametersUnsignedRange, error) {
+func BACnetNotificationParametersUnsignedRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersUnsignedRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersUnsignedRange"); pullErr != nil {
@@ -185,7 +182,7 @@ func BACnetNotificationParametersUnsignedRangeParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
 	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
+	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
 	if _innerOpeningTagErr != nil {
 		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersUnsignedRange")
 	}
@@ -198,7 +195,7 @@ func BACnetNotificationParametersUnsignedRangeParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("sequenceNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for sequenceNumber")
 	}
-	_sequenceNumber, _sequenceNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_sequenceNumber, _sequenceNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of BACnetNotificationParametersUnsignedRange")
 	}
@@ -211,7 +208,7 @@ func BACnetNotificationParametersUnsignedRangeParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("statusFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for statusFlags")
 	}
-	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_statusFlags, _statusFlagsErr := BACnetStatusFlagsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusFlagsErr != nil {
 		return nil, errors.Wrap(_statusFlagsErr, "Error parsing 'statusFlags' field of BACnetNotificationParametersUnsignedRange")
 	}
@@ -224,7 +221,7 @@ func BACnetNotificationParametersUnsignedRangeParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("exceededLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for exceededLimit")
 	}
-	_exceededLimit, _exceededLimitErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_exceededLimit, _exceededLimitErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _exceededLimitErr != nil {
 		return nil, errors.Wrap(_exceededLimitErr, "Error parsing 'exceededLimit' field of BACnetNotificationParametersUnsignedRange")
 	}
@@ -237,7 +234,7 @@ func BACnetNotificationParametersUnsignedRangeParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
 	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(peekedTagNumber))
+	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
 	if _innerClosingTagErr != nil {
 		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersUnsignedRange")
 	}
@@ -267,14 +264,14 @@ func BACnetNotificationParametersUnsignedRangeParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_BACnetNotificationParametersUnsignedRange) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetNotificationParametersUnsignedRange) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetNotificationParametersUnsignedRange) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -286,7 +283,7 @@ func (m *_BACnetNotificationParametersUnsignedRange) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("innerOpeningTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerOpeningTag")
 		}
-		_innerOpeningTagErr := writeBuffer.WriteSerializable(m.GetInnerOpeningTag())
+		_innerOpeningTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerOpeningTag())
 		if popErr := writeBuffer.PopContext("innerOpeningTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerOpeningTag")
 		}
@@ -298,7 +295,7 @@ func (m *_BACnetNotificationParametersUnsignedRange) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("sequenceNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for sequenceNumber")
 		}
-		_sequenceNumberErr := writeBuffer.WriteSerializable(m.GetSequenceNumber())
+		_sequenceNumberErr := writeBuffer.WriteSerializable(ctx, m.GetSequenceNumber())
 		if popErr := writeBuffer.PopContext("sequenceNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for sequenceNumber")
 		}
@@ -310,7 +307,7 @@ func (m *_BACnetNotificationParametersUnsignedRange) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("statusFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for statusFlags")
 		}
-		_statusFlagsErr := writeBuffer.WriteSerializable(m.GetStatusFlags())
+		_statusFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetStatusFlags())
 		if popErr := writeBuffer.PopContext("statusFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for statusFlags")
 		}
@@ -322,7 +319,7 @@ func (m *_BACnetNotificationParametersUnsignedRange) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("exceededLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for exceededLimit")
 		}
-		_exceededLimitErr := writeBuffer.WriteSerializable(m.GetExceededLimit())
+		_exceededLimitErr := writeBuffer.WriteSerializable(ctx, m.GetExceededLimit())
 		if popErr := writeBuffer.PopContext("exceededLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for exceededLimit")
 		}
@@ -334,7 +331,7 @@ func (m *_BACnetNotificationParametersUnsignedRange) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("innerClosingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for innerClosingTag")
 		}
-		_innerClosingTagErr := writeBuffer.WriteSerializable(m.GetInnerClosingTag())
+		_innerClosingTagErr := writeBuffer.WriteSerializable(ctx, m.GetInnerClosingTag())
 		if popErr := writeBuffer.PopContext("innerClosingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for innerClosingTag")
 		}
@@ -347,7 +344,7 @@ func (m *_BACnetNotificationParametersUnsignedRange) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetNotificationParametersUnsignedRange) isBACnetNotificationParametersUnsignedRange() bool {
@@ -359,7 +356,7 @@ func (m *_BACnetNotificationParametersUnsignedRange) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

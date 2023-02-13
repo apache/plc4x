@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_BACnetContextTagTime) GetTypeName() string {
 	return "BACnetContextTagTime"
 }
 
-func (m *_BACnetContextTagTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetContextTagTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetContextTagTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.GetLengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetContextTagTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetContextTagTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetContextTagTimeParse(theBytes []byte, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagTime, error) {
-	return BACnetContextTagTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
+	return BACnetContextTagTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
 }
 
-func BACnetContextTagTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagTime, error) {
+func BACnetContextTagTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetContextTagTime"); pullErr != nil {
@@ -143,7 +140,7 @@ func BACnetContextTagTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberA
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadTimeParseWithBuffer(readBuffer)
+	_payload, _payloadErr := BACnetTagPayloadTimeParseWithBuffer(ctx, readBuffer)
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagTime")
 	}
@@ -168,14 +165,14 @@ func BACnetContextTagTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumberA
 }
 
 func (m *_BACnetContextTagTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetContextTagTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetContextTagTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -187,7 +184,7 @@ func (m *_BACnetContextTagTime) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for payload")
 		}
-		_payloadErr := writeBuffer.WriteSerializable(m.GetPayload())
+		_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
 		if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for payload")
 		}
@@ -200,7 +197,7 @@ func (m *_BACnetContextTagTime) SerializeWithWriteBuffer(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetContextTagTime) isBACnetContextTagTime() bool {
@@ -212,7 +209,7 @@ func (m *_BACnetContextTagTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

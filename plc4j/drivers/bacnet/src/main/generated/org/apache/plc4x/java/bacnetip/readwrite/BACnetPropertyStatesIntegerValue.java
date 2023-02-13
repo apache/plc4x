@@ -56,6 +56,7 @@ public class BACnetPropertyStatesIntegerValue extends BACnetPropertyStates imple
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesIntegerValue");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesIntegerValue extends BACnetPropertyStates imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesIntegerValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (integerValue)
     lengthInBits += integerValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesIntegerValue extends BACnetPropertyStates imple
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesIntegerValueBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesIntegerValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagSignedInteger integerValue =
         readSimpleField(
@@ -102,15 +105,14 @@ public class BACnetPropertyStatesIntegerValue extends BACnetPropertyStates imple
 
     readBuffer.closeContext("BACnetPropertyStatesIntegerValue");
     // Create the instance
-    return new BACnetPropertyStatesIntegerValueBuilder(integerValue);
+    return new BACnetPropertyStatesIntegerValueBuilderImpl(integerValue);
   }
 
-  public static class BACnetPropertyStatesIntegerValueBuilder
+  public static class BACnetPropertyStatesIntegerValueBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetContextTagSignedInteger integerValue;
 
-    public BACnetPropertyStatesIntegerValueBuilder(BACnetContextTagSignedInteger integerValue) {
-
+    public BACnetPropertyStatesIntegerValueBuilderImpl(BACnetContextTagSignedInteger integerValue) {
       this.integerValue = integerValue;
     }
 

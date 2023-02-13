@@ -94,6 +94,7 @@ public class Argument extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Argument");
 
@@ -128,6 +129,7 @@ public class Argument extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     Argument _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
@@ -152,12 +154,13 @@ public class Argument extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static ArgumentBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("Argument");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(
@@ -185,11 +188,11 @@ public class Argument extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("Argument");
     // Create the instance
-    return new ArgumentBuilder(
+    return new ArgumentBuilderImpl(
         name, dataType, valueRank, noOfArrayDimensions, arrayDimensions, description);
   }
 
-  public static class ArgumentBuilder
+  public static class ArgumentBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
     private final NodeId dataType;
@@ -198,14 +201,13 @@ public class Argument extends ExtensionObjectDefinition implements Message {
     private final List<Long> arrayDimensions;
     private final LocalizedText description;
 
-    public ArgumentBuilder(
+    public ArgumentBuilderImpl(
         PascalString name,
         NodeId dataType,
         int valueRank,
         int noOfArrayDimensions,
         List<Long> arrayDimensions,
         LocalizedText description) {
-
       this.name = name;
       this.dataType = dataType;
       this.valueRank = valueRank;

@@ -63,6 +63,7 @@ public class BACnetContextTagTime extends BACnetContextTag implements Message {
   protected void serializeBACnetContextTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagTime");
 
@@ -81,6 +82,7 @@ public class BACnetContextTagTime extends BACnetContextTag implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetContextTagTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -88,13 +90,14 @@ public class BACnetContextTagTime extends BACnetContextTag implements Message {
     return lengthInBits;
   }
 
-  public static BACnetContextTagTimeBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer, Short tagNumberArgument, BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadTime payload =
         readSimpleField(
@@ -104,16 +107,15 @@ public class BACnetContextTagTime extends BACnetContextTag implements Message {
 
     readBuffer.closeContext("BACnetContextTagTime");
     // Create the instance
-    return new BACnetContextTagTimeBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagTimeBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagTimeBuilder
+  public static class BACnetContextTagTimeBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadTime payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagTimeBuilder(BACnetTagPayloadTime payload, Short tagNumberArgument) {
-
+    public BACnetContextTagTimeBuilderImpl(BACnetTagPayloadTime payload, Short tagNumberArgument) {
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

@@ -57,6 +57,7 @@ public class BVLCRegisterForeignDevice extends BVLC implements Message {
   @Override
   protected void serializeBVLCChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BVLCRegisterForeignDevice");
 
@@ -79,6 +80,7 @@ public class BVLCRegisterForeignDevice extends BVLC implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BVLCRegisterForeignDevice _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ttl)
     lengthInBits += 16;
@@ -86,12 +88,12 @@ public class BVLCRegisterForeignDevice extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCRegisterForeignDeviceBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BVLCRegisterForeignDevice");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int ttl =
         readSimpleField(
@@ -99,14 +101,13 @@ public class BVLCRegisterForeignDevice extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCRegisterForeignDevice");
     // Create the instance
-    return new BVLCRegisterForeignDeviceBuilder(ttl);
+    return new BVLCRegisterForeignDeviceBuilderImpl(ttl);
   }
 
-  public static class BVLCRegisterForeignDeviceBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCRegisterForeignDeviceBuilderImpl implements BVLC.BVLCBuilder {
     private final int ttl;
 
-    public BVLCRegisterForeignDeviceBuilder(int ttl) {
-
+    public BVLCRegisterForeignDeviceBuilderImpl(int ttl) {
       this.ttl = ttl;
     }
 

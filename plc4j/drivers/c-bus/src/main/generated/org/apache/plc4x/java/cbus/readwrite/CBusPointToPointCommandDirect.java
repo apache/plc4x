@@ -65,6 +65,7 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
   protected void serializeCBusPointToPointCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToPointCommandDirect");
 
@@ -89,6 +90,7 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusPointToPointCommandDirect _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unitAddress)
     lengthInBits += unitAddress.getLengthInBits();
@@ -99,12 +101,13 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
     return lengthInBits;
   }
 
-  public static CBusPointToPointCommandDirectBuilder staticParseBuilder(
+  public static CBusPointToPointCommandBuilder staticParseCBusPointToPointCommandBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToPointCommandDirect");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     UnitAddress unitAddress =
         readSimpleField(
@@ -116,16 +119,16 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
 
     readBuffer.closeContext("CBusPointToPointCommandDirect");
     // Create the instance
-    return new CBusPointToPointCommandDirectBuilder(unitAddress, cBusOptions, reservedField0);
+    return new CBusPointToPointCommandDirectBuilderImpl(unitAddress, cBusOptions, reservedField0);
   }
 
-  public static class CBusPointToPointCommandDirectBuilder
+  public static class CBusPointToPointCommandDirectBuilderImpl
       implements CBusPointToPointCommand.CBusPointToPointCommandBuilder {
     private final UnitAddress unitAddress;
     private final CBusOptions cBusOptions;
     private final Short reservedField0;
 
-    public CBusPointToPointCommandDirectBuilder(
+    public CBusPointToPointCommandDirectBuilderImpl(
         UnitAddress unitAddress, CBusOptions cBusOptions, Short reservedField0) {
       this.unitAddress = unitAddress;
       this.cBusOptions = cBusOptions;

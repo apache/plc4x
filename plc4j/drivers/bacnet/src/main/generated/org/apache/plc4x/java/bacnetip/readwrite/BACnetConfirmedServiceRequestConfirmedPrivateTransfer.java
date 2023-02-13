@@ -79,6 +79,7 @@ public class BACnetConfirmedServiceRequestConfirmedPrivateTransfer
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedPrivateTransfer");
 
@@ -104,6 +105,7 @@ public class BACnetConfirmedServiceRequestConfirmedPrivateTransfer
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestConfirmedPrivateTransfer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (vendorId)
     lengthInBits += vendorId.getLengthInBits();
@@ -119,12 +121,14 @@ public class BACnetConfirmedServiceRequestConfirmedPrivateTransfer
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestConfirmedPrivateTransfer");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetVendorIdTagged vendorId =
         readSimpleField(
@@ -163,23 +167,22 @@ public class BACnetConfirmedServiceRequestConfirmedPrivateTransfer
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedPrivateTransfer");
     // Create the instance
-    return new BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder(
+    return new BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilderImpl(
         vendorId, serviceNumber, serviceParameters, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder
+  public static class BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetVendorIdTagged vendorId;
     private final BACnetContextTagUnsignedInteger serviceNumber;
     private final BACnetConstructedData serviceParameters;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilder(
+    public BACnetConfirmedServiceRequestConfirmedPrivateTransferBuilderImpl(
         BACnetVendorIdTagged vendorId,
         BACnetContextTagUnsignedInteger serviceNumber,
         BACnetConstructedData serviceParameters,
         Long serviceRequestLength) {
-
       this.vendorId = vendorId;
       this.serviceNumber = serviceNumber;
       this.serviceParameters = serviceParameters;

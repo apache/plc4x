@@ -70,6 +70,7 @@ public class NLMInitalizeRoutingTable extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMInitalizeRoutingTable");
 
@@ -91,6 +92,7 @@ public class NLMInitalizeRoutingTable extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMInitalizeRoutingTable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (numberOfPorts)
     lengthInBits += 8;
@@ -99,7 +101,7 @@ public class NLMInitalizeRoutingTable extends NLM implements Message {
     if (portMappings != null) {
       int i = 0;
       for (NLMInitalizeRoutingTablePortMapping element : portMappings) {
-        boolean last = ++i >= portMappings.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= portMappings.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -107,12 +109,13 @@ public class NLMInitalizeRoutingTable extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMInitalizeRoutingTableBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMInitalizeRoutingTable");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numberOfPorts = readSimpleField("numberOfPorts", readUnsignedShort(readBuffer, 8));
 
@@ -125,19 +128,18 @@ public class NLMInitalizeRoutingTable extends NLM implements Message {
 
     readBuffer.closeContext("NLMInitalizeRoutingTable");
     // Create the instance
-    return new NLMInitalizeRoutingTableBuilder(numberOfPorts, portMappings, apduLength);
+    return new NLMInitalizeRoutingTableBuilderImpl(numberOfPorts, portMappings, apduLength);
   }
 
-  public static class NLMInitalizeRoutingTableBuilder implements NLM.NLMBuilder {
+  public static class NLMInitalizeRoutingTableBuilderImpl implements NLM.NLMBuilder {
     private final short numberOfPorts;
     private final List<NLMInitalizeRoutingTablePortMapping> portMappings;
     private final Integer apduLength;
 
-    public NLMInitalizeRoutingTableBuilder(
+    public NLMInitalizeRoutingTableBuilderImpl(
         short numberOfPorts,
         List<NLMInitalizeRoutingTablePortMapping> portMappings,
         Integer apduLength) {
-
       this.numberOfPorts = numberOfPorts;
       this.portMappings = portMappings;
       this.apduLength = apduLength;

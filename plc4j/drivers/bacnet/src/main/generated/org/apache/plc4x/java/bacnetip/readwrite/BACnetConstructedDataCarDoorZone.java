@@ -78,6 +78,7 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCarDoorZone");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCarDoorZone _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (carDoorZone)
     lengthInBits += carDoorZone.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCarDoorZoneBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean carDoorZone =
         readSimpleField(
@@ -132,20 +135,20 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataCarDoorZone");
     // Create the instance
-    return new BACnetConstructedDataCarDoorZoneBuilder(carDoorZone, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCarDoorZoneBuilderImpl(
+        carDoorZone, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCarDoorZoneBuilder
+  public static class BACnetConstructedDataCarDoorZoneBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean carDoorZone;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCarDoorZoneBuilder(
+    public BACnetConstructedDataCarDoorZoneBuilderImpl(
         BACnetApplicationTagBoolean carDoorZone,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.carDoorZone = carDoorZone;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

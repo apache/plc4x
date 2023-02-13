@@ -79,6 +79,7 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLocalForwardingOnly");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLocalForwardingOnly _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (localForwardingOnly)
     lengthInBits += localForwardingOnly.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLocalForwardingOnlyBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean localForwardingOnly =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataLocalForwardingOnly");
     // Create the instance
-    return new BACnetConstructedDataLocalForwardingOnlyBuilder(
+    return new BACnetConstructedDataLocalForwardingOnlyBuilderImpl(
         localForwardingOnly, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLocalForwardingOnlyBuilder
+  public static class BACnetConstructedDataLocalForwardingOnlyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean localForwardingOnly;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLocalForwardingOnlyBuilder(
+    public BACnetConstructedDataLocalForwardingOnlyBuilderImpl(
         BACnetApplicationTagBoolean localForwardingOnly,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.localForwardingOnly = localForwardingOnly;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

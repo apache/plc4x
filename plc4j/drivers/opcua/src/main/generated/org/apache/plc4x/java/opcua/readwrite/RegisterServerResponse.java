@@ -58,6 +58,7 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisterServerResponse");
 
@@ -76,6 +77,7 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RegisterServerResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -83,12 +85,13 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static RegisterServerResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterServerResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -99,15 +102,14 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("RegisterServerResponse");
     // Create the instance
-    return new RegisterServerResponseBuilder(responseHeader);
+    return new RegisterServerResponseBuilderImpl(responseHeader);
   }
 
-  public static class RegisterServerResponseBuilder
+  public static class RegisterServerResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
 
-    public RegisterServerResponseBuilder(ExtensionObjectDefinition responseHeader) {
-
+    public RegisterServerResponseBuilderImpl(ExtensionObjectDefinition responseHeader) {
       this.responseHeader = responseHeader;
     }
 

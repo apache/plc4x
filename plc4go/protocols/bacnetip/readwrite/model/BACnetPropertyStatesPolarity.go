@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesPolarity) GetTypeName() string {
 	return "BACnetPropertyStatesPolarity"
 }
 
-func (m *_BACnetPropertyStatesPolarity) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesPolarity) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesPolarity) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (polarity)
-	lengthInBits += m.Polarity.GetLengthInBits()
+	lengthInBits += m.Polarity.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesPolarity) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesPolarity) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesPolarityParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesPolarity, error) {
-	return BACnetPropertyStatesPolarityParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesPolarityParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesPolarityParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesPolarity, error) {
+func BACnetPropertyStatesPolarityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesPolarity, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesPolarity"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesPolarityParseWithBuffer(readBuffer utils.ReadBuffer, pe
 	if pullErr := readBuffer.PullContext("polarity"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for polarity")
 	}
-	_polarity, _polarityErr := BACnetPolarityTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_polarity, _polarityErr := BACnetPolarityTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _polarityErr != nil {
 		return nil, errors.Wrap(_polarityErr, "Error parsing 'polarity' field of BACnetPropertyStatesPolarity")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesPolarityParseWithBuffer(readBuffer utils.ReadBuffer, pe
 }
 
 func (m *_BACnetPropertyStatesPolarity) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesPolarity) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesPolarity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesPolarity) SerializeWithWriteBuffer(writeBuffer uti
 		if pushErr := writeBuffer.PushContext("polarity"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for polarity")
 		}
-		_polarityErr := writeBuffer.WriteSerializable(m.GetPolarity())
+		_polarityErr := writeBuffer.WriteSerializable(ctx, m.GetPolarity())
 		if popErr := writeBuffer.PopContext("polarity"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for polarity")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesPolarity) SerializeWithWriteBuffer(writeBuffer uti
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesPolarity) isBACnetPropertyStatesPolarity() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesPolarity) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

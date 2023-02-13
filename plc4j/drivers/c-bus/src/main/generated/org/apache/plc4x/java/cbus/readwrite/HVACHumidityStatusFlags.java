@@ -45,6 +45,7 @@ public class HVACHumidityStatusFlags implements Message {
   protected final boolean fanActive;
   protected final boolean dehumidifyingPlant;
   protected final boolean humidifyingPlant;
+
   // Reserved Fields
   private Boolean reservedField0;
 
@@ -104,6 +105,7 @@ public class HVACHumidityStatusFlags implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("HVACHumidityStatusFlags");
 
@@ -154,6 +156,7 @@ public class HVACHumidityStatusFlags implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     HVACHumidityStatusFlags _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (expansion)
     lengthInBits += 1;
@@ -197,6 +200,7 @@ public class HVACHumidityStatusFlags implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean expansion = readSimpleField("expansion", readBoolean(readBuffer));
 

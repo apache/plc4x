@@ -71,6 +71,7 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModificationInfo");
 
@@ -102,6 +103,7 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModificationInfo _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (modificationTime)
     lengthInBits += 64;
@@ -115,12 +117,13 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static ModificationInfoBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ModificationInfo");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long modificationTime = readSimpleField("modificationTime", readSignedLong(readBuffer, 64));
 
@@ -138,18 +141,17 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("ModificationInfo");
     // Create the instance
-    return new ModificationInfoBuilder(modificationTime, updateType, userName);
+    return new ModificationInfoBuilderImpl(modificationTime, updateType, userName);
   }
 
-  public static class ModificationInfoBuilder
+  public static class ModificationInfoBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long modificationTime;
     private final HistoryUpdateType updateType;
     private final PascalString userName;
 
-    public ModificationInfoBuilder(
+    public ModificationInfoBuilderImpl(
         long modificationTime, HistoryUpdateType updateType, PascalString userName) {
-
       this.modificationTime = modificationTime;
       this.updateType = updateType;
       this.userName = userName;

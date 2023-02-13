@@ -78,6 +78,7 @@ public class BACnetLogDataLogData extends BACnetLogData implements Message {
   protected void serializeBACnetLogDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogData");
 
@@ -104,6 +105,7 @@ public class BACnetLogDataLogData extends BACnetLogData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogDataLogData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (innerOpeningTag)
     lengthInBits += innerOpeningTag.getLengthInBits();
@@ -121,12 +123,13 @@ public class BACnetLogDataLogData extends BACnetLogData implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataBuilder staticParseBuilder(
+  public static BACnetLogDataBuilder staticParseBACnetLogDataBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
@@ -152,21 +155,22 @@ public class BACnetLogDataLogData extends BACnetLogData implements Message {
 
     readBuffer.closeContext("BACnetLogDataLogData");
     // Create the instance
-    return new BACnetLogDataLogDataBuilder(innerOpeningTag, logData, innerClosingTag, tagNumber);
+    return new BACnetLogDataLogDataBuilderImpl(
+        innerOpeningTag, logData, innerClosingTag, tagNumber);
   }
 
-  public static class BACnetLogDataLogDataBuilder implements BACnetLogData.BACnetLogDataBuilder {
+  public static class BACnetLogDataLogDataBuilderImpl
+      implements BACnetLogData.BACnetLogDataBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final List<BACnetLogDataLogDataEntry> logData;
     private final BACnetClosingTag innerClosingTag;
     private final Short tagNumber;
 
-    public BACnetLogDataLogDataBuilder(
+    public BACnetLogDataLogDataBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         List<BACnetLogDataLogDataEntry> logData,
         BACnetClosingTag innerClosingTag,
         Short tagNumber) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.logData = logData;
       this.innerClosingTag = innerClosingTag;

@@ -71,6 +71,7 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckGetEventInformation");
 
@@ -93,6 +94,7 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckGetEventInformation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (listOfEventSummaries)
     lengthInBits += listOfEventSummaries.getLengthInBits();
@@ -103,12 +105,13 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
     return lengthInBits;
   }
 
-  public static BACnetServiceAckGetEventInformationBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckGetEventInformation");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEventSummariesList listOfEventSummaries =
         readSimpleField(
@@ -128,21 +131,20 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
 
     readBuffer.closeContext("BACnetServiceAckGetEventInformation");
     // Create the instance
-    return new BACnetServiceAckGetEventInformationBuilder(
+    return new BACnetServiceAckGetEventInformationBuilderImpl(
         listOfEventSummaries, moreEvents, serviceAckLength);
   }
 
-  public static class BACnetServiceAckGetEventInformationBuilder
+  public static class BACnetServiceAckGetEventInformationBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetEventSummariesList listOfEventSummaries;
     private final BACnetContextTagBoolean moreEvents;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckGetEventInformationBuilder(
+    public BACnetServiceAckGetEventInformationBuilderImpl(
         BACnetEventSummariesList listOfEventSummaries,
         BACnetContextTagBoolean moreEvents,
         Long serviceAckLength) {
-
       this.listOfEventSummaries = listOfEventSummaries;
       this.moreEvents = moreEvents;
       this.serviceAckLength = serviceAckLength;

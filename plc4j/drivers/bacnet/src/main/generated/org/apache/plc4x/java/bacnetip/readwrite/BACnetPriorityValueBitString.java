@@ -62,6 +62,7 @@ public class BACnetPriorityValueBitString extends BACnetPriorityValue implements
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueBitString");
 
@@ -80,6 +81,7 @@ public class BACnetPriorityValueBitString extends BACnetPriorityValue implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueBitString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bitStringValue)
     lengthInBits += bitStringValue.getLengthInBits();
@@ -87,12 +89,13 @@ public class BACnetPriorityValueBitString extends BACnetPriorityValue implements
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueBitStringBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueBitString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBitString bitStringValue =
         readSimpleField(
@@ -103,17 +106,16 @@ public class BACnetPriorityValueBitString extends BACnetPriorityValue implements
 
     readBuffer.closeContext("BACnetPriorityValueBitString");
     // Create the instance
-    return new BACnetPriorityValueBitStringBuilder(bitStringValue, objectTypeArgument);
+    return new BACnetPriorityValueBitStringBuilderImpl(bitStringValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueBitStringBuilder
+  public static class BACnetPriorityValueBitStringBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagBitString bitStringValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueBitStringBuilder(
+    public BACnetPriorityValueBitStringBuilderImpl(
         BACnetApplicationTagBitString bitStringValue, BACnetObjectType objectTypeArgument) {
-
       this.bitStringValue = bitStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

@@ -44,9 +44,6 @@ public class SDOInitiateUploadRequest extends SDORequest implements Message {
 
   // Properties.
   protected final IndexAddress address;
-  // Reserved Fields
-  private Short reservedField0;
-  private Integer reservedField1;
 
   public SDOInitiateUploadRequest(IndexAddress address) {
     super();
@@ -60,23 +57,18 @@ public class SDOInitiateUploadRequest extends SDORequest implements Message {
   @Override
   protected void serializeSDORequestChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateUploadRequest");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 5));
 
     // Simple Field (address)
     writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (int) 0x00,
-        writeSignedInt(writeBuffer, 32));
+    writeReservedField("reserved", (int) 0x00, writeSignedInt(writeBuffer, 32));
 
     writeBuffer.popContext("SDOInitiateUploadRequest");
   }
@@ -90,6 +82,7 @@ public class SDOInitiateUploadRequest extends SDORequest implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOInitiateUploadRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 5;
@@ -103,12 +96,13 @@ public class SDOInitiateUploadRequest extends SDORequest implements Message {
     return lengthInBits;
   }
 
-  public static SDOInitiateUploadRequestBuilder staticParseBuilder(
+  public static SDORequestBuilder staticParseSDORequestBuilder(
       ReadBuffer readBuffer, SDORequestCommand command) throws ParseException {
     readBuffer.pullContext("SDOInitiateUploadRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 5), (short) 0x00);
@@ -123,25 +117,18 @@ public class SDOInitiateUploadRequest extends SDORequest implements Message {
 
     readBuffer.closeContext("SDOInitiateUploadRequest");
     // Create the instance
-    return new SDOInitiateUploadRequestBuilder(address, reservedField0, reservedField1);
+    return new SDOInitiateUploadRequestBuilderImpl(address);
   }
 
-  public static class SDOInitiateUploadRequestBuilder implements SDORequest.SDORequestBuilder {
+  public static class SDOInitiateUploadRequestBuilderImpl implements SDORequest.SDORequestBuilder {
     private final IndexAddress address;
-    private final Short reservedField0;
-    private final Integer reservedField1;
 
-    public SDOInitiateUploadRequestBuilder(
-        IndexAddress address, Short reservedField0, Integer reservedField1) {
+    public SDOInitiateUploadRequestBuilderImpl(IndexAddress address) {
       this.address = address;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public SDOInitiateUploadRequest build() {
       SDOInitiateUploadRequest sDOInitiateUploadRequest = new SDOInitiateUploadRequest(address);
-      sDOInitiateUploadRequest.reservedField0 = reservedField0;
-      sDOInitiateUploadRequest.reservedField1 = reservedField1;
       return sDOInitiateUploadRequest;
     }
   }

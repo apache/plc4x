@@ -78,6 +78,7 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOutOfService");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataOutOfService _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (outOfService)
     lengthInBits += outOfService.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOutOfServiceBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean outOfService =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataOutOfService");
     // Create the instance
-    return new BACnetConstructedDataOutOfServiceBuilder(
+    return new BACnetConstructedDataOutOfServiceBuilderImpl(
         outOfService, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOutOfServiceBuilder
+  public static class BACnetConstructedDataOutOfServiceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean outOfService;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOutOfServiceBuilder(
+    public BACnetConstructedDataOutOfServiceBuilderImpl(
         BACnetApplicationTagBoolean outOfService,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.outOfService = outOfService;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

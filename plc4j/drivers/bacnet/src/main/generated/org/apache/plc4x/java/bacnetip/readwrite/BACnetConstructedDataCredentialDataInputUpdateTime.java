@@ -79,6 +79,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCredentialDataInputUpdateTime");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCredentialDataInputUpdateTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (updateTime)
     lengthInBits += updateTime.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCredentialDataInputUpdateTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimeStamp updateTime =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
 
     readBuffer.closeContext("BACnetConstructedDataCredentialDataInputUpdateTime");
     // Create the instance
-    return new BACnetConstructedDataCredentialDataInputUpdateTimeBuilder(
+    return new BACnetConstructedDataCredentialDataInputUpdateTimeBuilderImpl(
         updateTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+  public static class BACnetConstructedDataCredentialDataInputUpdateTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetTimeStamp updateTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCredentialDataInputUpdateTimeBuilder(
+    public BACnetConstructedDataCredentialDataInputUpdateTimeBuilderImpl(
         BACnetTimeStamp updateTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.updateTime = updateTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

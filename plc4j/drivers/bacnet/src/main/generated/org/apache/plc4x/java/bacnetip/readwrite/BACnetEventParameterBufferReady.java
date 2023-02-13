@@ -78,6 +78,7 @@ public class BACnetEventParameterBufferReady extends BACnetEventParameter implem
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterBufferReady");
 
@@ -111,6 +112,7 @@ public class BACnetEventParameterBufferReady extends BACnetEventParameter implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterBufferReady _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -127,12 +129,13 @@ public class BACnetEventParameterBufferReady extends BACnetEventParameter implem
     return lengthInBits;
   }
 
-  public static BACnetEventParameterBufferReadyBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterBufferReady");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -172,23 +175,22 @@ public class BACnetEventParameterBufferReady extends BACnetEventParameter implem
 
     readBuffer.closeContext("BACnetEventParameterBufferReady");
     // Create the instance
-    return new BACnetEventParameterBufferReadyBuilder(
+    return new BACnetEventParameterBufferReadyBuilderImpl(
         openingTag, notificationThreshold, previousNotificationCount, closingTag);
   }
 
-  public static class BACnetEventParameterBufferReadyBuilder
+  public static class BACnetEventParameterBufferReadyBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger notificationThreshold;
     private final BACnetContextTagUnsignedInteger previousNotificationCount;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterBufferReadyBuilder(
+    public BACnetEventParameterBufferReadyBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger notificationThreshold,
         BACnetContextTagUnsignedInteger previousNotificationCount,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.notificationThreshold = notificationThreshold;
       this.previousNotificationCount = previousNotificationCount;

@@ -101,6 +101,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FieldTargetDataType");
 
@@ -146,6 +147,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FieldTargetDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dataSetFieldId)
     lengthInBits += dataSetFieldId.getLengthInBits();
@@ -171,12 +173,13 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static FieldTargetDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FieldTargetDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     GuidValue dataSetFieldId =
         readSimpleField(
@@ -214,7 +217,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("FieldTargetDataType");
     // Create the instance
-    return new FieldTargetDataTypeBuilder(
+    return new FieldTargetDataTypeBuilderImpl(
         dataSetFieldId,
         receiverIndexRange,
         targetNodeId,
@@ -224,7 +227,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
         overrideValue);
   }
 
-  public static class FieldTargetDataTypeBuilder
+  public static class FieldTargetDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final GuidValue dataSetFieldId;
     private final PascalString receiverIndexRange;
@@ -234,7 +237,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
     private final OverrideValueHandling overrideValueHandling;
     private final Variant overrideValue;
 
-    public FieldTargetDataTypeBuilder(
+    public FieldTargetDataTypeBuilderImpl(
         GuidValue dataSetFieldId,
         PascalString receiverIndexRange,
         NodeId targetNodeId,
@@ -242,7 +245,6 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
         PascalString writeIndexRange,
         OverrideValueHandling overrideValueHandling,
         Variant overrideValue) {
-
       this.dataSetFieldId = dataSetFieldId;
       this.receiverIndexRange = receiverIndexRange;
       this.targetNodeId = targetNodeId;

@@ -57,6 +57,7 @@ public class KnxNetIpCore extends ServiceId implements Message {
   @Override
   protected void serializeServiceIdChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("KnxNetIpCore");
 
@@ -75,6 +76,7 @@ public class KnxNetIpCore extends ServiceId implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     KnxNetIpCore _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (version)
     lengthInBits += 8;
@@ -82,25 +84,25 @@ public class KnxNetIpCore extends ServiceId implements Message {
     return lengthInBits;
   }
 
-  public static KnxNetIpCoreBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static ServiceIdBuilder staticParseServiceIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("KnxNetIpCore");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short version = readSimpleField("version", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("KnxNetIpCore");
     // Create the instance
-    return new KnxNetIpCoreBuilder(version);
+    return new KnxNetIpCoreBuilderImpl(version);
   }
 
-  public static class KnxNetIpCoreBuilder implements ServiceId.ServiceIdBuilder {
+  public static class KnxNetIpCoreBuilderImpl implements ServiceId.ServiceIdBuilder {
     private final short version;
 
-    public KnxNetIpCoreBuilder(short version) {
-
+    public KnxNetIpCoreBuilderImpl(short version) {
       this.version = version;
     }
 

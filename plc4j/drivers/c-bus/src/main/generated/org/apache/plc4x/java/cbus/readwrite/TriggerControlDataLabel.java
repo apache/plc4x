@@ -79,6 +79,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
   protected void serializeTriggerControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TriggerControlDataLabel");
 
@@ -115,6 +116,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TriggerControlDataLabel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (triggerControlOptions)
     lengthInBits += triggerControlOptions.getLengthInBits();
@@ -135,13 +137,14 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
     return lengthInBits;
   }
 
-  public static TriggerControlDataLabelBuilder staticParseBuilder(
+  public static TriggerControlDataBuilder staticParseTriggerControlDataBuilder(
       ReadBuffer readBuffer, TriggerControlCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("TriggerControlDataLabel");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TriggerControlLabelOptions triggerControlOptions =
         readSimpleField(
@@ -169,23 +172,22 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
 
     readBuffer.closeContext("TriggerControlDataLabel");
     // Create the instance
-    return new TriggerControlDataLabelBuilder(
+    return new TriggerControlDataLabelBuilderImpl(
         triggerControlOptions, actionSelector, language, data);
   }
 
-  public static class TriggerControlDataLabelBuilder
+  public static class TriggerControlDataLabelBuilderImpl
       implements TriggerControlData.TriggerControlDataBuilder {
     private final TriggerControlLabelOptions triggerControlOptions;
     private final byte actionSelector;
     private final Language language;
     private final byte[] data;
 
-    public TriggerControlDataLabelBuilder(
+    public TriggerControlDataLabelBuilderImpl(
         TriggerControlLabelOptions triggerControlOptions,
         byte actionSelector,
         Language language,
         byte[] data) {
-
       this.triggerControlOptions = triggerControlOptions;
       this.actionSelector = actionSelector;
       this.language = language;

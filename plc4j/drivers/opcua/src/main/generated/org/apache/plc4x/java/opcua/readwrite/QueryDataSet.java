@@ -80,6 +80,7 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("QueryDataSet");
 
@@ -108,6 +109,7 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     QueryDataSet _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nodeId)
     lengthInBits += nodeId.getLengthInBits();
@@ -122,7 +124,7 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
     if (values != null) {
       int i = 0;
       for (Variant element : values) {
-        boolean last = ++i >= values.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= values.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -130,12 +132,13 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static QueryDataSetBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("QueryDataSet");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExpandedNodeId nodeId =
         readSimpleField(
@@ -159,22 +162,21 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("QueryDataSet");
     // Create the instance
-    return new QueryDataSetBuilder(nodeId, typeDefinitionNode, noOfValues, values);
+    return new QueryDataSetBuilderImpl(nodeId, typeDefinitionNode, noOfValues, values);
   }
 
-  public static class QueryDataSetBuilder
+  public static class QueryDataSetBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExpandedNodeId nodeId;
     private final ExpandedNodeId typeDefinitionNode;
     private final int noOfValues;
     private final List<Variant> values;
 
-    public QueryDataSetBuilder(
+    public QueryDataSetBuilderImpl(
         ExpandedNodeId nodeId,
         ExpandedNodeId typeDefinitionNode,
         int noOfValues,
         List<Variant> values) {
-
       this.nodeId = nodeId;
       this.typeDefinitionNode = typeDefinitionNode;
       this.noOfValues = noOfValues;

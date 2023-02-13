@@ -78,6 +78,7 @@ public class BACnetConstructedDataStopTime extends BACnetConstructedData impleme
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataStopTime");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataStopTime extends BACnetConstructedData impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataStopTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (stopTime)
     lengthInBits += stopTime.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataStopTime extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataStopTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataStopTime extends BACnetConstructedData impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime stopTime =
         readSimpleField(
@@ -130,20 +133,19 @@ public class BACnetConstructedDataStopTime extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataStopTime");
     // Create the instance
-    return new BACnetConstructedDataStopTimeBuilder(stopTime, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataStopTimeBuilderImpl(stopTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataStopTimeBuilder
+  public static class BACnetConstructedDataStopTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime stopTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStopTimeBuilder(
+    public BACnetConstructedDataStopTimeBuilderImpl(
         BACnetDateTime stopTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.stopTime = stopTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

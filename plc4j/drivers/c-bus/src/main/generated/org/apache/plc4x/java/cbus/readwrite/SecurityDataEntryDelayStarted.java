@@ -47,6 +47,7 @@ public class SecurityDataEntryDelayStarted extends SecurityData implements Messa
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataEntryDelayStarted");
 
@@ -62,26 +63,28 @@ public class SecurityDataEntryDelayStarted extends SecurityData implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataEntryDelayStarted _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SecurityDataEntryDelayStartedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataEntryDelayStarted");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataEntryDelayStarted");
     // Create the instance
-    return new SecurityDataEntryDelayStartedBuilder();
+    return new SecurityDataEntryDelayStartedBuilderImpl();
   }
 
-  public static class SecurityDataEntryDelayStartedBuilder
+  public static class SecurityDataEntryDelayStartedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataEntryDelayStartedBuilder() {}
+    public SecurityDataEntryDelayStartedBuilderImpl() {}
 
     public SecurityDataEntryDelayStarted build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

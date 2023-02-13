@@ -78,6 +78,7 @@ public class BACnetConstructedDataPowerMode extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPowerMode");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataPowerMode extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPowerMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (powerMode)
     lengthInBits += powerMode.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataPowerMode extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPowerModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataPowerMode extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean powerMode =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataPowerMode extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataPowerMode");
     // Create the instance
-    return new BACnetConstructedDataPowerModeBuilder(powerMode, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPowerModeBuilderImpl(powerMode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPowerModeBuilder
+  public static class BACnetConstructedDataPowerModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean powerMode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPowerModeBuilder(
+    public BACnetConstructedDataPowerModeBuilderImpl(
         BACnetApplicationTagBoolean powerMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.powerMode = powerMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

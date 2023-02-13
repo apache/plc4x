@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAPDUTimeout) GetApduTimeout() BACnetApplicationTa
 ///////////////////////
 
 func (m *_BACnetConstructedDataAPDUTimeout) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetApduTimeout())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAPDUTimeout) GetTypeName() string {
 	return "BACnetConstructedDataAPDUTimeout"
 }
 
-func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (apduTimeout)
-	lengthInBits += m.ApduTimeout.GetLengthInBits()
+	lengthInBits += m.ApduTimeout.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAPDUTimeout) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAPDUTimeoutParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAPDUTimeout, error) {
-	return BACnetConstructedDataAPDUTimeoutParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAPDUTimeoutParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAPDUTimeoutParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAPDUTimeout, error) {
+func BACnetConstructedDataAPDUTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAPDUTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAPDUTimeout"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAPDUTimeoutParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("apduTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for apduTimeout")
 	}
-	_apduTimeout, _apduTimeoutErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_apduTimeout, _apduTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _apduTimeoutErr != nil {
 		return nil, errors.Wrap(_apduTimeoutErr, "Error parsing 'apduTimeout' field of BACnetConstructedDataAPDUTimeout")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAPDUTimeoutParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetConstructedDataAPDUTimeout) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAPDUTimeout) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAPDUTimeout) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAPDUTimeout) SerializeWithWriteBuffer(writeBuffer
 		if pushErr := writeBuffer.PushContext("apduTimeout"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for apduTimeout")
 		}
-		_apduTimeoutErr := writeBuffer.WriteSerializable(m.GetApduTimeout())
+		_apduTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetApduTimeout())
 		if popErr := writeBuffer.PopContext("apduTimeout"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for apduTimeout")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAPDUTimeout) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(_apduTimeoutErr, "Error serializing 'apduTimeout' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAPDUTimeout) SerializeWithWriteBuffer(writeBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAPDUTimeout) isBACnetConstructedDataAPDUTimeout() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAPDUTimeout) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

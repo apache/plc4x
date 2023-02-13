@@ -64,6 +64,7 @@ public class DecimalDataType extends ExtensionObjectDefinition implements Messag
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DecimalDataType");
 
@@ -85,6 +86,7 @@ public class DecimalDataType extends ExtensionObjectDefinition implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DecimalDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (scale)
     lengthInBits += 16;
@@ -95,12 +97,13 @@ public class DecimalDataType extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static DecimalDataTypeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DecimalDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short scale = readSimpleField("scale", readSignedShort(readBuffer, 16));
 
@@ -112,16 +115,15 @@ public class DecimalDataType extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("DecimalDataType");
     // Create the instance
-    return new DecimalDataTypeBuilder(scale, value);
+    return new DecimalDataTypeBuilderImpl(scale, value);
   }
 
-  public static class DecimalDataTypeBuilder
+  public static class DecimalDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final short scale;
     private final PascalByteString value;
 
-    public DecimalDataTypeBuilder(short scale, PascalByteString value) {
-
+    public DecimalDataTypeBuilderImpl(short scale, PascalByteString value) {
       this.scale = scale;
       this.value = value;
     }

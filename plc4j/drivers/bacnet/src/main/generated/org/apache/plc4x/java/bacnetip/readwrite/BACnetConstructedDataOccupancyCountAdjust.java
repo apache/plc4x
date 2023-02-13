@@ -79,6 +79,7 @@ public class BACnetConstructedDataOccupancyCountAdjust extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOccupancyCountAdjust");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataOccupancyCountAdjust extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataOccupancyCountAdjust _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (occupancyCountAdjust)
     lengthInBits += occupancyCountAdjust.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataOccupancyCountAdjust extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOccupancyCountAdjustBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataOccupancyCountAdjust extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean occupancyCountAdjust =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataOccupancyCountAdjust extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataOccupancyCountAdjust");
     // Create the instance
-    return new BACnetConstructedDataOccupancyCountAdjustBuilder(
+    return new BACnetConstructedDataOccupancyCountAdjustBuilderImpl(
         occupancyCountAdjust, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOccupancyCountAdjustBuilder
+  public static class BACnetConstructedDataOccupancyCountAdjustBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean occupancyCountAdjust;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOccupancyCountAdjustBuilder(
+    public BACnetConstructedDataOccupancyCountAdjustBuilderImpl(
         BACnetApplicationTagBoolean occupancyCountAdjust,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.occupancyCountAdjust = occupancyCountAdjust;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

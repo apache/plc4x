@@ -49,6 +49,7 @@ public class SALDataRoomControlSystem extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataRoomControlSystem");
 
@@ -64,16 +65,18 @@ public class SALDataRoomControlSystem extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataRoomControlSystem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SALDataRoomControlSystemBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataRoomControlSystem");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {
       throw new ParseValidationException("ROOM_CONTROL_SYSTEM Not yet implemented");
@@ -81,12 +84,12 @@ public class SALDataRoomControlSystem extends SALData implements Message {
 
     readBuffer.closeContext("SALDataRoomControlSystem");
     // Create the instance
-    return new SALDataRoomControlSystemBuilder();
+    return new SALDataRoomControlSystemBuilderImpl();
   }
 
-  public static class SALDataRoomControlSystemBuilder implements SALData.SALDataBuilder {
+  public static class SALDataRoomControlSystemBuilderImpl implements SALData.SALDataBuilder {
 
-    public SALDataRoomControlSystemBuilder() {}
+    public SALDataRoomControlSystemBuilderImpl() {}
 
     public SALDataRoomControlSystem build(SALData salData) {
       SALDataRoomControlSystem sALDataRoomControlSystem = new SALDataRoomControlSystem(salData);

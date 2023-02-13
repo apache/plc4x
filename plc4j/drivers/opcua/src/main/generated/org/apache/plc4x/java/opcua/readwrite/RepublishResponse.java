@@ -65,6 +65,7 @@ public class RepublishResponse extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RepublishResponse");
 
@@ -87,6 +88,7 @@ public class RepublishResponse extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RepublishResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -97,12 +99,13 @@ public class RepublishResponse extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static RepublishResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RepublishResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -120,17 +123,16 @@ public class RepublishResponse extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("RepublishResponse");
     // Create the instance
-    return new RepublishResponseBuilder(responseHeader, notificationMessage);
+    return new RepublishResponseBuilderImpl(responseHeader, notificationMessage);
   }
 
-  public static class RepublishResponseBuilder
+  public static class RepublishResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final ExtensionObjectDefinition notificationMessage;
 
-    public RepublishResponseBuilder(
+    public RepublishResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader, ExtensionObjectDefinition notificationMessage) {
-
       this.responseHeader = responseHeader;
       this.notificationMessage = notificationMessage;
     }

@@ -56,6 +56,7 @@ public class BACnetPropertyStatesLifeSafetyMode extends BACnetPropertyStates imp
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLifeSafetyMode");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesLifeSafetyMode extends BACnetPropertyStates imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLifeSafetyMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lifeSafetyMode)
     lengthInBits += lifeSafetyMode.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesLifeSafetyMode extends BACnetPropertyStates imp
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLifeSafetyModeBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLifeSafetyMode");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyModeTagged lifeSafetyMode =
         readSimpleField(
@@ -101,15 +104,15 @@ public class BACnetPropertyStatesLifeSafetyMode extends BACnetPropertyStates imp
 
     readBuffer.closeContext("BACnetPropertyStatesLifeSafetyMode");
     // Create the instance
-    return new BACnetPropertyStatesLifeSafetyModeBuilder(lifeSafetyMode);
+    return new BACnetPropertyStatesLifeSafetyModeBuilderImpl(lifeSafetyMode);
   }
 
-  public static class BACnetPropertyStatesLifeSafetyModeBuilder
+  public static class BACnetPropertyStatesLifeSafetyModeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLifeSafetyModeTagged lifeSafetyMode;
 
-    public BACnetPropertyStatesLifeSafetyModeBuilder(BACnetLifeSafetyModeTagged lifeSafetyMode) {
-
+    public BACnetPropertyStatesLifeSafetyModeBuilderImpl(
+        BACnetLifeSafetyModeTagged lifeSafetyMode) {
       this.lifeSafetyMode = lifeSafetyMode;
     }
 

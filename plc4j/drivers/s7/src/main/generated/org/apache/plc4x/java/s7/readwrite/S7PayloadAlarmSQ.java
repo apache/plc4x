@@ -69,6 +69,7 @@ public class S7PayloadAlarmSQ extends S7PayloadUserDataItem implements Message {
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadAlarmSQ");
 
@@ -87,6 +88,7 @@ public class S7PayloadAlarmSQ extends S7PayloadUserDataItem implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadAlarmSQ _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (alarmMessage)
     lengthInBits += alarmMessage.getLengthInBits();
@@ -94,12 +96,13 @@ public class S7PayloadAlarmSQ extends S7PayloadUserDataItem implements Message {
     return lengthInBits;
   }
 
-  public static S7PayloadAlarmSQBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadAlarmSQ");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AlarmMessagePushType alarmMessage =
         readSimpleField(
@@ -109,15 +112,14 @@ public class S7PayloadAlarmSQ extends S7PayloadUserDataItem implements Message {
 
     readBuffer.closeContext("S7PayloadAlarmSQ");
     // Create the instance
-    return new S7PayloadAlarmSQBuilder(alarmMessage);
+    return new S7PayloadAlarmSQBuilderImpl(alarmMessage);
   }
 
-  public static class S7PayloadAlarmSQBuilder
+  public static class S7PayloadAlarmSQBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final AlarmMessagePushType alarmMessage;
 
-    public S7PayloadAlarmSQBuilder(AlarmMessagePushType alarmMessage) {
-
+    public S7PayloadAlarmSQBuilderImpl(AlarmMessagePushType alarmMessage) {
       this.alarmMessage = alarmMessage;
     }
 

@@ -89,6 +89,7 @@ public class BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,18 +138,18 @@ public class BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder
-      staticParseBuilder(
-          ReadBuffer readBuffer,
-          Short tagNumber,
-          BACnetObjectType objectTypeArgument,
-          BACnetPropertyIdentifier propertyIdentifierArgument,
-          BACnetTagPayloadUnsignedInteger arrayIndexArgument)
-          throws ParseException {
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
+      ReadBuffer readBuffer,
+      Short tagNumber,
+      BACnetObjectType objectTypeArgument,
+      BACnetPropertyIdentifier propertyIdentifierArgument,
+      BACnetTagPayloadUnsignedInteger arrayIndexArgument)
+      throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -172,23 +174,22 @@ public class BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty
 
     readBuffer.closeContext("BACnetConstructedDataTrendLogMultipleLogDeviceObjectProperty");
     // Create the instance
-    return new BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder(
+    return new BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilderImpl(
         numberOfDataElements, groupMembers, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder
+  public static class BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetDeviceObjectPropertyReference> groupMembers;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilder(
+    public BACnetConstructedDataTrendLogMultipleLogDeviceObjectPropertyBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetDeviceObjectPropertyReference> groupMembers,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.groupMembers = groupMembers;
       this.tagNumber = tagNumber;

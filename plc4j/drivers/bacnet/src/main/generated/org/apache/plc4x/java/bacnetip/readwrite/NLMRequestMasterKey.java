@@ -70,6 +70,7 @@ public class NLMRequestMasterKey extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMRequestMasterKey");
 
@@ -97,6 +98,7 @@ public class NLMRequestMasterKey extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMRequestMasterKey _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (numberOfSupportedKeyAlgorithms)
     lengthInBits += 8;
@@ -109,12 +111,13 @@ public class NLMRequestMasterKey extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMRequestMasterKeyBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMRequestMasterKey");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numberOfSupportedKeyAlgorithms =
         readSimpleField("numberOfSupportedKeyAlgorithms", readUnsignedShort(readBuffer, 8));
@@ -125,20 +128,19 @@ public class NLMRequestMasterKey extends NLM implements Message {
 
     readBuffer.closeContext("NLMRequestMasterKey");
     // Create the instance
-    return new NLMRequestMasterKeyBuilder(
+    return new NLMRequestMasterKeyBuilderImpl(
         numberOfSupportedKeyAlgorithms, encryptionAndSignatureAlgorithms, apduLength);
   }
 
-  public static class NLMRequestMasterKeyBuilder implements NLM.NLMBuilder {
+  public static class NLMRequestMasterKeyBuilderImpl implements NLM.NLMBuilder {
     private final short numberOfSupportedKeyAlgorithms;
     private final byte[] encryptionAndSignatureAlgorithms;
     private final Integer apduLength;
 
-    public NLMRequestMasterKeyBuilder(
+    public NLMRequestMasterKeyBuilderImpl(
         short numberOfSupportedKeyAlgorithms,
         byte[] encryptionAndSignatureAlgorithms,
         Integer apduLength) {
-
       this.numberOfSupportedKeyAlgorithms = numberOfSupportedKeyAlgorithms;
       this.encryptionAndSignatureAlgorithms = encryptionAndSignatureAlgorithms;
       this.apduLength = apduLength;

@@ -60,6 +60,7 @@ public abstract class AirConditioningData implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningData");
 
@@ -92,6 +93,7 @@ public abstract class AirConditioningData implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     AirConditioningData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (commandTypeContainer)
     lengthInBits += 8;
@@ -114,6 +116,7 @@ public abstract class AirConditioningData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!(org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper
         .knowsAirConditioningCommandTypeContainer(readBuffer))) {
@@ -134,57 +137,81 @@ public abstract class AirConditioningData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     AirConditioningDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, AirConditioningCommandType.HVAC_SCHEDULE_ENTRY)) {
-      builder = AirConditioningDataHvacScheduleEntry.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataHvacScheduleEntry.staticParseAirConditioningDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.HUMIDITY_SCHEDULE_ENTRY)) {
-      builder = AirConditioningDataHumidityScheduleEntry.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataHumidityScheduleEntry.staticParseAirConditioningDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(commandType, AirConditioningCommandType.REFRESH)) {
-      builder = AirConditioningDataRefresh.staticParseBuilder(readBuffer);
+      builder = AirConditioningDataRefresh.staticParseAirConditioningDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.ZONE_HVAC_PLANT_STATUS)) {
-      builder = AirConditioningDataZoneHvacPlantStatus.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataZoneHvacPlantStatus.staticParseAirConditioningDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.ZONE_HUMIDITY_PLANT_STATUS)) {
-      builder = AirConditioningDataZoneHumidityPlantStatus.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataZoneHumidityPlantStatus.staticParseAirConditioningDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(commandType, AirConditioningCommandType.ZONE_TEMPERATURE)) {
-      builder = AirConditioningDataZoneTemperature.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataZoneTemperature.staticParseAirConditioningDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, AirConditioningCommandType.ZONE_HUMIDITY)) {
-      builder = AirConditioningDataZoneHumidity.staticParseBuilder(readBuffer);
+      builder = AirConditioningDataZoneHumidity.staticParseAirConditioningDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.SET_ZONE_GROUP_OFF)) {
-      builder = AirConditioningDataSetZoneGroupOff.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataSetZoneGroupOff.staticParseAirConditioningDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, AirConditioningCommandType.SET_ZONE_GROUP_ON)) {
-      builder = AirConditioningDataSetZoneGroupOn.staticParseBuilder(readBuffer);
+      builder = AirConditioningDataSetZoneGroupOn.staticParseAirConditioningDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.SET_ZONE_HVAC_MODE)) {
-      builder = AirConditioningDataSetZoneHvacMode.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataSetZoneHvacMode.staticParseAirConditioningDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.SET_PLANT_HVAC_LEVEL)) {
-      builder = AirConditioningDataSetPlantHvacLevel.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataSetPlantHvacLevel.staticParseAirConditioningDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.SET_ZONE_HUMIDITY_MODE)) {
-      builder = AirConditioningDataSetZoneHumidityMode.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataSetZoneHumidityMode.staticParseAirConditioningDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.SET_PLANT_HUMIDITY_LEVEL)) {
-      builder = AirConditioningDataSetPlantHumidityLevel.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataSetPlantHumidityLevel.staticParseAirConditioningDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.SET_HVAC_UPPER_GUARD_LIMIT)) {
-      builder = AirConditioningDataSetHvacUpperGuardLimit.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataSetHvacUpperGuardLimit.staticParseAirConditioningDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.SET_HVAC_LOWER_GUARD_LIMIT)) {
-      builder = AirConditioningDataSetHvacLowerGuardLimit.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataSetHvacLowerGuardLimit.staticParseAirConditioningDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.SET_HVAC_SETBACK_LIMIT)) {
-      builder = AirConditioningDataSetHvacSetbackLimit.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataSetHvacSetbackLimit.staticParseAirConditioningDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.SET_HUMIDITY_UPPER_GUARD_LIMIT)) {
-      builder = AirConditioningDataSetHumidityUpperGuardLimit.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataSetHumidityUpperGuardLimit.staticParseAirConditioningDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.SET_HUMIDITY_LOWER_GUARD_LIMIT)) {
-      builder = AirConditioningDataSetHumidityLowerGuardLimit.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataSetHumidityLowerGuardLimit.staticParseAirConditioningDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, AirConditioningCommandType.SET_HUMIDITY_SETBACK_LIMIT)) {
-      builder = AirConditioningDataSetHumiditySetbackLimit.staticParseBuilder(readBuffer);
+      builder =
+          AirConditioningDataSetHumiditySetbackLimit.staticParseAirConditioningDataBuilder(
+              readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -201,7 +228,7 @@ public abstract class AirConditioningData implements Message {
     return _airConditioningData;
   }
 
-  public static interface AirConditioningDataBuilder {
+  public interface AirConditioningDataBuilder {
     AirConditioningData build(AirConditioningCommandTypeContainer commandTypeContainer);
   }
 

@@ -64,6 +64,7 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SemanticChangeStructureDataType");
 
@@ -85,6 +86,7 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SemanticChangeStructureDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (affected)
     lengthInBits += affected.getLengthInBits();
@@ -95,12 +97,13 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
     return lengthInBits;
   }
 
-  public static SemanticChangeStructureDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SemanticChangeStructureDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId affected =
         readSimpleField(
@@ -114,16 +117,15 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
 
     readBuffer.closeContext("SemanticChangeStructureDataType");
     // Create the instance
-    return new SemanticChangeStructureDataTypeBuilder(affected, affectedType);
+    return new SemanticChangeStructureDataTypeBuilderImpl(affected, affectedType);
   }
 
-  public static class SemanticChangeStructureDataTypeBuilder
+  public static class SemanticChangeStructureDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId affected;
     private final NodeId affectedType;
 
-    public SemanticChangeStructureDataTypeBuilder(NodeId affected, NodeId affectedType) {
-
+    public SemanticChangeStructureDataTypeBuilderImpl(NodeId affected, NodeId affectedType) {
       this.affected = affected;
       this.affectedType = affectedType;
     }

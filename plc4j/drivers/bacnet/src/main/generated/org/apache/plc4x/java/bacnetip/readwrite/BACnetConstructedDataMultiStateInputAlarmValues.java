@@ -75,6 +75,7 @@ public class BACnetConstructedDataMultiStateInputAlarmValues extends BACnetConst
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMultiStateInputAlarmValues");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataMultiStateInputAlarmValues extends BACnetConst
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMultiStateInputAlarmValues _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (alarmValues != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataMultiStateInputAlarmValues extends BACnetConst
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMultiStateInputAlarmValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataMultiStateInputAlarmValues extends BACnetConst
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetApplicationTagUnsignedInteger> alarmValues =
         readTerminatedArrayField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataMultiStateInputAlarmValues extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateInputAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataMultiStateInputAlarmValuesBuilder(
+    return new BACnetConstructedDataMultiStateInputAlarmValuesBuilderImpl(
         alarmValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMultiStateInputAlarmValuesBuilder
+  public static class BACnetConstructedDataMultiStateInputAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetApplicationTagUnsignedInteger> alarmValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMultiStateInputAlarmValuesBuilder(
+    public BACnetConstructedDataMultiStateInputAlarmValuesBuilderImpl(
         List<BACnetApplicationTagUnsignedInteger> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

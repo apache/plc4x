@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,12 +106,8 @@ func (m *_AirConditioningDataRefresh) GetTypeName() string {
 	return "AirConditioningDataRefresh"
 }
 
-func (m *_AirConditioningDataRefresh) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AirConditioningDataRefresh) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AirConditioningDataRefresh) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (zoneGroup)
 	lengthInBits += 8
@@ -118,15 +115,15 @@ func (m *_AirConditioningDataRefresh) GetLengthInBitsConditional(lastItem bool) 
 	return lengthInBits
 }
 
-func (m *_AirConditioningDataRefresh) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AirConditioningDataRefresh) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AirConditioningDataRefreshParse(theBytes []byte) (AirConditioningDataRefresh, error) {
-	return AirConditioningDataRefreshParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AirConditioningDataRefreshParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AirConditioningDataRefreshParseWithBuffer(readBuffer utils.ReadBuffer) (AirConditioningDataRefresh, error) {
+func AirConditioningDataRefreshParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataRefresh, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AirConditioningDataRefresh"); pullErr != nil {
@@ -156,14 +153,14 @@ func AirConditioningDataRefreshParseWithBuffer(readBuffer utils.ReadBuffer) (Air
 }
 
 func (m *_AirConditioningDataRefresh) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AirConditioningDataRefresh) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AirConditioningDataRefresh) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_AirConditioningDataRefresh) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AirConditioningDataRefresh) isAirConditioningDataRefresh() bool {
@@ -195,7 +192,7 @@ func (m *_AirConditioningDataRefresh) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

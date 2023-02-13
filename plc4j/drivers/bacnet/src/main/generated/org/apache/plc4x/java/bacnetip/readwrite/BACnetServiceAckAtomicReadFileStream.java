@@ -67,6 +67,7 @@ public class BACnetServiceAckAtomicReadFileStream
   protected void serializeBACnetServiceAckAtomicReadFileStreamOrRecordChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFileStream");
 
@@ -89,6 +90,7 @@ public class BACnetServiceAckAtomicReadFileStream
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckAtomicReadFileStream _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileStartPosition)
     lengthInBits += fileStartPosition.getLengthInBits();
@@ -99,12 +101,14 @@ public class BACnetServiceAckAtomicReadFileStream
     return lengthInBits;
   }
 
-  public static BACnetServiceAckAtomicReadFileStreamBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
+      staticParseBACnetServiceAckAtomicReadFileStreamOrRecordBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicReadFileStream");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger fileStartPosition =
         readSimpleField(
@@ -125,19 +129,18 @@ public class BACnetServiceAckAtomicReadFileStream
 
     readBuffer.closeContext("BACnetServiceAckAtomicReadFileStream");
     // Create the instance
-    return new BACnetServiceAckAtomicReadFileStreamBuilder(fileStartPosition, fileData);
+    return new BACnetServiceAckAtomicReadFileStreamBuilderImpl(fileStartPosition, fileData);
   }
 
-  public static class BACnetServiceAckAtomicReadFileStreamBuilder
+  public static class BACnetServiceAckAtomicReadFileStreamBuilderImpl
       implements BACnetServiceAckAtomicReadFileStreamOrRecord
           .BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
     private final BACnetApplicationTagSignedInteger fileStartPosition;
     private final BACnetApplicationTagOctetString fileData;
 
-    public BACnetServiceAckAtomicReadFileStreamBuilder(
+    public BACnetServiceAckAtomicReadFileStreamBuilderImpl(
         BACnetApplicationTagSignedInteger fileStartPosition,
         BACnetApplicationTagOctetString fileData) {
-
       this.fileStartPosition = fileStartPosition;
       this.fileData = fileData;
     }

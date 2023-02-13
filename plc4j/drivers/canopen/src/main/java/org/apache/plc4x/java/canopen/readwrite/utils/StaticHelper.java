@@ -23,6 +23,7 @@ import org.apache.plc4x.java.canopen.readwrite.SDOInitiateExpeditedUploadRespons
 import org.apache.plc4x.java.canopen.readwrite.SDOInitiateUploadResponsePayload;
 import org.apache.plc4x.java.canopen.readwrite.SDOSegmentUploadResponse;
 import org.apache.plc4x.java.canopen.readwrite.CANOpenService;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -49,11 +50,11 @@ public class StaticHelper {
     }
 
     public static Object parseString(ReadBuffer io, int length, String charset) throws ParseException {
-        return io.readString(8 * length, charset);
+        return io.readString(8 * length, WithOption.WithEncoding(charset));
     }
 
     public static void serializeString(WriteBuffer io, PlcValue value, String charset) throws SerializationException {
-        io.writeString(8, charset, value.getString());
+        io.writeString(8, value.getString(), WithOption.WithEncoding(charset));
     }
 
     public static byte[] parseByteArray(ReadBuffer io, Integer length) {

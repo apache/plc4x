@@ -56,6 +56,7 @@ public class BACnetChannelValueOctetString extends BACnetChannelValue implements
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueOctetString");
 
@@ -75,6 +76,7 @@ public class BACnetChannelValueOctetString extends BACnetChannelValue implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueOctetString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (octetStringValue)
     lengthInBits += octetStringValue.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetChannelValueOctetString extends BACnetChannelValue implements
     return lengthInBits;
   }
 
-  public static BACnetChannelValueOctetStringBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueOctetString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString octetStringValue =
         readSimpleField(
@@ -99,15 +102,15 @@ public class BACnetChannelValueOctetString extends BACnetChannelValue implements
 
     readBuffer.closeContext("BACnetChannelValueOctetString");
     // Create the instance
-    return new BACnetChannelValueOctetStringBuilder(octetStringValue);
+    return new BACnetChannelValueOctetStringBuilderImpl(octetStringValue);
   }
 
-  public static class BACnetChannelValueOctetStringBuilder
+  public static class BACnetChannelValueOctetStringBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagOctetString octetStringValue;
 
-    public BACnetChannelValueOctetStringBuilder(BACnetApplicationTagOctetString octetStringValue) {
-
+    public BACnetChannelValueOctetStringBuilderImpl(
+        BACnetApplicationTagOctetString octetStringValue) {
       this.octetStringValue = octetStringValue;
     }
 

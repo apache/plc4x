@@ -64,6 +64,7 @@ public class BACnetLogRecordLogDatumLogStatus extends BACnetLogRecordLogDatum im
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumLogStatus");
 
@@ -82,6 +83,7 @@ public class BACnetLogRecordLogDatumLogStatus extends BACnetLogRecordLogDatum im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumLogStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (logStatus)
     lengthInBits += logStatus.getLengthInBits();
@@ -89,12 +91,13 @@ public class BACnetLogRecordLogDatumLogStatus extends BACnetLogRecordLogDatum im
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumLogStatusBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumLogStatus");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLogStatusTagged logStatus =
         readSimpleField(
@@ -107,17 +110,16 @@ public class BACnetLogRecordLogDatumLogStatus extends BACnetLogRecordLogDatum im
 
     readBuffer.closeContext("BACnetLogRecordLogDatumLogStatus");
     // Create the instance
-    return new BACnetLogRecordLogDatumLogStatusBuilder(logStatus, tagNumber);
+    return new BACnetLogRecordLogDatumLogStatusBuilderImpl(logStatus, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumLogStatusBuilder
+  public static class BACnetLogRecordLogDatumLogStatusBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetLogStatusTagged logStatus;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumLogStatusBuilder(
+    public BACnetLogRecordLogDatumLogStatusBuilderImpl(
         BACnetLogStatusTagged logStatus, Short tagNumber) {
-
       this.logStatus = logStatus;
       this.tagNumber = tagNumber;
     }

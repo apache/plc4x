@@ -78,6 +78,7 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFaultType");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFaultType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (faultType)
     lengthInBits += faultType.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFaultTypeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetFaultTypeTagged faultType =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataFaultType");
     // Create the instance
-    return new BACnetConstructedDataFaultTypeBuilder(faultType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFaultTypeBuilderImpl(faultType, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFaultTypeBuilder
+  public static class BACnetConstructedDataFaultTypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetFaultTypeTagged faultType;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFaultTypeBuilder(
+    public BACnetConstructedDataFaultTypeBuilderImpl(
         BACnetFaultTypeTagged faultType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultType = faultType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

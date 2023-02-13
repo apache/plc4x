@@ -20,8 +20,9 @@ package org.apache.plc4x.test.driver.internal;
 
 import io.netty.channel.Channel;
 import io.netty.channel.embedded.Plc4xEmbeddedChannel;
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.connection.ChannelExposingConnection;
@@ -34,7 +35,7 @@ public class ConnectionManager {
     PlcDriverManager plcDriverManager;
 
     public ConnectionManager() {
-        this.plcDriverManager = new PlcDriverManager();
+        this.plcDriverManager = new DefaultPlcDriverManager();
     }
 
     public PlcConnection getConnection(String driverName, Map<String, String> driverParameters) throws DriverTestsuiteException {
@@ -48,7 +49,7 @@ public class ConnectionManager {
             if (sb.length() > 0) {
                 sb.replace(0, 1, "?");
             }
-            return plcDriverManager.getConnection(driverName + ":test://hurz" + sb);
+            return plcDriverManager.getConnectionManager().getConnection(driverName + ":test://hurz" + sb);
         } catch (PlcConnectionException e) {
             throw new DriverTestsuiteException("Error loading driver", e);
         }

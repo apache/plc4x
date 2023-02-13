@@ -71,6 +71,7 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataRepeatOnOff");
 
@@ -101,6 +102,7 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataRepeatOnOff _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (repeatType)
     lengthInBits += 8;
@@ -114,12 +116,13 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataRepeatOnOffBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataRepeatOnOff");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte repeatType = readSimpleField("repeatType", readByte(readBuffer, 8));
     boolean isOff = readVirtualField("isOff", boolean.class, (repeatType) == (0x00));
@@ -131,15 +134,14 @@ public class MediaTransportControlDataRepeatOnOff extends MediaTransportControlD
 
     readBuffer.closeContext("MediaTransportControlDataRepeatOnOff");
     // Create the instance
-    return new MediaTransportControlDataRepeatOnOffBuilder(repeatType);
+    return new MediaTransportControlDataRepeatOnOffBuilderImpl(repeatType);
   }
 
-  public static class MediaTransportControlDataRepeatOnOffBuilder
+  public static class MediaTransportControlDataRepeatOnOffBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte repeatType;
 
-    public MediaTransportControlDataRepeatOnOffBuilder(byte repeatType) {
-
+    public MediaTransportControlDataRepeatOnOffBuilderImpl(byte repeatType) {
       this.repeatType = repeatType;
     }
 

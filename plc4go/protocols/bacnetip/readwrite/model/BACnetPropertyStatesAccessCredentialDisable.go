@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) GetTypeName() string {
 	return "BACnetPropertyStatesAccessCredentialDisable"
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisable) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesAccessCredentialDisable) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesAccessCredentialDisable) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (accessCredentialDisable)
-	lengthInBits += m.AccessCredentialDisable.GetLengthInBits()
+	lengthInBits += m.AccessCredentialDisable.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisable) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesAccessCredentialDisable) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesAccessCredentialDisableParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisable, error) {
-	return BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisable, error) {
+func BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisable, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAccessCredentialDisable"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(readBuffer utils
 	if pullErr := readBuffer.PullContext("accessCredentialDisable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for accessCredentialDisable")
 	}
-	_accessCredentialDisable, _accessCredentialDisableErr := BACnetAccessCredentialDisableTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_accessCredentialDisable, _accessCredentialDisableErr := BACnetAccessCredentialDisableTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _accessCredentialDisableErr != nil {
 		return nil, errors.Wrap(_accessCredentialDisableErr, "Error parsing 'accessCredentialDisable' field of BACnetPropertyStatesAccessCredentialDisable")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(readBuffer utils
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisable) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesAccessCredentialDisable) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesAccessCredentialDisable) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) SerializeWithWriteBuffer(
 		if pushErr := writeBuffer.PushContext("accessCredentialDisable"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for accessCredentialDisable")
 		}
-		_accessCredentialDisableErr := writeBuffer.WriteSerializable(m.GetAccessCredentialDisable())
+		_accessCredentialDisableErr := writeBuffer.WriteSerializable(ctx, m.GetAccessCredentialDisable())
 		if popErr := writeBuffer.PopContext("accessCredentialDisable"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for accessCredentialDisable")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesAccessCredentialDisable) isBACnetPropertyStatesAccessCredentialDisable() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesAccessCredentialDisable) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataActiveText) GetActiveText() BACnetApplicationTagC
 ///////////////////////
 
 func (m *_BACnetConstructedDataActiveText) GetActualValue() BACnetApplicationTagCharacterString {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagCharacterString(m.GetActiveText())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataActiveText) GetTypeName() string {
 	return "BACnetConstructedDataActiveText"
 }
 
-func (m *_BACnetConstructedDataActiveText) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataActiveText) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataActiveText) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (activeText)
-	lengthInBits += m.ActiveText.GetLengthInBits()
+	lengthInBits += m.ActiveText.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataActiveText) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataActiveText) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataActiveTextParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveText, error) {
-	return BACnetConstructedDataActiveTextParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataActiveTextParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataActiveTextParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveText, error) {
+func BACnetConstructedDataActiveTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveText, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveText"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataActiveTextParseWithBuffer(readBuffer utils.ReadBuffer,
 	if pullErr := readBuffer.PullContext("activeText"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for activeText")
 	}
-	_activeText, _activeTextErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_activeText, _activeTextErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _activeTextErr != nil {
 		return nil, errors.Wrap(_activeTextErr, "Error parsing 'activeText' field of BACnetConstructedDataActiveText")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataActiveTextParseWithBuffer(readBuffer utils.ReadBuffer,
 }
 
 func (m *_BACnetConstructedDataActiveText) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataActiveText) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataActiveText) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataActiveText) SerializeWithWriteBuffer(writeBuffer 
 		if pushErr := writeBuffer.PushContext("activeText"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for activeText")
 		}
-		_activeTextErr := writeBuffer.WriteSerializable(m.GetActiveText())
+		_activeTextErr := writeBuffer.WriteSerializable(ctx, m.GetActiveText())
 		if popErr := writeBuffer.PopContext("activeText"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for activeText")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataActiveText) SerializeWithWriteBuffer(writeBuffer 
 			return errors.Wrap(_activeTextErr, "Error serializing 'activeText' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataActiveText) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataActiveText) isBACnetConstructedDataActiveText() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataActiveText) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

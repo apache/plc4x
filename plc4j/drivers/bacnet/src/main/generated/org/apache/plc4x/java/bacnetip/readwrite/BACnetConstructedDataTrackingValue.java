@@ -78,6 +78,7 @@ public class BACnetConstructedDataTrackingValue extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrackingValue");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataTrackingValue extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTrackingValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (trackingValue)
     lengthInBits += trackingValue.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataTrackingValue extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTrackingValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataTrackingValue extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyStateTagged trackingValue =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataTrackingValue extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataTrackingValue");
     // Create the instance
-    return new BACnetConstructedDataTrackingValueBuilder(
+    return new BACnetConstructedDataTrackingValueBuilderImpl(
         trackingValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTrackingValueBuilder
+  public static class BACnetConstructedDataTrackingValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLifeSafetyStateTagged trackingValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTrackingValueBuilder(
+    public BACnetConstructedDataTrackingValueBuilderImpl(
         BACnetLifeSafetyStateTagged trackingValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.trackingValue = trackingValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -60,6 +60,7 @@ public abstract class BACnetPropertyStates implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStates");
 
@@ -82,6 +83,7 @@ public abstract class BACnetPropertyStates implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetPropertyStates _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -101,6 +103,7 @@ public abstract class BACnetPropertyStates implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -113,143 +116,241 @@ public abstract class BACnetPropertyStates implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetPropertyStatesBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetPropertyStatesBoolean.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesBoolean.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetPropertyStatesBinaryValue.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesBinaryValue.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetPropertyStatesEventType.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesEventType.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
-      builder = BACnetPropertyStatesPolarity.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesPolarity.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
-      builder = BACnetPropertyStatesProgramChange.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesProgramChange.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
-      builder = BACnetPropertyStatesProgramChange.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesProgramChange.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 6)) {
-      builder = BACnetPropertyStatesReasonForHalt.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesReasonForHalt.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 7)) {
-      builder = BACnetPropertyStatesReliability.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesReliability.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
-      builder = BACnetPropertyStatesState.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesState.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
-      builder = BACnetPropertyStatesSystemStatus.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesSystemStatus.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 10)) {
-      builder = BACnetPropertyStatesUnits.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesUnits.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
-      builder = BACnetPropertyStatesExtendedValue.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesExtendedValue.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 12)) {
-      builder = BACnetPropertyStatesLifeSafetyMode.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesLifeSafetyMode.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 13)) {
-      builder = BACnetPropertyStatesLifeSafetyState.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesLifeSafetyState.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 14)) {
-      builder = BACnetPropertyStatesRestartReason.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesRestartReason.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 15)) {
-      builder = BACnetPropertyStatesDoorAlarmState.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesDoorAlarmState.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 16)) {
-      builder = BACnetPropertyStatesAction.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesAction.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 17)) {
       builder =
-          BACnetPropertyStatesDoorSecuredStatus.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesDoorSecuredStatus.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 18)) {
-      builder = BACnetPropertyStatesDoorStatus.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesDoorStatus.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 19)) {
-      builder = BACnetPropertyStatesDoorValue.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesDoorValue.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 20)) {
       builder =
-          BACnetPropertyStatesFileAccessMethod.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesFileAccessMethod.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 21)) {
-      builder = BACnetPropertyStatesLockStatus.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesLockStatus.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 22)) {
       builder =
-          BACnetPropertyStatesLifeSafetyOperations.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesLifeSafetyOperations.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 23)) {
-      builder = BACnetPropertyStatesMaintenance.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesMaintenance.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 24)) {
-      builder = BACnetPropertyStatesNodeType.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesNodeType.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 25)) {
-      builder = BACnetPropertyStatesNotifyType.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesNotifyType.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 26)) {
-      builder = BACnetPropertyStatesSecurityLevel.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesSecurityLevel.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 27)) {
-      builder = BACnetPropertyStatesShedState.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesShedState.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 28)) {
-      builder = BACnetPropertyStatesSilencedState.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesSilencedState.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 30)) {
-      builder = BACnetPropertyStatesAccessEvent.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesAccessEvent.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 31)) {
       builder =
-          BACnetPropertyStatesZoneOccupanyState.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesZoneOccupanyState.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 32)) {
       builder =
-          BACnetPropertyStatesAccessCredentialDisableReason.staticParseBuilder(
+          BACnetPropertyStatesAccessCredentialDisableReason.staticParseBACnetPropertyStatesBuilder(
               readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 33)) {
       builder =
-          BACnetPropertyStatesAccessCredentialDisable.staticParseBuilder(
+          BACnetPropertyStatesAccessCredentialDisable.staticParseBACnetPropertyStatesBuilder(
               readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 34)) {
       builder =
-          BACnetPropertyStatesAuthenticationStatus.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesAuthenticationStatus.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 36)) {
-      builder = BACnetPropertyStatesBackupState.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesBackupState.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 37)) {
-      builder = BACnetPropertyStatesWriteStatus.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesWriteStatus.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 38)) {
       builder =
-          BACnetPropertyStatesLightningInProgress.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesLightningInProgress.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 39)) {
       builder =
-          BACnetPropertyStatesLightningOperation.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesLightningOperation.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 40)) {
       builder =
-          BACnetPropertyStatesLightningTransition.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesLightningTransition.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 41)) {
-      builder = BACnetPropertyStatesIntegerValue.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesIntegerValue.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 42)) {
       builder =
-          BACnetPropertyStatesBinaryLightningValue.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesBinaryLightningValue.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 43)) {
-      builder = BACnetPropertyStatesTimerState.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesTimerState.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 44)) {
-      builder = BACnetPropertyStatesTimerTransition.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesTimerTransition.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 45)) {
-      builder = BACnetPropertyStatesBacnetIpMode.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesBacnetIpMode.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 46)) {
       builder =
-          BACnetPropertyStatesNetworkPortCommand.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesNetworkPortCommand.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 47)) {
-      builder = BACnetPropertyStatesNetworkType.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesNetworkType.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 48)) {
       builder =
-          BACnetPropertyStatesNetworkNumberQuality.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesNetworkNumberQuality.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 49)) {
       builder =
-          BACnetPropertyStatesEscalatorOperationDirection.staticParseBuilder(
+          BACnetPropertyStatesEscalatorOperationDirection.staticParseBACnetPropertyStatesBuilder(
               readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 50)) {
-      builder = BACnetPropertyStatesEscalatorFault.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesEscalatorFault.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 51)) {
-      builder = BACnetPropertyStatesEscalatorMode.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesEscalatorMode.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 52)) {
       builder =
-          BACnetPropertyStatesLiftCarDirection.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesLiftCarDirection.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 53)) {
       builder =
-          BACnetPropertyStatesLiftCarDoorCommand.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesLiftCarDoorCommand.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 54)) {
       builder =
-          BACnetPropertyStatesLiftCarDriveStatus.staticParseBuilder(readBuffer, peekedTagNumber);
+          BACnetPropertyStatesLiftCarDriveStatus.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 55)) {
-      builder = BACnetPropertyStatesLiftCarMode.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesLiftCarMode.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 56)) {
-      builder = BACnetPropertyStatesLiftGroupMode.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesLiftGroupMode.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 57)) {
-      builder = BACnetPropertyStatesLiftFault.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesLiftFault.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 58)) {
-      builder = BACnetPropertyStatesProtocolLevel.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesProtocolLevel.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 63)) {
-      builder = BACnetPropertyStatesExtendedValue.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStatesExtendedValue.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     } else {
-      builder = BACnetPropertyStateActionUnknown.staticParseBuilder(readBuffer, peekedTagNumber);
+      builder =
+          BACnetPropertyStateActionUnknown.staticParseBACnetPropertyStatesBuilder(
+              readBuffer, peekedTagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -266,7 +367,7 @@ public abstract class BACnetPropertyStates implements Message {
     return _bACnetPropertyStates;
   }
 
-  public static interface BACnetPropertyStatesBuilder {
+  public interface BACnetPropertyStatesBuilder {
     BACnetPropertyStates build(BACnetTagHeader peekedTagHeader);
   }
 

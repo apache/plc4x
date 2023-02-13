@@ -56,6 +56,7 @@ public class BACnetPropertyStatesNetworkType extends BACnetPropertyStates implem
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesNetworkType");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesNetworkType extends BACnetPropertyStates implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesNetworkType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (networkType)
     lengthInBits += networkType.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesNetworkType extends BACnetPropertyStates implem
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesNetworkTypeBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNetworkType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNetworkTypeTagged networkType =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesNetworkType extends BACnetPropertyStates implem
 
     readBuffer.closeContext("BACnetPropertyStatesNetworkType");
     // Create the instance
-    return new BACnetPropertyStatesNetworkTypeBuilder(networkType);
+    return new BACnetPropertyStatesNetworkTypeBuilderImpl(networkType);
   }
 
-  public static class BACnetPropertyStatesNetworkTypeBuilder
+  public static class BACnetPropertyStatesNetworkTypeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetNetworkTypeTagged networkType;
 
-    public BACnetPropertyStatesNetworkTypeBuilder(BACnetNetworkTypeTagged networkType) {
-
+    public BACnetPropertyStatesNetworkTypeBuilderImpl(BACnetNetworkTypeTagged networkType) {
       this.networkType = networkType;
     }
 

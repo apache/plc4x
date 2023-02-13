@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) GetTypeName() string {
 	return "BACnetTimerStateChangeValueLightingCommand"
 }
 
-func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ligthingCommandValue)
-	lengthInBits += m.LigthingCommandValue.GetLengthInBits()
+	lengthInBits += m.LigthingCommandValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetTimerStateChangeValueLightingCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetTimerStateChangeValueLightingCommandParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueLightingCommand, error) {
-	return BACnetTimerStateChangeValueLightingCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+	return BACnetTimerStateChangeValueLightingCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetTimerStateChangeValueLightingCommandParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueLightingCommand, error) {
+func BACnetTimerStateChangeValueLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueLightingCommand"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetTimerStateChangeValueLightingCommandParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("ligthingCommandValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ligthingCommandValue")
 	}
-	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParseWithBuffer(readBuffer, uint8(uint8(3)))
+	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(3)))
 	if _ligthingCommandValueErr != nil {
 		return nil, errors.Wrap(_ligthingCommandValueErr, "Error parsing 'ligthingCommandValue' field of BACnetTimerStateChangeValueLightingCommand")
 	}
@@ -164,14 +161,14 @@ func BACnetTimerStateChangeValueLightingCommandParseWithBuffer(readBuffer utils.
 }
 
 func (m *_BACnetTimerStateChangeValueLightingCommand) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetTimerStateChangeValueLightingCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetTimerStateChangeValueLightingCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("ligthingCommandValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ligthingCommandValue")
 		}
-		_ligthingCommandValueErr := writeBuffer.WriteSerializable(m.GetLigthingCommandValue())
+		_ligthingCommandValueErr := writeBuffer.WriteSerializable(ctx, m.GetLigthingCommandValue())
 		if popErr := writeBuffer.PopContext("ligthingCommandValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ligthingCommandValue")
 		}
@@ -196,7 +193,7 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetTimerStateChangeValueLightingCommand) isBACnetTimerStateChangeValueLightingCommand() bool {
@@ -208,7 +205,7 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

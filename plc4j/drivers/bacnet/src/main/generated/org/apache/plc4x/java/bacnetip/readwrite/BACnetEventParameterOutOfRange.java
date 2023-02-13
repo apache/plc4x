@@ -92,6 +92,7 @@ public class BACnetEventParameterOutOfRange extends BACnetEventParameter impleme
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterOutOfRange");
 
@@ -125,6 +126,7 @@ public class BACnetEventParameterOutOfRange extends BACnetEventParameter impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterOutOfRange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -147,12 +149,13 @@ public class BACnetEventParameterOutOfRange extends BACnetEventParameter impleme
     return lengthInBits;
   }
 
-  public static BACnetEventParameterOutOfRangeBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterOutOfRange");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -210,11 +213,11 @@ public class BACnetEventParameterOutOfRange extends BACnetEventParameter impleme
 
     readBuffer.closeContext("BACnetEventParameterOutOfRange");
     // Create the instance
-    return new BACnetEventParameterOutOfRangeBuilder(
+    return new BACnetEventParameterOutOfRangeBuilderImpl(
         openingTag, timeDelay, lowDiffLimit, highDiffLimit, deadband, closingTag);
   }
 
-  public static class BACnetEventParameterOutOfRangeBuilder
+  public static class BACnetEventParameterOutOfRangeBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
@@ -223,14 +226,13 @@ public class BACnetEventParameterOutOfRange extends BACnetEventParameter impleme
     private final BACnetContextTagReal deadband;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterOutOfRangeBuilder(
+    public BACnetEventParameterOutOfRangeBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetContextTagReal lowDiffLimit,
         BACnetContextTagReal highDiffLimit,
         BACnetContextTagReal deadband,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.lowDiffLimit = lowDiffLimit;

@@ -64,6 +64,7 @@ public class BACnetLogRecordLogDatumNullValue extends BACnetLogRecordLogDatum im
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumNullValue");
 
@@ -82,6 +83,7 @@ public class BACnetLogRecordLogDatumNullValue extends BACnetLogRecordLogDatum im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumNullValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nullValue)
     lengthInBits += nullValue.getLengthInBits();
@@ -89,12 +91,13 @@ public class BACnetLogRecordLogDatumNullValue extends BACnetLogRecordLogDatum im
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumNullValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumNullValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagNull nullValue =
         readSimpleField(
@@ -108,17 +111,16 @@ public class BACnetLogRecordLogDatumNullValue extends BACnetLogRecordLogDatum im
 
     readBuffer.closeContext("BACnetLogRecordLogDatumNullValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumNullValueBuilder(nullValue, tagNumber);
+    return new BACnetLogRecordLogDatumNullValueBuilderImpl(nullValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumNullValueBuilder
+  public static class BACnetLogRecordLogDatumNullValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagNull nullValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumNullValueBuilder(
+    public BACnetLogRecordLogDatumNullValueBuilderImpl(
         BACnetContextTagNull nullValue, Short tagNumber) {
-
       this.nullValue = nullValue;
       this.tagNumber = tagNumber;
     }

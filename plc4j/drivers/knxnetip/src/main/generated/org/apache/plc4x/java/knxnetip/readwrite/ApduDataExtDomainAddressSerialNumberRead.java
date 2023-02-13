@@ -42,17 +42,14 @@ public class ApduDataExtDomainAddressSerialNumberRead extends ApduDataExt implem
     return (short) 0x2C;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtDomainAddressSerialNumberRead(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtDomainAddressSerialNumberRead() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtDomainAddressSerialNumberRead");
 
@@ -68,35 +65,32 @@ public class ApduDataExtDomainAddressSerialNumberRead extends ApduDataExt implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtDomainAddressSerialNumberRead _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtDomainAddressSerialNumberReadBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtDomainAddressSerialNumberRead");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtDomainAddressSerialNumberRead");
     // Create the instance
-    return new ApduDataExtDomainAddressSerialNumberReadBuilder(length);
+    return new ApduDataExtDomainAddressSerialNumberReadBuilderImpl();
   }
 
-  public static class ApduDataExtDomainAddressSerialNumberReadBuilder
+  public static class ApduDataExtDomainAddressSerialNumberReadBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtDomainAddressSerialNumberReadBuilder(Short length) {
+    public ApduDataExtDomainAddressSerialNumberReadBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtDomainAddressSerialNumberRead build(Short length) {
-
+    public ApduDataExtDomainAddressSerialNumberRead build() {
       ApduDataExtDomainAddressSerialNumberRead apduDataExtDomainAddressSerialNumberRead =
-          new ApduDataExtDomainAddressSerialNumberRead(length);
+          new ApduDataExtDomainAddressSerialNumberRead();
       return apduDataExtDomainAddressSerialNumberRead;
     }
   }

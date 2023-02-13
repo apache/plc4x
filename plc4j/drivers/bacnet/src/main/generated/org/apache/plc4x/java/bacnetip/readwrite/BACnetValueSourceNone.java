@@ -55,6 +55,7 @@ public class BACnetValueSourceNone extends BACnetValueSource implements Message 
   protected void serializeBACnetValueSourceChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetValueSourceNone");
 
@@ -73,6 +74,7 @@ public class BACnetValueSourceNone extends BACnetValueSource implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetValueSourceNone _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (none)
     lengthInBits += none.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetValueSourceNone extends BACnetValueSource implements Message 
     return lengthInBits;
   }
 
-  public static BACnetValueSourceNoneBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetValueSourceBuilder staticParseBACnetValueSourceBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetValueSourceNone");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagNull none =
         readSimpleField(
@@ -99,15 +102,14 @@ public class BACnetValueSourceNone extends BACnetValueSource implements Message 
 
     readBuffer.closeContext("BACnetValueSourceNone");
     // Create the instance
-    return new BACnetValueSourceNoneBuilder(none);
+    return new BACnetValueSourceNoneBuilderImpl(none);
   }
 
-  public static class BACnetValueSourceNoneBuilder
+  public static class BACnetValueSourceNoneBuilderImpl
       implements BACnetValueSource.BACnetValueSourceBuilder {
     private final BACnetContextTagNull none;
 
-    public BACnetValueSourceNoneBuilder(BACnetContextTagNull none) {
-
+    public BACnetValueSourceNoneBuilderImpl(BACnetContextTagNull none) {
       this.none = none;
     }
 

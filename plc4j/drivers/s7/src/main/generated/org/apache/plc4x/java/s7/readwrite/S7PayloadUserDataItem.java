@@ -67,6 +67,7 @@ public abstract class S7PayloadUserDataItem implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItem");
 
@@ -110,6 +111,7 @@ public abstract class S7PayloadUserDataItem implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     S7PayloadUserDataItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (returnCode)
     lengthInBits += 8;
@@ -161,6 +163,7 @@ public abstract class S7PayloadUserDataItem implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DataTransportErrorCode returnCode =
         readEnumField(
@@ -183,83 +186,96 @@ public abstract class S7PayloadUserDataItem implements Message {
     if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x00)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x03)) {
       builder =
-          S7PayloadDiagnosticMessage.staticParseBuilder(
+          S7PayloadDiagnosticMessage.staticParseS7PayloadUserDataItemBuilder(
               readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x00)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x05)) {
-      builder = S7PayloadAlarm8.staticParseBuilder(readBuffer, cpuFunctionType, cpuSubfunction);
+      builder =
+          S7PayloadAlarm8.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x00)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x06)) {
-      builder = S7PayloadNotify.staticParseBuilder(readBuffer, cpuFunctionType, cpuSubfunction);
+      builder =
+          S7PayloadNotify.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x00)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x0c)) {
       builder =
-          S7PayloadAlarmAckInd.staticParseBuilder(readBuffer, cpuFunctionType, cpuSubfunction);
+          S7PayloadAlarmAckInd.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x00)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x11)) {
-      builder = S7PayloadAlarmSQ.staticParseBuilder(readBuffer, cpuFunctionType, cpuSubfunction);
+      builder =
+          S7PayloadAlarmSQ.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x00)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x12)) {
-      builder = S7PayloadAlarmS.staticParseBuilder(readBuffer, cpuFunctionType, cpuSubfunction);
+      builder =
+          S7PayloadAlarmS.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x00)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x13)) {
-      builder = S7PayloadAlarmSC.staticParseBuilder(readBuffer, cpuFunctionType, cpuSubfunction);
+      builder =
+          S7PayloadAlarmSC.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x00)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x16)) {
-      builder = S7PayloadNotify8.staticParseBuilder(readBuffer, cpuFunctionType, cpuSubfunction);
+      builder =
+          S7PayloadNotify8.staticParseS7PayloadUserDataItemBuilder(
+              readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x04)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x01)) {
       builder =
-          S7PayloadUserDataItemCpuFunctionReadSzlRequest.staticParseBuilder(
+          S7PayloadUserDataItemCpuFunctionReadSzlRequest.staticParseS7PayloadUserDataItemBuilder(
               readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x01)) {
       builder =
-          S7PayloadUserDataItemCpuFunctionReadSzlResponse.staticParseBuilder(
+          S7PayloadUserDataItemCpuFunctionReadSzlResponse.staticParseS7PayloadUserDataItemBuilder(
               readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x04)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x02)) {
       builder =
-          S7PayloadUserDataItemCpuFunctionMsgSubscription.staticParseBuilder(
+          S7PayloadUserDataItemCpuFunctionMsgSubscription.staticParseS7PayloadUserDataItemBuilder(
               readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x02)
         && EvaluationHelper.equals(dataLength, (int) 0x00)) {
       builder =
-          S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse.staticParseBuilder(
-              readBuffer, cpuFunctionType, cpuSubfunction);
+          S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse
+              .staticParseS7PayloadUserDataItemBuilder(readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x02)
         && EvaluationHelper.equals(dataLength, (int) 0x02)) {
       builder =
-          S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse.staticParseBuilder(
-              readBuffer, cpuFunctionType, cpuSubfunction);
+          S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+              .staticParseS7PayloadUserDataItemBuilder(readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x02)
         && EvaluationHelper.equals(dataLength, (int) 0x05)) {
       builder =
-          S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse.staticParseBuilder(
-              readBuffer, cpuFunctionType, cpuSubfunction);
+          S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
+              .staticParseS7PayloadUserDataItemBuilder(readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x04)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x0b)) {
       builder =
-          S7PayloadUserDataItemCpuFunctionAlarmAck.staticParseBuilder(
+          S7PayloadUserDataItemCpuFunctionAlarmAck.staticParseS7PayloadUserDataItemBuilder(
               readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x0b)) {
       builder =
-          S7PayloadUserDataItemCpuFunctionAlarmAckResponse.staticParseBuilder(
+          S7PayloadUserDataItemCpuFunctionAlarmAckResponse.staticParseS7PayloadUserDataItemBuilder(
               readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x04)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x13)) {
       builder =
-          S7PayloadUserDataItemCpuFunctionAlarmQuery.staticParseBuilder(
+          S7PayloadUserDataItemCpuFunctionAlarmQuery.staticParseS7PayloadUserDataItemBuilder(
               readBuffer, cpuFunctionType, cpuSubfunction);
     } else if (EvaluationHelper.equals(cpuFunctionType, (byte) 0x08)
         && EvaluationHelper.equals(cpuSubfunction, (short) 0x13)) {
       builder =
-          S7PayloadUserDataItemCpuFunctionAlarmQueryResponse.staticParseBuilder(
-              readBuffer, cpuFunctionType, cpuSubfunction);
+          S7PayloadUserDataItemCpuFunctionAlarmQueryResponse
+              .staticParseS7PayloadUserDataItemBuilder(readBuffer, cpuFunctionType, cpuSubfunction);
     }
     if (builder == null) {
       throw new ParseException(
@@ -282,7 +298,7 @@ public abstract class S7PayloadUserDataItem implements Message {
     return _s7PayloadUserDataItem;
   }
 
-  public static interface S7PayloadUserDataItemBuilder {
+  public interface S7PayloadUserDataItemBuilder {
     S7PayloadUserDataItem build(DataTransportErrorCode returnCode, DataTransportSize transportSize);
   }
 

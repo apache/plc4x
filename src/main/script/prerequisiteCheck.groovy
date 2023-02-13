@@ -98,7 +98,8 @@ def checkDotnet() {
 
 def checkJavaVersion(String minVersion, String maxVersion) {
     print "Detecting Java version:    "
-    String curVersion = System.properties['java.version']
+    String curVersion = System.properties['java.version'].split("-")[0]
+
     def result
     if (minVersion != null) {
         result = checkVersionAtLeast(curVersion, minVersion)
@@ -180,13 +181,14 @@ def checkGit() {
 // Remark: We're using venv, which was introduced with python 3.3,
 // that's why this is the baseline for python.
 def checkPython() {
+    def python = project.properties['python.exe.bin']
+    println "Using python executable:   " + python + "        OK"
     print "Detecting Python version:  "
     try {
-        def process = ("python3 --version").execute()
+        def process = (python + " --version").execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
-        process.consumeProcessOutput(stdOut, stdErr)
-        process.waitForOrKill(5000)
+        process.waitForProcessOutput(stdOut, stdErr)
         Matcher matcher = extractVersion(stdOut + stdErr)
         if (matcher.size() > 0) {
             String curVersion = matcher[0][1]
@@ -210,12 +212,12 @@ def checkPython() {
 def checkPythonVenv() {
     print "Detecting venv:            "
     try {
-        def cmdArray = ["python3", "-Im", "ensurepip"]
+        def python = project.properties['python.exe.bin']
+        def cmdArray = [python, "-Im", "ensurepip"]
         def process = cmdArray.execute()
         def stdOut = new StringBuilder()
         def stdErr = new StringBuilder()
-        process.consumeProcessOutput(stdOut, stdErr)
-        process.waitForOrKill(500)
+        process.waitForProcessOutput(stdOut, stdErr)
         if (stdErr.contains("No module named")) {
             println "missing"
             allConditionsMet = false

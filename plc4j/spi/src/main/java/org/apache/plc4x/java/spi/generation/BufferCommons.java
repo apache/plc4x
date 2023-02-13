@@ -76,4 +76,22 @@ public interface BufferCommons {
         }
         return Optional.empty();
     }
+
+    default Optional<String> extractEncoding(WithReaderArgs... readerArgs) {
+        return extractEncoding(Stream.of(readerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
+    }
+
+    default Optional<String> extractEncoding(WithWriterArgs... writerArgs) {
+        return extractEncoding(Stream.of(writerArgs).map(WithReaderWriterArgs.class::cast).toArray(WithReaderWriterArgs[]::new));
+    }
+
+    default Optional<String> extractEncoding(WithReaderWriterArgs... readerWriterArgs) {
+        for (WithReaderWriterArgs arg : readerWriterArgs) {
+            if (arg instanceof withEncoding) {
+                return Optional.of(((withEncoding) arg).encoding());
+            }
+        }
+        return Optional.empty();
+    }
+
 }

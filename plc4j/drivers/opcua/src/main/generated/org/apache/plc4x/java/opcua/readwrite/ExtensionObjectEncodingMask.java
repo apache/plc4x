@@ -41,8 +41,6 @@ public class ExtensionObjectEncodingMask implements Message {
   protected final boolean typeIdSpecified;
   protected final boolean xmlbody;
   protected final boolean binaryBody;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public ExtensionObjectEncodingMask(boolean typeIdSpecified, boolean xmlbody, boolean binaryBody) {
     super();
@@ -65,14 +63,12 @@ public class ExtensionObjectEncodingMask implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ExtensionObjectEncodingMask");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeSignedByte(writeBuffer, 5));
+    writeReservedField("reserved", (byte) 0x00, writeSignedByte(writeBuffer, 5));
 
     // Simple Field (typeIdSpecified)
     writeSimpleField("typeIdSpecified", typeIdSpecified, writeBoolean(writeBuffer));
@@ -95,6 +91,7 @@ public class ExtensionObjectEncodingMask implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ExtensionObjectEncodingMask _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 5;
@@ -123,6 +120,7 @@ public class ExtensionObjectEncodingMask implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readSignedByte(readBuffer, 5), (byte) 0x00);
 
@@ -137,7 +135,6 @@ public class ExtensionObjectEncodingMask implements Message {
     ExtensionObjectEncodingMask _extensionObjectEncodingMask;
     _extensionObjectEncodingMask =
         new ExtensionObjectEncodingMask(typeIdSpecified, xmlbody, binaryBody);
-    _extensionObjectEncodingMask.reservedField0 = reservedField0;
     return _extensionObjectEncodingMask;
   }
 

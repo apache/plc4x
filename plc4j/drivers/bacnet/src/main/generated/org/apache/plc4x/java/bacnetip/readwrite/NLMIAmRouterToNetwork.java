@@ -61,6 +61,7 @@ public class NLMIAmRouterToNetwork extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMIAmRouterToNetwork");
 
@@ -82,6 +83,7 @@ public class NLMIAmRouterToNetwork extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMIAmRouterToNetwork _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (destinationNetworkAddresses != null) {
@@ -91,12 +93,13 @@ public class NLMIAmRouterToNetwork extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMIAmRouterToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMIAmRouterToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<Integer> destinationNetworkAddresses =
         readLengthArrayField(
@@ -104,16 +107,15 @@ public class NLMIAmRouterToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMIAmRouterToNetwork");
     // Create the instance
-    return new NLMIAmRouterToNetworkBuilder(destinationNetworkAddresses, apduLength);
+    return new NLMIAmRouterToNetworkBuilderImpl(destinationNetworkAddresses, apduLength);
   }
 
-  public static class NLMIAmRouterToNetworkBuilder implements NLM.NLMBuilder {
+  public static class NLMIAmRouterToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final List<Integer> destinationNetworkAddresses;
     private final Integer apduLength;
 
-    public NLMIAmRouterToNetworkBuilder(
+    public NLMIAmRouterToNetworkBuilderImpl(
         List<Integer> destinationNetworkAddresses, Integer apduLength) {
-
       this.destinationNetworkAddresses = destinationNetworkAddresses;
       this.apduLength = apduLength;
     }

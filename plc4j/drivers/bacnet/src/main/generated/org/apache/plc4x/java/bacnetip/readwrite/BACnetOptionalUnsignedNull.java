@@ -56,6 +56,7 @@ public class BACnetOptionalUnsignedNull extends BACnetOptionalUnsigned implement
   protected void serializeBACnetOptionalUnsignedChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalUnsignedNull");
 
@@ -74,6 +75,7 @@ public class BACnetOptionalUnsignedNull extends BACnetOptionalUnsigned implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalUnsignedNull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nullValue)
     lengthInBits += nullValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetOptionalUnsignedNull extends BACnetOptionalUnsigned implement
     return lengthInBits;
   }
 
-  public static BACnetOptionalUnsignedNullBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetOptionalUnsignedBuilder staticParseBACnetOptionalUnsignedBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalUnsignedNull");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetOptionalUnsignedNull extends BACnetOptionalUnsigned implement
 
     readBuffer.closeContext("BACnetOptionalUnsignedNull");
     // Create the instance
-    return new BACnetOptionalUnsignedNullBuilder(nullValue);
+    return new BACnetOptionalUnsignedNullBuilderImpl(nullValue);
   }
 
-  public static class BACnetOptionalUnsignedNullBuilder
+  public static class BACnetOptionalUnsignedNullBuilderImpl
       implements BACnetOptionalUnsigned.BACnetOptionalUnsignedBuilder {
     private final BACnetApplicationTagNull nullValue;
 
-    public BACnetOptionalUnsignedNullBuilder(BACnetApplicationTagNull nullValue) {
-
+    public BACnetOptionalUnsignedNullBuilderImpl(BACnetApplicationTagNull nullValue) {
       this.nullValue = nullValue;
     }
 

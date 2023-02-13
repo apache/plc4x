@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -95,38 +96,34 @@ func (m *_BACnetAuthenticationFactorFormat) GetTypeName() string {
 	return "BACnetAuthenticationFactorFormat"
 }
 
-func (m *_BACnetAuthenticationFactorFormat) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAuthenticationFactorFormat) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAuthenticationFactorFormat) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (formatType)
-	lengthInBits += m.FormatType.GetLengthInBits()
+	lengthInBits += m.FormatType.GetLengthInBits(ctx)
 
 	// Optional Field (vendorId)
 	if m.VendorId != nil {
-		lengthInBits += m.VendorId.GetLengthInBits()
+		lengthInBits += m.VendorId.GetLengthInBits(ctx)
 	}
 
 	// Optional Field (vendorFormat)
 	if m.VendorFormat != nil {
-		lengthInBits += m.VendorFormat.GetLengthInBits()
+		lengthInBits += m.VendorFormat.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetAuthenticationFactorFormat) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAuthenticationFactorFormat) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAuthenticationFactorFormatParse(theBytes []byte) (BACnetAuthenticationFactorFormat, error) {
-	return BACnetAuthenticationFactorFormatParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetAuthenticationFactorFormatParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAuthenticationFactorFormatParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorFormat, error) {
+func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorFormat, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationFactorFormat"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetAuthenticationFactorFormatParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("formatType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for formatType")
 	}
-	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _formatTypeErr != nil {
 		return nil, errors.Wrap(_formatTypeErr, "Error parsing 'formatType' field of BACnetAuthenticationFactorFormat")
 	}
@@ -155,7 +152,7 @@ func BACnetAuthenticationFactorFormatParseWithBuffer(readBuffer utils.ReadBuffer
 		if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
 		}
-		_val, _err := BACnetVendorIdTaggedParseWithBuffer(readBuffer, uint8(1), TagClass_CONTEXT_SPECIFIC_TAGS)
+		_val, _err := BACnetVendorIdTaggedParseWithBuffer(ctx, readBuffer, uint8(1), TagClass_CONTEXT_SPECIFIC_TAGS)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -177,7 +174,7 @@ func BACnetAuthenticationFactorFormatParseWithBuffer(readBuffer utils.ReadBuffer
 		if pullErr := readBuffer.PullContext("vendorFormat"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for vendorFormat")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -205,14 +202,14 @@ func BACnetAuthenticationFactorFormatParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_BACnetAuthenticationFactorFormat) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAuthenticationFactorFormat) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAuthenticationFactorFormat) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAuthenticationFactorFormat"); pushErr != nil {
@@ -223,7 +220,7 @@ func (m *_BACnetAuthenticationFactorFormat) SerializeWithWriteBuffer(writeBuffer
 	if pushErr := writeBuffer.PushContext("formatType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for formatType")
 	}
-	_formatTypeErr := writeBuffer.WriteSerializable(m.GetFormatType())
+	_formatTypeErr := writeBuffer.WriteSerializable(ctx, m.GetFormatType())
 	if popErr := writeBuffer.PopContext("formatType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for formatType")
 	}
@@ -238,7 +235,7 @@ func (m *_BACnetAuthenticationFactorFormat) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for vendorId")
 		}
 		vendorId = m.GetVendorId()
-		_vendorIdErr := writeBuffer.WriteSerializable(vendorId)
+		_vendorIdErr := writeBuffer.WriteSerializable(ctx, vendorId)
 		if popErr := writeBuffer.PopContext("vendorId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorId")
 		}
@@ -254,7 +251,7 @@ func (m *_BACnetAuthenticationFactorFormat) SerializeWithWriteBuffer(writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for vendorFormat")
 		}
 		vendorFormat = m.GetVendorFormat()
-		_vendorFormatErr := writeBuffer.WriteSerializable(vendorFormat)
+		_vendorFormatErr := writeBuffer.WriteSerializable(ctx, vendorFormat)
 		if popErr := writeBuffer.PopContext("vendorFormat"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vendorFormat")
 		}
@@ -278,7 +275,7 @@ func (m *_BACnetAuthenticationFactorFormat) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

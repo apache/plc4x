@@ -60,6 +60,7 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
   protected void serializeReplyOrConfirmationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServerErrorReply");
 
@@ -78,6 +79,7 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ServerErrorReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (errorMarker)
     lengthInBits += 8;
@@ -85,29 +87,29 @@ public class ServerErrorReply extends ReplyOrConfirmation implements Message {
     return lengthInBits;
   }
 
-  public static ServerErrorReplyBuilder staticParseBuilder(
+  public static ReplyOrConfirmationBuilder staticParseReplyOrConfirmationBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("ServerErrorReply");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte errorMarker =
         readConstField("errorMarker", readByte(readBuffer, 8), ServerErrorReply.ERRORMARKER);
 
     readBuffer.closeContext("ServerErrorReply");
     // Create the instance
-    return new ServerErrorReplyBuilder(cBusOptions, requestContext);
+    return new ServerErrorReplyBuilderImpl(cBusOptions, requestContext);
   }
 
-  public static class ServerErrorReplyBuilder
+  public static class ServerErrorReplyBuilderImpl
       implements ReplyOrConfirmation.ReplyOrConfirmationBuilder {
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public ServerErrorReplyBuilder(CBusOptions cBusOptions, RequestContext requestContext) {
-
+    public ServerErrorReplyBuilderImpl(CBusOptions cBusOptions, RequestContext requestContext) {
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;
     }

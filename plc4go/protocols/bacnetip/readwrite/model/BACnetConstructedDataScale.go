@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataScale) GetScale() BACnetScale {
 ///////////////////////
 
 func (m *_BACnetConstructedDataScale) GetActualValue() BACnetScale {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetScale(m.GetScale())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataScale) GetTypeName() string {
 	return "BACnetConstructedDataScale"
 }
 
-func (m *_BACnetConstructedDataScale) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataScale) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataScale) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (scale)
-	lengthInBits += m.Scale.GetLengthInBits()
+	lengthInBits += m.Scale.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataScale) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataScale) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataScaleParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScale, error) {
-	return BACnetConstructedDataScaleParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataScaleParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataScaleParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScale, error) {
+func BACnetConstructedDataScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScale, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataScale"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataScaleParseWithBuffer(readBuffer utils.ReadBuffer, tagN
 	if pullErr := readBuffer.PullContext("scale"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for scale")
 	}
-	_scale, _scaleErr := BACnetScaleParseWithBuffer(readBuffer)
+	_scale, _scaleErr := BACnetScaleParseWithBuffer(ctx, readBuffer)
 	if _scaleErr != nil {
 		return nil, errors.Wrap(_scaleErr, "Error parsing 'scale' field of BACnetConstructedDataScale")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataScaleParseWithBuffer(readBuffer utils.ReadBuffer, tagN
 }
 
 func (m *_BACnetConstructedDataScale) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataScale) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataScale) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataScale) SerializeWithWriteBuffer(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("scale"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for scale")
 		}
-		_scaleErr := writeBuffer.WriteSerializable(m.GetScale())
+		_scaleErr := writeBuffer.WriteSerializable(ctx, m.GetScale())
 		if popErr := writeBuffer.PopContext("scale"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for scale")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataScale) SerializeWithWriteBuffer(writeBuffer utils
 			return errors.Wrap(_scaleErr, "Error serializing 'scale' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataScale) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataScale) isBACnetConstructedDataScale() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataScale) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

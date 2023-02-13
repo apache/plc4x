@@ -65,6 +65,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
   protected void serializeBACnetNotificationParametersChangeOfDiscreteValueNewValueChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate");
 
@@ -83,6 +84,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dateValue)
     lengthInBits += dateValue.getLengthInBits();
@@ -90,12 +92,14 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+      staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDate dateValue =
         readSimpleField(
@@ -106,19 +110,18 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder(
+    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilderImpl(
         dateValue, tagNumber);
   }
 
-  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
+  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagDate dateValue;
     private final Short tagNumber;
 
-    public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder(
+    public BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilderImpl(
         BACnetApplicationTagDate dateValue, Short tagNumber) {
-
       this.dateValue = dateValue;
       this.tagNumber = tagNumber;
     }

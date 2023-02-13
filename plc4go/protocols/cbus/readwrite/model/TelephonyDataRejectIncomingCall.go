@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -88,25 +89,21 @@ func (m *_TelephonyDataRejectIncomingCall) GetTypeName() string {
 	return "TelephonyDataRejectIncomingCall"
 }
 
-func (m *_TelephonyDataRejectIncomingCall) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_TelephonyDataRejectIncomingCall) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_TelephonyDataRejectIncomingCall) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_TelephonyDataRejectIncomingCall) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TelephonyDataRejectIncomingCall) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TelephonyDataRejectIncomingCallParse(theBytes []byte) (TelephonyDataRejectIncomingCall, error) {
-	return TelephonyDataRejectIncomingCallParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return TelephonyDataRejectIncomingCallParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func TelephonyDataRejectIncomingCallParseWithBuffer(readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {
+func TelephonyDataRejectIncomingCallParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TelephonyDataRejectIncomingCall"); pullErr != nil {
@@ -128,14 +125,14 @@ func TelephonyDataRejectIncomingCallParseWithBuffer(readBuffer utils.ReadBuffer)
 }
 
 func (m *_TelephonyDataRejectIncomingCall) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_TelephonyDataRejectIncomingCall) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_TelephonyDataRejectIncomingCall) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -148,7 +145,7 @@ func (m *_TelephonyDataRejectIncomingCall) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_TelephonyDataRejectIncomingCall) isTelephonyDataRejectIncomingCall() bool {
@@ -160,7 +157,7 @@ func (m *_TelephonyDataRejectIncomingCall) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

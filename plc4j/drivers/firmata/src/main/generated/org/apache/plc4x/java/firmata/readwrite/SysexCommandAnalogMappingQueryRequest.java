@@ -53,6 +53,7 @@ public class SysexCommandAnalogMappingQueryRequest extends SysexCommand implemen
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandAnalogMappingQueryRequest");
 
@@ -68,26 +69,28 @@ public class SysexCommandAnalogMappingQueryRequest extends SysexCommand implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandAnalogMappingQueryRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SysexCommandAnalogMappingQueryRequestBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandAnalogMappingQueryRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SysexCommandAnalogMappingQueryRequest");
     // Create the instance
-    return new SysexCommandAnalogMappingQueryRequestBuilder();
+    return new SysexCommandAnalogMappingQueryRequestBuilderImpl();
   }
 
-  public static class SysexCommandAnalogMappingQueryRequestBuilder
+  public static class SysexCommandAnalogMappingQueryRequestBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandAnalogMappingQueryRequestBuilder() {}
+    public SysexCommandAnalogMappingQueryRequestBuilderImpl() {}
 
     public SysexCommandAnalogMappingQueryRequest build() {
       SysexCommandAnalogMappingQueryRequest sysexCommandAnalogMappingQueryRequest =

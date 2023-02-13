@@ -78,6 +78,7 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFDBBMDAddress");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFDBBMDAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fDBBMDAddress)
     lengthInBits += fDBBMDAddress.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFDBBMDAddressBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetHostNPort fDBBMDAddress =
         readSimpleField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataFDBBMDAddress");
     // Create the instance
-    return new BACnetConstructedDataFDBBMDAddressBuilder(
+    return new BACnetConstructedDataFDBBMDAddressBuilderImpl(
         fDBBMDAddress, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFDBBMDAddressBuilder
+  public static class BACnetConstructedDataFDBBMDAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetHostNPort fDBBMDAddress;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFDBBMDAddressBuilder(
+    public BACnetConstructedDataFDBBMDAddressBuilderImpl(
         BACnetHostNPort fDBBMDAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fDBBMDAddress = fDBBMDAddress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

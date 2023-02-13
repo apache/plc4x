@@ -56,6 +56,7 @@ public class BACnetPropertyStatesReasonForHalt extends BACnetPropertyStates impl
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesReasonForHalt");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesReasonForHalt extends BACnetPropertyStates impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesReasonForHalt _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reasonForHalt)
     lengthInBits += reasonForHalt.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesReasonForHalt extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesReasonForHaltBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesReasonForHalt");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetProgramErrorTagged reasonForHalt =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesReasonForHalt extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesReasonForHalt");
     // Create the instance
-    return new BACnetPropertyStatesReasonForHaltBuilder(reasonForHalt);
+    return new BACnetPropertyStatesReasonForHaltBuilderImpl(reasonForHalt);
   }
 
-  public static class BACnetPropertyStatesReasonForHaltBuilder
+  public static class BACnetPropertyStatesReasonForHaltBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetProgramErrorTagged reasonForHalt;
 
-    public BACnetPropertyStatesReasonForHaltBuilder(BACnetProgramErrorTagged reasonForHalt) {
-
+    public BACnetPropertyStatesReasonForHaltBuilderImpl(BACnetProgramErrorTagged reasonForHalt) {
       this.reasonForHalt = reasonForHalt;
     }
 

@@ -101,6 +101,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("QueryFirstRequest");
 
@@ -139,6 +140,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     QueryFirstRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -153,7 +155,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     if (nodeTypes != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : nodeTypes) {
-        boolean last = ++i >= nodeTypes.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodeTypes.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -170,12 +172,13 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static QueryFirstRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("QueryFirstRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -216,7 +219,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("QueryFirstRequest");
     // Create the instance
-    return new QueryFirstRequestBuilder(
+    return new QueryFirstRequestBuilderImpl(
         requestHeader,
         view,
         noOfNodeTypes,
@@ -226,7 +229,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
         maxReferencesToReturn);
   }
 
-  public static class QueryFirstRequestBuilder
+  public static class QueryFirstRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObjectDefinition view;
@@ -236,7 +239,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     private final long maxDataSetsToReturn;
     private final long maxReferencesToReturn;
 
-    public QueryFirstRequestBuilder(
+    public QueryFirstRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         ExtensionObjectDefinition view,
         int noOfNodeTypes,
@@ -244,7 +247,6 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
         ExtensionObjectDefinition filter,
         long maxDataSetsToReturn,
         long maxReferencesToReturn) {
-
       this.requestHeader = requestHeader;
       this.view = view;
       this.noOfNodeTypes = noOfNodeTypes;

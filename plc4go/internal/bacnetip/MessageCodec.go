@@ -21,7 +21,11 @@ package bacnetip
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/local"
+	"fmt"
+	"net"
+	"net/url"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
@@ -29,9 +33,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"net"
-	"net/url"
-	"time"
 )
 
 // ApplicationLayerMessageCodec is a wrapper for MessageCodec which takes care of segmentation, retries etc.
@@ -45,12 +46,12 @@ type ApplicationLayerMessageCodec struct {
 }
 
 func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl url.URL, options map[string][]string, localAddress *net.UDPAddr, remoteAddress *net.UDPAddr) (*ApplicationLayerMessageCodec, error) {
+	// TODO: currently this is done by the BIP down below
 	// Have the transport create a new transport-instance.
-	transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(transportUrl, options, localAddress)
-	if err != nil {
-		return nil, errors.Wrap(err, "error creating transport instance")
-	}
-	_ = transportInstance
+	//transportInstance, err := udpTransport.CreateTransportInstanceForLocalAddress(transportUrl, options, localAddress)
+	//if err != nil {
+	//	return nil, errors.Wrap(err, "error creating transport instance")
+	//}
 	a := &ApplicationLayerMessageCodec{
 		localAddress:  localAddress,
 		remoteAddress: remoteAddress,
@@ -59,12 +60,18 @@ func NewApplicationLayerMessageCodec(udpTransport *udp.Transport, transportUrl u
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating address")
 	}
-	application, err := NewBIPSimpleApplication(&local.LocalDeviceObject{}, *address, &a.deviceInfoCache, nil)
+	// TODO: workaround for strange address parsing
+	at := AddressTuple[string, uint16]{fmt.Sprintf("%d.%d.%d.%d", address.AddrAddress[0], address.AddrAddress[1], address.AddrAddress[2], address.AddrAddress[3]), *address.AddrPort}
+	address.AddrTuple = &at
+	application, err := NewBIPSimpleApplication(&LocalDeviceObject{
+		NumberOfAPDURetries: func() *uint { retries := uint(10); return &retries }(),
+	}, *address, &a.deviceInfoCache, nil)
 	if err != nil {
 		return nil, err
 	}
 	a.bipSimpleApplication = application
-	a.messageCode = NewMessageCodec(transportInstance)
+	// TODO: this is currently done by the BIP
+	//a.messageCode = NewMessageCodec(transportInstance)
 	return a, nil
 }
 
@@ -73,11 +80,15 @@ func (m *ApplicationLayerMessageCodec) GetCodec() spi.MessageCodec {
 }
 
 func (m *ApplicationLayerMessageCodec) Connect() error {
-	return m.messageCode.Connect()
+	// TODO: this is currently done by the BIP
+	//	return m.messageCode.Connect()
+	return nil
 }
 
 func (m *ApplicationLayerMessageCodec) ConnectWithContext(ctx context.Context) error {
-	return m.messageCode.ConnectWithContext(ctx)
+	// TODO: this is currently done by the BIP
+	//	return m.messageCode.ConnectWithContext(ctx)
+	return nil
 }
 
 func (m *ApplicationLayerMessageCodec) Disconnect() error {
@@ -92,11 +103,11 @@ func (m *ApplicationLayerMessageCodec) IsRunning() bool {
 }
 
 func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
-	address, err2 := NewAddress(m.remoteAddress)
-	if err2 != nil {
-		panic(err2)
+	address, err := NewAddress(m.remoteAddress)
+	if err != nil {
+		return err
 	}
-	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), m.remoteAddress)
+	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), address)
 	if err != nil {
 		return errors.Wrap(err, "error creating IOCB")
 	}
@@ -105,10 +116,10 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 		iocb.Wait()
 		if iocb.ioError != nil {
 			// TODO: handle error
-			println(iocb.ioError)
+			fmt.Printf("Err: %v\n", iocb.ioError)
 		} else if iocb.ioResponse != nil {
 			// TODO: response?
-			println(iocb.ioResponse)
+			fmt.Printf("Response: %v\n", iocb.ioResponse)
 		} else {
 			// TODO: what now?
 		}
@@ -118,19 +129,70 @@ func (m *ApplicationLayerMessageCodec) Send(message spi.Message) error {
 
 func (m *ApplicationLayerMessageCodec) Expect(ctx context.Context, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
 	// TODO: implement me
-	return nil
+	panic("not yet implemented")
 }
 
 func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message spi.Message, acceptsMessage spi.AcceptsMessage, handleMessage spi.HandleMessage, handleError spi.HandleError, ttl time.Duration) error {
-
-	// TODO: implement me
-	m.Send(message)
-
+	address, err := NewAddress(m.remoteAddress)
+	if err != nil {
+		return err
+	}
+	iocb, err := NewIOCB(NewPDU(message, WithPDUDestination(address)), address)
+	if err != nil {
+		return errors.Wrap(err, "error creating IOCB")
+	}
+	go func() {
+		go m.bipSimpleApplication.RequestIO(iocb)
+		iocb.Wait()
+		if err := iocb.ioError; err != nil {
+			if err := handleError(err); err != nil {
+				log.Debug().Err(err).Msg("error handling error")
+				return
+			}
+		} else if response := iocb.ioResponse; response != nil {
+			// TODO: we wrap it into a BVLC for now. Once we change the Readers etc. to accept apdus we can remove that
+			tempBVLC := model.NewBVLCOriginalUnicastNPDU(
+				model.NewNPDU(
+					0,
+					model.NewNPDUControl(
+						false,
+						false,
+						false,
+						false,
+						model.NPDUNetworkPriority_NORMAL_MESSAGE,
+					),
+					nil,
+					nil,
+					nil,
+					nil,
+					nil,
+					nil,
+					nil,
+					nil,
+					response.GetMessage().(model.APDU),
+					0,
+				),
+				0,
+			)
+			if acceptsMessage(tempBVLC) {
+				if err := handleMessage(
+					tempBVLC,
+				); err != nil {
+					log.Debug().Err(err).Msg("error handling message")
+					return
+				}
+			}
+		} else {
+			// TODO: what now?
+		}
+	}()
 	return nil
 }
 
 func (m *ApplicationLayerMessageCodec) GetDefaultIncomingMessageChannel() chan spi.Message {
-	return m.messageCode.GetDefaultIncomingMessageChannel()
+	// TODO: this is currently done by the BIP
+	//return m.messageCode.GetDefaultIncomingMessageChannel()
+	return make(chan spi.Message)
 }
 
 type MessageCodec struct {

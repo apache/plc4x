@@ -346,7 +346,7 @@ public class ReadBufferJsonBased implements ReadBuffer, BufferCommons {
     }
 
     @Override
-    public String readString(String logicalName, int bitLength, String encoding, WithReaderArgs... readerArgs) {
+    public String readString(String logicalName, int bitLength, WithReaderArgs... readerArgs) {
         logicalName = sanitizeLogicalName(logicalName);
         move(bitLength);
         Map element = getElement(logicalName);

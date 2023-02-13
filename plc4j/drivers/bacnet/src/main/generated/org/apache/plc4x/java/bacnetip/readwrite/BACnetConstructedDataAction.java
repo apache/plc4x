@@ -88,6 +88,7 @@ public class BACnetConstructedDataAction extends BACnetConstructedData implement
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAction");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataAction extends BACnetConstructedData implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAction _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataAction extends BACnetConstructedData implement
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataActionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataAction extends BACnetConstructedData implement
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -170,23 +173,22 @@ public class BACnetConstructedDataAction extends BACnetConstructedData implement
 
     readBuffer.closeContext("BACnetConstructedDataAction");
     // Create the instance
-    return new BACnetConstructedDataActionBuilder(
+    return new BACnetConstructedDataActionBuilderImpl(
         numberOfDataElements, actionLists, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataActionBuilder
+  public static class BACnetConstructedDataActionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetActionList> actionLists;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataActionBuilder(
+    public BACnetConstructedDataActionBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetActionList> actionLists,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.actionLists = actionLists;
       this.tagNumber = tagNumber;

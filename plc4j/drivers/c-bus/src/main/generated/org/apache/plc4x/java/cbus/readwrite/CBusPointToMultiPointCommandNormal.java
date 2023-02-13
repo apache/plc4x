@@ -72,6 +72,7 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
   protected void serializeCBusPointToMultiPointCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToMultiPointCommandNormal");
 
@@ -106,6 +107,7 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusPointToMultiPointCommandNormal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (application)
     lengthInBits += 8;
@@ -119,12 +121,13 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
     return lengthInBits;
   }
 
-  public static CBusPointToMultiPointCommandNormalBuilder staticParseBuilder(
+  public static CBusPointToMultiPointCommandBuilder staticParseCBusPointToMultiPointCommandBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToMultiPointCommandNormal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ApplicationIdContainer application =
         readEnumField(
@@ -146,18 +149,18 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
 
     readBuffer.closeContext("CBusPointToMultiPointCommandNormal");
     // Create the instance
-    return new CBusPointToMultiPointCommandNormalBuilder(
+    return new CBusPointToMultiPointCommandNormalBuilderImpl(
         application, salData, cBusOptions, reservedField0);
   }
 
-  public static class CBusPointToMultiPointCommandNormalBuilder
+  public static class CBusPointToMultiPointCommandNormalBuilderImpl
       implements CBusPointToMultiPointCommand.CBusPointToMultiPointCommandBuilder {
     private final ApplicationIdContainer application;
     private final SALData salData;
     private final CBusOptions cBusOptions;
     private final Byte reservedField0;
 
-    public CBusPointToMultiPointCommandNormalBuilder(
+    public CBusPointToMultiPointCommandNormalBuilderImpl(
         ApplicationIdContainer application,
         SALData salData,
         CBusOptions cBusOptions,

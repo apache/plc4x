@@ -57,6 +57,7 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
   protected void serializeBACnetOptionalCharacterStringChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalCharacterStringNull");
 
@@ -75,6 +76,7 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalCharacterStringNull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nullValue)
     lengthInBits += nullValue.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
     return lengthInBits;
   }
 
-  public static BACnetOptionalCharacterStringNullBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetOptionalCharacterStringBuilder
+      staticParseBACnetOptionalCharacterStringBuilder(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalCharacterStringNull");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =
         readSimpleField(
@@ -98,15 +101,14 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
 
     readBuffer.closeContext("BACnetOptionalCharacterStringNull");
     // Create the instance
-    return new BACnetOptionalCharacterStringNullBuilder(nullValue);
+    return new BACnetOptionalCharacterStringNullBuilderImpl(nullValue);
   }
 
-  public static class BACnetOptionalCharacterStringNullBuilder
+  public static class BACnetOptionalCharacterStringNullBuilderImpl
       implements BACnetOptionalCharacterString.BACnetOptionalCharacterStringBuilder {
     private final BACnetApplicationTagNull nullValue;
 
-    public BACnetOptionalCharacterStringNullBuilder(BACnetApplicationTagNull nullValue) {
-
+    public BACnetOptionalCharacterStringNullBuilderImpl(BACnetApplicationTagNull nullValue) {
       this.nullValue = nullValue;
     }
 

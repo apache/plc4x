@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,11 +130,7 @@ func (m *_IdentifyReplyCommandUnitSummary) GetTypeName() string {
 	return "IdentifyReplyCommandUnitSummary"
 }
 
-func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (assertingNetworkBurden)
@@ -163,15 +160,15 @@ func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_IdentifyReplyCommandUnitSummary) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func IdentifyReplyCommandUnitSummaryParse(theBytes []byte) (IdentifyReplyCommandUnitSummary, error) {
-	return IdentifyReplyCommandUnitSummaryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return IdentifyReplyCommandUnitSummaryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func IdentifyReplyCommandUnitSummaryParseWithBuffer(readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
+func IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandUnitSummary"); pullErr != nil {
@@ -254,14 +251,14 @@ func IdentifyReplyCommandUnitSummaryParseWithBuffer(readBuffer utils.ReadBuffer)
 }
 
 func (m *_IdentifyReplyCommandUnitSummary) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_IdentifyReplyCommandUnitSummary) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandUnitSummary) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("IdentifyReplyCommandUnitSummary"); pushErr != nil {
@@ -339,7 +336,7 @@ func (m *_IdentifyReplyCommandUnitSummary) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

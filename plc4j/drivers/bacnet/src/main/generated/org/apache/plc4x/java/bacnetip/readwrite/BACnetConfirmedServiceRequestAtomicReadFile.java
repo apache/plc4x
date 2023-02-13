@@ -72,6 +72,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestAtomicReadFile");
 
@@ -93,6 +94,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestAtomicReadFile _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileIdentifier)
     lengthInBits += fileIdentifier.getLengthInBits();
@@ -103,12 +105,14 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestAtomicReadFileBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestAtomicReadFile");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier fileIdentifier =
         readSimpleField(
@@ -130,21 +134,20 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAtomicReadFile");
     // Create the instance
-    return new BACnetConfirmedServiceRequestAtomicReadFileBuilder(
+    return new BACnetConfirmedServiceRequestAtomicReadFileBuilderImpl(
         fileIdentifier, accessMethod, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestAtomicReadFileBuilder
+  public static class BACnetConfirmedServiceRequestAtomicReadFileBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetApplicationTagObjectIdentifier fileIdentifier;
     private final BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestAtomicReadFileBuilder(
+    public BACnetConfirmedServiceRequestAtomicReadFileBuilderImpl(
         BACnetApplicationTagObjectIdentifier fileIdentifier,
         BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod,
         Long serviceRequestLength) {
-
       this.fileIdentifier = fileIdentifier;
       this.accessMethod = accessMethod;
       this.serviceRequestLength = serviceRequestLength;

@@ -75,6 +75,7 @@ public class BACnetConstructedDataLifeSafetyAlarmValues extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLifeSafetyAlarmValues");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataLifeSafetyAlarmValues extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLifeSafetyAlarmValues _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (alarmValues != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataLifeSafetyAlarmValues extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLifeSafetyAlarmValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataLifeSafetyAlarmValues extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetLifeSafetyStateTagged> alarmValues =
         readTerminatedArrayField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataLifeSafetyAlarmValues extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataLifeSafetyAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataLifeSafetyAlarmValuesBuilder(
+    return new BACnetConstructedDataLifeSafetyAlarmValuesBuilderImpl(
         alarmValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLifeSafetyAlarmValuesBuilder
+  public static class BACnetConstructedDataLifeSafetyAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetLifeSafetyStateTagged> alarmValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLifeSafetyAlarmValuesBuilder(
+    public BACnetConstructedDataLifeSafetyAlarmValuesBuilderImpl(
         List<BACnetLifeSafetyStateTagged> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

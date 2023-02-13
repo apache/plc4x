@@ -79,6 +79,7 @@ public class BACnetConstructedDataDerivativeConstantUnits extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDerivativeConstantUnits");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataDerivativeConstantUnits extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDerivativeConstantUnits _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (units)
     lengthInBits += units.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataDerivativeConstantUnits extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDerivativeConstantUnitsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataDerivativeConstantUnits extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEngineeringUnitsTagged units =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataDerivativeConstantUnits extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataDerivativeConstantUnits");
     // Create the instance
-    return new BACnetConstructedDataDerivativeConstantUnitsBuilder(
+    return new BACnetConstructedDataDerivativeConstantUnitsBuilderImpl(
         units, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDerivativeConstantUnitsBuilder
+  public static class BACnetConstructedDataDerivativeConstantUnitsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEngineeringUnitsTagged units;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDerivativeConstantUnitsBuilder(
+    public BACnetConstructedDataDerivativeConstantUnitsBuilderImpl(
         BACnetEngineeringUnitsTagged units,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.units = units;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

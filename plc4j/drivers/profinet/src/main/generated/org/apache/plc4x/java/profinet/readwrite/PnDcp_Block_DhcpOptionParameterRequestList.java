@@ -53,6 +53,7 @@ public class PnDcp_Block_DhcpOptionParameterRequestList extends PnDcp_Block impl
   @Override
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DhcpOptionParameterRequestList");
 
@@ -68,26 +69,28 @@ public class PnDcp_Block_DhcpOptionParameterRequestList extends PnDcp_Block impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Block_DhcpOptionParameterRequestList _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DhcpOptionParameterRequestListBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DhcpOptionParameterRequestList");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnDcp_Block_DhcpOptionParameterRequestList");
     // Create the instance
-    return new PnDcp_Block_DhcpOptionParameterRequestListBuilder();
+    return new PnDcp_Block_DhcpOptionParameterRequestListBuilderImpl();
   }
 
-  public static class PnDcp_Block_DhcpOptionParameterRequestListBuilder
+  public static class PnDcp_Block_DhcpOptionParameterRequestListBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DhcpOptionParameterRequestListBuilder() {}
+    public PnDcp_Block_DhcpOptionParameterRequestListBuilderImpl() {}
 
     public PnDcp_Block_DhcpOptionParameterRequestList build() {
       PnDcp_Block_DhcpOptionParameterRequestList pnDcp_Block_DhcpOptionParameterRequestList =

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -93,19 +94,19 @@ func CastBACnetEventTransitionBits(structType interface{}) BACnetEventTransition
 	return castFunc(structType)
 }
 
-func (m BACnetEventTransitionBits) GetLengthInBits() uint16 {
+func (m BACnetEventTransitionBits) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetEventTransitionBits) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetEventTransitionBits) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEventTransitionBitsParse(theBytes []byte) (BACnetEventTransitionBits, error) {
-	return BACnetEventTransitionBitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetEventTransitionBitsParse(ctx context.Context, theBytes []byte) (BACnetEventTransitionBits, error) {
+	return BACnetEventTransitionBitsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEventTransitionBitsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventTransitionBits, error) {
+func BACnetEventTransitionBitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventTransitionBits, error) {
 	val, err := readBuffer.ReadUint8("BACnetEventTransitionBits", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEventTransitionBits")
@@ -120,13 +121,13 @@ func BACnetEventTransitionBitsParseWithBuffer(readBuffer utils.ReadBuffer) (BACn
 
 func (e BACnetEventTransitionBits) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetEventTransitionBits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetEventTransitionBits) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetEventTransitionBits", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

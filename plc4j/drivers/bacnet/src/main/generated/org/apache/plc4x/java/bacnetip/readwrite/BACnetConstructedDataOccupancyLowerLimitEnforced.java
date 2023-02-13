@@ -79,6 +79,7 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOccupancyLowerLimitEnforced");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataOccupancyLowerLimitEnforced _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (occupancyLowerLimitEnforced)
     lengthInBits += occupancyLowerLimitEnforced.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean occupancyLowerLimitEnforced =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
 
     readBuffer.closeContext("BACnetConstructedDataOccupancyLowerLimitEnforced");
     // Create the instance
-    return new BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder(
+    return new BACnetConstructedDataOccupancyLowerLimitEnforcedBuilderImpl(
         occupancyLowerLimitEnforced, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder
+  public static class BACnetConstructedDataOccupancyLowerLimitEnforcedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean occupancyLowerLimitEnforced;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOccupancyLowerLimitEnforcedBuilder(
+    public BACnetConstructedDataOccupancyLowerLimitEnforcedBuilderImpl(
         BACnetApplicationTagBoolean occupancyLowerLimitEnforced,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.occupancyLowerLimitEnforced = occupancyLowerLimitEnforced;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

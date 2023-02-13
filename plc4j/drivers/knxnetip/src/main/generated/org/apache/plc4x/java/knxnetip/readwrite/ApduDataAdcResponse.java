@@ -42,17 +42,14 @@ public class ApduDataAdcResponse extends ApduData implements Message {
     return (byte) 0x7;
   }
 
-  // Arguments.
-  protected final Short dataLength;
-
-  public ApduDataAdcResponse(Short dataLength) {
-    super(dataLength);
-    this.dataLength = dataLength;
+  public ApduDataAdcResponse() {
+    super();
   }
 
   @Override
   protected void serializeApduDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataAdcResponse");
 
@@ -68,34 +65,30 @@ public class ApduDataAdcResponse extends ApduData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataAdcResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataAdcResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short dataLength) throws ParseException {
+  public static ApduDataBuilder staticParseApduDataBuilder(ReadBuffer readBuffer, Short dataLength)
+      throws ParseException {
     readBuffer.pullContext("ApduDataAdcResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataAdcResponse");
     // Create the instance
-    return new ApduDataAdcResponseBuilder(dataLength);
+    return new ApduDataAdcResponseBuilderImpl();
   }
 
-  public static class ApduDataAdcResponseBuilder implements ApduData.ApduDataBuilder {
-    private final Short dataLength;
+  public static class ApduDataAdcResponseBuilderImpl implements ApduData.ApduDataBuilder {
 
-    public ApduDataAdcResponseBuilder(Short dataLength) {
+    public ApduDataAdcResponseBuilderImpl() {}
 
-      this.dataLength = dataLength;
-    }
-
-    public ApduDataAdcResponse build(Short dataLength) {
-
-      ApduDataAdcResponse apduDataAdcResponse = new ApduDataAdcResponse(dataLength);
-
+    public ApduDataAdcResponse build() {
+      ApduDataAdcResponse apduDataAdcResponse = new ApduDataAdcResponse();
       return apduDataAdcResponse;
     }
   }

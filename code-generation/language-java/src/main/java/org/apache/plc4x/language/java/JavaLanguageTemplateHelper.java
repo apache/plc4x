@@ -357,8 +357,8 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toParseExpression(field, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null);
                 }
-                return "/*TODO: migrate me*/" + "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + length + ", \"" +
-                    encoding + "\")";
+                return "/*TODO: migrate me*/" + "readBuffer.read" + stringType + "(\"" + logicalName + "\", " + length + ", WithOption.WithEncoding(\"" +
+                    encoding + "\"))";
         }
         return "/*TODO: migrate me*/" + "";
     }
@@ -584,8 +584,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toSerializationExpression(field, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), thisType.getParserArguments().orElse(Collections.emptyList()));
                 }
-                return "/*TODO: migrate me*/" + "writeBuffer.writeString(\"" + logicalName + "\", " + length + ", \"" +
-                    encoding + "\", (String) " + fieldName + "" + writerArgsString + ")";
+                return "/*TODO: migrate me*/" + "writeBuffer.writeString(\"" + logicalName + "\", " + length + ", (String) " + fieldName + "" + writerArgsString + ", WithOption.WithEncoding(\"" + encoding + "\"))";
         }
         throw new FreemarkerException("Unmapped basetype" + simpleTypeReference.getBaseType());
     }
@@ -1233,6 +1232,11 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             final String byteOrder = toParseExpression(field, field.getType(), byteOrderOptional.get(), parserArguments);
             sb.append(", WithOption.WithByteOrder(").append(byteOrder).append(")");
         }
+        final Optional<Term> nullBytesHexOptional = field.getAttribute("nullBytesHex");
+        if (nullBytesHexOptional.isPresent()) {
+            final String nullBytesHex = toParseExpression(field, field.getType(), nullBytesHexOptional.get(), parserArguments);
+            sb.append(", WithOption.WithNullBytesHex(\"").append(nullBytesHex).append("\")");
+        }
         return sb.toString();
     }
 
@@ -1253,6 +1257,14 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public boolean needsLongMarker(Optional<SimpleTypeReference> baseTypeReference) {
         return baseTypeReference.isPresent() && baseTypeReference.get().isIntegerTypeReference() && baseTypeReference.get().asIntegerTypeReference().orElseThrow().getSizeInBits() >= 32;
+    }
+
+    public boolean isGeneratePropertiesForParserArguments() {
+        return options.getOrDefault("generate-properties-for-parser-arguments", "false").equals("true");
+    }
+
+    public boolean isGeneratePropertiesForReservedFields() {
+        return options.getOrDefault("generate-properties-for-reserved-fields", "false").equals("true");
     }
 
 }

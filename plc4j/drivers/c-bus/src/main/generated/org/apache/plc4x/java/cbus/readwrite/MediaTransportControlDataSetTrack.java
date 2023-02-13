@@ -80,6 +80,7 @@ public class MediaTransportControlDataSetTrack extends MediaTransportControlData
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataSetTrack");
 
@@ -107,6 +108,7 @@ public class MediaTransportControlDataSetTrack extends MediaTransportControlData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataSetTrack _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (trackMSB)
     lengthInBits += 8;
@@ -123,12 +125,13 @@ public class MediaTransportControlDataSetTrack extends MediaTransportControlData
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataSetTrackBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataSetTrack");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte trackMSB = readSimpleField("trackMSB", readByte(readBuffer, 8));
 
@@ -140,19 +143,19 @@ public class MediaTransportControlDataSetTrack extends MediaTransportControlData
 
     readBuffer.closeContext("MediaTransportControlDataSetTrack");
     // Create the instance
-    return new MediaTransportControlDataSetTrackBuilder(trackMSB, trackMMSB, trackMLSB, trackLSB);
+    return new MediaTransportControlDataSetTrackBuilderImpl(
+        trackMSB, trackMMSB, trackMLSB, trackLSB);
   }
 
-  public static class MediaTransportControlDataSetTrackBuilder
+  public static class MediaTransportControlDataSetTrackBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte trackMSB;
     private final byte trackMMSB;
     private final byte trackMLSB;
     private final byte trackLSB;
 
-    public MediaTransportControlDataSetTrackBuilder(
+    public MediaTransportControlDataSetTrackBuilderImpl(
         byte trackMSB, byte trackMMSB, byte trackMLSB, byte trackLSB) {
-
       this.trackMSB = trackMSB;
       this.trackMMSB = trackMMSB;
       this.trackMLSB = trackMLSB;

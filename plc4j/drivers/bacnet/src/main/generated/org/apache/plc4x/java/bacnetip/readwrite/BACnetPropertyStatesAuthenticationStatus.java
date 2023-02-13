@@ -57,6 +57,7 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesAuthenticationStatus");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesAuthenticationStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (authenticationStatus)
     lengthInBits += authenticationStatus.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesAuthenticationStatusBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesAuthenticationStatus");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAuthenticationStatusTagged authenticationStatus =
         readSimpleField(
@@ -103,16 +106,15 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
 
     readBuffer.closeContext("BACnetPropertyStatesAuthenticationStatus");
     // Create the instance
-    return new BACnetPropertyStatesAuthenticationStatusBuilder(authenticationStatus);
+    return new BACnetPropertyStatesAuthenticationStatusBuilderImpl(authenticationStatus);
   }
 
-  public static class BACnetPropertyStatesAuthenticationStatusBuilder
+  public static class BACnetPropertyStatesAuthenticationStatusBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetAuthenticationStatusTagged authenticationStatus;
 
-    public BACnetPropertyStatesAuthenticationStatusBuilder(
+    public BACnetPropertyStatesAuthenticationStatusBuilderImpl(
         BACnetAuthenticationStatusTagged authenticationStatus) {
-
       this.authenticationStatus = authenticationStatus;
     }
 

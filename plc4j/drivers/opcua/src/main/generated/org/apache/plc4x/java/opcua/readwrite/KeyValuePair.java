@@ -64,6 +64,7 @@ public class KeyValuePair extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("KeyValuePair");
 
@@ -85,6 +86,7 @@ public class KeyValuePair extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     KeyValuePair _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (key)
     lengthInBits += key.getLengthInBits();
@@ -95,12 +97,13 @@ public class KeyValuePair extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static KeyValuePairBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("KeyValuePair");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     QualifiedName key =
         readSimpleField(
@@ -115,16 +118,15 @@ public class KeyValuePair extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("KeyValuePair");
     // Create the instance
-    return new KeyValuePairBuilder(key, value);
+    return new KeyValuePairBuilderImpl(key, value);
   }
 
-  public static class KeyValuePairBuilder
+  public static class KeyValuePairBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final QualifiedName key;
     private final Variant value;
 
-    public KeyValuePairBuilder(QualifiedName key, Variant value) {
-
+    public KeyValuePairBuilderImpl(QualifiedName key, Variant value) {
       this.key = key;
       this.value = value;
     }

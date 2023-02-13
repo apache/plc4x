@@ -71,6 +71,7 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AliasNameDataType");
 
@@ -95,6 +96,7 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AliasNameDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (aliasName)
     lengthInBits += aliasName.getLengthInBits();
@@ -106,7 +108,7 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
     if (referencedNodes != null) {
       int i = 0;
       for (ExpandedNodeId element : referencedNodes) {
-        boolean last = ++i >= referencedNodes.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= referencedNodes.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -114,12 +116,13 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static AliasNameDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AliasNameDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     QualifiedName aliasName =
         readSimpleField(
@@ -138,18 +141,17 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("AliasNameDataType");
     // Create the instance
-    return new AliasNameDataTypeBuilder(aliasName, noOfReferencedNodes, referencedNodes);
+    return new AliasNameDataTypeBuilderImpl(aliasName, noOfReferencedNodes, referencedNodes);
   }
 
-  public static class AliasNameDataTypeBuilder
+  public static class AliasNameDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final QualifiedName aliasName;
     private final int noOfReferencedNodes;
     private final List<ExpandedNodeId> referencedNodes;
 
-    public AliasNameDataTypeBuilder(
+    public AliasNameDataTypeBuilderImpl(
         QualifiedName aliasName, int noOfReferencedNodes, List<ExpandedNodeId> referencedNodes) {
-
       this.aliasName = aliasName;
       this.noOfReferencedNodes = noOfReferencedNodes;
       this.referencedNodes = referencedNodes;

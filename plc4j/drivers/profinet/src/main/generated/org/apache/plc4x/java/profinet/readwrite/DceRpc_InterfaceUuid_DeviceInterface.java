@@ -50,6 +50,7 @@ public class DceRpc_InterfaceUuid_DeviceInterface extends DceRpc_InterfaceUuid i
   protected void serializeDceRpc_InterfaceUuidChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DceRpc_InterfaceUuid_DeviceInterface");
 
@@ -65,26 +66,28 @@ public class DceRpc_InterfaceUuid_DeviceInterface extends DceRpc_InterfaceUuid i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DceRpc_InterfaceUuid_DeviceInterface _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static DceRpc_InterfaceUuid_DeviceInterfaceBuilder staticParseBuilder(
+  public static DceRpc_InterfaceUuidBuilder staticParseDceRpc_InterfaceUuidBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DceRpc_InterfaceUuid_DeviceInterface");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("DceRpc_InterfaceUuid_DeviceInterface");
     // Create the instance
-    return new DceRpc_InterfaceUuid_DeviceInterfaceBuilder();
+    return new DceRpc_InterfaceUuid_DeviceInterfaceBuilderImpl();
   }
 
-  public static class DceRpc_InterfaceUuid_DeviceInterfaceBuilder
+  public static class DceRpc_InterfaceUuid_DeviceInterfaceBuilderImpl
       implements DceRpc_InterfaceUuid.DceRpc_InterfaceUuidBuilder {
 
-    public DceRpc_InterfaceUuid_DeviceInterfaceBuilder() {}
+    public DceRpc_InterfaceUuid_DeviceInterfaceBuilderImpl() {}
 
     public DceRpc_InterfaceUuid_DeviceInterface build() {
       DceRpc_InterfaceUuid_DeviceInterface dceRpc_InterfaceUuid_DeviceInterface =

@@ -80,6 +80,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FindServersOnNetworkResponse");
 
@@ -108,6 +109,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FindServersOnNetworkResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -122,7 +124,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     if (servers != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : servers) {
-        boolean last = ++i >= servers.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= servers.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -130,12 +132,13 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     return lengthInBits;
   }
 
-  public static FindServersOnNetworkResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FindServersOnNetworkResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -159,23 +162,22 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
 
     readBuffer.closeContext("FindServersOnNetworkResponse");
     // Create the instance
-    return new FindServersOnNetworkResponseBuilder(
+    return new FindServersOnNetworkResponseBuilderImpl(
         responseHeader, lastCounterResetTime, noOfServers, servers);
   }
 
-  public static class FindServersOnNetworkResponseBuilder
+  public static class FindServersOnNetworkResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final long lastCounterResetTime;
     private final int noOfServers;
     private final List<ExtensionObjectDefinition> servers;
 
-    public FindServersOnNetworkResponseBuilder(
+    public FindServersOnNetworkResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         long lastCounterResetTime,
         int noOfServers,
         List<ExtensionObjectDefinition> servers) {
-
       this.responseHeader = responseHeader;
       this.lastCounterResetTime = lastCounterResetTime;
       this.noOfServers = noOfServers;

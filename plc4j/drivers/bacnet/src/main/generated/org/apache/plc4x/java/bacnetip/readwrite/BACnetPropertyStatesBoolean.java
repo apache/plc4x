@@ -56,6 +56,7 @@ public class BACnetPropertyStatesBoolean extends BACnetPropertyStates implements
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesBoolean");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesBoolean extends BACnetPropertyStates implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesBoolean _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (booleanValue)
     lengthInBits += booleanValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesBoolean extends BACnetPropertyStates implements
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesBooleanBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesBoolean");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagBoolean booleanValue =
         readSimpleField(
@@ -102,15 +105,14 @@ public class BACnetPropertyStatesBoolean extends BACnetPropertyStates implements
 
     readBuffer.closeContext("BACnetPropertyStatesBoolean");
     // Create the instance
-    return new BACnetPropertyStatesBooleanBuilder(booleanValue);
+    return new BACnetPropertyStatesBooleanBuilderImpl(booleanValue);
   }
 
-  public static class BACnetPropertyStatesBooleanBuilder
+  public static class BACnetPropertyStatesBooleanBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetContextTagBoolean booleanValue;
 
-    public BACnetPropertyStatesBooleanBuilder(BACnetContextTagBoolean booleanValue) {
-
+    public BACnetPropertyStatesBooleanBuilderImpl(BACnetContextTagBoolean booleanValue) {
       this.booleanValue = booleanValue;
     }
 

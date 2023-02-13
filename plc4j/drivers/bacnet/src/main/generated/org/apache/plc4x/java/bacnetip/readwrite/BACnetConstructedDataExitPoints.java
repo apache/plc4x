@@ -74,6 +74,7 @@ public class BACnetConstructedDataExitPoints extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataExitPoints");
 
@@ -92,6 +93,7 @@ public class BACnetConstructedDataExitPoints extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataExitPoints _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (exitPoints != null) {
@@ -103,7 +105,7 @@ public class BACnetConstructedDataExitPoints extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataExitPointsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -114,6 +116,7 @@ public class BACnetConstructedDataExitPoints extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetDeviceObjectReference> exitPoints =
         readTerminatedArrayField(
@@ -127,20 +130,20 @@ public class BACnetConstructedDataExitPoints extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataExitPoints");
     // Create the instance
-    return new BACnetConstructedDataExitPointsBuilder(exitPoints, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataExitPointsBuilderImpl(
+        exitPoints, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataExitPointsBuilder
+  public static class BACnetConstructedDataExitPointsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> exitPoints;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataExitPointsBuilder(
+    public BACnetConstructedDataExitPointsBuilderImpl(
         List<BACnetDeviceObjectReference> exitPoints,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.exitPoints = exitPoints;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -78,6 +78,7 @@ public class BACnetConstructedDataPassbackTimeout extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPassbackTimeout");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataPassbackTimeout extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPassbackTimeout _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (passbackTimeout)
     lengthInBits += passbackTimeout.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataPassbackTimeout extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPassbackTimeoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataPassbackTimeout extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger passbackTimeout =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataPassbackTimeout extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataPassbackTimeout");
     // Create the instance
-    return new BACnetConstructedDataPassbackTimeoutBuilder(
+    return new BACnetConstructedDataPassbackTimeoutBuilderImpl(
         passbackTimeout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPassbackTimeoutBuilder
+  public static class BACnetConstructedDataPassbackTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger passbackTimeout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPassbackTimeoutBuilder(
+    public BACnetConstructedDataPassbackTimeoutBuilderImpl(
         BACnetApplicationTagUnsignedInteger passbackTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.passbackTimeout = passbackTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

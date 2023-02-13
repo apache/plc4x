@@ -91,6 +91,7 @@ public class DceRpc_ObjectUuid implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DceRpc_ObjectUuid");
 
@@ -104,7 +105,11 @@ public class DceRpc_ObjectUuid implements Message {
     writeConstField("data3", DATA3, writeUnsignedInt(writeBuffer, 16));
 
     // Const Field (data4)
-    writeConstField("data4", DATA4, writeUnsignedInt(writeBuffer, 16));
+    writeConstField(
+        "data4",
+        DATA4,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (interfaceNumber)
     writeSimpleField(
@@ -146,6 +151,7 @@ public class DceRpc_ObjectUuid implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     DceRpc_ObjectUuid _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (data1)
     lengthInBits += 32;
@@ -185,6 +191,7 @@ public class DceRpc_ObjectUuid implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long data1 = readConstField("data1", readUnsignedLong(readBuffer, 32), DceRpc_ObjectUuid.DATA1);
 

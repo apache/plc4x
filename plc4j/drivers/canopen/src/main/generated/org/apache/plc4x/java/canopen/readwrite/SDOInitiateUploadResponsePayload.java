@@ -42,12 +42,8 @@ public abstract class SDOInitiateUploadResponsePayload implements Message {
 
   public abstract Boolean getIndicated();
 
-  // Arguments.
-  protected final Byte size;
-
-  public SDOInitiateUploadResponsePayload(Byte size) {
+  public SDOInitiateUploadResponsePayload() {
     super();
-    this.size = size;
   }
 
   protected abstract void serializeSDOInitiateUploadResponsePayloadChild(WriteBuffer writeBuffer)
@@ -55,6 +51,7 @@ public abstract class SDOInitiateUploadResponsePayload implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateUploadResponsePayload");
 
@@ -73,6 +70,7 @@ public abstract class SDOInitiateUploadResponsePayload implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     SDOInitiateUploadResponsePayload _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -126,23 +124,24 @@ public abstract class SDOInitiateUploadResponsePayload implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     SDOInitiateUploadResponsePayloadBuilder builder = null;
     if (EvaluationHelper.equals(expedited, (boolean) true)
         && EvaluationHelper.equals(indicated, (boolean) true)) {
       builder =
-          SDOInitiateExpeditedUploadResponse.staticParseBuilder(
+          SDOInitiateExpeditedUploadResponse.staticParseSDOInitiateUploadResponsePayloadBuilder(
               readBuffer, expedited, indicated, size);
     } else if (EvaluationHelper.equals(expedited, (boolean) false)
         && EvaluationHelper.equals(indicated, (boolean) true)) {
       builder =
-          SDOInitiateSegmentedUploadResponse.staticParseBuilder(
+          SDOInitiateSegmentedUploadResponse.staticParseSDOInitiateUploadResponsePayloadBuilder(
               readBuffer, expedited, indicated, size);
     } else if (EvaluationHelper.equals(expedited, (boolean) false)
         && EvaluationHelper.equals(indicated, (boolean) false)) {
       builder =
-          SDOInitiateSegmentedReservedResponse.staticParseBuilder(
+          SDOInitiateSegmentedReservedResponse.staticParseSDOInitiateUploadResponsePayloadBuilder(
               readBuffer, expedited, indicated, size);
     }
     if (builder == null) {
@@ -159,13 +158,12 @@ public abstract class SDOInitiateUploadResponsePayload implements Message {
 
     readBuffer.closeContext("SDOInitiateUploadResponsePayload");
     // Create the instance
-    SDOInitiateUploadResponsePayload _sDOInitiateUploadResponsePayload = builder.build(size);
-
+    SDOInitiateUploadResponsePayload _sDOInitiateUploadResponsePayload = builder.build();
     return _sDOInitiateUploadResponsePayload;
   }
 
-  public static interface SDOInitiateUploadResponsePayloadBuilder {
-    SDOInitiateUploadResponsePayload build(Byte size);
+  public interface SDOInitiateUploadResponsePayloadBuilder {
+    SDOInitiateUploadResponsePayload build();
   }
 
   @Override

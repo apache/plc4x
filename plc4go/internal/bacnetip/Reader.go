@@ -125,7 +125,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 			serviceRequest,
 			nil,
 			nil,
-			serviceRequest.GetLengthInBytes(),
+			serviceRequest.GetLengthInBytes(context.Background()),
 		)
 
 		// Start a new request-transaction (Is ended in the response-handler)
@@ -272,22 +272,22 @@ func (m *Reader) ToPlc4xReadResponse(apdu readWriteModel.APDU, readRequest apiMo
 		return spiModel.NewDefaultPlcReadResponse(readRequest, responseCodes, plcValues), nil
 	}
 
-	switch complexAck := complexAck.(type) {
+	switch serviceAck := complexAck.GetServiceAck().(type) {
 	case readWriteModel.BACnetServiceAckReadPropertyExactly:
 		// TODO: super lazy implementation for now
 		responseCodes[readRequest.GetTagNames()[0]] = apiModel.PlcResponseCode_OK
-		plcValues[readRequest.GetTagNames()[0]] = spiValues.NewPlcSTRING(complexAck.GetValues().(fmt.Stringer).String())
+		plcValues[readRequest.GetTagNames()[0]] = spiValues.NewPlcSTRING(serviceAck.GetValues().(fmt.Stringer).String())
 	case readWriteModel.BACnetServiceAckReadPropertyMultipleExactly:
 
 		// way to know how to interpret the responses is by aligning them with the
 		// items from the request as this information is not returned by the PLC.
-		if len(readRequest.GetTagNames()) != len(complexAck.GetData()) {
+		if len(readRequest.GetTagNames()) != len(serviceAck.GetData()) {
 			return nil, errors.New("The number of requested items doesn't match the number of returned items")
 		}
 		for i, tagName := range readRequest.GetTagNames() {
 			// TODO: super lazy implementation for now
 			responseCodes[tagName] = apiModel.PlcResponseCode_OK
-			plcValues[tagName] = spiValues.NewPlcSTRING(complexAck.GetData()[i].GetListOfResults().(fmt.Stringer).String())
+			plcValues[tagName] = spiValues.NewPlcSTRING(serviceAck.GetData()[i].GetListOfResults().(fmt.Stringer).String())
 		}
 	}
 

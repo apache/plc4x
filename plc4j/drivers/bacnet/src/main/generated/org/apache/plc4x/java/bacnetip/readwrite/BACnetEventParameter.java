@@ -60,6 +60,7 @@ public abstract class BACnetEventParameter implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameter");
 
@@ -82,6 +83,7 @@ public abstract class BACnetEventParameter implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetEventParameter _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -101,6 +103,7 @@ public abstract class BACnetEventParameter implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -113,43 +116,60 @@ public abstract class BACnetEventParameter implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetEventParameterBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetEventParameterChangeOfBitstring.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterChangeOfBitstring.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetEventParameterChangeOfState.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterChangeOfState.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetEventParameterChangeOfValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterChangeOfValue.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
-      builder = BACnetEventParameterCommandFailure.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterCommandFailure.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 4)) {
-      builder = BACnetEventParameterFloatingLimit.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterFloatingLimit.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 5)) {
-      builder = BACnetEventParameterOutOfRange.staticParseBuilder(readBuffer);
+      builder = BACnetEventParameterOutOfRange.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 8)) {
-      builder = BACnetEventParameterChangeOfLifeSavety.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterChangeOfLifeSavety.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 9)) {
-      builder = BACnetEventParameterExtended.staticParseBuilder(readBuffer);
+      builder = BACnetEventParameterExtended.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 10)) {
-      builder = BACnetEventParameterBufferReady.staticParseBuilder(readBuffer);
+      builder = BACnetEventParameterBufferReady.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 11)) {
-      builder = BACnetEventParameterUnsignedRange.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterUnsignedRange.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 13)) {
-      builder = BACnetEventParameterAccessEvent.staticParseBuilder(readBuffer);
+      builder = BACnetEventParameterAccessEvent.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 14)) {
-      builder = BACnetEventParameterDoubleOutOfRange.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterDoubleOutOfRange.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 15)) {
-      builder = BACnetEventParameterSignedOutOfRange.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterSignedOutOfRange.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 16)) {
-      builder = BACnetEventParameterUnsignedOutOfRange.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterUnsignedOutOfRange.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 17)) {
-      builder = BACnetEventParameterChangeOfCharacterString.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterChangeOfCharacterString.staticParseBACnetEventParameterBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 18)) {
-      builder = BACnetEventParameterChangeOfStatusFlags.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterChangeOfStatusFlags.staticParseBACnetEventParameterBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 20)) {
-      builder = BACnetEventParameterNone.staticParseBuilder(readBuffer);
+      builder = BACnetEventParameterNone.staticParseBACnetEventParameterBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 21)) {
-      builder = BACnetEventParameterChangeOfDiscreteValue.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterChangeOfDiscreteValue.staticParseBACnetEventParameterBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 22)) {
-      builder = BACnetEventParameterChangeOfTimer.staticParseBuilder(readBuffer);
+      builder =
+          BACnetEventParameterChangeOfTimer.staticParseBACnetEventParameterBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -166,7 +186,7 @@ public abstract class BACnetEventParameter implements Message {
     return _bACnetEventParameter;
   }
 
-  public static interface BACnetEventParameterBuilder {
+  public interface BACnetEventParameterBuilder {
     BACnetEventParameter build(BACnetTagHeader peekedTagHeader);
   }
 

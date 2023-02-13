@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,15 +132,11 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetTypeName() string {
 	return "IdentifyReplyCommandOutputUnitSummary"
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (unitFlags)
-	lengthInBits += m.UnitFlags.GetLengthInBits()
+	lengthInBits += m.UnitFlags.GetLengthInBits(ctx)
 
 	// Optional Field (gavStoreEnabledByte1)
 	if m.GavStoreEnabledByte1 != nil {
@@ -157,15 +154,15 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBitsConditional(last
 	return lengthInBits
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_IdentifyReplyCommandOutputUnitSummary) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func IdentifyReplyCommandOutputUnitSummaryParse(theBytes []byte, attribute Attribute, numBytes uint8) (IdentifyReplyCommandOutputUnitSummary, error) {
-	return IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
+	return IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
-func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandOutputUnitSummary, error) {
+func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandOutputUnitSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandOutputUnitSummary"); pullErr != nil {
@@ -178,7 +175,7 @@ func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("unitFlags"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unitFlags")
 	}
-	_unitFlags, _unitFlagsErr := IdentifyReplyCommandUnitSummaryParseWithBuffer(readBuffer)
+	_unitFlags, _unitFlagsErr := IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx, readBuffer)
 	if _unitFlagsErr != nil {
 		return nil, errors.Wrap(_unitFlagsErr, "Error parsing 'unitFlags' field of IdentifyReplyCommandOutputUnitSummary")
 	}
@@ -233,14 +230,14 @@ func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_IdentifyReplyCommandOutputUnitSummary) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -252,7 +249,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("unitFlags"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for unitFlags")
 		}
-		_unitFlagsErr := writeBuffer.WriteSerializable(m.GetUnitFlags())
+		_unitFlagsErr := writeBuffer.WriteSerializable(ctx, m.GetUnitFlags())
 		if popErr := writeBuffer.PopContext("unitFlags"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for unitFlags")
 		}
@@ -292,7 +289,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_IdentifyReplyCommandOutputUnitSummary) isIdentifyReplyCommandOutputUnitSummary() bool {
@@ -304,7 +301,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -42,17 +42,14 @@ public class ApduDataExtLinkResponse extends ApduDataExt implements Message {
     return (short) 0x26;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtLinkResponse(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtLinkResponse() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtLinkResponse");
 
@@ -68,34 +65,30 @@ public class ApduDataExtLinkResponse extends ApduDataExt implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtLinkResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtLinkResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtLinkResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtLinkResponse");
     // Create the instance
-    return new ApduDataExtLinkResponseBuilder(length);
+    return new ApduDataExtLinkResponseBuilderImpl();
   }
 
-  public static class ApduDataExtLinkResponseBuilder implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
+  public static class ApduDataExtLinkResponseBuilderImpl implements ApduDataExt.ApduDataExtBuilder {
 
-    public ApduDataExtLinkResponseBuilder(Short length) {
+    public ApduDataExtLinkResponseBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtLinkResponse build(Short length) {
-
-      ApduDataExtLinkResponse apduDataExtLinkResponse = new ApduDataExtLinkResponse(length);
-
+    public ApduDataExtLinkResponse build() {
+      ApduDataExtLinkResponse apduDataExtLinkResponse = new ApduDataExtLinkResponse();
       return apduDataExtLinkResponse;
     }
   }

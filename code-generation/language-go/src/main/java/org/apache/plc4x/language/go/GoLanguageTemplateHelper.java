@@ -747,6 +747,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         } else if ("_value".equals(variableLiteralName)) {
             return toValueVariableExpression(field, typeReference, variableLiteral, parserArguments, serializerArguments, serialize, suppressPointerAccess, tracer);
         }
+        if ("_lastItem".equals(variableLiteralName)) {
+            return toLastItemVariableExpression(typeReference, serialize, tracer);
+        }
         if ("length".equals(variableLiteral.getChild().map(VariableLiteral::getName).orElse(""))) {
             return toLengthVariableExpression(field, variableLiteral, serialize, tracer);
         }
@@ -1136,6 +1139,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             child.getChild().map(childChild -> "." + toVariableExpression(field, typeReference, childChild, parserArguments, serializerArguments, false, suppressPointerAccess, true)).orElse("");
     }
 
+    private String toLastItemVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
+        tracer = tracer.dive("lastItem");
+        return tracer + "spiContext.GetLastItemFromContext(ctx)";
+    }
+
     private String toLengthVariableExpression(Field field, VariableLiteral variableLiteral, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("length");
         return tracer + (serialize ? ("len(m.Get" + capitalize(variableLiteral.getName()) + "())") : ("(" + variableLiteral.getName() + ")"));
@@ -1150,12 +1158,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toLengthInBitsVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("lengthInBits");
-        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(m.Get" : "Get") + "LengthInBits" + (serialize ? "())" : "()");
+        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(m.Get" : "Get") + "LengthInBits" + (serialize ? "(ctx))" : "(ctx)");
     }
 
     private String toLengthInBytesVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("lengthInBytes");
-        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(m.Get" : "Get") + "LengthInBytes" + (serialize ? "())" : "()");
+        return tracer + (serialize ? getCastExpressionForTypeReference(typeReference) + "(m.Get" : "Get") + "LengthInBytes" + (serialize ? "(ctx))" : "(ctx)");
     }
 
     public String getSizeInBits(ComplexTypeDefinition complexTypeDefinition, List<Argument> parserArguments) {
@@ -1375,9 +1383,27 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return "_";
     }
 
-    public boolean needsVariable(ArrayField field, String variableName, boolean serialization) {
+    public boolean needsVariable(Field field, String variableName, boolean serialization) {
         if (!serialization) {
-            if (field.getLoopExpression().contains(variableName)) {
+            if (field instanceof ArrayField) {
+                ArrayField arrayField = (ArrayField) field;
+                if (arrayField.getLoopExpression().contains(variableName)) {
+                    return true;
+                }
+            }
+        }
+        if (field instanceof VirtualField) {
+            VirtualField virtualField = (VirtualField) field;
+            if (virtualField.getValueExpression().contains(variableName)) {
+                return true;
+            }
+        }
+        if (field instanceof PaddingField) {
+            PaddingField paddingField = (PaddingField) field;
+            if (paddingField.getPaddingCondition().contains(variableName)) {
+                return true;
+            }
+            if (paddingField.getPaddingValue().contains(variableName)) {
                 return true;
             }
         }

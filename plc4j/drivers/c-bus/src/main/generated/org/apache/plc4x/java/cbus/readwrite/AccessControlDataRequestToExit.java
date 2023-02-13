@@ -48,6 +48,7 @@ public class AccessControlDataRequestToExit extends AccessControlData implements
   protected void serializeAccessControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AccessControlDataRequestToExit");
 
@@ -63,26 +64,28 @@ public class AccessControlDataRequestToExit extends AccessControlData implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AccessControlDataRequestToExit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static AccessControlDataRequestToExitBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AccessControlDataBuilder staticParseAccessControlDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AccessControlDataRequestToExit");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("AccessControlDataRequestToExit");
     // Create the instance
-    return new AccessControlDataRequestToExitBuilder();
+    return new AccessControlDataRequestToExitBuilderImpl();
   }
 
-  public static class AccessControlDataRequestToExitBuilder
+  public static class AccessControlDataRequestToExitBuilderImpl
       implements AccessControlData.AccessControlDataBuilder {
 
-    public AccessControlDataRequestToExitBuilder() {}
+    public AccessControlDataRequestToExitBuilderImpl() {}
 
     public AccessControlDataRequestToExit build(
         AccessControlCommandTypeContainer commandTypeContainer,

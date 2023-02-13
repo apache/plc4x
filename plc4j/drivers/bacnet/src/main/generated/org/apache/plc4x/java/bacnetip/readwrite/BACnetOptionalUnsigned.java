@@ -60,6 +60,7 @@ public abstract class BACnetOptionalUnsigned implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalUnsigned");
 
@@ -82,6 +83,7 @@ public abstract class BACnetOptionalUnsigned implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetOptionalUnsigned _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -101,6 +103,7 @@ public abstract class BACnetOptionalUnsigned implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -113,9 +116,9 @@ public abstract class BACnetOptionalUnsigned implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetOptionalUnsignedBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetOptionalUnsignedNull.staticParseBuilder(readBuffer);
+      builder = BACnetOptionalUnsignedNull.staticParseBACnetOptionalUnsignedBuilder(readBuffer);
     } else if (true) {
-      builder = BACnetOptionalUnsignedValue.staticParseBuilder(readBuffer);
+      builder = BACnetOptionalUnsignedValue.staticParseBACnetOptionalUnsignedBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -132,7 +135,7 @@ public abstract class BACnetOptionalUnsigned implements Message {
     return _bACnetOptionalUnsigned;
   }
 
-  public static interface BACnetOptionalUnsignedBuilder {
+  public interface BACnetOptionalUnsignedBuilder {
     BACnetOptionalUnsigned build(BACnetTagHeader peekedTagHeader);
   }
 

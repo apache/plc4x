@@ -42,17 +42,14 @@ public class TDataIndividualInd extends CEMI implements Message {
     return (short) 0x94;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public TDataIndividualInd(Integer size) {
-    super(size);
-    this.size = size;
+  public TDataIndividualInd() {
+    super();
   }
 
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TDataIndividualInd");
 
@@ -68,34 +65,30 @@ public class TDataIndividualInd extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TDataIndividualInd _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static TDataIndividualIndBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("TDataIndividualInd");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TDataIndividualInd");
     // Create the instance
-    return new TDataIndividualIndBuilder(size);
+    return new TDataIndividualIndBuilderImpl();
   }
 
-  public static class TDataIndividualIndBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class TDataIndividualIndBuilderImpl implements CEMI.CEMIBuilder {
 
-    public TDataIndividualIndBuilder(Integer size) {
+    public TDataIndividualIndBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public TDataIndividualInd build(Integer size) {
-
-      TDataIndividualInd tDataIndividualInd = new TDataIndividualInd(size);
-
+    public TDataIndividualInd build() {
+      TDataIndividualInd tDataIndividualInd = new TDataIndividualInd();
       return tDataIndividualInd;
     }
   }

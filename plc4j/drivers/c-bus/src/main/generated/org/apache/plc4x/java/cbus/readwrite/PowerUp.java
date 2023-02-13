@@ -55,6 +55,7 @@ public class PowerUp implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PowerUp");
 
@@ -76,6 +77,7 @@ public class PowerUp implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PowerUp _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (powerUpIndicator1)
     lengthInBits += 8;
@@ -96,6 +98,7 @@ public class PowerUp implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte powerUpIndicator1 =
         readConstField("powerUpIndicator1", readByte(readBuffer, 8), PowerUp.POWERUPINDICATOR1);

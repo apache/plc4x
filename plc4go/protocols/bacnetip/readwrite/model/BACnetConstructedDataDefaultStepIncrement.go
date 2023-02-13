@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) GetDefaultStepIncrement() B
 ///////////////////////
 
 func (m *_BACnetConstructedDataDefaultStepIncrement) GetActualValue() BACnetApplicationTagReal {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagReal(m.GetDefaultStepIncrement())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) GetTypeName() string {
 	return "BACnetConstructedDataDefaultStepIncrement"
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (defaultStepIncrement)
-	lengthInBits += m.DefaultStepIncrement.GetLengthInBits()
+	lengthInBits += m.DefaultStepIncrement.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataDefaultStepIncrement) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataDefaultStepIncrementParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultStepIncrement, error) {
-	return BACnetConstructedDataDefaultStepIncrementParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataDefaultStepIncrementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataDefaultStepIncrementParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultStepIncrement, error) {
+func BACnetConstructedDataDefaultStepIncrementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultStepIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDefaultStepIncrement"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataDefaultStepIncrementParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("defaultStepIncrement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for defaultStepIncrement")
 	}
-	_defaultStepIncrement, _defaultStepIncrementErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_defaultStepIncrement, _defaultStepIncrementErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _defaultStepIncrementErr != nil {
 		return nil, errors.Wrap(_defaultStepIncrementErr, "Error parsing 'defaultStepIncrement' field of BACnetConstructedDataDefaultStepIncrement")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataDefaultStepIncrementParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_BACnetConstructedDataDefaultStepIncrement) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataDefaultStepIncrement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDefaultStepIncrement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("defaultStepIncrement"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for defaultStepIncrement")
 		}
-		_defaultStepIncrementErr := writeBuffer.WriteSerializable(m.GetDefaultStepIncrement())
+		_defaultStepIncrementErr := writeBuffer.WriteSerializable(ctx, m.GetDefaultStepIncrement())
 		if popErr := writeBuffer.PopContext("defaultStepIncrement"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for defaultStepIncrement")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) SerializeWithWriteBuffer(wr
 			return errors.Wrap(_defaultStepIncrementErr, "Error serializing 'defaultStepIncrement' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataDefaultStepIncrement) isBACnetConstructedDataDefaultStepIncrement() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataDefaultStepIncrement) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

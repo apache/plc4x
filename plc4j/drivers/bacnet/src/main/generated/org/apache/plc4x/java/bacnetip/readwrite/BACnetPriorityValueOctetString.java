@@ -62,6 +62,7 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueOctetString");
 
@@ -81,6 +82,7 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueOctetString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (octetStringValue)
     lengthInBits += octetStringValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueOctetStringBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueOctetString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString octetStringValue =
         readSimpleField(
@@ -105,17 +108,16 @@ public class BACnetPriorityValueOctetString extends BACnetPriorityValue implemen
 
     readBuffer.closeContext("BACnetPriorityValueOctetString");
     // Create the instance
-    return new BACnetPriorityValueOctetStringBuilder(octetStringValue, objectTypeArgument);
+    return new BACnetPriorityValueOctetStringBuilderImpl(octetStringValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueOctetStringBuilder
+  public static class BACnetPriorityValueOctetStringBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagOctetString octetStringValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueOctetStringBuilder(
+    public BACnetPriorityValueOctetStringBuilderImpl(
         BACnetApplicationTagOctetString octetStringValue, BACnetObjectType objectTypeArgument) {
-
       this.octetStringValue = octetStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

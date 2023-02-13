@@ -73,6 +73,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("WriteRequest");
 
@@ -97,6 +98,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     WriteRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -108,7 +110,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     if (nodesToWrite != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : nodesToWrite) {
-        boolean last = ++i >= nodesToWrite.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToWrite.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -116,12 +118,13 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static WriteRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("WriteRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -142,20 +145,19 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("WriteRequest");
     // Create the instance
-    return new WriteRequestBuilder(requestHeader, noOfNodesToWrite, nodesToWrite);
+    return new WriteRequestBuilderImpl(requestHeader, noOfNodesToWrite, nodesToWrite);
   }
 
-  public static class WriteRequestBuilder
+  public static class WriteRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfNodesToWrite;
     private final List<ExtensionObjectDefinition> nodesToWrite;
 
-    public WriteRequestBuilder(
+    public WriteRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToWrite,
         List<ExtensionObjectDefinition> nodesToWrite) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToWrite = noOfNodesToWrite;
       this.nodesToWrite = nodesToWrite;

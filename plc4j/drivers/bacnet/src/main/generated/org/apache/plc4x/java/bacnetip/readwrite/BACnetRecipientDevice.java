@@ -56,6 +56,7 @@ public class BACnetRecipientDevice extends BACnetRecipient implements Message {
   protected void serializeBACnetRecipientChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetRecipientDevice");
 
@@ -74,6 +75,7 @@ public class BACnetRecipientDevice extends BACnetRecipient implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetRecipientDevice _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (deviceValue)
     lengthInBits += deviceValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetRecipientDevice extends BACnetRecipient implements Message {
     return lengthInBits;
   }
 
-  public static BACnetRecipientDeviceBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetRecipientBuilder staticParseBACnetRecipientBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetRecipientDevice");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier deviceValue =
         readSimpleField(
@@ -102,15 +105,14 @@ public class BACnetRecipientDevice extends BACnetRecipient implements Message {
 
     readBuffer.closeContext("BACnetRecipientDevice");
     // Create the instance
-    return new BACnetRecipientDeviceBuilder(deviceValue);
+    return new BACnetRecipientDeviceBuilderImpl(deviceValue);
   }
 
-  public static class BACnetRecipientDeviceBuilder
+  public static class BACnetRecipientDeviceBuilderImpl
       implements BACnetRecipient.BACnetRecipientBuilder {
     private final BACnetContextTagObjectIdentifier deviceValue;
 
-    public BACnetRecipientDeviceBuilder(BACnetContextTagObjectIdentifier deviceValue) {
-
+    public BACnetRecipientDeviceBuilderImpl(BACnetContextTagObjectIdentifier deviceValue) {
       this.deviceValue = deviceValue;
     }
 

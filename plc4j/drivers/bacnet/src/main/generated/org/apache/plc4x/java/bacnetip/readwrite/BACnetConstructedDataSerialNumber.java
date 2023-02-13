@@ -78,6 +78,7 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSerialNumber");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSerialNumber _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (serialNumber)
     lengthInBits += serialNumber.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSerialNumberBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString serialNumber =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataSerialNumber");
     // Create the instance
-    return new BACnetConstructedDataSerialNumberBuilder(
+    return new BACnetConstructedDataSerialNumberBuilderImpl(
         serialNumber, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSerialNumberBuilder
+  public static class BACnetConstructedDataSerialNumberBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString serialNumber;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSerialNumberBuilder(
+    public BACnetConstructedDataSerialNumberBuilderImpl(
         BACnetApplicationTagCharacterString serialNumber,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.serialNumber = serialNumber;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

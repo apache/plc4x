@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -129,11 +130,7 @@ func (m *_NLMUpdateKeyUpdateControlFlags) GetTypeName() string {
 	return "NLMUpdateKeyUpdateControlFlags"
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (set1KeyRevisionActivationTimeExpirationTimePresent)
@@ -163,15 +160,15 @@ func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBitsConditional(lastItem bo
 	return lengthInBits
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_NLMUpdateKeyUpdateControlFlags) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func NLMUpdateKeyUpdateControlFlagsParse(theBytes []byte) (NLMUpdateKeyUpdateControlFlags, error) {
-	return NLMUpdateKeyUpdateControlFlagsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return NLMUpdateKeyUpdateControlFlagsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func NLMUpdateKeyUpdateControlFlagsParseWithBuffer(readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateControlFlags, error) {
+func NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateControlFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NLMUpdateKeyUpdateControlFlags"); pullErr != nil {
@@ -254,14 +251,14 @@ func NLMUpdateKeyUpdateControlFlagsParseWithBuffer(readBuffer utils.ReadBuffer) 
 }
 
 func (m *_NLMUpdateKeyUpdateControlFlags) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_NLMUpdateKeyUpdateControlFlags) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_NLMUpdateKeyUpdateControlFlags) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("NLMUpdateKeyUpdateControlFlags"); pushErr != nil {
@@ -339,7 +336,7 @@ func (m *_NLMUpdateKeyUpdateControlFlags) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

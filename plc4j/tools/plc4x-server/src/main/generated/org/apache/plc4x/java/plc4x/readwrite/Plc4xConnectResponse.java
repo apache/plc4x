@@ -63,6 +63,7 @@ public class Plc4xConnectResponse extends Plc4xMessage implements Message {
   @Override
   protected void serializePlc4xMessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Plc4xConnectResponse");
 
@@ -81,7 +82,8 @@ public class Plc4xConnectResponse extends Plc4xMessage implements Message {
         new DataWriterEnumDefault<>(
             Plc4xResponseCode::getValue,
             Plc4xResponseCode::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("Plc4xConnectResponse");
   }
@@ -95,6 +97,7 @@ public class Plc4xConnectResponse extends Plc4xMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     Plc4xConnectResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (connectionId)
     lengthInBits += 16;
@@ -105,12 +108,13 @@ public class Plc4xConnectResponse extends Plc4xMessage implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xConnectResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static Plc4xMessageBuilder staticParsePlc4xMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("Plc4xConnectResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int connectionId =
         readSimpleField(
@@ -128,15 +132,14 @@ public class Plc4xConnectResponse extends Plc4xMessage implements Message {
 
     readBuffer.closeContext("Plc4xConnectResponse");
     // Create the instance
-    return new Plc4xConnectResponseBuilder(connectionId, responseCode);
+    return new Plc4xConnectResponseBuilderImpl(connectionId, responseCode);
   }
 
-  public static class Plc4xConnectResponseBuilder implements Plc4xMessage.Plc4xMessageBuilder {
+  public static class Plc4xConnectResponseBuilderImpl implements Plc4xMessage.Plc4xMessageBuilder {
     private final int connectionId;
     private final Plc4xResponseCode responseCode;
 
-    public Plc4xConnectResponseBuilder(int connectionId, Plc4xResponseCode responseCode) {
-
+    public Plc4xConnectResponseBuilderImpl(int connectionId, Plc4xResponseCode responseCode) {
       this.connectionId = connectionId;
       this.responseCode = responseCode;
     }

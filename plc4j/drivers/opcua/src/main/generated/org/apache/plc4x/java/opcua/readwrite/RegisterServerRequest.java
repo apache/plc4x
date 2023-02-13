@@ -65,6 +65,7 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisterServerRequest");
 
@@ -86,6 +87,7 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RegisterServerRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -96,12 +98,13 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static RegisterServerRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterServerRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -119,17 +122,16 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("RegisterServerRequest");
     // Create the instance
-    return new RegisterServerRequestBuilder(requestHeader, server);
+    return new RegisterServerRequestBuilderImpl(requestHeader, server);
   }
 
-  public static class RegisterServerRequestBuilder
+  public static class RegisterServerRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObjectDefinition server;
 
-    public RegisterServerRequestBuilder(
+    public RegisterServerRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader, ExtensionObjectDefinition server) {
-
       this.requestHeader = requestHeader;
       this.server = server;
     }

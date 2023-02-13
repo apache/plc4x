@@ -79,6 +79,7 @@ public class BACnetConstructedDataMultiStateOutputFeedbackValue extends BACnetCo
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMultiStateOutputFeedbackValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataMultiStateOutputFeedbackValue extends BACnetCo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMultiStateOutputFeedbackValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (feedbackValue)
     lengthInBits += feedbackValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataMultiStateOutputFeedbackValue extends BACnetCo
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMultiStateOutputFeedbackValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataMultiStateOutputFeedbackValue extends BACnetCo
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger feedbackValue =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataMultiStateOutputFeedbackValue extends BACnetCo
 
     readBuffer.closeContext("BACnetConstructedDataMultiStateOutputFeedbackValue");
     // Create the instance
-    return new BACnetConstructedDataMultiStateOutputFeedbackValueBuilder(
+    return new BACnetConstructedDataMultiStateOutputFeedbackValueBuilderImpl(
         feedbackValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMultiStateOutputFeedbackValueBuilder
+  public static class BACnetConstructedDataMultiStateOutputFeedbackValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger feedbackValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMultiStateOutputFeedbackValueBuilder(
+    public BACnetConstructedDataMultiStateOutputFeedbackValueBuilderImpl(
         BACnetApplicationTagUnsignedInteger feedbackValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.feedbackValue = feedbackValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -89,6 +89,7 @@ public class BACnetConstructedDataCharacterStringValueAlarmValues extends BACnet
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCharacterStringValueAlarmValues");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataCharacterStringValueAlarmValues extends BACnet
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCharacterStringValueAlarmValues _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,7 +138,7 @@ public class BACnetConstructedDataCharacterStringValueAlarmValues extends BACnet
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCharacterStringValueAlarmValuesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -147,6 +149,7 @@ public class BACnetConstructedDataCharacterStringValueAlarmValues extends BACnet
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -171,23 +174,22 @@ public class BACnetConstructedDataCharacterStringValueAlarmValues extends BACnet
 
     readBuffer.closeContext("BACnetConstructedDataCharacterStringValueAlarmValues");
     // Create the instance
-    return new BACnetConstructedDataCharacterStringValueAlarmValuesBuilder(
+    return new BACnetConstructedDataCharacterStringValueAlarmValuesBuilderImpl(
         numberOfDataElements, alarmValues, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCharacterStringValueAlarmValuesBuilder
+  public static class BACnetConstructedDataCharacterStringValueAlarmValuesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetOptionalCharacterString> alarmValues;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCharacterStringValueAlarmValuesBuilder(
+    public BACnetConstructedDataCharacterStringValueAlarmValuesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetOptionalCharacterString> alarmValues,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.alarmValues = alarmValues;
       this.tagNumber = tagNumber;

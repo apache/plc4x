@@ -55,6 +55,7 @@ public class SecurityDataZoneOpen extends SecurityData implements Message {
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataZoneOpen");
 
@@ -73,6 +74,7 @@ public class SecurityDataZoneOpen extends SecurityData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataZoneOpen _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneNumber)
     lengthInBits += 8;
@@ -80,25 +82,25 @@ public class SecurityDataZoneOpen extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataZoneOpenBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataZoneOpen");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short zoneNumber = readSimpleField("zoneNumber", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("SecurityDataZoneOpen");
     // Create the instance
-    return new SecurityDataZoneOpenBuilder(zoneNumber);
+    return new SecurityDataZoneOpenBuilderImpl(zoneNumber);
   }
 
-  public static class SecurityDataZoneOpenBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataZoneOpenBuilderImpl implements SecurityData.SecurityDataBuilder {
     private final short zoneNumber;
 
-    public SecurityDataZoneOpenBuilder(short zoneNumber) {
-
+    public SecurityDataZoneOpenBuilderImpl(short zoneNumber) {
       this.zoneNumber = zoneNumber;
     }
 

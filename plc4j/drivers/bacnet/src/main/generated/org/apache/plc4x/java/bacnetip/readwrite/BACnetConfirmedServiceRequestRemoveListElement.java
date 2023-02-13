@@ -86,6 +86,7 @@ public class BACnetConfirmedServiceRequestRemoveListElement extends BACnetConfir
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestRemoveListElement");
 
@@ -116,6 +117,7 @@ public class BACnetConfirmedServiceRequestRemoveListElement extends BACnetConfir
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestRemoveListElement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectIdentifier)
     lengthInBits += objectIdentifier.getLengthInBits();
@@ -136,12 +138,14 @@ public class BACnetConfirmedServiceRequestRemoveListElement extends BACnetConfir
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestRemoveListElementBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestRemoveListElement");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
@@ -192,11 +196,11 @@ public class BACnetConfirmedServiceRequestRemoveListElement extends BACnetConfir
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestRemoveListElement");
     // Create the instance
-    return new BACnetConfirmedServiceRequestRemoveListElementBuilder(
+    return new BACnetConfirmedServiceRequestRemoveListElementBuilderImpl(
         objectIdentifier, propertyIdentifier, arrayIndex, listOfElements, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestRemoveListElementBuilder
+  public static class BACnetConfirmedServiceRequestRemoveListElementBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagObjectIdentifier objectIdentifier;
     private final BACnetPropertyIdentifierTagged propertyIdentifier;
@@ -204,13 +208,12 @@ public class BACnetConfirmedServiceRequestRemoveListElement extends BACnetConfir
     private final BACnetConstructedData listOfElements;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestRemoveListElementBuilder(
+    public BACnetConfirmedServiceRequestRemoveListElementBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
         BACnetPropertyIdentifierTagged propertyIdentifier,
         BACnetContextTagUnsignedInteger arrayIndex,
         BACnetConstructedData listOfElements,
         Long serviceRequestLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.arrayIndex = arrayIndex;

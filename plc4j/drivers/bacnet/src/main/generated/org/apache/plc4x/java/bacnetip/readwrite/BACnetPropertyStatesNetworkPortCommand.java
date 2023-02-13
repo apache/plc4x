@@ -57,6 +57,7 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesNetworkPortCommand");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesNetworkPortCommand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (networkPortCommand)
     lengthInBits += networkPortCommand.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesNetworkPortCommandBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNetworkPortCommand");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNetworkPortCommandTagged networkPortCommand =
         readSimpleField(
@@ -103,16 +106,15 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
 
     readBuffer.closeContext("BACnetPropertyStatesNetworkPortCommand");
     // Create the instance
-    return new BACnetPropertyStatesNetworkPortCommandBuilder(networkPortCommand);
+    return new BACnetPropertyStatesNetworkPortCommandBuilderImpl(networkPortCommand);
   }
 
-  public static class BACnetPropertyStatesNetworkPortCommandBuilder
+  public static class BACnetPropertyStatesNetworkPortCommandBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetNetworkPortCommandTagged networkPortCommand;
 
-    public BACnetPropertyStatesNetworkPortCommandBuilder(
+    public BACnetPropertyStatesNetworkPortCommandBuilderImpl(
         BACnetNetworkPortCommandTagged networkPortCommand) {
-
       this.networkPortCommand = networkPortCommand;
     }
 

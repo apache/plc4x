@@ -62,6 +62,7 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueDouble");
 
@@ -80,6 +81,7 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueDouble _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doubleValue)
     lengthInBits += doubleValue.getLengthInBits();
@@ -87,12 +89,13 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueDoubleBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueDouble");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble doubleValue =
         readSimpleField(
@@ -103,17 +106,16 @@ public class BACnetPriorityValueDouble extends BACnetPriorityValue implements Me
 
     readBuffer.closeContext("BACnetPriorityValueDouble");
     // Create the instance
-    return new BACnetPriorityValueDoubleBuilder(doubleValue, objectTypeArgument);
+    return new BACnetPriorityValueDoubleBuilderImpl(doubleValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueDoubleBuilder
+  public static class BACnetPriorityValueDoubleBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagDouble doubleValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueDoubleBuilder(
+    public BACnetPriorityValueDoubleBuilderImpl(
         BACnetApplicationTagDouble doubleValue, BACnetObjectType objectTypeArgument) {
-
       this.doubleValue = doubleValue;
       this.objectTypeArgument = objectTypeArgument;
     }

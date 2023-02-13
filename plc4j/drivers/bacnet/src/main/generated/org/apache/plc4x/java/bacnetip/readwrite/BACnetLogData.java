@@ -80,6 +80,7 @@ public abstract class BACnetLogData implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogData");
 
@@ -108,6 +109,7 @@ public abstract class BACnetLogData implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetLogData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -148,6 +150,7 @@ public abstract class BACnetLogData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -166,11 +169,12 @@ public abstract class BACnetLogData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetLogDataBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetLogDataLogStatus.staticParseBuilder(readBuffer, tagNumber);
+      builder = BACnetLogDataLogStatus.staticParseBACnetLogDataBuilder(readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetLogDataLogData.staticParseBuilder(readBuffer, tagNumber);
+      builder = BACnetLogDataLogData.staticParseBACnetLogDataBuilder(readBuffer, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetLogDataLogDataTimeChange.staticParseBuilder(readBuffer, tagNumber);
+      builder =
+          BACnetLogDataLogDataTimeChange.staticParseBACnetLogDataBuilder(readBuffer, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -194,7 +198,7 @@ public abstract class BACnetLogData implements Message {
     return _bACnetLogData;
   }
 
-  public static interface BACnetLogDataBuilder {
+  public interface BACnetLogDataBuilder {
     BACnetLogData build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -118,12 +119,8 @@ func (m *_DisconnectRequest) GetTypeName() string {
 	return "DisconnectRequest"
 }
 
-func (m *_DisconnectRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_DisconnectRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_DisconnectRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (communicationChannelId)
 	lengthInBits += 8
@@ -132,20 +129,20 @@ func (m *_DisconnectRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
 	lengthInBits += 8
 
 	// Simple field (hpaiControlEndpoint)
-	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits()
+	lengthInBits += m.HpaiControlEndpoint.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_DisconnectRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_DisconnectRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func DisconnectRequestParse(theBytes []byte) (DisconnectRequest, error) {
-	return DisconnectRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return DisconnectRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
-func DisconnectRequestParseWithBuffer(readBuffer utils.ReadBuffer) (DisconnectRequest, error) {
+func DisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DisconnectRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DisconnectRequest"); pullErr != nil {
@@ -182,7 +179,7 @@ func DisconnectRequestParseWithBuffer(readBuffer utils.ReadBuffer) (DisconnectRe
 	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
 	}
-	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(readBuffer)
+	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(ctx, readBuffer)
 	if _hpaiControlEndpointErr != nil {
 		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of DisconnectRequest")
 	}
@@ -207,14 +204,14 @@ func DisconnectRequestParseWithBuffer(readBuffer utils.ReadBuffer) (DisconnectRe
 }
 
 func (m *_DisconnectRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_DisconnectRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_DisconnectRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -249,7 +246,7 @@ func (m *_DisconnectRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("hpaiControlEndpoint"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for hpaiControlEndpoint")
 		}
-		_hpaiControlEndpointErr := writeBuffer.WriteSerializable(m.GetHpaiControlEndpoint())
+		_hpaiControlEndpointErr := writeBuffer.WriteSerializable(ctx, m.GetHpaiControlEndpoint())
 		if popErr := writeBuffer.PopContext("hpaiControlEndpoint"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for hpaiControlEndpoint")
 		}
@@ -262,7 +259,7 @@ func (m *_DisconnectRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_DisconnectRequest) isDisconnectRequest() bool {
@@ -274,7 +271,7 @@ func (m *_DisconnectRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -78,6 +78,7 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFaultParameters");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFaultParameters _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (faultParameters)
     lengthInBits += faultParameters.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFaultParametersBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetFaultParameter faultParameters =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataFaultParameters");
     // Create the instance
-    return new BACnetConstructedDataFaultParametersBuilder(
+    return new BACnetConstructedDataFaultParametersBuilderImpl(
         faultParameters, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFaultParametersBuilder
+  public static class BACnetConstructedDataFaultParametersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetFaultParameter faultParameters;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFaultParametersBuilder(
+    public BACnetConstructedDataFaultParametersBuilderImpl(
         BACnetFaultParameter faultParameters,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultParameters = faultParameters;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

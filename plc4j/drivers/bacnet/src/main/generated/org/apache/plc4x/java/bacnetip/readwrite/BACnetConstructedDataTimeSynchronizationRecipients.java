@@ -75,6 +75,7 @@ public class BACnetConstructedDataTimeSynchronizationRecipients extends BACnetCo
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTimeSynchronizationRecipients");
 
@@ -94,6 +95,7 @@ public class BACnetConstructedDataTimeSynchronizationRecipients extends BACnetCo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTimeSynchronizationRecipients _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (timeSynchronizationRecipients != null) {
@@ -105,7 +107,7 @@ public class BACnetConstructedDataTimeSynchronizationRecipients extends BACnetCo
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTimeSynchronizationRecipientsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -116,6 +118,7 @@ public class BACnetConstructedDataTimeSynchronizationRecipients extends BACnetCo
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetRecipient> timeSynchronizationRecipients =
         readTerminatedArrayField(
@@ -129,21 +132,20 @@ public class BACnetConstructedDataTimeSynchronizationRecipients extends BACnetCo
 
     readBuffer.closeContext("BACnetConstructedDataTimeSynchronizationRecipients");
     // Create the instance
-    return new BACnetConstructedDataTimeSynchronizationRecipientsBuilder(
+    return new BACnetConstructedDataTimeSynchronizationRecipientsBuilderImpl(
         timeSynchronizationRecipients, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTimeSynchronizationRecipientsBuilder
+  public static class BACnetConstructedDataTimeSynchronizationRecipientsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetRecipient> timeSynchronizationRecipients;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTimeSynchronizationRecipientsBuilder(
+    public BACnetConstructedDataTimeSynchronizationRecipientsBuilderImpl(
         List<BACnetRecipient> timeSynchronizationRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.timeSynchronizationRecipients = timeSynchronizationRecipients;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -30,7 +30,7 @@ public class DataReaderSimpleString extends DataReaderSimpleBase<String> {
 
     @Override
     public String read(String logicalName, WithReaderArgs... readerArgs) throws ParseException {
-        return readBuffer.readString(logicalName, bitLength, "UTF-8", readerArgs);
+        return readBuffer.readString(logicalName, bitLength, readerArgs);
     }
 
 }

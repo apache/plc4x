@@ -73,6 +73,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("UnregisterNodesRequest");
 
@@ -98,6 +99,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     UnregisterNodesRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -109,7 +111,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     if (nodesToUnregister != null) {
       int i = 0;
       for (NodeId element : nodesToUnregister) {
-        boolean last = ++i >= nodesToUnregister.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToUnregister.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -117,12 +119,13 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static UnregisterNodesRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UnregisterNodesRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -142,21 +145,20 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("UnregisterNodesRequest");
     // Create the instance
-    return new UnregisterNodesRequestBuilder(
+    return new UnregisterNodesRequestBuilderImpl(
         requestHeader, noOfNodesToUnregister, nodesToUnregister);
   }
 
-  public static class UnregisterNodesRequestBuilder
+  public static class UnregisterNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfNodesToUnregister;
     private final List<NodeId> nodesToUnregister;
 
-    public UnregisterNodesRequestBuilder(
+    public UnregisterNodesRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToUnregister,
         List<NodeId> nodesToUnregister) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToUnregister = noOfNodesToUnregister;
       this.nodesToUnregister = nodesToUnregister;

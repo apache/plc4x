@@ -97,6 +97,7 @@ public class OpcuaMessageRequest extends MessagePDU implements Message {
   @Override
   protected void serializeMessagePDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpcuaMessageRequest");
 
@@ -135,6 +136,7 @@ public class OpcuaMessageRequest extends MessagePDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpcuaMessageRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (chunk)
     lengthInBits += 8;
@@ -162,12 +164,13 @@ public class OpcuaMessageRequest extends MessagePDU implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaMessageRequestBuilder staticParseBuilder(
+  public static MessagePDUBuilder staticParseMessagePDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaMessageRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String chunk = readSimpleField("chunk", readString(readBuffer, 8));
 
@@ -185,11 +188,11 @@ public class OpcuaMessageRequest extends MessagePDU implements Message {
 
     readBuffer.closeContext("OpcuaMessageRequest");
     // Create the instance
-    return new OpcuaMessageRequestBuilder(
+    return new OpcuaMessageRequestBuilderImpl(
         chunk, secureChannelId, secureTokenId, sequenceNumber, requestId, message);
   }
 
-  public static class OpcuaMessageRequestBuilder implements MessagePDU.MessagePDUBuilder {
+  public static class OpcuaMessageRequestBuilderImpl implements MessagePDU.MessagePDUBuilder {
     private final String chunk;
     private final int secureChannelId;
     private final int secureTokenId;
@@ -197,14 +200,13 @@ public class OpcuaMessageRequest extends MessagePDU implements Message {
     private final int requestId;
     private final byte[] message;
 
-    public OpcuaMessageRequestBuilder(
+    public OpcuaMessageRequestBuilderImpl(
         String chunk,
         int secureChannelId,
         int secureTokenId,
         int sequenceNumber,
         int requestId,
         byte[] message) {
-
       this.chunk = chunk;
       this.secureChannelId = secureChannelId;
       this.secureTokenId = secureTokenId;

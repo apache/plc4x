@@ -68,6 +68,7 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueBaudRateSelector");
 
@@ -96,6 +97,7 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueBaudRateSelector _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += 8;
@@ -108,12 +110,13 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
     return lengthInBits;
   }
 
-  public static ParameterValueBaudRateSelectorBuilder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueBaudRateSelector");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {
       throw new ParseValidationException("BaudRateSelector has exactly one byte");
@@ -130,18 +133,17 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
 
     readBuffer.closeContext("ParameterValueBaudRateSelector");
     // Create the instance
-    return new ParameterValueBaudRateSelectorBuilder(value, data, numBytes);
+    return new ParameterValueBaudRateSelectorBuilderImpl(value, data, numBytes);
   }
 
-  public static class ParameterValueBaudRateSelectorBuilder
+  public static class ParameterValueBaudRateSelectorBuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final BaudRateSelector value;
     private final byte[] data;
     private final Short numBytes;
 
-    public ParameterValueBaudRateSelectorBuilder(
+    public ParameterValueBaudRateSelectorBuilderImpl(
         BaudRateSelector value, byte[] data, Short numBytes) {
-
       this.value = value;
       this.data = data;
       this.numBytes = numBytes;

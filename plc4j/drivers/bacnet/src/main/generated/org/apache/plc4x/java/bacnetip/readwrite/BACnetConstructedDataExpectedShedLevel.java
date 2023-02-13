@@ -79,6 +79,7 @@ public class BACnetConstructedDataExpectedShedLevel extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataExpectedShedLevel");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataExpectedShedLevel extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataExpectedShedLevel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (expectedShedLevel)
     lengthInBits += expectedShedLevel.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataExpectedShedLevel extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataExpectedShedLevelBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataExpectedShedLevel extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetShedLevel expectedShedLevel =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataExpectedShedLevel extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataExpectedShedLevel");
     // Create the instance
-    return new BACnetConstructedDataExpectedShedLevelBuilder(
+    return new BACnetConstructedDataExpectedShedLevelBuilderImpl(
         expectedShedLevel, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataExpectedShedLevelBuilder
+  public static class BACnetConstructedDataExpectedShedLevelBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetShedLevel expectedShedLevel;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataExpectedShedLevelBuilder(
+    public BACnetConstructedDataExpectedShedLevelBuilderImpl(
         BACnetShedLevel expectedShedLevel,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.expectedShedLevel = expectedShedLevel;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

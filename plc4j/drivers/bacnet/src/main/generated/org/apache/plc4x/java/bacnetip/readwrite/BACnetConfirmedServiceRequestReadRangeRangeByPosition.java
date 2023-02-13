@@ -67,6 +67,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByPosition
   protected void serializeBACnetConfirmedServiceRequestReadRangeRangeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition");
 
@@ -88,6 +89,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByPosition
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestReadRangeRangeByPosition _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (referenceIndex)
     lengthInBits += referenceIndex.getLengthInBits();
@@ -98,12 +100,14 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByPosition
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetConfirmedServiceRequestReadRangeRangeBuilder
+      staticParseBACnetConfirmedServiceRequestReadRangeRangeBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger referenceIndex =
         readSimpleField(
@@ -125,19 +129,19 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByPosition
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition");
     // Create the instance
-    return new BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder(referenceIndex, count);
+    return new BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilderImpl(
+        referenceIndex, count);
   }
 
-  public static class BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+  public static class BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilderImpl
       implements BACnetConfirmedServiceRequestReadRangeRange
           .BACnetConfirmedServiceRequestReadRangeRangeBuilder {
     private final BACnetApplicationTagUnsignedInteger referenceIndex;
     private final BACnetApplicationTagSignedInteger count;
 
-    public BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder(
+    public BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilderImpl(
         BACnetApplicationTagUnsignedInteger referenceIndex,
         BACnetApplicationTagSignedInteger count) {
-
       this.referenceIndex = referenceIndex;
       this.count = count;
     }

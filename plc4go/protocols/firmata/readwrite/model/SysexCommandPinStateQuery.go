@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -111,12 +112,8 @@ func (m *_SysexCommandPinStateQuery) GetTypeName() string {
 	return "SysexCommandPinStateQuery"
 }
 
-func (m *_SysexCommandPinStateQuery) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SysexCommandPinStateQuery) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SysexCommandPinStateQuery) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (pin)
 	lengthInBits += 8
@@ -124,15 +121,15 @@ func (m *_SysexCommandPinStateQuery) GetLengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *_SysexCommandPinStateQuery) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SysexCommandPinStateQuery) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SysexCommandPinStateQueryParse(theBytes []byte, response bool) (SysexCommandPinStateQuery, error) {
-	return SysexCommandPinStateQueryParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return SysexCommandPinStateQueryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func SysexCommandPinStateQueryParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateQuery, error) {
+func SysexCommandPinStateQueryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateQuery, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SysexCommandPinStateQuery"); pullErr != nil {
@@ -162,14 +159,14 @@ func SysexCommandPinStateQueryParseWithBuffer(readBuffer utils.ReadBuffer, respo
 }
 
 func (m *_SysexCommandPinStateQuery) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SysexCommandPinStateQuery) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SysexCommandPinStateQuery) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -189,7 +186,7 @@ func (m *_SysexCommandPinStateQuery) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SysexCommandPinStateQuery) isSysexCommandPinStateQuery() bool {
@@ -201,7 +198,7 @@ func (m *_SysexCommandPinStateQuery) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -42,12 +42,8 @@ public abstract class S7Payload implements Message {
 
   public abstract Short getParameterParameterType();
 
-  // Arguments.
-  protected final S7Parameter parameter;
-
-  public S7Payload(S7Parameter parameter) {
+  public S7Payload() {
     super();
-    this.parameter = parameter;
   }
 
   protected abstract void serializeS7PayloadChild(WriteBuffer writeBuffer)
@@ -55,6 +51,7 @@ public abstract class S7Payload implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7Payload");
 
@@ -73,6 +70,7 @@ public abstract class S7Payload implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     S7Payload _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -112,21 +110,25 @@ public abstract class S7Payload implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     S7PayloadBuilder builder = null;
     if (EvaluationHelper.equals(parameter.getParameterType(), (short) 0x04)
         && EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = S7PayloadReadVarResponse.staticParseBuilder(readBuffer, messageType, parameter);
+      builder =
+          S7PayloadReadVarResponse.staticParseS7PayloadBuilder(readBuffer, messageType, parameter);
     } else if (EvaluationHelper.equals(parameter.getParameterType(), (short) 0x05)
         && EvaluationHelper.equals(messageType, (short) 0x01)) {
-      builder = S7PayloadWriteVarRequest.staticParseBuilder(readBuffer, messageType, parameter);
+      builder =
+          S7PayloadWriteVarRequest.staticParseS7PayloadBuilder(readBuffer, messageType, parameter);
     } else if (EvaluationHelper.equals(parameter.getParameterType(), (short) 0x05)
         && EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = S7PayloadWriteVarResponse.staticParseBuilder(readBuffer, messageType, parameter);
+      builder =
+          S7PayloadWriteVarResponse.staticParseS7PayloadBuilder(readBuffer, messageType, parameter);
     } else if (EvaluationHelper.equals(parameter.getParameterType(), (short) 0x00)
         && EvaluationHelper.equals(messageType, (short) 0x07)) {
-      builder = S7PayloadUserData.staticParseBuilder(readBuffer, messageType, parameter);
+      builder = S7PayloadUserData.staticParseS7PayloadBuilder(readBuffer, messageType, parameter);
     }
     if (builder == null) {
       throw new ParseException(
@@ -142,13 +144,12 @@ public abstract class S7Payload implements Message {
 
     readBuffer.closeContext("S7Payload");
     // Create the instance
-    S7Payload _s7Payload = builder.build(parameter);
-
+    S7Payload _s7Payload = builder.build();
     return _s7Payload;
   }
 
-  public static interface S7PayloadBuilder {
-    S7Payload build(S7Parameter parameter);
+  public interface S7PayloadBuilder {
+    S7Payload build();
   }
 
   @Override

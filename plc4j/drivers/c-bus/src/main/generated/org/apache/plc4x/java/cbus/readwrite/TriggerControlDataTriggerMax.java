@@ -48,6 +48,7 @@ public class TriggerControlDataTriggerMax extends TriggerControlData implements 
   protected void serializeTriggerControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TriggerControlDataTriggerMax");
 
@@ -63,26 +64,28 @@ public class TriggerControlDataTriggerMax extends TriggerControlData implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TriggerControlDataTriggerMax _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static TriggerControlDataTriggerMaxBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static TriggerControlDataBuilder staticParseTriggerControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TriggerControlDataTriggerMax");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TriggerControlDataTriggerMax");
     // Create the instance
-    return new TriggerControlDataTriggerMaxBuilder();
+    return new TriggerControlDataTriggerMaxBuilderImpl();
   }
 
-  public static class TriggerControlDataTriggerMaxBuilder
+  public static class TriggerControlDataTriggerMaxBuilderImpl
       implements TriggerControlData.TriggerControlDataBuilder {
 
-    public TriggerControlDataTriggerMaxBuilder() {}
+    public TriggerControlDataTriggerMaxBuilderImpl() {}
 
     public TriggerControlDataTriggerMax build(
         TriggerControlCommandTypeContainer commandTypeContainer, byte triggerGroup) {

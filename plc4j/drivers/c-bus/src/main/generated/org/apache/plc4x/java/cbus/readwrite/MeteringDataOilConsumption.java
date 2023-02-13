@@ -55,6 +55,7 @@ public class MeteringDataOilConsumption extends MeteringData implements Message 
   @Override
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataOilConsumption");
 
@@ -73,6 +74,7 @@ public class MeteringDataOilConsumption extends MeteringData implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MeteringDataOilConsumption _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (L)
     lengthInBits += 32;
@@ -80,26 +82,26 @@ public class MeteringDataOilConsumption extends MeteringData implements Message 
     return lengthInBits;
   }
 
-  public static MeteringDataOilConsumptionBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataOilConsumption");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long L = readSimpleField("L", readUnsignedLong(readBuffer, 32));
 
     readBuffer.closeContext("MeteringDataOilConsumption");
     // Create the instance
-    return new MeteringDataOilConsumptionBuilder(L);
+    return new MeteringDataOilConsumptionBuilderImpl(L);
   }
 
-  public static class MeteringDataOilConsumptionBuilder
+  public static class MeteringDataOilConsumptionBuilderImpl
       implements MeteringData.MeteringDataBuilder {
     private final long L;
 
-    public MeteringDataOilConsumptionBuilder(long L) {
-
+    public MeteringDataOilConsumptionBuilderImpl(long L) {
       this.L = L;
     }
 

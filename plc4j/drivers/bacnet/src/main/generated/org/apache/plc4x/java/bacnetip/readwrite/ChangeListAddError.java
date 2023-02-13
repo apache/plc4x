@@ -64,6 +64,7 @@ public class ChangeListAddError extends BACnetError implements Message {
   @Override
   protected void serializeBACnetErrorChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ChangeListAddError");
 
@@ -88,6 +89,7 @@ public class ChangeListAddError extends BACnetError implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ChangeListAddError _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (errorType)
     lengthInBits += errorType.getLengthInBits();
@@ -98,12 +100,13 @@ public class ChangeListAddError extends BACnetError implements Message {
     return lengthInBits;
   }
 
-  public static ChangeListAddErrorBuilder staticParseBuilder(
+  public static BACnetErrorBuilder staticParseBACnetErrorBuilder(
       ReadBuffer readBuffer, BACnetConfirmedServiceChoice errorChoice) throws ParseException {
     readBuffer.pullContext("ChangeListAddError");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed errorType =
         readSimpleField(
@@ -125,16 +128,15 @@ public class ChangeListAddError extends BACnetError implements Message {
 
     readBuffer.closeContext("ChangeListAddError");
     // Create the instance
-    return new ChangeListAddErrorBuilder(errorType, firstFailedElementNumber);
+    return new ChangeListAddErrorBuilderImpl(errorType, firstFailedElementNumber);
   }
 
-  public static class ChangeListAddErrorBuilder implements BACnetError.BACnetErrorBuilder {
+  public static class ChangeListAddErrorBuilderImpl implements BACnetError.BACnetErrorBuilder {
     private final ErrorEnclosed errorType;
     private final BACnetContextTagUnsignedInteger firstFailedElementNumber;
 
-    public ChangeListAddErrorBuilder(
+    public ChangeListAddErrorBuilderImpl(
         ErrorEnclosed errorType, BACnetContextTagUnsignedInteger firstFailedElementNumber) {
-
       this.errorType = errorType;
       this.firstFailedElementNumber = firstFailedElementNumber;
     }

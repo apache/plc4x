@@ -50,13 +50,9 @@ public class SDOInitiateSegmentedUploadResponse extends SDOInitiateUploadRespons
   // Properties.
   protected final long bytes;
 
-  // Arguments.
-  protected final Byte size;
-
-  public SDOInitiateSegmentedUploadResponse(long bytes, Byte size) {
-    super(size);
+  public SDOInitiateSegmentedUploadResponse(long bytes) {
+    super();
     this.bytes = bytes;
-    this.size = size;
   }
 
   public long getBytes() {
@@ -67,6 +63,7 @@ public class SDOInitiateSegmentedUploadResponse extends SDOInitiateUploadRespons
   protected void serializeSDOInitiateUploadResponsePayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOInitiateSegmentedUploadResponse");
 
@@ -85,6 +82,7 @@ public class SDOInitiateSegmentedUploadResponse extends SDOInitiateUploadRespons
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOInitiateSegmentedUploadResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bytes)
     lengthInBits += 32;
@@ -92,36 +90,34 @@ public class SDOInitiateSegmentedUploadResponse extends SDOInitiateUploadRespons
     return lengthInBits;
   }
 
-  public static SDOInitiateSegmentedUploadResponseBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Boolean expedited, Boolean indicated, Byte size)
-      throws ParseException {
+  public static SDOInitiateUploadResponsePayloadBuilder
+      staticParseSDOInitiateUploadResponsePayloadBuilder(
+          ReadBuffer readBuffer, Boolean expedited, Boolean indicated, Byte size)
+          throws ParseException {
     readBuffer.pullContext("SDOInitiateSegmentedUploadResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long bytes = readSimpleField("bytes", readUnsignedLong(readBuffer, 32));
 
     readBuffer.closeContext("SDOInitiateSegmentedUploadResponse");
     // Create the instance
-    return new SDOInitiateSegmentedUploadResponseBuilder(bytes, size);
+    return new SDOInitiateSegmentedUploadResponseBuilderImpl(bytes);
   }
 
-  public static class SDOInitiateSegmentedUploadResponseBuilder
+  public static class SDOInitiateSegmentedUploadResponseBuilderImpl
       implements SDOInitiateUploadResponsePayload.SDOInitiateUploadResponsePayloadBuilder {
     private final long bytes;
-    private final Byte size;
 
-    public SDOInitiateSegmentedUploadResponseBuilder(long bytes, Byte size) {
-
+    public SDOInitiateSegmentedUploadResponseBuilderImpl(long bytes) {
       this.bytes = bytes;
-      this.size = size;
     }
 
-    public SDOInitiateSegmentedUploadResponse build(Byte size) {
-
+    public SDOInitiateSegmentedUploadResponse build() {
       SDOInitiateSegmentedUploadResponse sDOInitiateSegmentedUploadResponse =
-          new SDOInitiateSegmentedUploadResponse(bytes, size);
+          new SDOInitiateSegmentedUploadResponse(bytes);
       return sDOInitiateSegmentedUploadResponse;
     }
   }

@@ -79,6 +79,7 @@ public class BACnetConstructedDataUpdateKeySetTimeout extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataUpdateKeySetTimeout");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataUpdateKeySetTimeout extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataUpdateKeySetTimeout _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (updateKeySetTimeout)
     lengthInBits += updateKeySetTimeout.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataUpdateKeySetTimeout extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataUpdateKeySetTimeoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataUpdateKeySetTimeout extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger updateKeySetTimeout =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataUpdateKeySetTimeout extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataUpdateKeySetTimeout");
     // Create the instance
-    return new BACnetConstructedDataUpdateKeySetTimeoutBuilder(
+    return new BACnetConstructedDataUpdateKeySetTimeoutBuilderImpl(
         updateKeySetTimeout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataUpdateKeySetTimeoutBuilder
+  public static class BACnetConstructedDataUpdateKeySetTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger updateKeySetTimeout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUpdateKeySetTimeoutBuilder(
+    public BACnetConstructedDataUpdateKeySetTimeoutBuilderImpl(
         BACnetApplicationTagUnsignedInteger updateKeySetTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.updateKeySetTimeout = updateKeySetTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

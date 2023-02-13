@@ -64,6 +64,7 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentityMappingRuleType");
 
@@ -92,6 +93,7 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentityMappingRuleType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (criteriaType)
     lengthInBits += 32;
@@ -102,12 +104,13 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static IdentityMappingRuleTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("IdentityMappingRuleType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     IdentityCriteriaType criteriaType =
         readEnumField(
@@ -123,17 +126,16 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("IdentityMappingRuleType");
     // Create the instance
-    return new IdentityMappingRuleTypeBuilder(criteriaType, criteria);
+    return new IdentityMappingRuleTypeBuilderImpl(criteriaType, criteria);
   }
 
-  public static class IdentityMappingRuleTypeBuilder
+  public static class IdentityMappingRuleTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final IdentityCriteriaType criteriaType;
     private final PascalString criteria;
 
-    public IdentityMappingRuleTypeBuilder(
+    public IdentityMappingRuleTypeBuilderImpl(
         IdentityCriteriaType criteriaType, PascalString criteria) {
-
       this.criteriaType = criteriaType;
       this.criteria = criteria;
     }

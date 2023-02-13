@@ -79,6 +79,7 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBBMDAcceptFDRegistrations");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBBMDAcceptFDRegistrations _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bbmdAcceptFDRegistrations)
     lengthInBits += bbmdAcceptFDRegistrations.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean bbmdAcceptFDRegistrations =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataBBMDAcceptFDRegistrations");
     // Create the instance
-    return new BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder(
+    return new BACnetConstructedDataBBMDAcceptFDRegistrationsBuilderImpl(
         bbmdAcceptFDRegistrations, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder
+  public static class BACnetConstructedDataBBMDAcceptFDRegistrationsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean bbmdAcceptFDRegistrations;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBBMDAcceptFDRegistrationsBuilder(
+    public BACnetConstructedDataBBMDAcceptFDRegistrationsBuilderImpl(
         BACnetApplicationTagBoolean bbmdAcceptFDRegistrations,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bbmdAcceptFDRegistrations = bbmdAcceptFDRegistrations;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

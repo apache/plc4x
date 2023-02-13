@@ -95,6 +95,7 @@ public class MediaTransportControlDataFastForward extends MediaTransportControlD
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataFastForward");
 
@@ -145,6 +146,7 @@ public class MediaTransportControlDataFastForward extends MediaTransportControlD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataFastForward _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (operation)
     lengthInBits += 8;
@@ -168,12 +170,13 @@ public class MediaTransportControlDataFastForward extends MediaTransportControlD
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataFastForwardBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataFastForward");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte operation = readSimpleField("operation", readByte(readBuffer, 8));
     boolean isCeaseFastForward =
@@ -194,15 +197,14 @@ public class MediaTransportControlDataFastForward extends MediaTransportControlD
 
     readBuffer.closeContext("MediaTransportControlDataFastForward");
     // Create the instance
-    return new MediaTransportControlDataFastForwardBuilder(operation);
+    return new MediaTransportControlDataFastForwardBuilderImpl(operation);
   }
 
-  public static class MediaTransportControlDataFastForwardBuilder
+  public static class MediaTransportControlDataFastForwardBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte operation;
 
-    public MediaTransportControlDataFastForwardBuilder(byte operation) {
-
+    public MediaTransportControlDataFastForwardBuilderImpl(byte operation) {
       this.operation = operation;
     }
 

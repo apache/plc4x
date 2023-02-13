@@ -66,6 +66,7 @@ public abstract class SecurityData implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityData");
 
@@ -101,6 +102,7 @@ public abstract class SecurityData implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     SecurityData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (commandTypeContainer)
     lengthInBits += 8;
@@ -126,6 +128,7 @@ public abstract class SecurityData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!(org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper.knowsSecurityCommandTypeContainer(
         readBuffer))) {
@@ -148,145 +151,147 @@ public abstract class SecurityData implements Message {
     SecurityDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0x80)) {
-      builder = SecurityDataSystemArmedDisarmed.staticParseBuilder(readBuffer);
+      builder = SecurityDataSystemArmedDisarmed.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0x80)) {
-      builder = SecurityDataSystemDisarmed.staticParseBuilder(readBuffer);
+      builder = SecurityDataSystemDisarmed.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x81)) {
-      builder = SecurityDataExitDelayStarted.staticParseBuilder(readBuffer);
+      builder = SecurityDataExitDelayStarted.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x82)) {
-      builder = SecurityDataEntryDelayStarted.staticParseBuilder(readBuffer);
+      builder = SecurityDataEntryDelayStarted.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0x83)) {
-      builder = SecurityDataAlarmOn.staticParseBuilder(readBuffer);
+      builder = SecurityDataAlarmOn.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0x83)) {
-      builder = SecurityDataAlarmOff.staticParseBuilder(readBuffer);
+      builder = SecurityDataAlarmOff.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0x84)) {
-      builder = SecurityDataTamperOn.staticParseBuilder(readBuffer);
+      builder = SecurityDataTamperOn.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0x84)) {
-      builder = SecurityDataTamperOff.staticParseBuilder(readBuffer);
+      builder = SecurityDataTamperOff.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0x85)) {
-      builder = SecurityDataPanicActivated.staticParseBuilder(readBuffer);
+      builder = SecurityDataPanicActivated.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0x85)) {
-      builder = SecurityDataPanicCleared.staticParseBuilder(readBuffer);
+      builder = SecurityDataPanicCleared.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x86)) {
-      builder = SecurityDataZoneUnsealed.staticParseBuilder(readBuffer);
+      builder = SecurityDataZoneUnsealed.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x87)) {
-      builder = SecurityDataZoneSealed.staticParseBuilder(readBuffer);
+      builder = SecurityDataZoneSealed.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x88)) {
-      builder = SecurityDataZoneOpen.staticParseBuilder(readBuffer);
+      builder = SecurityDataZoneOpen.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x89)) {
-      builder = SecurityDataZoneShort.staticParseBuilder(readBuffer);
+      builder = SecurityDataZoneShort.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x89)) {
-      builder = SecurityDataZoneIsolated.staticParseBuilder(readBuffer);
+      builder = SecurityDataZoneIsolated.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0x8B)) {
-      builder = SecurityDataLowBatteryDetected.staticParseBuilder(readBuffer);
+      builder = SecurityDataLowBatteryDetected.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0x8B)) {
-      builder = SecurityDataLowBatteryCorrected.staticParseBuilder(readBuffer);
+      builder = SecurityDataLowBatteryCorrected.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x8C)) {
-      builder = SecurityDataLowBatteryCharging.staticParseBuilder(readBuffer);
+      builder = SecurityDataLowBatteryCharging.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x8D)) {
-      builder = SecurityDataZoneName.staticParseBuilder(readBuffer);
+      builder = SecurityDataZoneName.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x8E)) {
-      builder = SecurityDataStatusReport1.staticParseBuilder(readBuffer);
+      builder = SecurityDataStatusReport1.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x8F)) {
-      builder = SecurityDataStatusReport2.staticParseBuilder(readBuffer);
+      builder = SecurityDataStatusReport2.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x90)) {
-      builder = SecurityDataPasswordEntryStatus.staticParseBuilder(readBuffer);
+      builder = SecurityDataPasswordEntryStatus.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0x91)) {
-      builder = SecurityDataMainsFailure.staticParseBuilder(readBuffer);
+      builder = SecurityDataMainsFailure.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0x91)) {
-      builder = SecurityDataMainsRestoredOrApplied.staticParseBuilder(readBuffer);
+      builder = SecurityDataMainsRestoredOrApplied.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x92)) {
-      builder = SecurityDataArmReadyNotReady.staticParseBuilder(readBuffer);
+      builder = SecurityDataArmReadyNotReady.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0x93)) {
-      builder = SecurityDataCurrentAlarmType.staticParseBuilder(readBuffer);
+      builder = SecurityDataCurrentAlarmType.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0x94)) {
-      builder = SecurityDataLineCutAlarmRaised.staticParseBuilder(readBuffer);
+      builder = SecurityDataLineCutAlarmRaised.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0x94)) {
-      builder = SecurityDataLineCutAlarmCleared.staticParseBuilder(readBuffer);
+      builder = SecurityDataLineCutAlarmCleared.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0x95)) {
-      builder = SecurityDataArmFailedRaised.staticParseBuilder(readBuffer);
+      builder = SecurityDataArmFailedRaised.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0x95)) {
-      builder = SecurityDataArmFailedCleared.staticParseBuilder(readBuffer);
+      builder = SecurityDataArmFailedCleared.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0x96)) {
-      builder = SecurityDataFireAlarmRaised.staticParseBuilder(readBuffer);
+      builder = SecurityDataFireAlarmRaised.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0x96)) {
-      builder = SecurityDataFireAlarmCleared.staticParseBuilder(readBuffer);
+      builder = SecurityDataFireAlarmCleared.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0x97)) {
-      builder = SecurityDataGasAlarmRaised.staticParseBuilder(readBuffer);
+      builder = SecurityDataGasAlarmRaised.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0x97)) {
-      builder = SecurityDataGasAlarmCleared.staticParseBuilder(readBuffer);
+      builder = SecurityDataGasAlarmCleared.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0x98)) {
-      builder = SecurityDataOtherAlarmRaised.staticParseBuilder(readBuffer);
+      builder = SecurityDataOtherAlarmRaised.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0x98)) {
-      builder = SecurityDataOtherAlarmCleared.staticParseBuilder(readBuffer);
+      builder = SecurityDataOtherAlarmCleared.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0xA0)) {
-      builder = SecurityDataStatus1Request.staticParseBuilder(readBuffer);
+      builder = SecurityDataStatus1Request.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0xA1)) {
-      builder = SecurityDataStatus2Request.staticParseBuilder(readBuffer);
+      builder = SecurityDataStatus2Request.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0xA2)) {
-      builder = SecurityDataArmSystem.staticParseBuilder(readBuffer);
+      builder = SecurityDataArmSystem.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0xA3)) {
-      builder = SecurityDataRaiseTamper.staticParseBuilder(readBuffer);
+      builder = SecurityDataRaiseTamper.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)
         && EvaluationHelper.equals(argument, (byte) 0xA3)) {
-      builder = SecurityDataDropTamper.staticParseBuilder(readBuffer);
+      builder = SecurityDataDropTamper.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0xA4)) {
-      builder = SecurityDataRaiseAlarm.staticParseBuilder(readBuffer);
+      builder = SecurityDataRaiseAlarm.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0xA5)) {
-      builder = SecurityDataEmulatedKeypad.staticParseBuilder(readBuffer);
+      builder = SecurityDataEmulatedKeypad.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)
         && EvaluationHelper.equals(argument, (byte) 0xA6)) {
-      builder = SecurityDataDisplayMessage.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder =
+          SecurityDataDisplayMessage.staticParseSecurityDataBuilder(
+              readBuffer, commandTypeContainer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)
         && EvaluationHelper.equals(argument, (byte) 0xA7)) {
-      builder = SecurityDataRequestZoneName.staticParseBuilder(readBuffer);
+      builder = SecurityDataRequestZoneName.staticParseSecurityDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.OFF)) {
-      builder = SecurityDataOff.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder = SecurityDataOff.staticParseSecurityDataBuilder(readBuffer, commandTypeContainer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.ON)) {
-      builder = SecurityDataOn.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder = SecurityDataOn.staticParseSecurityDataBuilder(readBuffer, commandTypeContainer);
     } else if (EvaluationHelper.equals(commandType, SecurityCommandType.EVENT)) {
-      builder = SecurityDataEvent.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder = SecurityDataEvent.staticParseSecurityDataBuilder(readBuffer, commandTypeContainer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -306,7 +311,7 @@ public abstract class SecurityData implements Message {
     return _securityData;
   }
 
-  public static interface SecurityDataBuilder {
+  public interface SecurityDataBuilder {
     SecurityData build(SecurityCommandTypeContainer commandTypeContainer, byte argument);
   }
 

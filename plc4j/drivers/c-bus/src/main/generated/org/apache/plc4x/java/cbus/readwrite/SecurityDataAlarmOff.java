@@ -46,6 +46,7 @@ public class SecurityDataAlarmOff extends SecurityData implements Message {
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataAlarmOff");
 
@@ -61,25 +62,27 @@ public class SecurityDataAlarmOff extends SecurityData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataAlarmOff _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SecurityDataAlarmOffBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataAlarmOff");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataAlarmOff");
     // Create the instance
-    return new SecurityDataAlarmOffBuilder();
+    return new SecurityDataAlarmOffBuilderImpl();
   }
 
-  public static class SecurityDataAlarmOffBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataAlarmOffBuilderImpl implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataAlarmOffBuilder() {}
+    public SecurityDataAlarmOffBuilderImpl() {}
 
     public SecurityDataAlarmOff build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

@@ -39,8 +39,6 @@ public class DeviceStatus implements Message {
 
   // Properties.
   protected final boolean programMode;
-  // Reserved Fields
-  private Short reservedField0;
 
   public DeviceStatus(boolean programMode) {
     super();
@@ -53,14 +51,12 @@ public class DeviceStatus implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DeviceStatus");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (programMode)
     writeSimpleField("programMode", programMode, writeBoolean(writeBuffer));
@@ -77,6 +73,7 @@ public class DeviceStatus implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     DeviceStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 7;
@@ -98,6 +95,7 @@ public class DeviceStatus implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 7), (short) 0x00);
@@ -108,7 +106,6 @@ public class DeviceStatus implements Message {
     // Create the instance
     DeviceStatus _deviceStatus;
     _deviceStatus = new DeviceStatus(programMode);
-    _deviceStatus.reservedField0 = reservedField0;
     return _deviceStatus;
   }
 

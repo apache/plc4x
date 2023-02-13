@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetHighLimit() BAC
 ///////////////////////
 
 func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetHighLimit())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetTypeName() stri
 	return "BACnetConstructedDataPositiveIntegerValueHighLimit"
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (highLimit)
-	lengthInBits += m.HighLimit.GetLengthInBits()
+	lengthInBits += m.HighLimit.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataPositiveIntegerValueHighLimitParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
-	return BACnetConstructedDataPositiveIntegerValueHighLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataPositiveIntegerValueHighLimitParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataPositiveIntegerValueHighLimitParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
+func BACnetConstructedDataPositiveIntegerValueHighLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveIntegerValueHighLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveIntegerValueHighLimit"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataPositiveIntegerValueHighLimitParseWithBuffer(readBuffe
 	if pullErr := readBuffer.PullContext("highLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for highLimit")
 	}
-	_highLimit, _highLimitErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_highLimit, _highLimitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _highLimitErr != nil {
 		return nil, errors.Wrap(_highLimitErr, "Error parsing 'highLimit' field of BACnetConstructedDataPositiveIntegerValueHighLimit")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataPositiveIntegerValueHighLimitParseWithBuffer(readBuffe
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) SerializeWithWrite
 		if pushErr := writeBuffer.PushContext("highLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for highLimit")
 		}
-		_highLimitErr := writeBuffer.WriteSerializable(m.GetHighLimit())
+		_highLimitErr := writeBuffer.WriteSerializable(ctx, m.GetHighLimit())
 		if popErr := writeBuffer.PopContext("highLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for highLimit")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) SerializeWithWrite
 			return errors.Wrap(_highLimitErr, "Error serializing 'highLimit' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) SerializeWithWrite
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) isBACnetConstructedDataPositiveIntegerValueHighLimit() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataPositiveIntegerValueHighLimit) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

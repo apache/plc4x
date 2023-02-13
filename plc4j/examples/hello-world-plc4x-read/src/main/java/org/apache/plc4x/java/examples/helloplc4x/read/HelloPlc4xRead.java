@@ -18,15 +18,13 @@
  */
 package org.apache.plc4x.java.examples.helloplc4x.read;
 
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.TimeUnit;
 
 public class HelloPlc4xRead {
 
@@ -46,7 +44,7 @@ public class HelloPlc4xRead {
         }
 
         // Establish a connection to the plc using the url provided as first argument
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(options.getConnectionString())) {
+        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(options.getConnectionString())) {
 
             // Check if this connection support reading of data.
             if (!plcConnection.getMetadata().canRead()) {
@@ -77,21 +75,21 @@ public class HelloPlc4xRead {
             //////////////////////////////////////////////////////////
             // Read asynchronously ...
             // Register a callback executed as soon as a response arrives.
-            /*logger.info("Asynchronous request ...");
-            CompletionStage<? extends PlcReadResponse> asyncResponse = readRequest.execute();
-            asyncResponse.whenComplete((readResponse, throwable) -> {
-                if (readResponse != null) {
-                    printResponse(readResponse);
-                } else {
-                    logger.error("An error occurred: " + throwable.getMessage(), throwable);
-                }
-            });*/
-
-            // Give the async request a little time...
-            TimeUnit.MILLISECONDS.sleep(1000);
-            plcConnection.close();
-            System.exit(0);
+//            logger.info("Asynchronous request ...");
+//            CompletableFuture<? extends PlcReadResponse> asyncResponse = readRequest.execute();
+//            asyncResponse.whenComplete((readResponse, throwable) -> {
+//                if (readResponse != null) {
+//                    printResponse(readResponse);
+//                } else {
+//                    logger.error("An error occurred: " + throwable.getMessage(), throwable);
+//                }
+//              });
+//
+//            // Wait until the async request has finished
+//            asyncResponse.get();
         }
+        // This is needed to avoid a known problem that an application may hang indefinitely.
+        System.exit(0);
     }
 
     private static void printResponse(PlcReadResponse response) {

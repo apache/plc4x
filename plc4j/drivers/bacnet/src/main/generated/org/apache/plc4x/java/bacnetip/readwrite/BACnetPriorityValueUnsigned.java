@@ -62,6 +62,7 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueUnsigned");
 
@@ -80,6 +81,7 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueUnsigned _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unsignedValue)
     lengthInBits += unsignedValue.getLengthInBits();
@@ -87,12 +89,13 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueUnsignedBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueUnsigned");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
@@ -105,17 +108,16 @@ public class BACnetPriorityValueUnsigned extends BACnetPriorityValue implements 
 
     readBuffer.closeContext("BACnetPriorityValueUnsigned");
     // Create the instance
-    return new BACnetPriorityValueUnsignedBuilder(unsignedValue, objectTypeArgument);
+    return new BACnetPriorityValueUnsignedBuilderImpl(unsignedValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueUnsignedBuilder
+  public static class BACnetPriorityValueUnsignedBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueUnsignedBuilder(
+    public BACnetPriorityValueUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue, BACnetObjectType objectTypeArgument) {
-
       this.unsignedValue = unsignedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

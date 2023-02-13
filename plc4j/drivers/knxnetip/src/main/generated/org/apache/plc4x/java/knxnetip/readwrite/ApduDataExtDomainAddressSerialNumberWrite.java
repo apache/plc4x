@@ -42,17 +42,14 @@ public class ApduDataExtDomainAddressSerialNumberWrite extends ApduDataExt imple
     return (short) 0x2E;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtDomainAddressSerialNumberWrite(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtDomainAddressSerialNumberWrite() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtDomainAddressSerialNumberWrite");
 
@@ -68,35 +65,32 @@ public class ApduDataExtDomainAddressSerialNumberWrite extends ApduDataExt imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtDomainAddressSerialNumberWrite _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtDomainAddressSerialNumberWriteBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtDomainAddressSerialNumberWrite");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtDomainAddressSerialNumberWrite");
     // Create the instance
-    return new ApduDataExtDomainAddressSerialNumberWriteBuilder(length);
+    return new ApduDataExtDomainAddressSerialNumberWriteBuilderImpl();
   }
 
-  public static class ApduDataExtDomainAddressSerialNumberWriteBuilder
+  public static class ApduDataExtDomainAddressSerialNumberWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtDomainAddressSerialNumberWriteBuilder(Short length) {
+    public ApduDataExtDomainAddressSerialNumberWriteBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtDomainAddressSerialNumberWrite build(Short length) {
-
+    public ApduDataExtDomainAddressSerialNumberWrite build() {
       ApduDataExtDomainAddressSerialNumberWrite apduDataExtDomainAddressSerialNumberWrite =
-          new ApduDataExtDomainAddressSerialNumberWrite(length);
+          new ApduDataExtDomainAddressSerialNumberWrite();
       return apduDataExtDomainAddressSerialNumberWrite;
     }
   }

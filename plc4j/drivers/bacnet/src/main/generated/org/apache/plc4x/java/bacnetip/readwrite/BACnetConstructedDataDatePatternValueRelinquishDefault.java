@@ -79,6 +79,7 @@ public class BACnetConstructedDataDatePatternValueRelinquishDefault extends BACn
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDatePatternValueRelinquishDefault");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataDatePatternValueRelinquishDefault extends BACn
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDatePatternValueRelinquishDefault _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (relinquishDefault)
     lengthInBits += relinquishDefault.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataDatePatternValueRelinquishDefault extends BACn
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDatePatternValueRelinquishDefaultBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataDatePatternValueRelinquishDefault extends BACn
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDate relinquishDefault =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataDatePatternValueRelinquishDefault extends BACn
 
     readBuffer.closeContext("BACnetConstructedDataDatePatternValueRelinquishDefault");
     // Create the instance
-    return new BACnetConstructedDataDatePatternValueRelinquishDefaultBuilder(
+    return new BACnetConstructedDataDatePatternValueRelinquishDefaultBuilderImpl(
         relinquishDefault, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDatePatternValueRelinquishDefaultBuilder
+  public static class BACnetConstructedDataDatePatternValueRelinquishDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDate relinquishDefault;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDatePatternValueRelinquishDefaultBuilder(
+    public BACnetConstructedDataDatePatternValueRelinquishDefaultBuilderImpl(
         BACnetApplicationTagDate relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

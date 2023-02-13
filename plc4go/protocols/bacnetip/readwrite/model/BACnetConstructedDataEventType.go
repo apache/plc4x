@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataEventType) GetEventType() BACnetEventTypeTagged {
 ///////////////////////
 
 func (m *_BACnetConstructedDataEventType) GetActualValue() BACnetEventTypeTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetEventTypeTagged(m.GetEventType())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataEventType) GetTypeName() string {
 	return "BACnetConstructedDataEventType"
 }
 
-func (m *_BACnetConstructedDataEventType) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataEventType) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataEventType) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (eventType)
-	lengthInBits += m.EventType.GetLengthInBits()
+	lengthInBits += m.EventType.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataEventType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataEventType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataEventTypeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventType, error) {
-	return BACnetConstructedDataEventTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataEventTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataEventTypeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventType, error) {
+func BACnetConstructedDataEventTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventType"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataEventTypeParseWithBuffer(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("eventType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for eventType")
 	}
-	_eventType, _eventTypeErr := BACnetEventTypeTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_eventType, _eventTypeErr := BACnetEventTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _eventTypeErr != nil {
 		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field of BACnetConstructedDataEventType")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataEventTypeParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_BACnetConstructedDataEventType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataEventType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataEventType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataEventType) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("eventType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for eventType")
 		}
-		_eventTypeErr := writeBuffer.WriteSerializable(m.GetEventType())
+		_eventTypeErr := writeBuffer.WriteSerializable(ctx, m.GetEventType())
 		if popErr := writeBuffer.PopContext("eventType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for eventType")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataEventType) SerializeWithWriteBuffer(writeBuffer u
 			return errors.Wrap(_eventTypeErr, "Error serializing 'eventType' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataEventType) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataEventType) isBACnetConstructedDataEventType() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataEventType) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

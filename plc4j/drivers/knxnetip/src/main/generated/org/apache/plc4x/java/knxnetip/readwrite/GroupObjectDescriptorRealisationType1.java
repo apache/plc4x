@@ -46,8 +46,6 @@ public class GroupObjectDescriptorRealisationType1 implements Message {
   protected final boolean communicationEnable;
   protected final CEMIPriority priority;
   protected final ComObjectValueType valueType;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public GroupObjectDescriptorRealisationType1(
       short dataPointer,
@@ -103,6 +101,7 @@ public class GroupObjectDescriptorRealisationType1 implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("GroupObjectDescriptorRealisationType1");
 
@@ -110,10 +109,7 @@ public class GroupObjectDescriptorRealisationType1 implements Message {
     writeSimpleField("dataPointer", dataPointer, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x1,
-        writeUnsignedByte(writeBuffer, 1));
+    writeReservedField("reserved", (byte) 0x1, writeUnsignedByte(writeBuffer, 1));
 
     // Simple Field (transmitEnable)
     writeSimpleField("transmitEnable", transmitEnable, writeBoolean(writeBuffer));
@@ -160,6 +156,7 @@ public class GroupObjectDescriptorRealisationType1 implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     GroupObjectDescriptorRealisationType1 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dataPointer)
     lengthInBits += 8;
@@ -203,6 +200,7 @@ public class GroupObjectDescriptorRealisationType1 implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short dataPointer = readSimpleField("dataPointer", readUnsignedShort(readBuffer, 8));
 
@@ -247,7 +245,6 @@ public class GroupObjectDescriptorRealisationType1 implements Message {
             communicationEnable,
             priority,
             valueType);
-    _groupObjectDescriptorRealisationType1.reservedField0 = reservedField0;
     return _groupObjectDescriptorRealisationType1;
   }
 

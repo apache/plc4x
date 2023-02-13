@@ -79,6 +79,7 @@ public class BACnetConstructedDataIntegerValueMinPresValue extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIntegerValueMinPresValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataIntegerValueMinPresValue extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIntegerValueMinPresValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (minPresValue)
     lengthInBits += minPresValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataIntegerValueMinPresValue extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIntegerValueMinPresValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataIntegerValueMinPresValue extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger minPresValue =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataIntegerValueMinPresValue extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataIntegerValueMinPresValue");
     // Create the instance
-    return new BACnetConstructedDataIntegerValueMinPresValueBuilder(
+    return new BACnetConstructedDataIntegerValueMinPresValueBuilderImpl(
         minPresValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIntegerValueMinPresValueBuilder
+  public static class BACnetConstructedDataIntegerValueMinPresValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger minPresValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIntegerValueMinPresValueBuilder(
+    public BACnetConstructedDataIntegerValueMinPresValueBuilderImpl(
         BACnetApplicationTagSignedInteger minPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.minPresValue = minPresValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -91,25 +92,21 @@ func (m *_SALDataRoomControlSystem) GetTypeName() string {
 	return "SALDataRoomControlSystem"
 }
 
-func (m *_SALDataRoomControlSystem) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataRoomControlSystem) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataRoomControlSystem) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_SALDataRoomControlSystem) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataRoomControlSystem) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataRoomControlSystemParse(theBytes []byte, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
-	return SALDataRoomControlSystemParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataRoomControlSystemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataRoomControlSystemParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
+func SALDataRoomControlSystemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataRoomControlSystem"); pullErr != nil {
@@ -136,14 +133,14 @@ func SALDataRoomControlSystemParseWithBuffer(readBuffer utils.ReadBuffer, applic
 }
 
 func (m *_SALDataRoomControlSystem) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataRoomControlSystem) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataRoomControlSystem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -156,7 +153,7 @@ func (m *_SALDataRoomControlSystem) SerializeWithWriteBuffer(writeBuffer utils.W
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataRoomControlSystem) isSALDataRoomControlSystem() bool {
@@ -168,7 +165,7 @@ func (m *_SALDataRoomControlSystem) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

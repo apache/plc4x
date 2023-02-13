@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -140,12 +141,8 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) GetTypeName() string {
 	return "ModbusPDUReadDeviceIdentificationRequest"
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Const Field (meiType)
 	lengthInBits += 8
@@ -159,15 +156,15 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBitsConditional(l
 	return lengthInBits
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ModbusPDUReadDeviceIdentificationRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ModbusPDUReadDeviceIdentificationRequestParse(theBytes []byte, response bool) (ModbusPDUReadDeviceIdentificationRequest, error) {
-	return ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes), response)
+	return ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDeviceIdentificationRequest, error) {
+func ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDeviceIdentificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDeviceIdentificationRequest"); pullErr != nil {
@@ -189,7 +186,7 @@ func ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("level"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for level")
 	}
-	_level, _levelErr := ModbusDeviceInformationLevelParseWithBuffer(readBuffer)
+	_level, _levelErr := ModbusDeviceInformationLevelParseWithBuffer(ctx, readBuffer)
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of ModbusPDUReadDeviceIdentificationRequest")
 	}
@@ -220,14 +217,14 @@ func ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_ModbusPDUReadDeviceIdentificationRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -245,7 +242,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("level"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for level")
 		}
-		_levelErr := writeBuffer.WriteSerializable(m.GetLevel())
+		_levelErr := writeBuffer.WriteSerializable(ctx, m.GetLevel())
 		if popErr := writeBuffer.PopContext("level"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for level")
 		}
@@ -265,7 +262,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ModbusPDUReadDeviceIdentificationRequest) isModbusPDUReadDeviceIdentificationRequest() bool {
@@ -277,7 +274,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

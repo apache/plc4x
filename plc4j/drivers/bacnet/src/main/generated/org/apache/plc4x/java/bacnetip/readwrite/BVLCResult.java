@@ -57,6 +57,7 @@ public class BVLCResult extends BVLC implements Message {
   @Override
   protected void serializeBVLCChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BVLCResult");
 
@@ -66,7 +67,8 @@ public class BVLCResult extends BVLC implements Message {
         "BVLCResultCode",
         code,
         new DataWriterEnumDefault<>(
-            BVLCResultCode::getValue, BVLCResultCode::name, writeUnsignedInt(writeBuffer, 16)));
+            BVLCResultCode::getValue, BVLCResultCode::name, writeUnsignedInt(writeBuffer, 16)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("BVLCResult");
   }
@@ -80,6 +82,7 @@ public class BVLCResult extends BVLC implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BVLCResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (code)
     lengthInBits += 16;
@@ -87,11 +90,12 @@ public class BVLCResult extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCResultBuilder staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BVLCResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BVLCResultCode code =
         readEnumField(
@@ -103,14 +107,13 @@ public class BVLCResult extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCResult");
     // Create the instance
-    return new BVLCResultBuilder(code);
+    return new BVLCResultBuilderImpl(code);
   }
 
-  public static class BVLCResultBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCResultBuilderImpl implements BVLC.BVLCBuilder {
     private final BVLCResultCode code;
 
-    public BVLCResultBuilder(BVLCResultCode code) {
-
+    public BVLCResultBuilderImpl(BVLCResultCode code) {
       this.code = code;
     }
 

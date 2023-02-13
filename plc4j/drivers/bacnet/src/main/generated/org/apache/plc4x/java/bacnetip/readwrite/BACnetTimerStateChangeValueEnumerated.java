@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueEnumerated");
 
@@ -82,6 +83,7 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueEnumerated _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (enumeratedValue)
     lengthInBits += enumeratedValue.getLengthInBits();
@@ -89,12 +91,13 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueEnumeratedBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueEnumerated");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagEnumerated enumeratedValue =
         readSimpleField(
@@ -105,17 +108,17 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
 
     readBuffer.closeContext("BACnetTimerStateChangeValueEnumerated");
     // Create the instance
-    return new BACnetTimerStateChangeValueEnumeratedBuilder(enumeratedValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueEnumeratedBuilderImpl(
+        enumeratedValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueEnumeratedBuilder
+  public static class BACnetTimerStateChangeValueEnumeratedBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagEnumerated enumeratedValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueEnumeratedBuilder(
+    public BACnetTimerStateChangeValueEnumeratedBuilderImpl(
         BACnetApplicationTagEnumerated enumeratedValue, BACnetObjectType objectTypeArgument) {
-
       this.enumeratedValue = enumeratedValue;
       this.objectTypeArgument = objectTypeArgument;
     }

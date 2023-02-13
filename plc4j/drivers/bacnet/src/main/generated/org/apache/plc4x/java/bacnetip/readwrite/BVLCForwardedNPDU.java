@@ -73,11 +73,16 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
   @Override
   protected void serializeBVLCChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BVLCForwardedNPDU");
 
     // Array Field (ip)
-    writeSimpleTypeArrayField("ip", ip, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleTypeArrayField(
+        "ip",
+        ip,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (port)
     writeSimpleField(
@@ -105,6 +110,7 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BVLCForwardedNPDU _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (ip != null) {
@@ -120,12 +126,13 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
     return lengthInBits;
   }
 
-  public static BVLCForwardedNPDUBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer bvlcPayloadLength) throws ParseException {
+  public static BVLCBuilder staticParseBVLCBuilder(ReadBuffer readBuffer, Integer bvlcPayloadLength)
+      throws ParseException {
     readBuffer.pullContext("BVLCForwardedNPDU");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<Short> ip =
         readCountArrayField(
@@ -149,18 +156,17 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
 
     readBuffer.closeContext("BVLCForwardedNPDU");
     // Create the instance
-    return new BVLCForwardedNPDUBuilder(ip, port, npdu, bvlcPayloadLength);
+    return new BVLCForwardedNPDUBuilderImpl(ip, port, npdu, bvlcPayloadLength);
   }
 
-  public static class BVLCForwardedNPDUBuilder implements BVLC.BVLCBuilder {
+  public static class BVLCForwardedNPDUBuilderImpl implements BVLC.BVLCBuilder {
     private final List<Short> ip;
     private final int port;
     private final NPDU npdu;
     private final Integer bvlcPayloadLength;
 
-    public BVLCForwardedNPDUBuilder(
+    public BVLCForwardedNPDUBuilderImpl(
         List<Short> ip, int port, NPDU npdu, Integer bvlcPayloadLength) {
-
       this.ip = ip;
       this.port = port;
       this.npdu = npdu;

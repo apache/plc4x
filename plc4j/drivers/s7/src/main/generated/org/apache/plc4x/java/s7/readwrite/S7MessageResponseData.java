@@ -68,6 +68,7 @@ public class S7MessageResponseData extends S7Message implements Message {
   @Override
   protected void serializeS7MessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7MessageResponseData");
 
@@ -89,6 +90,7 @@ public class S7MessageResponseData extends S7Message implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7MessageResponseData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (errorClass)
     lengthInBits += 8;
@@ -99,12 +101,13 @@ public class S7MessageResponseData extends S7Message implements Message {
     return lengthInBits;
   }
 
-  public static S7MessageResponseDataBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static S7MessageBuilder staticParseS7MessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("S7MessageResponseData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short errorClass = readSimpleField("errorClass", readUnsignedShort(readBuffer, 8));
 
@@ -112,15 +115,14 @@ public class S7MessageResponseData extends S7Message implements Message {
 
     readBuffer.closeContext("S7MessageResponseData");
     // Create the instance
-    return new S7MessageResponseDataBuilder(errorClass, errorCode);
+    return new S7MessageResponseDataBuilderImpl(errorClass, errorCode);
   }
 
-  public static class S7MessageResponseDataBuilder implements S7Message.S7MessageBuilder {
+  public static class S7MessageResponseDataBuilderImpl implements S7Message.S7MessageBuilder {
     private final short errorClass;
     private final short errorCode;
 
-    public S7MessageResponseDataBuilder(short errorClass, short errorCode) {
-
+    public S7MessageResponseDataBuilderImpl(short errorClass, short errorCode) {
       this.errorClass = errorClass;
       this.errorCode = errorCode;
     }

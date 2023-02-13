@@ -59,6 +59,7 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
   @Override
   protected void serializeCBusCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusCommandPointToPointToMultiPoint");
 
@@ -77,6 +78,7 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusCommandPointToPointToMultiPoint _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (command)
     lengthInBits += command.getLengthInBits();
@@ -84,12 +86,13 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
     return lengthInBits;
   }
 
-  public static CBusCommandPointToPointToMultiPointBuilder staticParseBuilder(
+  public static CBusCommandBuilder staticParseCBusCommandBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusCommandPointToPointToMultiPoint");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CBusPointToPointToMultiPointCommand command =
         readSimpleField(
@@ -102,17 +105,16 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
 
     readBuffer.closeContext("CBusCommandPointToPointToMultiPoint");
     // Create the instance
-    return new CBusCommandPointToPointToMultiPointBuilder(command, cBusOptions);
+    return new CBusCommandPointToPointToMultiPointBuilderImpl(command, cBusOptions);
   }
 
-  public static class CBusCommandPointToPointToMultiPointBuilder
+  public static class CBusCommandPointToPointToMultiPointBuilderImpl
       implements CBusCommand.CBusCommandBuilder {
     private final CBusPointToPointToMultiPointCommand command;
     private final CBusOptions cBusOptions;
 
-    public CBusCommandPointToPointToMultiPointBuilder(
+    public CBusCommandPointToPointToMultiPointBuilderImpl(
         CBusPointToPointToMultiPointCommand command, CBusOptions cBusOptions) {
-
       this.command = command;
       this.cBusOptions = cBusOptions;
     }

@@ -64,6 +64,7 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestGetEventInformation");
 
@@ -85,6 +86,7 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestGetEventInformation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (lastReceivedObjectIdentifier)
     if (lastReceivedObjectIdentifier != null) {
@@ -94,12 +96,14 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestGetEventInformationBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestGetEventInformation");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier =
         readOptionalField(
@@ -115,18 +119,17 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestGetEventInformation");
     // Create the instance
-    return new BACnetConfirmedServiceRequestGetEventInformationBuilder(
+    return new BACnetConfirmedServiceRequestGetEventInformationBuilderImpl(
         lastReceivedObjectIdentifier, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestGetEventInformationBuilder
+  public static class BACnetConfirmedServiceRequestGetEventInformationBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestGetEventInformationBuilder(
+    public BACnetConfirmedServiceRequestGetEventInformationBuilderImpl(
         BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier, Long serviceRequestLength) {
-
       this.lastReceivedObjectIdentifier = lastReceivedObjectIdentifier;
       this.serviceRequestLength = serviceRequestLength;
     }

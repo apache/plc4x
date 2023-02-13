@@ -72,6 +72,7 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestCreateObject");
 
@@ -94,6 +95,7 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestCreateObject _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectSpecifier)
     lengthInBits += objectSpecifier.getLengthInBits();
@@ -106,12 +108,14 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestCreateObjectBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestCreateObject");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier =
         readSimpleField(
@@ -138,21 +142,20 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestCreateObject");
     // Create the instance
-    return new BACnetConfirmedServiceRequestCreateObjectBuilder(
+    return new BACnetConfirmedServiceRequestCreateObjectBuilderImpl(
         objectSpecifier, listOfValues, serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestCreateObjectBuilder
+  public static class BACnetConfirmedServiceRequestCreateObjectBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier;
     private final BACnetPropertyValues listOfValues;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestCreateObjectBuilder(
+    public BACnetConfirmedServiceRequestCreateObjectBuilderImpl(
         BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier,
         BACnetPropertyValues listOfValues,
         Long serviceRequestLength) {
-
       this.objectSpecifier = objectSpecifier;
       this.listOfValues = listOfValues;
       this.serviceRequestLength = serviceRequestLength;

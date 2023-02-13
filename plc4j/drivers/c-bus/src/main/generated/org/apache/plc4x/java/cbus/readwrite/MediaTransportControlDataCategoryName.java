@@ -59,6 +59,7 @@ public class MediaTransportControlDataCategoryName extends MediaTransportControl
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataCategoryName");
 
@@ -80,6 +81,7 @@ public class MediaTransportControlDataCategoryName extends MediaTransportControl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataCategoryName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (categoryName)
     lengthInBits += (((commandTypeContainer.getNumBytes()) - (1))) * (8);
@@ -87,13 +89,14 @@ public class MediaTransportControlDataCategoryName extends MediaTransportControl
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataCategoryNameBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer, MediaTransportControlCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataCategoryName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String categoryName =
         readSimpleField(
@@ -102,15 +105,14 @@ public class MediaTransportControlDataCategoryName extends MediaTransportControl
 
     readBuffer.closeContext("MediaTransportControlDataCategoryName");
     // Create the instance
-    return new MediaTransportControlDataCategoryNameBuilder(categoryName);
+    return new MediaTransportControlDataCategoryNameBuilderImpl(categoryName);
   }
 
-  public static class MediaTransportControlDataCategoryNameBuilder
+  public static class MediaTransportControlDataCategoryNameBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final String categoryName;
 
-    public MediaTransportControlDataCategoryNameBuilder(String categoryName) {
-
+    public MediaTransportControlDataCategoryNameBuilderImpl(String categoryName) {
       this.categoryName = categoryName;
     }
 

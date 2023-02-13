@@ -79,6 +79,7 @@ public class BACnetConstructedDataPulseConverterAdjustValue extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPulseConverterAdjustValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataPulseConverterAdjustValue extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPulseConverterAdjustValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (adjustValue)
     lengthInBits += adjustValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataPulseConverterAdjustValue extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPulseConverterAdjustValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataPulseConverterAdjustValue extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal adjustValue =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataPulseConverterAdjustValue extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataPulseConverterAdjustValue");
     // Create the instance
-    return new BACnetConstructedDataPulseConverterAdjustValueBuilder(
+    return new BACnetConstructedDataPulseConverterAdjustValueBuilderImpl(
         adjustValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPulseConverterAdjustValueBuilder
+  public static class BACnetConstructedDataPulseConverterAdjustValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal adjustValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPulseConverterAdjustValueBuilder(
+    public BACnetConstructedDataPulseConverterAdjustValueBuilderImpl(
         BACnetApplicationTagReal adjustValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.adjustValue = adjustValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

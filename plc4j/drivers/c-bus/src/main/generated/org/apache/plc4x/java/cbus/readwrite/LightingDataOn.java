@@ -54,6 +54,7 @@ public class LightingDataOn extends LightingData implements Message {
   @Override
   protected void serializeLightingDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LightingDataOn");
 
@@ -72,6 +73,7 @@ public class LightingDataOn extends LightingData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LightingDataOn _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (group)
     lengthInBits += 8;
@@ -79,25 +81,25 @@ public class LightingDataOn extends LightingData implements Message {
     return lengthInBits;
   }
 
-  public static LightingDataOnBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LightingDataBuilder staticParseLightingDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LightingDataOn");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte group = readSimpleField("group", readByte(readBuffer, 8));
 
     readBuffer.closeContext("LightingDataOn");
     // Create the instance
-    return new LightingDataOnBuilder(group);
+    return new LightingDataOnBuilderImpl(group);
   }
 
-  public static class LightingDataOnBuilder implements LightingData.LightingDataBuilder {
+  public static class LightingDataOnBuilderImpl implements LightingData.LightingDataBuilder {
     private final byte group;
 
-    public LightingDataOnBuilder(byte group) {
-
+    public LightingDataOnBuilderImpl(byte group) {
       this.group = group;
     }
 

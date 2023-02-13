@@ -59,6 +59,7 @@ public class MediaTransportControlDataTrackName extends MediaTransportControlDat
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataTrackName");
 
@@ -80,6 +81,7 @@ public class MediaTransportControlDataTrackName extends MediaTransportControlDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataTrackName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (trackName)
     lengthInBits += (((commandTypeContainer.getNumBytes()) - (1))) * (8);
@@ -87,13 +89,14 @@ public class MediaTransportControlDataTrackName extends MediaTransportControlDat
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataTrackNameBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer, MediaTransportControlCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataTrackName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String trackName =
         readSimpleField(
@@ -102,15 +105,14 @@ public class MediaTransportControlDataTrackName extends MediaTransportControlDat
 
     readBuffer.closeContext("MediaTransportControlDataTrackName");
     // Create the instance
-    return new MediaTransportControlDataTrackNameBuilder(trackName);
+    return new MediaTransportControlDataTrackNameBuilderImpl(trackName);
   }
 
-  public static class MediaTransportControlDataTrackNameBuilder
+  public static class MediaTransportControlDataTrackNameBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final String trackName;
 
-    public MediaTransportControlDataTrackNameBuilder(String trackName) {
-
+    public MediaTransportControlDataTrackNameBuilderImpl(String trackName) {
       this.trackName = trackName;
     }
 

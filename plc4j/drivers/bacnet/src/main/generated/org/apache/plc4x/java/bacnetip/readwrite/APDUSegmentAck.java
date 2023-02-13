@@ -93,6 +93,7 @@ public class APDUSegmentAck extends APDU implements Message {
   @Override
   protected void serializeAPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("APDUSegmentAck");
 
@@ -129,6 +130,7 @@ public class APDUSegmentAck extends APDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     APDUSegmentAck _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 2;
@@ -151,12 +153,13 @@ public class APDUSegmentAck extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUSegmentAckBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUSegmentAck");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 2), (byte) 0x00);
@@ -173,7 +176,7 @@ public class APDUSegmentAck extends APDU implements Message {
 
     readBuffer.closeContext("APDUSegmentAck");
     // Create the instance
-    return new APDUSegmentAckBuilder(
+    return new APDUSegmentAckBuilderImpl(
         negativeAck,
         server,
         originalInvokeId,
@@ -183,7 +186,7 @@ public class APDUSegmentAck extends APDU implements Message {
         reservedField0);
   }
 
-  public static class APDUSegmentAckBuilder implements APDU.APDUBuilder {
+  public static class APDUSegmentAckBuilderImpl implements APDU.APDUBuilder {
     private final boolean negativeAck;
     private final boolean server;
     private final short originalInvokeId;
@@ -192,7 +195,7 @@ public class APDUSegmentAck extends APDU implements Message {
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDUSegmentAckBuilder(
+    public APDUSegmentAckBuilderImpl(
         boolean negativeAck,
         boolean server,
         short originalInvokeId,

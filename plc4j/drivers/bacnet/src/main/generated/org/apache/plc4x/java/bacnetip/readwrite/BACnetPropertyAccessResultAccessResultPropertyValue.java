@@ -73,6 +73,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue
   protected void serializeBACnetPropertyAccessResultAccessResultChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyAccessResultAccessResultPropertyValue");
 
@@ -91,6 +92,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyAccessResultAccessResultPropertyValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (propertyValue)
     lengthInBits += propertyValue.getLengthInBits();
@@ -98,16 +100,18 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue
     return lengthInBits;
   }
 
-  public static BACnetPropertyAccessResultAccessResultPropertyValueBuilder staticParseBuilder(
-      ReadBuffer readBuffer,
-      BACnetObjectType objectTypeArgument,
-      BACnetPropertyIdentifier propertyIdentifierArgument,
-      BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument)
-      throws ParseException {
+  public static BACnetPropertyAccessResultAccessResultBuilder
+      staticParseBACnetPropertyAccessResultAccessResultBuilder(
+          ReadBuffer readBuffer,
+          BACnetObjectType objectTypeArgument,
+          BACnetPropertyIdentifier propertyIdentifierArgument,
+          BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument)
+          throws ParseException {
     readBuffer.pullContext("BACnetPropertyAccessResultAccessResultPropertyValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConstructedData propertyValue =
         readSimpleField(
@@ -124,11 +128,11 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue
 
     readBuffer.closeContext("BACnetPropertyAccessResultAccessResultPropertyValue");
     // Create the instance
-    return new BACnetPropertyAccessResultAccessResultPropertyValueBuilder(
+    return new BACnetPropertyAccessResultAccessResultPropertyValueBuilderImpl(
         propertyValue, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument);
   }
 
-  public static class BACnetPropertyAccessResultAccessResultPropertyValueBuilder
+  public static class BACnetPropertyAccessResultAccessResultPropertyValueBuilderImpl
       implements BACnetPropertyAccessResultAccessResult
           .BACnetPropertyAccessResultAccessResultBuilder {
     private final BACnetConstructedData propertyValue;
@@ -136,12 +140,11 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue
     private final BACnetPropertyIdentifier propertyIdentifierArgument;
     private final BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument;
 
-    public BACnetPropertyAccessResultAccessResultPropertyValueBuilder(
+    public BACnetPropertyAccessResultAccessResultPropertyValueBuilderImpl(
         BACnetConstructedData propertyValue,
         BACnetObjectType objectTypeArgument,
         BACnetPropertyIdentifier propertyIdentifierArgument,
         BACnetTagPayloadUnsignedInteger propertyArrayIndexArgument) {
-
       this.propertyValue = propertyValue;
       this.objectTypeArgument = objectTypeArgument;
       this.propertyIdentifierArgument = propertyIdentifierArgument;

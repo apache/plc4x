@@ -79,6 +79,7 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLastCredentialRemoved");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLastCredentialRemoved _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lastCredentialRemoved)
     lengthInBits += lastCredentialRemoved.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastCredentialRemovedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference lastCredentialRemoved =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataLastCredentialRemoved");
     // Create the instance
-    return new BACnetConstructedDataLastCredentialRemovedBuilder(
+    return new BACnetConstructedDataLastCredentialRemovedBuilderImpl(
         lastCredentialRemoved, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastCredentialRemovedBuilder
+  public static class BACnetConstructedDataLastCredentialRemovedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference lastCredentialRemoved;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastCredentialRemovedBuilder(
+    public BACnetConstructedDataLastCredentialRemovedBuilderImpl(
         BACnetDeviceObjectReference lastCredentialRemoved,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastCredentialRemoved = lastCredentialRemoved;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

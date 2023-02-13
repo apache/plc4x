@@ -64,6 +64,7 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SignatureData");
 
@@ -85,6 +86,7 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SignatureData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (algorithm)
     lengthInBits += algorithm.getLengthInBits();
@@ -95,12 +97,13 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static SignatureDataBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SignatureData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString algorithm =
         readSimpleField(
@@ -115,16 +118,15 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("SignatureData");
     // Create the instance
-    return new SignatureDataBuilder(algorithm, signature);
+    return new SignatureDataBuilderImpl(algorithm, signature);
   }
 
-  public static class SignatureDataBuilder
+  public static class SignatureDataBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString algorithm;
     private final PascalByteString signature;
 
-    public SignatureDataBuilder(PascalString algorithm, PascalByteString signature) {
-
+    public SignatureDataBuilderImpl(PascalString algorithm, PascalByteString signature) {
       this.algorithm = algorithm;
       this.signature = signature;
     }

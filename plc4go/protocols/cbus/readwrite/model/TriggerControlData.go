@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -56,12 +57,11 @@ type _TriggerControlData struct {
 
 type _TriggerControlDataChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type TriggerControlDataParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child TriggerControlData, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child TriggerControlData, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -97,10 +97,14 @@ func (m *_TriggerControlData) GetTriggerGroup() byte {
 ///////////////////////
 
 func (m *_TriggerControlData) GetCommandType() TriggerControlCommandType {
+	ctx := context.Background()
+	_ = ctx
 	return CastTriggerControlCommandType(m.GetCommandTypeContainer().CommandType())
 }
 
 func (m *_TriggerControlData) GetIsUnused() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetTriggerGroup()) > (0xFE)))
 }
 
@@ -129,7 +133,7 @@ func (m *_TriggerControlData) GetTypeName() string {
 	return "TriggerControlData"
 }
 
-func (m *_TriggerControlData) GetParentLengthInBits() uint16 {
+func (m *_TriggerControlData) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (commandTypeContainer)
@@ -145,15 +149,15 @@ func (m *_TriggerControlData) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_TriggerControlData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_TriggerControlData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func TriggerControlDataParse(theBytes []byte) (TriggerControlData, error) {
-	return TriggerControlDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return TriggerControlDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func TriggerControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerControlData, error) {
+func TriggerControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TriggerControlData"); pullErr != nil {
@@ -171,7 +175,7 @@ func TriggerControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerCont
 	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
 	}
-	_commandTypeContainer, _commandTypeContainerErr := TriggerControlCommandTypeContainerParseWithBuffer(readBuffer)
+	_commandTypeContainer, _commandTypeContainerErr := TriggerControlCommandTypeContainerParseWithBuffer(ctx, readBuffer)
 	if _commandTypeContainerErr != nil {
 		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of TriggerControlData")
 	}
@@ -208,15 +212,15 @@ func TriggerControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerCont
 	var typeSwitchError error
 	switch {
 	case commandType == TriggerControlCommandType_TRIGGER_EVENT: // TriggerControlDataTriggerEvent
-		_childTemp, typeSwitchError = TriggerControlDataTriggerEventParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TriggerControlDataTriggerEventParseWithBuffer(ctx, readBuffer)
 	case commandType == TriggerControlCommandType_TRIGGER_MIN: // TriggerControlDataTriggerMin
-		_childTemp, typeSwitchError = TriggerControlDataTriggerMinParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TriggerControlDataTriggerMinParseWithBuffer(ctx, readBuffer)
 	case commandType == TriggerControlCommandType_TRIGGER_MAX: // TriggerControlDataTriggerMax
-		_childTemp, typeSwitchError = TriggerControlDataTriggerMaxParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TriggerControlDataTriggerMaxParseWithBuffer(ctx, readBuffer)
 	case commandType == TriggerControlCommandType_INDICATOR_KILL: // TriggerControlDataIndicatorKill
-		_childTemp, typeSwitchError = TriggerControlDataIndicatorKillParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = TriggerControlDataIndicatorKillParseWithBuffer(ctx, readBuffer)
 	case commandType == TriggerControlCommandType_LABEL: // TriggerControlDataLabel
-		_childTemp, typeSwitchError = TriggerControlDataLabelParseWithBuffer(readBuffer, commandTypeContainer)
+		_childTemp, typeSwitchError = TriggerControlDataLabelParseWithBuffer(ctx, readBuffer, commandTypeContainer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandType=%v]", commandType)
 	}
@@ -234,7 +238,7 @@ func TriggerControlDataParseWithBuffer(readBuffer utils.ReadBuffer) (TriggerCont
 	return _child, nil
 }
 
-func (pm *_TriggerControlData) SerializeParent(writeBuffer utils.WriteBuffer, child TriggerControlData, serializeChildFunction func() error) error {
+func (pm *_TriggerControlData) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child TriggerControlData, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -248,7 +252,7 @@ func (pm *_TriggerControlData) SerializeParent(writeBuffer utils.WriteBuffer, ch
 	if pushErr := writeBuffer.PushContext("commandTypeContainer"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandTypeContainer")
 	}
-	_commandTypeContainerErr := writeBuffer.WriteSerializable(m.GetCommandTypeContainer())
+	_commandTypeContainerErr := writeBuffer.WriteSerializable(ctx, m.GetCommandTypeContainer())
 	if popErr := writeBuffer.PopContext("commandTypeContainer"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandTypeContainer")
 	}
@@ -256,7 +260,7 @@ func (pm *_TriggerControlData) SerializeParent(writeBuffer utils.WriteBuffer, ch
 		return errors.Wrap(_commandTypeContainerErr, "Error serializing 'commandTypeContainer' field")
 	}
 	// Virtual field
-	if _commandTypeErr := writeBuffer.WriteVirtual("commandType", m.GetCommandType()); _commandTypeErr != nil {
+	if _commandTypeErr := writeBuffer.WriteVirtual(ctx, "commandType", m.GetCommandType()); _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
 	}
 
@@ -267,7 +271,7 @@ func (pm *_TriggerControlData) SerializeParent(writeBuffer utils.WriteBuffer, ch
 		return errors.Wrap(_triggerGroupErr, "Error serializing 'triggerGroup' field")
 	}
 	// Virtual field
-	if _isUnusedErr := writeBuffer.WriteVirtual("isUnused", m.GetIsUnused()); _isUnusedErr != nil {
+	if _isUnusedErr := writeBuffer.WriteVirtual(ctx, "isUnused", m.GetIsUnused()); _isUnusedErr != nil {
 		return errors.Wrap(_isUnusedErr, "Error serializing 'isUnused' field")
 	}
 
@@ -291,7 +295,7 @@ func (m *_TriggerControlData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

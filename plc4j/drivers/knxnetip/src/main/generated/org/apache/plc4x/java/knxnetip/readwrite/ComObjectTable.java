@@ -49,6 +49,7 @@ public abstract class ComObjectTable implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ComObjectTable");
 
@@ -67,6 +68,7 @@ public abstract class ComObjectTable implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ComObjectTable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -99,15 +101,19 @@ public abstract class ComObjectTable implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     ComObjectTableBuilder builder = null;
     if (EvaluationHelper.equals(firmwareType, FirmwareType.SYSTEM_1)) {
-      builder = ComObjectTableRealisationType1.staticParseBuilder(readBuffer, firmwareType);
+      builder =
+          ComObjectTableRealisationType1.staticParseComObjectTableBuilder(readBuffer, firmwareType);
     } else if (EvaluationHelper.equals(firmwareType, FirmwareType.SYSTEM_2)) {
-      builder = ComObjectTableRealisationType2.staticParseBuilder(readBuffer, firmwareType);
+      builder =
+          ComObjectTableRealisationType2.staticParseComObjectTableBuilder(readBuffer, firmwareType);
     } else if (EvaluationHelper.equals(firmwareType, FirmwareType.SYSTEM_300)) {
-      builder = ComObjectTableRealisationType6.staticParseBuilder(readBuffer, firmwareType);
+      builder =
+          ComObjectTableRealisationType6.staticParseComObjectTableBuilder(readBuffer, firmwareType);
     }
     if (builder == null) {
       throw new ParseException(
@@ -124,7 +130,7 @@ public abstract class ComObjectTable implements Message {
     return _comObjectTable;
   }
 
-  public static interface ComObjectTableBuilder {
+  public interface ComObjectTableBuilder {
     ComObjectTable build();
   }
 

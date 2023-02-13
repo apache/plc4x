@@ -55,6 +55,7 @@ public class SecurityDataOn extends SecurityData implements Message {
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataOn");
 
@@ -73,6 +74,7 @@ public class SecurityDataOn extends SecurityData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataOn _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (data != null) {
@@ -82,13 +84,14 @@ public class SecurityDataOn extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataOnBuilder staticParseBuilder(
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(
       ReadBuffer readBuffer, SecurityCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataOn");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] data =
         readBuffer.readByteArray(
@@ -96,14 +99,13 @@ public class SecurityDataOn extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataOn");
     // Create the instance
-    return new SecurityDataOnBuilder(data);
+    return new SecurityDataOnBuilderImpl(data);
   }
 
-  public static class SecurityDataOnBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataOnBuilderImpl implements SecurityData.SecurityDataBuilder {
     private final byte[] data;
 
-    public SecurityDataOnBuilder(byte[] data) {
-
+    public SecurityDataOnBuilderImpl(byte[] data) {
       this.data = data;
     }
 

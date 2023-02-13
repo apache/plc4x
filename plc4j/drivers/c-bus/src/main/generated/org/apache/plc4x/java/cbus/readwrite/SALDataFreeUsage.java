@@ -49,6 +49,7 @@ public class SALDataFreeUsage extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataFreeUsage");
 
@@ -64,16 +65,18 @@ public class SALDataFreeUsage extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataFreeUsage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SALDataFreeUsageBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataFreeUsage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((1) == (2))) {
       throw new ParseValidationException("FREE_USAGE Not yet implemented");
@@ -81,12 +84,12 @@ public class SALDataFreeUsage extends SALData implements Message {
 
     readBuffer.closeContext("SALDataFreeUsage");
     // Create the instance
-    return new SALDataFreeUsageBuilder();
+    return new SALDataFreeUsageBuilderImpl();
   }
 
-  public static class SALDataFreeUsageBuilder implements SALData.SALDataBuilder {
+  public static class SALDataFreeUsageBuilderImpl implements SALData.SALDataBuilder {
 
-    public SALDataFreeUsageBuilder() {}
+    public SALDataFreeUsageBuilderImpl() {}
 
     public SALDataFreeUsage build(SALData salData) {
       SALDataFreeUsage sALDataFreeUsage = new SALDataFreeUsage(salData);

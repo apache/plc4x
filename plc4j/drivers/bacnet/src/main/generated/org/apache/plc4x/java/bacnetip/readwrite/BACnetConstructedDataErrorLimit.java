@@ -78,6 +78,7 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataErrorLimit");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataErrorLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (errorLimit)
     lengthInBits += errorLimit.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataErrorLimitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal errorLimit =
         readSimpleField(
@@ -132,20 +135,20 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataErrorLimit");
     // Create the instance
-    return new BACnetConstructedDataErrorLimitBuilder(errorLimit, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataErrorLimitBuilderImpl(
+        errorLimit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataErrorLimitBuilder
+  public static class BACnetConstructedDataErrorLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal errorLimit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataErrorLimitBuilder(
+    public BACnetConstructedDataErrorLimitBuilderImpl(
         BACnetApplicationTagReal errorLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.errorLimit = errorLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

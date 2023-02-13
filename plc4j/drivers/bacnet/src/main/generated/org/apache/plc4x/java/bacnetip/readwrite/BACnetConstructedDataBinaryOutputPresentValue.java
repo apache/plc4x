@@ -79,6 +79,7 @@ public class BACnetConstructedDataBinaryOutputPresentValue extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBinaryOutputPresentValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataBinaryOutputPresentValue extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBinaryOutputPresentValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (presentValue)
     lengthInBits += presentValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataBinaryOutputPresentValue extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBinaryOutputPresentValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataBinaryOutputPresentValue extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBinaryPVTagged presentValue =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataBinaryOutputPresentValue extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataBinaryOutputPresentValue");
     // Create the instance
-    return new BACnetConstructedDataBinaryOutputPresentValueBuilder(
+    return new BACnetConstructedDataBinaryOutputPresentValueBuilderImpl(
         presentValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBinaryOutputPresentValueBuilder
+  public static class BACnetConstructedDataBinaryOutputPresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetBinaryPVTagged presentValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBinaryOutputPresentValueBuilder(
+    public BACnetConstructedDataBinaryOutputPresentValueBuilderImpl(
         BACnetBinaryPVTagged presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

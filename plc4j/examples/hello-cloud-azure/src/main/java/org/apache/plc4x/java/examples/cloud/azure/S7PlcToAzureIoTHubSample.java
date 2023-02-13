@@ -21,8 +21,8 @@ package org.apache.plc4x.java.examples.cloud.azure;
 import com.microsoft.azure.sdk.iot.device.DeviceClient;
 import com.microsoft.azure.sdk.iot.device.IotHubClientProtocol;
 import com.microsoft.azure.sdk.iot.device.Message;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcDriverManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ public class S7PlcToAzureIoTHubSample {
 
         // Open both a connection to the remote PLC and the cloud service.
         DeviceClient client = new DeviceClient(options.getIotHubConnectionString(), IotHubClientProtocol.MQTT);
-        try (PlcConnection plcConnection = new PlcDriverManager().getConnection(options.getPlc4xConnectionString())) {
+        try (PlcConnection plcConnection = PlcDriverManager.getDefault().getConnectionManager().getConnection(options.getPlc4xConnectionString())) {
 
             LOGGER.info("Connected");
 

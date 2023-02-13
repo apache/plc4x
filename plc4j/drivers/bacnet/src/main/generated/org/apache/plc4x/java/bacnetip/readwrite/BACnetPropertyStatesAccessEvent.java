@@ -56,6 +56,7 @@ public class BACnetPropertyStatesAccessEvent extends BACnetPropertyStates implem
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesAccessEvent");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesAccessEvent extends BACnetPropertyStates implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesAccessEvent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessEvent)
     lengthInBits += accessEvent.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesAccessEvent extends BACnetPropertyStates implem
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesAccessEventBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesAccessEvent");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessEventTagged accessEvent =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesAccessEvent extends BACnetPropertyStates implem
 
     readBuffer.closeContext("BACnetPropertyStatesAccessEvent");
     // Create the instance
-    return new BACnetPropertyStatesAccessEventBuilder(accessEvent);
+    return new BACnetPropertyStatesAccessEventBuilderImpl(accessEvent);
   }
 
-  public static class BACnetPropertyStatesAccessEventBuilder
+  public static class BACnetPropertyStatesAccessEventBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetAccessEventTagged accessEvent;
 
-    public BACnetPropertyStatesAccessEventBuilder(BACnetAccessEventTagged accessEvent) {
-
+    public BACnetPropertyStatesAccessEventBuilderImpl(BACnetAccessEventTagged accessEvent) {
       this.accessEvent = accessEvent;
     }
 

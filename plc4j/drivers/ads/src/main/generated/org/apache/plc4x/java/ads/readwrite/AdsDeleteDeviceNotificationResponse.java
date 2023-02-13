@@ -68,6 +68,7 @@ public class AdsDeleteDeviceNotificationResponse extends AmsPacket implements Me
   @Override
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDeleteDeviceNotificationResponse");
 
@@ -91,6 +92,7 @@ public class AdsDeleteDeviceNotificationResponse extends AmsPacket implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsDeleteDeviceNotificationResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (result)
     lengthInBits += 32;
@@ -98,12 +100,13 @@ public class AdsDeleteDeviceNotificationResponse extends AmsPacket implements Me
     return lengthInBits;
   }
 
-  public static AdsDeleteDeviceNotificationResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsDeleteDeviceNotificationResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ReturnCode result =
         readEnumField(
@@ -114,15 +117,14 @@ public class AdsDeleteDeviceNotificationResponse extends AmsPacket implements Me
 
     readBuffer.closeContext("AdsDeleteDeviceNotificationResponse");
     // Create the instance
-    return new AdsDeleteDeviceNotificationResponseBuilder(result);
+    return new AdsDeleteDeviceNotificationResponseBuilderImpl(result);
   }
 
-  public static class AdsDeleteDeviceNotificationResponseBuilder
+  public static class AdsDeleteDeviceNotificationResponseBuilderImpl
       implements AmsPacket.AmsPacketBuilder {
     private final ReturnCode result;
 
-    public AdsDeleteDeviceNotificationResponseBuilder(ReturnCode result) {
-
+    public AdsDeleteDeviceNotificationResponseBuilderImpl(ReturnCode result) {
       this.result = result;
     }
 

@@ -89,6 +89,7 @@ public class BACnetConstructedDataNegativeAccessRules extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNegativeAccessRules");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataNegativeAccessRules extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNegativeAccessRules _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,7 +138,7 @@ public class BACnetConstructedDataNegativeAccessRules extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNegativeAccessRulesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -147,6 +149,7 @@ public class BACnetConstructedDataNegativeAccessRules extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -171,23 +174,22 @@ public class BACnetConstructedDataNegativeAccessRules extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataNegativeAccessRules");
     // Create the instance
-    return new BACnetConstructedDataNegativeAccessRulesBuilder(
+    return new BACnetConstructedDataNegativeAccessRulesBuilderImpl(
         numberOfDataElements, negativeAccessRules, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNegativeAccessRulesBuilder
+  public static class BACnetConstructedDataNegativeAccessRulesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetAccessRule> negativeAccessRules;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNegativeAccessRulesBuilder(
+    public BACnetConstructedDataNegativeAccessRulesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetAccessRule> negativeAccessRules,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.negativeAccessRules = negativeAccessRules;
       this.tagNumber = tagNumber;

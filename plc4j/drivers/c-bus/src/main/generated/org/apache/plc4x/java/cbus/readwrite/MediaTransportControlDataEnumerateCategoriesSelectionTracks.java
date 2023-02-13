@@ -83,6 +83,7 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks");
 
@@ -120,6 +121,7 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataEnumerateCategoriesSelectionTracks _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (enumerateType)
     lengthInBits += 8;
@@ -138,12 +140,13 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder
-      staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte enumerateType = readSimpleField("enumerateType", readByte(readBuffer, 8));
     boolean isListCategories =
@@ -162,18 +165,17 @@ public class MediaTransportControlDataEnumerateCategoriesSelectionTracks
 
     readBuffer.closeContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks");
     // Create the instance
-    return new MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder(
+    return new MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilderImpl(
         enumerateType, start);
   }
 
-  public static class MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder
+  public static class MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte enumerateType;
     private final short start;
 
-    public MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilder(
+    public MediaTransportControlDataEnumerateCategoriesSelectionTracksBuilderImpl(
         byte enumerateType, short start) {
-
       this.enumerateType = enumerateType;
       this.start = start;
     }

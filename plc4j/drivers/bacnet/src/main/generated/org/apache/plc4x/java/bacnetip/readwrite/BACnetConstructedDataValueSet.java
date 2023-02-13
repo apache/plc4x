@@ -78,6 +78,7 @@ public class BACnetConstructedDataValueSet extends BACnetConstructedData impleme
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataValueSet");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataValueSet extends BACnetConstructedData impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataValueSet _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (valueSet)
     lengthInBits += valueSet.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataValueSet extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataValueSetBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataValueSet extends BACnetConstructedData impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger valueSet =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataValueSet extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataValueSet");
     // Create the instance
-    return new BACnetConstructedDataValueSetBuilder(valueSet, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataValueSetBuilderImpl(valueSet, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataValueSetBuilder
+  public static class BACnetConstructedDataValueSetBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger valueSet;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataValueSetBuilder(
+    public BACnetConstructedDataValueSetBuilderImpl(
         BACnetApplicationTagUnsignedInteger valueSet,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.valueSet = valueSet;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -78,6 +78,7 @@ public class BACnetConstructedDataInitialTimeout extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataInitialTimeout");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataInitialTimeout extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataInitialTimeout _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (initialTimeout)
     lengthInBits += initialTimeout.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataInitialTimeout extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataInitialTimeoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataInitialTimeout extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger initialTimeout =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataInitialTimeout extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataInitialTimeout");
     // Create the instance
-    return new BACnetConstructedDataInitialTimeoutBuilder(
+    return new BACnetConstructedDataInitialTimeoutBuilderImpl(
         initialTimeout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataInitialTimeoutBuilder
+  public static class BACnetConstructedDataInitialTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger initialTimeout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataInitialTimeoutBuilder(
+    public BACnetConstructedDataInitialTimeoutBuilderImpl(
         BACnetApplicationTagUnsignedInteger initialTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.initialTimeout = initialTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

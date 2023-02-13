@@ -78,6 +78,7 @@ public class BACnetConstructedDataDirectReading extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDirectReading");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataDirectReading extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDirectReading _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (directReading)
     lengthInBits += directReading.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataDirectReading extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDirectReadingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataDirectReading extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal directReading =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataDirectReading extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataDirectReading");
     // Create the instance
-    return new BACnetConstructedDataDirectReadingBuilder(
+    return new BACnetConstructedDataDirectReadingBuilderImpl(
         directReading, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDirectReadingBuilder
+  public static class BACnetConstructedDataDirectReadingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal directReading;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDirectReadingBuilder(
+    public BACnetConstructedDataDirectReadingBuilderImpl(
         BACnetApplicationTagReal directReading,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.directReading = directReading;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -40,8 +40,6 @@ public class DeviceConfigurationRequestDataBlock implements Message {
   // Properties.
   protected final short communicationChannelId;
   protected final short sequenceCounter;
-  // Reserved Fields
-  private Short reservedField0;
 
   public DeviceConfigurationRequestDataBlock(short communicationChannelId, short sequenceCounter) {
     super();
@@ -59,6 +57,7 @@ public class DeviceConfigurationRequestDataBlock implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DeviceConfigurationRequestDataBlock");
 
@@ -75,10 +74,7 @@ public class DeviceConfigurationRequestDataBlock implements Message {
     writeSimpleField("sequenceCounter", sequenceCounter, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("DeviceConfigurationRequestDataBlock");
   }
@@ -92,6 +88,7 @@ public class DeviceConfigurationRequestDataBlock implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     DeviceConfigurationRequestDataBlock _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (structureLength)
     lengthInBits += 8;
@@ -120,6 +117,7 @@ public class DeviceConfigurationRequestDataBlock implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short structureLength = readImplicitField("structureLength", readUnsignedShort(readBuffer, 8));
 
@@ -136,7 +134,6 @@ public class DeviceConfigurationRequestDataBlock implements Message {
     DeviceConfigurationRequestDataBlock _deviceConfigurationRequestDataBlock;
     _deviceConfigurationRequestDataBlock =
         new DeviceConfigurationRequestDataBlock(communicationChannelId, sequenceCounter);
-    _deviceConfigurationRequestDataBlock.reservedField0 = reservedField0;
     return _deviceConfigurationRequestDataBlock;
   }
 

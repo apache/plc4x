@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -111,28 +112,24 @@ func (m *_BVLCOriginalBroadcastNPDU) GetTypeName() string {
 	return "BVLCOriginalBroadcastNPDU"
 }
 
-func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (npdu)
-	lengthInBits += m.Npdu.GetLengthInBits()
+	lengthInBits += m.Npdu.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BVLCOriginalBroadcastNPDU) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BVLCOriginalBroadcastNPDUParse(theBytes []byte, bvlcPayloadLength uint16) (BVLCOriginalBroadcastNPDU, error) {
-	return BVLCOriginalBroadcastNPDUParseWithBuffer(utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
+	return BVLCOriginalBroadcastNPDUParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
-func BVLCOriginalBroadcastNPDUParseWithBuffer(readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCOriginalBroadcastNPDU, error) {
+func BVLCOriginalBroadcastNPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCOriginalBroadcastNPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BVLCOriginalBroadcastNPDU"); pullErr != nil {
@@ -145,7 +142,7 @@ func BVLCOriginalBroadcastNPDUParseWithBuffer(readBuffer utils.ReadBuffer, bvlcP
 	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for npdu")
 	}
-	_npdu, _npduErr := NPDUParseWithBuffer(readBuffer, uint16(bvlcPayloadLength))
+	_npdu, _npduErr := NPDUParseWithBuffer(ctx, readBuffer, uint16(bvlcPayloadLength))
 	if _npduErr != nil {
 		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field of BVLCOriginalBroadcastNPDU")
 	}
@@ -168,14 +165,14 @@ func BVLCOriginalBroadcastNPDUParseWithBuffer(readBuffer utils.ReadBuffer, bvlcP
 }
 
 func (m *_BVLCOriginalBroadcastNPDU) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BVLCOriginalBroadcastNPDU) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BVLCOriginalBroadcastNPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -187,7 +184,7 @@ func (m *_BVLCOriginalBroadcastNPDU) SerializeWithWriteBuffer(writeBuffer utils.
 		if pushErr := writeBuffer.PushContext("npdu"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for npdu")
 		}
-		_npduErr := writeBuffer.WriteSerializable(m.GetNpdu())
+		_npduErr := writeBuffer.WriteSerializable(ctx, m.GetNpdu())
 		if popErr := writeBuffer.PopContext("npdu"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for npdu")
 		}
@@ -200,7 +197,7 @@ func (m *_BVLCOriginalBroadcastNPDU) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 ////
@@ -222,7 +219,7 @@ func (m *_BVLCOriginalBroadcastNPDU) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

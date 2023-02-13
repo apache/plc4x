@@ -55,6 +55,7 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
   protected void serializeBACnetValueSourceChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetValueSourceAddress");
 
@@ -73,6 +74,7 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetValueSourceAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (address)
     lengthInBits += address.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
     return lengthInBits;
   }
 
-  public static BACnetValueSourceAddressBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetValueSourceBuilder staticParseBACnetValueSourceBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetValueSourceAddress");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAddressEnclosed address =
         readSimpleField(
@@ -95,15 +98,14 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
 
     readBuffer.closeContext("BACnetValueSourceAddress");
     // Create the instance
-    return new BACnetValueSourceAddressBuilder(address);
+    return new BACnetValueSourceAddressBuilderImpl(address);
   }
 
-  public static class BACnetValueSourceAddressBuilder
+  public static class BACnetValueSourceAddressBuilderImpl
       implements BACnetValueSource.BACnetValueSourceBuilder {
     private final BACnetAddressEnclosed address;
 
-    public BACnetValueSourceAddressBuilder(BACnetAddressEnclosed address) {
-
+    public BACnetValueSourceAddressBuilderImpl(BACnetAddressEnclosed address) {
       this.address = address;
     }
 

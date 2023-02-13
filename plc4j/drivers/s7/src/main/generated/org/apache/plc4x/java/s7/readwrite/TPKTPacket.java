@@ -42,8 +42,6 @@ public class TPKTPacket implements Message {
 
   // Properties.
   protected final COTPPacket payload;
-  // Reserved Fields
-  private Short reservedField0;
 
   public TPKTPacket(COTPPacket payload) {
     super();
@@ -60,22 +58,32 @@ public class TPKTPacket implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TPKTPacket");
 
     // Const Field (protocolId)
-    writeConstField("protocolId", PROTOCOLID, writeUnsignedShort(writeBuffer, 8));
+    writeConstField(
+        "protocolId",
+        PROTOCOLID,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given
     // by the objects content)
     int len = (int) ((getPayload().getLengthInBytes()) + (4));
-    writeImplicitField("len", len, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "len",
+        len,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (payload)
     writeSimpleField(
@@ -96,6 +104,7 @@ public class TPKTPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     TPKTPacket _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (protocolId)
     lengthInBits += 8;
@@ -123,6 +132,7 @@ public class TPKTPacket implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short protocolId =
         readConstField(
@@ -153,7 +163,6 @@ public class TPKTPacket implements Message {
     // Create the instance
     TPKTPacket _tPKTPacket;
     _tPKTPacket = new TPKTPacket(payload);
-    _tPKTPacket.reservedField0 = reservedField0;
     return _tPKTPacket;
   }
 

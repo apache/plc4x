@@ -88,6 +88,7 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPv6DNSServer");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIPv6DNSServer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPv6DNSServerBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -172,23 +175,22 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataIPv6DNSServer");
     // Create the instance
-    return new BACnetConstructedDataIPv6DNSServerBuilder(
+    return new BACnetConstructedDataIPv6DNSServerBuilderImpl(
         numberOfDataElements, ipv6DnsServer, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPv6DNSServerBuilder
+  public static class BACnetConstructedDataIPv6DNSServerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetApplicationTagOctetString> ipv6DnsServer;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPv6DNSServerBuilder(
+    public BACnetConstructedDataIPv6DNSServerBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetApplicationTagOctetString> ipv6DnsServer,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.ipv6DnsServer = ipv6DnsServer;
       this.tagNumber = tagNumber;

@@ -62,6 +62,7 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
   protected void serializeBACnetPriorityValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPriorityValueBoolean");
 
@@ -80,6 +81,7 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPriorityValueBoolean _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (booleanValue)
     lengthInBits += booleanValue.getLengthInBits();
@@ -87,12 +89,13 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
     return lengthInBits;
   }
 
-  public static BACnetPriorityValueBooleanBuilder staticParseBuilder(
+  public static BACnetPriorityValueBuilder staticParseBACnetPriorityValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetPriorityValueBoolean");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean booleanValue =
         readSimpleField(
@@ -103,17 +106,16 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
 
     readBuffer.closeContext("BACnetPriorityValueBoolean");
     // Create the instance
-    return new BACnetPriorityValueBooleanBuilder(booleanValue, objectTypeArgument);
+    return new BACnetPriorityValueBooleanBuilderImpl(booleanValue, objectTypeArgument);
   }
 
-  public static class BACnetPriorityValueBooleanBuilder
+  public static class BACnetPriorityValueBooleanBuilderImpl
       implements BACnetPriorityValue.BACnetPriorityValueBuilder {
     private final BACnetApplicationTagBoolean booleanValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetPriorityValueBooleanBuilder(
+    public BACnetPriorityValueBooleanBuilderImpl(
         BACnetApplicationTagBoolean booleanValue, BACnetObjectType objectTypeArgument) {
-
       this.booleanValue = booleanValue;
       this.objectTypeArgument = objectTypeArgument;
     }

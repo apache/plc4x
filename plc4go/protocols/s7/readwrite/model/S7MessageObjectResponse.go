@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,12 +118,8 @@ func (m *_S7MessageObjectResponse) GetTypeName() string {
 	return "S7MessageObjectResponse"
 }
 
-func (m *_S7MessageObjectResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_S7MessageObjectResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_S7MessageObjectResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (returnCode)
 	lengthInBits += 8
@@ -136,15 +133,15 @@ func (m *_S7MessageObjectResponse) GetLengthInBitsConditional(lastItem bool) uin
 	return lengthInBits
 }
 
-func (m *_S7MessageObjectResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_S7MessageObjectResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func S7MessageObjectResponseParse(theBytes []byte, cpuFunctionType uint8) (S7MessageObjectResponse, error) {
-	return S7MessageObjectResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
+	return S7MessageObjectResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
 }
 
-func S7MessageObjectResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7MessageObjectResponse, error) {
+func S7MessageObjectResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7MessageObjectResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("S7MessageObjectResponse"); pullErr != nil {
@@ -157,7 +154,7 @@ func S7MessageObjectResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunc
 	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
 	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(readBuffer)
+	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(ctx, readBuffer)
 	if _returnCodeErr != nil {
 		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7MessageObjectResponse")
 	}
@@ -170,7 +167,7 @@ func S7MessageObjectResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunc
 	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
-	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(readBuffer)
+	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(ctx, readBuffer)
 	if _transportSizeErr != nil {
 		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of S7MessageObjectResponse")
 	}
@@ -212,14 +209,14 @@ func S7MessageObjectResponseParseWithBuffer(readBuffer utils.ReadBuffer, cpuFunc
 }
 
 func (m *_S7MessageObjectResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_S7MessageObjectResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_S7MessageObjectResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -231,7 +228,7 @@ func (m *_S7MessageObjectResponse) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("returnCode"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for returnCode")
 		}
-		_returnCodeErr := writeBuffer.WriteSerializable(m.GetReturnCode())
+		_returnCodeErr := writeBuffer.WriteSerializable(ctx, m.GetReturnCode())
 		if popErr := writeBuffer.PopContext("returnCode"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for returnCode")
 		}
@@ -243,7 +240,7 @@ func (m *_S7MessageObjectResponse) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		if pushErr := writeBuffer.PushContext("transportSize"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for transportSize")
 		}
-		_transportSizeErr := writeBuffer.WriteSerializable(m.GetTransportSize())
+		_transportSizeErr := writeBuffer.WriteSerializable(ctx, m.GetTransportSize())
 		if popErr := writeBuffer.PopContext("transportSize"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for transportSize")
 		}
@@ -272,7 +269,7 @@ func (m *_S7MessageObjectResponse) SerializeWithWriteBuffer(writeBuffer utils.Wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_S7MessageObjectResponse) isS7MessageObjectResponse() bool {
@@ -284,7 +281,7 @@ func (m *_S7MessageObjectResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

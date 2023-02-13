@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -114,31 +115,27 @@ func (m *_CALDataIdentifyReply) GetTypeName() string {
 	return "CALDataIdentifyReply"
 }
 
-func (m *_CALDataIdentifyReply) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CALDataIdentifyReply) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CALDataIdentifyReply) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (attribute)
 	lengthInBits += 8
 
 	// Simple field (identifyReplyCommand)
-	lengthInBits += m.IdentifyReplyCommand.GetLengthInBits()
+	lengthInBits += m.IdentifyReplyCommand.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CALDataIdentifyReply) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CALDataIdentifyReply) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func CALDataIdentifyReplyParse(theBytes []byte, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataIdentifyReply, error) {
-	return CALDataIdentifyReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), requestContext, commandTypeContainer)
+func CALDataIdentifyReplyParse(theBytes []byte, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataIdentifyReply, error) {
+	return CALDataIdentifyReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
 }
 
-func CALDataIdentifyReplyParseWithBuffer(readBuffer utils.ReadBuffer, requestContext RequestContext, commandTypeContainer CALCommandTypeContainer) (CALDataIdentifyReply, error) {
+func CALDataIdentifyReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataIdentifyReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALDataIdentifyReply"); pullErr != nil {
@@ -151,7 +148,7 @@ func CALDataIdentifyReplyParseWithBuffer(readBuffer utils.ReadBuffer, requestCon
 	if pullErr := readBuffer.PullContext("attribute"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for attribute")
 	}
-	_attribute, _attributeErr := AttributeParseWithBuffer(readBuffer)
+	_attribute, _attributeErr := AttributeParseWithBuffer(ctx, readBuffer)
 	if _attributeErr != nil {
 		return nil, errors.Wrap(_attributeErr, "Error parsing 'attribute' field of CALDataIdentifyReply")
 	}
@@ -164,7 +161,7 @@ func CALDataIdentifyReplyParseWithBuffer(readBuffer utils.ReadBuffer, requestCon
 	if pullErr := readBuffer.PullContext("identifyReplyCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for identifyReplyCommand")
 	}
-	_identifyReplyCommand, _identifyReplyCommandErr := IdentifyReplyCommandParseWithBuffer(readBuffer, Attribute(attribute), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1))))
+	_identifyReplyCommand, _identifyReplyCommandErr := IdentifyReplyCommandParseWithBuffer(ctx, readBuffer, Attribute(attribute), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1))))
 	if _identifyReplyCommandErr != nil {
 		return nil, errors.Wrap(_identifyReplyCommandErr, "Error parsing 'identifyReplyCommand' field of CALDataIdentifyReply")
 	}
@@ -190,14 +187,14 @@ func CALDataIdentifyReplyParseWithBuffer(readBuffer utils.ReadBuffer, requestCon
 }
 
 func (m *_CALDataIdentifyReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CALDataIdentifyReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CALDataIdentifyReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -209,7 +206,7 @@ func (m *_CALDataIdentifyReply) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("attribute"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for attribute")
 		}
-		_attributeErr := writeBuffer.WriteSerializable(m.GetAttribute())
+		_attributeErr := writeBuffer.WriteSerializable(ctx, m.GetAttribute())
 		if popErr := writeBuffer.PopContext("attribute"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for attribute")
 		}
@@ -221,7 +218,7 @@ func (m *_CALDataIdentifyReply) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("identifyReplyCommand"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for identifyReplyCommand")
 		}
-		_identifyReplyCommandErr := writeBuffer.WriteSerializable(m.GetIdentifyReplyCommand())
+		_identifyReplyCommandErr := writeBuffer.WriteSerializable(ctx, m.GetIdentifyReplyCommand())
 		if popErr := writeBuffer.PopContext("identifyReplyCommand"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for identifyReplyCommand")
 		}
@@ -234,7 +231,7 @@ func (m *_CALDataIdentifyReply) SerializeWithWriteBuffer(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CALDataIdentifyReply) isCALDataIdentifyReply() bool {
@@ -246,7 +243,7 @@ func (m *_CALDataIdentifyReply) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

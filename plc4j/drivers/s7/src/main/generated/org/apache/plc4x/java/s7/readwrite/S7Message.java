@@ -47,8 +47,6 @@ public abstract class S7Message implements Message {
   protected final int tpduReference;
   protected final S7Parameter parameter;
   protected final S7Payload payload;
-  // Reserved Fields
-  private Integer reservedField0;
 
   public S7Message(int tpduReference, S7Parameter parameter, S7Payload payload) {
     super();
@@ -78,6 +76,7 @@ public abstract class S7Message implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7Message");
 
@@ -88,10 +87,7 @@ public abstract class S7Message implements Message {
     writeDiscriminatorField("messageType", getMessageType(), writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (tpduReference)
     writeSimpleField("tpduReference", tpduReference, writeUnsignedInt(writeBuffer, 16));
@@ -111,18 +107,10 @@ public abstract class S7Message implements Message {
     serializeS7MessageChild(writeBuffer);
 
     // Optional Field (parameter) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "parameter",
-        parameter,
-        new DataWriterComplexDefault<>(writeBuffer),
-        ((((getParameter()) != (null)) ? getParameter().getLengthInBytes() : 0)) > (0));
+    writeOptionalField("parameter", parameter, new DataWriterComplexDefault<>(writeBuffer));
 
     // Optional Field (payload) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "payload",
-        payload,
-        new DataWriterComplexDefault<>(writeBuffer),
-        ((((getPayload()) != (null)) ? getPayload().getLengthInBytes() : 0)) > (0));
+    writeOptionalField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("S7Message");
   }
@@ -136,6 +124,7 @@ public abstract class S7Message implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     S7Message _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (protocolId)
     lengthInBits += 8;
@@ -180,6 +169,7 @@ public abstract class S7Message implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short protocolId =
         readConstField("protocolId", readUnsignedShort(readBuffer, 8), S7Message.PROTOCOLID);
@@ -198,13 +188,13 @@ public abstract class S7Message implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     S7MessageBuilder builder = null;
     if (EvaluationHelper.equals(messageType, (short) 0x01)) {
-      builder = S7MessageRequest.staticParseBuilder(readBuffer);
+      builder = S7MessageRequest.staticParseS7MessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(messageType, (short) 0x02)) {
-      builder = S7MessageResponse.staticParseBuilder(readBuffer);
+      builder = S7MessageResponse.staticParseS7MessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(messageType, (short) 0x03)) {
-      builder = S7MessageResponseData.staticParseBuilder(readBuffer);
+      builder = S7MessageResponseData.staticParseS7MessageBuilder(readBuffer);
     } else if (EvaluationHelper.equals(messageType, (short) 0x07)) {
-      builder = S7MessageUserData.staticParseBuilder(readBuffer);
+      builder = S7MessageUserData.staticParseS7MessageBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -235,11 +225,10 @@ public abstract class S7Message implements Message {
     readBuffer.closeContext("S7Message");
     // Create the instance
     S7Message _s7Message = builder.build(tpduReference, parameter, payload);
-    _s7Message.reservedField0 = reservedField0;
     return _s7Message;
   }
 
-  public static interface S7MessageBuilder {
+  public interface S7MessageBuilder {
     S7Message build(int tpduReference, S7Parameter parameter, S7Payload payload);
   }
 

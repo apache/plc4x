@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataRestorePreparationTime) GetRestorePreparationTime
 ///////////////////////
 
 func (m *_BACnetConstructedDataRestorePreparationTime) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetRestorePreparationTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataRestorePreparationTime) GetTypeName() string {
 	return "BACnetConstructedDataRestorePreparationTime"
 }
 
-func (m *_BACnetConstructedDataRestorePreparationTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataRestorePreparationTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataRestorePreparationTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (restorePreparationTime)
-	lengthInBits += m.RestorePreparationTime.GetLengthInBits()
+	lengthInBits += m.RestorePreparationTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataRestorePreparationTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataRestorePreparationTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataRestorePreparationTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestorePreparationTime, error) {
-	return BACnetConstructedDataRestorePreparationTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataRestorePreparationTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataRestorePreparationTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestorePreparationTime, error) {
+func BACnetConstructedDataRestorePreparationTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRestorePreparationTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataRestorePreparationTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataRestorePreparationTimeParseWithBuffer(readBuffer utils
 	if pullErr := readBuffer.PullContext("restorePreparationTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for restorePreparationTime")
 	}
-	_restorePreparationTime, _restorePreparationTimeErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_restorePreparationTime, _restorePreparationTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _restorePreparationTimeErr != nil {
 		return nil, errors.Wrap(_restorePreparationTimeErr, "Error parsing 'restorePreparationTime' field of BACnetConstructedDataRestorePreparationTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataRestorePreparationTimeParseWithBuffer(readBuffer utils
 }
 
 func (m *_BACnetConstructedDataRestorePreparationTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataRestorePreparationTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataRestorePreparationTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataRestorePreparationTime) SerializeWithWriteBuffer(
 		if pushErr := writeBuffer.PushContext("restorePreparationTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for restorePreparationTime")
 		}
-		_restorePreparationTimeErr := writeBuffer.WriteSerializable(m.GetRestorePreparationTime())
+		_restorePreparationTimeErr := writeBuffer.WriteSerializable(ctx, m.GetRestorePreparationTime())
 		if popErr := writeBuffer.PopContext("restorePreparationTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for restorePreparationTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataRestorePreparationTime) SerializeWithWriteBuffer(
 			return errors.Wrap(_restorePreparationTimeErr, "Error serializing 'restorePreparationTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataRestorePreparationTime) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataRestorePreparationTime) isBACnetConstructedDataRestorePreparationTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataRestorePreparationTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

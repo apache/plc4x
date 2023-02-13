@@ -80,6 +80,7 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisterServer2Request");
 
@@ -108,6 +109,7 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RegisterServer2Request _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -122,7 +124,7 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
     if (discoveryConfiguration != null) {
       int i = 0;
       for (ExtensionObject element : discoveryConfiguration) {
-        boolean last = ++i >= discoveryConfiguration.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= discoveryConfiguration.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -130,12 +132,13 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static RegisterServer2RequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterServer2Request");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -163,23 +166,22 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("RegisterServer2Request");
     // Create the instance
-    return new RegisterServer2RequestBuilder(
+    return new RegisterServer2RequestBuilderImpl(
         requestHeader, server, noOfDiscoveryConfiguration, discoveryConfiguration);
   }
 
-  public static class RegisterServer2RequestBuilder
+  public static class RegisterServer2RequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObjectDefinition server;
     private final int noOfDiscoveryConfiguration;
     private final List<ExtensionObject> discoveryConfiguration;
 
-    public RegisterServer2RequestBuilder(
+    public RegisterServer2RequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         ExtensionObjectDefinition server,
         int noOfDiscoveryConfiguration,
         List<ExtensionObject> discoveryConfiguration) {
-
       this.requestHeader = requestHeader;
       this.server = server;
       this.noOfDiscoveryConfiguration = noOfDiscoveryConfiguration;

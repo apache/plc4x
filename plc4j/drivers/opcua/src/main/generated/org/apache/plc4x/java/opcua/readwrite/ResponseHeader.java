@@ -101,6 +101,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ResponseHeader");
 
@@ -139,6 +140,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ResponseHeader _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timestamp)
     lengthInBits += 64;
@@ -159,7 +161,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     if (stringTable != null) {
       int i = 0;
       for (PascalString element : stringTable) {
-        boolean last = ++i >= stringTable.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= stringTable.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -170,12 +172,13 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static ResponseHeaderBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ResponseHeader");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long timestamp = readSimpleField("timestamp", readSignedLong(readBuffer, 64));
 
@@ -208,7 +211,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("ResponseHeader");
     // Create the instance
-    return new ResponseHeaderBuilder(
+    return new ResponseHeaderBuilderImpl(
         timestamp,
         requestHandle,
         serviceResult,
@@ -218,7 +221,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
         additionalHeader);
   }
 
-  public static class ResponseHeaderBuilder
+  public static class ResponseHeaderBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long timestamp;
     private final long requestHandle;
@@ -228,7 +231,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     private final List<PascalString> stringTable;
     private final ExtensionObject additionalHeader;
 
-    public ResponseHeaderBuilder(
+    public ResponseHeaderBuilderImpl(
         long timestamp,
         long requestHandle,
         StatusCode serviceResult,
@@ -236,7 +239,6 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
         int noOfStringTable,
         List<PascalString> stringTable,
         ExtensionObject additionalHeader) {
-
       this.timestamp = timestamp;
       this.requestHandle = requestHandle;
       this.serviceResult = serviceResult;

@@ -59,8 +59,6 @@ public abstract class AmsPacket implements Message {
   protected final int sourceAmsPort;
   protected final long errorCode;
   protected final long invokeId;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public AmsPacket(
       AmsNetId targetAmsNetId,
@@ -139,6 +137,7 @@ public abstract class AmsPacket implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AmsPacket");
 
@@ -190,10 +189,7 @@ public abstract class AmsPacket implements Message {
     writeConstField("broadcast", BROADCAST, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x0,
-        writeSignedByte(writeBuffer, 7));
+    writeReservedField("reserved", (byte) 0x0, writeSignedByte(writeBuffer, 7));
 
     // Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
@@ -221,6 +217,7 @@ public abstract class AmsPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     AmsPacket _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (targetAmsNetId)
     lengthInBits += targetAmsNetId.getLengthInBits();
@@ -291,6 +288,7 @@ public abstract class AmsPacket implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AmsNetId targetAmsNetId =
         readSimpleField(
@@ -346,71 +344,96 @@ public abstract class AmsPacket implements Message {
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     AmsPacketBuilder builder = null;
-    if (EvaluationHelper.equals(commandId, CommandId.INVALID)
+    if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.INVALID)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsInvalidRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.INVALID)
+      builder = AdsInvalidRequest.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.INVALID)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsInvalidResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_DEVICE_INFO)
+      builder = AdsInvalidResponse.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_DEVICE_INFO)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsReadDeviceInfoRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_DEVICE_INFO)
+      builder = AdsReadDeviceInfoRequest.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_DEVICE_INFO)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsReadDeviceInfoResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ)
+      builder = AdsReadDeviceInfoResponse.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsReadRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ)
+      builder = AdsReadRequest.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsReadResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_WRITE)
+      builder = AdsReadResponse.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsWriteRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_WRITE)
+      builder = AdsWriteRequest.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsWriteResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_STATE)
+      builder = AdsWriteResponse.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_STATE)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsReadStateRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_STATE)
+      builder = AdsReadStateRequest.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_STATE)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsReadStateResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_WRITE_CONTROL)
+      builder = AdsReadStateResponse.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE_CONTROL)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsWriteControlRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_WRITE_CONTROL)
+      builder = AdsWriteControlRequest.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_WRITE_CONTROL)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsWriteControlResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_ADD_DEVICE_NOTIFICATION)
+      builder = AdsWriteControlResponse.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_ADD_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsAddDeviceNotificationRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_ADD_DEVICE_NOTIFICATION)
+      builder = AdsAddDeviceNotificationRequest.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_ADD_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsAddDeviceNotificationResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_DELETE_DEVICE_NOTIFICATION)
+      builder = AdsAddDeviceNotificationResponse.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_DELETE_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsDeleteDeviceNotificationRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_DELETE_DEVICE_NOTIFICATION)
+      builder = AdsDeleteDeviceNotificationRequest.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_DELETE_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsDeleteDeviceNotificationResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_DEVICE_NOTIFICATION)
+      builder = AdsDeleteDeviceNotificationResponse.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsDeviceNotificationRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_DEVICE_NOTIFICATION)
+      builder = AdsDeviceNotificationRequest.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_DEVICE_NOTIFICATION)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsDeviceNotificationResponse.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_WRITE)
+      builder = AdsDeviceNotificationResponse.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_WRITE)
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = AdsReadWriteRequest.staticParseBuilder(readBuffer);
-    } else if (EvaluationHelper.equals(commandId, CommandId.ADS_READ_WRITE)
+      builder = AdsReadWriteRequest.staticParseAmsPacketBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(errorCode, (long) 0x00000000L)
+        && EvaluationHelper.equals(commandId, CommandId.ADS_READ_WRITE)
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = AdsReadWriteResponse.staticParseBuilder(readBuffer);
+      builder = AdsReadWriteResponse.staticParseAmsPacketBuilder(readBuffer);
+    } else {
+      builder = ErrorResponse.staticParseAmsPacketBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
           "Unsupported case for discriminated type"
               + " parameters ["
+              + "errorCode="
+              + errorCode
+              + " "
               + "commandId="
               + commandId
               + " "
@@ -424,11 +447,10 @@ public abstract class AmsPacket implements Message {
     AmsPacket _amsPacket =
         builder.build(
             targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId);
-    _amsPacket.reservedField0 = reservedField0;
     return _amsPacket;
   }
 
-  public static interface AmsPacketBuilder {
+  public interface AmsPacketBuilder {
     AmsPacket build(
         AmsNetId targetAmsNetId,
         int targetAmsPort,

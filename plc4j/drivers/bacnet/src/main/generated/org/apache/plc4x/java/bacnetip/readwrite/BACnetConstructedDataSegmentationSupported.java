@@ -79,6 +79,7 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSegmentationSupported");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSegmentationSupported _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (segmentationSupported)
     lengthInBits += segmentationSupported.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSegmentationSupportedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetSegmentationTagged segmentationSupported =
         readSimpleField(
@@ -138,21 +141,20 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataSegmentationSupported");
     // Create the instance
-    return new BACnetConstructedDataSegmentationSupportedBuilder(
+    return new BACnetConstructedDataSegmentationSupportedBuilderImpl(
         segmentationSupported, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSegmentationSupportedBuilder
+  public static class BACnetConstructedDataSegmentationSupportedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetSegmentationTagged segmentationSupported;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSegmentationSupportedBuilder(
+    public BACnetConstructedDataSegmentationSupportedBuilderImpl(
         BACnetSegmentationTagged segmentationSupported,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.segmentationSupported = segmentationSupported;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

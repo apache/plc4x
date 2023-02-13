@@ -79,6 +79,7 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCredentialDisable");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCredentialDisable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (credentialDisable)
     lengthInBits += credentialDisable.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCredentialDisableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessCredentialDisableTagged credentialDisable =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataCredentialDisable");
     // Create the instance
-    return new BACnetConstructedDataCredentialDisableBuilder(
+    return new BACnetConstructedDataCredentialDisableBuilderImpl(
         credentialDisable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCredentialDisableBuilder
+  public static class BACnetConstructedDataCredentialDisableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessCredentialDisableTagged credentialDisable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCredentialDisableBuilder(
+    public BACnetConstructedDataCredentialDisableBuilderImpl(
         BACnetAccessCredentialDisableTagged credentialDisable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.credentialDisable = credentialDisable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

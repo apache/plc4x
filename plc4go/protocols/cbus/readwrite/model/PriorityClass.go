@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastPriorityClass(structType interface{}) PriorityClass {
 	return castFunc(structType)
 }
 
-func (m PriorityClass) GetLengthInBits() uint16 {
+func (m PriorityClass) GetLengthInBits(ctx context.Context) uint16 {
 	return 2
 }
 
-func (m PriorityClass) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m PriorityClass) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func PriorityClassParse(theBytes []byte) (PriorityClass, error) {
-	return PriorityClassParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func PriorityClassParse(ctx context.Context, theBytes []byte) (PriorityClass, error) {
+	return PriorityClassParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func PriorityClassParseWithBuffer(readBuffer utils.ReadBuffer) (PriorityClass, error) {
+func PriorityClassParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PriorityClass, error) {
 	val, err := readBuffer.ReadUint8("PriorityClass", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PriorityClass")
@@ -126,13 +127,13 @@ func PriorityClassParseWithBuffer(readBuffer utils.ReadBuffer) (PriorityClass, e
 
 func (e PriorityClass) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e PriorityClass) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e PriorityClass) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("PriorityClass", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

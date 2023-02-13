@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_EncodedReplyCALReply) GetTypeName() string {
 	return "EncodedReplyCALReply"
 }
 
-func (m *_EncodedReplyCALReply) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_EncodedReplyCALReply) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_EncodedReplyCALReply) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (calReply)
-	lengthInBits += m.CalReply.GetLengthInBits()
+	lengthInBits += m.CalReply.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_EncodedReplyCALReply) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_EncodedReplyCALReply) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func EncodedReplyCALReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReplyCALReply, error) {
-	return EncodedReplyCALReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return EncodedReplyCALReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func EncodedReplyCALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReplyCALReply, error) {
+func EncodedReplyCALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReplyCALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EncodedReplyCALReply"); pullErr != nil {
@@ -139,7 +136,7 @@ func EncodedReplyCALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOption
 	if pullErr := readBuffer.PullContext("calReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for calReply")
 	}
-	_calReply, _calReplyErr := CALReplyParseWithBuffer(readBuffer, cBusOptions, requestContext)
+	_calReply, _calReplyErr := CALReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	if _calReplyErr != nil {
 		return nil, errors.Wrap(_calReplyErr, "Error parsing 'calReply' field of EncodedReplyCALReply")
 	}
@@ -165,14 +162,14 @@ func EncodedReplyCALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOption
 }
 
 func (m *_EncodedReplyCALReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_EncodedReplyCALReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_EncodedReplyCALReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_EncodedReplyCALReply) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("calReply"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for calReply")
 		}
-		_calReplyErr := writeBuffer.WriteSerializable(m.GetCalReply())
+		_calReplyErr := writeBuffer.WriteSerializable(ctx, m.GetCalReply())
 		if popErr := writeBuffer.PopContext("calReply"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for calReply")
 		}
@@ -197,7 +194,7 @@ func (m *_EncodedReplyCALReply) SerializeWithWriteBuffer(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_EncodedReplyCALReply) isEncodedReplyCALReply() bool {
@@ -209,7 +206,7 @@ func (m *_EncodedReplyCALReply) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

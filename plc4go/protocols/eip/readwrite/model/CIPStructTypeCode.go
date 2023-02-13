@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -81,19 +82,19 @@ func CastCIPStructTypeCode(structType interface{}) CIPStructTypeCode {
 	return castFunc(structType)
 }
 
-func (m CIPStructTypeCode) GetLengthInBits() uint16 {
+func (m CIPStructTypeCode) GetLengthInBits(ctx context.Context) uint16 {
 	return 16
 }
 
-func (m CIPStructTypeCode) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m CIPStructTypeCode) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func CIPStructTypeCodeParse(theBytes []byte) (CIPStructTypeCode, error) {
-	return CIPStructTypeCodeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func CIPStructTypeCodeParse(ctx context.Context, theBytes []byte) (CIPStructTypeCode, error) {
+	return CIPStructTypeCodeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func CIPStructTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPStructTypeCode, error) {
+func CIPStructTypeCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPStructTypeCode, error) {
 	val, err := readBuffer.ReadUint16("CIPStructTypeCode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CIPStructTypeCode")
@@ -108,13 +109,13 @@ func CIPStructTypeCodeParseWithBuffer(readBuffer utils.ReadBuffer) (CIPStructTyp
 
 func (e CIPStructTypeCode) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e CIPStructTypeCode) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e CIPStructTypeCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint16("CIPStructTypeCode", 16, uint16(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

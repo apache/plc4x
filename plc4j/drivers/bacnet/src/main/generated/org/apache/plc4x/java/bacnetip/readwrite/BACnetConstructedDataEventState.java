@@ -78,6 +78,7 @@ public class BACnetConstructedDataEventState extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEventState");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataEventState extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEventState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (eventState)
     lengthInBits += eventState.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataEventState extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEventStateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataEventState extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEventStateTagged eventState =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataEventState extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataEventState");
     // Create the instance
-    return new BACnetConstructedDataEventStateBuilder(eventState, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataEventStateBuilderImpl(
+        eventState, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEventStateBuilder
+  public static class BACnetConstructedDataEventStateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEventStateTagged eventState;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventStateBuilder(
+    public BACnetConstructedDataEventStateBuilderImpl(
         BACnetEventStateTagged eventState,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.eventState = eventState;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

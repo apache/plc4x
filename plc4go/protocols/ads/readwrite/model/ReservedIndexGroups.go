@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -68,6 +69,7 @@ const (
 	ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS    ReservedIndexGroups = 0x0000F085
 	ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS ReservedIndexGroups = 0x0000F086
 	ReservedIndexGroups_ADSIGRP_DEVICE_DATA                          ReservedIndexGroups = 0x0000F100
+	ReservedIndexGroups_ADS_OVER_ETHERCAT                            ReservedIndexGroups = 0x0000F302
 	ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE                    ReservedIndexGroups = 0x00000000
 	ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE                    ReservedIndexGroups = 0x00000002
 )
@@ -111,6 +113,7 @@ func init() {
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_ADD_DEVICE_NOTIFICATIONS,
 		ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS,
 		ReservedIndexGroups_ADSIGRP_DEVICE_DATA,
+		ReservedIndexGroups_ADS_OVER_ETHERCAT,
 		ReservedIndexGroups_ADSIOFFS_DEVDATA_ADSSTATE,
 		ReservedIndexGroups_ADSIOFFS_DEVDATA_DEVSTATE,
 	}
@@ -190,6 +193,8 @@ func ReservedIndexGroupsByValue(value uint32) (enum ReservedIndexGroups, ok bool
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS, true
 	case 0x0000F100:
 		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA, true
+	case 0x0000F302:
+		return ReservedIndexGroups_ADS_OVER_ETHERCAT, true
 	}
 	return 0, false
 }
@@ -268,6 +273,8 @@ func ReservedIndexGroupsByName(value string) (enum ReservedIndexGroups, ok bool)
 		return ReservedIndexGroups_ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS, true
 	case "ADSIGRP_DEVICE_DATA":
 		return ReservedIndexGroups_ADSIGRP_DEVICE_DATA, true
+	case "ADS_OVER_ETHERCAT":
+		return ReservedIndexGroups_ADS_OVER_ETHERCAT, true
 	}
 	return 0, false
 }
@@ -291,19 +298,19 @@ func CastReservedIndexGroups(structType interface{}) ReservedIndexGroups {
 	return castFunc(structType)
 }
 
-func (m ReservedIndexGroups) GetLengthInBits() uint16 {
+func (m ReservedIndexGroups) GetLengthInBits(ctx context.Context) uint16 {
 	return 32
 }
 
-func (m ReservedIndexGroups) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ReservedIndexGroups) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ReservedIndexGroupsParse(theBytes []byte) (ReservedIndexGroups, error) {
-	return ReservedIndexGroupsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ReservedIndexGroupsParse(ctx context.Context, theBytes []byte) (ReservedIndexGroups, error) {
+	return ReservedIndexGroupsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ReservedIndexGroupsParseWithBuffer(readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
+func ReservedIndexGroupsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ReservedIndexGroups, error) {
 	val, err := readBuffer.ReadUint32("ReservedIndexGroups", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ReservedIndexGroups")
@@ -318,13 +325,13 @@ func ReservedIndexGroupsParseWithBuffer(readBuffer utils.ReadBuffer) (ReservedIn
 
 func (e ReservedIndexGroups) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ReservedIndexGroups) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ReservedIndexGroups) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("ReservedIndexGroups", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
@@ -403,6 +410,8 @@ func (e ReservedIndexGroups) PLC4XEnumName() string {
 		return "ADSIGRP_MULTIPLE_DELETE_DEVICE_NOTIFICATIONS"
 	case ReservedIndexGroups_ADSIGRP_DEVICE_DATA:
 		return "ADSIGRP_DEVICE_DATA"
+	case ReservedIndexGroups_ADS_OVER_ETHERCAT:
+		return "ADS_OVER_ETHERCAT"
 	}
 	return ""
 }

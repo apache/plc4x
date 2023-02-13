@@ -199,6 +199,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandExtendedDiagnosticSummary");
 
@@ -307,6 +308,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandExtendedDiagnosticSummary _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lowApplication)
     lengthInBits += 8;
@@ -379,12 +381,13 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandExtendedDiagnosticSummaryBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandExtendedDiagnosticSummary");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ApplicationIdContainer lowApplication =
         readEnumField(
@@ -446,7 +449,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
 
     readBuffer.closeContext("IdentifyReplyCommandExtendedDiagnosticSummary");
     // Create the instance
-    return new IdentifyReplyCommandExtendedDiagnosticSummaryBuilder(
+    return new IdentifyReplyCommandExtendedDiagnosticSummaryBuilderImpl(
         lowApplication,
         highApplication,
         area,
@@ -472,7 +475,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
         reservedField2);
   }
 
-  public static class IdentifyReplyCommandExtendedDiagnosticSummaryBuilder
+  public static class IdentifyReplyCommandExtendedDiagnosticSummaryBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final ApplicationIdContainer lowApplication;
     private final ApplicationIdContainer highApplication;
@@ -498,7 +501,7 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
     private final Byte reservedField1;
     private final Byte reservedField2;
 
-    public IdentifyReplyCommandExtendedDiagnosticSummaryBuilder(
+    public IdentifyReplyCommandExtendedDiagnosticSummaryBuilderImpl(
         ApplicationIdContainer lowApplication,
         ApplicationIdContainer highApplication,
         byte area,

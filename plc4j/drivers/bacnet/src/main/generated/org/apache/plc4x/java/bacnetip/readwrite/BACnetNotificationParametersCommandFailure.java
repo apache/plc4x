@@ -96,6 +96,7 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
   protected void serializeBACnetNotificationParametersChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersCommandFailure");
 
@@ -128,6 +129,7 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersCommandFailure _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (innerOpeningTag)
     lengthInBits += innerOpeningTag.getLengthInBits();
@@ -147,16 +149,17 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersCommandFailureBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersCommandFailure");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
@@ -211,7 +214,7 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
 
     readBuffer.closeContext("BACnetNotificationParametersCommandFailure");
     // Create the instance
-    return new BACnetNotificationParametersCommandFailureBuilder(
+    return new BACnetNotificationParametersCommandFailureBuilderImpl(
         innerOpeningTag,
         commandValue,
         statusFlags,
@@ -221,7 +224,7 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersCommandFailureBuilder
+  public static class BACnetNotificationParametersCommandFailureBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetConstructedData commandValue;
@@ -231,7 +234,7 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersCommandFailureBuilder(
+    public BACnetNotificationParametersCommandFailureBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetConstructedData commandValue,
         BACnetStatusFlagsTagged statusFlags,
@@ -239,7 +242,6 @@ public class BACnetNotificationParametersCommandFailure extends BACnetNotificati
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.commandValue = commandValue;
       this.statusFlags = statusFlags;

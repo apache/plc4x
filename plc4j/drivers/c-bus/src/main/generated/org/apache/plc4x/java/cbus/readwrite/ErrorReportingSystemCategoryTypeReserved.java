@@ -59,6 +59,7 @@ public class ErrorReportingSystemCategoryTypeReserved extends ErrorReportingSyst
   protected void serializeErrorReportingSystemCategoryTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingSystemCategoryTypeReserved");
 
@@ -77,6 +78,7 @@ public class ErrorReportingSystemCategoryTypeReserved extends ErrorReportingSyst
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ErrorReportingSystemCategoryTypeReserved _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reservedValue)
     lengthInBits += 4;
@@ -84,27 +86,29 @@ public class ErrorReportingSystemCategoryTypeReserved extends ErrorReportingSyst
     return lengthInBits;
   }
 
-  public static ErrorReportingSystemCategoryTypeReservedBuilder staticParseBuilder(
-      ReadBuffer readBuffer, ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
-      throws ParseException {
+  public static ErrorReportingSystemCategoryTypeBuilder
+      staticParseErrorReportingSystemCategoryTypeBuilder(
+          ReadBuffer readBuffer,
+          ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
+          throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeReserved");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte reservedValue = readSimpleField("reservedValue", readUnsignedByte(readBuffer, 4));
 
     readBuffer.closeContext("ErrorReportingSystemCategoryTypeReserved");
     // Create the instance
-    return new ErrorReportingSystemCategoryTypeReservedBuilder(reservedValue);
+    return new ErrorReportingSystemCategoryTypeReservedBuilderImpl(reservedValue);
   }
 
-  public static class ErrorReportingSystemCategoryTypeReservedBuilder
+  public static class ErrorReportingSystemCategoryTypeReservedBuilderImpl
       implements ErrorReportingSystemCategoryType.ErrorReportingSystemCategoryTypeBuilder {
     private final byte reservedValue;
 
-    public ErrorReportingSystemCategoryTypeReservedBuilder(byte reservedValue) {
-
+    public ErrorReportingSystemCategoryTypeReservedBuilderImpl(byte reservedValue) {
       this.reservedValue = reservedValue;
     }
 

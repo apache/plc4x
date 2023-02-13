@@ -79,6 +79,7 @@ public class BACnetConstructedDataEventAlgorithmInhibitRef extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEventAlgorithmInhibitRef");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataEventAlgorithmInhibitRef extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEventAlgorithmInhibitRef _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (eventAlgorithmInhibitRef)
     lengthInBits += eventAlgorithmInhibitRef.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataEventAlgorithmInhibitRef extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEventAlgorithmInhibitRefBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataEventAlgorithmInhibitRef extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetObjectPropertyReference eventAlgorithmInhibitRef =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataEventAlgorithmInhibitRef extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataEventAlgorithmInhibitRef");
     // Create the instance
-    return new BACnetConstructedDataEventAlgorithmInhibitRefBuilder(
+    return new BACnetConstructedDataEventAlgorithmInhibitRefBuilderImpl(
         eventAlgorithmInhibitRef, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEventAlgorithmInhibitRefBuilder
+  public static class BACnetConstructedDataEventAlgorithmInhibitRefBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetObjectPropertyReference eventAlgorithmInhibitRef;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventAlgorithmInhibitRefBuilder(
+    public BACnetConstructedDataEventAlgorithmInhibitRefBuilderImpl(
         BACnetObjectPropertyReference eventAlgorithmInhibitRef,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.eventAlgorithmInhibitRef = eventAlgorithmInhibitRef;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

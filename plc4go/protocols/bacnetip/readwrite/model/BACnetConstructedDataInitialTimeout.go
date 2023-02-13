@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataInitialTimeout) GetInitialTimeout() BACnetApplica
 ///////////////////////
 
 func (m *_BACnetConstructedDataInitialTimeout) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetInitialTimeout())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataInitialTimeout) GetTypeName() string {
 	return "BACnetConstructedDataInitialTimeout"
 }
 
-func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (initialTimeout)
-	lengthInBits += m.InitialTimeout.GetLengthInBits()
+	lengthInBits += m.InitialTimeout.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataInitialTimeout) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataInitialTimeoutParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInitialTimeout, error) {
-	return BACnetConstructedDataInitialTimeoutParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataInitialTimeoutParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataInitialTimeoutParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInitialTimeout, error) {
+func BACnetConstructedDataInitialTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInitialTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInitialTimeout"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataInitialTimeoutParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("initialTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for initialTimeout")
 	}
-	_initialTimeout, _initialTimeoutErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_initialTimeout, _initialTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _initialTimeoutErr != nil {
 		return nil, errors.Wrap(_initialTimeoutErr, "Error parsing 'initialTimeout' field of BACnetConstructedDataInitialTimeout")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataInitialTimeoutParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConstructedDataInitialTimeout) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataInitialTimeout) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataInitialTimeout) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataInitialTimeout) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("initialTimeout"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for initialTimeout")
 		}
-		_initialTimeoutErr := writeBuffer.WriteSerializable(m.GetInitialTimeout())
+		_initialTimeoutErr := writeBuffer.WriteSerializable(ctx, m.GetInitialTimeout())
 		if popErr := writeBuffer.PopContext("initialTimeout"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for initialTimeout")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataInitialTimeout) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_initialTimeoutErr, "Error serializing 'initialTimeout' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataInitialTimeout) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataInitialTimeout) isBACnetConstructedDataInitialTimeout() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataInitialTimeout) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -56,6 +56,7 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesNotifyType");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesNotifyType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (notifyType)
     lengthInBits += notifyType.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesNotifyTypeBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesNotifyType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNotifyTypeTagged notifyType =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
 
     readBuffer.closeContext("BACnetPropertyStatesNotifyType");
     // Create the instance
-    return new BACnetPropertyStatesNotifyTypeBuilder(notifyType);
+    return new BACnetPropertyStatesNotifyTypeBuilderImpl(notifyType);
   }
 
-  public static class BACnetPropertyStatesNotifyTypeBuilder
+  public static class BACnetPropertyStatesNotifyTypeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetNotifyTypeTagged notifyType;
 
-    public BACnetPropertyStatesNotifyTypeBuilder(BACnetNotifyTypeTagged notifyType) {
-
+    public BACnetPropertyStatesNotifyTypeBuilderImpl(BACnetNotifyTypeTagged notifyType) {
       this.notifyType = notifyType;
     }
 

@@ -55,6 +55,7 @@ public class BACnetFaultParameterNone extends BACnetFaultParameter implements Me
   protected void serializeBACnetFaultParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterNone");
 
@@ -73,6 +74,7 @@ public class BACnetFaultParameterNone extends BACnetFaultParameter implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterNone _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (none)
     lengthInBits += none.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetFaultParameterNone extends BACnetFaultParameter implements Me
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterNoneBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetFaultParameterBuilder staticParseBACnetFaultParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterNone");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagNull none =
         readSimpleField(
@@ -99,15 +102,14 @@ public class BACnetFaultParameterNone extends BACnetFaultParameter implements Me
 
     readBuffer.closeContext("BACnetFaultParameterNone");
     // Create the instance
-    return new BACnetFaultParameterNoneBuilder(none);
+    return new BACnetFaultParameterNoneBuilderImpl(none);
   }
 
-  public static class BACnetFaultParameterNoneBuilder
+  public static class BACnetFaultParameterNoneBuilderImpl
       implements BACnetFaultParameter.BACnetFaultParameterBuilder {
     private final BACnetContextTagNull none;
 
-    public BACnetFaultParameterNoneBuilder(BACnetContextTagNull none) {
-
+    public BACnetFaultParameterNoneBuilderImpl(BACnetContextTagNull none) {
       this.none = none;
     }
 

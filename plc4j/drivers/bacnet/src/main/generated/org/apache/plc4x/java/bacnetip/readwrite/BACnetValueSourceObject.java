@@ -56,6 +56,7 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
   protected void serializeBACnetValueSourceChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetValueSourceObject");
 
@@ -74,6 +75,7 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetValueSourceObject _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (object)
     lengthInBits += object.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
     return lengthInBits;
   }
 
-  public static BACnetValueSourceObjectBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetValueSourceBuilder staticParseBACnetValueSourceBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetValueSourceObject");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReferenceEnclosed object =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
 
     readBuffer.closeContext("BACnetValueSourceObject");
     // Create the instance
-    return new BACnetValueSourceObjectBuilder(object);
+    return new BACnetValueSourceObjectBuilderImpl(object);
   }
 
-  public static class BACnetValueSourceObjectBuilder
+  public static class BACnetValueSourceObjectBuilderImpl
       implements BACnetValueSource.BACnetValueSourceBuilder {
     private final BACnetDeviceObjectReferenceEnclosed object;
 
-    public BACnetValueSourceObjectBuilder(BACnetDeviceObjectReferenceEnclosed object) {
-
+    public BACnetValueSourceObjectBuilderImpl(BACnetDeviceObjectReferenceEnclosed object) {
       this.object = object;
     }
 

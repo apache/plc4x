@@ -79,6 +79,7 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLimitMonitoringInterval");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLimitMonitoringInterval _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (limitMonitoringInterval)
     lengthInBits += limitMonitoringInterval.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLimitMonitoringIntervalBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger limitMonitoringInterval =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataLimitMonitoringInterval");
     // Create the instance
-    return new BACnetConstructedDataLimitMonitoringIntervalBuilder(
+    return new BACnetConstructedDataLimitMonitoringIntervalBuilderImpl(
         limitMonitoringInterval, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLimitMonitoringIntervalBuilder
+  public static class BACnetConstructedDataLimitMonitoringIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger limitMonitoringInterval;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLimitMonitoringIntervalBuilder(
+    public BACnetConstructedDataLimitMonitoringIntervalBuilderImpl(
         BACnetApplicationTagUnsignedInteger limitMonitoringInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.limitMonitoringInterval = limitMonitoringInterval;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

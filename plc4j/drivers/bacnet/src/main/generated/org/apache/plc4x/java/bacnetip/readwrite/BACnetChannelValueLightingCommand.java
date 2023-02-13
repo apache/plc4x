@@ -56,6 +56,7 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueLightingCommand");
 
@@ -75,6 +76,7 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueLightingCommand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ligthingCommandValue)
     lengthInBits += ligthingCommandValue.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
     return lengthInBits;
   }
 
-  public static BACnetChannelValueLightingCommandBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueLightingCommand");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLightingCommandEnclosed ligthingCommandValue =
         readSimpleField(
@@ -98,16 +101,15 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
 
     readBuffer.closeContext("BACnetChannelValueLightingCommand");
     // Create the instance
-    return new BACnetChannelValueLightingCommandBuilder(ligthingCommandValue);
+    return new BACnetChannelValueLightingCommandBuilderImpl(ligthingCommandValue);
   }
 
-  public static class BACnetChannelValueLightingCommandBuilder
+  public static class BACnetChannelValueLightingCommandBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetLightingCommandEnclosed ligthingCommandValue;
 
-    public BACnetChannelValueLightingCommandBuilder(
+    public BACnetChannelValueLightingCommandBuilderImpl(
         BACnetLightingCommandEnclosed ligthingCommandValue) {
-
       this.ligthingCommandValue = ligthingCommandValue;
     }
 

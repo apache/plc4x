@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -52,12 +53,11 @@ type _CBusPointToMultiPointCommand struct {
 
 type _CBusPointToMultiPointCommandChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type CBusPointToMultiPointCommandParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child CBusPointToMultiPointCommand, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CBusPointToMultiPointCommand, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -104,21 +104,21 @@ func (m *_CBusPointToMultiPointCommand) GetTypeName() string {
 	return "CBusPointToMultiPointCommand"
 }
 
-func (m *_CBusPointToMultiPointCommand) GetParentLengthInBits() uint16 {
+func (m *_CBusPointToMultiPointCommand) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	return lengthInBits
 }
 
-func (m *_CBusPointToMultiPointCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusPointToMultiPointCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusPointToMultiPointCommandParse(theBytes []byte, cBusOptions CBusOptions) (CBusPointToMultiPointCommand, error) {
-	return CBusPointToMultiPointCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusPointToMultiPointCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func CBusPointToMultiPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommand, error) {
+func CBusPointToMultiPointCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusPointToMultiPointCommand"); pullErr != nil {
@@ -147,9 +147,9 @@ func CBusPointToMultiPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cB
 	var typeSwitchError error
 	switch {
 	case peekedApplication == 0xFF: // CBusPointToMultiPointCommandStatus
-		_childTemp, typeSwitchError = CBusPointToMultiPointCommandStatusParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToMultiPointCommandStatusParseWithBuffer(ctx, readBuffer, cBusOptions)
 	case 0 == 0: // CBusPointToMultiPointCommandNormal
-		_childTemp, typeSwitchError = CBusPointToMultiPointCommandNormalParseWithBuffer(readBuffer, cBusOptions)
+		_childTemp, typeSwitchError = CBusPointToMultiPointCommandNormalParseWithBuffer(ctx, readBuffer, cBusOptions)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [peekedApplication=%v]", peekedApplication)
 	}
@@ -167,7 +167,7 @@ func CBusPointToMultiPointCommandParseWithBuffer(readBuffer utils.ReadBuffer, cB
 	return _child, nil
 }
 
-func (pm *_CBusPointToMultiPointCommand) SerializeParent(writeBuffer utils.WriteBuffer, child CBusPointToMultiPointCommand, serializeChildFunction func() error) error {
+func (pm *_CBusPointToMultiPointCommand) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CBusPointToMultiPointCommand, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -207,7 +207,7 @@ func (m *_CBusPointToMultiPointCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

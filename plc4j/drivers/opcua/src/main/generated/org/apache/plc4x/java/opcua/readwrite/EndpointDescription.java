@@ -115,6 +115,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EndpointDescription");
 
@@ -168,6 +169,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EndpointDescription _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (endpointUrl)
     lengthInBits += endpointUrl.getLengthInBits();
@@ -191,7 +193,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     if (userIdentityTokens != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : userIdentityTokens) {
-        boolean last = ++i >= userIdentityTokens.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= userIdentityTokens.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -205,12 +207,13 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static EndpointDescriptionBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EndpointDescription");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString endpointUrl =
         readSimpleField(
@@ -262,7 +265,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("EndpointDescription");
     // Create the instance
-    return new EndpointDescriptionBuilder(
+    return new EndpointDescriptionBuilderImpl(
         endpointUrl,
         server,
         serverCertificate,
@@ -274,7 +277,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
         securityLevel);
   }
 
-  public static class EndpointDescriptionBuilder
+  public static class EndpointDescriptionBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString endpointUrl;
     private final ExtensionObjectDefinition server;
@@ -286,7 +289,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     private final PascalString transportProfileUri;
     private final short securityLevel;
 
-    public EndpointDescriptionBuilder(
+    public EndpointDescriptionBuilderImpl(
         PascalString endpointUrl,
         ExtensionObjectDefinition server,
         PascalByteString serverCertificate,
@@ -296,7 +299,6 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
         List<ExtensionObjectDefinition> userIdentityTokens,
         PascalString transportProfileUri,
         short securityLevel) {
-
       this.endpointUrl = endpointUrl;
       this.server = server;
       this.serverCertificate = serverCertificate;

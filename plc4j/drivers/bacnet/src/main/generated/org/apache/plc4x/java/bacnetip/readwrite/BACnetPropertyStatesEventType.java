@@ -56,6 +56,7 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesEventType");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesEventType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (eventType)
     lengthInBits += eventType.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesEventTypeBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesEventType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEventTypeTagged eventType =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
 
     readBuffer.closeContext("BACnetPropertyStatesEventType");
     // Create the instance
-    return new BACnetPropertyStatesEventTypeBuilder(eventType);
+    return new BACnetPropertyStatesEventTypeBuilderImpl(eventType);
   }
 
-  public static class BACnetPropertyStatesEventTypeBuilder
+  public static class BACnetPropertyStatesEventTypeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetEventTypeTagged eventType;
 
-    public BACnetPropertyStatesEventTypeBuilder(BACnetEventTypeTagged eventType) {
-
+    public BACnetPropertyStatesEventTypeBuilderImpl(BACnetEventTypeTagged eventType) {
       this.eventType = eventType;
     }
 

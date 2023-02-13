@@ -63,6 +63,7 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
   protected void serializeBACnetContextTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagBitString");
 
@@ -81,6 +82,7 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetContextTagBitString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -88,16 +90,17 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
     return lengthInBits;
   }
 
-  public static BACnetContextTagBitStringBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer,
+      BACnetTagHeader header,
       Short tagNumberArgument,
-      BACnetDataType dataType,
-      BACnetTagHeader header)
+      BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagBitString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadBitString payload =
         readSimpleField(
@@ -110,17 +113,16 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
 
     readBuffer.closeContext("BACnetContextTagBitString");
     // Create the instance
-    return new BACnetContextTagBitStringBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagBitStringBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagBitStringBuilder
+  public static class BACnetContextTagBitStringBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadBitString payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagBitStringBuilder(
+    public BACnetContextTagBitStringBuilderImpl(
         BACnetTagPayloadBitString payload, Short tagNumberArgument) {
-
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

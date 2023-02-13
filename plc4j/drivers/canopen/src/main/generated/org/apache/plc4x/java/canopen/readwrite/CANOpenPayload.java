@@ -49,6 +49,7 @@ public abstract class CANOpenPayload implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenPayload");
 
@@ -67,6 +68,7 @@ public abstract class CANOpenPayload implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CANOpenPayload _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -99,35 +101,36 @@ public abstract class CANOpenPayload implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     CANOpenPayloadBuilder builder = null;
     if (EvaluationHelper.equals(service, CANOpenService.NMT)) {
-      builder = CANOpenNetworkPayload.staticParseBuilder(readBuffer, service);
+      builder = CANOpenNetworkPayload.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.TIME)) {
-      builder = CANOpenTimeSynchronization.staticParseBuilder(readBuffer, service);
+      builder = CANOpenTimeSynchronization.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.RECEIVE_PDO_1)) {
-      builder = CANOpenPDOPayload.staticParseBuilder(readBuffer, service);
+      builder = CANOpenPDOPayload.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.TRANSMIT_PDO_1)) {
-      builder = CANOpenPDOPayload.staticParseBuilder(readBuffer, service);
+      builder = CANOpenPDOPayload.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.RECEIVE_PDO_2)) {
-      builder = CANOpenPDOPayload.staticParseBuilder(readBuffer, service);
+      builder = CANOpenPDOPayload.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.TRANSMIT_PDO_2)) {
-      builder = CANOpenPDOPayload.staticParseBuilder(readBuffer, service);
+      builder = CANOpenPDOPayload.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.RECEIVE_PDO_3)) {
-      builder = CANOpenPDOPayload.staticParseBuilder(readBuffer, service);
+      builder = CANOpenPDOPayload.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.TRANSMIT_PDO_3)) {
-      builder = CANOpenPDOPayload.staticParseBuilder(readBuffer, service);
+      builder = CANOpenPDOPayload.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.RECEIVE_PDO_4)) {
-      builder = CANOpenPDOPayload.staticParseBuilder(readBuffer, service);
+      builder = CANOpenPDOPayload.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.TRANSMIT_PDO_4)) {
-      builder = CANOpenPDOPayload.staticParseBuilder(readBuffer, service);
+      builder = CANOpenPDOPayload.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.RECEIVE_SDO)) {
-      builder = CANOpenSDORequest.staticParseBuilder(readBuffer, service);
+      builder = CANOpenSDORequest.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.TRANSMIT_SDO)) {
-      builder = CANOpenSDOResponse.staticParseBuilder(readBuffer, service);
+      builder = CANOpenSDOResponse.staticParseCANOpenPayloadBuilder(readBuffer, service);
     } else if (EvaluationHelper.equals(service, CANOpenService.HEARTBEAT)) {
-      builder = CANOpenHeartbeatPayload.staticParseBuilder(readBuffer, service);
+      builder = CANOpenHeartbeatPayload.staticParseCANOpenPayloadBuilder(readBuffer, service);
     }
     if (builder == null) {
       throw new ParseException(
@@ -140,7 +143,7 @@ public abstract class CANOpenPayload implements Message {
     return _cANOpenPayload;
   }
 
-  public static interface CANOpenPayloadBuilder {
+  public interface CANOpenPayloadBuilder {
     CANOpenPayload build();
   }
 

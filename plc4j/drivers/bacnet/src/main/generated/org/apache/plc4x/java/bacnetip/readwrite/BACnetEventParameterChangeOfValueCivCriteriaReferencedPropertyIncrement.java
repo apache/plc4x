@@ -65,6 +65,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
   protected void serializeBACnetEventParameterChangeOfValueCivCriteriaChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext(
         "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement");
@@ -88,6 +89,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (referencedPropertyIncrement)
     lengthInBits += referencedPropertyIncrement.getLengthInBits();
@@ -95,13 +97,15 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetEventParameterChangeOfValueCivCriteriaBuilder
+      staticParseBACnetEventParameterChangeOfValueCivCriteriaBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext(
         "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagReal referencedPropertyIncrement =
         readSimpleField(
@@ -116,19 +120,19 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
     readBuffer.closeContext(
         "BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement");
     // Create the instance
-    return new BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder(
+    return new BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilderImpl(
         referencedPropertyIncrement, tagNumber);
   }
 
-  public static class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
+  public static
+  class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilderImpl
       implements BACnetEventParameterChangeOfValueCivCriteria
           .BACnetEventParameterChangeOfValueCivCriteriaBuilder {
     private final BACnetContextTagReal referencedPropertyIncrement;
     private final Short tagNumber;
 
-    public BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder(
+    public BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilderImpl(
         BACnetContextTagReal referencedPropertyIncrement, Short tagNumber) {
-
       this.referencedPropertyIncrement = referencedPropertyIncrement;
       this.tagNumber = tagNumber;
     }

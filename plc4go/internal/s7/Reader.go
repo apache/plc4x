@@ -216,7 +216,7 @@ func (m *Reader) ToPlc4xReadResponse(response readWriteModel.S7Message, readRequ
 		log.Trace().Msg("decode data")
 		responseCodes[tagName] = responseCode
 		if responseCode == model.PlcResponseCode_OK {
-			plcValue, err := readWriteModel.DataItemParse(payloadItem.GetData(), tag.GetDataType().DataProtocolId(), int32(tag.GetNumElements()))
+			plcValue, err := readWriteModel.DataItemParse(context.Background(), payloadItem.GetData(), tag.GetDataType().DataProtocolId(), int32(tag.GetNumElements()))
 			if err != nil {
 				return nil, errors.Wrap(err, "Error parsing data item")
 			}

@@ -79,6 +79,7 @@ public class BACnetConstructedDataOccupancyLowerLimit extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataOccupancyLowerLimit");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataOccupancyLowerLimit extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataOccupancyLowerLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (occupancyLowerLimit)
     lengthInBits += occupancyLowerLimit.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataOccupancyLowerLimit extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataOccupancyLowerLimitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataOccupancyLowerLimit extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger occupancyLowerLimit =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataOccupancyLowerLimit extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataOccupancyLowerLimit");
     // Create the instance
-    return new BACnetConstructedDataOccupancyLowerLimitBuilder(
+    return new BACnetConstructedDataOccupancyLowerLimitBuilderImpl(
         occupancyLowerLimit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataOccupancyLowerLimitBuilder
+  public static class BACnetConstructedDataOccupancyLowerLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger occupancyLowerLimit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataOccupancyLowerLimitBuilder(
+    public BACnetConstructedDataOccupancyLowerLimitBuilderImpl(
         BACnetApplicationTagUnsignedInteger occupancyLowerLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.occupancyLowerLimit = occupancyLowerLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

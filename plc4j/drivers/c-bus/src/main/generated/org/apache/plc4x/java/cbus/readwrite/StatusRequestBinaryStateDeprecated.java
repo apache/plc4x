@@ -41,6 +41,7 @@ public class StatusRequestBinaryStateDeprecated extends StatusRequest implements
 
   // Properties.
   protected final ApplicationIdContainer application;
+
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;
@@ -58,6 +59,7 @@ public class StatusRequestBinaryStateDeprecated extends StatusRequest implements
   protected void serializeStatusRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusRequestBinaryStateDeprecated");
 
@@ -95,6 +97,7 @@ public class StatusRequestBinaryStateDeprecated extends StatusRequest implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     StatusRequestBinaryStateDeprecated _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -108,12 +111,13 @@ public class StatusRequestBinaryStateDeprecated extends StatusRequest implements
     return lengthInBits;
   }
 
-  public static StatusRequestBinaryStateDeprecatedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static StatusRequestBuilder staticParseStatusRequestBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("StatusRequestBinaryStateDeprecated");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0xFA);
 
@@ -128,17 +132,17 @@ public class StatusRequestBinaryStateDeprecated extends StatusRequest implements
 
     readBuffer.closeContext("StatusRequestBinaryStateDeprecated");
     // Create the instance
-    return new StatusRequestBinaryStateDeprecatedBuilder(
+    return new StatusRequestBinaryStateDeprecatedBuilderImpl(
         application, reservedField0, reservedField1);
   }
 
-  public static class StatusRequestBinaryStateDeprecatedBuilder
+  public static class StatusRequestBinaryStateDeprecatedBuilderImpl
       implements StatusRequest.StatusRequestBuilder {
     private final ApplicationIdContainer application;
     private final Byte reservedField0;
     private final Byte reservedField1;
 
-    public StatusRequestBinaryStateDeprecatedBuilder(
+    public StatusRequestBinaryStateDeprecatedBuilderImpl(
         ApplicationIdContainer application, Byte reservedField0, Byte reservedField1) {
       this.application = application;
       this.reservedField0 = reservedField0;

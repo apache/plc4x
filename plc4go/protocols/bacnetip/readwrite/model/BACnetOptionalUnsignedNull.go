@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetOptionalUnsignedNull) GetTypeName() string {
 	return "BACnetOptionalUnsignedNull"
 }
 
-func (m *_BACnetOptionalUnsignedNull) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetOptionalUnsignedNull) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetOptionalUnsignedNull) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (nullValue)
-	lengthInBits += m.NullValue.GetLengthInBits()
+	lengthInBits += m.NullValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetOptionalUnsignedNull) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetOptionalUnsignedNull) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetOptionalUnsignedNullParse(theBytes []byte) (BACnetOptionalUnsignedNull, error) {
-	return BACnetOptionalUnsignedNullParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetOptionalUnsignedNullParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetOptionalUnsignedNullParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetOptionalUnsignedNull, error) {
+func BACnetOptionalUnsignedNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalUnsignedNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetOptionalUnsignedNull"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetOptionalUnsignedNullParseWithBuffer(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
 	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _nullValueErr != nil {
 		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetOptionalUnsignedNull")
 	}
@@ -162,14 +159,14 @@ func BACnetOptionalUnsignedNullParseWithBuffer(readBuffer utils.ReadBuffer) (BAC
 }
 
 func (m *_BACnetOptionalUnsignedNull) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetOptionalUnsignedNull) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetOptionalUnsignedNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetOptionalUnsignedNull) SerializeWithWriteBuffer(writeBuffer utils
 		if pushErr := writeBuffer.PushContext("nullValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for nullValue")
 		}
-		_nullValueErr := writeBuffer.WriteSerializable(m.GetNullValue())
+		_nullValueErr := writeBuffer.WriteSerializable(ctx, m.GetNullValue())
 		if popErr := writeBuffer.PopContext("nullValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for nullValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetOptionalUnsignedNull) SerializeWithWriteBuffer(writeBuffer utils
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetOptionalUnsignedNull) isBACnetOptionalUnsignedNull() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetOptionalUnsignedNull) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

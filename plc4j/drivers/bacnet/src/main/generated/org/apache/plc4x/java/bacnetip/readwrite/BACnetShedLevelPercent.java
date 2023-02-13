@@ -56,6 +56,7 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
   protected void serializeBACnetShedLevelChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetShedLevelPercent");
 
@@ -74,6 +75,7 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetShedLevelPercent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (percent)
     lengthInBits += percent.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
     return lengthInBits;
   }
 
-  public static BACnetShedLevelPercentBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetShedLevelBuilder staticParseBACnetShedLevelBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetShedLevelPercent");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger percent =
         readSimpleField(
@@ -102,15 +105,14 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
 
     readBuffer.closeContext("BACnetShedLevelPercent");
     // Create the instance
-    return new BACnetShedLevelPercentBuilder(percent);
+    return new BACnetShedLevelPercentBuilderImpl(percent);
   }
 
-  public static class BACnetShedLevelPercentBuilder
+  public static class BACnetShedLevelPercentBuilderImpl
       implements BACnetShedLevel.BACnetShedLevelBuilder {
     private final BACnetContextTagUnsignedInteger percent;
 
-    public BACnetShedLevelPercentBuilder(BACnetContextTagUnsignedInteger percent) {
-
+    public BACnetShedLevelPercentBuilderImpl(BACnetContextTagUnsignedInteger percent) {
       this.percent = percent;
     }
 

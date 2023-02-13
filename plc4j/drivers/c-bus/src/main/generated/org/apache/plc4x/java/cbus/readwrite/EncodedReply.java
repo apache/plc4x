@@ -69,6 +69,7 @@ public abstract class EncodedReply implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EncodedReply");
 
@@ -91,6 +92,7 @@ public abstract class EncodedReply implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     EncodedReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -132,6 +134,7 @@ public abstract class EncodedReply implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte peekedByte = readPeekField("peekedByte", readByte(readBuffer, 8));
     boolean isMonitoredSAL =
@@ -145,9 +148,12 @@ public abstract class EncodedReply implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     EncodedReplyBuilder builder = null;
     if (EvaluationHelper.equals(isMonitoredSAL, (boolean) true)) {
-      builder = MonitoredSALReply.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder =
+          MonitoredSALReply.staticParseEncodedReplyBuilder(readBuffer, cBusOptions, requestContext);
     } else if (true) {
-      builder = EncodedReplyCALReply.staticParseBuilder(readBuffer, cBusOptions, requestContext);
+      builder =
+          EncodedReplyCALReply.staticParseEncodedReplyBuilder(
+              readBuffer, cBusOptions, requestContext);
     }
     if (builder == null) {
       throw new ParseException(
@@ -164,7 +170,7 @@ public abstract class EncodedReply implements Message {
     return _encodedReply;
   }
 
-  public static interface EncodedReplyBuilder {
+  public interface EncodedReplyBuilder {
     EncodedReply build(byte peekedByte, CBusOptions cBusOptions, RequestContext requestContext);
   }
 

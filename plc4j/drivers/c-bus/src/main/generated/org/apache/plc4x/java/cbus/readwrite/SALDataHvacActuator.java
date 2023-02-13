@@ -57,6 +57,7 @@ public class SALDataHvacActuator extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataHvacActuator");
 
@@ -76,6 +77,7 @@ public class SALDataHvacActuator extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataHvacActuator _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (hvacActuatorData)
     lengthInBits += hvacActuatorData.getLengthInBits();
@@ -83,12 +85,13 @@ public class SALDataHvacActuator extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataHvacActuatorBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataHvacActuator");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     LightingData hvacActuatorData =
         readSimpleField(
@@ -97,14 +100,13 @@ public class SALDataHvacActuator extends SALData implements Message {
 
     readBuffer.closeContext("SALDataHvacActuator");
     // Create the instance
-    return new SALDataHvacActuatorBuilder(hvacActuatorData);
+    return new SALDataHvacActuatorBuilderImpl(hvacActuatorData);
   }
 
-  public static class SALDataHvacActuatorBuilder implements SALData.SALDataBuilder {
+  public static class SALDataHvacActuatorBuilderImpl implements SALData.SALDataBuilder {
     private final LightingData hvacActuatorData;
 
-    public SALDataHvacActuatorBuilder(LightingData hvacActuatorData) {
-
+    public SALDataHvacActuatorBuilderImpl(LightingData hvacActuatorData) {
       this.hvacActuatorData = hvacActuatorData;
     }
 

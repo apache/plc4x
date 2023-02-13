@@ -79,6 +79,7 @@ public class BACnetConstructedDataLargeAnalogValueRelinquishDefault extends BACn
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueRelinquishDefault");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataLargeAnalogValueRelinquishDefault extends BACn
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLargeAnalogValueRelinquishDefault _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (relinquishDefault)
     lengthInBits += relinquishDefault.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataLargeAnalogValueRelinquishDefault extends BACn
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataLargeAnalogValueRelinquishDefault extends BACn
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble relinquishDefault =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataLargeAnalogValueRelinquishDefault extends BACn
 
     readBuffer.closeContext("BACnetConstructedDataLargeAnalogValueRelinquishDefault");
     // Create the instance
-    return new BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder(
+    return new BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilderImpl(
         relinquishDefault, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder
+  public static class BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagDouble relinquishDefault;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilder(
+    public BACnetConstructedDataLargeAnalogValueRelinquishDefaultBuilderImpl(
         BACnetApplicationTagDouble relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

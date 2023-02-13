@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -81,30 +82,26 @@ func (m *_BACnetSetpointReference) GetTypeName() string {
 	return "BACnetSetpointReference"
 }
 
-func (m *_BACnetSetpointReference) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetSetpointReference) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetSetpointReference) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Optional Field (setPointReference)
 	if m.SetPointReference != nil {
-		lengthInBits += m.SetPointReference.GetLengthInBits()
+		lengthInBits += m.SetPointReference.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetSetpointReference) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetSetpointReference) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetSetpointReferenceParse(theBytes []byte) (BACnetSetpointReference, error) {
-	return BACnetSetpointReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetSetpointReferenceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetSetpointReferenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetSetpointReference, error) {
+func BACnetSetpointReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSetpointReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetSetpointReference"); pullErr != nil {
@@ -120,7 +117,7 @@ func BACnetSetpointReferenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 		if pullErr := readBuffer.PullContext("setPointReference"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for setPointReference")
 		}
-		_val, _err := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(0))
+		_val, _err := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(0))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -146,14 +143,14 @@ func BACnetSetpointReferenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnet
 }
 
 func (m *_BACnetSetpointReference) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetSetpointReference) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetSetpointReference) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetSetpointReference"); pushErr != nil {
@@ -167,7 +164,7 @@ func (m *_BACnetSetpointReference) SerializeWithWriteBuffer(writeBuffer utils.Wr
 			return errors.Wrap(pushErr, "Error pushing for setPointReference")
 		}
 		setPointReference = m.GetSetPointReference()
-		_setPointReferenceErr := writeBuffer.WriteSerializable(setPointReference)
+		_setPointReferenceErr := writeBuffer.WriteSerializable(ctx, setPointReference)
 		if popErr := writeBuffer.PopContext("setPointReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for setPointReference")
 		}
@@ -191,7 +188,7 @@ func (m *_BACnetSetpointReference) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

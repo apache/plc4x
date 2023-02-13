@@ -58,6 +58,7 @@ public class KnxGroupAddressFreeLevel extends KnxGroupAddress implements Message
   protected void serializeKnxGroupAddressChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("KnxGroupAddressFreeLevel");
 
@@ -76,6 +77,7 @@ public class KnxGroupAddressFreeLevel extends KnxGroupAddress implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     KnxGroupAddressFreeLevel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (subGroup)
     lengthInBits += 16;
@@ -83,26 +85,26 @@ public class KnxGroupAddressFreeLevel extends KnxGroupAddress implements Message
     return lengthInBits;
   }
 
-  public static KnxGroupAddressFreeLevelBuilder staticParseBuilder(
+  public static KnxGroupAddressBuilder staticParseKnxGroupAddressBuilder(
       ReadBuffer readBuffer, Byte numLevels) throws ParseException {
     readBuffer.pullContext("KnxGroupAddressFreeLevel");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int subGroup = readSimpleField("subGroup", readUnsignedInt(readBuffer, 16));
 
     readBuffer.closeContext("KnxGroupAddressFreeLevel");
     // Create the instance
-    return new KnxGroupAddressFreeLevelBuilder(subGroup);
+    return new KnxGroupAddressFreeLevelBuilderImpl(subGroup);
   }
 
-  public static class KnxGroupAddressFreeLevelBuilder
+  public static class KnxGroupAddressFreeLevelBuilderImpl
       implements KnxGroupAddress.KnxGroupAddressBuilder {
     private final int subGroup;
 
-    public KnxGroupAddressFreeLevelBuilder(int subGroup) {
-
+    public KnxGroupAddressFreeLevelBuilderImpl(int subGroup) {
       this.subGroup = subGroup;
     }
 

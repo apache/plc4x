@@ -78,6 +78,7 @@ public class BACnetConstructedDataMaxInfoFrames extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaxInfoFrames");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataMaxInfoFrames extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMaxInfoFrames _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxInfoFrames)
     lengthInBits += maxInfoFrames.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataMaxInfoFrames extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMaxInfoFramesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataMaxInfoFrames extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxInfoFrames =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataMaxInfoFrames extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataMaxInfoFrames");
     // Create the instance
-    return new BACnetConstructedDataMaxInfoFramesBuilder(
+    return new BACnetConstructedDataMaxInfoFramesBuilderImpl(
         maxInfoFrames, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMaxInfoFramesBuilder
+  public static class BACnetConstructedDataMaxInfoFramesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxInfoFrames;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMaxInfoFramesBuilder(
+    public BACnetConstructedDataMaxInfoFramesBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxInfoFrames,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxInfoFrames = maxInfoFrames;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

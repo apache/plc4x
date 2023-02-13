@@ -50,6 +50,7 @@ public class CartesianCoordinates extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CartesianCoordinates");
 
@@ -65,26 +66,28 @@ public class CartesianCoordinates extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CartesianCoordinates _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static CartesianCoordinatesBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CartesianCoordinates");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("CartesianCoordinates");
     // Create the instance
-    return new CartesianCoordinatesBuilder();
+    return new CartesianCoordinatesBuilderImpl();
   }
 
-  public static class CartesianCoordinatesBuilder
+  public static class CartesianCoordinatesBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public CartesianCoordinatesBuilder() {}
+    public CartesianCoordinatesBuilderImpl() {}
 
     public CartesianCoordinates build() {
       CartesianCoordinates cartesianCoordinates = new CartesianCoordinates();

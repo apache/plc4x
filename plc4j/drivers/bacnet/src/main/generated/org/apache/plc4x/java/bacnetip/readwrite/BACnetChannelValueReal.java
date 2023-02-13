@@ -56,6 +56,7 @@ public class BACnetChannelValueReal extends BACnetChannelValue implements Messag
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueReal");
 
@@ -74,6 +75,7 @@ public class BACnetChannelValueReal extends BACnetChannelValue implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueReal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (realValue)
     lengthInBits += realValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetChannelValueReal extends BACnetChannelValue implements Messag
     return lengthInBits;
   }
 
-  public static BACnetChannelValueRealBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueReal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal realValue =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetChannelValueReal extends BACnetChannelValue implements Messag
 
     readBuffer.closeContext("BACnetChannelValueReal");
     // Create the instance
-    return new BACnetChannelValueRealBuilder(realValue);
+    return new BACnetChannelValueRealBuilderImpl(realValue);
   }
 
-  public static class BACnetChannelValueRealBuilder
+  public static class BACnetChannelValueRealBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagReal realValue;
 
-    public BACnetChannelValueRealBuilder(BACnetApplicationTagReal realValue) {
-
+    public BACnetChannelValueRealBuilderImpl(BACnetApplicationTagReal realValue) {
       this.realValue = realValue;
     }
 

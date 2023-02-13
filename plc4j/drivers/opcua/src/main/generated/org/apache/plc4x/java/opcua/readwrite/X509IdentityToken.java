@@ -58,6 +58,7 @@ public class X509IdentityToken extends UserIdentityTokenDefinition implements Me
   protected void serializeUserIdentityTokenDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("X509IdentityToken");
 
@@ -77,6 +78,7 @@ public class X509IdentityToken extends UserIdentityTokenDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     X509IdentityToken _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (certificateData)
     lengthInBits += certificateData.getLengthInBits();
@@ -84,12 +86,13 @@ public class X509IdentityToken extends UserIdentityTokenDefinition implements Me
     return lengthInBits;
   }
 
-  public static X509IdentityTokenBuilder staticParseBuilder(
+  public static UserIdentityTokenDefinitionBuilder staticParseUserIdentityTokenDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("X509IdentityToken");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString certificateData =
         readSimpleField(
@@ -99,15 +102,14 @@ public class X509IdentityToken extends UserIdentityTokenDefinition implements Me
 
     readBuffer.closeContext("X509IdentityToken");
     // Create the instance
-    return new X509IdentityTokenBuilder(certificateData);
+    return new X509IdentityTokenBuilderImpl(certificateData);
   }
 
-  public static class X509IdentityTokenBuilder
+  public static class X509IdentityTokenBuilderImpl
       implements UserIdentityTokenDefinition.UserIdentityTokenDefinitionBuilder {
     private final PascalByteString certificateData;
 
-    public X509IdentityTokenBuilder(PascalByteString certificateData) {
-
+    public X509IdentityTokenBuilderImpl(PascalByteString certificateData) {
       this.certificateData = certificateData;
     }
 

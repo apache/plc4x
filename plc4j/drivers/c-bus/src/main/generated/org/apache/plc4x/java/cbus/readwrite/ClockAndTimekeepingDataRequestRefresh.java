@@ -49,6 +49,7 @@ public class ClockAndTimekeepingDataRequestRefresh extends ClockAndTimekeepingDa
   protected void serializeClockAndTimekeepingDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ClockAndTimekeepingDataRequestRefresh");
 
@@ -64,26 +65,28 @@ public class ClockAndTimekeepingDataRequestRefresh extends ClockAndTimekeepingDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ClockAndTimekeepingDataRequestRefresh _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ClockAndTimekeepingDataRequestRefreshBuilder staticParseBuilder(
+  public static ClockAndTimekeepingDataBuilder staticParseClockAndTimekeepingDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ClockAndTimekeepingDataRequestRefresh");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ClockAndTimekeepingDataRequestRefresh");
     // Create the instance
-    return new ClockAndTimekeepingDataRequestRefreshBuilder();
+    return new ClockAndTimekeepingDataRequestRefreshBuilderImpl();
   }
 
-  public static class ClockAndTimekeepingDataRequestRefreshBuilder
+  public static class ClockAndTimekeepingDataRequestRefreshBuilderImpl
       implements ClockAndTimekeepingData.ClockAndTimekeepingDataBuilder {
 
-    public ClockAndTimekeepingDataRequestRefreshBuilder() {}
+    public ClockAndTimekeepingDataRequestRefreshBuilderImpl() {}
 
     public ClockAndTimekeepingDataRequestRefresh build(
         ClockAndTimekeepingCommandTypeContainer commandTypeContainer, byte argument) {

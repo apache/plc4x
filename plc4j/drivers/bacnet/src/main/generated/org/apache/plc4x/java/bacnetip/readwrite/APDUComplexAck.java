@@ -125,6 +125,7 @@ public class APDUComplexAck extends APDU implements Message {
   @Override
   protected void serializeAPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("APDUComplexAck");
 
@@ -198,6 +199,7 @@ public class APDUComplexAck extends APDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     APDUComplexAck _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (segmentedMessage)
     lengthInBits += 1;
@@ -243,12 +245,13 @@ public class APDUComplexAck extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUComplexAckBuilder staticParseBuilder(ReadBuffer readBuffer, Integer apduLength)
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
       throws ParseException {
     readBuffer.pullContext("APDUComplexAck");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean segmentedMessage = readSimpleField("segmentedMessage", readBoolean(readBuffer));
 
@@ -304,7 +307,7 @@ public class APDUComplexAck extends APDU implements Message {
 
     readBuffer.closeContext("APDUComplexAck");
     // Create the instance
-    return new APDUComplexAckBuilder(
+    return new APDUComplexAckBuilderImpl(
         segmentedMessage,
         moreFollows,
         originalInvokeId,
@@ -317,7 +320,7 @@ public class APDUComplexAck extends APDU implements Message {
         reservedField0);
   }
 
-  public static class APDUComplexAckBuilder implements APDU.APDUBuilder {
+  public static class APDUComplexAckBuilderImpl implements APDU.APDUBuilder {
     private final boolean segmentedMessage;
     private final boolean moreFollows;
     private final short originalInvokeId;
@@ -329,7 +332,7 @@ public class APDUComplexAck extends APDU implements Message {
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDUComplexAckBuilder(
+    public APDUComplexAckBuilderImpl(
         boolean segmentedMessage,
         boolean moreFollows,
         short originalInvokeId,

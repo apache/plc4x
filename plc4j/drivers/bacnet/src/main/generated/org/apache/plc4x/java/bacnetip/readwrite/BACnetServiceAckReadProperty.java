@@ -85,6 +85,7 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckReadProperty");
 
@@ -114,6 +115,7 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckReadProperty _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectIdentifier)
     lengthInBits += objectIdentifier.getLengthInBits();
@@ -134,12 +136,13 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
     return lengthInBits;
   }
 
-  public static BACnetServiceAckReadPropertyBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckReadProperty");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
@@ -190,11 +193,11 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
 
     readBuffer.closeContext("BACnetServiceAckReadProperty");
     // Create the instance
-    return new BACnetServiceAckReadPropertyBuilder(
+    return new BACnetServiceAckReadPropertyBuilderImpl(
         objectIdentifier, propertyIdentifier, arrayIndex, values, serviceAckLength);
   }
 
-  public static class BACnetServiceAckReadPropertyBuilder
+  public static class BACnetServiceAckReadPropertyBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetContextTagObjectIdentifier objectIdentifier;
     private final BACnetPropertyIdentifierTagged propertyIdentifier;
@@ -202,13 +205,12 @@ public class BACnetServiceAckReadProperty extends BACnetServiceAck implements Me
     private final BACnetConstructedData values;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckReadPropertyBuilder(
+    public BACnetServiceAckReadPropertyBuilderImpl(
         BACnetContextTagObjectIdentifier objectIdentifier,
         BACnetPropertyIdentifierTagged propertyIdentifier,
         BACnetContextTagUnsignedInteger arrayIndex,
         BACnetConstructedData values,
         Long serviceAckLength) {
-
       this.objectIdentifier = objectIdentifier;
       this.propertyIdentifier = propertyIdentifier;
       this.arrayIndex = arrayIndex;

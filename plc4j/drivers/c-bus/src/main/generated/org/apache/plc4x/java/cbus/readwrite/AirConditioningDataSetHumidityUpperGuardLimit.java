@@ -79,6 +79,7 @@ public class AirConditioningDataSetHumidityUpperGuardLimit extends AirConditioni
   protected void serializeAirConditioningDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningDataSetHumidityUpperGuardLimit");
 
@@ -107,6 +108,7 @@ public class AirConditioningDataSetHumidityUpperGuardLimit extends AirConditioni
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AirConditioningDataSetHumidityUpperGuardLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneGroup)
     lengthInBits += 8;
@@ -123,12 +125,13 @@ public class AirConditioningDataSetHumidityUpperGuardLimit extends AirConditioni
     return lengthInBits;
   }
 
-  public static AirConditioningDataSetHumidityUpperGuardLimitBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataSetHumidityUpperGuardLimit");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte zoneGroup = readSimpleField("zoneGroup", readByte(readBuffer, 8));
 
@@ -150,23 +153,22 @@ public class AirConditioningDataSetHumidityUpperGuardLimit extends AirConditioni
 
     readBuffer.closeContext("AirConditioningDataSetHumidityUpperGuardLimit");
     // Create the instance
-    return new AirConditioningDataSetHumidityUpperGuardLimitBuilder(
+    return new AirConditioningDataSetHumidityUpperGuardLimitBuilderImpl(
         zoneGroup, zoneList, limit, hvacModeAndFlags);
   }
 
-  public static class AirConditioningDataSetHumidityUpperGuardLimitBuilder
+  public static class AirConditioningDataSetHumidityUpperGuardLimitBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
     private final HVACHumidity limit;
     private final HVACHumidityModeAndFlags hvacModeAndFlags;
 
-    public AirConditioningDataSetHumidityUpperGuardLimitBuilder(
+    public AirConditioningDataSetHumidityUpperGuardLimitBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACHumidity limit,
         HVACHumidityModeAndFlags hvacModeAndFlags) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.limit = limit;

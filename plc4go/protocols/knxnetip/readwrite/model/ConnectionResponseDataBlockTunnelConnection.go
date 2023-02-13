@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -108,28 +109,24 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) GetTypeName() string {
 	return "ConnectionResponseDataBlockTunnelConnection"
 }
 
-func (m *_ConnectionResponseDataBlockTunnelConnection) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ConnectionResponseDataBlockTunnelConnection) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ConnectionResponseDataBlockTunnelConnection) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (knxAddress)
-	lengthInBits += m.KnxAddress.GetLengthInBits()
+	lengthInBits += m.KnxAddress.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_ConnectionResponseDataBlockTunnelConnection) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ConnectionResponseDataBlockTunnelConnection) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ConnectionResponseDataBlockTunnelConnectionParse(theBytes []byte) (ConnectionResponseDataBlockTunnelConnection, error) {
-	return ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockTunnelConnection, error) {
+func ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockTunnelConnection, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectionResponseDataBlockTunnelConnection"); pullErr != nil {
@@ -142,7 +139,7 @@ func ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(readBuffer utils
 	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for knxAddress")
 	}
-	_knxAddress, _knxAddressErr := KnxAddressParseWithBuffer(readBuffer)
+	_knxAddress, _knxAddressErr := KnxAddressParseWithBuffer(ctx, readBuffer)
 	if _knxAddressErr != nil {
 		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field of ConnectionResponseDataBlockTunnelConnection")
 	}
@@ -165,14 +162,14 @@ func ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(readBuffer utils
 }
 
 func (m *_ConnectionResponseDataBlockTunnelConnection) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ConnectionResponseDataBlockTunnelConnection) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ConnectionResponseDataBlockTunnelConnection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) SerializeWithWriteBuffer(
 		if pushErr := writeBuffer.PushContext("knxAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for knxAddress")
 		}
-		_knxAddressErr := writeBuffer.WriteSerializable(m.GetKnxAddress())
+		_knxAddressErr := writeBuffer.WriteSerializable(ctx, m.GetKnxAddress())
 		if popErr := writeBuffer.PopContext("knxAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for knxAddress")
 		}
@@ -197,7 +194,7 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ConnectionResponseDataBlockTunnelConnection) isConnectionResponseDataBlockTunnelConnection() bool {
@@ -209,7 +206,7 @@ func (m *_ConnectionResponseDataBlockTunnelConnection) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

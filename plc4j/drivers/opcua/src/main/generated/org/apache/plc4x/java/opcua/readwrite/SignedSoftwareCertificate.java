@@ -64,6 +64,7 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SignedSoftwareCertificate");
 
@@ -86,6 +87,7 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SignedSoftwareCertificate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (certificateData)
     lengthInBits += certificateData.getLengthInBits();
@@ -96,12 +98,13 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static SignedSoftwareCertificateBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SignedSoftwareCertificate");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString certificateData =
         readSimpleField(
@@ -117,17 +120,16 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("SignedSoftwareCertificate");
     // Create the instance
-    return new SignedSoftwareCertificateBuilder(certificateData, signature);
+    return new SignedSoftwareCertificateBuilderImpl(certificateData, signature);
   }
 
-  public static class SignedSoftwareCertificateBuilder
+  public static class SignedSoftwareCertificateBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalByteString certificateData;
     private final PascalByteString signature;
 
-    public SignedSoftwareCertificateBuilder(
+    public SignedSoftwareCertificateBuilderImpl(
         PascalByteString certificateData, PascalByteString signature) {
-
       this.certificateData = certificateData;
       this.signature = signature;
     }

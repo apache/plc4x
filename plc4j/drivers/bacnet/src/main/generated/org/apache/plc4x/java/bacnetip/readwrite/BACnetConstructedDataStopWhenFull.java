@@ -78,6 +78,7 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataStopWhenFull");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataStopWhenFull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (stopWhenFull)
     lengthInBits += stopWhenFull.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataStopWhenFullBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean stopWhenFull =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataStopWhenFull");
     // Create the instance
-    return new BACnetConstructedDataStopWhenFullBuilder(
+    return new BACnetConstructedDataStopWhenFullBuilderImpl(
         stopWhenFull, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataStopWhenFullBuilder
+  public static class BACnetConstructedDataStopWhenFullBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean stopWhenFull;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataStopWhenFullBuilder(
+    public BACnetConstructedDataStopWhenFullBuilderImpl(
         BACnetApplicationTagBoolean stopWhenFull,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.stopWhenFull = stopWhenFull;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

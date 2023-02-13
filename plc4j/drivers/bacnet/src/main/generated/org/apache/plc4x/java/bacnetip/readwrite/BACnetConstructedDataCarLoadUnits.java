@@ -78,6 +78,7 @@ public class BACnetConstructedDataCarLoadUnits extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCarLoadUnits");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataCarLoadUnits extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCarLoadUnits _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (units)
     lengthInBits += units.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataCarLoadUnits extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCarLoadUnitsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataCarLoadUnits extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEngineeringUnitsTagged units =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataCarLoadUnits extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataCarLoadUnits");
     // Create the instance
-    return new BACnetConstructedDataCarLoadUnitsBuilder(units, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCarLoadUnitsBuilderImpl(units, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCarLoadUnitsBuilder
+  public static class BACnetConstructedDataCarLoadUnitsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetEngineeringUnitsTagged units;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCarLoadUnitsBuilder(
+    public BACnetConstructedDataCarLoadUnitsBuilderImpl(
         BACnetEngineeringUnitsTagged units,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.units = units;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

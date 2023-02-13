@@ -68,6 +68,7 @@ public class AdsDeleteDeviceNotificationRequest extends AmsPacket implements Mes
   @Override
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDeleteDeviceNotificationRequest");
 
@@ -86,6 +87,7 @@ public class AdsDeleteDeviceNotificationRequest extends AmsPacket implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsDeleteDeviceNotificationRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (notificationHandle)
     lengthInBits += 32;
@@ -93,27 +95,27 @@ public class AdsDeleteDeviceNotificationRequest extends AmsPacket implements Mes
     return lengthInBits;
   }
 
-  public static AdsDeleteDeviceNotificationRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsDeleteDeviceNotificationRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long notificationHandle =
         readSimpleField("notificationHandle", readUnsignedLong(readBuffer, 32));
 
     readBuffer.closeContext("AdsDeleteDeviceNotificationRequest");
     // Create the instance
-    return new AdsDeleteDeviceNotificationRequestBuilder(notificationHandle);
+    return new AdsDeleteDeviceNotificationRequestBuilderImpl(notificationHandle);
   }
 
-  public static class AdsDeleteDeviceNotificationRequestBuilder
+  public static class AdsDeleteDeviceNotificationRequestBuilderImpl
       implements AmsPacket.AmsPacketBuilder {
     private final long notificationHandle;
 
-    public AdsDeleteDeviceNotificationRequestBuilder(long notificationHandle) {
-
+    public AdsDeleteDeviceNotificationRequestBuilderImpl(long notificationHandle) {
       this.notificationHandle = notificationHandle;
     }
 

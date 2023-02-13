@@ -64,6 +64,7 @@ public class BACnetApplicationTagObjectIdentifier extends BACnetApplicationTag i
   protected void serializeBACnetApplicationTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagObjectIdentifier");
 
@@ -90,6 +91,7 @@ public class BACnetApplicationTagObjectIdentifier extends BACnetApplicationTag i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetApplicationTagObjectIdentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -101,12 +103,13 @@ public class BACnetApplicationTagObjectIdentifier extends BACnetApplicationTag i
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagObjectIdentifierBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagObjectIdentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadObjectIdentifier payload =
         readSimpleField(
@@ -120,15 +123,15 @@ public class BACnetApplicationTagObjectIdentifier extends BACnetApplicationTag i
 
     readBuffer.closeContext("BACnetApplicationTagObjectIdentifier");
     // Create the instance
-    return new BACnetApplicationTagObjectIdentifierBuilder(payload);
+    return new BACnetApplicationTagObjectIdentifierBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagObjectIdentifierBuilder
+  public static class BACnetApplicationTagObjectIdentifierBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadObjectIdentifier payload;
 
-    public BACnetApplicationTagObjectIdentifierBuilder(BACnetTagPayloadObjectIdentifier payload) {
-
+    public BACnetApplicationTagObjectIdentifierBuilderImpl(
+        BACnetTagPayloadObjectIdentifier payload) {
       this.payload = payload;
     }
 

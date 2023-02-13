@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -56,12 +57,11 @@ type _CALReply struct {
 
 type _CALReplyChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type CALReplyParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child CALReply, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CALReply, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -112,24 +112,24 @@ func (m *_CALReply) GetTypeName() string {
 	return "CALReply"
 }
 
-func (m *_CALReply) GetParentLengthInBits() uint16 {
+func (m *_CALReply) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (calData)
-	lengthInBits += m.CalData.GetLengthInBits()
+	lengthInBits += m.CalData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CALReply) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CALReply) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CALReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (CALReply, error) {
-	return CALReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return CALReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func CALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReply, error) {
+func CALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CALReply"); pullErr != nil {
@@ -158,9 +158,9 @@ func CALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOption
 	var typeSwitchError error
 	switch {
 	case calType == 0x86: // CALReplyLong
-		_childTemp, typeSwitchError = CALReplyLongParseWithBuffer(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = CALReplyLongParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	case true: // CALReplyShort
-		_childTemp, typeSwitchError = CALReplyShortParseWithBuffer(readBuffer, cBusOptions, requestContext)
+		_childTemp, typeSwitchError = CALReplyShortParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [calType=%v]", calType)
 	}
@@ -173,7 +173,7 @@ func CALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOption
 	if pullErr := readBuffer.PullContext("calData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for calData")
 	}
-	_calData, _calDataErr := CALDataParseWithBuffer(readBuffer, requestContext)
+	_calData, _calDataErr := CALDataParseWithBuffer(ctx, readBuffer, requestContext)
 	if _calDataErr != nil {
 		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of CALReply")
 	}
@@ -191,7 +191,7 @@ func CALReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOption
 	return _child, nil
 }
 
-func (pm *_CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child CALReply, serializeChildFunction func() error) error {
+func (pm *_CALReply) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child CALReply, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -210,7 +210,7 @@ func (pm *_CALReply) SerializeParent(writeBuffer utils.WriteBuffer, child CALRep
 	if pushErr := writeBuffer.PushContext("calData"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for calData")
 	}
-	_calDataErr := writeBuffer.WriteSerializable(m.GetCalData())
+	_calDataErr := writeBuffer.WriteSerializable(ctx, m.GetCalData())
 	if popErr := writeBuffer.PopContext("calData"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for calData")
 	}
@@ -246,7 +246,7 @@ func (m *_CALReply) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

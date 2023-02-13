@@ -57,6 +57,7 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataSystemArmedDisarmed");
 
@@ -75,6 +76,7 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataSystemArmedDisarmed _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (armCodeType)
     lengthInBits += armCodeType.getLengthInBits();
@@ -82,12 +84,13 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
     return lengthInBits;
   }
 
-  public static SecurityDataSystemArmedDisarmedBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataSystemArmedDisarmed");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SecurityArmCode armCodeType =
         readSimpleField(
@@ -97,15 +100,14 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
 
     readBuffer.closeContext("SecurityDataSystemArmedDisarmed");
     // Create the instance
-    return new SecurityDataSystemArmedDisarmedBuilder(armCodeType);
+    return new SecurityDataSystemArmedDisarmedBuilderImpl(armCodeType);
   }
 
-  public static class SecurityDataSystemArmedDisarmedBuilder
+  public static class SecurityDataSystemArmedDisarmedBuilderImpl
       implements SecurityData.SecurityDataBuilder {
     private final SecurityArmCode armCodeType;
 
-    public SecurityDataSystemArmedDisarmedBuilder(SecurityArmCode armCodeType) {
-
+    public SecurityDataSystemArmedDisarmedBuilderImpl(SecurityArmCode armCodeType) {
       this.armCodeType = armCodeType;
     }
 

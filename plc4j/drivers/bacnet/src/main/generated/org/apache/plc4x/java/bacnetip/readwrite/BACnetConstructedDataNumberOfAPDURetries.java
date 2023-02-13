@@ -79,6 +79,7 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNumberOfAPDURetries");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNumberOfAPDURetries _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (numberOfApduRetries)
     lengthInBits += numberOfApduRetries.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNumberOfAPDURetriesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger numberOfApduRetries =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataNumberOfAPDURetries");
     // Create the instance
-    return new BACnetConstructedDataNumberOfAPDURetriesBuilder(
+    return new BACnetConstructedDataNumberOfAPDURetriesBuilderImpl(
         numberOfApduRetries, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNumberOfAPDURetriesBuilder
+  public static class BACnetConstructedDataNumberOfAPDURetriesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfApduRetries;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNumberOfAPDURetriesBuilder(
+    public BACnetConstructedDataNumberOfAPDURetriesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfApduRetries,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfApduRetries = numberOfApduRetries;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -86,6 +86,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
   protected void serializeAirConditioningDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningDataZoneHumidityPlantStatus");
 
@@ -130,6 +131,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AirConditioningDataZoneHumidityPlantStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneGroup)
     lengthInBits += 8;
@@ -149,12 +151,13 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
     return lengthInBits;
   }
 
-  public static AirConditioningDataZoneHumidityPlantStatusBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataZoneHumidityPlantStatus");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte zoneGroup = readSimpleField("zoneGroup", readByte(readBuffer, 8));
 
@@ -185,11 +188,11 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
 
     readBuffer.closeContext("AirConditioningDataZoneHumidityPlantStatus");
     // Create the instance
-    return new AirConditioningDataZoneHumidityPlantStatusBuilder(
+    return new AirConditioningDataZoneHumidityPlantStatusBuilderImpl(
         zoneGroup, zoneList, humidityType, humidityStatus, humidityErrorCode);
   }
 
-  public static class AirConditioningDataZoneHumidityPlantStatusBuilder
+  public static class AirConditioningDataZoneHumidityPlantStatusBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
@@ -197,13 +200,12 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
     private final HVACHumidityStatusFlags humidityStatus;
     private final HVACHumidityError humidityErrorCode;
 
-    public AirConditioningDataZoneHumidityPlantStatusBuilder(
+    public AirConditioningDataZoneHumidityPlantStatusBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         HVACHumidityType humidityType,
         HVACHumidityStatusFlags humidityStatus,
         HVACHumidityError humidityErrorCode) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.humidityType = humidityType;

@@ -40,6 +40,7 @@ public class PnDcp_ServiceType implements Message {
   // Properties.
   protected final boolean notSupported;
   protected final boolean response;
+
   // Reserved Fields
   private Short reservedField0;
   private Byte reservedField1;
@@ -60,6 +61,7 @@ public class PnDcp_ServiceType implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_ServiceType");
 
@@ -67,19 +69,29 @@ public class PnDcp_ServiceType implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5));
+        writeUnsignedShort(writeBuffer, 5),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (notSupported)
-    writeSimpleField("notSupported", notSupported, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "notSupported",
+        notSupported,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 1));
+        writeUnsignedByte(writeBuffer, 1),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (response)
-    writeSimpleField("response", response, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "response",
+        response,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_ServiceType");
   }
@@ -93,6 +105,7 @@ public class PnDcp_ServiceType implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnDcp_ServiceType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 5;
@@ -120,16 +133,31 @@ public class PnDcp_ServiceType implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 5), (short) 0x00);
+        readReservedField(
+            "reserved",
+            readUnsignedShort(readBuffer, 5),
+            (short) 0x00,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean notSupported = readSimpleField("notSupported", readBoolean(readBuffer));
+    boolean notSupported =
+        readSimpleField(
+            "notSupported",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Byte reservedField1 =
-        readReservedField("reserved", readUnsignedByte(readBuffer, 1), (byte) 0x00);
+        readReservedField(
+            "reserved",
+            readUnsignedByte(readBuffer, 1),
+            (byte) 0x00,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean response = readSimpleField("response", readBoolean(readBuffer));
+    boolean response =
+        readSimpleField(
+            "response", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_ServiceType");
     // Create the instance

@@ -58,6 +58,7 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
   protected void serializeS7VarRequestParameterItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7VarRequestParameterItemAddress");
 
@@ -81,6 +82,7 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7VarRequestParameterItemAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (itemLength)
     lengthInBits += 8;
@@ -91,12 +93,13 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
     return lengthInBits;
   }
 
-  public static S7VarRequestParameterItemAddressBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static S7VarRequestParameterItemBuilder staticParseS7VarRequestParameterItemBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7VarRequestParameterItemAddress");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short itemLength = readImplicitField("itemLength", readUnsignedShort(readBuffer, 8));
 
@@ -107,15 +110,14 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
 
     readBuffer.closeContext("S7VarRequestParameterItemAddress");
     // Create the instance
-    return new S7VarRequestParameterItemAddressBuilder(address);
+    return new S7VarRequestParameterItemAddressBuilderImpl(address);
   }
 
-  public static class S7VarRequestParameterItemAddressBuilder
+  public static class S7VarRequestParameterItemAddressBuilderImpl
       implements S7VarRequestParameterItem.S7VarRequestParameterItemBuilder {
     private final S7Address address;
 
-    public S7VarRequestParameterItemAddressBuilder(S7Address address) {
-
+    public S7VarRequestParameterItemAddressBuilderImpl(S7Address address) {
       this.address = address;
     }
 

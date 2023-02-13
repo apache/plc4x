@@ -62,6 +62,7 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueCustomManufacturer");
 
@@ -80,6 +81,7 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueCustomManufacturer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += value.getLengthInBits();
@@ -87,12 +89,13 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
     return lengthInBits;
   }
 
-  public static ParameterValueCustomManufacturerBuilder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueCustomManufacturer");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CustomManufacturer value =
         readSimpleField(
@@ -102,16 +105,15 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
 
     readBuffer.closeContext("ParameterValueCustomManufacturer");
     // Create the instance
-    return new ParameterValueCustomManufacturerBuilder(value, numBytes);
+    return new ParameterValueCustomManufacturerBuilderImpl(value, numBytes);
   }
 
-  public static class ParameterValueCustomManufacturerBuilder
+  public static class ParameterValueCustomManufacturerBuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final CustomManufacturer value;
     private final Short numBytes;
 
-    public ParameterValueCustomManufacturerBuilder(CustomManufacturer value, Short numBytes) {
-
+    public ParameterValueCustomManufacturerBuilderImpl(CustomManufacturer value, Short numBytes) {
       this.value = value;
       this.numBytes = numBytes;
     }

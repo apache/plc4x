@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastNPDUNetworkPriority(structType interface{}) NPDUNetworkPriority {
 	return castFunc(structType)
 }
 
-func (m NPDUNetworkPriority) GetLengthInBits() uint16 {
+func (m NPDUNetworkPriority) GetLengthInBits(ctx context.Context) uint16 {
 	return 2
 }
 
-func (m NPDUNetworkPriority) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m NPDUNetworkPriority) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func NPDUNetworkPriorityParse(theBytes []byte) (NPDUNetworkPriority, error) {
-	return NPDUNetworkPriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func NPDUNetworkPriorityParse(ctx context.Context, theBytes []byte) (NPDUNetworkPriority, error) {
+	return NPDUNetworkPriorityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func NPDUNetworkPriorityParseWithBuffer(readBuffer utils.ReadBuffer) (NPDUNetworkPriority, error) {
+func NPDUNetworkPriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NPDUNetworkPriority, error) {
 	val, err := readBuffer.ReadUint8("NPDUNetworkPriority", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading NPDUNetworkPriority")
@@ -126,13 +127,13 @@ func NPDUNetworkPriorityParseWithBuffer(readBuffer utils.ReadBuffer) (NPDUNetwor
 
 func (e NPDUNetworkPriority) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e NPDUNetworkPriority) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e NPDUNetworkPriority) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("NPDUNetworkPriority", 2, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -71,6 +71,7 @@ public abstract class TriggerControlData implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TriggerControlData");
 
@@ -110,6 +111,7 @@ public abstract class TriggerControlData implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     TriggerControlData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (commandTypeContainer)
     lengthInBits += 8;
@@ -137,6 +139,7 @@ public abstract class TriggerControlData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!(org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper
         .knowsTriggerControlCommandTypeContainer(readBuffer))) {
@@ -160,15 +163,17 @@ public abstract class TriggerControlData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     TriggerControlDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, TriggerControlCommandType.TRIGGER_EVENT)) {
-      builder = TriggerControlDataTriggerEvent.staticParseBuilder(readBuffer);
+      builder = TriggerControlDataTriggerEvent.staticParseTriggerControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TriggerControlCommandType.TRIGGER_MIN)) {
-      builder = TriggerControlDataTriggerMin.staticParseBuilder(readBuffer);
+      builder = TriggerControlDataTriggerMin.staticParseTriggerControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TriggerControlCommandType.TRIGGER_MAX)) {
-      builder = TriggerControlDataTriggerMax.staticParseBuilder(readBuffer);
+      builder = TriggerControlDataTriggerMax.staticParseTriggerControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TriggerControlCommandType.INDICATOR_KILL)) {
-      builder = TriggerControlDataIndicatorKill.staticParseBuilder(readBuffer);
+      builder = TriggerControlDataIndicatorKill.staticParseTriggerControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, TriggerControlCommandType.LABEL)) {
-      builder = TriggerControlDataLabel.staticParseBuilder(readBuffer, commandTypeContainer);
+      builder =
+          TriggerControlDataLabel.staticParseTriggerControlDataBuilder(
+              readBuffer, commandTypeContainer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -185,7 +190,7 @@ public abstract class TriggerControlData implements Message {
     return _triggerControlData;
   }
 
-  public static interface TriggerControlDataBuilder {
+  public interface TriggerControlDataBuilder {
     TriggerControlData build(
         TriggerControlCommandTypeContainer commandTypeContainer, byte triggerGroup);
   }

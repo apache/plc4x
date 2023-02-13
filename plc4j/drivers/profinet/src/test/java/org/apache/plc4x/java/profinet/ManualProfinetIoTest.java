@@ -18,18 +18,40 @@
  */
 package org.apache.plc4x.java.profinet;
 
-import org.apache.plc4x.java.PlcDriverManager;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.messages.PlcReadRequest;
-import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcBrowseRequest;
+import org.apache.plc4x.java.api.messages.PlcBrowseResponse;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.profinet.device.ProfinetSubscriptionHandle;
+import org.apache.plc4x.java.profinet.tag.ProfinetTag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ManualProfinetIoTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManualProfinetIoTest.class);
+
     public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new PlcDriverManager().getConnection("profinet://192.168.24.31");
-        final PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress("test", "").build();
-        final PlcReadResponse plcReadResponse = readRequest.execute().get();
-        System.out.println(plcReadResponse);
+        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("profinet://192.168.90.1?gsddirectory=/Profinet/gsd&devices=[[test-device,MOD_1,(SUBMOD_1,SUBMOD_1,SUBMOD_1,)]]&reductionratio=16&sendclockfactor=32&dataholdfactor=3&watchdogfactor=2");
+        PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("Browse", "").build();
+        final PlcBrowseResponse browseResponse = browseRequest.execute().get();
+        PlcSubscriptionRequest.Builder builder = connection.subscriptionRequestBuilder();
+        builder.addChangeOfStateTag("Input 4", ProfinetTag.of("test-device.1.1.SUBMOD.4:BOOL"));
+        PlcSubscriptionRequest request = builder.build();
+
+        final PlcSubscriptionResponse response = request.execute().get();
+
+        // Get result of creating subscription
+        final ProfinetSubscriptionHandle subscriptionHandle = (ProfinetSubscriptionHandle) response.getSubscriptionHandle("Input 4");
+
+        // Create handler for returned value
+        subscriptionHandle.register(plcSubscriptionEvent -> {
+            assert plcSubscriptionEvent.getResponseCode("Input 4").equals(PlcResponseCode.OK);
+            LOGGER.info("Received a response from {} test {}", "Input 4", plcSubscriptionEvent.getPlcValue("Input 4").toString());
+        });
     }
 
 }

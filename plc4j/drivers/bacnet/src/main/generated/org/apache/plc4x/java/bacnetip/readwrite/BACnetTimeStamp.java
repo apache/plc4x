@@ -60,6 +60,7 @@ public abstract class BACnetTimeStamp implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimeStamp");
 
@@ -82,6 +83,7 @@ public abstract class BACnetTimeStamp implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetTimeStamp _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -101,6 +103,7 @@ public abstract class BACnetTimeStamp implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -113,11 +116,11 @@ public abstract class BACnetTimeStamp implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetTimeStampBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetTimeStampTime.staticParseBuilder(readBuffer);
+      builder = BACnetTimeStampTime.staticParseBACnetTimeStampBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetTimeStampSequence.staticParseBuilder(readBuffer);
+      builder = BACnetTimeStampSequence.staticParseBACnetTimeStampBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetTimeStampDateTime.staticParseBuilder(readBuffer);
+      builder = BACnetTimeStampDateTime.staticParseBACnetTimeStampBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -134,7 +137,7 @@ public abstract class BACnetTimeStamp implements Message {
     return _bACnetTimeStamp;
   }
 
-  public static interface BACnetTimeStampBuilder {
+  public interface BACnetTimeStampBuilder {
     BACnetTimeStamp build(BACnetTagHeader peekedTagHeader);
   }
 

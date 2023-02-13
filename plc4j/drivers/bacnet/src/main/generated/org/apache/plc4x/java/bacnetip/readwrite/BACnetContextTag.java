@@ -69,6 +69,7 @@ public abstract class BACnetContextTag implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTag");
 
@@ -98,6 +99,7 @@ public abstract class BACnetContextTag implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetContextTag _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (header)
     lengthInBits += header.getLengthInBits();
@@ -148,6 +150,7 @@ public abstract class BACnetContextTag implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader header =
         readSimpleField(
@@ -173,51 +176,60 @@ public abstract class BACnetContextTag implements Message {
     BACnetContextTagBuilder builder = null;
     if (EvaluationHelper.equals(dataType, BACnetDataType.NULL)) {
       builder =
-          BACnetContextTagNull.staticParseBuilder(readBuffer, tagNumberArgument, dataType, header);
+          BACnetContextTagNull.staticParseBACnetContextTagBuilder(
+              readBuffer, header, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.BOOLEAN)) {
       builder =
-          BACnetContextTagBoolean.staticParseBuilder(
-              readBuffer, tagNumberArgument, dataType, header);
+          BACnetContextTagBoolean.staticParseBACnetContextTagBuilder(
+              readBuffer, header, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.UNSIGNED_INTEGER)) {
       builder =
-          BACnetContextTagUnsignedInteger.staticParseBuilder(
-              readBuffer, tagNumberArgument, dataType, header);
+          BACnetContextTagUnsignedInteger.staticParseBACnetContextTagBuilder(
+              readBuffer, header, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.SIGNED_INTEGER)) {
       builder =
-          BACnetContextTagSignedInteger.staticParseBuilder(
-              readBuffer, tagNumberArgument, dataType, header);
+          BACnetContextTagSignedInteger.staticParseBACnetContextTagBuilder(
+              readBuffer, header, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.REAL)) {
-      builder = BACnetContextTagReal.staticParseBuilder(readBuffer, tagNumberArgument, dataType);
+      builder =
+          BACnetContextTagReal.staticParseBACnetContextTagBuilder(
+              readBuffer, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.DOUBLE)) {
-      builder = BACnetContextTagDouble.staticParseBuilder(readBuffer, tagNumberArgument, dataType);
+      builder =
+          BACnetContextTagDouble.staticParseBACnetContextTagBuilder(
+              readBuffer, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.OCTET_STRING)) {
       builder =
-          BACnetContextTagOctetString.staticParseBuilder(
-              readBuffer, tagNumberArgument, dataType, header);
+          BACnetContextTagOctetString.staticParseBACnetContextTagBuilder(
+              readBuffer, header, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.CHARACTER_STRING)) {
       builder =
-          BACnetContextTagCharacterString.staticParseBuilder(
-              readBuffer, tagNumberArgument, dataType, header);
+          BACnetContextTagCharacterString.staticParseBACnetContextTagBuilder(
+              readBuffer, header, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.BIT_STRING)) {
       builder =
-          BACnetContextTagBitString.staticParseBuilder(
-              readBuffer, tagNumberArgument, dataType, header);
+          BACnetContextTagBitString.staticParseBACnetContextTagBuilder(
+              readBuffer, header, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.ENUMERATED)) {
       builder =
-          BACnetContextTagEnumerated.staticParseBuilder(
-              readBuffer, tagNumberArgument, dataType, header);
+          BACnetContextTagEnumerated.staticParseBACnetContextTagBuilder(
+              readBuffer, header, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.DATE)) {
-      builder = BACnetContextTagDate.staticParseBuilder(readBuffer, tagNumberArgument, dataType);
+      builder =
+          BACnetContextTagDate.staticParseBACnetContextTagBuilder(
+              readBuffer, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.TIME)) {
-      builder = BACnetContextTagTime.staticParseBuilder(readBuffer, tagNumberArgument, dataType);
+      builder =
+          BACnetContextTagTime.staticParseBACnetContextTagBuilder(
+              readBuffer, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.BACNET_OBJECT_IDENTIFIER)) {
       builder =
-          BACnetContextTagObjectIdentifier.staticParseBuilder(
+          BACnetContextTagObjectIdentifier.staticParseBACnetContextTagBuilder(
               readBuffer, tagNumberArgument, dataType);
     } else if (EvaluationHelper.equals(dataType, BACnetDataType.UNKNOWN)) {
       builder =
-          BACnetContextTagUnknown.staticParseBuilder(
-              readBuffer, tagNumberArgument, dataType, actualLength);
+          BACnetContextTagUnknown.staticParseBACnetContextTagBuilder(
+              readBuffer, actualLength, tagNumberArgument, dataType);
     }
     if (builder == null) {
       throw new ParseException(
@@ -234,7 +246,7 @@ public abstract class BACnetContextTag implements Message {
     return _bACnetContextTag;
   }
 
-  public static interface BACnetContextTagBuilder {
+  public interface BACnetContextTagBuilder {
     BACnetContextTag build(BACnetTagHeader header, Short tagNumberArgument);
   }
 

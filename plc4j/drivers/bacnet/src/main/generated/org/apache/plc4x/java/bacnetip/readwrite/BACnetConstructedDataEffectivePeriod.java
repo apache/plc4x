@@ -78,6 +78,7 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEffectivePeriod");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEffectivePeriod _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dateRange)
     lengthInBits += dateRange.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEffectivePeriodBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateRange dateRange =
         readSimpleField(
@@ -130,21 +133,20 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataEffectivePeriod");
     // Create the instance
-    return new BACnetConstructedDataEffectivePeriodBuilder(
+    return new BACnetConstructedDataEffectivePeriodBuilderImpl(
         dateRange, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEffectivePeriodBuilder
+  public static class BACnetConstructedDataEffectivePeriodBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateRange dateRange;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEffectivePeriodBuilder(
+    public BACnetConstructedDataEffectivePeriodBuilderImpl(
         BACnetDateRange dateRange,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.dateRange = dateRange;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

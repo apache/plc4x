@@ -60,6 +60,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse extends S7P
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse");
 
@@ -75,26 +76,28 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse extends S7P
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder();
+    return new S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilderImpl();
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder
+  public static class S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
 
-    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilder() {}
+    public S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseBuilderImpl() {}
 
     public S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse build(
         DataTransportErrorCode returnCode, DataTransportSize transportSize) {

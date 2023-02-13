@@ -60,6 +60,7 @@ public class ErrorReportingSystemCategoryTypeSupportUnits extends ErrorReporting
   protected void serializeErrorReportingSystemCategoryTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingSystemCategoryTypeSupportUnits");
 
@@ -85,6 +86,7 @@ public class ErrorReportingSystemCategoryTypeSupportUnits extends ErrorReporting
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ErrorReportingSystemCategoryTypeSupportUnits _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (categoryForType)
     lengthInBits += 4;
@@ -92,13 +94,16 @@ public class ErrorReportingSystemCategoryTypeSupportUnits extends ErrorReporting
     return lengthInBits;
   }
 
-  public static ErrorReportingSystemCategoryTypeSupportUnitsBuilder staticParseBuilder(
-      ReadBuffer readBuffer, ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
-      throws ParseException {
+  public static ErrorReportingSystemCategoryTypeBuilder
+      staticParseErrorReportingSystemCategoryTypeBuilder(
+          ReadBuffer readBuffer,
+          ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
+          throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeSupportUnits");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorReportingSystemCategoryTypeForSupportUnits categoryForType =
         readEnumField(
@@ -110,16 +115,15 @@ public class ErrorReportingSystemCategoryTypeSupportUnits extends ErrorReporting
 
     readBuffer.closeContext("ErrorReportingSystemCategoryTypeSupportUnits");
     // Create the instance
-    return new ErrorReportingSystemCategoryTypeSupportUnitsBuilder(categoryForType);
+    return new ErrorReportingSystemCategoryTypeSupportUnitsBuilderImpl(categoryForType);
   }
 
-  public static class ErrorReportingSystemCategoryTypeSupportUnitsBuilder
+  public static class ErrorReportingSystemCategoryTypeSupportUnitsBuilderImpl
       implements ErrorReportingSystemCategoryType.ErrorReportingSystemCategoryTypeBuilder {
     private final ErrorReportingSystemCategoryTypeForSupportUnits categoryForType;
 
-    public ErrorReportingSystemCategoryTypeSupportUnitsBuilder(
+    public ErrorReportingSystemCategoryTypeSupportUnitsBuilderImpl(
         ErrorReportingSystemCategoryTypeForSupportUnits categoryForType) {
-
       this.categoryForType = categoryForType;
     }
 

@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueObjectidentifier extends BACnetTimerStat
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueObjectidentifier");
 
@@ -84,6 +85,7 @@ public class BACnetTimerStateChangeValueObjectidentifier extends BACnetTimerStat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueObjectidentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectidentifierValue)
     lengthInBits += objectidentifierValue.getLengthInBits();
@@ -91,12 +93,13 @@ public class BACnetTimerStateChangeValueObjectidentifier extends BACnetTimerStat
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueObjectidentifierBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueObjectidentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectidentifierValue =
         readSimpleField(
@@ -109,19 +112,18 @@ public class BACnetTimerStateChangeValueObjectidentifier extends BACnetTimerStat
 
     readBuffer.closeContext("BACnetTimerStateChangeValueObjectidentifier");
     // Create the instance
-    return new BACnetTimerStateChangeValueObjectidentifierBuilder(
+    return new BACnetTimerStateChangeValueObjectidentifierBuilderImpl(
         objectidentifierValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueObjectidentifierBuilder
+  public static class BACnetTimerStateChangeValueObjectidentifierBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagObjectIdentifier objectidentifierValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueObjectidentifierBuilder(
+    public BACnetTimerStateChangeValueObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue,
         BACnetObjectType objectTypeArgument) {
-
       this.objectidentifierValue = objectidentifierValue;
       this.objectTypeArgument = objectTypeArgument;
     }

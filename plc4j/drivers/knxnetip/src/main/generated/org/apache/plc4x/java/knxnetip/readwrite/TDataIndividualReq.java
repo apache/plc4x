@@ -42,17 +42,14 @@ public class TDataIndividualReq extends CEMI implements Message {
     return (short) 0x4A;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public TDataIndividualReq(Integer size) {
-    super(size);
-    this.size = size;
+  public TDataIndividualReq() {
+    super();
   }
 
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TDataIndividualReq");
 
@@ -68,34 +65,30 @@ public class TDataIndividualReq extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TDataIndividualReq _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static TDataIndividualReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("TDataIndividualReq");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TDataIndividualReq");
     // Create the instance
-    return new TDataIndividualReqBuilder(size);
+    return new TDataIndividualReqBuilderImpl();
   }
 
-  public static class TDataIndividualReqBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class TDataIndividualReqBuilderImpl implements CEMI.CEMIBuilder {
 
-    public TDataIndividualReqBuilder(Integer size) {
+    public TDataIndividualReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public TDataIndividualReq build(Integer size) {
-
-      TDataIndividualReq tDataIndividualReq = new TDataIndividualReq(size);
-
+    public TDataIndividualReq build() {
+      TDataIndividualReq tDataIndividualReq = new TDataIndividualReq();
       return tDataIndividualReq;
     }
   }

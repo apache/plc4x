@@ -46,6 +46,7 @@ public class SecurityDataTamperOn extends SecurityData implements Message {
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataTamperOn");
 
@@ -61,25 +62,27 @@ public class SecurityDataTamperOn extends SecurityData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataTamperOn _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SecurityDataTamperOnBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataTamperOn");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataTamperOn");
     // Create the instance
-    return new SecurityDataTamperOnBuilder();
+    return new SecurityDataTamperOnBuilderImpl();
   }
 
-  public static class SecurityDataTamperOnBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataTamperOnBuilderImpl implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataTamperOnBuilder() {}
+    public SecurityDataTamperOnBuilderImpl() {}
 
     public SecurityDataTamperOn build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

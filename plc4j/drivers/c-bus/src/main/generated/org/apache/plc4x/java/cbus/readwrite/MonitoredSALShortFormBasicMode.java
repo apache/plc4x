@@ -96,6 +96,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
   @Override
   protected void serializeMonitoredSALChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoredSALShortFormBasicMode");
 
@@ -138,6 +139,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MonitoredSALShortFormBasicMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (bridgeCount)
     if (bridgeCount != null) {
@@ -165,12 +167,13 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
     return lengthInBits;
   }
 
-  public static MonitoredSALShortFormBasicModeBuilder staticParseBuilder(
+  public static MonitoredSALBuilder staticParseMonitoredSALBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("MonitoredSALShortFormBasicMode");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte counts = readPeekField("counts", readByte(readBuffer, 8));
 
@@ -200,11 +203,11 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
 
     readBuffer.closeContext("MonitoredSALShortFormBasicMode");
     // Create the instance
-    return new MonitoredSALShortFormBasicModeBuilder(
+    return new MonitoredSALShortFormBasicModeBuilderImpl(
         counts, bridgeCount, networkNumber, noCounts, application, salData, cBusOptions);
   }
 
-  public static class MonitoredSALShortFormBasicModeBuilder
+  public static class MonitoredSALShortFormBasicModeBuilderImpl
       implements MonitoredSAL.MonitoredSALBuilder {
     private final byte counts;
     private final Short bridgeCount;
@@ -214,7 +217,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
     private final SALData salData;
     private final CBusOptions cBusOptions;
 
-    public MonitoredSALShortFormBasicModeBuilder(
+    public MonitoredSALShortFormBasicModeBuilderImpl(
         byte counts,
         Short bridgeCount,
         Short networkNumber,
@@ -222,7 +225,6 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
         ApplicationIdContainer application,
         SALData salData,
         CBusOptions cBusOptions) {
-
       this.counts = counts;
       this.bridgeCount = bridgeCount;
       this.networkNumber = networkNumber;

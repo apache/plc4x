@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,12 +107,8 @@ func (m *_SecurityDataOff) GetTypeName() string {
 	return "SecurityDataOff"
 }
 
-func (m *_SecurityDataOff) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SecurityDataOff) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SecurityDataOff) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Array field
 	if len(m.Data) > 0 {
@@ -121,15 +118,15 @@ func (m *_SecurityDataOff) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_SecurityDataOff) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SecurityDataOff) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SecurityDataOffParse(theBytes []byte, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataOff, error) {
-	return SecurityDataOffParseWithBuffer(utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
+	return SecurityDataOffParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
-func SecurityDataOffParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataOff, error) {
+func SecurityDataOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SecurityDataOff"); pullErr != nil {
@@ -158,14 +155,14 @@ func SecurityDataOffParseWithBuffer(readBuffer utils.ReadBuffer, commandTypeCont
 }
 
 func (m *_SecurityDataOff) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SecurityDataOff) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SecurityDataOff) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_SecurityDataOff) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SecurityDataOff) isSecurityDataOff() bool {
@@ -196,7 +193,7 @@ func (m *_SecurityDataOff) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

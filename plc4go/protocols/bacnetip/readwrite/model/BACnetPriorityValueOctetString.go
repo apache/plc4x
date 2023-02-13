@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPriorityValueOctetString) GetTypeName() string {
 	return "BACnetPriorityValueOctetString"
 }
 
-func (m *_BACnetPriorityValueOctetString) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPriorityValueOctetString) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPriorityValueOctetString) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (octetStringValue)
-	lengthInBits += m.OctetStringValue.GetLengthInBits()
+	lengthInBits += m.OctetStringValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPriorityValueOctetString) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPriorityValueOctetString) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPriorityValueOctetStringParse(theBytes []byte, objectTypeArgument BACnetObjectType) (BACnetPriorityValueOctetString, error) {
-	return BACnetPriorityValueOctetStringParseWithBuffer(utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
+	return BACnetPriorityValueOctetStringParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
-func BACnetPriorityValueOctetStringParseWithBuffer(readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueOctetString, error) {
+func BACnetPriorityValueOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueOctetString"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPriorityValueOctetStringParseWithBuffer(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
 	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _octetStringValueErr != nil {
 		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetPriorityValueOctetString")
 	}
@@ -164,14 +161,14 @@ func BACnetPriorityValueOctetStringParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_BACnetPriorityValueOctetString) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPriorityValueOctetString) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPriorityValueOctetString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_BACnetPriorityValueOctetString) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("octetStringValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for octetStringValue")
 		}
-		_octetStringValueErr := writeBuffer.WriteSerializable(m.GetOctetStringValue())
+		_octetStringValueErr := writeBuffer.WriteSerializable(ctx, m.GetOctetStringValue())
 		if popErr := writeBuffer.PopContext("octetStringValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for octetStringValue")
 		}
@@ -196,7 +193,7 @@ func (m *_BACnetPriorityValueOctetString) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPriorityValueOctetString) isBACnetPriorityValueOctetString() bool {
@@ -208,7 +205,7 @@ func (m *_BACnetPriorityValueOctetString) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

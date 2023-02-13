@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -163,19 +164,19 @@ func CastDataTransportSize(structType interface{}) DataTransportSize {
 	return castFunc(structType)
 }
 
-func (m DataTransportSize) GetLengthInBits() uint16 {
+func (m DataTransportSize) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m DataTransportSize) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m DataTransportSize) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func DataTransportSizeParse(theBytes []byte) (DataTransportSize, error) {
-	return DataTransportSizeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func DataTransportSizeParse(ctx context.Context, theBytes []byte) (DataTransportSize, error) {
+	return DataTransportSizeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func DataTransportSizeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTransportSize, error) {
+func DataTransportSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataTransportSize, error) {
 	val, err := readBuffer.ReadUint8("DataTransportSize", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DataTransportSize")
@@ -190,13 +191,13 @@ func DataTransportSizeParseWithBuffer(readBuffer utils.ReadBuffer) (DataTranspor
 
 func (e DataTransportSize) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e DataTransportSize) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e DataTransportSize) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("DataTransportSize", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

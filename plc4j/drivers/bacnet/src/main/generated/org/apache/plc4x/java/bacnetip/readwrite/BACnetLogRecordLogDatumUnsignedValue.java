@@ -65,6 +65,7 @@ public class BACnetLogRecordLogDatumUnsignedValue extends BACnetLogRecordLogDatu
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumUnsignedValue");
 
@@ -83,6 +84,7 @@ public class BACnetLogRecordLogDatumUnsignedValue extends BACnetLogRecordLogDatu
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumUnsignedValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unsignedValue)
     lengthInBits += unsignedValue.getLengthInBits();
@@ -90,12 +92,13 @@ public class BACnetLogRecordLogDatumUnsignedValue extends BACnetLogRecordLogDatu
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumUnsignedValueBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumUnsignedValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger unsignedValue =
         readSimpleField(
@@ -111,17 +114,16 @@ public class BACnetLogRecordLogDatumUnsignedValue extends BACnetLogRecordLogDatu
 
     readBuffer.closeContext("BACnetLogRecordLogDatumUnsignedValue");
     // Create the instance
-    return new BACnetLogRecordLogDatumUnsignedValueBuilder(unsignedValue, tagNumber);
+    return new BACnetLogRecordLogDatumUnsignedValueBuilderImpl(unsignedValue, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumUnsignedValueBuilder
+  public static class BACnetLogRecordLogDatumUnsignedValueBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final BACnetContextTagUnsignedInteger unsignedValue;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumUnsignedValueBuilder(
+    public BACnetLogRecordLogDatumUnsignedValueBuilderImpl(
         BACnetContextTagUnsignedInteger unsignedValue, Short tagNumber) {
-
       this.unsignedValue = unsignedValue;
       this.tagNumber = tagNumber;
     }

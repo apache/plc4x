@@ -78,6 +78,7 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
   protected void serializeBACnetFaultParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRange");
 
@@ -105,6 +106,7 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultOutOfRange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -121,12 +123,13 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultOutOfRangeBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetFaultParameterBuilder staticParseBACnetFaultParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultOutOfRange");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -160,23 +163,22 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRange");
     // Create the instance
-    return new BACnetFaultParameterFaultOutOfRangeBuilder(
+    return new BACnetFaultParameterFaultOutOfRangeBuilderImpl(
         openingTag, minNormalValue, maxNormalValue, closingTag);
   }
 
-  public static class BACnetFaultParameterFaultOutOfRangeBuilder
+  public static class BACnetFaultParameterFaultOutOfRangeBuilderImpl
       implements BACnetFaultParameter.BACnetFaultParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetFaultParameterFaultOutOfRangeMinNormalValue minNormalValue;
     private final BACnetFaultParameterFaultOutOfRangeMaxNormalValue maxNormalValue;
     private final BACnetClosingTag closingTag;
 
-    public BACnetFaultParameterFaultOutOfRangeBuilder(
+    public BACnetFaultParameterFaultOutOfRangeBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetFaultParameterFaultOutOfRangeMinNormalValue minNormalValue,
         BACnetFaultParameterFaultOutOfRangeMaxNormalValue maxNormalValue,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.minNormalValue = minNormalValue;
       this.maxNormalValue = maxNormalValue;

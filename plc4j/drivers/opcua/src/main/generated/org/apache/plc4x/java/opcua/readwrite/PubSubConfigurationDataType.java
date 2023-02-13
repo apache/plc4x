@@ -48,8 +48,6 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
   protected final int noOfConnections;
   protected final List<ExtensionObjectDefinition> connections;
   protected final boolean enabled;
-  // Reserved Fields
-  private Short reservedField0;
 
   public PubSubConfigurationDataType(
       int noOfPublishedDataSets,
@@ -89,6 +87,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PubSubConfigurationDataType");
 
@@ -106,10 +105,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     writeComplexTypeArrayField("connections", connections, writeBuffer);
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (enabled)
     writeSimpleField("enabled", enabled, writeBoolean(writeBuffer));
@@ -126,6 +122,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PubSubConfigurationDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfPublishedDataSets)
     lengthInBits += 32;
@@ -134,7 +131,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     if (publishedDataSets != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : publishedDataSets) {
-        boolean last = ++i >= publishedDataSets.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= publishedDataSets.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -146,7 +143,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     if (connections != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : connections) {
-        boolean last = ++i >= connections.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= connections.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -160,12 +157,13 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     return lengthInBits;
   }
 
-  public static PubSubConfigurationDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PubSubConfigurationDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfPublishedDataSets =
         readSimpleField("noOfPublishedDataSets", readSignedInt(readBuffer, 32));
@@ -195,44 +193,35 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
 
     readBuffer.closeContext("PubSubConfigurationDataType");
     // Create the instance
-    return new PubSubConfigurationDataTypeBuilder(
-        noOfPublishedDataSets,
-        publishedDataSets,
-        noOfConnections,
-        connections,
-        enabled,
-        reservedField0);
+    return new PubSubConfigurationDataTypeBuilderImpl(
+        noOfPublishedDataSets, publishedDataSets, noOfConnections, connections, enabled);
   }
 
-  public static class PubSubConfigurationDataTypeBuilder
+  public static class PubSubConfigurationDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfPublishedDataSets;
     private final List<ExtensionObjectDefinition> publishedDataSets;
     private final int noOfConnections;
     private final List<ExtensionObjectDefinition> connections;
     private final boolean enabled;
-    private final Short reservedField0;
 
-    public PubSubConfigurationDataTypeBuilder(
+    public PubSubConfigurationDataTypeBuilderImpl(
         int noOfPublishedDataSets,
         List<ExtensionObjectDefinition> publishedDataSets,
         int noOfConnections,
         List<ExtensionObjectDefinition> connections,
-        boolean enabled,
-        Short reservedField0) {
+        boolean enabled) {
       this.noOfPublishedDataSets = noOfPublishedDataSets;
       this.publishedDataSets = publishedDataSets;
       this.noOfConnections = noOfConnections;
       this.connections = connections;
       this.enabled = enabled;
-      this.reservedField0 = reservedField0;
     }
 
     public PubSubConfigurationDataType build() {
       PubSubConfigurationDataType pubSubConfigurationDataType =
           new PubSubConfigurationDataType(
               noOfPublishedDataSets, publishedDataSets, noOfConnections, connections, enabled);
-      pubSubConfigurationDataType.reservedField0 = reservedField0;
       return pubSubConfigurationDataType;
     }
   }

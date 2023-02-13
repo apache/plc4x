@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetInterfaceValue() BA
 ///////////////////////
 
 func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetActualValue() BACnetOptionalREAL {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetOptionalREAL(m.GetInterfaceValue())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetTypeName() string {
 	return "BACnetConstructedDataAnalogInputInterfaceValue"
 }
 
-func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (interfaceValue)
-	lengthInBits += m.InterfaceValue.GetLengthInBits()
+	lengthInBits += m.InterfaceValue.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataAnalogInputInterfaceValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataAnalogInputInterfaceValueParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogInputInterfaceValue, error) {
-	return BACnetConstructedDataAnalogInputInterfaceValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataAnalogInputInterfaceValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataAnalogInputInterfaceValueParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogInputInterfaceValue, error) {
+func BACnetConstructedDataAnalogInputInterfaceValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAnalogInputInterfaceValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAnalogInputInterfaceValue"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataAnalogInputInterfaceValueParseWithBuffer(readBuffer ut
 	if pullErr := readBuffer.PullContext("interfaceValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for interfaceValue")
 	}
-	_interfaceValue, _interfaceValueErr := BACnetOptionalREALParseWithBuffer(readBuffer)
+	_interfaceValue, _interfaceValueErr := BACnetOptionalREALParseWithBuffer(ctx, readBuffer)
 	if _interfaceValueErr != nil {
 		return nil, errors.Wrap(_interfaceValueErr, "Error parsing 'interfaceValue' field of BACnetConstructedDataAnalogInputInterfaceValue")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataAnalogInputInterfaceValueParseWithBuffer(readBuffer ut
 }
 
 func (m *_BACnetConstructedDataAnalogInputInterfaceValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataAnalogInputInterfaceValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataAnalogInputInterfaceValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataAnalogInputInterfaceValue) SerializeWithWriteBuff
 		if pushErr := writeBuffer.PushContext("interfaceValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for interfaceValue")
 		}
-		_interfaceValueErr := writeBuffer.WriteSerializable(m.GetInterfaceValue())
+		_interfaceValueErr := writeBuffer.WriteSerializable(ctx, m.GetInterfaceValue())
 		if popErr := writeBuffer.PopContext("interfaceValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for interfaceValue")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataAnalogInputInterfaceValue) SerializeWithWriteBuff
 			return errors.Wrap(_interfaceValueErr, "Error serializing 'interfaceValue' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataAnalogInputInterfaceValue) SerializeWithWriteBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataAnalogInputInterfaceValue) isBACnetConstructedDataAnalogInputInterfaceValue() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataAnalogInputInterfaceValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

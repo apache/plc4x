@@ -25,6 +25,11 @@ on:
       - code-generation/**
       - protocols/**
       - plc4go**
+  pull_request:
+    paths:
+      - code-generation/**
+      - protocols/**
+      - plc4go**
   workflow_dispatch:
     inputs:
       forceUpdates:
@@ -70,7 +75,7 @@ jobs:
 
       - name: Set Platform options
         id: platform_opts
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v6.4.0
         env:
           OS: ${{ matrix.os }}
         with:
@@ -88,7 +93,7 @@ jobs:
 
       - name: Calculate platform suffix
         id: platform_suffix
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v6.4.0
         env:
           OS: ${{ matrix.os }}
         with:
@@ -102,7 +107,7 @@ jobs:
 
       - name: Set extra options
         id: extra_options
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v6.4.0
         env:
           FORCE_UPDATE: ${{ github.event.inputs.forceUpdates }}
         with:

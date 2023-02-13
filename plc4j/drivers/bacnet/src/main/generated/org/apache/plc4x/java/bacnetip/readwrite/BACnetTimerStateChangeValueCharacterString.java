@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueCharacterString extends BACnetTimerState
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueCharacterString");
 
@@ -82,6 +83,7 @@ public class BACnetTimerStateChangeValueCharacterString extends BACnetTimerState
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueCharacterString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (characterStringValue)
     lengthInBits += characterStringValue.getLengthInBits();
@@ -89,12 +91,13 @@ public class BACnetTimerStateChangeValueCharacterString extends BACnetTimerState
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueCharacterStringBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueCharacterString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString characterStringValue =
         readSimpleField(
@@ -107,19 +110,18 @@ public class BACnetTimerStateChangeValueCharacterString extends BACnetTimerState
 
     readBuffer.closeContext("BACnetTimerStateChangeValueCharacterString");
     // Create the instance
-    return new BACnetTimerStateChangeValueCharacterStringBuilder(
+    return new BACnetTimerStateChangeValueCharacterStringBuilderImpl(
         characterStringValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueCharacterStringBuilder
+  public static class BACnetTimerStateChangeValueCharacterStringBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagCharacterString characterStringValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueCharacterStringBuilder(
+    public BACnetTimerStateChangeValueCharacterStringBuilderImpl(
         BACnetApplicationTagCharacterString characterStringValue,
         BACnetObjectType objectTypeArgument) {
-
       this.characterStringValue = characterStringValue;
       this.objectTypeArgument = objectTypeArgument;
     }

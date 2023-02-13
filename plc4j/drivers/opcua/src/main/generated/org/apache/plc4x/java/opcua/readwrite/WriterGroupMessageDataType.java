@@ -50,6 +50,7 @@ public class WriterGroupMessageDataType extends ExtensionObjectDefinition implem
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("WriterGroupMessageDataType");
 
@@ -65,26 +66,28 @@ public class WriterGroupMessageDataType extends ExtensionObjectDefinition implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     WriterGroupMessageDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static WriterGroupMessageDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("WriterGroupMessageDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("WriterGroupMessageDataType");
     // Create the instance
-    return new WriterGroupMessageDataTypeBuilder();
+    return new WriterGroupMessageDataTypeBuilderImpl();
   }
 
-  public static class WriterGroupMessageDataTypeBuilder
+  public static class WriterGroupMessageDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public WriterGroupMessageDataTypeBuilder() {}
+    public WriterGroupMessageDataTypeBuilderImpl() {}
 
     public WriterGroupMessageDataType build() {
       WriterGroupMessageDataType writerGroupMessageDataType = new WriterGroupMessageDataType();

@@ -49,8 +49,6 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
   protected final PascalString targetServerUri;
   protected final ExpandedNodeId targetNodeId;
   protected final NodeClass targetNodeClass;
-  // Reserved Fields
-  private Short reservedField0;
 
   public AddReferencesItem(
       NodeId sourceNodeId,
@@ -96,6 +94,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AddReferencesItem");
 
@@ -107,10 +106,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (isForward)
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
@@ -142,6 +138,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AddReferencesItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (sourceNodeId)
     lengthInBits += sourceNodeId.getLengthInBits();
@@ -167,12 +164,13 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
     return lengthInBits;
   }
 
-  public static AddReferencesItemBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AddReferencesItem");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sourceNodeId =
         readSimpleField(
@@ -208,17 +206,11 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
 
     readBuffer.closeContext("AddReferencesItem");
     // Create the instance
-    return new AddReferencesItemBuilder(
-        sourceNodeId,
-        referenceTypeId,
-        isForward,
-        targetServerUri,
-        targetNodeId,
-        targetNodeClass,
-        reservedField0);
+    return new AddReferencesItemBuilderImpl(
+        sourceNodeId, referenceTypeId, isForward, targetServerUri, targetNodeId, targetNodeClass);
   }
 
-  public static class AddReferencesItemBuilder
+  public static class AddReferencesItemBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId sourceNodeId;
     private final NodeId referenceTypeId;
@@ -226,23 +218,20 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
     private final PascalString targetServerUri;
     private final ExpandedNodeId targetNodeId;
     private final NodeClass targetNodeClass;
-    private final Short reservedField0;
 
-    public AddReferencesItemBuilder(
+    public AddReferencesItemBuilderImpl(
         NodeId sourceNodeId,
         NodeId referenceTypeId,
         boolean isForward,
         PascalString targetServerUri,
         ExpandedNodeId targetNodeId,
-        NodeClass targetNodeClass,
-        Short reservedField0) {
+        NodeClass targetNodeClass) {
       this.sourceNodeId = sourceNodeId;
       this.referenceTypeId = referenceTypeId;
       this.isForward = isForward;
       this.targetServerUri = targetServerUri;
       this.targetNodeId = targetNodeId;
       this.targetNodeClass = targetNodeClass;
-      this.reservedField0 = reservedField0;
     }
 
     public AddReferencesItem build() {
@@ -254,7 +243,6 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
               targetServerUri,
               targetNodeId,
               targetNodeClass);
-      addReferencesItem.reservedField0 = reservedField0;
       return addReferencesItem;
     }
   }

@@ -75,6 +75,7 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBBMDBroadcastDistributionTable");
 
@@ -94,6 +95,7 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBBMDBroadcastDistributionTable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (bbmdBroadcastDistributionTable != null) {
@@ -105,7 +107,7 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBBMDBroadcastDistributionTableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -116,6 +118,7 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetBDTEntry> bbmdBroadcastDistributionTable =
         readTerminatedArrayField(
@@ -129,21 +132,20 @@ public class BACnetConstructedDataBBMDBroadcastDistributionTable extends BACnetC
 
     readBuffer.closeContext("BACnetConstructedDataBBMDBroadcastDistributionTable");
     // Create the instance
-    return new BACnetConstructedDataBBMDBroadcastDistributionTableBuilder(
+    return new BACnetConstructedDataBBMDBroadcastDistributionTableBuilderImpl(
         bbmdBroadcastDistributionTable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBBMDBroadcastDistributionTableBuilder
+  public static class BACnetConstructedDataBBMDBroadcastDistributionTableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetBDTEntry> bbmdBroadcastDistributionTable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBBMDBroadcastDistributionTableBuilder(
+    public BACnetConstructedDataBBMDBroadcastDistributionTableBuilderImpl(
         List<BACnetBDTEntry> bbmdBroadcastDistributionTable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bbmdBroadcastDistributionTable = bbmdBroadcastDistributionTable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -78,6 +78,7 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLinkSpeed");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLinkSpeed _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (linkSpeed)
     lengthInBits += linkSpeed.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLinkSpeedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal linkSpeed =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataLinkSpeed");
     // Create the instance
-    return new BACnetConstructedDataLinkSpeedBuilder(linkSpeed, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLinkSpeedBuilderImpl(linkSpeed, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLinkSpeedBuilder
+  public static class BACnetConstructedDataLinkSpeedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal linkSpeed;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLinkSpeedBuilder(
+    public BACnetConstructedDataLinkSpeedBuilderImpl(
         BACnetApplicationTagReal linkSpeed,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.linkSpeed = linkSpeed;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

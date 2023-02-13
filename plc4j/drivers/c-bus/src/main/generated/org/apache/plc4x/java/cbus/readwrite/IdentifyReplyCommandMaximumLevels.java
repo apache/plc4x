@@ -62,6 +62,7 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandMaximumLevels");
 
@@ -80,6 +81,7 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandMaximumLevels _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (maximumLevels != null) {
@@ -89,27 +91,27 @@ public class IdentifyReplyCommandMaximumLevels extends IdentifyReplyCommand impl
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandMaximumLevelsBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandMaximumLevels");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] maximumLevels = readBuffer.readByteArray("maximumLevels", Math.toIntExact(numBytes));
 
     readBuffer.closeContext("IdentifyReplyCommandMaximumLevels");
     // Create the instance
-    return new IdentifyReplyCommandMaximumLevelsBuilder(maximumLevels, numBytes);
+    return new IdentifyReplyCommandMaximumLevelsBuilderImpl(maximumLevels, numBytes);
   }
 
-  public static class IdentifyReplyCommandMaximumLevelsBuilder
+  public static class IdentifyReplyCommandMaximumLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] maximumLevels;
     private final Short numBytes;
 
-    public IdentifyReplyCommandMaximumLevelsBuilder(byte[] maximumLevels, Short numBytes) {
-
+    public IdentifyReplyCommandMaximumLevelsBuilderImpl(byte[] maximumLevels, Short numBytes) {
       this.maximumLevels = maximumLevels;
       this.numBytes = numBytes;
     }

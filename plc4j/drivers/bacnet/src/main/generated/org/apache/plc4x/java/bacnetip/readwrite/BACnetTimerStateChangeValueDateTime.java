@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueDateTime");
 
@@ -81,6 +82,7 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueDateTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dateTimeValue)
     lengthInBits += dateTimeValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueDateTimeBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueDateTime");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTimeEnclosed dateTimeValue =
         readSimpleField(
@@ -103,17 +106,16 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
 
     readBuffer.closeContext("BACnetTimerStateChangeValueDateTime");
     // Create the instance
-    return new BACnetTimerStateChangeValueDateTimeBuilder(dateTimeValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueDateTimeBuilderImpl(dateTimeValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueDateTimeBuilder
+  public static class BACnetTimerStateChangeValueDateTimeBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetDateTimeEnclosed dateTimeValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueDateTimeBuilder(
+    public BACnetTimerStateChangeValueDateTimeBuilderImpl(
         BACnetDateTimeEnclosed dateTimeValue, BACnetObjectType objectTypeArgument) {
-
       this.dateTimeValue = dateTimeValue;
       this.objectTypeArgument = objectTypeArgument;
     }

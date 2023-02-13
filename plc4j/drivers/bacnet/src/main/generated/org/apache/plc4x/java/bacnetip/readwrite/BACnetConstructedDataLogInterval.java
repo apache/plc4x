@@ -78,6 +78,7 @@ public class BACnetConstructedDataLogInterval extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLogInterval");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLogInterval extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLogInterval _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (logInterval)
     lengthInBits += logInterval.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLogInterval extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLogIntervalBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLogInterval extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger logInterval =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataLogInterval extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataLogInterval");
     // Create the instance
-    return new BACnetConstructedDataLogIntervalBuilder(logInterval, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLogIntervalBuilderImpl(
+        logInterval, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLogIntervalBuilder
+  public static class BACnetConstructedDataLogIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger logInterval;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLogIntervalBuilder(
+    public BACnetConstructedDataLogIntervalBuilderImpl(
         BACnetApplicationTagUnsignedInteger logInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.logInterval = logInterval;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -49,6 +49,7 @@ public abstract class AdsMultiRequestItem implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsMultiRequestItem");
 
@@ -67,6 +68,7 @@ public abstract class AdsMultiRequestItem implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     AdsMultiRequestItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -99,15 +101,20 @@ public abstract class AdsMultiRequestItem implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     AdsMultiRequestItemBuilder builder = null;
     if (EvaluationHelper.equals(indexGroup, (long) 61568L)) {
-      builder = AdsMultiRequestItemRead.staticParseBuilder(readBuffer, indexGroup);
+      builder =
+          AdsMultiRequestItemRead.staticParseAdsMultiRequestItemBuilder(readBuffer, indexGroup);
     } else if (EvaluationHelper.equals(indexGroup, (long) 61569L)) {
-      builder = AdsMultiRequestItemWrite.staticParseBuilder(readBuffer, indexGroup);
+      builder =
+          AdsMultiRequestItemWrite.staticParseAdsMultiRequestItemBuilder(readBuffer, indexGroup);
     } else if (EvaluationHelper.equals(indexGroup, (long) 61570L)) {
-      builder = AdsMultiRequestItemReadWrite.staticParseBuilder(readBuffer, indexGroup);
+      builder =
+          AdsMultiRequestItemReadWrite.staticParseAdsMultiRequestItemBuilder(
+              readBuffer, indexGroup);
     }
     if (builder == null) {
       throw new ParseException(
@@ -124,7 +131,7 @@ public abstract class AdsMultiRequestItem implements Message {
     return _adsMultiRequestItem;
   }
 
-  public static interface AdsMultiRequestItemBuilder {
+  public interface AdsMultiRequestItemBuilder {
     AdsMultiRequestItem build();
   }
 

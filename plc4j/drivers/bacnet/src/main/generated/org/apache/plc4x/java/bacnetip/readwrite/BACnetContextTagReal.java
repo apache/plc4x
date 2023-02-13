@@ -67,6 +67,7 @@ public class BACnetContextTagReal extends BACnetContextTag implements Message {
   protected void serializeBACnetContextTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetContextTagReal");
 
@@ -89,6 +90,7 @@ public class BACnetContextTagReal extends BACnetContextTag implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetContextTagReal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -98,13 +100,14 @@ public class BACnetContextTagReal extends BACnetContextTag implements Message {
     return lengthInBits;
   }
 
-  public static BACnetContextTagRealBuilder staticParseBuilder(
+  public static BACnetContextTagBuilder staticParseBACnetContextTagBuilder(
       ReadBuffer readBuffer, Short tagNumberArgument, BACnetDataType dataType)
       throws ParseException {
     readBuffer.pullContext("BACnetContextTagReal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadReal payload =
         readSimpleField(
@@ -115,16 +118,15 @@ public class BACnetContextTagReal extends BACnetContextTag implements Message {
 
     readBuffer.closeContext("BACnetContextTagReal");
     // Create the instance
-    return new BACnetContextTagRealBuilder(payload, tagNumberArgument);
+    return new BACnetContextTagRealBuilderImpl(payload, tagNumberArgument);
   }
 
-  public static class BACnetContextTagRealBuilder
+  public static class BACnetContextTagRealBuilderImpl
       implements BACnetContextTag.BACnetContextTagBuilder {
     private final BACnetTagPayloadReal payload;
     private final Short tagNumberArgument;
 
-    public BACnetContextTagRealBuilder(BACnetTagPayloadReal payload, Short tagNumberArgument) {
-
+    public BACnetContextTagRealBuilderImpl(BACnetTagPayloadReal payload, Short tagNumberArgument) {
       this.payload = payload;
       this.tagNumberArgument = tagNumberArgument;
     }

@@ -77,6 +77,7 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
   protected void serializeCBusPointToPointCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToPointCommandIndirect");
 
@@ -101,6 +102,7 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusPointToPointCommandIndirect _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (bridgeAddress)
     lengthInBits += bridgeAddress.getLengthInBits();
@@ -114,12 +116,13 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
     return lengthInBits;
   }
 
-  public static CBusPointToPointCommandIndirectBuilder staticParseBuilder(
+  public static CBusPointToPointCommandBuilder staticParseCBusPointToPointCommandBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToPointCommandIndirect");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BridgeAddress bridgeAddress =
         readSimpleField(
@@ -139,23 +142,22 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
 
     readBuffer.closeContext("CBusPointToPointCommandIndirect");
     // Create the instance
-    return new CBusPointToPointCommandIndirectBuilder(
+    return new CBusPointToPointCommandIndirectBuilderImpl(
         bridgeAddress, networkRoute, unitAddress, cBusOptions);
   }
 
-  public static class CBusPointToPointCommandIndirectBuilder
+  public static class CBusPointToPointCommandIndirectBuilderImpl
       implements CBusPointToPointCommand.CBusPointToPointCommandBuilder {
     private final BridgeAddress bridgeAddress;
     private final NetworkRoute networkRoute;
     private final UnitAddress unitAddress;
     private final CBusOptions cBusOptions;
 
-    public CBusPointToPointCommandIndirectBuilder(
+    public CBusPointToPointCommandIndirectBuilderImpl(
         BridgeAddress bridgeAddress,
         NetworkRoute networkRoute,
         UnitAddress unitAddress,
         CBusOptions cBusOptions) {
-
       this.bridgeAddress = bridgeAddress;
       this.networkRoute = networkRoute;
       this.unitAddress = unitAddress;

@@ -79,6 +79,7 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPacketReorderTime");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPacketReorderTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (packetReorderTime)
     lengthInBits += packetReorderTime.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPacketReorderTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger packetReorderTime =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataPacketReorderTime");
     // Create the instance
-    return new BACnetConstructedDataPacketReorderTimeBuilder(
+    return new BACnetConstructedDataPacketReorderTimeBuilderImpl(
         packetReorderTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPacketReorderTimeBuilder
+  public static class BACnetConstructedDataPacketReorderTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger packetReorderTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPacketReorderTimeBuilder(
+    public BACnetConstructedDataPacketReorderTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger packetReorderTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.packetReorderTime = packetReorderTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

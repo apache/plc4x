@@ -99,6 +99,7 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterFloatingLimit");
 
@@ -136,6 +137,7 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterFloatingLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -161,12 +163,13 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
     return lengthInBits;
   }
 
-  public static BACnetEventParameterFloatingLimitBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterFloatingLimit");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -233,7 +236,7 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
 
     readBuffer.closeContext("BACnetEventParameterFloatingLimit");
     // Create the instance
-    return new BACnetEventParameterFloatingLimitBuilder(
+    return new BACnetEventParameterFloatingLimitBuilderImpl(
         openingTag,
         timeDelay,
         setpointReference,
@@ -243,7 +246,7 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
         closingTag);
   }
 
-  public static class BACnetEventParameterFloatingLimitBuilder
+  public static class BACnetEventParameterFloatingLimitBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
@@ -253,7 +256,7 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
     private final BACnetContextTagReal deadband;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterFloatingLimitBuilder(
+    public BACnetEventParameterFloatingLimitBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetDeviceObjectPropertyReferenceEnclosed setpointReference,
@@ -261,7 +264,6 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
         BACnetContextTagReal highDiffLimit,
         BACnetContextTagReal deadband,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.setpointReference = setpointReference;

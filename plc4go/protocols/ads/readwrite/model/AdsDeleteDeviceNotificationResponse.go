@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -118,12 +119,8 @@ func (m *_AdsDeleteDeviceNotificationResponse) GetTypeName() string {
 	return "AdsDeleteDeviceNotificationResponse"
 }
 
-func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -131,15 +128,15 @@ func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBitsConditional(lastIt
 	return lengthInBits
 }
 
-func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsDeleteDeviceNotificationResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsDeleteDeviceNotificationResponseParse(theBytes []byte) (AdsDeleteDeviceNotificationResponse, error) {
-	return AdsDeleteDeviceNotificationResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsDeleteDeviceNotificationResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsDeleteDeviceNotificationResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationResponse, error) {
+func AdsDeleteDeviceNotificationResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsDeleteDeviceNotificationResponse"); pullErr != nil {
@@ -152,7 +149,7 @@ func AdsDeleteDeviceNotificationResponseParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
-	_result, _resultErr := ReturnCodeParseWithBuffer(readBuffer)
+	_result, _resultErr := ReturnCodeParseWithBuffer(ctx, readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsDeleteDeviceNotificationResponse")
 	}
@@ -175,14 +172,14 @@ func AdsDeleteDeviceNotificationResponseParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_AdsDeleteDeviceNotificationResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsDeleteDeviceNotificationResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsDeleteDeviceNotificationResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -194,7 +191,7 @@ func (m *_AdsDeleteDeviceNotificationResponse) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for result")
 		}
-		_resultErr := writeBuffer.WriteSerializable(m.GetResult())
+		_resultErr := writeBuffer.WriteSerializable(ctx, m.GetResult())
 		if popErr := writeBuffer.PopContext("result"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for result")
 		}
@@ -207,7 +204,7 @@ func (m *_AdsDeleteDeviceNotificationResponse) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsDeleteDeviceNotificationResponse) isAdsDeleteDeviceNotificationResponse() bool {
@@ -219,7 +216,7 @@ func (m *_AdsDeleteDeviceNotificationResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

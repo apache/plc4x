@@ -42,17 +42,14 @@ public class MResetReq extends CEMI implements Message {
     return (short) 0xF1;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public MResetReq(Integer size) {
-    super(size);
-    this.size = size;
+  public MResetReq() {
+    super();
   }
 
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MResetReq");
 
@@ -68,34 +65,30 @@ public class MResetReq extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MResetReq _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static MResetReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MResetReq");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MResetReq");
     // Create the instance
-    return new MResetReqBuilder(size);
+    return new MResetReqBuilderImpl();
   }
 
-  public static class MResetReqBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class MResetReqBuilderImpl implements CEMI.CEMIBuilder {
 
-    public MResetReqBuilder(Integer size) {
+    public MResetReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public MResetReq build(Integer size) {
-
-      MResetReq mResetReq = new MResetReq(size);
-
+    public MResetReq build() {
+      MResetReq mResetReq = new MResetReq();
       return mResetReq;
     }
   }

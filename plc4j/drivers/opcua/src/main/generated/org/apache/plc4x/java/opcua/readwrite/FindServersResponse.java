@@ -73,6 +73,7 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FindServersResponse");
 
@@ -97,6 +98,7 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FindServersResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -108,7 +110,7 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     if (servers != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : servers) {
-        boolean last = ++i >= servers.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= servers.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -116,12 +118,13 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static FindServersResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("FindServersResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -142,20 +145,19 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("FindServersResponse");
     // Create the instance
-    return new FindServersResponseBuilder(responseHeader, noOfServers, servers);
+    return new FindServersResponseBuilderImpl(responseHeader, noOfServers, servers);
   }
 
-  public static class FindServersResponseBuilder
+  public static class FindServersResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfServers;
     private final List<ExtensionObjectDefinition> servers;
 
-    public FindServersResponseBuilder(
+    public FindServersResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfServers,
         List<ExtensionObjectDefinition> servers) {
-
       this.responseHeader = responseHeader;
       this.noOfServers = noOfServers;
       this.servers = servers;

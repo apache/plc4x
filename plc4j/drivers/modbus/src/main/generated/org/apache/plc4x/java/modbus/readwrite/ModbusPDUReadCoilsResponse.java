@@ -65,6 +65,7 @@ public class ModbusPDUReadCoilsResponse extends ModbusPDU implements Message {
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadCoilsResponse");
 
@@ -88,6 +89,7 @@ public class ModbusPDUReadCoilsResponse extends ModbusPDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadCoilsResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (byteCount)
     lengthInBits += 8;
@@ -100,12 +102,13 @@ public class ModbusPDUReadCoilsResponse extends ModbusPDU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusPDUReadCoilsResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadCoilsResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short byteCount = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8));
 
@@ -113,14 +116,13 @@ public class ModbusPDUReadCoilsResponse extends ModbusPDU implements Message {
 
     readBuffer.closeContext("ModbusPDUReadCoilsResponse");
     // Create the instance
-    return new ModbusPDUReadCoilsResponseBuilder(value);
+    return new ModbusPDUReadCoilsResponseBuilderImpl(value);
   }
 
-  public static class ModbusPDUReadCoilsResponseBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUReadCoilsResponseBuilderImpl implements ModbusPDU.ModbusPDUBuilder {
     private final byte[] value;
 
-    public ModbusPDUReadCoilsResponseBuilder(byte[] value) {
-
+    public ModbusPDUReadCoilsResponseBuilderImpl(byte[] value) {
       this.value = value;
     }
 

@@ -56,6 +56,7 @@ public class BACnetPropertyStatesExtendedValue extends BACnetPropertyStates impl
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesExtendedValue");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesExtendedValue extends BACnetPropertyStates impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesExtendedValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (extendedValue)
     lengthInBits += extendedValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesExtendedValue extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesExtendedValueBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesExtendedValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagUnsignedInteger extendedValue =
         readSimpleField(
@@ -102,15 +105,15 @@ public class BACnetPropertyStatesExtendedValue extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesExtendedValue");
     // Create the instance
-    return new BACnetPropertyStatesExtendedValueBuilder(extendedValue);
+    return new BACnetPropertyStatesExtendedValueBuilderImpl(extendedValue);
   }
 
-  public static class BACnetPropertyStatesExtendedValueBuilder
+  public static class BACnetPropertyStatesExtendedValueBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetContextTagUnsignedInteger extendedValue;
 
-    public BACnetPropertyStatesExtendedValueBuilder(BACnetContextTagUnsignedInteger extendedValue) {
-
+    public BACnetPropertyStatesExtendedValueBuilderImpl(
+        BACnetContextTagUnsignedInteger extendedValue) {
       this.extendedValue = extendedValue;
     }
 

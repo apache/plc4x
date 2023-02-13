@@ -78,6 +78,7 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataReasonForHalt");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataReasonForHalt _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (programError)
     lengthInBits += programError.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataReasonForHaltBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetProgramErrorTagged programError =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataReasonForHalt");
     // Create the instance
-    return new BACnetConstructedDataReasonForHaltBuilder(
+    return new BACnetConstructedDataReasonForHaltBuilderImpl(
         programError, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataReasonForHaltBuilder
+  public static class BACnetConstructedDataReasonForHaltBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetProgramErrorTagged programError;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataReasonForHaltBuilder(
+    public BACnetConstructedDataReasonForHaltBuilderImpl(
         BACnetProgramErrorTagged programError,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.programError = programError;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

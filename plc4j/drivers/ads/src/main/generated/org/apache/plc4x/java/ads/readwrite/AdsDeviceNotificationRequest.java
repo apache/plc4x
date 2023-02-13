@@ -82,6 +82,7 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
   @Override
   protected void serializeAmsPacketChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsDeviceNotificationRequest");
 
@@ -106,6 +107,7 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsDeviceNotificationRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (length)
     lengthInBits += 32;
@@ -117,7 +119,7 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
     if (adsStampHeaders != null) {
       int i = 0;
       for (AdsStampHeader element : adsStampHeaders) {
-        boolean last = ++i >= adsStampHeaders.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= adsStampHeaders.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -125,12 +127,13 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
     return lengthInBits;
   }
 
-  public static AdsDeviceNotificationRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static AmsPacketBuilder staticParseAmsPacketBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AdsDeviceNotificationRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long length = readSimpleField("length", readUnsignedLong(readBuffer, 32));
 
@@ -145,17 +148,17 @@ public class AdsDeviceNotificationRequest extends AmsPacket implements Message {
 
     readBuffer.closeContext("AdsDeviceNotificationRequest");
     // Create the instance
-    return new AdsDeviceNotificationRequestBuilder(length, stamps, adsStampHeaders);
+    return new AdsDeviceNotificationRequestBuilderImpl(length, stamps, adsStampHeaders);
   }
 
-  public static class AdsDeviceNotificationRequestBuilder implements AmsPacket.AmsPacketBuilder {
+  public static class AdsDeviceNotificationRequestBuilderImpl
+      implements AmsPacket.AmsPacketBuilder {
     private final long length;
     private final long stamps;
     private final List<AdsStampHeader> adsStampHeaders;
 
-    public AdsDeviceNotificationRequestBuilder(
+    public AdsDeviceNotificationRequestBuilderImpl(
         long length, long stamps, List<AdsStampHeader> adsStampHeaders) {
-
       this.length = length;
       this.stamps = stamps;
       this.adsStampHeaders = adsStampHeaders;

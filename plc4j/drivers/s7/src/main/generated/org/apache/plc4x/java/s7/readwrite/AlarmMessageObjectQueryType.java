@@ -49,8 +49,6 @@ public class AlarmMessageObjectQueryType implements Message {
   protected final AssociatedValueType valueComing;
   protected final DateAndTime timeGoing;
   protected final AssociatedValueType valueGoing;
-  // Reserved Fields
-  private Integer reservedField0;
 
   public AlarmMessageObjectQueryType(
       short lengthDataset,
@@ -110,6 +108,7 @@ public class AlarmMessageObjectQueryType implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AlarmMessageObjectQueryType");
 
@@ -117,10 +116,7 @@ public class AlarmMessageObjectQueryType implements Message {
     writeSimpleField("lengthDataset", lengthDataset, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
 
     // Const Field (variableSpec)
     writeConstField("variableSpec", VARIABLESPEC, writeUnsignedShort(writeBuffer, 8));
@@ -158,6 +154,7 @@ public class AlarmMessageObjectQueryType implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     AlarmMessageObjectQueryType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lengthDataset)
     lengthInBits += 8;
@@ -204,6 +201,7 @@ public class AlarmMessageObjectQueryType implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short lengthDataset = readSimpleField("lengthDataset", readUnsignedShort(readBuffer, 8));
 
@@ -266,7 +264,6 @@ public class AlarmMessageObjectQueryType implements Message {
             valueComing,
             timeGoing,
             valueGoing);
-    _alarmMessageObjectQueryType.reservedField0 = reservedField0;
     return _alarmMessageObjectQueryType;
   }
 

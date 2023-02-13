@@ -59,6 +59,7 @@ public class BACnetTagPayloadBoolean implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTagPayloadBoolean");
 
@@ -86,6 +87,7 @@ public class BACnetTagPayloadBoolean implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetTagPayloadBoolean _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -122,6 +124,7 @@ public class BACnetTagPayloadBoolean implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     boolean value = readVirtualField("value", boolean.class, (actualLength) == (1));
     boolean isTrue = readVirtualField("isTrue", boolean.class, value);
     boolean isFalse = readVirtualField("isFalse", boolean.class, !(value));

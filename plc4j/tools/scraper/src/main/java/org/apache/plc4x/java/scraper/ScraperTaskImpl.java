@@ -21,8 +21,8 @@ package org.apache.plc4x.java.scraper;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.plc4x.java.PlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -53,7 +53,7 @@ public class ScraperTaskImpl implements ScraperTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScraperTaskImpl.class);
 
-    private final PlcDriverManager driverManager;
+    private final PlcConnectionManager connectionManager;
     private final String jobName;
     private final String connectionAlias;
     private final String connectionString;
@@ -67,7 +67,7 @@ public class ScraperTaskImpl implements ScraperTask {
     private final DescriptiveStatistics latencyStatistics = new DescriptiveStatistics(1000);
     private final DescriptiveStatistics failedStatistics = new DescriptiveStatistics(1000);
 
-    public ScraperTaskImpl(PlcDriverManager driverManager,
+    public ScraperTaskImpl(PlcConnectionManager connectionManager,
                            String jobName,
                            String connectionAlias,
                            String connectionString,
@@ -75,14 +75,14 @@ public class ScraperTaskImpl implements ScraperTask {
                            long requestTimeoutMs,
                            ExecutorService handlerService,
                            ResultHandler resultHandler) {
-        Validate.notNull(driverManager);
+        Validate.notNull(connectionManager);
         Validate.notBlank(jobName);
         Validate.notBlank(connectionAlias);
         Validate.notBlank(connectionString);
         Validate.notEmpty(tags);
         Validate.isTrue(requestTimeoutMs > 0);
         Validate.notNull(resultHandler);
-        this.driverManager = driverManager;
+        this.connectionManager = connectionManager;
         this.jobName = jobName;
         this.connectionAlias = connectionAlias;
         this.connectionString = connectionString;
@@ -106,7 +106,7 @@ public class ScraperTaskImpl implements ScraperTask {
         try {
             CompletableFuture<PlcConnection> future = CompletableFuture.supplyAsync(() -> {
                 try {
-                    return driverManager.getConnection(connectionString);
+                    return connectionManager.getConnection(connectionString);
                 } catch (PlcConnectionException e) {
                     LOGGER.warn("Unable to instantiate connection to " + connectionString, e);
                     throw new PlcRuntimeException(e);

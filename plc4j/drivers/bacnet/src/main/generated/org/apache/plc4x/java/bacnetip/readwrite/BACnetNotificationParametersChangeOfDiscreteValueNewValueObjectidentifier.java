@@ -65,6 +65,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectiden
   protected void serializeBACnetNotificationParametersChangeOfDiscreteValueNewValueChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext(
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier");
@@ -88,6 +89,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectiden
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectidentifierValue)
     lengthInBits += objectidentifierValue.getLengthInBits();
@@ -95,13 +97,15 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectiden
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+      staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext(
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier objectidentifierValue =
         readSimpleField(
@@ -115,20 +119,19 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectiden
     readBuffer.closeContext(
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder(
+    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilderImpl(
         objectidentifierValue, tagNumber);
   }
 
   public static
-  class BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder
+  class BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagObjectIdentifier objectidentifierValue;
     private final Short tagNumber;
 
-    public BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilder(
+    public BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifierBuilderImpl(
         BACnetApplicationTagObjectIdentifier objectidentifierValue, Short tagNumber) {
-
       this.objectidentifierValue = objectidentifierValue;
       this.tagNumber = tagNumber;
     }

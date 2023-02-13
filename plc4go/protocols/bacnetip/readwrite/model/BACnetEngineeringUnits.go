@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -1587,19 +1588,19 @@ func CastBACnetEngineeringUnits(structType interface{}) BACnetEngineeringUnits {
 	return castFunc(structType)
 }
 
-func (m BACnetEngineeringUnits) GetLengthInBits() uint16 {
+func (m BACnetEngineeringUnits) GetLengthInBits(ctx context.Context) uint16 {
 	return 32
 }
 
-func (m BACnetEngineeringUnits) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetEngineeringUnits) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetEngineeringUnitsParse(theBytes []byte) (BACnetEngineeringUnits, error) {
-	return BACnetEngineeringUnitsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetEngineeringUnitsParse(ctx context.Context, theBytes []byte) (BACnetEngineeringUnits, error) {
+	return BACnetEngineeringUnitsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEngineeringUnitsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEngineeringUnits, error) {
+func BACnetEngineeringUnitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEngineeringUnits, error) {
 	val, err := readBuffer.ReadUint32("BACnetEngineeringUnits", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEngineeringUnits")
@@ -1614,13 +1615,13 @@ func BACnetEngineeringUnitsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetE
 
 func (e BACnetEngineeringUnits) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetEngineeringUnits) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetEngineeringUnits) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint32("BACnetEngineeringUnits", 32, uint32(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

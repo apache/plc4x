@@ -80,6 +80,7 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpenSecureChannelResponse");
 
@@ -108,6 +109,7 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpenSecureChannelResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -124,12 +126,13 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static OpenSecureChannelResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("OpenSecureChannelResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -156,23 +159,22 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("OpenSecureChannelResponse");
     // Create the instance
-    return new OpenSecureChannelResponseBuilder(
+    return new OpenSecureChannelResponseBuilderImpl(
         responseHeader, serverProtocolVersion, securityToken, serverNonce);
   }
 
-  public static class OpenSecureChannelResponseBuilder
+  public static class OpenSecureChannelResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final long serverProtocolVersion;
     private final ExtensionObjectDefinition securityToken;
     private final PascalByteString serverNonce;
 
-    public OpenSecureChannelResponseBuilder(
+    public OpenSecureChannelResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         long serverProtocolVersion,
         ExtensionObjectDefinition securityToken,
         PascalByteString serverNonce) {
-
       this.responseHeader = responseHeader;
       this.serverProtocolVersion = serverProtocolVersion;
       this.securityToken = securityToken;

@@ -78,6 +78,7 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCommand");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCommand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (command)
     lengthInBits += command.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCommandBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetNetworkPortCommandTagged command =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataCommand");
     // Create the instance
-    return new BACnetConstructedDataCommandBuilder(command, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataCommandBuilderImpl(command, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCommandBuilder
+  public static class BACnetConstructedDataCommandBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetNetworkPortCommandTagged command;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCommandBuilder(
+    public BACnetConstructedDataCommandBuilderImpl(
         BACnetNetworkPortCommandTagged command,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.command = command;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

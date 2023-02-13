@@ -78,6 +78,7 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataGroupID");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataGroupID _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (groupId)
     lengthInBits += groupId.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataGroupIDBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger groupId =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataGroupID");
     // Create the instance
-    return new BACnetConstructedDataGroupIDBuilder(groupId, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataGroupIDBuilderImpl(groupId, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataGroupIDBuilder
+  public static class BACnetConstructedDataGroupIDBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger groupId;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataGroupIDBuilder(
+    public BACnetConstructedDataGroupIDBuilderImpl(
         BACnetApplicationTagUnsignedInteger groupId,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.groupId = groupId;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

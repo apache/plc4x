@@ -49,6 +49,7 @@ public abstract class S7Address implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7Address");
 
@@ -70,6 +71,7 @@ public abstract class S7Address implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     S7Address _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (addressType)
     lengthInBits += 8;
@@ -89,13 +91,14 @@ public abstract class S7Address implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short addressType = readDiscriminatorField("addressType", readUnsignedShort(readBuffer, 8));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     S7AddressBuilder builder = null;
     if (EvaluationHelper.equals(addressType, (short) 0x10)) {
-      builder = S7AddressAny.staticParseBuilder(readBuffer);
+      builder = S7AddressAny.staticParseS7AddressBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -112,7 +115,7 @@ public abstract class S7Address implements Message {
     return _s7Address;
   }
 
-  public static interface S7AddressBuilder {
+  public interface S7AddressBuilder {
     S7Address build();
   }
 

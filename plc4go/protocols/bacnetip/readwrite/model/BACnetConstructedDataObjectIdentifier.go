@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataObjectIdentifier) GetObjectIdentifier() BACnetApp
 ///////////////////////
 
 func (m *_BACnetConstructedDataObjectIdentifier) GetActualValue() BACnetApplicationTagObjectIdentifier {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagObjectIdentifier(m.GetObjectIdentifier())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataObjectIdentifier) GetTypeName() string {
 	return "BACnetConstructedDataObjectIdentifier"
 }
 
-func (m *_BACnetConstructedDataObjectIdentifier) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataObjectIdentifier) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataObjectIdentifier) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (objectIdentifier)
-	lengthInBits += m.ObjectIdentifier.GetLengthInBits()
+	lengthInBits += m.ObjectIdentifier.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataObjectIdentifier) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataObjectIdentifier) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataObjectIdentifierParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectIdentifier, error) {
-	return BACnetConstructedDataObjectIdentifierParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataObjectIdentifierParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataObjectIdentifierParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectIdentifier, error) {
+func BACnetConstructedDataObjectIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataObjectIdentifier"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataObjectIdentifierParseWithBuffer(readBuffer utils.ReadB
 	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
 	}
-	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _objectIdentifierErr != nil {
 		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetConstructedDataObjectIdentifier")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataObjectIdentifierParseWithBuffer(readBuffer utils.ReadB
 }
 
 func (m *_BACnetConstructedDataObjectIdentifier) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataObjectIdentifier) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataObjectIdentifier) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataObjectIdentifier) SerializeWithWriteBuffer(writeB
 		if pushErr := writeBuffer.PushContext("objectIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectIdentifier")
 		}
-		_objectIdentifierErr := writeBuffer.WriteSerializable(m.GetObjectIdentifier())
+		_objectIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetObjectIdentifier())
 		if popErr := writeBuffer.PopContext("objectIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectIdentifier")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataObjectIdentifier) SerializeWithWriteBuffer(writeB
 			return errors.Wrap(_objectIdentifierErr, "Error serializing 'objectIdentifier' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataObjectIdentifier) SerializeWithWriteBuffer(writeB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataObjectIdentifier) isBACnetConstructedDataObjectIdentifier() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataObjectIdentifier) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

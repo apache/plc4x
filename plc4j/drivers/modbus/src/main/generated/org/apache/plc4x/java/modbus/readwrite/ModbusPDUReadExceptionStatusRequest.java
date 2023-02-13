@@ -57,6 +57,7 @@ public class ModbusPDUReadExceptionStatusRequest extends ModbusPDU implements Me
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadExceptionStatusRequest");
 
@@ -72,26 +73,28 @@ public class ModbusPDUReadExceptionStatusRequest extends ModbusPDU implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadExceptionStatusRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ModbusPDUReadExceptionStatusRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadExceptionStatusRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ModbusPDUReadExceptionStatusRequest");
     // Create the instance
-    return new ModbusPDUReadExceptionStatusRequestBuilder();
+    return new ModbusPDUReadExceptionStatusRequestBuilderImpl();
   }
 
-  public static class ModbusPDUReadExceptionStatusRequestBuilder
+  public static class ModbusPDUReadExceptionStatusRequestBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
 
-    public ModbusPDUReadExceptionStatusRequestBuilder() {}
+    public ModbusPDUReadExceptionStatusRequestBuilderImpl() {}
 
     public ModbusPDUReadExceptionStatusRequest build() {
       ModbusPDUReadExceptionStatusRequest modbusPDUReadExceptionStatusRequest =

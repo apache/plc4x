@@ -56,6 +56,7 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
   protected void serializeBACnetCalendarEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetCalendarEntryWeekNDay");
 
@@ -74,6 +75,7 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetCalendarEntryWeekNDay _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (weekNDay)
     lengthInBits += weekNDay.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
     return lengthInBits;
   }
 
-  public static BACnetCalendarEntryWeekNDayBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetCalendarEntryBuilder staticParseBACnetCalendarEntryBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCalendarEntryWeekNDay");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetWeekNDayTagged weekNDay =
         readSimpleField(
@@ -99,15 +102,14 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
 
     readBuffer.closeContext("BACnetCalendarEntryWeekNDay");
     // Create the instance
-    return new BACnetCalendarEntryWeekNDayBuilder(weekNDay);
+    return new BACnetCalendarEntryWeekNDayBuilderImpl(weekNDay);
   }
 
-  public static class BACnetCalendarEntryWeekNDayBuilder
+  public static class BACnetCalendarEntryWeekNDayBuilderImpl
       implements BACnetCalendarEntry.BACnetCalendarEntryBuilder {
     private final BACnetWeekNDayTagged weekNDay;
 
-    public BACnetCalendarEntryWeekNDayBuilder(BACnetWeekNDayTagged weekNDay) {
-
+    public BACnetCalendarEntryWeekNDayBuilderImpl(BACnetWeekNDayTagged weekNDay) {
       this.weekNDay = weekNDay;
     }
 

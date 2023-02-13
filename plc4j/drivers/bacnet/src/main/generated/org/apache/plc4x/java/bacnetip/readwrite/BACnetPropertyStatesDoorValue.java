@@ -56,6 +56,7 @@ public class BACnetPropertyStatesDoorValue extends BACnetPropertyStates implemen
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesDoorValue");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesDoorValue extends BACnetPropertyStates implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesDoorValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doorValue)
     lengthInBits += doorValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesDoorValue extends BACnetPropertyStates implemen
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesDoorValueBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesDoorValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDoorValueTagged doorValue =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesDoorValue extends BACnetPropertyStates implemen
 
     readBuffer.closeContext("BACnetPropertyStatesDoorValue");
     // Create the instance
-    return new BACnetPropertyStatesDoorValueBuilder(doorValue);
+    return new BACnetPropertyStatesDoorValueBuilderImpl(doorValue);
   }
 
-  public static class BACnetPropertyStatesDoorValueBuilder
+  public static class BACnetPropertyStatesDoorValueBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetDoorValueTagged doorValue;
 
-    public BACnetPropertyStatesDoorValueBuilder(BACnetDoorValueTagged doorValue) {
-
+    public BACnetPropertyStatesDoorValueBuilderImpl(BACnetDoorValueTagged doorValue) {
       this.doorValue = doorValue;
     }
 

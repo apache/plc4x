@@ -55,6 +55,7 @@ public class MeteringDataElectricityConsumption extends MeteringData implements 
   @Override
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataElectricityConsumption");
 
@@ -73,6 +74,7 @@ public class MeteringDataElectricityConsumption extends MeteringData implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MeteringDataElectricityConsumption _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (kWhr)
     lengthInBits += 32;
@@ -80,26 +82,26 @@ public class MeteringDataElectricityConsumption extends MeteringData implements 
     return lengthInBits;
   }
 
-  public static MeteringDataElectricityConsumptionBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataElectricityConsumption");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long kWhr = readSimpleField("kWhr", readUnsignedLong(readBuffer, 32));
 
     readBuffer.closeContext("MeteringDataElectricityConsumption");
     // Create the instance
-    return new MeteringDataElectricityConsumptionBuilder(kWhr);
+    return new MeteringDataElectricityConsumptionBuilderImpl(kWhr);
   }
 
-  public static class MeteringDataElectricityConsumptionBuilder
+  public static class MeteringDataElectricityConsumptionBuilderImpl
       implements MeteringData.MeteringDataBuilder {
     private final long kWhr;
 
-    public MeteringDataElectricityConsumptionBuilder(long kWhr) {
-
+    public MeteringDataElectricityConsumptionBuilderImpl(long kWhr) {
       this.kWhr = kWhr;
     }
 

@@ -63,6 +63,7 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandGAVPhysicalAddresses");
 
@@ -81,6 +82,7 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandGAVPhysicalAddresses _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (values != null) {
@@ -90,27 +92,27 @@ public class IdentifyReplyCommandGAVPhysicalAddresses extends IdentifyReplyComma
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandGAVPhysicalAddressesBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandGAVPhysicalAddresses");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] values = readBuffer.readByteArray("values", Math.toIntExact(numBytes));
 
     readBuffer.closeContext("IdentifyReplyCommandGAVPhysicalAddresses");
     // Create the instance
-    return new IdentifyReplyCommandGAVPhysicalAddressesBuilder(values, numBytes);
+    return new IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl(values, numBytes);
   }
 
-  public static class IdentifyReplyCommandGAVPhysicalAddressesBuilder
+  public static class IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] values;
     private final Short numBytes;
 
-    public IdentifyReplyCommandGAVPhysicalAddressesBuilder(byte[] values, Short numBytes) {
-
+    public IdentifyReplyCommandGAVPhysicalAddressesBuilderImpl(byte[] values, Short numBytes) {
       this.values = values;
       this.numBytes = numBytes;
     }

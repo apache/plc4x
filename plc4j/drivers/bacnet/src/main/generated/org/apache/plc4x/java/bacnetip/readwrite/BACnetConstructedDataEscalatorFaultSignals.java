@@ -75,6 +75,7 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEscalatorFaultSignals");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEscalatorFaultSignals _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (faultSignals != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEscalatorFaultSignalsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetEscalatorFaultTagged> faultSignals =
         readTerminatedArrayField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataEscalatorFaultSignals extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataEscalatorFaultSignals");
     // Create the instance
-    return new BACnetConstructedDataEscalatorFaultSignalsBuilder(
+    return new BACnetConstructedDataEscalatorFaultSignalsBuilderImpl(
         faultSignals, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEscalatorFaultSignalsBuilder
+  public static class BACnetConstructedDataEscalatorFaultSignalsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetEscalatorFaultTagged> faultSignals;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEscalatorFaultSignalsBuilder(
+    public BACnetConstructedDataEscalatorFaultSignalsBuilderImpl(
         List<BACnetEscalatorFaultTagged> faultSignals,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultSignals = faultSignals;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

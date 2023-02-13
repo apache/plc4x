@@ -127,6 +127,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandDSIStatus");
 
@@ -217,6 +218,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandDSIStatus _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (channelStatus1)
     lengthInBits += 8;
@@ -251,12 +253,13 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandDSIStatusBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandDSIStatus");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ChannelStatus channelStatus1 =
         readEnumField(
@@ -326,7 +329,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
 
     readBuffer.closeContext("IdentifyReplyCommandDSIStatus");
     // Create the instance
-    return new IdentifyReplyCommandDSIStatusBuilder(
+    return new IdentifyReplyCommandDSIStatusBuilderImpl(
         channelStatus1,
         channelStatus2,
         channelStatus3,
@@ -340,7 +343,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         numBytes);
   }
 
-  public static class IdentifyReplyCommandDSIStatusBuilder
+  public static class IdentifyReplyCommandDSIStatusBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final ChannelStatus channelStatus1;
     private final ChannelStatus channelStatus2;
@@ -354,7 +357,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
     private final byte dimmingUCRevisionNumber;
     private final Short numBytes;
 
-    public IdentifyReplyCommandDSIStatusBuilder(
+    public IdentifyReplyCommandDSIStatusBuilderImpl(
         ChannelStatus channelStatus1,
         ChannelStatus channelStatus2,
         ChannelStatus channelStatus3,
@@ -366,7 +369,6 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         UnitStatus unitStatus,
         byte dimmingUCRevisionNumber,
         Short numBytes) {
-
       this.channelStatus1 = channelStatus1;
       this.channelStatus2 = channelStatus2;
       this.channelStatus3 = channelStatus3;

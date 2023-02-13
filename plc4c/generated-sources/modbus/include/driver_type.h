@@ -22,6 +22,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/read_buffer.h>
 #include <plc4c/spi/write_buffer.h>
 
@@ -38,9 +39,9 @@ typedef enum plc4c_modbus_read_write_driver_type plc4c_modbus_read_write_driver_
 // Get an empty NULL-struct
 plc4c_modbus_read_write_driver_type plc4c_modbus_read_write_driver_type_null();
 
-plc4c_return_code plc4c_modbus_read_write_driver_type_parse(plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_driver_type* message);
+plc4c_return_code plc4c_modbus_read_write_driver_type_parse(plc4x_spi_context ctx, plc4c_spi_read_buffer* readBuffer, plc4c_modbus_read_write_driver_type* message);
 
-plc4c_return_code plc4c_modbus_read_write_driver_type_serialize(plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_driver_type* message);
+plc4c_return_code plc4c_modbus_read_write_driver_type_serialize(plc4x_spi_context ctx, plc4c_spi_write_buffer* writeBuffer, plc4c_modbus_read_write_driver_type* message);
 
 plc4c_modbus_read_write_driver_type plc4c_modbus_read_write_driver_type_for_value(uint32_t value);
 
@@ -50,9 +51,9 @@ int plc4c_modbus_read_write_driver_type_num_values();
 
 plc4c_modbus_read_write_driver_type plc4c_modbus_read_write_driver_type_value_for_index(int index);
 
-uint16_t plc4c_modbus_read_write_driver_type_length_in_bytes(plc4c_modbus_read_write_driver_type* message);
+uint16_t plc4c_modbus_read_write_driver_type_length_in_bytes(plc4x_spi_context ctx, plc4c_modbus_read_write_driver_type* message);
 
-uint16_t plc4c_modbus_read_write_driver_type_length_in_bits(plc4c_modbus_read_write_driver_type* message);
+uint16_t plc4c_modbus_read_write_driver_type_length_in_bits(plc4x_spi_context ctx, plc4c_modbus_read_write_driver_type* message);
 
 
 #endif  // PLC4C_MODBUS_READ_WRITE_DRIVER_TYPE_H_

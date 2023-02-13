@@ -79,6 +79,7 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNumberOfAuthenticationPolicies");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNumberOfAuthenticationPolicies _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (numberOfAuthenticationPolicies)
     lengthInBits += numberOfAuthenticationPolicies.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger numberOfAuthenticationPolicies =
         readSimpleField(
@@ -141,21 +144,20 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
 
     readBuffer.closeContext("BACnetConstructedDataNumberOfAuthenticationPolicies");
     // Create the instance
-    return new BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder(
+    return new BACnetConstructedDataNumberOfAuthenticationPoliciesBuilderImpl(
         numberOfAuthenticationPolicies, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder
+  public static class BACnetConstructedDataNumberOfAuthenticationPoliciesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfAuthenticationPolicies;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNumberOfAuthenticationPoliciesBuilder(
+    public BACnetConstructedDataNumberOfAuthenticationPoliciesBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfAuthenticationPolicies,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfAuthenticationPolicies = numberOfAuthenticationPolicies;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

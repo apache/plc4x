@@ -65,6 +65,7 @@ public class ModbusPDUReadExceptionStatusResponse extends ModbusPDU implements M
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadExceptionStatusResponse");
 
@@ -83,6 +84,7 @@ public class ModbusPDUReadExceptionStatusResponse extends ModbusPDU implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadExceptionStatusResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += 8;
@@ -90,26 +92,26 @@ public class ModbusPDUReadExceptionStatusResponse extends ModbusPDU implements M
     return lengthInBits;
   }
 
-  public static ModbusPDUReadExceptionStatusResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadExceptionStatusResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short value = readSimpleField("value", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("ModbusPDUReadExceptionStatusResponse");
     // Create the instance
-    return new ModbusPDUReadExceptionStatusResponseBuilder(value);
+    return new ModbusPDUReadExceptionStatusResponseBuilderImpl(value);
   }
 
-  public static class ModbusPDUReadExceptionStatusResponseBuilder
+  public static class ModbusPDUReadExceptionStatusResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final short value;
 
-    public ModbusPDUReadExceptionStatusResponseBuilder(short value) {
-
+    public ModbusPDUReadExceptionStatusResponseBuilderImpl(short value) {
       this.value = value;
     }
 

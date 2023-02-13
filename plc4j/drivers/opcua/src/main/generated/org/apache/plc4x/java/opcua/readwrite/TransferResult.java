@@ -73,6 +73,7 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TransferResult");
 
@@ -101,6 +102,7 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TransferResult _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (statusCode)
     lengthInBits += statusCode.getLengthInBits();
@@ -116,12 +118,13 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static TransferResultBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("TransferResult");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCode statusCode =
         readSimpleField(
@@ -139,21 +142,20 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("TransferResult");
     // Create the instance
-    return new TransferResultBuilder(
+    return new TransferResultBuilderImpl(
         statusCode, noOfAvailableSequenceNumbers, availableSequenceNumbers);
   }
 
-  public static class TransferResultBuilder
+  public static class TransferResultBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final StatusCode statusCode;
     private final int noOfAvailableSequenceNumbers;
     private final List<Long> availableSequenceNumbers;
 
-    public TransferResultBuilder(
+    public TransferResultBuilderImpl(
         StatusCode statusCode,
         int noOfAvailableSequenceNumbers,
         List<Long> availableSequenceNumbers) {
-
       this.statusCode = statusCode;
       this.noOfAvailableSequenceNumbers = noOfAvailableSequenceNumbers;
       this.availableSequenceNumbers = availableSequenceNumbers;

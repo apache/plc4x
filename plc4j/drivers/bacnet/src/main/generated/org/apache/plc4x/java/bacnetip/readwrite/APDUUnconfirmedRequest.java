@@ -64,6 +64,7 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
   @Override
   protected void serializeAPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("APDUUnconfirmedRequest");
 
@@ -88,6 +89,7 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     APDUUnconfirmedRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 4;
@@ -98,12 +100,13 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDUUnconfirmedRequestBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static APDUBuilder staticParseAPDUBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("APDUUnconfirmedRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readUnsignedByte(readBuffer, 4), (byte) 0);
 
@@ -118,15 +121,15 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
 
     readBuffer.closeContext("APDUUnconfirmedRequest");
     // Create the instance
-    return new APDUUnconfirmedRequestBuilder(serviceRequest, apduLength, reservedField0);
+    return new APDUUnconfirmedRequestBuilderImpl(serviceRequest, apduLength, reservedField0);
   }
 
-  public static class APDUUnconfirmedRequestBuilder implements APDU.APDUBuilder {
+  public static class APDUUnconfirmedRequestBuilderImpl implements APDU.APDUBuilder {
     private final BACnetUnconfirmedServiceRequest serviceRequest;
     private final Integer apduLength;
     private final Byte reservedField0;
 
-    public APDUUnconfirmedRequestBuilder(
+    public APDUUnconfirmedRequestBuilderImpl(
         BACnetUnconfirmedServiceRequest serviceRequest, Integer apduLength, Byte reservedField0) {
       this.serviceRequest = serviceRequest;
       this.apduLength = apduLength;

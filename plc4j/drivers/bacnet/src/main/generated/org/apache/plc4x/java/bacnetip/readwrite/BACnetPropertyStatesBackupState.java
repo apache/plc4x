@@ -56,6 +56,7 @@ public class BACnetPropertyStatesBackupState extends BACnetPropertyStates implem
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesBackupState");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesBackupState extends BACnetPropertyStates implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesBackupState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (backupState)
     lengthInBits += backupState.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesBackupState extends BACnetPropertyStates implem
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesBackupStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesBackupState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetBackupStateTagged backupState =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesBackupState extends BACnetPropertyStates implem
 
     readBuffer.closeContext("BACnetPropertyStatesBackupState");
     // Create the instance
-    return new BACnetPropertyStatesBackupStateBuilder(backupState);
+    return new BACnetPropertyStatesBackupStateBuilderImpl(backupState);
   }
 
-  public static class BACnetPropertyStatesBackupStateBuilder
+  public static class BACnetPropertyStatesBackupStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetBackupStateTagged backupState;
 
-    public BACnetPropertyStatesBackupStateBuilder(BACnetBackupStateTagged backupState) {
-
+    public BACnetPropertyStatesBackupStateBuilderImpl(BACnetBackupStateTagged backupState) {
       this.backupState = backupState;
     }
 

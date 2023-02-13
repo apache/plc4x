@@ -51,6 +51,7 @@ public class ConnectionResponseDataBlockDeviceManagement extends ConnectionRespo
   protected void serializeConnectionResponseDataBlockChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionResponseDataBlockDeviceManagement");
 
@@ -66,26 +67,28 @@ public class ConnectionResponseDataBlockDeviceManagement extends ConnectionRespo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConnectionResponseDataBlockDeviceManagement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ConnectionResponseDataBlockDeviceManagementBuilder staticParseBuilder(
+  public static ConnectionResponseDataBlockBuilder staticParseConnectionResponseDataBlockBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ConnectionResponseDataBlockDeviceManagement");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ConnectionResponseDataBlockDeviceManagement");
     // Create the instance
-    return new ConnectionResponseDataBlockDeviceManagementBuilder();
+    return new ConnectionResponseDataBlockDeviceManagementBuilderImpl();
   }
 
-  public static class ConnectionResponseDataBlockDeviceManagementBuilder
+  public static class ConnectionResponseDataBlockDeviceManagementBuilderImpl
       implements ConnectionResponseDataBlock.ConnectionResponseDataBlockBuilder {
 
-    public ConnectionResponseDataBlockDeviceManagementBuilder() {}
+    public ConnectionResponseDataBlockDeviceManagementBuilderImpl() {}
 
     public ConnectionResponseDataBlockDeviceManagement build() {
       ConnectionResponseDataBlockDeviceManagement connectionResponseDataBlockDeviceManagement =

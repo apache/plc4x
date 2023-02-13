@@ -311,6 +311,6 @@ func (m *Connection) parsePlcValue(dataType driverModel.AdsDataTypeTableEntry, a
 		if !ok {
 			return nil, errors.New(fmt.Sprintf("error converting plc4x plc-value type %s into ads plc-value type", valueType.String()))
 		}
-		return driverModel.DataItemParseWithBuffer(rb, adsValueType, stringLength)
+		return driverModel.DataItemParseWithBuffer(context.Background(), rb, adsValueType, stringLength)
 	}
 }

@@ -79,6 +79,7 @@ public class BACnetConstructedDataCharacterStringValueRelinquishDefault
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCharacterStringValueRelinquishDefault");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataCharacterStringValueRelinquishDefault
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCharacterStringValueRelinquishDefault _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (relinquishDefault)
     lengthInBits += relinquishDefault.getLengthInBits();
@@ -111,18 +113,18 @@ public class BACnetConstructedDataCharacterStringValueRelinquishDefault
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder
-      staticParseBuilder(
-          ReadBuffer readBuffer,
-          Short tagNumber,
-          BACnetObjectType objectTypeArgument,
-          BACnetPropertyIdentifier propertyIdentifierArgument,
-          BACnetTagPayloadUnsignedInteger arrayIndexArgument)
-          throws ParseException {
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
+      ReadBuffer readBuffer,
+      Short tagNumber,
+      BACnetObjectType objectTypeArgument,
+      BACnetPropertyIdentifier propertyIdentifierArgument,
+      BACnetTagPayloadUnsignedInteger arrayIndexArgument)
+      throws ParseException {
     readBuffer.pullContext("BACnetConstructedDataCharacterStringValueRelinquishDefault");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString relinquishDefault =
         readSimpleField(
@@ -138,21 +140,20 @@ public class BACnetConstructedDataCharacterStringValueRelinquishDefault
 
     readBuffer.closeContext("BACnetConstructedDataCharacterStringValueRelinquishDefault");
     // Create the instance
-    return new BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder(
+    return new BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilderImpl(
         relinquishDefault, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder
+  public static class BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString relinquishDefault;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilder(
+    public BACnetConstructedDataCharacterStringValueRelinquishDefaultBuilderImpl(
         BACnetApplicationTagCharacterString relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

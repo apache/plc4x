@@ -57,6 +57,7 @@ public class BACnetPropertyStatesLiftCarDoorCommand extends BACnetPropertyStates
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarDoorCommand");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesLiftCarDoorCommand extends BACnetPropertyStates
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLiftCarDoorCommand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (liftCarDoorCommand)
     lengthInBits += liftCarDoorCommand.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetPropertyStatesLiftCarDoorCommand extends BACnetPropertyStates
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLiftCarDoorCommandBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLiftCarDoorCommand");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDoorCommandTagged liftCarDoorCommand =
         readSimpleField(
@@ -103,16 +106,15 @@ public class BACnetPropertyStatesLiftCarDoorCommand extends BACnetPropertyStates
 
     readBuffer.closeContext("BACnetPropertyStatesLiftCarDoorCommand");
     // Create the instance
-    return new BACnetPropertyStatesLiftCarDoorCommandBuilder(liftCarDoorCommand);
+    return new BACnetPropertyStatesLiftCarDoorCommandBuilderImpl(liftCarDoorCommand);
   }
 
-  public static class BACnetPropertyStatesLiftCarDoorCommandBuilder
+  public static class BACnetPropertyStatesLiftCarDoorCommandBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLiftCarDoorCommandTagged liftCarDoorCommand;
 
-    public BACnetPropertyStatesLiftCarDoorCommandBuilder(
+    public BACnetPropertyStatesLiftCarDoorCommandBuilderImpl(
         BACnetLiftCarDoorCommandTagged liftCarDoorCommand) {
-
       this.liftCarDoorCommand = liftCarDoorCommand;
     }
 

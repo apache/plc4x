@@ -57,6 +57,7 @@ public class BACnetPropertyStatesLightningTransition extends BACnetPropertyState
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLightningTransition");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesLightningTransition extends BACnetPropertyState
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLightningTransition _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lightningTransition)
     lengthInBits += lightningTransition.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetPropertyStatesLightningTransition extends BACnetPropertyState
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLightningTransitionBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLightningTransition");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLightingTransitionTagged lightningTransition =
         readSimpleField(
@@ -103,16 +106,15 @@ public class BACnetPropertyStatesLightningTransition extends BACnetPropertyState
 
     readBuffer.closeContext("BACnetPropertyStatesLightningTransition");
     // Create the instance
-    return new BACnetPropertyStatesLightningTransitionBuilder(lightningTransition);
+    return new BACnetPropertyStatesLightningTransitionBuilderImpl(lightningTransition);
   }
 
-  public static class BACnetPropertyStatesLightningTransitionBuilder
+  public static class BACnetPropertyStatesLightningTransitionBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLightingTransitionTagged lightningTransition;
 
-    public BACnetPropertyStatesLightningTransitionBuilder(
+    public BACnetPropertyStatesLightningTransitionBuilderImpl(
         BACnetLightingTransitionTagged lightningTransition) {
-
       this.lightningTransition = lightningTransition;
     }
 

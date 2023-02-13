@@ -56,6 +56,7 @@ public class BACnetOptionalREALNull extends BACnetOptionalREAL implements Messag
   protected void serializeBACnetOptionalREALChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalREALNull");
 
@@ -74,6 +75,7 @@ public class BACnetOptionalREALNull extends BACnetOptionalREAL implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalREALNull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nullValue)
     lengthInBits += nullValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetOptionalREALNull extends BACnetOptionalREAL implements Messag
     return lengthInBits;
   }
 
-  public static BACnetOptionalREALNullBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetOptionalREALBuilder staticParseBACnetOptionalREALBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalREALNull");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetOptionalREALNull extends BACnetOptionalREAL implements Messag
 
     readBuffer.closeContext("BACnetOptionalREALNull");
     // Create the instance
-    return new BACnetOptionalREALNullBuilder(nullValue);
+    return new BACnetOptionalREALNullBuilderImpl(nullValue);
   }
 
-  public static class BACnetOptionalREALNullBuilder
+  public static class BACnetOptionalREALNullBuilderImpl
       implements BACnetOptionalREAL.BACnetOptionalREALBuilder {
     private final BACnetApplicationTagNull nullValue;
 
-    public BACnetOptionalREALNullBuilder(BACnetApplicationTagNull nullValue) {
-
+    public BACnetOptionalREALNullBuilderImpl(BACnetApplicationTagNull nullValue) {
       this.nullValue = nullValue;
     }
 

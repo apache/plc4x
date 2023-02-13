@@ -71,6 +71,7 @@ public class ModbusPDUGetComEventCounterResponse extends ModbusPDU implements Me
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUGetComEventCounterResponse");
 
@@ -92,6 +93,7 @@ public class ModbusPDUGetComEventCounterResponse extends ModbusPDU implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUGetComEventCounterResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (status)
     lengthInBits += 16;
@@ -102,12 +104,13 @@ public class ModbusPDUGetComEventCounterResponse extends ModbusPDU implements Me
     return lengthInBits;
   }
 
-  public static ModbusPDUGetComEventCounterResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUGetComEventCounterResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int status = readSimpleField("status", readUnsignedInt(readBuffer, 16));
 
@@ -115,16 +118,15 @@ public class ModbusPDUGetComEventCounterResponse extends ModbusPDU implements Me
 
     readBuffer.closeContext("ModbusPDUGetComEventCounterResponse");
     // Create the instance
-    return new ModbusPDUGetComEventCounterResponseBuilder(status, eventCount);
+    return new ModbusPDUGetComEventCounterResponseBuilderImpl(status, eventCount);
   }
 
-  public static class ModbusPDUGetComEventCounterResponseBuilder
+  public static class ModbusPDUGetComEventCounterResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final int status;
     private final int eventCount;
 
-    public ModbusPDUGetComEventCounterResponseBuilder(int status, int eventCount) {
-
+    public ModbusPDUGetComEventCounterResponseBuilderImpl(int status, int eventCount) {
       this.status = status;
       this.eventCount = eventCount;
     }

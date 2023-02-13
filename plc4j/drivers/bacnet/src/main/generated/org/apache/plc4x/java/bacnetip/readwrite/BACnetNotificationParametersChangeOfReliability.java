@@ -96,6 +96,7 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
   protected void serializeBACnetNotificationParametersChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfReliability");
 
@@ -128,6 +129,7 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersChangeOfReliability _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (innerOpeningTag)
     lengthInBits += innerOpeningTag.getLengthInBits();
@@ -147,16 +149,17 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfReliabilityBuilder staticParseBuilder(
+  public static BACnetNotificationParametersBuilder staticParseBACnetNotificationParametersBuilder(
       ReadBuffer readBuffer,
+      Short peekedTagNumber,
       Short tagNumber,
-      BACnetObjectType objectTypeArgument,
-      Short peekedTagNumber)
+      BACnetObjectType objectTypeArgument)
       throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfReliability");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
@@ -201,7 +204,7 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfReliability");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfReliabilityBuilder(
+    return new BACnetNotificationParametersChangeOfReliabilityBuilderImpl(
         innerOpeningTag,
         reliability,
         statusFlags,
@@ -211,7 +214,7 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
         objectTypeArgument);
   }
 
-  public static class BACnetNotificationParametersChangeOfReliabilityBuilder
+  public static class BACnetNotificationParametersChangeOfReliabilityBuilderImpl
       implements BACnetNotificationParameters.BACnetNotificationParametersBuilder {
     private final BACnetOpeningTag innerOpeningTag;
     private final BACnetReliabilityTagged reliability;
@@ -221,7 +224,7 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
     private final Short tagNumber;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetNotificationParametersChangeOfReliabilityBuilder(
+    public BACnetNotificationParametersChangeOfReliabilityBuilderImpl(
         BACnetOpeningTag innerOpeningTag,
         BACnetReliabilityTagged reliability,
         BACnetStatusFlagsTagged statusFlags,
@@ -229,7 +232,6 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
         BACnetClosingTag innerClosingTag,
         Short tagNumber,
         BACnetObjectType objectTypeArgument) {
-
       this.innerOpeningTag = innerOpeningTag;
       this.reliability = reliability;
       this.statusFlags = statusFlags;

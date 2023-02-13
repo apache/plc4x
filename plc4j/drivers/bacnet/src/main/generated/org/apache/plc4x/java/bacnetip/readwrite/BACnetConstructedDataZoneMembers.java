@@ -74,6 +74,7 @@ public class BACnetConstructedDataZoneMembers extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataZoneMembers");
 
@@ -92,6 +93,7 @@ public class BACnetConstructedDataZoneMembers extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataZoneMembers _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (members != null) {
@@ -103,7 +105,7 @@ public class BACnetConstructedDataZoneMembers extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataZoneMembersBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -114,6 +116,7 @@ public class BACnetConstructedDataZoneMembers extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetDeviceObjectReference> members =
         readTerminatedArrayField(
@@ -127,20 +130,19 @@ public class BACnetConstructedDataZoneMembers extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataZoneMembers");
     // Create the instance
-    return new BACnetConstructedDataZoneMembersBuilder(members, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataZoneMembersBuilderImpl(members, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataZoneMembersBuilder
+  public static class BACnetConstructedDataZoneMembersBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDeviceObjectReference> members;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataZoneMembersBuilder(
+    public BACnetConstructedDataZoneMembersBuilderImpl(
         List<BACnetDeviceObjectReference> members,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.members = members;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

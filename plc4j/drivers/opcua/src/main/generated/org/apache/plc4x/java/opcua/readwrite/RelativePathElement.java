@@ -47,8 +47,6 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
   protected final boolean includeSubtypes;
   protected final boolean isInverse;
   protected final QualifiedName targetName;
-  // Reserved Fields
-  private Short reservedField0;
 
   public RelativePathElement(
       NodeId referenceTypeId,
@@ -82,6 +80,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RelativePathElement");
 
@@ -90,10 +89,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
         "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 6));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 6));
 
     // Simple Field (includeSubtypes)
     writeSimpleField("includeSubtypes", includeSubtypes, writeBoolean(writeBuffer));
@@ -116,6 +112,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RelativePathElement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (referenceTypeId)
     lengthInBits += referenceTypeId.getLengthInBits();
@@ -135,12 +132,13 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static RelativePathElementBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RelativePathElement");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId referenceTypeId =
         readSimpleField(
@@ -162,35 +160,31 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("RelativePathElement");
     // Create the instance
-    return new RelativePathElementBuilder(
-        referenceTypeId, includeSubtypes, isInverse, targetName, reservedField0);
+    return new RelativePathElementBuilderImpl(
+        referenceTypeId, includeSubtypes, isInverse, targetName);
   }
 
-  public static class RelativePathElementBuilder
+  public static class RelativePathElementBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId referenceTypeId;
     private final boolean includeSubtypes;
     private final boolean isInverse;
     private final QualifiedName targetName;
-    private final Short reservedField0;
 
-    public RelativePathElementBuilder(
+    public RelativePathElementBuilderImpl(
         NodeId referenceTypeId,
         boolean includeSubtypes,
         boolean isInverse,
-        QualifiedName targetName,
-        Short reservedField0) {
+        QualifiedName targetName) {
       this.referenceTypeId = referenceTypeId;
       this.includeSubtypes = includeSubtypes;
       this.isInverse = isInverse;
       this.targetName = targetName;
-      this.reservedField0 = reservedField0;
     }
 
     public RelativePathElement build() {
       RelativePathElement relativePathElement =
           new RelativePathElement(referenceTypeId, includeSubtypes, isInverse, targetName);
-      relativePathElement.reservedField0 = reservedField0;
       return relativePathElement;
     }
   }

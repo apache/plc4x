@@ -56,6 +56,7 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueInteger");
 
@@ -74,6 +75,7 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueInteger _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (integerValue)
     lengthInBits += integerValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
     return lengthInBits;
   }
 
-  public static BACnetChannelValueIntegerBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueInteger");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger integerValue =
         readSimpleField(
@@ -99,15 +102,14 @@ public class BACnetChannelValueInteger extends BACnetChannelValue implements Mes
 
     readBuffer.closeContext("BACnetChannelValueInteger");
     // Create the instance
-    return new BACnetChannelValueIntegerBuilder(integerValue);
+    return new BACnetChannelValueIntegerBuilderImpl(integerValue);
   }
 
-  public static class BACnetChannelValueIntegerBuilder
+  public static class BACnetChannelValueIntegerBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagSignedInteger integerValue;
 
-    public BACnetChannelValueIntegerBuilder(BACnetApplicationTagSignedInteger integerValue) {
-
+    public BACnetChannelValueIntegerBuilderImpl(BACnetApplicationTagSignedInteger integerValue) {
       this.integerValue = integerValue;
     }
 

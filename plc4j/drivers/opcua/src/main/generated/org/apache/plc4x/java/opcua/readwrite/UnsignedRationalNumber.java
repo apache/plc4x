@@ -64,6 +64,7 @@ public class UnsignedRationalNumber extends ExtensionObjectDefinition implements
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("UnsignedRationalNumber");
 
@@ -85,6 +86,7 @@ public class UnsignedRationalNumber extends ExtensionObjectDefinition implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     UnsignedRationalNumber _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (numerator)
     lengthInBits += 32;
@@ -95,12 +97,13 @@ public class UnsignedRationalNumber extends ExtensionObjectDefinition implements
     return lengthInBits;
   }
 
-  public static UnsignedRationalNumberBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UnsignedRationalNumber");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long numerator = readSimpleField("numerator", readUnsignedLong(readBuffer, 32));
 
@@ -108,16 +111,15 @@ public class UnsignedRationalNumber extends ExtensionObjectDefinition implements
 
     readBuffer.closeContext("UnsignedRationalNumber");
     // Create the instance
-    return new UnsignedRationalNumberBuilder(numerator, denominator);
+    return new UnsignedRationalNumberBuilderImpl(numerator, denominator);
   }
 
-  public static class UnsignedRationalNumberBuilder
+  public static class UnsignedRationalNumberBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long numerator;
     private final long denominator;
 
-    public UnsignedRationalNumberBuilder(long numerator, long denominator) {
-
+    public UnsignedRationalNumberBuilderImpl(long numerator, long denominator) {
       this.numerator = numerator;
       this.denominator = denominator;
     }

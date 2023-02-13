@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -80,28 +81,24 @@ func (m *_BACnetAssignedLandingCalls) GetTypeName() string {
 	return "BACnetAssignedLandingCalls"
 }
 
-func (m *_BACnetAssignedLandingCalls) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetAssignedLandingCalls) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetAssignedLandingCalls) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (landingCalls)
-	lengthInBits += m.LandingCalls.GetLengthInBits()
+	lengthInBits += m.LandingCalls.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetAssignedLandingCalls) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetAssignedLandingCalls) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetAssignedLandingCallsParse(theBytes []byte) (BACnetAssignedLandingCalls, error) {
-	return BACnetAssignedLandingCallsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetAssignedLandingCallsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetAssignedLandingCallsParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetAssignedLandingCalls, error) {
+func BACnetAssignedLandingCallsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedLandingCalls, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetAssignedLandingCalls"); pullErr != nil {
@@ -114,7 +111,7 @@ func BACnetAssignedLandingCallsParseWithBuffer(readBuffer utils.ReadBuffer) (BAC
 	if pullErr := readBuffer.PullContext("landingCalls"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for landingCalls")
 	}
-	_landingCalls, _landingCallsErr := BACnetAssignedLandingCallsLandingCallsListParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_landingCalls, _landingCallsErr := BACnetAssignedLandingCallsLandingCallsListParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _landingCallsErr != nil {
 		return nil, errors.Wrap(_landingCallsErr, "Error parsing 'landingCalls' field of BACnetAssignedLandingCalls")
 	}
@@ -134,14 +131,14 @@ func BACnetAssignedLandingCallsParseWithBuffer(readBuffer utils.ReadBuffer) (BAC
 }
 
 func (m *_BACnetAssignedLandingCalls) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetAssignedLandingCalls) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetAssignedLandingCalls) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetAssignedLandingCalls"); pushErr != nil {
@@ -152,7 +149,7 @@ func (m *_BACnetAssignedLandingCalls) SerializeWithWriteBuffer(writeBuffer utils
 	if pushErr := writeBuffer.PushContext("landingCalls"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for landingCalls")
 	}
-	_landingCallsErr := writeBuffer.WriteSerializable(m.GetLandingCalls())
+	_landingCallsErr := writeBuffer.WriteSerializable(ctx, m.GetLandingCalls())
 	if popErr := writeBuffer.PopContext("landingCalls"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for landingCalls")
 	}
@@ -175,7 +172,7 @@ func (m *_BACnetAssignedLandingCalls) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -49,6 +49,7 @@ public class MediaTransportControlDataStatusRequest extends MediaTransportContro
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataStatusRequest");
 
@@ -64,26 +65,28 @@ public class MediaTransportControlDataStatusRequest extends MediaTransportContro
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataStatusRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataStatusRequestBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataStatusRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MediaTransportControlDataStatusRequest");
     // Create the instance
-    return new MediaTransportControlDataStatusRequestBuilder();
+    return new MediaTransportControlDataStatusRequestBuilderImpl();
   }
 
-  public static class MediaTransportControlDataStatusRequestBuilder
+  public static class MediaTransportControlDataStatusRequestBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
 
-    public MediaTransportControlDataStatusRequestBuilder() {}
+    public MediaTransportControlDataStatusRequestBuilderImpl() {}
 
     public MediaTransportControlDataStatusRequest build(
         MediaTransportControlCommandTypeContainer commandTypeContainer, byte mediaLinkGroup) {

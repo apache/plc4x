@@ -88,6 +88,7 @@ public class BACnetConstructedDataUnspecified extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataUnspecified");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataUnspecified extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataUnspecified _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataUnspecified extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataUnspecifiedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataUnspecified extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -176,23 +179,22 @@ public class BACnetConstructedDataUnspecified extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataUnspecified");
     // Create the instance
-    return new BACnetConstructedDataUnspecifiedBuilder(
+    return new BACnetConstructedDataUnspecifiedBuilderImpl(
         numberOfDataElements, data, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataUnspecifiedBuilder
+  public static class BACnetConstructedDataUnspecifiedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetConstructedDataElement> data;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUnspecifiedBuilder(
+    public BACnetConstructedDataUnspecifiedBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetConstructedDataElement> data,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.data = data;
       this.tagNumber = tagNumber;

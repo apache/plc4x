@@ -88,6 +88,7 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLogBuffer");
 
@@ -117,6 +118,7 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLogBuffer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -135,7 +137,7 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLogBufferBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -146,6 +148,7 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -170,23 +173,22 @@ public class BACnetConstructedDataLogBuffer extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataLogBuffer");
     // Create the instance
-    return new BACnetConstructedDataLogBufferBuilder(
+    return new BACnetConstructedDataLogBufferBuilderImpl(
         numberOfDataElements, floorText, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLogBufferBuilder
+  public static class BACnetConstructedDataLogBufferBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetLogRecord> floorText;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLogBufferBuilder(
+    public BACnetConstructedDataLogBufferBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetLogRecord> floorText,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.floorText = floorText;
       this.tagNumber = tagNumber;

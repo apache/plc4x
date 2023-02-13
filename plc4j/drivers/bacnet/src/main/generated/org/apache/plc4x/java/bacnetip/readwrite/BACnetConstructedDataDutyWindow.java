@@ -78,6 +78,7 @@ public class BACnetConstructedDataDutyWindow extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDutyWindow");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataDutyWindow extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDutyWindow _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dutyWindow)
     lengthInBits += dutyWindow.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataDutyWindow extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDutyWindowBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataDutyWindow extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger dutyWindow =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataDutyWindow extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataDutyWindow");
     // Create the instance
-    return new BACnetConstructedDataDutyWindowBuilder(dutyWindow, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDutyWindowBuilderImpl(
+        dutyWindow, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDutyWindowBuilder
+  public static class BACnetConstructedDataDutyWindowBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger dutyWindow;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDutyWindowBuilder(
+    public BACnetConstructedDataDutyWindowBuilderImpl(
         BACnetApplicationTagUnsignedInteger dutyWindow,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.dutyWindow = dutyWindow;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

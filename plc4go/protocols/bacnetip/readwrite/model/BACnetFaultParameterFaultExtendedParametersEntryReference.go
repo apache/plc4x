@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetTypeName
 	return "BACnetFaultParameterFaultExtendedParametersEntryReference"
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (reference)
-	lengthInBits += m.Reference.GetLengthInBits()
+	lengthInBits += m.Reference.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetFaultParameterFaultExtendedParametersEntryReferenceParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(re
 	if pullErr := readBuffer.PullContext("reference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for reference")
 	}
-	_reference, _referenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_reference, _referenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _referenceErr != nil {
 		return nil, errors.Wrap(_referenceErr, "Error parsing 'reference' field of BACnetFaultParameterFaultExtendedParametersEntryReference")
 	}
@@ -162,14 +159,14 @@ func BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(re
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) SerializeWi
 		if pushErr := writeBuffer.PushContext("reference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for reference")
 		}
-		_referenceErr := writeBuffer.WriteSerializable(m.GetReference())
+		_referenceErr := writeBuffer.WriteSerializable(ctx, m.GetReference())
 		if popErr := writeBuffer.PopContext("reference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for reference")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) SerializeWi
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) isBACnetFaultParameterFaultExtendedParametersEntryReference() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryReference) String() st
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

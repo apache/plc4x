@@ -53,6 +53,7 @@ public class NLMWhatIsNetworkNumber extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMWhatIsNetworkNumber");
 
@@ -68,27 +69,28 @@ public class NLMWhatIsNetworkNumber extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMWhatIsNetworkNumber _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static NLMWhatIsNetworkNumberBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMWhatIsNetworkNumber");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("NLMWhatIsNetworkNumber");
     // Create the instance
-    return new NLMWhatIsNetworkNumberBuilder(apduLength);
+    return new NLMWhatIsNetworkNumberBuilderImpl(apduLength);
   }
 
-  public static class NLMWhatIsNetworkNumberBuilder implements NLM.NLMBuilder {
+  public static class NLMWhatIsNetworkNumberBuilderImpl implements NLM.NLMBuilder {
     private final Integer apduLength;
 
-    public NLMWhatIsNetworkNumberBuilder(Integer apduLength) {
-
+    public NLMWhatIsNetworkNumberBuilderImpl(Integer apduLength) {
       this.apduLength = apduLength;
     }
 

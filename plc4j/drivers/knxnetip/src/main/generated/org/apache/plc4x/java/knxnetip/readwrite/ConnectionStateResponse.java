@@ -64,6 +64,7 @@ public class ConnectionStateResponse extends KnxNetIpMessage implements Message 
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionStateResponse");
 
@@ -80,7 +81,8 @@ public class ConnectionStateResponse extends KnxNetIpMessage implements Message 
         "Status",
         status,
         new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)));
+            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ConnectionStateResponse");
   }
@@ -94,6 +96,7 @@ public class ConnectionStateResponse extends KnxNetIpMessage implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConnectionStateResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (communicationChannelId)
     lengthInBits += 8;
@@ -104,12 +107,13 @@ public class ConnectionStateResponse extends KnxNetIpMessage implements Message 
     return lengthInBits;
   }
 
-  public static ConnectionStateResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ConnectionStateResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short communicationChannelId =
         readSimpleField(
@@ -126,16 +130,15 @@ public class ConnectionStateResponse extends KnxNetIpMessage implements Message 
 
     readBuffer.closeContext("ConnectionStateResponse");
     // Create the instance
-    return new ConnectionStateResponseBuilder(communicationChannelId, status);
+    return new ConnectionStateResponseBuilderImpl(communicationChannelId, status);
   }
 
-  public static class ConnectionStateResponseBuilder
+  public static class ConnectionStateResponseBuilderImpl
       implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final short communicationChannelId;
     private final Status status;
 
-    public ConnectionStateResponseBuilder(short communicationChannelId, Status status) {
-
+    public ConnectionStateResponseBuilderImpl(short communicationChannelId, Status status) {
       this.communicationChannelId = communicationChannelId;
       this.status = status;
     }

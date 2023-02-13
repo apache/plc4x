@@ -105,6 +105,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
   protected void serializeBACnetConfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestGetEnrollmentSummary");
 
@@ -146,6 +147,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestGetEnrollmentSummary _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (acknowledgmentFilter)
     lengthInBits += acknowledgmentFilter.getLengthInBits();
@@ -178,12 +180,14 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
+  public static BACnetConfirmedServiceRequestBuilder
+      staticParseBACnetConfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Long serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestGetEnrollmentSummary");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
         acknowledgmentFilter =
@@ -247,7 +251,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestGetEnrollmentSummary");
     // Create the instance
-    return new BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder(
+    return new BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilderImpl(
         acknowledgmentFilter,
         enrollmentFilter,
         eventStateFilter,
@@ -257,7 +261,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
         serviceRequestLength);
   }
 
-  public static class BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder
+  public static class BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilderImpl
       implements BACnetConfirmedServiceRequest.BACnetConfirmedServiceRequestBuilder {
     private final BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
         acknowledgmentFilter;
@@ -269,7 +273,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
     private final BACnetContextTagUnsignedInteger notificationClassFilter;
     private final Long serviceRequestLength;
 
-    public BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilder(
+    public BACnetConfirmedServiceRequestGetEnrollmentSummaryBuilderImpl(
         BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
             acknowledgmentFilter,
         BACnetRecipientProcessEnclosed enrollmentFilter,
@@ -278,7 +282,6 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
         BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter priorityFilter,
         BACnetContextTagUnsignedInteger notificationClassFilter,
         Long serviceRequestLength) {
-
       this.acknowledgmentFilter = acknowledgmentFilter;
       this.enrollmentFilter = enrollmentFilter;
       this.eventStateFilter = eventStateFilter;

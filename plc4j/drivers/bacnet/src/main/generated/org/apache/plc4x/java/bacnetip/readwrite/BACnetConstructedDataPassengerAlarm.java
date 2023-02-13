@@ -78,6 +78,7 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPassengerAlarm");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPassengerAlarm _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (passengerAlarm)
     lengthInBits += passengerAlarm.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPassengerAlarmBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean passengerAlarm =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataPassengerAlarm");
     // Create the instance
-    return new BACnetConstructedDataPassengerAlarmBuilder(
+    return new BACnetConstructedDataPassengerAlarmBuilderImpl(
         passengerAlarm, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPassengerAlarmBuilder
+  public static class BACnetConstructedDataPassengerAlarmBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean passengerAlarm;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPassengerAlarmBuilder(
+    public BACnetConstructedDataPassengerAlarmBuilderImpl(
         BACnetApplicationTagBoolean passengerAlarm,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.passengerAlarm = passengerAlarm;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

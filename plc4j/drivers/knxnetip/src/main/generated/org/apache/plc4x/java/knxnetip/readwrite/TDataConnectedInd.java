@@ -42,17 +42,14 @@ public class TDataConnectedInd extends CEMI implements Message {
     return (short) 0x89;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public TDataConnectedInd(Integer size) {
-    super(size);
-    this.size = size;
+  public TDataConnectedInd() {
+    super();
   }
 
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TDataConnectedInd");
 
@@ -68,34 +65,30 @@ public class TDataConnectedInd extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TDataConnectedInd _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static TDataConnectedIndBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("TDataConnectedInd");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("TDataConnectedInd");
     // Create the instance
-    return new TDataConnectedIndBuilder(size);
+    return new TDataConnectedIndBuilderImpl();
   }
 
-  public static class TDataConnectedIndBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class TDataConnectedIndBuilderImpl implements CEMI.CEMIBuilder {
 
-    public TDataConnectedIndBuilder(Integer size) {
+    public TDataConnectedIndBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public TDataConnectedInd build(Integer size) {
-
-      TDataConnectedInd tDataConnectedInd = new TDataConnectedInd(size);
-
+    public TDataConnectedInd build() {
+      TDataConnectedInd tDataConnectedInd = new TDataConnectedInd();
       return tDataConnectedInd;
     }
   }

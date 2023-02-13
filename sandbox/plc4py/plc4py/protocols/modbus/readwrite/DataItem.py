@@ -44,7 +44,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # BOOL
-
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: c_uint16 = read_buffer.readUnsignedInt("", 15)
             if reserved != c_uint16(0x0000):
@@ -82,7 +81,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # BYTE
-
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: c_uint8 = read_buffer.readUnsignedShort("", 8)
             if reserved != c_uint8(0x00):
@@ -116,19 +114,16 @@ class DataItem:
 
             return PlcList(value)
         if EvaluationHelper.equals(data_type, ModbusDataType.WORD):  # WORD
-
             # Simple Field (value)
             value: c_uint16 = read_buffer.readUnsignedInt("", 16)
 
             return PlcWORD(value)
         if EvaluationHelper.equals(data_type, ModbusDataType.DWORD):  # DWORD
-
             # Simple Field (value)
             value: c_uint32 = read_buffer.readUnsignedLong("", 32)
 
             return PlcDWORD(value)
         if EvaluationHelper.equals(data_type, ModbusDataType.LWORD):  # LWORD
-
             # Simple Field (value)
             value: c_uint64 = read_buffer.readUnsignedBigInteger("", 64)
 
@@ -138,7 +133,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # SINT
-
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: c_uint8 = read_buffer.readUnsignedShort("", 8)
             if reserved != c_uint8(0x00):
@@ -176,7 +170,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # INT
-
             # Simple Field (value)
             value: c_int16 = read_buffer.readShort("", 16)
 
@@ -203,7 +196,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # DINT
-
             # Simple Field (value)
             value: c_int32 = read_buffer.readInt("", 32)
 
@@ -230,7 +222,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # LINT
-
             # Simple Field (value)
             value: c_int64 = read_buffer.readLong("", 64)
 
@@ -257,7 +248,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # USINT
-
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
             reserved: c_uint8 = read_buffer.readUnsignedShort("", 8)
             if reserved != c_uint8(0x00):
@@ -295,7 +285,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # UINT
-
             # Simple Field (value)
             value: c_uint16 = read_buffer.readUnsignedInt("", 16)
 
@@ -322,7 +311,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # UDINT
-
             # Simple Field (value)
             value: c_uint32 = read_buffer.readUnsignedLong("", 32)
 
@@ -349,7 +337,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # ULINT
-
             # Simple Field (value)
             value: c_uint64 = read_buffer.readUnsignedBigInteger("", 64)
 
@@ -378,7 +365,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # REAL
-
             # Simple Field (value)
             value: c_float = read_buffer.readFloat("", 32)
 
@@ -405,7 +391,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # LREAL
-
             # Simple Field (value)
             value: c_double = read_buffer.readDouble("", 64)
 
@@ -432,7 +417,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # CHAR
-
             # Simple Field (value)
             value: str = read_buffer.readString("", 8, "UTF-8")
 
@@ -459,7 +443,6 @@ class DataItem:
         ) and EvaluationHelper.equals(
             number_of_values, 1
         ):  # WCHAR
-
             # Simple Field (value)
             value: str = read_buffer.readString("", 16, "UTF-16")
 
@@ -507,14 +490,12 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # BOOL
-
             # Reserved Field
             writeBuffer.writeUnsignedInt("", 15, c_uint16(0x0000).intValue())
             # Simple Field (value)
             value: c_bool = _value.getC_bool()
             writeBuffer.writeBit("", bool((value)))
         if EvaluationHelper.equals(dataType, ModbusDataType.BOOL):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -526,14 +507,12 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # BYTE
-
             # Reserved Field
             writeBuffer.writeUnsignedShort("", 8, c_uint8(0x00).shortValue())
             # Simple Field (value)
             value: c_uint8 = _value.getC_uint8()
             writeBuffer.writeUnsignedShort("", 8, (value).shortValue())
         if EvaluationHelper.equals(dataType, ModbusDataType.BYTE):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -541,17 +520,14 @@ class DataItem:
                 writeBuffer.writeBit("", bool((value)))
 
         if EvaluationHelper.equals(dataType, ModbusDataType.WORD):  # WORD
-
             # Simple Field (value)
             value: c_uint16 = _value.getC_uint16()
             writeBuffer.writeUnsignedInt("", 16, (value).intValue())
         if EvaluationHelper.equals(dataType, ModbusDataType.DWORD):  # DWORD
-
             # Simple Field (value)
             value: c_uint32 = _value.getC_uint32()
             writeBuffer.writeUnsignedLong("", 32, (value).longValue())
         if EvaluationHelper.equals(dataType, ModbusDataType.LWORD):  # LWORD
-
             # Simple Field (value)
             value: c_uint64 = _value.getC_uint64()
             writeBuffer.writeUnsignedBigInteger("", 64, (value))
@@ -560,14 +536,12 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # SINT
-
             # Reserved Field
             writeBuffer.writeUnsignedShort("", 8, c_uint8(0x00).shortValue())
             # Simple Field (value)
             value: c_int8 = _value.getC_int8()
             writeBuffer.writeSignedByte("", 8, (value).byteValue())
         if EvaluationHelper.equals(dataType, ModbusDataType.SINT):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -579,12 +553,10 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # INT
-
             # Simple Field (value)
             value: c_int16 = _value.getC_int16()
             writeBuffer.writeShort("", 16, (value).shortValue())
         if EvaluationHelper.equals(dataType, ModbusDataType.INT):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -596,12 +568,10 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # DINT
-
             # Simple Field (value)
             value: c_int32 = _value.getC_int32()
             writeBuffer.writeInt("", 32, (value).intValue())
         if EvaluationHelper.equals(dataType, ModbusDataType.DINT):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -613,12 +583,10 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # LINT
-
             # Simple Field (value)
             value: c_int64 = _value.getC_int64()
             writeBuffer.writeLong("", 64, (value).longValue())
         if EvaluationHelper.equals(dataType, ModbusDataType.LINT):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -630,14 +598,12 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # USINT
-
             # Reserved Field
             writeBuffer.writeUnsignedShort("", 8, c_uint8(0x00).shortValue())
             # Simple Field (value)
             value: c_uint8 = _value.getC_uint8()
             writeBuffer.writeUnsignedShort("", 8, (value).shortValue())
         if EvaluationHelper.equals(dataType, ModbusDataType.USINT):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -649,12 +615,10 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # UINT
-
             # Simple Field (value)
             value: c_uint16 = _value.getC_uint16()
             writeBuffer.writeUnsignedInt("", 16, (value).intValue())
         if EvaluationHelper.equals(dataType, ModbusDataType.UINT):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -666,12 +630,10 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # UDINT
-
             # Simple Field (value)
             value: c_uint32 = _value.getC_uint32()
             writeBuffer.writeUnsignedLong("", 32, (value).longValue())
         if EvaluationHelper.equals(dataType, ModbusDataType.UDINT):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -683,12 +645,10 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # ULINT
-
             # Simple Field (value)
             value: c_uint64 = _value.getC_uint64()
             writeBuffer.writeUnsignedBigInteger("", 64, (value))
         if EvaluationHelper.equals(dataType, ModbusDataType.ULINT):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -700,12 +660,10 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # REAL
-
             # Simple Field (value)
             value: c_float = _value.getC_float()
             writeBuffer.writeFloat("", 32, (value))
         if EvaluationHelper.equals(dataType, ModbusDataType.REAL):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -717,12 +675,10 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # LREAL
-
             # Simple Field (value)
             value: c_double = _value.getC_double()
             writeBuffer.writeDouble("", 64, (value))
         if EvaluationHelper.equals(dataType, ModbusDataType.LREAL):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -734,12 +690,10 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # CHAR
-
             # Simple Field (value)
             value: str = _value.getStr()
             writeBuffer.writeString("", 8, "UTF-8", (String)(value))
         if EvaluationHelper.equals(dataType, ModbusDataType.CHAR):  # List
-
             values: PlcList = _value
 
             for val in values.getList():
@@ -751,12 +705,10 @@ class DataItem:
         ) and EvaluationHelper.equals(
             numberOfValues, 1
         ):  # WCHAR
-
             # Simple Field (value)
             value: str = _value.getStr()
             writeBuffer.writeString("", 16, "UTF-16", (String)(value))
         if EvaluationHelper.equals(dataType, ModbusDataType.WCHAR):  # List
-
             values: PlcList = _value
 
             for val in values.getList():

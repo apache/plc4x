@@ -64,6 +64,7 @@ public class ConfigurationVersionDataType extends ExtensionObjectDefinition impl
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConfigurationVersionDataType");
 
@@ -85,6 +86,7 @@ public class ConfigurationVersionDataType extends ExtensionObjectDefinition impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConfigurationVersionDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (majorVersion)
     lengthInBits += 32;
@@ -95,12 +97,13 @@ public class ConfigurationVersionDataType extends ExtensionObjectDefinition impl
     return lengthInBits;
   }
 
-  public static ConfigurationVersionDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ConfigurationVersionDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long majorVersion = readSimpleField("majorVersion", readUnsignedLong(readBuffer, 32));
 
@@ -108,16 +111,15 @@ public class ConfigurationVersionDataType extends ExtensionObjectDefinition impl
 
     readBuffer.closeContext("ConfigurationVersionDataType");
     // Create the instance
-    return new ConfigurationVersionDataTypeBuilder(majorVersion, minorVersion);
+    return new ConfigurationVersionDataTypeBuilderImpl(majorVersion, minorVersion);
   }
 
-  public static class ConfigurationVersionDataTypeBuilder
+  public static class ConfigurationVersionDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long majorVersion;
     private final long minorVersion;
 
-    public ConfigurationVersionDataTypeBuilder(long majorVersion, long minorVersion) {
-
+    public ConfigurationVersionDataTypeBuilderImpl(long majorVersion, long minorVersion) {
       this.majorVersion = majorVersion;
       this.minorVersion = minorVersion;
     }

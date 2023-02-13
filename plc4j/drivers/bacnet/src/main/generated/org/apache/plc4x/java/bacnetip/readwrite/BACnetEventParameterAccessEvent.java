@@ -78,6 +78,7 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterAccessEvent");
 
@@ -109,6 +110,7 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterAccessEvent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -125,12 +127,13 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
     return lengthInBits;
   }
 
-  public static BACnetEventParameterAccessEventBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterAccessEvent");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -164,23 +167,22 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
 
     readBuffer.closeContext("BACnetEventParameterAccessEvent");
     // Create the instance
-    return new BACnetEventParameterAccessEventBuilder(
+    return new BACnetEventParameterAccessEventBuilderImpl(
         openingTag, listOfAccessEvents, accessEventTimeReference, closingTag);
   }
 
-  public static class BACnetEventParameterAccessEventBuilder
+  public static class BACnetEventParameterAccessEventBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetEventParameterAccessEventListOfAccessEvents listOfAccessEvents;
     private final BACnetDeviceObjectPropertyReferenceEnclosed accessEventTimeReference;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterAccessEventBuilder(
+    public BACnetEventParameterAccessEventBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetEventParameterAccessEventListOfAccessEvents listOfAccessEvents,
         BACnetDeviceObjectPropertyReferenceEnclosed accessEventTimeReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.listOfAccessEvents = listOfAccessEvents;
       this.accessEventTimeReference = accessEventTimeReference;

@@ -55,6 +55,7 @@ public class SecurityDataEvent extends SecurityData implements Message {
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataEvent");
 
@@ -73,6 +74,7 @@ public class SecurityDataEvent extends SecurityData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataEvent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (data != null) {
@@ -82,13 +84,14 @@ public class SecurityDataEvent extends SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityDataEventBuilder staticParseBuilder(
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(
       ReadBuffer readBuffer, SecurityCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataEvent");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] data =
         readBuffer.readByteArray(
@@ -96,14 +99,13 @@ public class SecurityDataEvent extends SecurityData implements Message {
 
     readBuffer.closeContext("SecurityDataEvent");
     // Create the instance
-    return new SecurityDataEventBuilder(data);
+    return new SecurityDataEventBuilderImpl(data);
   }
 
-  public static class SecurityDataEventBuilder implements SecurityData.SecurityDataBuilder {
+  public static class SecurityDataEventBuilderImpl implements SecurityData.SecurityDataBuilder {
     private final byte[] data;
 
-    public SecurityDataEventBuilder(byte[] data) {
-
+    public SecurityDataEventBuilderImpl(byte[] data) {
       this.data = data;
     }
 

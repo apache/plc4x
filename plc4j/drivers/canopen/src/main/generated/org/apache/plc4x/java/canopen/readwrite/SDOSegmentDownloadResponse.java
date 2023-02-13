@@ -44,9 +44,6 @@ public class SDOSegmentDownloadResponse extends SDOResponse implements Message {
 
   // Properties.
   protected final boolean toggle;
-  // Reserved Fields
-  private Byte reservedField0;
-  private Long reservedField1;
 
   public SDOSegmentDownloadResponse(boolean toggle) {
     super();
@@ -60,6 +57,7 @@ public class SDOSegmentDownloadResponse extends SDOResponse implements Message {
   @Override
   protected void serializeSDOResponseChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOSegmentDownloadResponse");
 
@@ -67,16 +65,10 @@ public class SDOSegmentDownloadResponse extends SDOResponse implements Message {
     writeSimpleField("toggle", toggle, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 4));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 4));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (long) 0x00,
-        writeSignedLong(writeBuffer, 56));
+    writeReservedField("reserved", (long) 0x00, writeSignedLong(writeBuffer, 56));
 
     writeBuffer.popContext("SDOSegmentDownloadResponse");
   }
@@ -90,6 +82,7 @@ public class SDOSegmentDownloadResponse extends SDOResponse implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOSegmentDownloadResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (toggle)
     lengthInBits += 1;
@@ -103,12 +96,13 @@ public class SDOSegmentDownloadResponse extends SDOResponse implements Message {
     return lengthInBits;
   }
 
-  public static SDOSegmentDownloadResponseBuilder staticParseBuilder(
+  public static SDOResponseBuilder staticParseSDOResponseBuilder(
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOSegmentDownloadResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean toggle = readSimpleField("toggle", readBoolean(readBuffer));
 
@@ -120,26 +114,20 @@ public class SDOSegmentDownloadResponse extends SDOResponse implements Message {
 
     readBuffer.closeContext("SDOSegmentDownloadResponse");
     // Create the instance
-    return new SDOSegmentDownloadResponseBuilder(toggle, reservedField0, reservedField1);
+    return new SDOSegmentDownloadResponseBuilderImpl(toggle);
   }
 
-  public static class SDOSegmentDownloadResponseBuilder implements SDOResponse.SDOResponseBuilder {
+  public static class SDOSegmentDownloadResponseBuilderImpl
+      implements SDOResponse.SDOResponseBuilder {
     private final boolean toggle;
-    private final Byte reservedField0;
-    private final Long reservedField1;
 
-    public SDOSegmentDownloadResponseBuilder(
-        boolean toggle, Byte reservedField0, Long reservedField1) {
+    public SDOSegmentDownloadResponseBuilderImpl(boolean toggle) {
       this.toggle = toggle;
-      this.reservedField0 = reservedField0;
-      this.reservedField1 = reservedField1;
     }
 
     public SDOSegmentDownloadResponse build() {
       SDOSegmentDownloadResponse sDOSegmentDownloadResponse =
           new SDOSegmentDownloadResponse(toggle);
-      sDOSegmentDownloadResponse.reservedField0 = reservedField0;
-      sDOSegmentDownloadResponse.reservedField1 = reservedField1;
       return sDOSegmentDownloadResponse;
     }
   }

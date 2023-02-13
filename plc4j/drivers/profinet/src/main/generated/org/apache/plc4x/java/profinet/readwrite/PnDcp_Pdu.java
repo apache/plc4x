@@ -61,11 +61,16 @@ public abstract class PnDcp_Pdu implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu");
 
     // Simple Field (frameIdValue)
-    writeSimpleField("frameIdValue", frameIdValue, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "frameIdValue",
+        frameIdValue,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     PnDcp_FrameId frameId = getFrameId();
@@ -86,6 +91,7 @@ public abstract class PnDcp_Pdu implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnDcp_Pdu _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (frameIdValue)
     lengthInBits += 16;
@@ -107,24 +113,32 @@ public abstract class PnDcp_Pdu implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int frameIdValue = readSimpleField("frameIdValue", readUnsignedInt(readBuffer, 16));
+    int frameIdValue =
+        readSimpleField(
+            "frameIdValue",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
     PnDcp_FrameId frameId =
         readVirtualField(
             "frameId",
             PnDcp_FrameId.class,
-            org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.getFrameId(frameIdValue));
+            org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.getFrameId(frameIdValue),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnDcp_PduBuilder builder = null;
     if (EvaluationHelper.equals(frameId, PnDcp_FrameId.RT_CLASS_1)) {
-      builder = PnDcp_Pdu_RealTimeCyclic.staticParseBuilder(readBuffer);
+      builder = PnDcp_Pdu_RealTimeCyclic.staticParsePnDcp_PduBuilder(readBuffer);
     } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.PTCP_DelayReqPDU)) {
-      builder = PcDcp_Pdu_DelayReq.staticParseBuilder(readBuffer);
+      builder = PcDcp_Pdu_DelayReq.staticParsePnDcp_PduBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.Alarm_Low)) {
+      builder = PnDcp_Pdu_AlarmLow.staticParsePnDcp_PduBuilder(readBuffer);
     } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.DCP_Identify_ReqPDU)) {
-      builder = PnDcp_Pdu_IdentifyReq.staticParseBuilder(readBuffer);
+      builder = PnDcp_Pdu_IdentifyReq.staticParsePnDcp_PduBuilder(readBuffer);
     } else if (EvaluationHelper.equals(frameId, PnDcp_FrameId.DCP_Identify_ResPDU)) {
-      builder = PnDcp_Pdu_IdentifyRes.staticParseBuilder(readBuffer);
+      builder = PnDcp_Pdu_IdentifyRes.staticParsePnDcp_PduBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -137,7 +151,7 @@ public abstract class PnDcp_Pdu implements Message {
     return _pnDcp_Pdu;
   }
 
-  public static interface PnDcp_PduBuilder {
+  public interface PnDcp_PduBuilder {
     PnDcp_Pdu build(int frameIdValue);
   }
 

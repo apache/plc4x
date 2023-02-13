@@ -57,6 +57,7 @@ public class BACnetOptionalCharacterStringValue extends BACnetOptionalCharacterS
   protected void serializeBACnetOptionalCharacterStringChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalCharacterStringValue");
 
@@ -76,6 +77,7 @@ public class BACnetOptionalCharacterStringValue extends BACnetOptionalCharacterS
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalCharacterStringValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (characterstring)
     lengthInBits += characterstring.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetOptionalCharacterStringValue extends BACnetOptionalCharacterS
     return lengthInBits;
   }
 
-  public static BACnetOptionalCharacterStringValueBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetOptionalCharacterStringBuilder
+      staticParseBACnetOptionalCharacterStringBuilder(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalCharacterStringValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString characterstring =
         readSimpleField(
@@ -101,16 +104,15 @@ public class BACnetOptionalCharacterStringValue extends BACnetOptionalCharacterS
 
     readBuffer.closeContext("BACnetOptionalCharacterStringValue");
     // Create the instance
-    return new BACnetOptionalCharacterStringValueBuilder(characterstring);
+    return new BACnetOptionalCharacterStringValueBuilderImpl(characterstring);
   }
 
-  public static class BACnetOptionalCharacterStringValueBuilder
+  public static class BACnetOptionalCharacterStringValueBuilderImpl
       implements BACnetOptionalCharacterString.BACnetOptionalCharacterStringBuilder {
     private final BACnetApplicationTagCharacterString characterstring;
 
-    public BACnetOptionalCharacterStringValueBuilder(
+    public BACnetOptionalCharacterStringValueBuilderImpl(
         BACnetApplicationTagCharacterString characterstring) {
-
       this.characterstring = characterstring;
     }
 

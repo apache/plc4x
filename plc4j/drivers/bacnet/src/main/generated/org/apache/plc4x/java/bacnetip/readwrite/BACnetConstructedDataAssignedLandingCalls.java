@@ -89,6 +89,7 @@ public class BACnetConstructedDataAssignedLandingCalls extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAssignedLandingCalls");
 
@@ -118,6 +119,7 @@ public class BACnetConstructedDataAssignedLandingCalls extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAssignedLandingCalls _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -136,7 +138,7 @@ public class BACnetConstructedDataAssignedLandingCalls extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAssignedLandingCallsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -147,6 +149,7 @@ public class BACnetConstructedDataAssignedLandingCalls extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     BigInteger zero = readVirtualField("zero", BigInteger.class, 0L);
 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
@@ -171,23 +174,22 @@ public class BACnetConstructedDataAssignedLandingCalls extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataAssignedLandingCalls");
     // Create the instance
-    return new BACnetConstructedDataAssignedLandingCallsBuilder(
+    return new BACnetConstructedDataAssignedLandingCallsBuilderImpl(
         numberOfDataElements, assignedLandingCalls, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAssignedLandingCallsBuilder
+  public static class BACnetConstructedDataAssignedLandingCallsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger numberOfDataElements;
     private final List<BACnetAssignedLandingCalls> assignedLandingCalls;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAssignedLandingCallsBuilder(
+    public BACnetConstructedDataAssignedLandingCallsBuilderImpl(
         BACnetApplicationTagUnsignedInteger numberOfDataElements,
         List<BACnetAssignedLandingCalls> assignedLandingCalls,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.numberOfDataElements = numberOfDataElements;
       this.assignedLandingCalls = assignedLandingCalls;
       this.tagNumber = tagNumber;

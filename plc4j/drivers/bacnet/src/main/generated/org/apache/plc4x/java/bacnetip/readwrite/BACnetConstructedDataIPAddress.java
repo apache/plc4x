@@ -78,6 +78,7 @@ public class BACnetConstructedDataIPAddress extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPAddress");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataIPAddress extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIPAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ipAddress)
     lengthInBits += ipAddress.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataIPAddress extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPAddressBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataIPAddress extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString ipAddress =
         readSimpleField(
@@ -133,20 +136,19 @@ public class BACnetConstructedDataIPAddress extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataIPAddress");
     // Create the instance
-    return new BACnetConstructedDataIPAddressBuilder(ipAddress, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataIPAddressBuilderImpl(ipAddress, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPAddressBuilder
+  public static class BACnetConstructedDataIPAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipAddress;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPAddressBuilder(
+    public BACnetConstructedDataIPAddressBuilderImpl(
         BACnetApplicationTagOctetString ipAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipAddress = ipAddress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -47,10 +47,8 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
   protected final short errorCode1;
   protected final short errorDecode;
   protected final short errorCode;
-  protected final long argsLength;
   protected final long arrayMaximumCount;
   protected final long arrayOffset;
-  protected final long arrayActualCount;
   protected final List<PnIoCm_Block> blocks;
 
   public PnIoCm_Packet_Res(
@@ -58,20 +56,16 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
       short errorCode1,
       short errorDecode,
       short errorCode,
-      long argsLength,
       long arrayMaximumCount,
       long arrayOffset,
-      long arrayActualCount,
       List<PnIoCm_Block> blocks) {
     super();
     this.errorCode2 = errorCode2;
     this.errorCode1 = errorCode1;
     this.errorDecode = errorDecode;
     this.errorCode = errorCode;
-    this.argsLength = argsLength;
     this.arrayMaximumCount = arrayMaximumCount;
     this.arrayOffset = arrayOffset;
-    this.arrayActualCount = arrayActualCount;
     this.blocks = blocks;
   }
 
@@ -91,20 +85,12 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
     return errorCode;
   }
 
-  public long getArgsLength() {
-    return argsLength;
-  }
-
   public long getArrayMaximumCount() {
     return arrayMaximumCount;
   }
 
   public long getArrayOffset() {
     return arrayOffset;
-  }
-
-  public long getArrayActualCount() {
-    return arrayActualCount;
   }
 
   public List<PnIoCm_Block> getBlocks() {
@@ -115,6 +101,7 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
   protected void serializePnIoCm_PacketChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Packet_Res");
 
@@ -130,8 +117,13 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
     // Simple Field (errorCode)
     writeSimpleField("errorCode", errorCode, writeUnsignedShort(writeBuffer, 8));
 
-    // Simple Field (argsLength)
-    writeSimpleField("argsLength", argsLength, writeUnsignedLong(writeBuffer, 32));
+    // Implicit Field (argsLength) (Used for parsing, but its value is not stored as it's implicitly
+    // given by the objects content)
+    long argsLength =
+        (long)
+            (((((((((getLengthInBytes()) - (1L)) - (1L)) - (1L)) - (1L)) - (4L)) - (4L)) - (4L))
+                - (4L));
+    writeImplicitField("argsLength", argsLength, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (arrayMaximumCount)
     writeSimpleField("arrayMaximumCount", arrayMaximumCount, writeUnsignedLong(writeBuffer, 32));
@@ -139,8 +131,13 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
     // Simple Field (arrayOffset)
     writeSimpleField("arrayOffset", arrayOffset, writeUnsignedLong(writeBuffer, 32));
 
-    // Simple Field (arrayActualCount)
-    writeSimpleField("arrayActualCount", arrayActualCount, writeUnsignedLong(writeBuffer, 32));
+    // Implicit Field (arrayActualCount) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    long arrayActualCount =
+        (long)
+            (((((((((getLengthInBytes()) - (1L)) - (1L)) - (1L)) - (1L)) - (4L)) - (4L)) - (4L))
+                - (4L));
+    writeImplicitField("arrayActualCount", arrayActualCount, writeUnsignedLong(writeBuffer, 32));
 
     // Array Field (blocks)
     writeComplexTypeArrayField("blocks", blocks, writeBuffer);
@@ -157,6 +154,7 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Packet_Res _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (errorCode2)
     lengthInBits += 8;
@@ -170,7 +168,7 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
     // Simple field (errorCode)
     lengthInBits += 8;
 
-    // Simple field (argsLength)
+    // Implicit Field (argsLength)
     lengthInBits += 32;
 
     // Simple field (arrayMaximumCount)
@@ -179,7 +177,7 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
     // Simple field (arrayOffset)
     lengthInBits += 32;
 
-    // Simple field (arrayActualCount)
+    // Implicit Field (arrayActualCount)
     lengthInBits += 32;
 
     // Array field
@@ -192,12 +190,13 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Packet_ResBuilder staticParseBuilder(
+  public static PnIoCm_PacketBuilder staticParsePnIoCm_PacketBuilder(
       ReadBuffer readBuffer, DceRpc_PacketType packetType) throws ParseException {
     readBuffer.pullContext("PnIoCm_Packet_Res");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short errorCode2 = readSimpleField("errorCode2", readUnsignedShort(readBuffer, 8));
 
@@ -207,13 +206,13 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
 
     short errorCode = readSimpleField("errorCode", readUnsignedShort(readBuffer, 8));
 
-    long argsLength = readSimpleField("argsLength", readUnsignedLong(readBuffer, 32));
+    long argsLength = readImplicitField("argsLength", readUnsignedLong(readBuffer, 32));
 
     long arrayMaximumCount = readSimpleField("arrayMaximumCount", readUnsignedLong(readBuffer, 32));
 
     long arrayOffset = readSimpleField("arrayOffset", readUnsignedLong(readBuffer, 32));
 
-    long arrayActualCount = readSimpleField("arrayActualCount", readUnsignedLong(readBuffer, 32));
+    long arrayActualCount = readImplicitField("arrayActualCount", readUnsignedLong(readBuffer, 32));
 
     List<PnIoCm_Block> blocks =
         readLengthArrayField(
@@ -223,48 +222,33 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
 
     readBuffer.closeContext("PnIoCm_Packet_Res");
     // Create the instance
-    return new PnIoCm_Packet_ResBuilder(
-        errorCode2,
-        errorCode1,
-        errorDecode,
-        errorCode,
-        argsLength,
-        arrayMaximumCount,
-        arrayOffset,
-        arrayActualCount,
-        blocks);
+    return new PnIoCm_Packet_ResBuilderImpl(
+        errorCode2, errorCode1, errorDecode, errorCode, arrayMaximumCount, arrayOffset, blocks);
   }
 
-  public static class PnIoCm_Packet_ResBuilder implements PnIoCm_Packet.PnIoCm_PacketBuilder {
+  public static class PnIoCm_Packet_ResBuilderImpl implements PnIoCm_Packet.PnIoCm_PacketBuilder {
     private final short errorCode2;
     private final short errorCode1;
     private final short errorDecode;
     private final short errorCode;
-    private final long argsLength;
     private final long arrayMaximumCount;
     private final long arrayOffset;
-    private final long arrayActualCount;
     private final List<PnIoCm_Block> blocks;
 
-    public PnIoCm_Packet_ResBuilder(
+    public PnIoCm_Packet_ResBuilderImpl(
         short errorCode2,
         short errorCode1,
         short errorDecode,
         short errorCode,
-        long argsLength,
         long arrayMaximumCount,
         long arrayOffset,
-        long arrayActualCount,
         List<PnIoCm_Block> blocks) {
-
       this.errorCode2 = errorCode2;
       this.errorCode1 = errorCode1;
       this.errorDecode = errorDecode;
       this.errorCode = errorCode;
-      this.argsLength = argsLength;
       this.arrayMaximumCount = arrayMaximumCount;
       this.arrayOffset = arrayOffset;
-      this.arrayActualCount = arrayActualCount;
       this.blocks = blocks;
     }
 
@@ -275,10 +259,8 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
               errorCode1,
               errorDecode,
               errorCode,
-              argsLength,
               arrayMaximumCount,
               arrayOffset,
-              arrayActualCount,
               blocks);
       return pnIoCm_Packet_Res;
     }
@@ -297,10 +279,8 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
         && (getErrorCode1() == that.getErrorCode1())
         && (getErrorDecode() == that.getErrorDecode())
         && (getErrorCode() == that.getErrorCode())
-        && (getArgsLength() == that.getArgsLength())
         && (getArrayMaximumCount() == that.getArrayMaximumCount())
         && (getArrayOffset() == that.getArrayOffset())
-        && (getArrayActualCount() == that.getArrayActualCount())
         && (getBlocks() == that.getBlocks())
         && super.equals(that)
         && true;
@@ -314,10 +294,8 @@ public class PnIoCm_Packet_Res extends PnIoCm_Packet implements Message {
         getErrorCode1(),
         getErrorDecode(),
         getErrorCode(),
-        getArgsLength(),
         getArrayMaximumCount(),
         getArrayOffset(),
-        getArrayActualCount(),
         getBlocks());
   }
 

@@ -115,6 +115,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PublishedVariableDataType");
 
@@ -160,6 +161,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PublishedVariableDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (publishedVariable)
     lengthInBits += publishedVariable.getLengthInBits();
@@ -189,7 +191,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     if (metaDataProperties != null) {
       int i = 0;
       for (QualifiedName element : metaDataProperties) {
-        boolean last = ++i >= metaDataProperties.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= metaDataProperties.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -197,12 +199,13 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static PublishedVariableDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PublishedVariableDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId publishedVariable =
         readSimpleField(
@@ -239,7 +242,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("PublishedVariableDataType");
     // Create the instance
-    return new PublishedVariableDataTypeBuilder(
+    return new PublishedVariableDataTypeBuilderImpl(
         publishedVariable,
         attributeId,
         samplingIntervalHint,
@@ -251,7 +254,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
         metaDataProperties);
   }
 
-  public static class PublishedVariableDataTypeBuilder
+  public static class PublishedVariableDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId publishedVariable;
     private final long attributeId;
@@ -263,7 +266,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     private final int noOfMetaDataProperties;
     private final List<QualifiedName> metaDataProperties;
 
-    public PublishedVariableDataTypeBuilder(
+    public PublishedVariableDataTypeBuilderImpl(
         NodeId publishedVariable,
         long attributeId,
         double samplingIntervalHint,
@@ -273,7 +276,6 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
         Variant substituteValue,
         int noOfMetaDataProperties,
         List<QualifiedName> metaDataProperties) {
-
       this.publishedVariable = publishedVariable;
       this.attributeId = attributeId;
       this.samplingIntervalHint = samplingIntervalHint;

@@ -75,6 +75,7 @@ public class BACnetConstructedDataBBMDForeignDeviceTable extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBBMDForeignDeviceTable");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataBBMDForeignDeviceTable extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBBMDForeignDeviceTable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (bbmdForeignDeviceTable != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataBBMDForeignDeviceTable extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBBMDForeignDeviceTableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataBBMDForeignDeviceTable extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetBDTEntry> bbmdForeignDeviceTable =
         readTerminatedArrayField(
@@ -128,21 +131,20 @@ public class BACnetConstructedDataBBMDForeignDeviceTable extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataBBMDForeignDeviceTable");
     // Create the instance
-    return new BACnetConstructedDataBBMDForeignDeviceTableBuilder(
+    return new BACnetConstructedDataBBMDForeignDeviceTableBuilderImpl(
         bbmdForeignDeviceTable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBBMDForeignDeviceTableBuilder
+  public static class BACnetConstructedDataBBMDForeignDeviceTableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetBDTEntry> bbmdForeignDeviceTable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBBMDForeignDeviceTableBuilder(
+    public BACnetConstructedDataBBMDForeignDeviceTableBuilderImpl(
         List<BACnetBDTEntry> bbmdForeignDeviceTable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.bbmdForeignDeviceTable = bbmdForeignDeviceTable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

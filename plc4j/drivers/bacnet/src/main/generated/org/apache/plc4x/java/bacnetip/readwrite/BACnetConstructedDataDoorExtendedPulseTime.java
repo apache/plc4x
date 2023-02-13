@@ -79,6 +79,7 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDoorExtendedPulseTime");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDoorExtendedPulseTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doorExtendedPulseTime)
     lengthInBits += doorExtendedPulseTime.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDoorExtendedPulseTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger doorExtendedPulseTime =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
 
     readBuffer.closeContext("BACnetConstructedDataDoorExtendedPulseTime");
     // Create the instance
-    return new BACnetConstructedDataDoorExtendedPulseTimeBuilder(
+    return new BACnetConstructedDataDoorExtendedPulseTimeBuilderImpl(
         doorExtendedPulseTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDoorExtendedPulseTimeBuilder
+  public static class BACnetConstructedDataDoorExtendedPulseTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger doorExtendedPulseTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDoorExtendedPulseTimeBuilder(
+    public BACnetConstructedDataDoorExtendedPulseTimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger doorExtendedPulseTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.doorExtendedPulseTime = doorExtendedPulseTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

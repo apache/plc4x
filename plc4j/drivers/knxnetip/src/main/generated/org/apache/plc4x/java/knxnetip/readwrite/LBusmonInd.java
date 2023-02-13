@@ -48,21 +48,16 @@ public class LBusmonInd extends CEMI implements Message {
   protected final LDataFrame dataFrame;
   protected final Short crc;
 
-  // Arguments.
-  protected final Integer size;
-
   public LBusmonInd(
       short additionalInformationLength,
       List<CEMIAdditionalInformation> additionalInformation,
       LDataFrame dataFrame,
-      Short crc,
-      Integer size) {
-    super(size);
+      Short crc) {
+    super();
     this.additionalInformationLength = additionalInformationLength;
     this.additionalInformation = additionalInformation;
     this.dataFrame = dataFrame;
     this.crc = crc;
-    this.size = size;
   }
 
   public short getAdditionalInformationLength() {
@@ -84,6 +79,7 @@ public class LBusmonInd extends CEMI implements Message {
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LBusmonInd");
 
@@ -100,8 +96,7 @@ public class LBusmonInd extends CEMI implements Message {
     writeSimpleField("dataFrame", dataFrame, new DataWriterComplexDefault<>(writeBuffer));
 
     // Optional Field (crc) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "crc", crc, writeUnsignedShort(writeBuffer, 8), getDataFrame().getNotAckFrame());
+    writeOptionalField("crc", crc, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("LBusmonInd");
   }
@@ -115,6 +110,7 @@ public class LBusmonInd extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LBusmonInd _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (additionalInformationLength)
     lengthInBits += 8;
@@ -137,12 +133,13 @@ public class LBusmonInd extends CEMI implements Message {
     return lengthInBits;
   }
 
-  public static LBusmonIndBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LBusmonInd");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short additionalInformationLength =
         readSimpleField("additionalInformationLength", readUnsignedShort(readBuffer, 8));
@@ -164,35 +161,30 @@ public class LBusmonInd extends CEMI implements Message {
 
     readBuffer.closeContext("LBusmonInd");
     // Create the instance
-    return new LBusmonIndBuilder(
-        additionalInformationLength, additionalInformation, dataFrame, crc, size);
+    return new LBusmonIndBuilderImpl(
+        additionalInformationLength, additionalInformation, dataFrame, crc);
   }
 
-  public static class LBusmonIndBuilder implements CEMI.CEMIBuilder {
+  public static class LBusmonIndBuilderImpl implements CEMI.CEMIBuilder {
     private final short additionalInformationLength;
     private final List<CEMIAdditionalInformation> additionalInformation;
     private final LDataFrame dataFrame;
     private final Short crc;
-    private final Integer size;
 
-    public LBusmonIndBuilder(
+    public LBusmonIndBuilderImpl(
         short additionalInformationLength,
         List<CEMIAdditionalInformation> additionalInformation,
         LDataFrame dataFrame,
-        Short crc,
-        Integer size) {
-
+        Short crc) {
       this.additionalInformationLength = additionalInformationLength;
       this.additionalInformation = additionalInformation;
       this.dataFrame = dataFrame;
       this.crc = crc;
-      this.size = size;
     }
 
-    public LBusmonInd build(Integer size) {
-
+    public LBusmonInd build() {
       LBusmonInd lBusmonInd =
-          new LBusmonInd(additionalInformationLength, additionalInformation, dataFrame, crc, size);
+          new LBusmonInd(additionalInformationLength, additionalInformation, dataFrame, crc);
       return lBusmonInd;
     }
   }

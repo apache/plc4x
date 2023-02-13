@@ -106,6 +106,7 @@ public class CALDataStatusExtended extends CALData implements Message {
   @Override
   protected void serializeCALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALDataStatusExtended");
 
@@ -156,6 +157,7 @@ public class CALDataStatusExtended extends CALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CALDataStatusExtended _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (coding)
     lengthInBits += 8;
@@ -174,7 +176,7 @@ public class CALDataStatusExtended extends CALData implements Message {
     if (statusBytes != null) {
       int i = 0;
       for (StatusByte element : statusBytes) {
-        boolean last = ++i >= statusBytes.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= statusBytes.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -183,7 +185,7 @@ public class CALDataStatusExtended extends CALData implements Message {
     if (levelInformation != null) {
       int i = 0;
       for (LevelInformation element : levelInformation) {
-        boolean last = ++i >= levelInformation.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= levelInformation.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -191,15 +193,16 @@ public class CALDataStatusExtended extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataStatusExtendedBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer,
-      RequestContext requestContext,
-      CALCommandTypeContainer commandTypeContainer)
+      CALCommandTypeContainer commandTypeContainer,
+      RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALDataStatusExtended");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     StatusCoding coding =
         readEnumField(
@@ -247,11 +250,11 @@ public class CALDataStatusExtended extends CALData implements Message {
 
     readBuffer.closeContext("CALDataStatusExtended");
     // Create the instance
-    return new CALDataStatusExtendedBuilder(
+    return new CALDataStatusExtendedBuilderImpl(
         coding, application, blockStart, statusBytes, levelInformation, requestContext);
   }
 
-  public static class CALDataStatusExtendedBuilder implements CALData.CALDataBuilder {
+  public static class CALDataStatusExtendedBuilderImpl implements CALData.CALDataBuilder {
     private final StatusCoding coding;
     private final ApplicationIdContainer application;
     private final short blockStart;
@@ -259,14 +262,13 @@ public class CALDataStatusExtended extends CALData implements Message {
     private final List<LevelInformation> levelInformation;
     private final RequestContext requestContext;
 
-    public CALDataStatusExtendedBuilder(
+    public CALDataStatusExtendedBuilderImpl(
         StatusCoding coding,
         ApplicationIdContainer application,
         short blockStart,
         List<StatusByte> statusBytes,
         List<LevelInformation> levelInformation,
         RequestContext requestContext) {
-
       this.coding = coding;
       this.application = application;
       this.blockStart = blockStart;

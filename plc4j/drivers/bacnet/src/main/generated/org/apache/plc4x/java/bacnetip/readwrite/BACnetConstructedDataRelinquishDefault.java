@@ -79,6 +79,7 @@ public class BACnetConstructedDataRelinquishDefault extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRelinquishDefault");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataRelinquishDefault extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataRelinquishDefault _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (relinquishDefault)
     lengthInBits += relinquishDefault.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataRelinquishDefault extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataRelinquishDefaultBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataRelinquishDefault extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger relinquishDefault =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataRelinquishDefault extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataRelinquishDefault");
     // Create the instance
-    return new BACnetConstructedDataRelinquishDefaultBuilder(
+    return new BACnetConstructedDataRelinquishDefaultBuilderImpl(
         relinquishDefault, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataRelinquishDefaultBuilder
+  public static class BACnetConstructedDataRelinquishDefaultBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger relinquishDefault;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRelinquishDefaultBuilder(
+    public BACnetConstructedDataRelinquishDefaultBuilderImpl(
         BACnetApplicationTagUnsignedInteger relinquishDefault,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.relinquishDefault = relinquishDefault;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

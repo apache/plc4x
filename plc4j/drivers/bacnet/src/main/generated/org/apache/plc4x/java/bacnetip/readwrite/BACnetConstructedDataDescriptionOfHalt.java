@@ -79,6 +79,7 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDescriptionOfHalt");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDescriptionOfHalt _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (descriptionForHalt)
     lengthInBits += descriptionForHalt.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDescriptionOfHaltBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString descriptionForHalt =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataDescriptionOfHalt");
     // Create the instance
-    return new BACnetConstructedDataDescriptionOfHaltBuilder(
+    return new BACnetConstructedDataDescriptionOfHaltBuilderImpl(
         descriptionForHalt, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDescriptionOfHaltBuilder
+  public static class BACnetConstructedDataDescriptionOfHaltBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString descriptionForHalt;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDescriptionOfHaltBuilder(
+    public BACnetConstructedDataDescriptionOfHaltBuilderImpl(
         BACnetApplicationTagCharacterString descriptionForHalt,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.descriptionForHalt = descriptionForHalt;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

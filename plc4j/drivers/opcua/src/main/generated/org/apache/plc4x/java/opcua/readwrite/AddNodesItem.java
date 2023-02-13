@@ -101,6 +101,7 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AddNodesItem");
 
@@ -144,6 +145,7 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AddNodesItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (parentNodeId)
     lengthInBits += parentNodeId.getLengthInBits();
@@ -169,12 +171,13 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static AddNodesItemBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AddNodesItem");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExpandedNodeId parentNodeId =
         readSimpleField(
@@ -219,7 +222,7 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("AddNodesItem");
     // Create the instance
-    return new AddNodesItemBuilder(
+    return new AddNodesItemBuilderImpl(
         parentNodeId,
         referenceTypeId,
         requestedNewNodeId,
@@ -229,7 +232,7 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
         typeDefinition);
   }
 
-  public static class AddNodesItemBuilder
+  public static class AddNodesItemBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExpandedNodeId parentNodeId;
     private final NodeId referenceTypeId;
@@ -239,7 +242,7 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
     private final ExtensionObject nodeAttributes;
     private final ExpandedNodeId typeDefinition;
 
-    public AddNodesItemBuilder(
+    public AddNodesItemBuilderImpl(
         ExpandedNodeId parentNodeId,
         NodeId referenceTypeId,
         ExpandedNodeId requestedNewNodeId,
@@ -247,7 +250,6 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
         NodeClass nodeClass,
         ExtensionObject nodeAttributes,
         ExpandedNodeId typeDefinition) {
-
       this.parentNodeId = parentNodeId;
       this.referenceTypeId = referenceTypeId;
       this.requestedNewNodeId = requestedNewNodeId;

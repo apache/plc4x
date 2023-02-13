@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -134,12 +135,8 @@ func (m *_AdsReadStateResponse) GetTypeName() string {
 	return "AdsReadStateResponse"
 }
 
-func (m *_AdsReadStateResponse) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsReadStateResponse) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsReadStateResponse) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (result)
 	lengthInBits += 32
@@ -153,15 +150,15 @@ func (m *_AdsReadStateResponse) GetLengthInBitsConditional(lastItem bool) uint16
 	return lengthInBits
 }
 
-func (m *_AdsReadStateResponse) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsReadStateResponse) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsReadStateResponseParse(theBytes []byte) (AdsReadStateResponse, error) {
-	return AdsReadStateResponseParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsReadStateResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsReadStateResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadStateResponse, error) {
+func AdsReadStateResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadStateResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadStateResponse"); pullErr != nil {
@@ -174,7 +171,7 @@ func AdsReadStateResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadSt
 	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for result")
 	}
-	_result, _resultErr := ReturnCodeParseWithBuffer(readBuffer)
+	_result, _resultErr := ReturnCodeParseWithBuffer(ctx, readBuffer)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsReadStateResponse")
 	}
@@ -213,14 +210,14 @@ func AdsReadStateResponseParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadSt
 }
 
 func (m *_AdsReadStateResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsReadStateResponse) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsReadStateResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -232,7 +229,7 @@ func (m *_AdsReadStateResponse) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("result"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for result")
 		}
-		_resultErr := writeBuffer.WriteSerializable(m.GetResult())
+		_resultErr := writeBuffer.WriteSerializable(ctx, m.GetResult())
 		if popErr := writeBuffer.PopContext("result"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for result")
 		}
@@ -259,7 +256,7 @@ func (m *_AdsReadStateResponse) SerializeWithWriteBuffer(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsReadStateResponse) isAdsReadStateResponse() bool {
@@ -271,7 +268,7 @@ func (m *_AdsReadStateResponse) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

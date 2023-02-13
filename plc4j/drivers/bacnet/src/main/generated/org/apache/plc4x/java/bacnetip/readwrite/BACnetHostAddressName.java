@@ -56,6 +56,7 @@ public class BACnetHostAddressName extends BACnetHostAddress implements Message 
   protected void serializeBACnetHostAddressChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetHostAddressName");
 
@@ -74,6 +75,7 @@ public class BACnetHostAddressName extends BACnetHostAddress implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetHostAddressName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetHostAddressName extends BACnetHostAddress implements Message 
     return lengthInBits;
   }
 
-  public static BACnetHostAddressNameBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetHostAddressBuilder staticParseBACnetHostAddressBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetHostAddressName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagCharacterString name =
         readSimpleField(
@@ -102,15 +105,14 @@ public class BACnetHostAddressName extends BACnetHostAddress implements Message 
 
     readBuffer.closeContext("BACnetHostAddressName");
     // Create the instance
-    return new BACnetHostAddressNameBuilder(name);
+    return new BACnetHostAddressNameBuilderImpl(name);
   }
 
-  public static class BACnetHostAddressNameBuilder
+  public static class BACnetHostAddressNameBuilderImpl
       implements BACnetHostAddress.BACnetHostAddressBuilder {
     private final BACnetContextTagCharacterString name;
 
-    public BACnetHostAddressNameBuilder(BACnetContextTagCharacterString name) {
-
+    public BACnetHostAddressNameBuilderImpl(BACnetContextTagCharacterString name) {
       this.name = name;
     }
 

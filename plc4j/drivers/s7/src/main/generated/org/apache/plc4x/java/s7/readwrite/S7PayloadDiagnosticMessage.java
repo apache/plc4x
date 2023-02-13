@@ -111,6 +111,7 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadDiagnosticMessage");
 
@@ -147,6 +148,7 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadDiagnosticMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (EventId)
     lengthInBits += 16;
@@ -172,12 +174,13 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
     return lengthInBits;
   }
 
-  public static S7PayloadDiagnosticMessageBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadDiagnosticMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int EventId = readSimpleField("EventId", readUnsignedInt(readBuffer, 16));
 
@@ -198,11 +201,11 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
 
     readBuffer.closeContext("S7PayloadDiagnosticMessage");
     // Create the instance
-    return new S7PayloadDiagnosticMessageBuilder(
+    return new S7PayloadDiagnosticMessageBuilderImpl(
         EventId, PriorityClass, ObNumber, DatId, Info1, Info2, TimeStamp);
   }
 
-  public static class S7PayloadDiagnosticMessageBuilder
+  public static class S7PayloadDiagnosticMessageBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final int EventId;
     private final short PriorityClass;
@@ -212,7 +215,7 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
     private final long Info2;
     private final DateAndTime TimeStamp;
 
-    public S7PayloadDiagnosticMessageBuilder(
+    public S7PayloadDiagnosticMessageBuilderImpl(
         int EventId,
         short PriorityClass,
         short ObNumber,
@@ -220,7 +223,6 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
         int Info1,
         long Info2,
         DateAndTime TimeStamp) {
-
       this.EventId = EventId;
       this.PriorityClass = PriorityClass;
       this.ObNumber = ObNumber;

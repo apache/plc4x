@@ -87,6 +87,7 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SetMonitoringModeResponse");
 
@@ -117,6 +118,7 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SetMonitoringModeResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -128,7 +130,7 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
     if (results != null) {
       int i = 0;
       for (StatusCode element : results) {
-        boolean last = ++i >= results.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= results.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -140,7 +142,7 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
     if (diagnosticInfos != null) {
       int i = 0;
       for (DiagnosticInfo element : diagnosticInfos) {
-        boolean last = ++i >= diagnosticInfos.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= diagnosticInfos.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -148,12 +150,13 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static SetMonitoringModeResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SetMonitoringModeResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -181,11 +184,11 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("SetMonitoringModeResponse");
     // Create the instance
-    return new SetMonitoringModeResponseBuilder(
+    return new SetMonitoringModeResponseBuilderImpl(
         responseHeader, noOfResults, results, noOfDiagnosticInfos, diagnosticInfos);
   }
 
-  public static class SetMonitoringModeResponseBuilder
+  public static class SetMonitoringModeResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfResults;
@@ -193,13 +196,12 @@ public class SetMonitoringModeResponse extends ExtensionObjectDefinition impleme
     private final int noOfDiagnosticInfos;
     private final List<DiagnosticInfo> diagnosticInfos;
 
-    public SetMonitoringModeResponseBuilder(
+    public SetMonitoringModeResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfResults,
         List<StatusCode> results,
         int noOfDiagnosticInfos,
         List<DiagnosticInfo> diagnosticInfos) {
-
       this.responseHeader = responseHeader;
       this.noOfResults = noOfResults;
       this.results = results;

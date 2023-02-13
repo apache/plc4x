@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -1792,19 +1793,19 @@ func CastSecurityCommandTypeContainer(structType interface{}) SecurityCommandTyp
 	return castFunc(structType)
 }
 
-func (m SecurityCommandTypeContainer) GetLengthInBits() uint16 {
+func (m SecurityCommandTypeContainer) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m SecurityCommandTypeContainer) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m SecurityCommandTypeContainer) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func SecurityCommandTypeContainerParse(theBytes []byte) (SecurityCommandTypeContainer, error) {
-	return SecurityCommandTypeContainerParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func SecurityCommandTypeContainerParse(ctx context.Context, theBytes []byte) (SecurityCommandTypeContainer, error) {
+	return SecurityCommandTypeContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func SecurityCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (SecurityCommandTypeContainer, error) {
+func SecurityCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityCommandTypeContainer, error) {
 	val, err := readBuffer.ReadUint8("SecurityCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SecurityCommandTypeContainer")
@@ -1819,13 +1820,13 @@ func SecurityCommandTypeContainerParseWithBuffer(readBuffer utils.ReadBuffer) (S
 
 func (e SecurityCommandTypeContainer) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e SecurityCommandTypeContainer) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e SecurityCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SecurityCommandTypeContainer", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -123,34 +124,30 @@ func (m *_BACnetServiceAckVTData) GetTypeName() string {
 	return "BACnetServiceAckVTData"
 }
 
-func (m *_BACnetServiceAckVTData) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetServiceAckVTData) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetServiceAckVTData) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (vtSessionIdentifier)
-	lengthInBits += m.VtSessionIdentifier.GetLengthInBits()
+	lengthInBits += m.VtSessionIdentifier.GetLengthInBits(ctx)
 
 	// Simple field (vtNewData)
-	lengthInBits += m.VtNewData.GetLengthInBits()
+	lengthInBits += m.VtNewData.GetLengthInBits(ctx)
 
 	// Simple field (vtDataFlag)
-	lengthInBits += m.VtDataFlag.GetLengthInBits()
+	lengthInBits += m.VtDataFlag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetServiceAckVTData) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetServiceAckVTData) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetServiceAckVTDataParse(theBytes []byte, serviceAckLength uint32) (BACnetServiceAckVTData, error) {
-	return BACnetServiceAckVTDataParseWithBuffer(utils.NewReadBufferByteBased(theBytes), serviceAckLength)
+	return BACnetServiceAckVTDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
-func BACnetServiceAckVTDataParseWithBuffer(readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTData, error) {
+func BACnetServiceAckVTDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTData"); pullErr != nil {
@@ -163,7 +160,7 @@ func BACnetServiceAckVTDataParseWithBuffer(readBuffer utils.ReadBuffer, serviceA
 	if pullErr := readBuffer.PullContext("vtSessionIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vtSessionIdentifier")
 	}
-	_vtSessionIdentifier, _vtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_vtSessionIdentifier, _vtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _vtSessionIdentifierErr != nil {
 		return nil, errors.Wrap(_vtSessionIdentifierErr, "Error parsing 'vtSessionIdentifier' field of BACnetServiceAckVTData")
 	}
@@ -176,7 +173,7 @@ func BACnetServiceAckVTDataParseWithBuffer(readBuffer utils.ReadBuffer, serviceA
 	if pullErr := readBuffer.PullContext("vtNewData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vtNewData")
 	}
-	_vtNewData, _vtNewDataErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_vtNewData, _vtNewDataErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _vtNewDataErr != nil {
 		return nil, errors.Wrap(_vtNewDataErr, "Error parsing 'vtNewData' field of BACnetServiceAckVTData")
 	}
@@ -189,7 +186,7 @@ func BACnetServiceAckVTDataParseWithBuffer(readBuffer utils.ReadBuffer, serviceA
 	if pullErr := readBuffer.PullContext("vtDataFlag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for vtDataFlag")
 	}
-	_vtDataFlag, _vtDataFlagErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_vtDataFlag, _vtDataFlagErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _vtDataFlagErr != nil {
 		return nil, errors.Wrap(_vtDataFlagErr, "Error parsing 'vtDataFlag' field of BACnetServiceAckVTData")
 	}
@@ -216,14 +213,14 @@ func BACnetServiceAckVTDataParseWithBuffer(readBuffer utils.ReadBuffer, serviceA
 }
 
 func (m *_BACnetServiceAckVTData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetServiceAckVTData) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServiceAckVTData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -235,7 +232,7 @@ func (m *_BACnetServiceAckVTData) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("vtSessionIdentifier"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vtSessionIdentifier")
 		}
-		_vtSessionIdentifierErr := writeBuffer.WriteSerializable(m.GetVtSessionIdentifier())
+		_vtSessionIdentifierErr := writeBuffer.WriteSerializable(ctx, m.GetVtSessionIdentifier())
 		if popErr := writeBuffer.PopContext("vtSessionIdentifier"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vtSessionIdentifier")
 		}
@@ -247,7 +244,7 @@ func (m *_BACnetServiceAckVTData) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("vtNewData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vtNewData")
 		}
-		_vtNewDataErr := writeBuffer.WriteSerializable(m.GetVtNewData())
+		_vtNewDataErr := writeBuffer.WriteSerializable(ctx, m.GetVtNewData())
 		if popErr := writeBuffer.PopContext("vtNewData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vtNewData")
 		}
@@ -259,7 +256,7 @@ func (m *_BACnetServiceAckVTData) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("vtDataFlag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for vtDataFlag")
 		}
-		_vtDataFlagErr := writeBuffer.WriteSerializable(m.GetVtDataFlag())
+		_vtDataFlagErr := writeBuffer.WriteSerializable(ctx, m.GetVtDataFlag())
 		if popErr := writeBuffer.PopContext("vtDataFlag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for vtDataFlag")
 		}
@@ -272,7 +269,7 @@ func (m *_BACnetServiceAckVTData) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetServiceAckVTData) isBACnetServiceAckVTData() bool {
@@ -284,7 +281,7 @@ func (m *_BACnetServiceAckVTData) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

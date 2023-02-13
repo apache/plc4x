@@ -97,6 +97,7 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
   @Override
   protected void serializeMessagePDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpcuaAcknowledgeResponse");
 
@@ -135,6 +136,7 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpcuaAcknowledgeResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (chunk)
     lengthInBits += 8;
@@ -160,12 +162,13 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaAcknowledgeResponseBuilder staticParseBuilder(
+  public static MessagePDUBuilder staticParseMessagePDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaAcknowledgeResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String chunk = readSimpleField("chunk", readString(readBuffer, 8));
 
@@ -183,11 +186,11 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
 
     readBuffer.closeContext("OpcuaAcknowledgeResponse");
     // Create the instance
-    return new OpcuaAcknowledgeResponseBuilder(
+    return new OpcuaAcknowledgeResponseBuilderImpl(
         chunk, version, receiveBufferSize, sendBufferSize, maxMessageSize, maxChunkCount);
   }
 
-  public static class OpcuaAcknowledgeResponseBuilder implements MessagePDU.MessagePDUBuilder {
+  public static class OpcuaAcknowledgeResponseBuilderImpl implements MessagePDU.MessagePDUBuilder {
     private final String chunk;
     private final int version;
     private final int receiveBufferSize;
@@ -195,14 +198,13 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
     private final int maxMessageSize;
     private final int maxChunkCount;
 
-    public OpcuaAcknowledgeResponseBuilder(
+    public OpcuaAcknowledgeResponseBuilderImpl(
         String chunk,
         int version,
         int receiveBufferSize,
         int sendBufferSize,
         int maxMessageSize,
         int maxChunkCount) {
-
       this.chunk = chunk;
       this.version = version;
       this.receiveBufferSize = receiveBufferSize;

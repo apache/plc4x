@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetTypeName() string {
 	return "BACnetLogDataLogDataEntryEnumeratedValue"
 }
 
-func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (enumeratedValue)
-	lengthInBits += m.EnumeratedValue.GetLengthInBits()
+	lengthInBits += m.EnumeratedValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLogDataLogDataEntryEnumeratedValueParse(theBytes []byte) (BACnetLogDataLogDataEntryEnumeratedValue, error) {
-	return BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryEnumeratedValue, error) {
+func BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryEnumeratedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryEnumeratedValue"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
 	}
-	_enumeratedValue, _enumeratedValueErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_ENUMERATED))
+	_enumeratedValue, _enumeratedValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_ENUMERATED))
 	if _enumeratedValueErr != nil {
 		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetLogDataLogDataEntryEnumeratedValue")
 	}
@@ -162,14 +159,14 @@ func BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLogDataLogDataEntryEnumeratedValue) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("enumeratedValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for enumeratedValue")
 		}
-		_enumeratedValueErr := writeBuffer.WriteSerializable(m.GetEnumeratedValue())
+		_enumeratedValueErr := writeBuffer.WriteSerializable(ctx, m.GetEnumeratedValue())
 		if popErr := writeBuffer.PopContext("enumeratedValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for enumeratedValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) isBACnetLogDataLogDataEntryEnumeratedValue() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

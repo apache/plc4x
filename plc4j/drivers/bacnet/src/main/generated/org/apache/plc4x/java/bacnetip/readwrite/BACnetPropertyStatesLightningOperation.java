@@ -57,6 +57,7 @@ public class BACnetPropertyStatesLightningOperation extends BACnetPropertyStates
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLightningOperation");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesLightningOperation extends BACnetPropertyStates
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLightningOperation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lightningOperation)
     lengthInBits += lightningOperation.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetPropertyStatesLightningOperation extends BACnetPropertyStates
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLightningOperationBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLightningOperation");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLightingOperationTagged lightningOperation =
         readSimpleField(
@@ -103,16 +106,15 @@ public class BACnetPropertyStatesLightningOperation extends BACnetPropertyStates
 
     readBuffer.closeContext("BACnetPropertyStatesLightningOperation");
     // Create the instance
-    return new BACnetPropertyStatesLightningOperationBuilder(lightningOperation);
+    return new BACnetPropertyStatesLightningOperationBuilderImpl(lightningOperation);
   }
 
-  public static class BACnetPropertyStatesLightningOperationBuilder
+  public static class BACnetPropertyStatesLightningOperationBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLightingOperationTagged lightningOperation;
 
-    public BACnetPropertyStatesLightningOperationBuilder(
+    public BACnetPropertyStatesLightningOperationBuilderImpl(
         BACnetLightingOperationTagged lightningOperation) {
-
       this.lightningOperation = lightningOperation;
     }
 

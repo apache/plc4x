@@ -57,6 +57,7 @@ public class Plc4xConnectRequest extends Plc4xMessage implements Message {
   @Override
   protected void serializePlc4xMessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Plc4xConnectRequest");
 
@@ -64,7 +65,10 @@ public class Plc4xConnectRequest extends Plc4xMessage implements Message {
     // implicitly given by the objects content)
     short connectionStringLen = (short) (STR_LEN(getConnectionString()));
     writeImplicitField(
-        "connectionStringLen", connectionStringLen, writeUnsignedShort(writeBuffer, 8));
+        "connectionStringLen",
+        connectionStringLen,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (connectionString)
     writeSimpleField(
@@ -85,6 +89,7 @@ public class Plc4xConnectRequest extends Plc4xMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     Plc4xConnectRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (connectionStringLen)
     lengthInBits += 8;
@@ -95,12 +100,13 @@ public class Plc4xConnectRequest extends Plc4xMessage implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xConnectRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static Plc4xMessageBuilder staticParsePlc4xMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("Plc4xConnectRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short connectionStringLen =
         readImplicitField(
@@ -116,14 +122,13 @@ public class Plc4xConnectRequest extends Plc4xMessage implements Message {
 
     readBuffer.closeContext("Plc4xConnectRequest");
     // Create the instance
-    return new Plc4xConnectRequestBuilder(connectionString);
+    return new Plc4xConnectRequestBuilderImpl(connectionString);
   }
 
-  public static class Plc4xConnectRequestBuilder implements Plc4xMessage.Plc4xMessageBuilder {
+  public static class Plc4xConnectRequestBuilderImpl implements Plc4xMessage.Plc4xMessageBuilder {
     private final String connectionString;
 
-    public Plc4xConnectRequestBuilder(String connectionString) {
-
+    public Plc4xConnectRequestBuilderImpl(String connectionString) {
       this.connectionString = connectionString;
     }
 

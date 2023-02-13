@@ -115,6 +115,7 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CreateSessionRequest");
 
@@ -161,6 +162,7 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CreateSessionRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -192,12 +194,13 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static CreateSessionRequestBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CreateSessionRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -248,7 +251,7 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("CreateSessionRequest");
     // Create the instance
-    return new CreateSessionRequestBuilder(
+    return new CreateSessionRequestBuilderImpl(
         requestHeader,
         clientDescription,
         serverUri,
@@ -260,7 +263,7 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
         maxResponseMessageSize);
   }
 
-  public static class CreateSessionRequestBuilder
+  public static class CreateSessionRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final ExtensionObjectDefinition clientDescription;
@@ -272,7 +275,7 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
     private final double requestedSessionTimeout;
     private final long maxResponseMessageSize;
 
-    public CreateSessionRequestBuilder(
+    public CreateSessionRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         ExtensionObjectDefinition clientDescription,
         PascalString serverUri,
@@ -282,7 +285,6 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
         PascalByteString clientCertificate,
         double requestedSessionTimeout,
         long maxResponseMessageSize) {
-
       this.requestHeader = requestHeader;
       this.clientDescription = clientDescription;
       this.serverUri = serverUri;

@@ -56,6 +56,7 @@ public class BACnetPropertyStatesUnits extends BACnetPropertyStates implements M
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesUnits");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesUnits extends BACnetPropertyStates implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesUnits _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (units)
     lengthInBits += units.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesUnits extends BACnetPropertyStates implements M
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesUnitsBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesUnits");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetEngineeringUnitsTagged units =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesUnits extends BACnetPropertyStates implements M
 
     readBuffer.closeContext("BACnetPropertyStatesUnits");
     // Create the instance
-    return new BACnetPropertyStatesUnitsBuilder(units);
+    return new BACnetPropertyStatesUnitsBuilderImpl(units);
   }
 
-  public static class BACnetPropertyStatesUnitsBuilder
+  public static class BACnetPropertyStatesUnitsBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetEngineeringUnitsTagged units;
 
-    public BACnetPropertyStatesUnitsBuilder(BACnetEngineeringUnitsTagged units) {
-
+    public BACnetPropertyStatesUnitsBuilderImpl(BACnetEngineeringUnitsTagged units) {
       this.units = units;
     }
 

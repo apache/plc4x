@@ -72,6 +72,7 @@ public class CBusPointToPointToMultiPointCommandNormal extends CBusPointToPointT
   protected void serializeCBusPointToPointToMultiPointCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToPointToMultiPointCommandNormal");
 
@@ -100,6 +101,7 @@ public class CBusPointToPointToMultiPointCommandNormal extends CBusPointToPointT
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CBusPointToPointToMultiPointCommandNormal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (application)
     lengthInBits += 8;
@@ -110,12 +112,14 @@ public class CBusPointToPointToMultiPointCommandNormal extends CBusPointToPointT
     return lengthInBits;
   }
 
-  public static CBusPointToPointToMultiPointCommandNormalBuilder staticParseBuilder(
-      ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
+  public static CBusPointToPointToMultiPointCommandBuilder
+      staticParseCBusPointToPointToMultiPointCommandBuilder(
+          ReadBuffer readBuffer, CBusOptions cBusOptions) throws ParseException {
     readBuffer.pullContext("CBusPointToPointToMultiPointCommandNormal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ApplicationIdContainer application =
         readEnumField(
@@ -135,18 +139,18 @@ public class CBusPointToPointToMultiPointCommandNormal extends CBusPointToPointT
 
     readBuffer.closeContext("CBusPointToPointToMultiPointCommandNormal");
     // Create the instance
-    return new CBusPointToPointToMultiPointCommandNormalBuilder(application, salData, cBusOptions);
+    return new CBusPointToPointToMultiPointCommandNormalBuilderImpl(
+        application, salData, cBusOptions);
   }
 
-  public static class CBusPointToPointToMultiPointCommandNormalBuilder
+  public static class CBusPointToPointToMultiPointCommandNormalBuilderImpl
       implements CBusPointToPointToMultiPointCommand.CBusPointToPointToMultiPointCommandBuilder {
     private final ApplicationIdContainer application;
     private final SALData salData;
     private final CBusOptions cBusOptions;
 
-    public CBusPointToPointToMultiPointCommandNormalBuilder(
+    public CBusPointToPointToMultiPointCommandNormalBuilderImpl(
         ApplicationIdContainer application, SALData salData, CBusOptions cBusOptions) {
-
       this.application = application;
       this.salData = salData;
       this.cBusOptions = cBusOptions;

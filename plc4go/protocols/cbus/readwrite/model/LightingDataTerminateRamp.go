@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,12 +106,8 @@ func (m *_LightingDataTerminateRamp) GetTypeName() string {
 	return "LightingDataTerminateRamp"
 }
 
-func (m *_LightingDataTerminateRamp) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_LightingDataTerminateRamp) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_LightingDataTerminateRamp) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (group)
 	lengthInBits += 8
@@ -118,15 +115,15 @@ func (m *_LightingDataTerminateRamp) GetLengthInBitsConditional(lastItem bool) u
 	return lengthInBits
 }
 
-func (m *_LightingDataTerminateRamp) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_LightingDataTerminateRamp) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func LightingDataTerminateRampParse(theBytes []byte) (LightingDataTerminateRamp, error) {
-	return LightingDataTerminateRampParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return LightingDataTerminateRampParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func LightingDataTerminateRampParseWithBuffer(readBuffer utils.ReadBuffer) (LightingDataTerminateRamp, error) {
+func LightingDataTerminateRampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataTerminateRamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LightingDataTerminateRamp"); pullErr != nil {
@@ -156,14 +153,14 @@ func LightingDataTerminateRampParseWithBuffer(readBuffer utils.ReadBuffer) (Ligh
 }
 
 func (m *_LightingDataTerminateRamp) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_LightingDataTerminateRamp) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_LightingDataTerminateRamp) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_LightingDataTerminateRamp) SerializeWithWriteBuffer(writeBuffer utils.
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_LightingDataTerminateRamp) isLightingDataTerminateRamp() bool {
@@ -195,7 +192,7 @@ func (m *_LightingDataTerminateRamp) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

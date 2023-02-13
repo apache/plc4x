@@ -68,6 +68,7 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMUpdateKeyDistributionKey");
 
@@ -89,6 +90,7 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMUpdateKeyDistributionKey _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (keyRevision)
     lengthInBits += 8;
@@ -99,12 +101,13 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMUpdateKeyDistributionKeyBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMUpdateKeyDistributionKey");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte keyRevision = readSimpleField("keyRevision", readByte(readBuffer, 8));
 
@@ -116,17 +119,16 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
 
     readBuffer.closeContext("NLMUpdateKeyDistributionKey");
     // Create the instance
-    return new NLMUpdateKeyDistributionKeyBuilder(keyRevision, key, apduLength);
+    return new NLMUpdateKeyDistributionKeyBuilderImpl(keyRevision, key, apduLength);
   }
 
-  public static class NLMUpdateKeyDistributionKeyBuilder implements NLM.NLMBuilder {
+  public static class NLMUpdateKeyDistributionKeyBuilderImpl implements NLM.NLMBuilder {
     private final byte keyRevision;
     private final NLMUpdateKeyUpdateKeyEntry key;
     private final Integer apduLength;
 
-    public NLMUpdateKeyDistributionKeyBuilder(
+    public NLMUpdateKeyDistributionKeyBuilderImpl(
         byte keyRevision, NLMUpdateKeyUpdateKeyEntry key, Integer apduLength) {
-
       this.keyRevision = keyRevision;
       this.key = key;
       this.apduLength = apduLength;

@@ -78,6 +78,7 @@ public class BACnetEventParameterChangeOfState extends BACnetEventParameter impl
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterChangeOfState");
 
@@ -105,6 +106,7 @@ public class BACnetEventParameterChangeOfState extends BACnetEventParameter impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterChangeOfState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -121,12 +123,13 @@ public class BACnetEventParameterChangeOfState extends BACnetEventParameter impl
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfStateBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -163,23 +166,22 @@ public class BACnetEventParameterChangeOfState extends BACnetEventParameter impl
 
     readBuffer.closeContext("BACnetEventParameterChangeOfState");
     // Create the instance
-    return new BACnetEventParameterChangeOfStateBuilder(
+    return new BACnetEventParameterChangeOfStateBuilderImpl(
         openingTag, timeDelay, listOfValues, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfStateBuilder
+  public static class BACnetEventParameterChangeOfStateBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
     private final BACnetEventParameterChangeOfStateListOfValues listOfValues;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfStateBuilder(
+    public BACnetEventParameterChangeOfStateBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetEventParameterChangeOfStateListOfValues listOfValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.listOfValues = listOfValues;

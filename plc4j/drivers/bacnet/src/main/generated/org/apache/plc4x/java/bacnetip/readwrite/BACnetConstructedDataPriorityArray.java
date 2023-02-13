@@ -78,6 +78,7 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPriorityArray");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPriorityArray _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (priorityArray)
     lengthInBits += priorityArray.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPriorityArrayBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetPriorityArray priorityArray =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataPriorityArray");
     // Create the instance
-    return new BACnetConstructedDataPriorityArrayBuilder(
+    return new BACnetConstructedDataPriorityArrayBuilderImpl(
         priorityArray, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPriorityArrayBuilder
+  public static class BACnetConstructedDataPriorityArrayBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetPriorityArray priorityArray;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPriorityArrayBuilder(
+    public BACnetConstructedDataPriorityArrayBuilderImpl(
         BACnetPriorityArray priorityArray,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.priorityArray = priorityArray;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

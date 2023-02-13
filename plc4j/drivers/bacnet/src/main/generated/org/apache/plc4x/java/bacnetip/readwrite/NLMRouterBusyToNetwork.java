@@ -61,6 +61,7 @@ public class NLMRouterBusyToNetwork extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMRouterBusyToNetwork");
 
@@ -82,6 +83,7 @@ public class NLMRouterBusyToNetwork extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMRouterBusyToNetwork _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (destinationNetworkAddresses != null) {
@@ -91,12 +93,13 @@ public class NLMRouterBusyToNetwork extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMRouterBusyToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMRouterBusyToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<Integer> destinationNetworkAddresses =
         readLengthArrayField(
@@ -104,16 +107,15 @@ public class NLMRouterBusyToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMRouterBusyToNetwork");
     // Create the instance
-    return new NLMRouterBusyToNetworkBuilder(destinationNetworkAddresses, apduLength);
+    return new NLMRouterBusyToNetworkBuilderImpl(destinationNetworkAddresses, apduLength);
   }
 
-  public static class NLMRouterBusyToNetworkBuilder implements NLM.NLMBuilder {
+  public static class NLMRouterBusyToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final List<Integer> destinationNetworkAddresses;
     private final Integer apduLength;
 
-    public NLMRouterBusyToNetworkBuilder(
+    public NLMRouterBusyToNetworkBuilderImpl(
         List<Integer> destinationNetworkAddresses, Integer apduLength) {
-
       this.destinationNetworkAddresses = destinationNetworkAddresses;
       this.apduLength = apduLength;
     }

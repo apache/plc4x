@@ -64,6 +64,7 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ContentFilter");
 
@@ -85,6 +86,7 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ContentFilter _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (noOfElements)
     lengthInBits += 32;
@@ -93,7 +95,7 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
     if (elements != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : elements) {
-        boolean last = ++i >= elements.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= elements.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -101,12 +103,13 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
     return lengthInBits;
   }
 
-  public static ContentFilterBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ContentFilter");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int noOfElements = readSimpleField("noOfElements", readSignedInt(readBuffer, 32));
 
@@ -120,16 +123,15 @@ public class ContentFilter extends ExtensionObjectDefinition implements Message 
 
     readBuffer.closeContext("ContentFilter");
     // Create the instance
-    return new ContentFilterBuilder(noOfElements, elements);
+    return new ContentFilterBuilderImpl(noOfElements, elements);
   }
 
-  public static class ContentFilterBuilder
+  public static class ContentFilterBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final int noOfElements;
     private final List<ExtensionObjectDefinition> elements;
 
-    public ContentFilterBuilder(int noOfElements, List<ExtensionObjectDefinition> elements) {
-
+    public ContentFilterBuilderImpl(int noOfElements, List<ExtensionObjectDefinition> elements) {
       this.noOfElements = noOfElements;
       this.elements = elements;
     }

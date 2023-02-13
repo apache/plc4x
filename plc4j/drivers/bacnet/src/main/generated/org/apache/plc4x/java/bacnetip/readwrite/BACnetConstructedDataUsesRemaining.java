@@ -78,6 +78,7 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataUsesRemaining");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataUsesRemaining _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (usesRemaining)
     lengthInBits += usesRemaining.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataUsesRemainingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger usesRemaining =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataUsesRemaining");
     // Create the instance
-    return new BACnetConstructedDataUsesRemainingBuilder(
+    return new BACnetConstructedDataUsesRemainingBuilderImpl(
         usesRemaining, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataUsesRemainingBuilder
+  public static class BACnetConstructedDataUsesRemainingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger usesRemaining;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUsesRemainingBuilder(
+    public BACnetConstructedDataUsesRemainingBuilderImpl(
         BACnetApplicationTagSignedInteger usesRemaining,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.usesRemaining = usesRemaining;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

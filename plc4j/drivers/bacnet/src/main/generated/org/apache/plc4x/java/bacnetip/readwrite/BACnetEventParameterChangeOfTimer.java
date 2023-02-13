@@ -85,6 +85,7 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterChangeOfTimer");
 
@@ -116,6 +117,7 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterChangeOfTimer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -135,12 +137,13 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
     return lengthInBits;
   }
 
-  public static BACnetEventParameterChangeOfTimerBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterChangeOfTimer");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -186,11 +189,11 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
 
     readBuffer.closeContext("BACnetEventParameterChangeOfTimer");
     // Create the instance
-    return new BACnetEventParameterChangeOfTimerBuilder(
+    return new BACnetEventParameterChangeOfTimerBuilderImpl(
         openingTag, timeDelay, alarmValues, updateTimeReference, closingTag);
   }
 
-  public static class BACnetEventParameterChangeOfTimerBuilder
+  public static class BACnetEventParameterChangeOfTimerBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetContextTagUnsignedInteger timeDelay;
@@ -198,13 +201,12 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
     private final BACnetDeviceObjectPropertyReferenceEnclosed updateTimeReference;
     private final BACnetClosingTag closingTag;
 
-    public BACnetEventParameterChangeOfTimerBuilder(
+    public BACnetEventParameterChangeOfTimerBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetContextTagUnsignedInteger timeDelay,
         BACnetEventParameterChangeOfTimerAlarmValue alarmValues,
         BACnetDeviceObjectPropertyReferenceEnclosed updateTimeReference,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.timeDelay = timeDelay;
       this.alarmValues = alarmValues;

@@ -21,6 +21,7 @@ add_library(plc4c-spi
         src/utils/list.c
         src/utils/queue.c
         src/connection.c
+        src/context.c
         src/data.c
         src/evaluation_helper.c
         src/read.c

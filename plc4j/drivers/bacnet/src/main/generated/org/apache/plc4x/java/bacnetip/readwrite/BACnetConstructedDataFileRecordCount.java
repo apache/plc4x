@@ -78,6 +78,7 @@ public class BACnetConstructedDataFileRecordCount extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFileRecordCount");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataFileRecordCount extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFileRecordCount _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (recordCount)
     lengthInBits += recordCount.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataFileRecordCount extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFileRecordCountBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataFileRecordCount extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger recordCount =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataFileRecordCount extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataFileRecordCount");
     // Create the instance
-    return new BACnetConstructedDataFileRecordCountBuilder(
+    return new BACnetConstructedDataFileRecordCountBuilderImpl(
         recordCount, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFileRecordCountBuilder
+  public static class BACnetConstructedDataFileRecordCountBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger recordCount;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFileRecordCountBuilder(
+    public BACnetConstructedDataFileRecordCountBuilderImpl(
         BACnetApplicationTagUnsignedInteger recordCount,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.recordCount = recordCount;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

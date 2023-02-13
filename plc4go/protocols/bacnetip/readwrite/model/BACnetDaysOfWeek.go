@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -117,19 +118,19 @@ func CastBACnetDaysOfWeek(structType interface{}) BACnetDaysOfWeek {
 	return castFunc(structType)
 }
 
-func (m BACnetDaysOfWeek) GetLengthInBits() uint16 {
+func (m BACnetDaysOfWeek) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m BACnetDaysOfWeek) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m BACnetDaysOfWeek) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func BACnetDaysOfWeekParse(theBytes []byte) (BACnetDaysOfWeek, error) {
-	return BACnetDaysOfWeekParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func BACnetDaysOfWeekParse(ctx context.Context, theBytes []byte) (BACnetDaysOfWeek, error) {
+	return BACnetDaysOfWeekParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetDaysOfWeekParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDaysOfWeek, error) {
+func BACnetDaysOfWeekParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDaysOfWeek, error) {
 	val, err := readBuffer.ReadUint8("BACnetDaysOfWeek", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetDaysOfWeek")
@@ -144,13 +145,13 @@ func BACnetDaysOfWeekParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetDaysOfW
 
 func (e BACnetDaysOfWeek) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e BACnetDaysOfWeek) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e BACnetDaysOfWeek) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("BACnetDaysOfWeek", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

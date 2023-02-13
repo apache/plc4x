@@ -60,6 +60,7 @@ public abstract class BACnetUnconfirmedServiceRequestWhoHasObject implements Mes
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestWhoHasObject");
 
@@ -82,6 +83,7 @@ public abstract class BACnetUnconfirmedServiceRequestWhoHasObject implements Mes
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetUnconfirmedServiceRequestWhoHasObject _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -102,6 +104,7 @@ public abstract class BACnetUnconfirmedServiceRequestWhoHasObject implements Mes
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -115,9 +118,12 @@ public abstract class BACnetUnconfirmedServiceRequestWhoHasObject implements Mes
     BACnetUnconfirmedServiceRequestWhoHasObjectBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
       builder =
-          BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier.staticParseBuilder(readBuffer);
+          BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
+              .staticParseBACnetUnconfirmedServiceRequestWhoHasObjectBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 3)) {
-      builder = BACnetUnconfirmedServiceRequestWhoHasObjectName.staticParseBuilder(readBuffer);
+      builder =
+          BACnetUnconfirmedServiceRequestWhoHasObjectName
+              .staticParseBACnetUnconfirmedServiceRequestWhoHasObjectBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -135,7 +141,7 @@ public abstract class BACnetUnconfirmedServiceRequestWhoHasObject implements Mes
     return _bACnetUnconfirmedServiceRequestWhoHasObject;
   }
 
-  public static interface BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
+  public interface BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
     BACnetUnconfirmedServiceRequestWhoHasObject build(BACnetTagHeader peekedTagHeader);
   }
 

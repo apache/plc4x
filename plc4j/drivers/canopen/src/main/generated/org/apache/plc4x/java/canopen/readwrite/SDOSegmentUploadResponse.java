@@ -69,6 +69,7 @@ public class SDOSegmentUploadResponse extends SDOResponse implements Message {
   @Override
   protected void serializeSDOResponseChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOSegmentUploadResponse");
 
@@ -102,6 +103,7 @@ public class SDOSegmentUploadResponse extends SDOResponse implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOSegmentUploadResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (toggle)
     lengthInBits += 1;
@@ -126,12 +128,13 @@ public class SDOSegmentUploadResponse extends SDOResponse implements Message {
     return lengthInBits;
   }
 
-  public static SDOSegmentUploadResponseBuilder staticParseBuilder(
+  public static SDOResponseBuilder staticParseSDOResponseBuilder(
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOSegmentUploadResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean toggle = readSimpleField("toggle", readBoolean(readBuffer));
 
@@ -145,16 +148,16 @@ public class SDOSegmentUploadResponse extends SDOResponse implements Message {
 
     readBuffer.closeContext("SDOSegmentUploadResponse");
     // Create the instance
-    return new SDOSegmentUploadResponseBuilder(toggle, last, data);
+    return new SDOSegmentUploadResponseBuilderImpl(toggle, last, data);
   }
 
-  public static class SDOSegmentUploadResponseBuilder implements SDOResponse.SDOResponseBuilder {
+  public static class SDOSegmentUploadResponseBuilderImpl
+      implements SDOResponse.SDOResponseBuilder {
     private final boolean toggle;
     private final boolean last;
     private final byte[] data;
 
-    public SDOSegmentUploadResponseBuilder(boolean toggle, boolean last, byte[] data) {
-
+    public SDOSegmentUploadResponseBuilderImpl(boolean toggle, boolean last, byte[] data) {
       this.toggle = toggle;
       this.last = last;
       this.data = data;

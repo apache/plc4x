@@ -67,6 +67,7 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
   protected void serializeMediaTransportControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlDataShuffleOnOff");
 
@@ -93,6 +94,7 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MediaTransportControlDataShuffleOnOff _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (state)
     lengthInBits += 8;
@@ -104,12 +106,13 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
     return lengthInBits;
   }
 
-  public static MediaTransportControlDataShuffleOnOffBuilder staticParseBuilder(
+  public static MediaTransportControlDataBuilder staticParseMediaTransportControlDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("MediaTransportControlDataShuffleOnOff");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte state = readSimpleField("state", readByte(readBuffer, 8));
     boolean isOff = readVirtualField("isOff", boolean.class, (state) == (0x00));
@@ -117,15 +120,14 @@ public class MediaTransportControlDataShuffleOnOff extends MediaTransportControl
 
     readBuffer.closeContext("MediaTransportControlDataShuffleOnOff");
     // Create the instance
-    return new MediaTransportControlDataShuffleOnOffBuilder(state);
+    return new MediaTransportControlDataShuffleOnOffBuilderImpl(state);
   }
 
-  public static class MediaTransportControlDataShuffleOnOffBuilder
+  public static class MediaTransportControlDataShuffleOnOffBuilderImpl
       implements MediaTransportControlData.MediaTransportControlDataBuilder {
     private final byte state;
 
-    public MediaTransportControlDataShuffleOnOffBuilder(byte state) {
-
+    public MediaTransportControlDataShuffleOnOffBuilderImpl(byte state) {
       this.state = state;
     }
 

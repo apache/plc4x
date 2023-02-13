@@ -51,8 +51,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
   protected final List<Long> arrayDimensions;
   protected final long maxStringLength;
   protected final boolean isOptional;
-  // Reserved Fields
-  private Short reservedField0;
 
   public StructureField(
       PascalString name,
@@ -110,6 +108,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("StructureField");
 
@@ -136,10 +135,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     writeSimpleField("maxStringLength", maxStringLength, writeUnsignedLong(writeBuffer, 32));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (isOptional)
     writeSimpleField("isOptional", isOptional, writeBoolean(writeBuffer));
@@ -156,6 +152,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     StructureField _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
@@ -189,12 +186,13 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     return lengthInBits;
   }
 
-  public static StructureFieldBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("StructureField");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(
@@ -229,7 +227,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
 
     readBuffer.closeContext("StructureField");
     // Create the instance
-    return new StructureFieldBuilder(
+    return new StructureFieldBuilderImpl(
         name,
         description,
         dataType,
@@ -237,11 +235,10 @@ public class StructureField extends ExtensionObjectDefinition implements Message
         noOfArrayDimensions,
         arrayDimensions,
         maxStringLength,
-        isOptional,
-        reservedField0);
+        isOptional);
   }
 
-  public static class StructureFieldBuilder
+  public static class StructureFieldBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
     private final LocalizedText description;
@@ -251,9 +248,8 @@ public class StructureField extends ExtensionObjectDefinition implements Message
     private final List<Long> arrayDimensions;
     private final long maxStringLength;
     private final boolean isOptional;
-    private final Short reservedField0;
 
-    public StructureFieldBuilder(
+    public StructureFieldBuilderImpl(
         PascalString name,
         LocalizedText description,
         NodeId dataType,
@@ -261,8 +257,7 @@ public class StructureField extends ExtensionObjectDefinition implements Message
         int noOfArrayDimensions,
         List<Long> arrayDimensions,
         long maxStringLength,
-        boolean isOptional,
-        Short reservedField0) {
+        boolean isOptional) {
       this.name = name;
       this.description = description;
       this.dataType = dataType;
@@ -271,7 +266,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
       this.arrayDimensions = arrayDimensions;
       this.maxStringLength = maxStringLength;
       this.isOptional = isOptional;
-      this.reservedField0 = reservedField0;
     }
 
     public StructureField build() {
@@ -285,7 +279,6 @@ public class StructureField extends ExtensionObjectDefinition implements Message
               arrayDimensions,
               maxStringLength,
               isOptional);
-      structureField.reservedField0 = reservedField0;
       return structureField;
     }
   }

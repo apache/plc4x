@@ -71,6 +71,7 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFile");
 
@@ -92,6 +93,7 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckAtomicReadFile _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (endOfFile)
     lengthInBits += endOfFile.getLengthInBits();
@@ -102,12 +104,13 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
     return lengthInBits;
   }
 
-  public static BACnetServiceAckAtomicReadFileBuilder staticParseBuilder(
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
       ReadBuffer readBuffer, Long serviceAckLength) throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAtomicReadFile");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean endOfFile =
         readSimpleField(
@@ -125,20 +128,19 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
 
     readBuffer.closeContext("BACnetServiceAckAtomicReadFile");
     // Create the instance
-    return new BACnetServiceAckAtomicReadFileBuilder(endOfFile, accessMethod, serviceAckLength);
+    return new BACnetServiceAckAtomicReadFileBuilderImpl(endOfFile, accessMethod, serviceAckLength);
   }
 
-  public static class BACnetServiceAckAtomicReadFileBuilder
+  public static class BACnetServiceAckAtomicReadFileBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final BACnetApplicationTagBoolean endOfFile;
     private final BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod;
     private final Long serviceAckLength;
 
-    public BACnetServiceAckAtomicReadFileBuilder(
+    public BACnetServiceAckAtomicReadFileBuilderImpl(
         BACnetApplicationTagBoolean endOfFile,
         BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod,
         Long serviceAckLength) {
-
       this.endOfFile = endOfFile;
       this.accessMethod = accessMethod;
       this.serviceAckLength = serviceAckLength;

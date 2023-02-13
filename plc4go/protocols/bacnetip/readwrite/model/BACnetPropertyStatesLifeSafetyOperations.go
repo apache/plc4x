@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) GetTypeName() string {
 	return "BACnetPropertyStatesLifeSafetyOperations"
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyOperations) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesLifeSafetyOperations) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesLifeSafetyOperations) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (lifeSafetyOperations)
-	lengthInBits += m.LifeSafetyOperations.GetLengthInBits()
+	lengthInBits += m.LifeSafetyOperations.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyOperations) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesLifeSafetyOperations) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesLifeSafetyOperationsParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyOperations, error) {
-	return BACnetPropertyStatesLifeSafetyOperationsParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesLifeSafetyOperationsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesLifeSafetyOperationsParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyOperations, error) {
+func BACnetPropertyStatesLifeSafetyOperationsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyOperations, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLifeSafetyOperations"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesLifeSafetyOperationsParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("lifeSafetyOperations"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lifeSafetyOperations")
 	}
-	_lifeSafetyOperations, _lifeSafetyOperationsErr := BACnetLifeSafetyOperationTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_lifeSafetyOperations, _lifeSafetyOperationsErr := BACnetLifeSafetyOperationTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _lifeSafetyOperationsErr != nil {
 		return nil, errors.Wrap(_lifeSafetyOperationsErr, "Error parsing 'lifeSafetyOperations' field of BACnetPropertyStatesLifeSafetyOperations")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesLifeSafetyOperationsParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetPropertyStatesLifeSafetyOperations) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesLifeSafetyOperations) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesLifeSafetyOperations) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("lifeSafetyOperations"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lifeSafetyOperations")
 		}
-		_lifeSafetyOperationsErr := writeBuffer.WriteSerializable(m.GetLifeSafetyOperations())
+		_lifeSafetyOperationsErr := writeBuffer.WriteSerializable(ctx, m.GetLifeSafetyOperations())
 		if popErr := writeBuffer.PopContext("lifeSafetyOperations"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lifeSafetyOperations")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesLifeSafetyOperations) isBACnetPropertyStatesLifeSafetyOperations() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesLifeSafetyOperations) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

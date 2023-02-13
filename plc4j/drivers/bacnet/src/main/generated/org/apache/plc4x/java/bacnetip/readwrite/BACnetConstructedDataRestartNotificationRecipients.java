@@ -75,6 +75,7 @@ public class BACnetConstructedDataRestartNotificationRecipients extends BACnetCo
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRestartNotificationRecipients");
 
@@ -94,6 +95,7 @@ public class BACnetConstructedDataRestartNotificationRecipients extends BACnetCo
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataRestartNotificationRecipients _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (restartNotificationRecipients != null) {
@@ -105,7 +107,7 @@ public class BACnetConstructedDataRestartNotificationRecipients extends BACnetCo
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataRestartNotificationRecipientsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -116,6 +118,7 @@ public class BACnetConstructedDataRestartNotificationRecipients extends BACnetCo
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetRecipient> restartNotificationRecipients =
         readTerminatedArrayField(
@@ -129,21 +132,20 @@ public class BACnetConstructedDataRestartNotificationRecipients extends BACnetCo
 
     readBuffer.closeContext("BACnetConstructedDataRestartNotificationRecipients");
     // Create the instance
-    return new BACnetConstructedDataRestartNotificationRecipientsBuilder(
+    return new BACnetConstructedDataRestartNotificationRecipientsBuilderImpl(
         restartNotificationRecipients, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataRestartNotificationRecipientsBuilder
+  public static class BACnetConstructedDataRestartNotificationRecipientsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetRecipient> restartNotificationRecipients;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRestartNotificationRecipientsBuilder(
+    public BACnetConstructedDataRestartNotificationRecipientsBuilderImpl(
         List<BACnetRecipient> restartNotificationRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.restartNotificationRecipients = restartNotificationRecipients;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

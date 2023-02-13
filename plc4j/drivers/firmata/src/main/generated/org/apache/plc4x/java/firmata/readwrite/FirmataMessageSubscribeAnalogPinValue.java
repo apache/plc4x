@@ -46,16 +46,10 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
   protected final byte pin;
   protected final boolean enable;
 
-  // Arguments.
-  protected final Boolean response;
-  // Reserved Fields
-  private Short reservedField0;
-
-  public FirmataMessageSubscribeAnalogPinValue(byte pin, boolean enable, Boolean response) {
-    super(response);
+  public FirmataMessageSubscribeAnalogPinValue(byte pin, boolean enable) {
+    super();
     this.pin = pin;
     this.enable = enable;
-    this.response = response;
   }
 
   public byte getPin() {
@@ -70,6 +64,7 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
   protected void serializeFirmataMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataMessageSubscribeAnalogPinValue");
 
@@ -83,8 +78,9 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+        (short) 0x00,
+        writeUnsignedShort(writeBuffer, 7),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (enable)
     writeSimpleField(
@@ -105,6 +101,7 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FirmataMessageSubscribeAnalogPinValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pin)
     lengthInBits += 4;
@@ -118,12 +115,13 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
     return lengthInBits;
   }
 
-  public static FirmataMessageSubscribeAnalogPinValueBuilder staticParseBuilder(
+  public static FirmataMessageBuilder staticParseFirmataMessageBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataMessageSubscribeAnalogPinValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte pin =
         readSimpleField(
@@ -142,29 +140,22 @@ public class FirmataMessageSubscribeAnalogPinValue extends FirmataMessage implem
 
     readBuffer.closeContext("FirmataMessageSubscribeAnalogPinValue");
     // Create the instance
-    return new FirmataMessageSubscribeAnalogPinValueBuilder(pin, enable, response, reservedField0);
+    return new FirmataMessageSubscribeAnalogPinValueBuilderImpl(pin, enable);
   }
 
-  public static class FirmataMessageSubscribeAnalogPinValueBuilder
+  public static class FirmataMessageSubscribeAnalogPinValueBuilderImpl
       implements FirmataMessage.FirmataMessageBuilder {
     private final byte pin;
     private final boolean enable;
-    private final Boolean response;
-    private final Short reservedField0;
 
-    public FirmataMessageSubscribeAnalogPinValueBuilder(
-        byte pin, boolean enable, Boolean response, Short reservedField0) {
+    public FirmataMessageSubscribeAnalogPinValueBuilderImpl(byte pin, boolean enable) {
       this.pin = pin;
       this.enable = enable;
-      this.response = response;
-      this.reservedField0 = reservedField0;
     }
 
-    public FirmataMessageSubscribeAnalogPinValue build(Boolean response) {
-
+    public FirmataMessageSubscribeAnalogPinValue build() {
       FirmataMessageSubscribeAnalogPinValue firmataMessageSubscribeAnalogPinValue =
-          new FirmataMessageSubscribeAnalogPinValue(pin, enable, response);
-      firmataMessageSubscribeAnalogPinValue.reservedField0 = reservedField0;
+          new FirmataMessageSubscribeAnalogPinValue(pin, enable);
       return firmataMessageSubscribeAnalogPinValue;
     }
   }

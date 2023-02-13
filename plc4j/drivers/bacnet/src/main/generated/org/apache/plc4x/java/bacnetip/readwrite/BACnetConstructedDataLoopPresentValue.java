@@ -79,6 +79,7 @@ public class BACnetConstructedDataLoopPresentValue extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLoopPresentValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataLoopPresentValue extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLoopPresentValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (presentValue)
     lengthInBits += presentValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataLoopPresentValue extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLoopPresentValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataLoopPresentValue extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal presentValue =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataLoopPresentValue extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataLoopPresentValue");
     // Create the instance
-    return new BACnetConstructedDataLoopPresentValueBuilder(
+    return new BACnetConstructedDataLoopPresentValueBuilderImpl(
         presentValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLoopPresentValueBuilder
+  public static class BACnetConstructedDataLoopPresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal presentValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLoopPresentValueBuilder(
+    public BACnetConstructedDataLoopPresentValueBuilderImpl(
         BACnetApplicationTagReal presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

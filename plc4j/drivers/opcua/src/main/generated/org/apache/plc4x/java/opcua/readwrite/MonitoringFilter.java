@@ -50,6 +50,7 @@ public class MonitoringFilter extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MonitoringFilter");
 
@@ -65,26 +66,28 @@ public class MonitoringFilter extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MonitoringFilter _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static MonitoringFilterBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("MonitoringFilter");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MonitoringFilter");
     // Create the instance
-    return new MonitoringFilterBuilder();
+    return new MonitoringFilterBuilderImpl();
   }
 
-  public static class MonitoringFilterBuilder
+  public static class MonitoringFilterBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public MonitoringFilterBuilder() {}
+    public MonitoringFilterBuilderImpl() {}
 
     public MonitoringFilter build() {
       MonitoringFilter monitoringFilter = new MonitoringFilter();

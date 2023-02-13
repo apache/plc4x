@@ -64,6 +64,7 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("EphemeralKeyType");
 
@@ -85,6 +86,7 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     EphemeralKeyType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (publicKey)
     lengthInBits += publicKey.getLengthInBits();
@@ -95,12 +97,13 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
     return lengthInBits;
   }
 
-  public static EphemeralKeyTypeBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("EphemeralKeyType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString publicKey =
         readSimpleField(
@@ -116,16 +119,15 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
 
     readBuffer.closeContext("EphemeralKeyType");
     // Create the instance
-    return new EphemeralKeyTypeBuilder(publicKey, signature);
+    return new EphemeralKeyTypeBuilderImpl(publicKey, signature);
   }
 
-  public static class EphemeralKeyTypeBuilder
+  public static class EphemeralKeyTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalByteString publicKey;
     private final PascalByteString signature;
 
-    public EphemeralKeyTypeBuilder(PascalByteString publicKey, PascalByteString signature) {
-
+    public EphemeralKeyTypeBuilderImpl(PascalByteString publicKey, PascalByteString signature) {
       this.publicKey = publicKey;
       this.signature = signature;
     }

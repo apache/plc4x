@@ -78,6 +78,7 @@ public class BACnetConstructedDataObjectName extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataObjectName");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataObjectName extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataObjectName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (objectName)
     lengthInBits += objectName.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataObjectName extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataObjectNameBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataObjectName extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString objectName =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataObjectName extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataObjectName");
     // Create the instance
-    return new BACnetConstructedDataObjectNameBuilder(objectName, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataObjectNameBuilderImpl(
+        objectName, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataObjectNameBuilder
+  public static class BACnetConstructedDataObjectNameBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString objectName;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataObjectNameBuilder(
+    public BACnetConstructedDataObjectNameBuilderImpl(
         BACnetApplicationTagCharacterString objectName,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.objectName = objectName;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

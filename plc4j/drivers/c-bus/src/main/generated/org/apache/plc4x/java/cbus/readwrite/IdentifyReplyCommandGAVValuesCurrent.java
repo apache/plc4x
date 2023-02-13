@@ -62,6 +62,7 @@ public class IdentifyReplyCommandGAVValuesCurrent extends IdentifyReplyCommand i
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandGAVValuesCurrent");
 
@@ -80,6 +81,7 @@ public class IdentifyReplyCommandGAVValuesCurrent extends IdentifyReplyCommand i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandGAVValuesCurrent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (values != null) {
@@ -89,27 +91,27 @@ public class IdentifyReplyCommandGAVValuesCurrent extends IdentifyReplyCommand i
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandGAVValuesCurrentBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandGAVValuesCurrent");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] values = readBuffer.readByteArray("values", Math.toIntExact(numBytes));
 
     readBuffer.closeContext("IdentifyReplyCommandGAVValuesCurrent");
     // Create the instance
-    return new IdentifyReplyCommandGAVValuesCurrentBuilder(values, numBytes);
+    return new IdentifyReplyCommandGAVValuesCurrentBuilderImpl(values, numBytes);
   }
 
-  public static class IdentifyReplyCommandGAVValuesCurrentBuilder
+  public static class IdentifyReplyCommandGAVValuesCurrentBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] values;
     private final Short numBytes;
 
-    public IdentifyReplyCommandGAVValuesCurrentBuilder(byte[] values, Short numBytes) {
-
+    public IdentifyReplyCommandGAVValuesCurrentBuilderImpl(byte[] values, Short numBytes) {
       this.values = values;
       this.numBytes = numBytes;
     }

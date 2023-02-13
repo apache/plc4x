@@ -360,6 +360,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SessionDiagnosticsDataType");
 
@@ -562,6 +563,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SessionDiagnosticsDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (sessionId)
     lengthInBits += sessionId.getLengthInBits();
@@ -585,7 +587,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     if (localeIds != null) {
       int i = 0;
       for (PascalString element : localeIds) {
-        boolean last = ++i >= localeIds.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= localeIds.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -704,12 +706,13 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     return lengthInBits;
   }
 
-  public static SessionDiagnosticsDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SessionDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =
         readSimpleField(
@@ -975,7 +978,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
 
     readBuffer.closeContext("SessionDiagnosticsDataType");
     // Create the instance
-    return new SessionDiagnosticsDataTypeBuilder(
+    return new SessionDiagnosticsDataTypeBuilderImpl(
         sessionId,
         sessionName,
         clientDescription,
@@ -1022,7 +1025,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
         unregisterNodesCount);
   }
 
-  public static class SessionDiagnosticsDataTypeBuilder
+  public static class SessionDiagnosticsDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId sessionId;
     private final PascalString sessionName;
@@ -1069,7 +1072,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     private final ExtensionObjectDefinition registerNodesCount;
     private final ExtensionObjectDefinition unregisterNodesCount;
 
-    public SessionDiagnosticsDataTypeBuilder(
+    public SessionDiagnosticsDataTypeBuilderImpl(
         NodeId sessionId,
         PascalString sessionName,
         ExtensionObjectDefinition clientDescription,
@@ -1114,7 +1117,6 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
         ExtensionObjectDefinition queryNextCount,
         ExtensionObjectDefinition registerNodesCount,
         ExtensionObjectDefinition unregisterNodesCount) {
-
       this.sessionId = sessionId;
       this.sessionName = sessionName;
       this.clientDescription = clientDescription;

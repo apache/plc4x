@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -150,12 +152,8 @@ func (m *_AdsReadWriteRequest) GetTypeName() string {
 	return "AdsReadWriteRequest"
 }
 
-func (m *_AdsReadWriteRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsReadWriteRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsReadWriteRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (indexGroup)
 	lengthInBits += 32
@@ -171,9 +169,11 @@ func (m *_AdsReadWriteRequest) GetLengthInBitsConditional(lastItem bool) uint16 
 
 	// Array field
 	if len(m.Items) > 0 {
-		for i, element := range m.Items {
-			last := i == len(m.Items)-1
-			lengthInBits += element.(interface{ GetLengthInBitsConditional(bool) uint16 }).GetLengthInBitsConditional(last)
+		for _curItem, element := range m.Items {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Items), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
 		}
 	}
 
@@ -185,15 +185,15 @@ func (m *_AdsReadWriteRequest) GetLengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *_AdsReadWriteRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsReadWriteRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsReadWriteRequestParse(theBytes []byte) (AdsReadWriteRequest, error) {
-	return AdsReadWriteRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsReadWriteRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsReadWriteRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadWriteRequest, error) {
+func AdsReadWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadWriteRequest"); pullErr != nil {
@@ -241,12 +241,16 @@ func AdsReadWriteRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadWri
 		items = nil
 	}
 	{
-		for curItem := uint16(0); curItem < uint16(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16)); curItem++ {
-			_item, _err := AdsMultiRequestItemParseWithBuffer(readBuffer, indexGroup)
+		_numItems := uint16(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := AdsMultiRequestItemParseWithBuffer(arrayCtx, readBuffer, indexGroup)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'items' field of AdsReadWriteRequest")
 			}
-			items[curItem] = _item.(AdsMultiRequestItem)
+			items[_curItem] = _item.(AdsMultiRequestItem)
 		}
 	}
 	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
@@ -277,14 +281,14 @@ func AdsReadWriteRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadWri
 }
 
 func (m *_AdsReadWriteRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -324,8 +328,11 @@ func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		if pushErr := writeBuffer.PushContext("items", utils.WithRenderAsList(true)); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for items")
 		}
-		for _, _element := range m.GetItems() {
-			_elementErr := writeBuffer.WriteSerializable(_element)
+		for _curItem, _element := range m.GetItems() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'items' field")
 			}
@@ -345,7 +352,7 @@ func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsReadWriteRequest) isAdsReadWriteRequest() bool {
@@ -357,7 +364,7 @@ func (m *_AdsReadWriteRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -79,6 +79,7 @@ public class BACnetConstructedDataSecurityPDUTimeout extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSecurityPDUTimeout");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataSecurityPDUTimeout extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSecurityPDUTimeout _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (securityPduTimeout)
     lengthInBits += securityPduTimeout.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataSecurityPDUTimeout extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSecurityPDUTimeoutBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataSecurityPDUTimeout extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger securityPduTimeout =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataSecurityPDUTimeout extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataSecurityPDUTimeout");
     // Create the instance
-    return new BACnetConstructedDataSecurityPDUTimeoutBuilder(
+    return new BACnetConstructedDataSecurityPDUTimeoutBuilderImpl(
         securityPduTimeout, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSecurityPDUTimeoutBuilder
+  public static class BACnetConstructedDataSecurityPDUTimeoutBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger securityPduTimeout;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSecurityPDUTimeoutBuilder(
+    public BACnetConstructedDataSecurityPDUTimeoutBuilderImpl(
         BACnetApplicationTagUnsignedInteger securityPduTimeout,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.securityPduTimeout = securityPduTimeout;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

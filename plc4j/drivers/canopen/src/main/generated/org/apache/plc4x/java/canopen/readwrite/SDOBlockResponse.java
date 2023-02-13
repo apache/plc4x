@@ -57,6 +57,7 @@ public class SDOBlockResponse extends SDOResponse implements Message {
   @Override
   protected void serializeSDOResponseChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SDOBlockResponse");
 
@@ -75,6 +76,7 @@ public class SDOBlockResponse extends SDOResponse implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SDOBlockResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (block)
     lengthInBits += block.getLengthInBits();
@@ -82,12 +84,13 @@ public class SDOBlockResponse extends SDOResponse implements Message {
     return lengthInBits;
   }
 
-  public static SDOBlockResponseBuilder staticParseBuilder(
+  public static SDOResponseBuilder staticParseSDOResponseBuilder(
       ReadBuffer readBuffer, SDOResponseCommand command) throws ParseException {
     readBuffer.pullContext("SDOBlockResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SDOBlockData block =
         readSimpleField(
@@ -96,14 +99,13 @@ public class SDOBlockResponse extends SDOResponse implements Message {
 
     readBuffer.closeContext("SDOBlockResponse");
     // Create the instance
-    return new SDOBlockResponseBuilder(block);
+    return new SDOBlockResponseBuilderImpl(block);
   }
 
-  public static class SDOBlockResponseBuilder implements SDOResponse.SDOResponseBuilder {
+  public static class SDOBlockResponseBuilderImpl implements SDOResponse.SDOResponseBuilder {
     private final SDOBlockData block;
 
-    public SDOBlockResponseBuilder(SDOBlockData block) {
-
+    public SDOBlockResponseBuilderImpl(SDOBlockData block) {
       this.block = block;
     }
 

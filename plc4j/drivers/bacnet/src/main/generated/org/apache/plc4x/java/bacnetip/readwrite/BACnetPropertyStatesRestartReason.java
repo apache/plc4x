@@ -56,6 +56,7 @@ public class BACnetPropertyStatesRestartReason extends BACnetPropertyStates impl
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesRestartReason");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesRestartReason extends BACnetPropertyStates impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesRestartReason _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (restartReason)
     lengthInBits += restartReason.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesRestartReason extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesRestartReasonBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesRestartReason");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetRestartReasonTagged restartReason =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesRestartReason extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesRestartReason");
     // Create the instance
-    return new BACnetPropertyStatesRestartReasonBuilder(restartReason);
+    return new BACnetPropertyStatesRestartReasonBuilderImpl(restartReason);
   }
 
-  public static class BACnetPropertyStatesRestartReasonBuilder
+  public static class BACnetPropertyStatesRestartReasonBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetRestartReasonTagged restartReason;
 
-    public BACnetPropertyStatesRestartReasonBuilder(BACnetRestartReasonTagged restartReason) {
-
+    public BACnetPropertyStatesRestartReasonBuilderImpl(BACnetRestartReasonTagged restartReason) {
       this.restartReason = restartReason;
     }
 

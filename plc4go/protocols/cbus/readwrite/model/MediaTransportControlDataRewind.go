@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -102,34 +103,50 @@ func (m *_MediaTransportControlDataRewind) GetOperation() byte {
 ///////////////////////
 
 func (m *_MediaTransportControlDataRewind) GetIsCeaseRewind() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) == (0x00)))
 }
 
 func (m *_MediaTransportControlDataRewind) GetIs2x() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) == (0x02)))
 }
 
 func (m *_MediaTransportControlDataRewind) GetIs4x() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) == (0x04)))
 }
 
 func (m *_MediaTransportControlDataRewind) GetIs8x() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) == (0x06)))
 }
 
 func (m *_MediaTransportControlDataRewind) GetIs16x() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) == (0x08)))
 }
 
 func (m *_MediaTransportControlDataRewind) GetIs32x() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) == (0x0A)))
 }
 
 func (m *_MediaTransportControlDataRewind) GetIs64x() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetOperation()) == (0x0C)))
 }
 
 func (m *_MediaTransportControlDataRewind) GetIsReserved() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool(bool(bool(bool(bool(bool(!(m.GetIsCeaseRewind())) && bool(!(m.GetIs2x()))) && bool(!(m.GetIs4x()))) && bool(!(m.GetIs8x()))) && bool(!(m.GetIs16x()))) && bool(!(m.GetIs32x()))) && bool(!(m.GetIs64x())))
 }
 
@@ -163,12 +180,8 @@ func (m *_MediaTransportControlDataRewind) GetTypeName() string {
 	return "MediaTransportControlDataRewind"
 }
 
-func (m *_MediaTransportControlDataRewind) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_MediaTransportControlDataRewind) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_MediaTransportControlDataRewind) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (operation)
 	lengthInBits += 8
@@ -192,15 +205,15 @@ func (m *_MediaTransportControlDataRewind) GetLengthInBitsConditional(lastItem b
 	return lengthInBits
 }
 
-func (m *_MediaTransportControlDataRewind) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_MediaTransportControlDataRewind) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func MediaTransportControlDataRewindParse(theBytes []byte) (MediaTransportControlDataRewind, error) {
-	return MediaTransportControlDataRewindParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return MediaTransportControlDataRewindParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func MediaTransportControlDataRewindParseWithBuffer(readBuffer utils.ReadBuffer) (MediaTransportControlDataRewind, error) {
+func MediaTransportControlDataRewindParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRewind, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataRewind"); pullErr != nil {
@@ -270,14 +283,14 @@ func MediaTransportControlDataRewindParseWithBuffer(readBuffer utils.ReadBuffer)
 }
 
 func (m *_MediaTransportControlDataRewind) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_MediaTransportControlDataRewind) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_MediaTransportControlDataRewind) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -292,35 +305,35 @@ func (m *_MediaTransportControlDataRewind) SerializeWithWriteBuffer(writeBuffer 
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}
 		// Virtual field
-		if _isCeaseRewindErr := writeBuffer.WriteVirtual("isCeaseRewind", m.GetIsCeaseRewind()); _isCeaseRewindErr != nil {
+		if _isCeaseRewindErr := writeBuffer.WriteVirtual(ctx, "isCeaseRewind", m.GetIsCeaseRewind()); _isCeaseRewindErr != nil {
 			return errors.Wrap(_isCeaseRewindErr, "Error serializing 'isCeaseRewind' field")
 		}
 		// Virtual field
-		if _is2xErr := writeBuffer.WriteVirtual("is2x", m.GetIs2x()); _is2xErr != nil {
+		if _is2xErr := writeBuffer.WriteVirtual(ctx, "is2x", m.GetIs2x()); _is2xErr != nil {
 			return errors.Wrap(_is2xErr, "Error serializing 'is2x' field")
 		}
 		// Virtual field
-		if _is4xErr := writeBuffer.WriteVirtual("is4x", m.GetIs4x()); _is4xErr != nil {
+		if _is4xErr := writeBuffer.WriteVirtual(ctx, "is4x", m.GetIs4x()); _is4xErr != nil {
 			return errors.Wrap(_is4xErr, "Error serializing 'is4x' field")
 		}
 		// Virtual field
-		if _is8xErr := writeBuffer.WriteVirtual("is8x", m.GetIs8x()); _is8xErr != nil {
+		if _is8xErr := writeBuffer.WriteVirtual(ctx, "is8x", m.GetIs8x()); _is8xErr != nil {
 			return errors.Wrap(_is8xErr, "Error serializing 'is8x' field")
 		}
 		// Virtual field
-		if _is16xErr := writeBuffer.WriteVirtual("is16x", m.GetIs16x()); _is16xErr != nil {
+		if _is16xErr := writeBuffer.WriteVirtual(ctx, "is16x", m.GetIs16x()); _is16xErr != nil {
 			return errors.Wrap(_is16xErr, "Error serializing 'is16x' field")
 		}
 		// Virtual field
-		if _is32xErr := writeBuffer.WriteVirtual("is32x", m.GetIs32x()); _is32xErr != nil {
+		if _is32xErr := writeBuffer.WriteVirtual(ctx, "is32x", m.GetIs32x()); _is32xErr != nil {
 			return errors.Wrap(_is32xErr, "Error serializing 'is32x' field")
 		}
 		// Virtual field
-		if _is64xErr := writeBuffer.WriteVirtual("is64x", m.GetIs64x()); _is64xErr != nil {
+		if _is64xErr := writeBuffer.WriteVirtual(ctx, "is64x", m.GetIs64x()); _is64xErr != nil {
 			return errors.Wrap(_is64xErr, "Error serializing 'is64x' field")
 		}
 		// Virtual field
-		if _isReservedErr := writeBuffer.WriteVirtual("isReserved", m.GetIsReserved()); _isReservedErr != nil {
+		if _isReservedErr := writeBuffer.WriteVirtual(ctx, "isReserved", m.GetIsReserved()); _isReservedErr != nil {
 			return errors.Wrap(_isReservedErr, "Error serializing 'isReserved' field")
 		}
 
@@ -329,7 +342,7 @@ func (m *_MediaTransportControlDataRewind) SerializeWithWriteBuffer(writeBuffer 
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_MediaTransportControlDataRewind) isMediaTransportControlDataRewind() bool {
@@ -341,7 +354,7 @@ func (m *_MediaTransportControlDataRewind) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

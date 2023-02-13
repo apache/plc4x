@@ -56,6 +56,7 @@ public class BACnetApplicationTagOctetString extends BACnetApplicationTag implem
   protected void serializeBACnetApplicationTagChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetApplicationTagOctetString");
 
@@ -74,6 +75,7 @@ public class BACnetApplicationTagOctetString extends BACnetApplicationTag implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetApplicationTagOctetString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetApplicationTagOctetString extends BACnetApplicationTag implem
     return lengthInBits;
   }
 
-  public static BACnetApplicationTagOctetStringBuilder staticParseBuilder(
+  public static BACnetApplicationTagBuilder staticParseBACnetApplicationTagBuilder(
       ReadBuffer readBuffer, BACnetTagHeader header) throws ParseException {
     readBuffer.pullContext("BACnetApplicationTagOctetString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagPayloadOctetString payload =
         readSimpleField(
@@ -99,15 +102,14 @@ public class BACnetApplicationTagOctetString extends BACnetApplicationTag implem
 
     readBuffer.closeContext("BACnetApplicationTagOctetString");
     // Create the instance
-    return new BACnetApplicationTagOctetStringBuilder(payload);
+    return new BACnetApplicationTagOctetStringBuilderImpl(payload);
   }
 
-  public static class BACnetApplicationTagOctetStringBuilder
+  public static class BACnetApplicationTagOctetStringBuilderImpl
       implements BACnetApplicationTag.BACnetApplicationTagBuilder {
     private final BACnetTagPayloadOctetString payload;
 
-    public BACnetApplicationTagOctetStringBuilder(BACnetTagPayloadOctetString payload) {
-
+    public BACnetApplicationTagOctetStringBuilderImpl(BACnetTagPayloadOctetString payload) {
       this.payload = payload;
     }
 

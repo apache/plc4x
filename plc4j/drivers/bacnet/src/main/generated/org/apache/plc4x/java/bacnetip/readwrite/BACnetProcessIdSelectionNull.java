@@ -56,6 +56,7 @@ public class BACnetProcessIdSelectionNull extends BACnetProcessIdSelection imple
   protected void serializeBACnetProcessIdSelectionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetProcessIdSelectionNull");
 
@@ -74,6 +75,7 @@ public class BACnetProcessIdSelectionNull extends BACnetProcessIdSelection imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetProcessIdSelectionNull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nullValue)
     lengthInBits += nullValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetProcessIdSelectionNull extends BACnetProcessIdSelection imple
     return lengthInBits;
   }
 
-  public static BACnetProcessIdSelectionNullBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetProcessIdSelectionBuilder staticParseBACnetProcessIdSelectionBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetProcessIdSelectionNull");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetProcessIdSelectionNull extends BACnetProcessIdSelection imple
 
     readBuffer.closeContext("BACnetProcessIdSelectionNull");
     // Create the instance
-    return new BACnetProcessIdSelectionNullBuilder(nullValue);
+    return new BACnetProcessIdSelectionNullBuilderImpl(nullValue);
   }
 
-  public static class BACnetProcessIdSelectionNullBuilder
+  public static class BACnetProcessIdSelectionNullBuilderImpl
       implements BACnetProcessIdSelection.BACnetProcessIdSelectionBuilder {
     private final BACnetApplicationTagNull nullValue;
 
-    public BACnetProcessIdSelectionNullBuilder(BACnetApplicationTagNull nullValue) {
-
+    public BACnetProcessIdSelectionNullBuilderImpl(BACnetApplicationTagNull nullValue) {
       this.nullValue = nullValue;
     }
 

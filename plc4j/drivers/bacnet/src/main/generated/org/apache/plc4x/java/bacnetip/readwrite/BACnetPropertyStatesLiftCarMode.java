@@ -56,6 +56,7 @@ public class BACnetPropertyStatesLiftCarMode extends BACnetPropertyStates implem
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarMode");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesLiftCarMode extends BACnetPropertyStates implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLiftCarMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (liftCarMode)
     lengthInBits += liftCarMode.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesLiftCarMode extends BACnetPropertyStates implem
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLiftCarModeBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLiftCarMode");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarModeTagged liftCarMode =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesLiftCarMode extends BACnetPropertyStates implem
 
     readBuffer.closeContext("BACnetPropertyStatesLiftCarMode");
     // Create the instance
-    return new BACnetPropertyStatesLiftCarModeBuilder(liftCarMode);
+    return new BACnetPropertyStatesLiftCarModeBuilderImpl(liftCarMode);
   }
 
-  public static class BACnetPropertyStatesLiftCarModeBuilder
+  public static class BACnetPropertyStatesLiftCarModeBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLiftCarModeTagged liftCarMode;
 
-    public BACnetPropertyStatesLiftCarModeBuilder(BACnetLiftCarModeTagged liftCarMode) {
-
+    public BACnetPropertyStatesLiftCarModeBuilderImpl(BACnetLiftCarModeTagged liftCarMode) {
       this.liftCarMode = liftCarMode;
     }
 

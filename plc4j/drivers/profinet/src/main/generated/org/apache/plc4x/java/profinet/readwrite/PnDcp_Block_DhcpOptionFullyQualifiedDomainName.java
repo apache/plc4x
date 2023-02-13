@@ -53,6 +53,7 @@ public class PnDcp_Block_DhcpOptionFullyQualifiedDomainName extends PnDcp_Block 
   @Override
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DhcpOptionFullyQualifiedDomainName");
 
@@ -68,26 +69,28 @@ public class PnDcp_Block_DhcpOptionFullyQualifiedDomainName extends PnDcp_Block 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Block_DhcpOptionFullyQualifiedDomainName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DhcpOptionFullyQualifiedDomainName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnDcp_Block_DhcpOptionFullyQualifiedDomainName");
     // Create the instance
-    return new PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilder();
+    return new PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilderImpl();
   }
 
-  public static class PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilder
+  public static class PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilder() {}
+    public PnDcp_Block_DhcpOptionFullyQualifiedDomainNameBuilderImpl() {}
 
     public PnDcp_Block_DhcpOptionFullyQualifiedDomainName build() {
       PnDcp_Block_DhcpOptionFullyQualifiedDomainName

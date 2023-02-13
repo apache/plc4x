@@ -79,6 +79,7 @@ public class BACnetConstructedDataCountBeforeChange extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCountBeforeChange");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataCountBeforeChange extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCountBeforeChange _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (countBeforeChange)
     lengthInBits += countBeforeChange.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataCountBeforeChange extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCountBeforeChangeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataCountBeforeChange extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger countBeforeChange =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataCountBeforeChange extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataCountBeforeChange");
     // Create the instance
-    return new BACnetConstructedDataCountBeforeChangeBuilder(
+    return new BACnetConstructedDataCountBeforeChangeBuilderImpl(
         countBeforeChange, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCountBeforeChangeBuilder
+  public static class BACnetConstructedDataCountBeforeChangeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger countBeforeChange;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCountBeforeChangeBuilder(
+    public BACnetConstructedDataCountBeforeChangeBuilderImpl(
         BACnetApplicationTagUnsignedInteger countBeforeChange,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.countBeforeChange = countBeforeChange;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

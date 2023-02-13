@@ -63,6 +63,7 @@ public class DF1UnprotectedReadRequest extends DF1Command implements Message {
   @Override
   protected void serializeDF1CommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1UnprotectedReadRequest");
 
@@ -84,6 +85,7 @@ public class DF1UnprotectedReadRequest extends DF1Command implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DF1UnprotectedReadRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (address)
     lengthInBits += 16;
@@ -94,12 +96,13 @@ public class DF1UnprotectedReadRequest extends DF1Command implements Message {
     return lengthInBits;
   }
 
-  public static DF1UnprotectedReadRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static DF1CommandBuilder staticParseDF1CommandBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DF1UnprotectedReadRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int address = readSimpleField("address", readUnsignedInt(readBuffer, 16));
 
@@ -107,15 +110,14 @@ public class DF1UnprotectedReadRequest extends DF1Command implements Message {
 
     readBuffer.closeContext("DF1UnprotectedReadRequest");
     // Create the instance
-    return new DF1UnprotectedReadRequestBuilder(address, size);
+    return new DF1UnprotectedReadRequestBuilderImpl(address, size);
   }
 
-  public static class DF1UnprotectedReadRequestBuilder implements DF1Command.DF1CommandBuilder {
+  public static class DF1UnprotectedReadRequestBuilderImpl implements DF1Command.DF1CommandBuilder {
     private final int address;
     private final short size;
 
-    public DF1UnprotectedReadRequestBuilder(int address, short size) {
-
+    public DF1UnprotectedReadRequestBuilderImpl(int address, short size) {
       this.address = address;
       this.size = size;
     }

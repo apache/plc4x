@@ -70,6 +70,7 @@ public class AdsMultiRequestItemRead extends AdsMultiRequestItem implements Mess
   protected void serializeAdsMultiRequestItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AdsMultiRequestItemRead");
 
@@ -94,6 +95,7 @@ public class AdsMultiRequestItemRead extends AdsMultiRequestItem implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AdsMultiRequestItemRead _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (itemIndexGroup)
     lengthInBits += 32;
@@ -107,12 +109,13 @@ public class AdsMultiRequestItemRead extends AdsMultiRequestItem implements Mess
     return lengthInBits;
   }
 
-  public static AdsMultiRequestItemReadBuilder staticParseBuilder(
+  public static AdsMultiRequestItemBuilder staticParseAdsMultiRequestItemBuilder(
       ReadBuffer readBuffer, Long indexGroup) throws ParseException {
     readBuffer.pullContext("AdsMultiRequestItemRead");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long itemIndexGroup = readSimpleField("itemIndexGroup", readUnsignedLong(readBuffer, 32));
 
@@ -122,18 +125,17 @@ public class AdsMultiRequestItemRead extends AdsMultiRequestItem implements Mess
 
     readBuffer.closeContext("AdsMultiRequestItemRead");
     // Create the instance
-    return new AdsMultiRequestItemReadBuilder(itemIndexGroup, itemIndexOffset, itemReadLength);
+    return new AdsMultiRequestItemReadBuilderImpl(itemIndexGroup, itemIndexOffset, itemReadLength);
   }
 
-  public static class AdsMultiRequestItemReadBuilder
+  public static class AdsMultiRequestItemReadBuilderImpl
       implements AdsMultiRequestItem.AdsMultiRequestItemBuilder {
     private final long itemIndexGroup;
     private final long itemIndexOffset;
     private final long itemReadLength;
 
-    public AdsMultiRequestItemReadBuilder(
+    public AdsMultiRequestItemReadBuilderImpl(
         long itemIndexGroup, long itemIndexOffset, long itemReadLength) {
-
       this.itemIndexGroup = itemIndexGroup;
       this.itemIndexOffset = itemIndexOffset;
       this.itemReadLength = itemReadLength;

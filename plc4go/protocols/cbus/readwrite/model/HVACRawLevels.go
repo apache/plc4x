@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -67,6 +68,8 @@ func (m *_HVACRawLevels) GetRawValue() int16 {
 ///////////////////////
 
 func (m *_HVACRawLevels) GetValueInPercent() float32 {
+	ctx := context.Background()
+	_ = ctx
 	return float32(float32(m.GetRawValue()) / float32(float32(32767)))
 }
 
@@ -95,11 +98,7 @@ func (m *_HVACRawLevels) GetTypeName() string {
 	return "HVACRawLevels"
 }
 
-func (m *_HVACRawLevels) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_HVACRawLevels) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_HVACRawLevels) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (rawValue)
@@ -110,15 +109,15 @@ func (m *_HVACRawLevels) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_HVACRawLevels) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_HVACRawLevels) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func HVACRawLevelsParse(theBytes []byte) (HVACRawLevels, error) {
-	return HVACRawLevelsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return HVACRawLevelsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACRawLevelsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
+func HVACRawLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("HVACRawLevels"); pullErr != nil {
@@ -150,14 +149,14 @@ func HVACRawLevelsParseWithBuffer(readBuffer utils.ReadBuffer) (HVACRawLevels, e
 }
 
 func (m *_HVACRawLevels) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_HVACRawLevels) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_HVACRawLevels) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("HVACRawLevels"); pushErr != nil {
@@ -171,7 +170,7 @@ func (m *_HVACRawLevels) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer)
 		return errors.Wrap(_rawValueErr, "Error serializing 'rawValue' field")
 	}
 	// Virtual field
-	if _valueInPercentErr := writeBuffer.WriteVirtual("valueInPercent", m.GetValueInPercent()); _valueInPercentErr != nil {
+	if _valueInPercentErr := writeBuffer.WriteVirtual(ctx, "valueInPercent", m.GetValueInPercent()); _valueInPercentErr != nil {
 		return errors.Wrap(_valueInPercentErr, "Error serializing 'valueInPercent' field")
 	}
 
@@ -190,7 +189,7 @@ func (m *_HVACRawLevels) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

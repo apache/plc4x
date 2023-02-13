@@ -79,6 +79,7 @@ public class BACnetConstructedDataAnalogValueMaxPresValue extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAnalogValueMaxPresValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataAnalogValueMaxPresValue extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAnalogValueMaxPresValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxPresValue)
     lengthInBits += maxPresValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataAnalogValueMaxPresValue extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAnalogValueMaxPresValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataAnalogValueMaxPresValue extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal maxPresValue =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataAnalogValueMaxPresValue extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataAnalogValueMaxPresValue");
     // Create the instance
-    return new BACnetConstructedDataAnalogValueMaxPresValueBuilder(
+    return new BACnetConstructedDataAnalogValueMaxPresValueBuilderImpl(
         maxPresValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAnalogValueMaxPresValueBuilder
+  public static class BACnetConstructedDataAnalogValueMaxPresValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal maxPresValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAnalogValueMaxPresValueBuilder(
+    public BACnetConstructedDataAnalogValueMaxPresValueBuilderImpl(
         BACnetApplicationTagReal maxPresValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxPresValue = maxPresValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -49,6 +49,7 @@ public abstract class Ethernet_FramePayload implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Ethernet_FramePayload");
 
@@ -70,6 +71,7 @@ public abstract class Ethernet_FramePayload implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     Ethernet_FramePayload _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (packetType)
     lengthInBits += 16;
@@ -90,17 +92,21 @@ public abstract class Ethernet_FramePayload implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int packetType = readDiscriminatorField("packetType", readUnsignedInt(readBuffer, 16));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     Ethernet_FramePayloadBuilder builder = null;
     if (EvaluationHelper.equals(packetType, (int) 0x0800)) {
-      builder = Ethernet_FramePayload_IPv4.staticParseBuilder(readBuffer);
+      builder = Ethernet_FramePayload_IPv4.staticParseEthernet_FramePayloadBuilder(readBuffer);
     } else if (EvaluationHelper.equals(packetType, (int) 0x8100)) {
-      builder = Ethernet_FramePayload_VirtualLan.staticParseBuilder(readBuffer);
+      builder =
+          Ethernet_FramePayload_VirtualLan.staticParseEthernet_FramePayloadBuilder(readBuffer);
     } else if (EvaluationHelper.equals(packetType, (int) 0x8892)) {
-      builder = Ethernet_FramePayload_PnDcp.staticParseBuilder(readBuffer);
+      builder = Ethernet_FramePayload_PnDcp.staticParseEthernet_FramePayloadBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(packetType, (int) 0x88cc)) {
+      builder = Ethernet_FramePayload_LLDP.staticParseEthernet_FramePayloadBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -117,7 +123,7 @@ public abstract class Ethernet_FramePayload implements Message {
     return _ethernet_FramePayload;
   }
 
-  public static interface Ethernet_FramePayloadBuilder {
+  public interface Ethernet_FramePayloadBuilder {
     Ethernet_FramePayload build();
   }
 

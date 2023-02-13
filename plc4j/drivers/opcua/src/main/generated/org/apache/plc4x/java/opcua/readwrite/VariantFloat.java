@@ -69,12 +69,12 @@ public class VariantFloat extends Variant implements Message {
   @Override
   protected void serializeVariantChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("VariantFloat");
 
     // Optional Field (arrayLength) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "arrayLength", arrayLength, writeSignedInt(writeBuffer, 32), arrayLengthSpecified);
+    writeOptionalField("arrayLength", arrayLength, writeSignedInt(writeBuffer, 32));
 
     // Array Field (value)
     writeSimpleTypeArrayField("value", value, writeFloat(writeBuffer, 32));
@@ -91,6 +91,7 @@ public class VariantFloat extends Variant implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     VariantFloat _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Optional Field (arrayLength)
     if (arrayLength != null) {
@@ -105,12 +106,13 @@ public class VariantFloat extends Variant implements Message {
     return lengthInBits;
   }
 
-  public static VariantFloatBuilder staticParseBuilder(
+  public static VariantBuilder staticParseVariantBuilder(
       ReadBuffer readBuffer, Boolean arrayLengthSpecified) throws ParseException {
     readBuffer.pullContext("VariantFloat");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer arrayLength =
         readOptionalField("arrayLength", readSignedInt(readBuffer, 32), arrayLengthSpecified);
@@ -121,15 +123,14 @@ public class VariantFloat extends Variant implements Message {
 
     readBuffer.closeContext("VariantFloat");
     // Create the instance
-    return new VariantFloatBuilder(arrayLength, value);
+    return new VariantFloatBuilderImpl(arrayLength, value);
   }
 
-  public static class VariantFloatBuilder implements Variant.VariantBuilder {
+  public static class VariantFloatBuilderImpl implements Variant.VariantBuilder {
     private final Integer arrayLength;
     private final List<Float> value;
 
-    public VariantFloatBuilder(Integer arrayLength, List<Float> value) {
-
+    public VariantFloatBuilderImpl(Integer arrayLength, List<Float> value) {
       this.arrayLength = arrayLength;
       this.value = value;
     }

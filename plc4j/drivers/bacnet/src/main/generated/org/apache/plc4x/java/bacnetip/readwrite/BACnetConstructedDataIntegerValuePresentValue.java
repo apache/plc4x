@@ -79,6 +79,7 @@ public class BACnetConstructedDataIntegerValuePresentValue extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIntegerValuePresentValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataIntegerValuePresentValue extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIntegerValuePresentValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (presentValue)
     lengthInBits += presentValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataIntegerValuePresentValue extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIntegerValuePresentValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataIntegerValuePresentValue extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger presentValue =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataIntegerValuePresentValue extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataIntegerValuePresentValue");
     // Create the instance
-    return new BACnetConstructedDataIntegerValuePresentValueBuilder(
+    return new BACnetConstructedDataIntegerValuePresentValueBuilderImpl(
         presentValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIntegerValuePresentValueBuilder
+  public static class BACnetConstructedDataIntegerValuePresentValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger presentValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIntegerValuePresentValueBuilder(
+    public BACnetConstructedDataIntegerValuePresentValueBuilderImpl(
         BACnetApplicationTagSignedInteger presentValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.presentValue = presentValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

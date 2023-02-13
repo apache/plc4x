@@ -73,6 +73,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("GetEndpointsResponse");
 
@@ -97,6 +98,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     GetEndpointsResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -108,7 +110,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     if (endpoints != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : endpoints) {
-        boolean last = ++i >= endpoints.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= endpoints.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -116,12 +118,13 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static GetEndpointsResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("GetEndpointsResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -142,20 +145,19 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("GetEndpointsResponse");
     // Create the instance
-    return new GetEndpointsResponseBuilder(responseHeader, noOfEndpoints, endpoints);
+    return new GetEndpointsResponseBuilderImpl(responseHeader, noOfEndpoints, endpoints);
   }
 
-  public static class GetEndpointsResponseBuilder
+  public static class GetEndpointsResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfEndpoints;
     private final List<ExtensionObjectDefinition> endpoints;
 
-    public GetEndpointsResponseBuilder(
+    public GetEndpointsResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfEndpoints,
         List<ExtensionObjectDefinition> endpoints) {
-
       this.responseHeader = responseHeader;
       this.noOfEndpoints = noOfEndpoints;
       this.endpoints = endpoints;

@@ -71,6 +71,7 @@ public class ModbusPDUDiagnosticResponse extends ModbusPDU implements Message {
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUDiagnosticResponse");
 
@@ -92,6 +93,7 @@ public class ModbusPDUDiagnosticResponse extends ModbusPDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUDiagnosticResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (subFunction)
     lengthInBits += 16;
@@ -102,12 +104,13 @@ public class ModbusPDUDiagnosticResponse extends ModbusPDU implements Message {
     return lengthInBits;
   }
 
-  public static ModbusPDUDiagnosticResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUDiagnosticResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int subFunction = readSimpleField("subFunction", readUnsignedInt(readBuffer, 16));
 
@@ -115,15 +118,14 @@ public class ModbusPDUDiagnosticResponse extends ModbusPDU implements Message {
 
     readBuffer.closeContext("ModbusPDUDiagnosticResponse");
     // Create the instance
-    return new ModbusPDUDiagnosticResponseBuilder(subFunction, data);
+    return new ModbusPDUDiagnosticResponseBuilderImpl(subFunction, data);
   }
 
-  public static class ModbusPDUDiagnosticResponseBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUDiagnosticResponseBuilderImpl implements ModbusPDU.ModbusPDUBuilder {
     private final int subFunction;
     private final int data;
 
-    public ModbusPDUDiagnosticResponseBuilder(int subFunction, int data) {
-
+    public ModbusPDUDiagnosticResponseBuilderImpl(int subFunction, int data) {
       this.subFunction = subFunction;
       this.data = data;
     }

@@ -49,6 +49,7 @@ public class S7MessageUserData extends S7Message implements Message {
   @Override
   protected void serializeS7MessageChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7MessageUserData");
 
@@ -64,25 +65,27 @@ public class S7MessageUserData extends S7Message implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7MessageUserData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static S7MessageUserDataBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static S7MessageBuilder staticParseS7MessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("S7MessageUserData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("S7MessageUserData");
     // Create the instance
-    return new S7MessageUserDataBuilder();
+    return new S7MessageUserDataBuilderImpl();
   }
 
-  public static class S7MessageUserDataBuilder implements S7Message.S7MessageBuilder {
+  public static class S7MessageUserDataBuilderImpl implements S7Message.S7MessageBuilder {
 
-    public S7MessageUserDataBuilder() {}
+    public S7MessageUserDataBuilderImpl() {}
 
     public S7MessageUserData build(int tpduReference, S7Parameter parameter, S7Payload payload) {
       S7MessageUserData s7MessageUserData =

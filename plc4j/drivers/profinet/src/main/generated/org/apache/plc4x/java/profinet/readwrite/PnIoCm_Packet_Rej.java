@@ -58,6 +58,7 @@ public class PnIoCm_Packet_Rej extends PnIoCm_Packet implements Message {
   protected void serializePnIoCm_PacketChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Packet_Rej");
 
@@ -76,6 +77,7 @@ public class PnIoCm_Packet_Rej extends PnIoCm_Packet implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Packet_Rej _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (status)
     lengthInBits += 32;
@@ -83,25 +85,25 @@ public class PnIoCm_Packet_Rej extends PnIoCm_Packet implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_Packet_RejBuilder staticParseBuilder(
+  public static PnIoCm_PacketBuilder staticParsePnIoCm_PacketBuilder(
       ReadBuffer readBuffer, DceRpc_PacketType packetType) throws ParseException {
     readBuffer.pullContext("PnIoCm_Packet_Rej");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long status = readSimpleField("status", readUnsignedLong(readBuffer, 32));
 
     readBuffer.closeContext("PnIoCm_Packet_Rej");
     // Create the instance
-    return new PnIoCm_Packet_RejBuilder(status);
+    return new PnIoCm_Packet_RejBuilderImpl(status);
   }
 
-  public static class PnIoCm_Packet_RejBuilder implements PnIoCm_Packet.PnIoCm_PacketBuilder {
+  public static class PnIoCm_Packet_RejBuilderImpl implements PnIoCm_Packet.PnIoCm_PacketBuilder {
     private final long status;
 
-    public PnIoCm_Packet_RejBuilder(long status) {
-
+    public PnIoCm_Packet_RejBuilderImpl(long status) {
       this.status = status;
     }
 

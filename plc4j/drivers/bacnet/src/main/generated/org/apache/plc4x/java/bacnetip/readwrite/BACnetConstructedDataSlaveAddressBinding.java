@@ -75,6 +75,7 @@ public class BACnetConstructedDataSlaveAddressBinding extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataSlaveAddressBinding");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataSlaveAddressBinding extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataSlaveAddressBinding _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (slaveAddressBinding != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataSlaveAddressBinding extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataSlaveAddressBindingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataSlaveAddressBinding extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetAddressBinding> slaveAddressBinding =
         readTerminatedArrayField(
@@ -128,21 +131,20 @@ public class BACnetConstructedDataSlaveAddressBinding extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataSlaveAddressBinding");
     // Create the instance
-    return new BACnetConstructedDataSlaveAddressBindingBuilder(
+    return new BACnetConstructedDataSlaveAddressBindingBuilderImpl(
         slaveAddressBinding, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataSlaveAddressBindingBuilder
+  public static class BACnetConstructedDataSlaveAddressBindingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetAddressBinding> slaveAddressBinding;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataSlaveAddressBindingBuilder(
+    public BACnetConstructedDataSlaveAddressBindingBuilderImpl(
         List<BACnetAddressBinding> slaveAddressBinding,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.slaveAddressBinding = slaveAddressBinding;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

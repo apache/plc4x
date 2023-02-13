@@ -68,6 +68,7 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
   @Override
   protected void serializeNLMChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NLMICouldBeRouterToNetwork");
 
@@ -90,6 +91,7 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NLMICouldBeRouterToNetwork _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (destinationNetworkAddress)
     lengthInBits += 16;
@@ -100,12 +102,13 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
     return lengthInBits;
   }
 
-  public static NLMICouldBeRouterToNetworkBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer apduLength) throws ParseException {
+  public static NLMBuilder staticParseNLMBuilder(ReadBuffer readBuffer, Integer apduLength)
+      throws ParseException {
     readBuffer.pullContext("NLMICouldBeRouterToNetwork");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int destinationNetworkAddress =
         readSimpleField("destinationNetworkAddress", readUnsignedInt(readBuffer, 16));
@@ -114,18 +117,17 @@ public class NLMICouldBeRouterToNetwork extends NLM implements Message {
 
     readBuffer.closeContext("NLMICouldBeRouterToNetwork");
     // Create the instance
-    return new NLMICouldBeRouterToNetworkBuilder(
+    return new NLMICouldBeRouterToNetworkBuilderImpl(
         destinationNetworkAddress, performanceIndex, apduLength);
   }
 
-  public static class NLMICouldBeRouterToNetworkBuilder implements NLM.NLMBuilder {
+  public static class NLMICouldBeRouterToNetworkBuilderImpl implements NLM.NLMBuilder {
     private final int destinationNetworkAddress;
     private final short performanceIndex;
     private final Integer apduLength;
 
-    public NLMICouldBeRouterToNetworkBuilder(
+    public NLMICouldBeRouterToNetworkBuilderImpl(
         int destinationNetworkAddress, short performanceIndex, Integer apduLength) {
-
       this.destinationNetworkAddress = destinationNetworkAddress;
       this.performanceIndex = performanceIndex;
       this.apduLength = apduLength;

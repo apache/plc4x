@@ -40,6 +40,7 @@ public class InterfaceOptions2 implements Message {
   // Properties.
   protected final boolean burden;
   protected final boolean clockGen;
+
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;
@@ -64,6 +65,7 @@ public class InterfaceOptions2 implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("InterfaceOptions2");
 
@@ -121,6 +123,7 @@ public class InterfaceOptions2 implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     InterfaceOptions2 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 1;
@@ -160,6 +163,7 @@ public class InterfaceOptions2 implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Boolean reservedField0 =
         readReservedField("reserved", readBoolean(readBuffer), (boolean) false);

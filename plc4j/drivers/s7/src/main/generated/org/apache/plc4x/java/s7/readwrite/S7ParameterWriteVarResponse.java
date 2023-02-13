@@ -61,6 +61,7 @@ public class S7ParameterWriteVarResponse extends S7Parameter implements Message 
   @Override
   protected void serializeS7ParameterChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7ParameterWriteVarResponse");
 
@@ -79,6 +80,7 @@ public class S7ParameterWriteVarResponse extends S7Parameter implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7ParameterWriteVarResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (numItems)
     lengthInBits += 8;
@@ -86,25 +88,26 @@ public class S7ParameterWriteVarResponse extends S7Parameter implements Message 
     return lengthInBits;
   }
 
-  public static S7ParameterWriteVarResponseBuilder staticParseBuilder(
+  public static S7ParameterBuilder staticParseS7ParameterBuilder(
       ReadBuffer readBuffer, Short messageType) throws ParseException {
     readBuffer.pullContext("S7ParameterWriteVarResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numItems = readSimpleField("numItems", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("S7ParameterWriteVarResponse");
     // Create the instance
-    return new S7ParameterWriteVarResponseBuilder(numItems);
+    return new S7ParameterWriteVarResponseBuilderImpl(numItems);
   }
 
-  public static class S7ParameterWriteVarResponseBuilder implements S7Parameter.S7ParameterBuilder {
+  public static class S7ParameterWriteVarResponseBuilderImpl
+      implements S7Parameter.S7ParameterBuilder {
     private final short numItems;
 
-    public S7ParameterWriteVarResponseBuilder(short numItems) {
-
+    public S7ParameterWriteVarResponseBuilderImpl(short numItems) {
       this.numItems = numItems;
     }
 

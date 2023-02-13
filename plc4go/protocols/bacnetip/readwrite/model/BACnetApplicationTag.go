@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -53,12 +54,11 @@ type _BACnetApplicationTag struct {
 
 type _BACnetApplicationTagChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 }
 
 type BACnetApplicationTagParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child BACnetApplicationTag, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetApplicationTag, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -90,10 +90,14 @@ func (m *_BACnetApplicationTag) GetHeader() BACnetTagHeader {
 ///////////////////////
 
 func (m *_BACnetApplicationTag) GetActualTagNumber() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetHeader().GetActualTagNumber())
 }
 
 func (m *_BACnetApplicationTag) GetActualLength() uint32 {
+	ctx := context.Background()
+	_ = ctx
 	return uint32(m.GetHeader().GetActualLength())
 }
 
@@ -122,11 +126,11 @@ func (m *_BACnetApplicationTag) GetTypeName() string {
 	return "BACnetApplicationTag"
 }
 
-func (m *_BACnetApplicationTag) GetParentLengthInBits() uint16 {
+func (m *_BACnetApplicationTag) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -135,15 +139,15 @@ func (m *_BACnetApplicationTag) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_BACnetApplicationTag) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetApplicationTag) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetApplicationTagParse(theBytes []byte) (BACnetApplicationTag, error) {
-	return BACnetApplicationTagParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetApplicationTagParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetApplicationTagParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetApplicationTag, error) {
+func BACnetApplicationTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTag, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetApplicationTag"); pullErr != nil {
@@ -156,7 +160,7 @@ func BACnetApplicationTagParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetApp
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetApplicationTag")
 	}
@@ -191,31 +195,31 @@ func BACnetApplicationTagParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetApp
 	var typeSwitchError error
 	switch {
 	case actualTagNumber == 0x0: // BACnetApplicationTagNull
-		_childTemp, typeSwitchError = BACnetApplicationTagNullParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagNullParseWithBuffer(ctx, readBuffer)
 	case actualTagNumber == 0x1: // BACnetApplicationTagBoolean
-		_childTemp, typeSwitchError = BACnetApplicationTagBooleanParseWithBuffer(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagBooleanParseWithBuffer(ctx, readBuffer, header)
 	case actualTagNumber == 0x2: // BACnetApplicationTagUnsignedInteger
-		_childTemp, typeSwitchError = BACnetApplicationTagUnsignedIntegerParseWithBuffer(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagUnsignedIntegerParseWithBuffer(ctx, readBuffer, header)
 	case actualTagNumber == 0x3: // BACnetApplicationTagSignedInteger
-		_childTemp, typeSwitchError = BACnetApplicationTagSignedIntegerParseWithBuffer(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagSignedIntegerParseWithBuffer(ctx, readBuffer, header)
 	case actualTagNumber == 0x4: // BACnetApplicationTagReal
-		_childTemp, typeSwitchError = BACnetApplicationTagRealParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagRealParseWithBuffer(ctx, readBuffer)
 	case actualTagNumber == 0x5: // BACnetApplicationTagDouble
-		_childTemp, typeSwitchError = BACnetApplicationTagDoubleParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagDoubleParseWithBuffer(ctx, readBuffer)
 	case actualTagNumber == 0x6: // BACnetApplicationTagOctetString
-		_childTemp, typeSwitchError = BACnetApplicationTagOctetStringParseWithBuffer(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagOctetStringParseWithBuffer(ctx, readBuffer, header)
 	case actualTagNumber == 0x7: // BACnetApplicationTagCharacterString
-		_childTemp, typeSwitchError = BACnetApplicationTagCharacterStringParseWithBuffer(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagCharacterStringParseWithBuffer(ctx, readBuffer, header)
 	case actualTagNumber == 0x8: // BACnetApplicationTagBitString
-		_childTemp, typeSwitchError = BACnetApplicationTagBitStringParseWithBuffer(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagBitStringParseWithBuffer(ctx, readBuffer, header)
 	case actualTagNumber == 0x9: // BACnetApplicationTagEnumerated
-		_childTemp, typeSwitchError = BACnetApplicationTagEnumeratedParseWithBuffer(readBuffer, header)
+		_childTemp, typeSwitchError = BACnetApplicationTagEnumeratedParseWithBuffer(ctx, readBuffer, header)
 	case actualTagNumber == 0xA: // BACnetApplicationTagDate
-		_childTemp, typeSwitchError = BACnetApplicationTagDateParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagDateParseWithBuffer(ctx, readBuffer)
 	case actualTagNumber == 0xB: // BACnetApplicationTagTime
-		_childTemp, typeSwitchError = BACnetApplicationTagTimeParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagTimeParseWithBuffer(ctx, readBuffer)
 	case actualTagNumber == 0xC: // BACnetApplicationTagObjectIdentifier
-		_childTemp, typeSwitchError = BACnetApplicationTagObjectIdentifierParseWithBuffer(readBuffer)
+		_childTemp, typeSwitchError = BACnetApplicationTagObjectIdentifierParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [actualTagNumber=%v]", actualTagNumber)
 	}
@@ -233,7 +237,7 @@ func BACnetApplicationTagParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetApp
 	return _child, nil
 }
 
-func (pm *_BACnetApplicationTag) SerializeParent(writeBuffer utils.WriteBuffer, child BACnetApplicationTag, serializeChildFunction func() error) error {
+func (pm *_BACnetApplicationTag) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child BACnetApplicationTag, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -247,7 +251,7 @@ func (pm *_BACnetApplicationTag) SerializeParent(writeBuffer utils.WriteBuffer, 
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -255,11 +259,11 @@ func (pm *_BACnetApplicationTag) SerializeParent(writeBuffer utils.WriteBuffer, 
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 	// Virtual field
-	if _actualTagNumberErr := writeBuffer.WriteVirtual("actualTagNumber", m.GetActualTagNumber()); _actualTagNumberErr != nil {
+	if _actualTagNumberErr := writeBuffer.WriteVirtual(ctx, "actualTagNumber", m.GetActualTagNumber()); _actualTagNumberErr != nil {
 		return errors.Wrap(_actualTagNumberErr, "Error serializing 'actualTagNumber' field")
 	}
 	// Virtual field
-	if _actualLengthErr := writeBuffer.WriteVirtual("actualLength", m.GetActualLength()); _actualLengthErr != nil {
+	if _actualLengthErr := writeBuffer.WriteVirtual(ctx, "actualLength", m.GetActualLength()); _actualLengthErr != nil {
 		return errors.Wrap(_actualLengthErr, "Error serializing 'actualLength' field")
 	}
 
@@ -283,7 +287,7 @@ func (m *_BACnetApplicationTag) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -51,6 +51,7 @@ public class BACnetAccessThreatLevel implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetAccessThreatLevel");
 
@@ -69,6 +70,7 @@ public class BACnetAccessThreatLevel implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetAccessThreatLevel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (threatLevel)
     lengthInBits += threatLevel.getLengthInBits();
@@ -87,6 +89,7 @@ public class BACnetAccessThreatLevel implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger threatLevel =
         readSimpleField(

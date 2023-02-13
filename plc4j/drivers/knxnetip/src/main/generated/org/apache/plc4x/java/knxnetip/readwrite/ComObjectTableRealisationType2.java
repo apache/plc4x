@@ -73,6 +73,7 @@ public class ComObjectTableRealisationType2 extends ComObjectTable implements Me
   protected void serializeComObjectTableChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ComObjectTableRealisationType2");
 
@@ -98,6 +99,7 @@ public class ComObjectTableRealisationType2 extends ComObjectTable implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ComObjectTableRealisationType2 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (numEntries)
     lengthInBits += 8;
@@ -109,7 +111,7 @@ public class ComObjectTableRealisationType2 extends ComObjectTable implements Me
     if (comObjectDescriptors != null) {
       int i = 0;
       for (GroupObjectDescriptorRealisationType2 element : comObjectDescriptors) {
-        boolean last = ++i >= comObjectDescriptors.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= comObjectDescriptors.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -117,12 +119,13 @@ public class ComObjectTableRealisationType2 extends ComObjectTable implements Me
     return lengthInBits;
   }
 
-  public static ComObjectTableRealisationType2Builder staticParseBuilder(
+  public static ComObjectTableBuilder staticParseComObjectTableBuilder(
       ReadBuffer readBuffer, FirmwareType firmwareType) throws ParseException {
     readBuffer.pullContext("ComObjectTableRealisationType2");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short numEntries = readSimpleField("numEntries", readUnsignedShort(readBuffer, 8));
 
@@ -138,21 +141,20 @@ public class ComObjectTableRealisationType2 extends ComObjectTable implements Me
 
     readBuffer.closeContext("ComObjectTableRealisationType2");
     // Create the instance
-    return new ComObjectTableRealisationType2Builder(
+    return new ComObjectTableRealisationType2BuilderImpl(
         numEntries, ramFlagsTablePointer, comObjectDescriptors);
   }
 
-  public static class ComObjectTableRealisationType2Builder
+  public static class ComObjectTableRealisationType2BuilderImpl
       implements ComObjectTable.ComObjectTableBuilder {
     private final short numEntries;
     private final short ramFlagsTablePointer;
     private final List<GroupObjectDescriptorRealisationType2> comObjectDescriptors;
 
-    public ComObjectTableRealisationType2Builder(
+    public ComObjectTableRealisationType2BuilderImpl(
         short numEntries,
         short ramFlagsTablePointer,
         List<GroupObjectDescriptorRealisationType2> comObjectDescriptors) {
-
       this.numEntries = numEntries;
       this.ramFlagsTablePointer = ramFlagsTablePointer;
       this.comObjectDescriptors = comObjectDescriptors;

@@ -106,6 +106,7 @@ public class AirConditioningDataHvacScheduleEntry extends AirConditioningData im
   protected void serializeAirConditioningDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AirConditioningDataHvacScheduleEntry");
 
@@ -154,6 +155,7 @@ public class AirConditioningDataHvacScheduleEntry extends AirConditioningData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AirConditioningDataHvacScheduleEntry _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (zoneGroup)
     lengthInBits += 8;
@@ -186,12 +188,13 @@ public class AirConditioningDataHvacScheduleEntry extends AirConditioningData im
     return lengthInBits;
   }
 
-  public static AirConditioningDataHvacScheduleEntryBuilder staticParseBuilder(
+  public static AirConditioningDataBuilder staticParseAirConditioningDataBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningDataHvacScheduleEntry");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte zoneGroup = readSimpleField("zoneGroup", readByte(readBuffer, 8));
 
@@ -231,11 +234,11 @@ public class AirConditioningDataHvacScheduleEntry extends AirConditioningData im
 
     readBuffer.closeContext("AirConditioningDataHvacScheduleEntry");
     // Create the instance
-    return new AirConditioningDataHvacScheduleEntryBuilder(
+    return new AirConditioningDataHvacScheduleEntryBuilderImpl(
         zoneGroup, zoneList, entry, format, hvacModeAndFlags, startTime, level, rawLevel);
   }
 
-  public static class AirConditioningDataHvacScheduleEntryBuilder
+  public static class AirConditioningDataHvacScheduleEntryBuilderImpl
       implements AirConditioningData.AirConditioningDataBuilder {
     private final byte zoneGroup;
     private final HVACZoneList zoneList;
@@ -246,7 +249,7 @@ public class AirConditioningDataHvacScheduleEntry extends AirConditioningData im
     private final HVACTemperature level;
     private final HVACRawLevels rawLevel;
 
-    public AirConditioningDataHvacScheduleEntryBuilder(
+    public AirConditioningDataHvacScheduleEntryBuilderImpl(
         byte zoneGroup,
         HVACZoneList zoneList,
         short entry,
@@ -255,7 +258,6 @@ public class AirConditioningDataHvacScheduleEntry extends AirConditioningData im
         HVACStartTime startTime,
         HVACTemperature level,
         HVACRawLevels rawLevel) {
-
       this.zoneGroup = zoneGroup;
       this.zoneList = zoneList;
       this.entry = entry;

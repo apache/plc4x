@@ -46,16 +46,10 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
   protected final short pin;
   protected final boolean on;
 
-  // Arguments.
-  protected final Boolean response;
-  // Reserved Fields
-  private Short reservedField0;
-
-  public FirmataCommandSetDigitalPinValue(short pin, boolean on, Boolean response) {
-    super(response);
+  public FirmataCommandSetDigitalPinValue(short pin, boolean on) {
+    super();
     this.pin = pin;
     this.on = on;
-    this.response = response;
   }
 
   public short getPin() {
@@ -70,6 +64,7 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
   protected void serializeFirmataCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataCommandSetDigitalPinValue");
 
@@ -77,10 +72,7 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
     writeSimpleField("pin", pin, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (on)
     writeSimpleField("on", on, writeBoolean(writeBuffer));
@@ -97,6 +89,7 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FirmataCommandSetDigitalPinValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pin)
     lengthInBits += 8;
@@ -110,12 +103,13 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
     return lengthInBits;
   }
 
-  public static FirmataCommandSetDigitalPinValueBuilder staticParseBuilder(
+  public static FirmataCommandBuilder staticParseFirmataCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandSetDigitalPinValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short pin = readSimpleField("pin", readUnsignedShort(readBuffer, 8));
 
@@ -126,29 +120,22 @@ public class FirmataCommandSetDigitalPinValue extends FirmataCommand implements 
 
     readBuffer.closeContext("FirmataCommandSetDigitalPinValue");
     // Create the instance
-    return new FirmataCommandSetDigitalPinValueBuilder(pin, on, response, reservedField0);
+    return new FirmataCommandSetDigitalPinValueBuilderImpl(pin, on);
   }
 
-  public static class FirmataCommandSetDigitalPinValueBuilder
+  public static class FirmataCommandSetDigitalPinValueBuilderImpl
       implements FirmataCommand.FirmataCommandBuilder {
     private final short pin;
     private final boolean on;
-    private final Boolean response;
-    private final Short reservedField0;
 
-    public FirmataCommandSetDigitalPinValueBuilder(
-        short pin, boolean on, Boolean response, Short reservedField0) {
+    public FirmataCommandSetDigitalPinValueBuilderImpl(short pin, boolean on) {
       this.pin = pin;
       this.on = on;
-      this.response = response;
-      this.reservedField0 = reservedField0;
     }
 
-    public FirmataCommandSetDigitalPinValue build(Boolean response) {
-
+    public FirmataCommandSetDigitalPinValue build() {
       FirmataCommandSetDigitalPinValue firmataCommandSetDigitalPinValue =
-          new FirmataCommandSetDigitalPinValue(pin, on, response);
-      firmataCommandSetDigitalPinValue.reservedField0 = reservedField0;
+          new FirmataCommandSetDigitalPinValue(pin, on);
       return firmataCommandSetDigitalPinValue;
     }
   }

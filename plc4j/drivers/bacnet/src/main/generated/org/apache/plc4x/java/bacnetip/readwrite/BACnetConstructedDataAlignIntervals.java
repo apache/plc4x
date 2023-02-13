@@ -78,6 +78,7 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAlignIntervals");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAlignIntervals _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (alignIntervals)
     lengthInBits += alignIntervals.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAlignIntervalsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean alignIntervals =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataAlignIntervals");
     // Create the instance
-    return new BACnetConstructedDataAlignIntervalsBuilder(
+    return new BACnetConstructedDataAlignIntervalsBuilderImpl(
         alignIntervals, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAlignIntervalsBuilder
+  public static class BACnetConstructedDataAlignIntervalsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean alignIntervals;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAlignIntervalsBuilder(
+    public BACnetConstructedDataAlignIntervalsBuilderImpl(
         BACnetApplicationTagBoolean alignIntervals,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.alignIntervals = alignIntervals;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

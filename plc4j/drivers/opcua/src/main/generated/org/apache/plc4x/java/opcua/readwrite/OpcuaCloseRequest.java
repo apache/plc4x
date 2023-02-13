@@ -97,6 +97,7 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
   @Override
   protected void serializeMessagePDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpcuaCloseRequest");
 
@@ -135,6 +136,7 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpcuaCloseRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (chunk)
     lengthInBits += 8;
@@ -160,12 +162,13 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaCloseRequestBuilder staticParseBuilder(ReadBuffer readBuffer, Boolean response)
-      throws ParseException {
+  public static MessagePDUBuilder staticParseMessagePDUBuilder(
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaCloseRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String chunk = readSimpleField("chunk", readString(readBuffer, 8));
 
@@ -187,11 +190,11 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
 
     readBuffer.closeContext("OpcuaCloseRequest");
     // Create the instance
-    return new OpcuaCloseRequestBuilder(
+    return new OpcuaCloseRequestBuilderImpl(
         chunk, secureChannelId, secureTokenId, sequenceNumber, requestId, message);
   }
 
-  public static class OpcuaCloseRequestBuilder implements MessagePDU.MessagePDUBuilder {
+  public static class OpcuaCloseRequestBuilderImpl implements MessagePDU.MessagePDUBuilder {
     private final String chunk;
     private final int secureChannelId;
     private final int secureTokenId;
@@ -199,14 +202,13 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
     private final int requestId;
     private final ExtensionObject message;
 
-    public OpcuaCloseRequestBuilder(
+    public OpcuaCloseRequestBuilderImpl(
         String chunk,
         int secureChannelId,
         int secureTokenId,
         int sequenceNumber,
         int requestId,
         ExtensionObject message) {
-
       this.chunk = chunk;
       this.secureChannelId = secureChannelId;
       this.secureTokenId = secureTokenId;

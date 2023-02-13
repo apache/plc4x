@@ -79,6 +79,7 @@ public class BACnetConstructedDataMaxSegmentsAccepted extends BACnetConstructedD
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMaxSegmentsAccepted");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataMaxSegmentsAccepted extends BACnetConstructedD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMaxSegmentsAccepted _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maxSegmentsAccepted)
     lengthInBits += maxSegmentsAccepted.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataMaxSegmentsAccepted extends BACnetConstructedD
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataMaxSegmentsAcceptedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataMaxSegmentsAccepted extends BACnetConstructedD
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger maxSegmentsAccepted =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataMaxSegmentsAccepted extends BACnetConstructedD
 
     readBuffer.closeContext("BACnetConstructedDataMaxSegmentsAccepted");
     // Create the instance
-    return new BACnetConstructedDataMaxSegmentsAcceptedBuilder(
+    return new BACnetConstructedDataMaxSegmentsAcceptedBuilderImpl(
         maxSegmentsAccepted, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataMaxSegmentsAcceptedBuilder
+  public static class BACnetConstructedDataMaxSegmentsAcceptedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger maxSegmentsAccepted;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataMaxSegmentsAcceptedBuilder(
+    public BACnetConstructedDataMaxSegmentsAcceptedBuilderImpl(
         BACnetApplicationTagUnsignedInteger maxSegmentsAccepted,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maxSegmentsAccepted = maxSegmentsAccepted;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

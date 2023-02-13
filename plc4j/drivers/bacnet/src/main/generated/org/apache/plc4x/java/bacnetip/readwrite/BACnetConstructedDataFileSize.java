@@ -78,6 +78,7 @@ public class BACnetConstructedDataFileSize extends BACnetConstructedData impleme
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFileSize");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataFileSize extends BACnetConstructedData impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFileSize _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileSize)
     lengthInBits += fileSize.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataFileSize extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFileSizeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataFileSize extends BACnetConstructedData impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger fileSize =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataFileSize extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataFileSize");
     // Create the instance
-    return new BACnetConstructedDataFileSizeBuilder(fileSize, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataFileSizeBuilderImpl(fileSize, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFileSizeBuilder
+  public static class BACnetConstructedDataFileSizeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger fileSize;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFileSizeBuilder(
+    public BACnetConstructedDataFileSizeBuilderImpl(
         BACnetApplicationTagUnsignedInteger fileSize,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fileSize = fileSize;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

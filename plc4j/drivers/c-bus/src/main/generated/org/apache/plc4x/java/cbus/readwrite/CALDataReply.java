@@ -69,6 +69,7 @@ public class CALDataReply extends CALData implements Message {
   @Override
   protected void serializeCALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALDataReply");
 
@@ -95,6 +96,7 @@ public class CALDataReply extends CALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CALDataReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (paramNo)
     lengthInBits += 8;
@@ -105,15 +107,16 @@ public class CALDataReply extends CALData implements Message {
     return lengthInBits;
   }
 
-  public static CALDataReplyBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer,
-      RequestContext requestContext,
-      CALCommandTypeContainer commandTypeContainer)
+      CALCommandTypeContainer commandTypeContainer,
+      RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("CALDataReply");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Parameter paramNo =
         readEnumField(
@@ -134,17 +137,16 @@ public class CALDataReply extends CALData implements Message {
 
     readBuffer.closeContext("CALDataReply");
     // Create the instance
-    return new CALDataReplyBuilder(paramNo, parameterValue, requestContext);
+    return new CALDataReplyBuilderImpl(paramNo, parameterValue, requestContext);
   }
 
-  public static class CALDataReplyBuilder implements CALData.CALDataBuilder {
+  public static class CALDataReplyBuilderImpl implements CALData.CALDataBuilder {
     private final Parameter paramNo;
     private final ParameterValue parameterValue;
     private final RequestContext requestContext;
 
-    public CALDataReplyBuilder(
+    public CALDataReplyBuilderImpl(
         Parameter paramNo, ParameterValue parameterValue, RequestContext requestContext) {
-
       this.paramNo = paramNo;
       this.parameterValue = parameterValue;
       this.requestContext = requestContext;

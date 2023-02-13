@@ -136,6 +136,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ProgramDiagnosticDataType");
 
@@ -200,6 +201,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ProgramDiagnosticDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (createSessionId)
     lengthInBits += createSessionId.getLengthInBits();
@@ -226,7 +228,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     if (lastMethodInputArguments != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : lastMethodInputArguments) {
-        boolean last = ++i >= lastMethodInputArguments.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodInputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -238,7 +240,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     if (lastMethodOutputArguments != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : lastMethodOutputArguments) {
-        boolean last = ++i >= lastMethodOutputArguments.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= lastMethodOutputArguments.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -252,12 +254,13 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     return lengthInBits;
   }
 
-  public static ProgramDiagnosticDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ProgramDiagnosticDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId createSessionId =
         readSimpleField(
@@ -317,7 +320,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
 
     readBuffer.closeContext("ProgramDiagnosticDataType");
     // Create the instance
-    return new ProgramDiagnosticDataTypeBuilder(
+    return new ProgramDiagnosticDataTypeBuilderImpl(
         createSessionId,
         createClientName,
         invocationCreationTime,
@@ -332,7 +335,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
         lastMethodReturnStatus);
   }
 
-  public static class ProgramDiagnosticDataTypeBuilder
+  public static class ProgramDiagnosticDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId createSessionId;
     private final PascalString createClientName;
@@ -347,7 +350,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     private final long lastMethodCallTime;
     private final ExtensionObjectDefinition lastMethodReturnStatus;
 
-    public ProgramDiagnosticDataTypeBuilder(
+    public ProgramDiagnosticDataTypeBuilderImpl(
         NodeId createSessionId,
         PascalString createClientName,
         long invocationCreationTime,
@@ -360,7 +363,6 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
         List<ExtensionObjectDefinition> lastMethodOutputArguments,
         long lastMethodCallTime,
         ExtensionObjectDefinition lastMethodReturnStatus) {
-
       this.createSessionId = createSessionId;
       this.createClientName = createClientName;
       this.invocationCreationTime = invocationCreationTime;

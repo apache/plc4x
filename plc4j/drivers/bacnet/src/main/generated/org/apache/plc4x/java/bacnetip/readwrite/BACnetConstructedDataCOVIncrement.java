@@ -78,6 +78,7 @@ public class BACnetConstructedDataCOVIncrement extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCOVIncrement");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataCOVIncrement extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCOVIncrement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (covIncrement)
     lengthInBits += covIncrement.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataCOVIncrement extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCOVIncrementBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataCOVIncrement extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal covIncrement =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataCOVIncrement extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataCOVIncrement");
     // Create the instance
-    return new BACnetConstructedDataCOVIncrementBuilder(
+    return new BACnetConstructedDataCOVIncrementBuilderImpl(
         covIncrement, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCOVIncrementBuilder
+  public static class BACnetConstructedDataCOVIncrementBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal covIncrement;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCOVIncrementBuilder(
+    public BACnetConstructedDataCOVIncrementBuilderImpl(
         BACnetApplicationTagReal covIncrement,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.covIncrement = covIncrement;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

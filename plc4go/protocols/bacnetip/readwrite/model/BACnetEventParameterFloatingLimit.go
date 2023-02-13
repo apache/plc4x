@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -153,46 +154,42 @@ func (m *_BACnetEventParameterFloatingLimit) GetTypeName() string {
 	return "BACnetEventParameterFloatingLimit"
 }
 
-func (m *_BACnetEventParameterFloatingLimit) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetEventParameterFloatingLimit) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetEventParameterFloatingLimit) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (timeDelay)
-	lengthInBits += m.TimeDelay.GetLengthInBits()
+	lengthInBits += m.TimeDelay.GetLengthInBits(ctx)
 
 	// Simple field (setpointReference)
-	lengthInBits += m.SetpointReference.GetLengthInBits()
+	lengthInBits += m.SetpointReference.GetLengthInBits(ctx)
 
 	// Simple field (lowDiffLimit)
-	lengthInBits += m.LowDiffLimit.GetLengthInBits()
+	lengthInBits += m.LowDiffLimit.GetLengthInBits(ctx)
 
 	// Simple field (highDiffLimit)
-	lengthInBits += m.HighDiffLimit.GetLengthInBits()
+	lengthInBits += m.HighDiffLimit.GetLengthInBits(ctx)
 
 	// Simple field (deadband)
-	lengthInBits += m.Deadband.GetLengthInBits()
+	lengthInBits += m.Deadband.GetLengthInBits(ctx)
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetEventParameterFloatingLimit) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetEventParameterFloatingLimit) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetEventParameterFloatingLimitParse(theBytes []byte) (BACnetEventParameterFloatingLimit, error) {
-	return BACnetEventParameterFloatingLimitParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetEventParameterFloatingLimitParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetEventParameterFloatingLimit, error) {
+func BACnetEventParameterFloatingLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterFloatingLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetEventParameterFloatingLimit"); pullErr != nil {
@@ -205,7 +202,7 @@ func BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(uint8(4)))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterFloatingLimit")
 	}
@@ -218,7 +215,7 @@ func BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("timeDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for timeDelay")
 	}
-	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_timeDelay, _timeDelayErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _timeDelayErr != nil {
 		return nil, errors.Wrap(_timeDelayErr, "Error parsing 'timeDelay' field of BACnetEventParameterFloatingLimit")
 	}
@@ -231,7 +228,7 @@ func BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("setpointReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for setpointReference")
 	}
-	_setpointReference, _setpointReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(readBuffer, uint8(uint8(1)))
+	_setpointReference, _setpointReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
 	if _setpointReferenceErr != nil {
 		return nil, errors.Wrap(_setpointReferenceErr, "Error parsing 'setpointReference' field of BACnetEventParameterFloatingLimit")
 	}
@@ -244,7 +241,7 @@ func BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("lowDiffLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for lowDiffLimit")
 	}
-	_lowDiffLimit, _lowDiffLimitErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
+	_lowDiffLimit, _lowDiffLimitErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
 	if _lowDiffLimitErr != nil {
 		return nil, errors.Wrap(_lowDiffLimitErr, "Error parsing 'lowDiffLimit' field of BACnetEventParameterFloatingLimit")
 	}
@@ -257,7 +254,7 @@ func BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("highDiffLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for highDiffLimit")
 	}
-	_highDiffLimit, _highDiffLimitErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_REAL))
+	_highDiffLimit, _highDiffLimitErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_REAL))
 	if _highDiffLimitErr != nil {
 		return nil, errors.Wrap(_highDiffLimitErr, "Error parsing 'highDiffLimit' field of BACnetEventParameterFloatingLimit")
 	}
@@ -270,7 +267,7 @@ func BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("deadband"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for deadband")
 	}
-	_deadband, _deadbandErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_REAL))
+	_deadband, _deadbandErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), BACnetDataType(BACnetDataType_REAL))
 	if _deadbandErr != nil {
 		return nil, errors.Wrap(_deadbandErr, "Error parsing 'deadband' field of BACnetEventParameterFloatingLimit")
 	}
@@ -283,7 +280,7 @@ func BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(uint8(4)))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(4)))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterFloatingLimit")
 	}
@@ -312,14 +309,14 @@ func BACnetEventParameterFloatingLimitParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetEventParameterFloatingLimit) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -331,7 +328,7 @@ func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for openingTag")
 		}
-		_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+		_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 		if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for openingTag")
 		}
@@ -343,7 +340,7 @@ func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("timeDelay"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for timeDelay")
 		}
-		_timeDelayErr := writeBuffer.WriteSerializable(m.GetTimeDelay())
+		_timeDelayErr := writeBuffer.WriteSerializable(ctx, m.GetTimeDelay())
 		if popErr := writeBuffer.PopContext("timeDelay"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for timeDelay")
 		}
@@ -355,7 +352,7 @@ func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("setpointReference"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for setpointReference")
 		}
-		_setpointReferenceErr := writeBuffer.WriteSerializable(m.GetSetpointReference())
+		_setpointReferenceErr := writeBuffer.WriteSerializable(ctx, m.GetSetpointReference())
 		if popErr := writeBuffer.PopContext("setpointReference"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for setpointReference")
 		}
@@ -367,7 +364,7 @@ func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("lowDiffLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for lowDiffLimit")
 		}
-		_lowDiffLimitErr := writeBuffer.WriteSerializable(m.GetLowDiffLimit())
+		_lowDiffLimitErr := writeBuffer.WriteSerializable(ctx, m.GetLowDiffLimit())
 		if popErr := writeBuffer.PopContext("lowDiffLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for lowDiffLimit")
 		}
@@ -379,7 +376,7 @@ func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("highDiffLimit"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for highDiffLimit")
 		}
-		_highDiffLimitErr := writeBuffer.WriteSerializable(m.GetHighDiffLimit())
+		_highDiffLimitErr := writeBuffer.WriteSerializable(ctx, m.GetHighDiffLimit())
 		if popErr := writeBuffer.PopContext("highDiffLimit"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for highDiffLimit")
 		}
@@ -391,7 +388,7 @@ func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("deadband"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for deadband")
 		}
-		_deadbandErr := writeBuffer.WriteSerializable(m.GetDeadband())
+		_deadbandErr := writeBuffer.WriteSerializable(ctx, m.GetDeadband())
 		if popErr := writeBuffer.PopContext("deadband"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for deadband")
 		}
@@ -403,7 +400,7 @@ func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for closingTag")
 		}
-		_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+		_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 		if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for closingTag")
 		}
@@ -416,7 +413,7 @@ func (m *_BACnetEventParameterFloatingLimit) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetEventParameterFloatingLimit) isBACnetEventParameterFloatingLimit() bool {
@@ -428,7 +425,7 @@ func (m *_BACnetEventParameterFloatingLimit) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

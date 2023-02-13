@@ -78,6 +78,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPower");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPower _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (power)
     lengthInBits += power.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPowerBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal power =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
 
     readBuffer.closeContext("BACnetConstructedDataPower");
     // Create the instance
-    return new BACnetConstructedDataPowerBuilder(power, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataPowerBuilderImpl(power, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPowerBuilder
+  public static class BACnetConstructedDataPowerBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal power;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPowerBuilder(
+    public BACnetConstructedDataPowerBuilderImpl(
         BACnetApplicationTagReal power,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.power = power;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

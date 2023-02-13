@@ -65,6 +65,7 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
   protected void serializeBACnetFaultParameterFaultOutOfRangeMaxNormalValueChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal");
 
@@ -83,6 +84,7 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (realValue)
     lengthInBits += realValue.getLengthInBits();
@@ -90,12 +92,14 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder
+      staticParseBACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal realValue =
         readSimpleField(
@@ -106,18 +110,18 @@ public class BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueReal");
     // Create the instance
-    return new BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder(realValue, tagNumber);
+    return new BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilderImpl(
+        realValue, tagNumber);
   }
 
-  public static class BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder
+  public static class BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilderImpl
       implements BACnetFaultParameterFaultOutOfRangeMaxNormalValue
           .BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder {
     private final BACnetApplicationTagReal realValue;
     private final Short tagNumber;
 
-    public BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilder(
+    public BACnetFaultParameterFaultOutOfRangeMaxNormalValueRealBuilderImpl(
         BACnetApplicationTagReal realValue, Short tagNumber) {
-
       this.realValue = realValue;
       this.tagNumber = tagNumber;
     }

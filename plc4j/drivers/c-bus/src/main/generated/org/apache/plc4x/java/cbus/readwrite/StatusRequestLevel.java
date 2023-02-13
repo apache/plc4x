@@ -42,6 +42,7 @@ public class StatusRequestLevel extends StatusRequest implements Message {
   // Properties.
   protected final ApplicationIdContainer application;
   protected final byte startingGroupAddressLabel;
+
   // Reserved Fields
   private Byte reservedField0;
   private Byte reservedField1;
@@ -65,6 +66,7 @@ public class StatusRequestLevel extends StatusRequest implements Message {
   protected void serializeStatusRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("StatusRequestLevel");
 
@@ -106,6 +108,7 @@ public class StatusRequestLevel extends StatusRequest implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     StatusRequestLevel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -122,12 +125,13 @@ public class StatusRequestLevel extends StatusRequest implements Message {
     return lengthInBits;
   }
 
-  public static StatusRequestLevelBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static StatusRequestBuilder staticParseStatusRequestBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("StatusRequestLevel");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x73);
 
@@ -155,17 +159,17 @@ public class StatusRequestLevel extends StatusRequest implements Message {
 
     readBuffer.closeContext("StatusRequestLevel");
     // Create the instance
-    return new StatusRequestLevelBuilder(
+    return new StatusRequestLevelBuilderImpl(
         application, startingGroupAddressLabel, reservedField0, reservedField1);
   }
 
-  public static class StatusRequestLevelBuilder implements StatusRequest.StatusRequestBuilder {
+  public static class StatusRequestLevelBuilderImpl implements StatusRequest.StatusRequestBuilder {
     private final ApplicationIdContainer application;
     private final byte startingGroupAddressLabel;
     private final Byte reservedField0;
     private final Byte reservedField1;
 
-    public StatusRequestLevelBuilder(
+    public StatusRequestLevelBuilderImpl(
         ApplicationIdContainer application,
         byte startingGroupAddressLabel,
         Byte reservedField0,

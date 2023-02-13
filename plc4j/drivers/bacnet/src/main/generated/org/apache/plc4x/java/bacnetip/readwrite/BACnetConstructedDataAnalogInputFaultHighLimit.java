@@ -79,6 +79,7 @@ public class BACnetConstructedDataAnalogInputFaultHighLimit extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAnalogInputFaultHighLimit");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataAnalogInputFaultHighLimit extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAnalogInputFaultHighLimit _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (faultHighLimit)
     lengthInBits += faultHighLimit.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataAnalogInputFaultHighLimit extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAnalogInputFaultHighLimitBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataAnalogInputFaultHighLimit extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal faultHighLimit =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataAnalogInputFaultHighLimit extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataAnalogInputFaultHighLimit");
     // Create the instance
-    return new BACnetConstructedDataAnalogInputFaultHighLimitBuilder(
+    return new BACnetConstructedDataAnalogInputFaultHighLimitBuilderImpl(
         faultHighLimit, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAnalogInputFaultHighLimitBuilder
+  public static class BACnetConstructedDataAnalogInputFaultHighLimitBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal faultHighLimit;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAnalogInputFaultHighLimitBuilder(
+    public BACnetConstructedDataAnalogInputFaultHighLimitBuilderImpl(
         BACnetApplicationTagReal faultHighLimit,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.faultHighLimit = faultHighLimit;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

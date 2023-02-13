@@ -55,8 +55,6 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
   protected final List<PubSubGroupDataType> writerGroups;
   protected final int noOfReaderGroups;
   protected final List<PubSubGroupDataType> readerGroups;
-  // Reserved Fields
-  private Short reservedField0;
 
   public PubSubConnectionDataType(
       PascalString name,
@@ -138,6 +136,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PubSubConnectionDataType");
 
@@ -145,10 +144,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 7));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 7));
 
     // Simple Field (enabled)
     writeSimpleField("enabled", enabled, writeBoolean(writeBuffer));
@@ -198,6 +194,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PubSubConnectionDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (name)
     lengthInBits += name.getLengthInBits();
@@ -224,7 +221,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     if (connectionProperties != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : connectionProperties) {
-        boolean last = ++i >= connectionProperties.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= connectionProperties.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -239,7 +236,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     if (writerGroups != null) {
       int i = 0;
       for (PubSubGroupDataType element : writerGroups) {
-        boolean last = ++i >= writerGroups.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= writerGroups.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -251,7 +248,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     if (readerGroups != null) {
       int i = 0;
       for (PubSubGroupDataType element : readerGroups) {
-        boolean last = ++i >= readerGroups.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= readerGroups.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -259,12 +256,13 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     return lengthInBits;
   }
 
-  public static PubSubConnectionDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("PubSubConnectionDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString name =
         readSimpleField(
@@ -335,7 +333,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
 
     readBuffer.closeContext("PubSubConnectionDataType");
     // Create the instance
-    return new PubSubConnectionDataTypeBuilder(
+    return new PubSubConnectionDataTypeBuilderImpl(
         name,
         enabled,
         publisherId,
@@ -347,11 +345,10 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
         noOfWriterGroups,
         writerGroups,
         noOfReaderGroups,
-        readerGroups,
-        reservedField0);
+        readerGroups);
   }
 
-  public static class PubSubConnectionDataTypeBuilder
+  public static class PubSubConnectionDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalString name;
     private final boolean enabled;
@@ -365,9 +362,8 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     private final List<PubSubGroupDataType> writerGroups;
     private final int noOfReaderGroups;
     private final List<PubSubGroupDataType> readerGroups;
-    private final Short reservedField0;
 
-    public PubSubConnectionDataTypeBuilder(
+    public PubSubConnectionDataTypeBuilderImpl(
         PascalString name,
         boolean enabled,
         Variant publisherId,
@@ -379,8 +375,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
         int noOfWriterGroups,
         List<PubSubGroupDataType> writerGroups,
         int noOfReaderGroups,
-        List<PubSubGroupDataType> readerGroups,
-        Short reservedField0) {
+        List<PubSubGroupDataType> readerGroups) {
       this.name = name;
       this.enabled = enabled;
       this.publisherId = publisherId;
@@ -393,7 +388,6 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
       this.writerGroups = writerGroups;
       this.noOfReaderGroups = noOfReaderGroups;
       this.readerGroups = readerGroups;
-      this.reservedField0 = reservedField0;
     }
 
     public PubSubConnectionDataType build() {
@@ -411,7 +405,6 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
               writerGroups,
               noOfReaderGroups,
               readerGroups);
-      pubSubConnectionDataType.reservedField0 = reservedField0;
       return pubSubConnectionDataType;
     }
   }

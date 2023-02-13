@@ -57,6 +57,7 @@ public class ModbusPDUReportServerIdRequest extends ModbusPDU implements Message
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReportServerIdRequest");
 
@@ -72,25 +73,28 @@ public class ModbusPDUReportServerIdRequest extends ModbusPDU implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReportServerIdRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ModbusPDUReportServerIdRequestBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReportServerIdRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ModbusPDUReportServerIdRequest");
     // Create the instance
-    return new ModbusPDUReportServerIdRequestBuilder();
+    return new ModbusPDUReportServerIdRequestBuilderImpl();
   }
 
-  public static class ModbusPDUReportServerIdRequestBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUReportServerIdRequestBuilderImpl
+      implements ModbusPDU.ModbusPDUBuilder {
 
-    public ModbusPDUReportServerIdRequestBuilder() {}
+    public ModbusPDUReportServerIdRequestBuilderImpl() {}
 
     public ModbusPDUReportServerIdRequest build() {
       ModbusPDUReportServerIdRequest modbusPDUReportServerIdRequest =

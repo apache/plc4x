@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,31 +116,27 @@ func (m *_CreateObjectError) GetTypeName() string {
 	return "CreateObjectError"
 }
 
-func (m *_CreateObjectError) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CreateObjectError) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CreateObjectError) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (errorType)
-	lengthInBits += m.ErrorType.GetLengthInBits()
+	lengthInBits += m.ErrorType.GetLengthInBits(ctx)
 
 	// Simple field (firstFailedElementNumber)
-	lengthInBits += m.FirstFailedElementNumber.GetLengthInBits()
+	lengthInBits += m.FirstFailedElementNumber.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_CreateObjectError) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CreateObjectError) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CreateObjectErrorParse(theBytes []byte, errorChoice BACnetConfirmedServiceChoice) (CreateObjectError, error) {
-	return CreateObjectErrorParseWithBuffer(utils.NewReadBufferByteBased(theBytes), errorChoice)
+	return CreateObjectErrorParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
-func CreateObjectErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (CreateObjectError, error) {
+func CreateObjectErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (CreateObjectError, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CreateObjectError"); pullErr != nil {
@@ -152,7 +149,7 @@ func CreateObjectErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice B
 	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
 	}
-	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _errorTypeErr != nil {
 		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of CreateObjectError")
 	}
@@ -165,7 +162,7 @@ func CreateObjectErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice B
 	if pullErr := readBuffer.PullContext("firstFailedElementNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedElementNumber")
 	}
-	_firstFailedElementNumber, _firstFailedElementNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_firstFailedElementNumber, _firstFailedElementNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _firstFailedElementNumberErr != nil {
 		return nil, errors.Wrap(_firstFailedElementNumberErr, "Error parsing 'firstFailedElementNumber' field of CreateObjectError")
 	}
@@ -189,14 +186,14 @@ func CreateObjectErrorParseWithBuffer(readBuffer utils.ReadBuffer, errorChoice B
 }
 
 func (m *_CreateObjectError) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CreateObjectError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CreateObjectError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -208,7 +205,7 @@ func (m *_CreateObjectError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("errorType"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for errorType")
 		}
-		_errorTypeErr := writeBuffer.WriteSerializable(m.GetErrorType())
+		_errorTypeErr := writeBuffer.WriteSerializable(ctx, m.GetErrorType())
 		if popErr := writeBuffer.PopContext("errorType"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for errorType")
 		}
@@ -220,7 +217,7 @@ func (m *_CreateObjectError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		if pushErr := writeBuffer.PushContext("firstFailedElementNumber"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for firstFailedElementNumber")
 		}
-		_firstFailedElementNumberErr := writeBuffer.WriteSerializable(m.GetFirstFailedElementNumber())
+		_firstFailedElementNumberErr := writeBuffer.WriteSerializable(ctx, m.GetFirstFailedElementNumber())
 		if popErr := writeBuffer.PopContext("firstFailedElementNumber"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for firstFailedElementNumber")
 		}
@@ -233,7 +230,7 @@ func (m *_CreateObjectError) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CreateObjectError) isCreateObjectError() bool {
@@ -245,7 +242,7 @@ func (m *_CreateObjectError) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

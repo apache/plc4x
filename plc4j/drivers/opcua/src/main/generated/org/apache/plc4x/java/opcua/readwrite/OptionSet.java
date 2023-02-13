@@ -64,6 +64,7 @@ public class OptionSet extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OptionSet");
 
@@ -85,6 +86,7 @@ public class OptionSet extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OptionSet _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += value.getLengthInBits();
@@ -95,12 +97,13 @@ public class OptionSet extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static OptionSetBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("OptionSet");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalByteString value =
         readSimpleField(
@@ -116,16 +119,15 @@ public class OptionSet extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("OptionSet");
     // Create the instance
-    return new OptionSetBuilder(value, validBits);
+    return new OptionSetBuilderImpl(value, validBits);
   }
 
-  public static class OptionSetBuilder
+  public static class OptionSetBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final PascalByteString value;
     private final PascalByteString validBits;
 
-    public OptionSetBuilder(PascalByteString value, PascalByteString validBits) {
-
+    public OptionSetBuilderImpl(PascalByteString value, PascalByteString validBits) {
       this.value = value;
       this.validBits = validBits;
     }

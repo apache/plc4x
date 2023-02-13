@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetLandingCallStatusCommandDestination) GetTypeName() string {
 	return "BACnetLandingCallStatusCommandDestination"
 }
 
-func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (destination)
-	lengthInBits += m.Destination.GetLengthInBits()
+	lengthInBits += m.Destination.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetLandingCallStatusCommandDestination) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetLandingCallStatusCommandDestinationParse(theBytes []byte) (BACnetLandingCallStatusCommandDestination, error) {
-	return BACnetLandingCallStatusCommandDestinationParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetLandingCallStatusCommandDestinationParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetLandingCallStatusCommandDestinationParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDestination, error) {
+func BACnetLandingCallStatusCommandDestinationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDestination, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatusCommandDestination"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetLandingCallStatusCommandDestinationParseWithBuffer(readBuffer utils.R
 	if pullErr := readBuffer.PullContext("destination"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for destination")
 	}
-	_destination, _destinationErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_destination, _destinationErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _destinationErr != nil {
 		return nil, errors.Wrap(_destinationErr, "Error parsing 'destination' field of BACnetLandingCallStatusCommandDestination")
 	}
@@ -162,14 +159,14 @@ func BACnetLandingCallStatusCommandDestinationParseWithBuffer(readBuffer utils.R
 }
 
 func (m *_BACnetLandingCallStatusCommandDestination) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetLandingCallStatusCommandDestination) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetLandingCallStatusCommandDestination) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetLandingCallStatusCommandDestination) SerializeWithWriteBuffer(wr
 		if pushErr := writeBuffer.PushContext("destination"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for destination")
 		}
-		_destinationErr := writeBuffer.WriteSerializable(m.GetDestination())
+		_destinationErr := writeBuffer.WriteSerializable(ctx, m.GetDestination())
 		if popErr := writeBuffer.PopContext("destination"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for destination")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetLandingCallStatusCommandDestination) SerializeWithWriteBuffer(wr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetLandingCallStatusCommandDestination) isBACnetLandingCallStatusCommandDestination() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetLandingCallStatusCommandDestination) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

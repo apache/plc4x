@@ -57,6 +57,7 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLightningInProgress");
 
@@ -76,6 +77,7 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLightningInProgress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lightningInProgress)
     lengthInBits += lightningInProgress.getLengthInBits();
@@ -83,12 +85,13 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLightningInProgressBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLightningInProgress");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLightingInProgressTagged lightningInProgress =
         readSimpleField(
@@ -103,16 +106,15 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
 
     readBuffer.closeContext("BACnetPropertyStatesLightningInProgress");
     // Create the instance
-    return new BACnetPropertyStatesLightningInProgressBuilder(lightningInProgress);
+    return new BACnetPropertyStatesLightningInProgressBuilderImpl(lightningInProgress);
   }
 
-  public static class BACnetPropertyStatesLightningInProgressBuilder
+  public static class BACnetPropertyStatesLightningInProgressBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLightingInProgressTagged lightningInProgress;
 
-    public BACnetPropertyStatesLightningInProgressBuilder(
+    public BACnetPropertyStatesLightningInProgressBuilderImpl(
         BACnetLightingInProgressTagged lightningInProgress) {
-
       this.lightningInProgress = lightningInProgress;
     }
 

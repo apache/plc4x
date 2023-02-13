@@ -58,6 +58,7 @@ public class TriggerControlDataTriggerEvent extends TriggerControlData implement
   protected void serializeTriggerControlDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TriggerControlDataTriggerEvent");
 
@@ -76,6 +77,7 @@ public class TriggerControlDataTriggerEvent extends TriggerControlData implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TriggerControlDataTriggerEvent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (actionSelector)
     lengthInBits += 8;
@@ -83,26 +85,26 @@ public class TriggerControlDataTriggerEvent extends TriggerControlData implement
     return lengthInBits;
   }
 
-  public static TriggerControlDataTriggerEventBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static TriggerControlDataBuilder staticParseTriggerControlDataBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TriggerControlDataTriggerEvent");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte actionSelector = readSimpleField("actionSelector", readByte(readBuffer, 8));
 
     readBuffer.closeContext("TriggerControlDataTriggerEvent");
     // Create the instance
-    return new TriggerControlDataTriggerEventBuilder(actionSelector);
+    return new TriggerControlDataTriggerEventBuilderImpl(actionSelector);
   }
 
-  public static class TriggerControlDataTriggerEventBuilder
+  public static class TriggerControlDataTriggerEventBuilderImpl
       implements TriggerControlData.TriggerControlDataBuilder {
     private final byte actionSelector;
 
-    public TriggerControlDataTriggerEventBuilder(byte actionSelector) {
-
+    public TriggerControlDataTriggerEventBuilderImpl(byte actionSelector) {
       this.actionSelector = actionSelector;
     }
 

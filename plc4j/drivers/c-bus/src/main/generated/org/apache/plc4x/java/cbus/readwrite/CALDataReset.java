@@ -53,6 +53,7 @@ public class CALDataReset extends CALData implements Message {
   @Override
   protected void serializeCALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CALDataReset");
 
@@ -68,27 +69,28 @@ public class CALDataReset extends CALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CALDataReset _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static CALDataResetBuilder staticParseBuilder(
+  public static CALDataBuilder staticParseCALDataBuilder(
       ReadBuffer readBuffer, RequestContext requestContext) throws ParseException {
     readBuffer.pullContext("CALDataReset");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("CALDataReset");
     // Create the instance
-    return new CALDataResetBuilder(requestContext);
+    return new CALDataResetBuilderImpl(requestContext);
   }
 
-  public static class CALDataResetBuilder implements CALData.CALDataBuilder {
+  public static class CALDataResetBuilderImpl implements CALData.CALDataBuilder {
     private final RequestContext requestContext;
 
-    public CALDataResetBuilder(RequestContext requestContext) {
-
+    public CALDataResetBuilderImpl(RequestContext requestContext) {
       this.requestContext = requestContext;
     }
 

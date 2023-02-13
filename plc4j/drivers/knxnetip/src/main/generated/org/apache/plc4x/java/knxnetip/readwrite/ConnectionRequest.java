@@ -73,6 +73,7 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ConnectionRequest");
 
@@ -109,6 +110,7 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ConnectionRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (hpaiDiscoveryEndpoint)
     lengthInBits += hpaiDiscoveryEndpoint.getLengthInBits();
@@ -122,12 +124,13 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static ConnectionRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ConnectionRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     HPAIDiscoveryEndpoint hpaiDiscoveryEndpoint =
         readSimpleField(
@@ -152,20 +155,20 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("ConnectionRequest");
     // Create the instance
-    return new ConnectionRequestBuilder(
+    return new ConnectionRequestBuilderImpl(
         hpaiDiscoveryEndpoint, hpaiDataEndpoint, connectionRequestInformation);
   }
 
-  public static class ConnectionRequestBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class ConnectionRequestBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final HPAIDiscoveryEndpoint hpaiDiscoveryEndpoint;
     private final HPAIDataEndpoint hpaiDataEndpoint;
     private final ConnectionRequestInformation connectionRequestInformation;
 
-    public ConnectionRequestBuilder(
+    public ConnectionRequestBuilderImpl(
         HPAIDiscoveryEndpoint hpaiDiscoveryEndpoint,
         HPAIDataEndpoint hpaiDataEndpoint,
         ConnectionRequestInformation connectionRequestInformation) {
-
       this.hpaiDiscoveryEndpoint = hpaiDiscoveryEndpoint;
       this.hpaiDataEndpoint = hpaiDataEndpoint;
       this.connectionRequestInformation = connectionRequestInformation;

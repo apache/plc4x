@@ -78,6 +78,7 @@ public class BACnetConstructedDataArchive extends BACnetConstructedData implemen
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataArchive");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataArchive extends BACnetConstructedData implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataArchive _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (archive)
     lengthInBits += archive.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataArchive extends BACnetConstructedData implemen
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataArchiveBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataArchive extends BACnetConstructedData implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean archive =
         readSimpleField(
@@ -132,20 +135,19 @@ public class BACnetConstructedDataArchive extends BACnetConstructedData implemen
 
     readBuffer.closeContext("BACnetConstructedDataArchive");
     // Create the instance
-    return new BACnetConstructedDataArchiveBuilder(archive, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataArchiveBuilderImpl(archive, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataArchiveBuilder
+  public static class BACnetConstructedDataArchiveBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean archive;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataArchiveBuilder(
+    public BACnetConstructedDataArchiveBuilderImpl(
         BACnetApplicationTagBoolean archive,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.archive = archive;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

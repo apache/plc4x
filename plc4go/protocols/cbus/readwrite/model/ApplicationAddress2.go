@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -67,6 +68,8 @@ func (m *_ApplicationAddress2) GetAddress() byte {
 ///////////////////////
 
 func (m *_ApplicationAddress2) GetIsWildcard() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(bool((m.GetAddress()) == (0xFF)))
 }
 
@@ -95,11 +98,7 @@ func (m *_ApplicationAddress2) GetTypeName() string {
 	return "ApplicationAddress2"
 }
 
-func (m *_ApplicationAddress2) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ApplicationAddress2) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_ApplicationAddress2) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (address)
@@ -110,15 +109,15 @@ func (m *_ApplicationAddress2) GetLengthInBitsConditional(lastItem bool) uint16 
 	return lengthInBits
 }
 
-func (m *_ApplicationAddress2) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ApplicationAddress2) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ApplicationAddress2Parse(theBytes []byte) (ApplicationAddress2, error) {
-	return ApplicationAddress2ParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return ApplicationAddress2ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ApplicationAddress2ParseWithBuffer(readBuffer utils.ReadBuffer) (ApplicationAddress2, error) {
+func ApplicationAddress2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationAddress2, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ApplicationAddress2"); pullErr != nil {
@@ -150,14 +149,14 @@ func ApplicationAddress2ParseWithBuffer(readBuffer utils.ReadBuffer) (Applicatio
 }
 
 func (m *_ApplicationAddress2) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ApplicationAddress2) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ApplicationAddress2) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("ApplicationAddress2"); pushErr != nil {
@@ -171,7 +170,7 @@ func (m *_ApplicationAddress2) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		return errors.Wrap(_addressErr, "Error serializing 'address' field")
 	}
 	// Virtual field
-	if _isWildcardErr := writeBuffer.WriteVirtual("isWildcard", m.GetIsWildcard()); _isWildcardErr != nil {
+	if _isWildcardErr := writeBuffer.WriteVirtual(ctx, "isWildcard", m.GetIsWildcard()); _isWildcardErr != nil {
 		return errors.Wrap(_isWildcardErr, "Error serializing 'isWildcard' field")
 	}
 
@@ -190,7 +189,7 @@ func (m *_ApplicationAddress2) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

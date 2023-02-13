@@ -21,6 +21,7 @@ package utils
 
 import (
 	"container/list"
+	"context"
 	"fmt"
 	"math/big"
 )
@@ -211,7 +212,7 @@ func (b *boxedWriteBuffer) WriteString(logicalName string, bitLength uint32, _ s
 	return nil
 }
 
-func (b *boxedWriteBuffer) WriteVirtual(logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+func (b *boxedWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
 	additionalStringRepresentation := b.extractAdditionalStringRepresentation(UpcastWriterArgs(writerArgs...)...)
 	if value == nil {
 		return nil
@@ -226,7 +227,7 @@ func (b *boxedWriteBuffer) WriteVirtual(logicalName string, value interface{}, w
 		asciiBox = b.asciiBoxWriterLight.BoxString(logicalName, fmt.Sprintf("%x %f%s", value, value, additionalStringRepresentation), 0)
 	case Serializable:
 		virtualBoxedWriteBuffer := NewWriteBufferBoxBasedWithOptions(b.mergeSingleBoxes, b.omitEmptyBoxes)
-		if err := value.(Serializable).SerializeWithWriteBuffer(virtualBoxedWriteBuffer); err == nil {
+		if err := value.(Serializable).SerializeWithWriteBuffer(ctx, virtualBoxedWriteBuffer); err == nil {
 			asciiBox = b.asciiBoxWriterLight.BoxBox(logicalName, virtualBoxedWriteBuffer.GetBox(), 0)
 		} else {
 			b.asciiBoxWriterLight.BoxString(logicalName, err.Error(), 0)
@@ -238,11 +239,11 @@ func (b *boxedWriteBuffer) WriteVirtual(logicalName string, value interface{}, w
 	return nil
 }
 
-func (b *boxedWriteBuffer) WriteSerializable(serializable Serializable) error {
+func (b *boxedWriteBuffer) WriteSerializable(ctx context.Context, serializable Serializable) error {
 	if serializable == nil {
 		return nil
 	}
-	return serializable.SerializeWithWriteBuffer(b)
+	return serializable.SerializeWithWriteBuffer(ctx, b)
 }
 
 func (b *boxedWriteBuffer) PopContext(logicalName string, _ ...WithWriterArgs) error {

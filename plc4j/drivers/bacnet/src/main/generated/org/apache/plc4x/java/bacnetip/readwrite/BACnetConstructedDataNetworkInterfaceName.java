@@ -79,6 +79,7 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNetworkInterfaceName");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNetworkInterfaceName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (networkInterfaceName)
     lengthInBits += networkInterfaceName.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNetworkInterfaceNameBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString networkInterfaceName =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataNetworkInterfaceName");
     // Create the instance
-    return new BACnetConstructedDataNetworkInterfaceNameBuilder(
+    return new BACnetConstructedDataNetworkInterfaceNameBuilderImpl(
         networkInterfaceName, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNetworkInterfaceNameBuilder
+  public static class BACnetConstructedDataNetworkInterfaceNameBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString networkInterfaceName;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNetworkInterfaceNameBuilder(
+    public BACnetConstructedDataNetworkInterfaceNameBuilderImpl(
         BACnetApplicationTagCharacterString networkInterfaceName,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.networkInterfaceName = networkInterfaceName;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

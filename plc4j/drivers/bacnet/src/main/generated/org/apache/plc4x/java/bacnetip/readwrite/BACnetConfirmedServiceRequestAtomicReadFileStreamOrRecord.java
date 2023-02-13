@@ -73,6 +73,7 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord");
 
@@ -101,6 +102,7 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -127,6 +129,7 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -148,9 +151,15 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x0)) {
-      builder = BACnetConfirmedServiceRequestAtomicReadFileStream.staticParseBuilder(readBuffer);
+      builder =
+          BACnetConfirmedServiceRequestAtomicReadFileStream
+              .staticParseBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder(
+                  readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x1)) {
-      builder = BACnetConfirmedServiceRequestAtomicReadFileRecord.staticParseBuilder(readBuffer);
+      builder =
+          BACnetConfirmedServiceRequestAtomicReadFileRecord
+              .staticParseBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder(
+                  readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -178,7 +187,7 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
     return _bACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord;
   }
 
-  public static interface BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder {
+  public interface BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder {
     BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord build(
         BACnetTagHeader peekedTagHeader, BACnetOpeningTag openingTag, BACnetClosingTag closingTag);
   }

@@ -79,6 +79,7 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPMulticastAddress");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBACnetIPMulticastAddress _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ipMulticastAddress)
     lengthInBits += ipMulticastAddress.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBACnetIPMulticastAddressBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagOctetString ipMulticastAddress =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataBACnetIPMulticastAddress extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataBACnetIPMulticastAddress");
     // Create the instance
-    return new BACnetConstructedDataBACnetIPMulticastAddressBuilder(
+    return new BACnetConstructedDataBACnetIPMulticastAddressBuilderImpl(
         ipMulticastAddress, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBACnetIPMulticastAddressBuilder
+  public static class BACnetConstructedDataBACnetIPMulticastAddressBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagOctetString ipMulticastAddress;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBACnetIPMulticastAddressBuilder(
+    public BACnetConstructedDataBACnetIPMulticastAddressBuilderImpl(
         BACnetApplicationTagOctetString ipMulticastAddress,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipMulticastAddress = ipMulticastAddress;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

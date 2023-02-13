@@ -58,6 +58,7 @@ public class SALDataMediaTransport extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataMediaTransport");
 
@@ -79,6 +80,7 @@ public class SALDataMediaTransport extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataMediaTransport _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (mediaTransportControlData)
     lengthInBits += mediaTransportControlData.getLengthInBits();
@@ -86,12 +88,13 @@ public class SALDataMediaTransport extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataMediaTransportBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataMediaTransport");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     MediaTransportControlData mediaTransportControlData =
         readSimpleField(
@@ -101,14 +104,13 @@ public class SALDataMediaTransport extends SALData implements Message {
 
     readBuffer.closeContext("SALDataMediaTransport");
     // Create the instance
-    return new SALDataMediaTransportBuilder(mediaTransportControlData);
+    return new SALDataMediaTransportBuilderImpl(mediaTransportControlData);
   }
 
-  public static class SALDataMediaTransportBuilder implements SALData.SALDataBuilder {
+  public static class SALDataMediaTransportBuilderImpl implements SALData.SALDataBuilder {
     private final MediaTransportControlData mediaTransportControlData;
 
-    public SALDataMediaTransportBuilder(MediaTransportControlData mediaTransportControlData) {
-
+    public SALDataMediaTransportBuilderImpl(MediaTransportControlData mediaTransportControlData) {
       this.mediaTransportControlData = mediaTransportControlData;
     }
 

@@ -65,6 +65,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
   protected void serializeBACnetNotificationParametersChangeOfDiscreteValueNewValueChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned");
 
@@ -83,6 +84,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unsignedValue)
     lengthInBits += unsignedValue.getLengthInBits();
@@ -90,12 +92,14 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
     return lengthInBits;
   }
 
-  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilder
-      staticParseBuilder(ReadBuffer readBuffer, Short tagNumber) throws ParseException {
+  public static BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+      staticParseBACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder(
+          ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
@@ -108,19 +112,18 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsigned");
     // Create the instance
-    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilder(
+    return new BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilderImpl(
         unsignedValue, tagNumber);
   }
 
-  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilder
+  public static class BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilderImpl
       implements BACnetNotificationParametersChangeOfDiscreteValueNewValue
           .BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
     private final Short tagNumber;
 
-    public BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilder(
+    public BACnetNotificationParametersChangeOfDiscreteValueNewValueUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue, Short tagNumber) {
-
       this.unsignedValue = unsignedValue;
       this.tagNumber = tagNumber;
     }

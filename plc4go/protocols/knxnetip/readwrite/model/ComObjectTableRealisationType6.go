@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -107,28 +108,24 @@ func (m *_ComObjectTableRealisationType6) GetTypeName() string {
 	return "ComObjectTableRealisationType6"
 }
 
-func (m *_ComObjectTableRealisationType6) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ComObjectTableRealisationType6) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ComObjectTableRealisationType6) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (comObjectDescriptors)
-	lengthInBits += m.ComObjectDescriptors.GetLengthInBits()
+	lengthInBits += m.ComObjectDescriptors.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_ComObjectTableRealisationType6) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ComObjectTableRealisationType6) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ComObjectTableRealisationType6Parse(theBytes []byte, firmwareType FirmwareType) (ComObjectTableRealisationType6, error) {
-	return ComObjectTableRealisationType6ParseWithBuffer(utils.NewReadBufferByteBased(theBytes), firmwareType)
+	return ComObjectTableRealisationType6ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), firmwareType)
 }
 
-func ComObjectTableRealisationType6ParseWithBuffer(readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType6, error) {
+func ComObjectTableRealisationType6ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType6, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType6"); pullErr != nil {
@@ -141,7 +138,7 @@ func ComObjectTableRealisationType6ParseWithBuffer(readBuffer utils.ReadBuffer, 
 	if pullErr := readBuffer.PullContext("comObjectDescriptors"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for comObjectDescriptors")
 	}
-	_comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6ParseWithBuffer(readBuffer)
+	_comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6ParseWithBuffer(ctx, readBuffer)
 	if _comObjectDescriptorsErr != nil {
 		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field of ComObjectTableRealisationType6")
 	}
@@ -164,14 +161,14 @@ func ComObjectTableRealisationType6ParseWithBuffer(readBuffer utils.ReadBuffer, 
 }
 
 func (m *_ComObjectTableRealisationType6) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ComObjectTableRealisationType6) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ComObjectTableRealisationType6) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -183,7 +180,7 @@ func (m *_ComObjectTableRealisationType6) SerializeWithWriteBuffer(writeBuffer u
 		if pushErr := writeBuffer.PushContext("comObjectDescriptors"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for comObjectDescriptors")
 		}
-		_comObjectDescriptorsErr := writeBuffer.WriteSerializable(m.GetComObjectDescriptors())
+		_comObjectDescriptorsErr := writeBuffer.WriteSerializable(ctx, m.GetComObjectDescriptors())
 		if popErr := writeBuffer.PopContext("comObjectDescriptors"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for comObjectDescriptors")
 		}
@@ -196,7 +193,7 @@ func (m *_ComObjectTableRealisationType6) SerializeWithWriteBuffer(writeBuffer u
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ComObjectTableRealisationType6) isComObjectTableRealisationType6() bool {
@@ -208,7 +205,7 @@ func (m *_ComObjectTableRealisationType6) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

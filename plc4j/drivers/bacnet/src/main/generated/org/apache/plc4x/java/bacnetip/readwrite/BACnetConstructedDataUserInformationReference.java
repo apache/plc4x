@@ -79,6 +79,7 @@ public class BACnetConstructedDataUserInformationReference extends BACnetConstru
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataUserInformationReference");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataUserInformationReference extends BACnetConstru
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataUserInformationReference _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (userInformationReference)
     lengthInBits += userInformationReference.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataUserInformationReference extends BACnetConstru
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataUserInformationReferenceBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataUserInformationReference extends BACnetConstru
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString userInformationReference =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataUserInformationReference extends BACnetConstru
 
     readBuffer.closeContext("BACnetConstructedDataUserInformationReference");
     // Create the instance
-    return new BACnetConstructedDataUserInformationReferenceBuilder(
+    return new BACnetConstructedDataUserInformationReferenceBuilderImpl(
         userInformationReference, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataUserInformationReferenceBuilder
+  public static class BACnetConstructedDataUserInformationReferenceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString userInformationReference;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataUserInformationReferenceBuilder(
+    public BACnetConstructedDataUserInformationReferenceBuilderImpl(
         BACnetApplicationTagCharacterString userInformationReference,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.userInformationReference = userInformationReference;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

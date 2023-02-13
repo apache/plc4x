@@ -60,6 +60,7 @@ public class ErrorReportingSystemCategoryTypeClimateControllers
   protected void serializeErrorReportingSystemCategoryTypeChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ErrorReportingSystemCategoryTypeClimateControllers");
 
@@ -85,6 +86,7 @@ public class ErrorReportingSystemCategoryTypeClimateControllers
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ErrorReportingSystemCategoryTypeClimateControllers _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (categoryForType)
     lengthInBits += 4;
@@ -92,13 +94,16 @@ public class ErrorReportingSystemCategoryTypeClimateControllers
     return lengthInBits;
   }
 
-  public static ErrorReportingSystemCategoryTypeClimateControllersBuilder staticParseBuilder(
-      ReadBuffer readBuffer, ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
-      throws ParseException {
+  public static ErrorReportingSystemCategoryTypeBuilder
+      staticParseErrorReportingSystemCategoryTypeBuilder(
+          ReadBuffer readBuffer,
+          ErrorReportingSystemCategoryClass errorReportingSystemCategoryClass)
+          throws ParseException {
     readBuffer.pullContext("ErrorReportingSystemCategoryTypeClimateControllers");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorReportingSystemCategoryTypeForClimateControllers categoryForType =
         readEnumField(
@@ -110,16 +115,15 @@ public class ErrorReportingSystemCategoryTypeClimateControllers
 
     readBuffer.closeContext("ErrorReportingSystemCategoryTypeClimateControllers");
     // Create the instance
-    return new ErrorReportingSystemCategoryTypeClimateControllersBuilder(categoryForType);
+    return new ErrorReportingSystemCategoryTypeClimateControllersBuilderImpl(categoryForType);
   }
 
-  public static class ErrorReportingSystemCategoryTypeClimateControllersBuilder
+  public static class ErrorReportingSystemCategoryTypeClimateControllersBuilderImpl
       implements ErrorReportingSystemCategoryType.ErrorReportingSystemCategoryTypeBuilder {
     private final ErrorReportingSystemCategoryTypeForClimateControllers categoryForType;
 
-    public ErrorReportingSystemCategoryTypeClimateControllersBuilder(
+    public ErrorReportingSystemCategoryTypeClimateControllersBuilderImpl(
         ErrorReportingSystemCategoryTypeForClimateControllers categoryForType) {
-
       this.categoryForType = categoryForType;
     }
 

@@ -78,6 +78,7 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataWindowSamples");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataWindowSamples _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (windowSamples)
     lengthInBits += windowSamples.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataWindowSamplesBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger windowSamples =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataWindowSamples");
     // Create the instance
-    return new BACnetConstructedDataWindowSamplesBuilder(
+    return new BACnetConstructedDataWindowSamplesBuilderImpl(
         windowSamples, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataWindowSamplesBuilder
+  public static class BACnetConstructedDataWindowSamplesBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger windowSamples;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataWindowSamplesBuilder(
+    public BACnetConstructedDataWindowSamplesBuilderImpl(
         BACnetApplicationTagUnsignedInteger windowSamples,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.windowSamples = windowSamples;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

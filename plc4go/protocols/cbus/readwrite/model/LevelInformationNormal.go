@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -96,10 +97,14 @@ func (m *_LevelInformationNormal) GetPair2() LevelInformationNibblePair {
 ///////////////////////
 
 func (m *_LevelInformationNormal) GetActualLevel() uint8 {
+	ctx := context.Background()
+	_ = ctx
 	return uint8(m.GetPair2().NibbleValue()<<uint8(4) | m.GetPair1().NibbleValue())
 }
 
 func (m *_LevelInformationNormal) GetActualLevelInPercent() float32 {
+	ctx := context.Background()
+	_ = ctx
 	return float32(float32(float32(float32(100))*float32((float32(m.GetActualLevel())+float32(float32(2))))) / float32(float32(255)))
 }
 
@@ -134,12 +139,8 @@ func (m *_LevelInformationNormal) GetTypeName() string {
 	return "LevelInformationNormal"
 }
 
-func (m *_LevelInformationNormal) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_LevelInformationNormal) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_LevelInformationNormal) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (pair1)
 	lengthInBits += 8
@@ -154,15 +155,15 @@ func (m *_LevelInformationNormal) GetLengthInBitsConditional(lastItem bool) uint
 	return lengthInBits
 }
 
-func (m *_LevelInformationNormal) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_LevelInformationNormal) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func LevelInformationNormalParse(theBytes []byte) (LevelInformationNormal, error) {
-	return LevelInformationNormalParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return LevelInformationNormalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func LevelInformationNormalParseWithBuffer(readBuffer utils.ReadBuffer) (LevelInformationNormal, error) {
+func LevelInformationNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LevelInformationNormal"); pullErr != nil {
@@ -175,7 +176,7 @@ func LevelInformationNormalParseWithBuffer(readBuffer utils.ReadBuffer) (LevelIn
 	if pullErr := readBuffer.PullContext("pair1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pair1")
 	}
-	_pair1, _pair1Err := LevelInformationNibblePairParseWithBuffer(readBuffer)
+	_pair1, _pair1Err := LevelInformationNibblePairParseWithBuffer(ctx, readBuffer)
 	if _pair1Err != nil {
 		return nil, errors.Wrap(_pair1Err, "Error parsing 'pair1' field of LevelInformationNormal")
 	}
@@ -188,7 +189,7 @@ func LevelInformationNormalParseWithBuffer(readBuffer utils.ReadBuffer) (LevelIn
 	if pullErr := readBuffer.PullContext("pair2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for pair2")
 	}
-	_pair2, _pair2Err := LevelInformationNibblePairParseWithBuffer(readBuffer)
+	_pair2, _pair2Err := LevelInformationNibblePairParseWithBuffer(ctx, readBuffer)
 	if _pair2Err != nil {
 		return nil, errors.Wrap(_pair2Err, "Error parsing 'pair2' field of LevelInformationNormal")
 	}
@@ -222,14 +223,14 @@ func LevelInformationNormalParseWithBuffer(readBuffer utils.ReadBuffer) (LevelIn
 }
 
 func (m *_LevelInformationNormal) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_LevelInformationNormal) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_LevelInformationNormal) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -241,7 +242,7 @@ func (m *_LevelInformationNormal) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("pair1"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for pair1")
 		}
-		_pair1Err := writeBuffer.WriteSerializable(m.GetPair1())
+		_pair1Err := writeBuffer.WriteSerializable(ctx, m.GetPair1())
 		if popErr := writeBuffer.PopContext("pair1"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for pair1")
 		}
@@ -253,7 +254,7 @@ func (m *_LevelInformationNormal) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		if pushErr := writeBuffer.PushContext("pair2"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for pair2")
 		}
-		_pair2Err := writeBuffer.WriteSerializable(m.GetPair2())
+		_pair2Err := writeBuffer.WriteSerializable(ctx, m.GetPair2())
 		if popErr := writeBuffer.PopContext("pair2"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for pair2")
 		}
@@ -261,11 +262,11 @@ func (m *_LevelInformationNormal) SerializeWithWriteBuffer(writeBuffer utils.Wri
 			return errors.Wrap(_pair2Err, "Error serializing 'pair2' field")
 		}
 		// Virtual field
-		if _actualLevelErr := writeBuffer.WriteVirtual("actualLevel", m.GetActualLevel()); _actualLevelErr != nil {
+		if _actualLevelErr := writeBuffer.WriteVirtual(ctx, "actualLevel", m.GetActualLevel()); _actualLevelErr != nil {
 			return errors.Wrap(_actualLevelErr, "Error serializing 'actualLevel' field")
 		}
 		// Virtual field
-		if _actualLevelInPercentErr := writeBuffer.WriteVirtual("actualLevelInPercent", m.GetActualLevelInPercent()); _actualLevelInPercentErr != nil {
+		if _actualLevelInPercentErr := writeBuffer.WriteVirtual(ctx, "actualLevelInPercent", m.GetActualLevelInPercent()); _actualLevelInPercentErr != nil {
 			return errors.Wrap(_actualLevelInPercentErr, "Error serializing 'actualLevelInPercent' field")
 		}
 
@@ -274,7 +275,7 @@ func (m *_LevelInformationNormal) SerializeWithWriteBuffer(writeBuffer utils.Wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_LevelInformationNormal) isLevelInformationNormal() bool {
@@ -286,7 +287,7 @@ func (m *_LevelInformationNormal) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

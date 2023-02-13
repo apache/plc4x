@@ -64,6 +64,7 @@ public class PowerUpReply extends Reply implements Message {
   @Override
   protected void serializeReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PowerUpReply");
 
@@ -83,6 +84,7 @@ public class PowerUpReply extends Reply implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PowerUpReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (powerUpIndicator)
     lengthInBits += powerUpIndicator.getLengthInBits();
@@ -90,13 +92,14 @@ public class PowerUpReply extends Reply implements Message {
     return lengthInBits;
   }
 
-  public static PowerUpReplyBuilder staticParseBuilder(
+  public static ReplyBuilder staticParseReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("PowerUpReply");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PowerUp powerUpIndicator =
         readSimpleField(
@@ -105,17 +108,16 @@ public class PowerUpReply extends Reply implements Message {
 
     readBuffer.closeContext("PowerUpReply");
     // Create the instance
-    return new PowerUpReplyBuilder(powerUpIndicator, cBusOptions, requestContext);
+    return new PowerUpReplyBuilderImpl(powerUpIndicator, cBusOptions, requestContext);
   }
 
-  public static class PowerUpReplyBuilder implements Reply.ReplyBuilder {
+  public static class PowerUpReplyBuilderImpl implements Reply.ReplyBuilder {
     private final PowerUp powerUpIndicator;
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public PowerUpReplyBuilder(
+    public PowerUpReplyBuilderImpl(
         PowerUp powerUpIndicator, CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.powerUpIndicator = powerUpIndicator;
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;

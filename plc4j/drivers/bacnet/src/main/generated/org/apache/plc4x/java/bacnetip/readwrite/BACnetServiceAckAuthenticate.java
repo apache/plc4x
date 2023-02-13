@@ -46,15 +46,15 @@ public class BACnetServiceAckAuthenticate extends BACnetServiceAck implements Me
   protected final byte[] bytesOfRemovedService;
 
   // Arguments.
-  protected final Long serviceAckLength;
   protected final Long serviceAckPayloadLength;
+  protected final Long serviceAckLength;
 
   public BACnetServiceAckAuthenticate(
-      byte[] bytesOfRemovedService, Long serviceAckLength, Long serviceAckPayloadLength) {
+      byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
     super(serviceAckLength);
     this.bytesOfRemovedService = bytesOfRemovedService;
-    this.serviceAckLength = serviceAckLength;
     this.serviceAckPayloadLength = serviceAckPayloadLength;
+    this.serviceAckLength = serviceAckLength;
   }
 
   public byte[] getBytesOfRemovedService() {
@@ -65,6 +65,7 @@ public class BACnetServiceAckAuthenticate extends BACnetServiceAck implements Me
   protected void serializeBACnetServiceAckChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAckAuthenticate");
 
@@ -84,6 +85,7 @@ public class BACnetServiceAckAuthenticate extends BACnetServiceAck implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetServiceAckAuthenticate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (bytesOfRemovedService != null) {
@@ -93,42 +95,42 @@ public class BACnetServiceAckAuthenticate extends BACnetServiceAck implements Me
     return lengthInBits;
   }
 
-  public static BACnetServiceAckAuthenticateBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Long serviceAckLength, Long serviceAckPayloadLength)
+  public static BACnetServiceAckBuilder staticParseBACnetServiceAckBuilder(
+      ReadBuffer readBuffer, Long serviceAckPayloadLength, Long serviceAckLength)
       throws ParseException {
     readBuffer.pullContext("BACnetServiceAckAuthenticate");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] bytesOfRemovedService =
         readBuffer.readByteArray("bytesOfRemovedService", Math.toIntExact(serviceAckPayloadLength));
 
     readBuffer.closeContext("BACnetServiceAckAuthenticate");
     // Create the instance
-    return new BACnetServiceAckAuthenticateBuilder(
-        bytesOfRemovedService, serviceAckLength, serviceAckPayloadLength);
+    return new BACnetServiceAckAuthenticateBuilderImpl(
+        bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
   }
 
-  public static class BACnetServiceAckAuthenticateBuilder
+  public static class BACnetServiceAckAuthenticateBuilderImpl
       implements BACnetServiceAck.BACnetServiceAckBuilder {
     private final byte[] bytesOfRemovedService;
-    private final Long serviceAckLength;
     private final Long serviceAckPayloadLength;
+    private final Long serviceAckLength;
 
-    public BACnetServiceAckAuthenticateBuilder(
-        byte[] bytesOfRemovedService, Long serviceAckLength, Long serviceAckPayloadLength) {
-
+    public BACnetServiceAckAuthenticateBuilderImpl(
+        byte[] bytesOfRemovedService, Long serviceAckPayloadLength, Long serviceAckLength) {
       this.bytesOfRemovedService = bytesOfRemovedService;
-      this.serviceAckLength = serviceAckLength;
       this.serviceAckPayloadLength = serviceAckPayloadLength;
+      this.serviceAckLength = serviceAckLength;
     }
 
     public BACnetServiceAckAuthenticate build(Long serviceAckLength) {
 
       BACnetServiceAckAuthenticate bACnetServiceAckAuthenticate =
           new BACnetServiceAckAuthenticate(
-              bytesOfRemovedService, serviceAckLength, serviceAckPayloadLength);
+              bytesOfRemovedService, serviceAckPayloadLength, serviceAckLength);
       return bACnetServiceAckAuthenticate;
     }
   }

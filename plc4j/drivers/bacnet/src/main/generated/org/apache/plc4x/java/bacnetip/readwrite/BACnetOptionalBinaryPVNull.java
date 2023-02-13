@@ -56,6 +56,7 @@ public class BACnetOptionalBinaryPVNull extends BACnetOptionalBinaryPV implement
   protected void serializeBACnetOptionalBinaryPVChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetOptionalBinaryPVNull");
 
@@ -74,6 +75,7 @@ public class BACnetOptionalBinaryPVNull extends BACnetOptionalBinaryPV implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetOptionalBinaryPVNull _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nullValue)
     lengthInBits += nullValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetOptionalBinaryPVNull extends BACnetOptionalBinaryPV implement
     return lengthInBits;
   }
 
-  public static BACnetOptionalBinaryPVNullBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetOptionalBinaryPVBuilder staticParseBACnetOptionalBinaryPVBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetOptionalBinaryPVNull");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagNull nullValue =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetOptionalBinaryPVNull extends BACnetOptionalBinaryPV implement
 
     readBuffer.closeContext("BACnetOptionalBinaryPVNull");
     // Create the instance
-    return new BACnetOptionalBinaryPVNullBuilder(nullValue);
+    return new BACnetOptionalBinaryPVNullBuilderImpl(nullValue);
   }
 
-  public static class BACnetOptionalBinaryPVNullBuilder
+  public static class BACnetOptionalBinaryPVNullBuilderImpl
       implements BACnetOptionalBinaryPV.BACnetOptionalBinaryPVBuilder {
     private final BACnetApplicationTagNull nullValue;
 
-    public BACnetOptionalBinaryPVNullBuilder(BACnetApplicationTagNull nullValue) {
-
+    public BACnetOptionalBinaryPVNullBuilderImpl(BACnetApplicationTagNull nullValue) {
       this.nullValue = nullValue;
     }
 

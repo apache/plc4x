@@ -77,6 +77,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAck extends S7PayloadUserDataI
   protected void serializeS7PayloadUserDataItemChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionAlarmAck");
 
@@ -103,6 +104,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAck extends S7PayloadUserDataI
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     S7PayloadUserDataItemCpuFunctionAlarmAck _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (functionId)
     lengthInBits += 8;
@@ -114,7 +116,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAck extends S7PayloadUserDataI
     if (messageObjects != null) {
       int i = 0;
       for (AlarmMessageObjectAckType element : messageObjects) {
-        boolean last = ++i >= messageObjects.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= messageObjects.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -122,12 +124,13 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAck extends S7PayloadUserDataI
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItemCpuFunctionAlarmAckBuilder staticParseBuilder(
+  public static S7PayloadUserDataItemBuilder staticParseS7PayloadUserDataItemBuilder(
       ReadBuffer readBuffer, Byte cpuFunctionType, Short cpuSubfunction) throws ParseException {
     readBuffer.pullContext("S7PayloadUserDataItemCpuFunctionAlarmAck");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short functionId = readSimpleField("functionId", readUnsignedShort(readBuffer, 8));
 
@@ -142,17 +145,16 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAck extends S7PayloadUserDataI
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionAlarmAck");
     // Create the instance
-    return new S7PayloadUserDataItemCpuFunctionAlarmAckBuilder(functionId, messageObjects);
+    return new S7PayloadUserDataItemCpuFunctionAlarmAckBuilderImpl(functionId, messageObjects);
   }
 
-  public static class S7PayloadUserDataItemCpuFunctionAlarmAckBuilder
+  public static class S7PayloadUserDataItemCpuFunctionAlarmAckBuilderImpl
       implements S7PayloadUserDataItem.S7PayloadUserDataItemBuilder {
     private final short functionId;
     private final List<AlarmMessageObjectAckType> messageObjects;
 
-    public S7PayloadUserDataItemCpuFunctionAlarmAckBuilder(
+    public S7PayloadUserDataItemCpuFunctionAlarmAckBuilderImpl(
         short functionId, List<AlarmMessageObjectAckType> messageObjects) {
-
       this.functionId = functionId;
       this.messageObjects = messageObjects;
     }

@@ -41,6 +41,7 @@ public class TelephonyDataRinging extends TelephonyData implements Message {
 
   // Properties.
   protected final String number;
+
   // Reserved Fields
   private Byte reservedField0;
 
@@ -58,6 +59,7 @@ public class TelephonyDataRinging extends TelephonyData implements Message {
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataRinging");
 
@@ -85,6 +87,7 @@ public class TelephonyDataRinging extends TelephonyData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataRinging _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -95,13 +98,14 @@ public class TelephonyDataRinging extends TelephonyData implements Message {
     return lengthInBits;
   }
 
-  public static TelephonyDataRingingBuilder staticParseBuilder(
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(
       ReadBuffer readBuffer, TelephonyCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataRinging");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x01);
 
@@ -111,14 +115,15 @@ public class TelephonyDataRinging extends TelephonyData implements Message {
 
     readBuffer.closeContext("TelephonyDataRinging");
     // Create the instance
-    return new TelephonyDataRingingBuilder(number, reservedField0);
+    return new TelephonyDataRingingBuilderImpl(number, reservedField0);
   }
 
-  public static class TelephonyDataRingingBuilder implements TelephonyData.TelephonyDataBuilder {
+  public static class TelephonyDataRingingBuilderImpl
+      implements TelephonyData.TelephonyDataBuilder {
     private final String number;
     private final Byte reservedField0;
 
-    public TelephonyDataRingingBuilder(String number, Byte reservedField0) {
+    public TelephonyDataRingingBuilderImpl(String number, Byte reservedField0) {
       this.number = number;
       this.reservedField0 = reservedField0;
     }

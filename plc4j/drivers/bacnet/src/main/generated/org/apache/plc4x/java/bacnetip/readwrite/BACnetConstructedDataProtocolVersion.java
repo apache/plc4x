@@ -78,6 +78,7 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProtocolVersion");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataProtocolVersion _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (protocolVersion)
     lengthInBits += protocolVersion.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProtocolVersionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger protocolVersion =
         readSimpleField(
@@ -135,21 +138,20 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataProtocolVersion");
     // Create the instance
-    return new BACnetConstructedDataProtocolVersionBuilder(
+    return new BACnetConstructedDataProtocolVersionBuilderImpl(
         protocolVersion, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProtocolVersionBuilder
+  public static class BACnetConstructedDataProtocolVersionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger protocolVersion;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProtocolVersionBuilder(
+    public BACnetConstructedDataProtocolVersionBuilderImpl(
         BACnetApplicationTagUnsignedInteger protocolVersion,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.protocolVersion = protocolVersion;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

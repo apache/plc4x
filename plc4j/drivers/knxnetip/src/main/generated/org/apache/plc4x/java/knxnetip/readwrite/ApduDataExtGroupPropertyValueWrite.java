@@ -42,17 +42,14 @@ public class ApduDataExtGroupPropertyValueWrite extends ApduDataExt implements M
     return (short) 0x2A;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtGroupPropertyValueWrite(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtGroupPropertyValueWrite() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtGroupPropertyValueWrite");
 
@@ -68,35 +65,32 @@ public class ApduDataExtGroupPropertyValueWrite extends ApduDataExt implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtGroupPropertyValueWrite _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtGroupPropertyValueWriteBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtGroupPropertyValueWrite");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtGroupPropertyValueWrite");
     // Create the instance
-    return new ApduDataExtGroupPropertyValueWriteBuilder(length);
+    return new ApduDataExtGroupPropertyValueWriteBuilderImpl();
   }
 
-  public static class ApduDataExtGroupPropertyValueWriteBuilder
+  public static class ApduDataExtGroupPropertyValueWriteBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtGroupPropertyValueWriteBuilder(Short length) {
+    public ApduDataExtGroupPropertyValueWriteBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtGroupPropertyValueWrite build(Short length) {
-
+    public ApduDataExtGroupPropertyValueWrite build() {
       ApduDataExtGroupPropertyValueWrite apduDataExtGroupPropertyValueWrite =
-          new ApduDataExtGroupPropertyValueWrite(length);
+          new ApduDataExtGroupPropertyValueWrite();
       return apduDataExtGroupPropertyValueWrite;
     }
   }

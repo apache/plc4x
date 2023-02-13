@@ -40,6 +40,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   // Accessors for discriminator values.
 
   // Properties.
+  protected final PnIo_CyclicServiceDataUnit dataUnit;
   protected final int cycleCounter;
   protected final boolean ignore;
   protected final boolean stationProblemIndicatorOk;
@@ -47,6 +48,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   protected final boolean dataValid;
   protected final boolean redundancy;
   protected final boolean statePrimary;
+
   // Reserved Fields
   private Boolean reservedField0;
   private Boolean reservedField1;
@@ -54,6 +56,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
 
   public PnDcp_Pdu_RealTimeCyclic(
       int frameIdValue,
+      PnIo_CyclicServiceDataUnit dataUnit,
       int cycleCounter,
       boolean ignore,
       boolean stationProblemIndicatorOk,
@@ -62,6 +65,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
       boolean redundancy,
       boolean statePrimary) {
     super(frameIdValue);
+    this.dataUnit = dataUnit;
     this.cycleCounter = cycleCounter;
     this.ignore = ignore;
     this.stationProblemIndicatorOk = stationProblemIndicatorOk;
@@ -69,6 +73,10 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     this.dataValid = dataValid;
     this.redundancy = redundancy;
     this.statePrimary = statePrimary;
+  }
+
+  public PnIo_CyclicServiceDataUnit getDataUnit() {
+    return dataUnit;
   }
 
   public int getCycleCounter() {
@@ -102,48 +110,88 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   @Override
   protected void serializePnDcp_PduChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Pdu_RealTimeCyclic");
 
+    // Manual Field (dataUnit)
+    writeManualField(
+        "dataUnit",
+        () ->
+            org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.writeDataUnit(
+                writeBuffer, dataUnit),
+        writeBuffer,
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
     // Simple Field (cycleCounter)
-    writeSimpleField("cycleCounter", cycleCounter, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "cycleCounter",
+        cycleCounter,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (ignore)
-    writeSimpleField("ignore", ignore, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "ignore",
+        ignore,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (boolean) false,
-        writeBoolean(writeBuffer));
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (stationProblemIndicatorOk)
     writeSimpleField(
-        "stationProblemIndicatorOk", stationProblemIndicatorOk, writeBoolean(writeBuffer));
+        "stationProblemIndicatorOk",
+        stationProblemIndicatorOk,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (providerStateRun)
-    writeSimpleField("providerStateRun", providerStateRun, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "providerStateRun",
+        providerStateRun,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (boolean) false,
-        writeBoolean(writeBuffer));
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (dataValid)
-    writeSimpleField("dataValid", dataValid, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "dataValid",
+        dataValid,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (redundancy)
-    writeSimpleField("redundancy", redundancy, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "redundancy",
+        redundancy,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (statePrimary)
-    writeSimpleField("statePrimary", statePrimary, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "statePrimary",
+        statePrimary,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField2 != null ? reservedField2 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Pdu_RealTimeCyclic");
   }
@@ -157,6 +205,10 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Pdu_RealTimeCyclic _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    // Manual Field (dataUnit)
+    lengthInBits += ((dataUnit.getLengthInBytes())) * (8);
 
     // Simple field (cycleCounter)
     lengthInBits += 16;
@@ -191,40 +243,85 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Pdu_RealTimeCyclicBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_PduBuilder staticParsePnDcp_PduBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Pdu_RealTimeCyclic");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int cycleCounter = readSimpleField("cycleCounter", readUnsignedInt(readBuffer, 16));
+    PnIo_CyclicServiceDataUnit dataUnit =
+        readManualField(
+            "dataUnit",
+            readBuffer,
+            () ->
+                (PnIo_CyclicServiceDataUnit)
+                    (org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.readDataUnit(
+                        readBuffer)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean ignore = readSimpleField("ignore", readBoolean(readBuffer));
+    int cycleCounter =
+        readSimpleField(
+            "cycleCounter",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    boolean ignore =
+        readSimpleField(
+            "ignore", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Boolean reservedField0 =
-        readReservedField("reserved", readBoolean(readBuffer), (boolean) false);
+        readReservedField(
+            "reserved",
+            readBoolean(readBuffer),
+            (boolean) false,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean stationProblemIndicatorOk =
-        readSimpleField("stationProblemIndicatorOk", readBoolean(readBuffer));
+        readSimpleField(
+            "stationProblemIndicatorOk",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean providerStateRun = readSimpleField("providerStateRun", readBoolean(readBuffer));
+    boolean providerStateRun =
+        readSimpleField(
+            "providerStateRun",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Boolean reservedField1 =
-        readReservedField("reserved", readBoolean(readBuffer), (boolean) false);
+        readReservedField(
+            "reserved",
+            readBoolean(readBuffer),
+            (boolean) false,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean dataValid = readSimpleField("dataValid", readBoolean(readBuffer));
+    boolean dataValid =
+        readSimpleField(
+            "dataValid", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean redundancy = readSimpleField("redundancy", readBoolean(readBuffer));
+    boolean redundancy =
+        readSimpleField(
+            "redundancy", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean statePrimary = readSimpleField("statePrimary", readBoolean(readBuffer));
+    boolean statePrimary =
+        readSimpleField(
+            "statePrimary",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Short reservedField2 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
+        readReservedField(
+            "reserved",
+            readUnsignedShort(readBuffer, 8),
+            (short) 0x00,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Pdu_RealTimeCyclic");
     // Create the instance
-    return new PnDcp_Pdu_RealTimeCyclicBuilder(
+    return new PnDcp_Pdu_RealTimeCyclicBuilderImpl(
+        dataUnit,
         cycleCounter,
         ignore,
         stationProblemIndicatorOk,
@@ -237,7 +334,8 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
         reservedField2);
   }
 
-  public static class PnDcp_Pdu_RealTimeCyclicBuilder implements PnDcp_Pdu.PnDcp_PduBuilder {
+  public static class PnDcp_Pdu_RealTimeCyclicBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
+    private final PnIo_CyclicServiceDataUnit dataUnit;
     private final int cycleCounter;
     private final boolean ignore;
     private final boolean stationProblemIndicatorOk;
@@ -249,7 +347,8 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
     private final Boolean reservedField1;
     private final Short reservedField2;
 
-    public PnDcp_Pdu_RealTimeCyclicBuilder(
+    public PnDcp_Pdu_RealTimeCyclicBuilderImpl(
+        PnIo_CyclicServiceDataUnit dataUnit,
         int cycleCounter,
         boolean ignore,
         boolean stationProblemIndicatorOk,
@@ -260,6 +359,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
         Boolean reservedField0,
         Boolean reservedField1,
         Short reservedField2) {
+      this.dataUnit = dataUnit;
       this.cycleCounter = cycleCounter;
       this.ignore = ignore;
       this.stationProblemIndicatorOk = stationProblemIndicatorOk;
@@ -276,6 +376,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
       PnDcp_Pdu_RealTimeCyclic pnDcp_Pdu_RealTimeCyclic =
           new PnDcp_Pdu_RealTimeCyclic(
               frameIdValue,
+              dataUnit,
               cycleCounter,
               ignore,
               stationProblemIndicatorOk,
@@ -299,7 +400,8 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
       return false;
     }
     PnDcp_Pdu_RealTimeCyclic that = (PnDcp_Pdu_RealTimeCyclic) o;
-    return (getCycleCounter() == that.getCycleCounter())
+    return (getDataUnit() == that.getDataUnit())
+        && (getCycleCounter() == that.getCycleCounter())
         && (getIgnore() == that.getIgnore())
         && (getStationProblemIndicatorOk() == that.getStationProblemIndicatorOk())
         && (getProviderStateRun() == that.getProviderStateRun())
@@ -314,6 +416,7 @@ public class PnDcp_Pdu_RealTimeCyclic extends PnDcp_Pdu implements Message {
   public int hashCode() {
     return Objects.hash(
         super.hashCode(),
+        getDataUnit(),
         getCycleCounter(),
         getIgnore(),
         getStationProblemIndicatorOk(),

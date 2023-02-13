@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetTypeName() string 
 	return "BACnetUnconfirmedServiceRequestWhoHasObjectName"
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (objectName)
-	lengthInBits += m.ObjectName.GetLengthInBits()
+	lengthInBits += m.ObjectName.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetUnconfirmedServiceRequestWhoHasObjectNameParse(theBytes []byte) (BACnetUnconfirmedServiceRequestWhoHasObjectName, error) {
-	return BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObjectName, error) {
+func BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObjectName, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequestWhoHasObjectName"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(readBuffer u
 	if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for objectName")
 	}
-	_objectName, _objectNameErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
+	_objectName, _objectNameErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
 	if _objectNameErr != nil {
 		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field of BACnetUnconfirmedServiceRequestWhoHasObjectName")
 	}
@@ -162,14 +159,14 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(readBuffer u
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) SerializeWithWriteBuf
 		if pushErr := writeBuffer.PushContext("objectName"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for objectName")
 		}
-		_objectNameErr := writeBuffer.WriteSerializable(m.GetObjectName())
+		_objectNameErr := writeBuffer.WriteSerializable(ctx, m.GetObjectName())
 		if popErr := writeBuffer.PopContext("objectName"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for objectName")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) SerializeWithWriteBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) isBACnetUnconfirmedServiceRequestWhoHasObjectName() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObjectName) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

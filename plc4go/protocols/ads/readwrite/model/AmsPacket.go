@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -81,14 +82,13 @@ type _AmsPacket struct {
 
 type _AmsPacketChildRequirements interface {
 	utils.Serializable
-	GetLengthInBits() uint16
-	GetLengthInBitsConditional(lastItem bool) uint16
+	GetLengthInBits(ctx context.Context) uint16
 	GetCommandId() CommandId
 	GetResponse() bool
 }
 
 type AmsPacketParent interface {
-	SerializeParent(writeBuffer utils.WriteBuffer, child AmsPacket, serializeChildFunction func() error) error
+	SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AmsPacket, serializeChildFunction func() error) error
 	GetTypeName() string
 }
 
@@ -196,17 +196,17 @@ func (m *_AmsPacket) GetTypeName() string {
 	return "AmsPacket"
 }
 
-func (m *_AmsPacket) GetParentLengthInBits() uint16 {
+func (m *_AmsPacket) GetParentLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (targetAmsNetId)
-	lengthInBits += m.TargetAmsNetId.GetLengthInBits()
+	lengthInBits += m.TargetAmsNetId.GetLengthInBits(ctx)
 
 	// Simple field (targetAmsPort)
 	lengthInBits += 16
 
 	// Simple field (sourceAmsNetId)
-	lengthInBits += m.SourceAmsNetId.GetLengthInBits()
+	lengthInBits += m.SourceAmsNetId.GetLengthInBits(ctx)
 
 	// Simple field (sourceAmsPort)
 	lengthInBits += 16
@@ -254,15 +254,15 @@ func (m *_AmsPacket) GetParentLengthInBits() uint16 {
 	return lengthInBits
 }
 
-func (m *_AmsPacket) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AmsPacket) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AmsPacketParse(theBytes []byte) (AmsPacket, error) {
-	return AmsPacketParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AmsPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AmsPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsPacket, error) {
+func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AmsPacket"); pullErr != nil {
@@ -275,7 +275,7 @@ func AmsPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	if pullErr := readBuffer.PullContext("targetAmsNetId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for targetAmsNetId")
 	}
-	_targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParseWithBuffer(readBuffer)
+	_targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParseWithBuffer(ctx, readBuffer)
 	if _targetAmsNetIdErr != nil {
 		return nil, errors.Wrap(_targetAmsNetIdErr, "Error parsing 'targetAmsNetId' field of AmsPacket")
 	}
@@ -295,7 +295,7 @@ func AmsPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	if pullErr := readBuffer.PullContext("sourceAmsNetId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for sourceAmsNetId")
 	}
-	_sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParseWithBuffer(readBuffer)
+	_sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParseWithBuffer(ctx, readBuffer)
 	if _sourceAmsNetIdErr != nil {
 		return nil, errors.Wrap(_sourceAmsNetIdErr, "Error parsing 'sourceAmsNetId' field of AmsPacket")
 	}
@@ -315,7 +315,7 @@ func AmsPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	if pullErr := readBuffer.PullContext("commandId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for commandId")
 	}
-	commandId_temp, _commandIdErr := CommandIdParseWithBuffer(readBuffer)
+	commandId_temp, _commandIdErr := CommandIdParseWithBuffer(ctx, readBuffer)
 	var commandId CommandId = commandId_temp
 	if closeErr := readBuffer.CloseContext("commandId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for commandId")
@@ -450,48 +450,50 @@ func AmsPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	var _child AmsPacketChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
-		_childTemp, typeSwitchError = AdsInvalidRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
-		_childTemp, typeSwitchError = AdsInvalidResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
-		_childTemp, typeSwitchError = AdsReadDeviceInfoRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
-		_childTemp, typeSwitchError = AdsReadDeviceInfoResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
-		_childTemp, typeSwitchError = AdsReadRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
-		_childTemp, typeSwitchError = AdsReadResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
-		_childTemp, typeSwitchError = AdsWriteRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
-		_childTemp, typeSwitchError = AdsWriteResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
-		_childTemp, typeSwitchError = AdsReadStateRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
-		_childTemp, typeSwitchError = AdsReadStateResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
-		_childTemp, typeSwitchError = AdsWriteControlRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
-		_childTemp, typeSwitchError = AdsWriteControlResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
-		_childTemp, typeSwitchError = AdsAddDeviceNotificationRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
-		_childTemp, typeSwitchError = AdsAddDeviceNotificationResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
-		_childTemp, typeSwitchError = AdsDeleteDeviceNotificationRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
-		_childTemp, typeSwitchError = AdsDeleteDeviceNotificationResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
-		_childTemp, typeSwitchError = AdsDeviceNotificationRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
-		_childTemp, typeSwitchError = AdsDeviceNotificationResponseParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
-		_childTemp, typeSwitchError = AdsReadWriteRequestParseWithBuffer(readBuffer)
-	case commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
-		_childTemp, typeSwitchError = AdsReadWriteResponseParseWithBuffer(readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
+		_childTemp, typeSwitchError = AdsInvalidRequestParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
+		_childTemp, typeSwitchError = AdsInvalidResponseParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
+		_childTemp, typeSwitchError = AdsReadDeviceInfoRequestParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
+		_childTemp, typeSwitchError = AdsReadDeviceInfoResponseParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
+		_childTemp, typeSwitchError = AdsReadRequestParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
+		_childTemp, typeSwitchError = AdsReadResponseParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
+		_childTemp, typeSwitchError = AdsWriteRequestParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
+		_childTemp, typeSwitchError = AdsWriteResponseParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
+		_childTemp, typeSwitchError = AdsReadStateRequestParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
+		_childTemp, typeSwitchError = AdsReadStateResponseParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
+		_childTemp, typeSwitchError = AdsWriteControlRequestParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
+		_childTemp, typeSwitchError = AdsWriteControlResponseParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
+		_childTemp, typeSwitchError = AdsAddDeviceNotificationRequestParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
+		_childTemp, typeSwitchError = AdsAddDeviceNotificationResponseParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
+		_childTemp, typeSwitchError = AdsDeleteDeviceNotificationRequestParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
+		_childTemp, typeSwitchError = AdsDeleteDeviceNotificationResponseParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
+		_childTemp, typeSwitchError = AdsDeviceNotificationRequestParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
+		_childTemp, typeSwitchError = AdsDeviceNotificationResponseParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
+		_childTemp, typeSwitchError = AdsReadWriteRequestParseWithBuffer(ctx, readBuffer)
+	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
+		_childTemp, typeSwitchError = AdsReadWriteResponseParseWithBuffer(ctx, readBuffer)
+	case true: // ErrorResponse
+		_childTemp, typeSwitchError = ErrorResponseParseWithBuffer(ctx, readBuffer)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [commandId=%v, response=%v]", commandId, response)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [errorCode=%v, commandId=%v, response=%v]", errorCode, commandId, response)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of AmsPacket")
@@ -508,7 +510,7 @@ func AmsPacketParseWithBuffer(readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	return _child, nil
 }
 
-func (pm *_AmsPacket) SerializeParent(writeBuffer utils.WriteBuffer, child AmsPacket, serializeChildFunction func() error) error {
+func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuffer, child AmsPacket, serializeChildFunction func() error) error {
 	// We redirect all calls through client as some methods are only implemented there
 	m := child
 	_ = m
@@ -522,7 +524,7 @@ func (pm *_AmsPacket) SerializeParent(writeBuffer utils.WriteBuffer, child AmsPa
 	if pushErr := writeBuffer.PushContext("targetAmsNetId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for targetAmsNetId")
 	}
-	_targetAmsNetIdErr := writeBuffer.WriteSerializable(m.GetTargetAmsNetId())
+	_targetAmsNetIdErr := writeBuffer.WriteSerializable(ctx, m.GetTargetAmsNetId())
 	if popErr := writeBuffer.PopContext("targetAmsNetId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for targetAmsNetId")
 	}
@@ -541,7 +543,7 @@ func (pm *_AmsPacket) SerializeParent(writeBuffer utils.WriteBuffer, child AmsPa
 	if pushErr := writeBuffer.PushContext("sourceAmsNetId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for sourceAmsNetId")
 	}
-	_sourceAmsNetIdErr := writeBuffer.WriteSerializable(m.GetSourceAmsNetId())
+	_sourceAmsNetIdErr := writeBuffer.WriteSerializable(ctx, m.GetSourceAmsNetId())
 	if popErr := writeBuffer.PopContext("sourceAmsNetId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for sourceAmsNetId")
 	}
@@ -561,7 +563,7 @@ func (pm *_AmsPacket) SerializeParent(writeBuffer utils.WriteBuffer, child AmsPa
 	if pushErr := writeBuffer.PushContext("commandId"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for commandId")
 	}
-	_commandIdErr := writeBuffer.WriteSerializable(commandId)
+	_commandIdErr := writeBuffer.WriteSerializable(ctx, commandId)
 	if popErr := writeBuffer.PopContext("commandId"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for commandId")
 	}
@@ -643,7 +645,7 @@ func (pm *_AmsPacket) SerializeParent(writeBuffer utils.WriteBuffer, child AmsPa
 	}
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	length := uint32(uint32(uint32(m.GetLengthInBytes())) - uint32(uint32(32)))
+	length := uint32(uint32(uint32(m.GetLengthInBytes(ctx))) - uint32(uint32(32)))
 	_lengthErr := writeBuffer.WriteUint32("length", 32, (length))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
@@ -683,7 +685,7 @@ func (m *_AmsPacket) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

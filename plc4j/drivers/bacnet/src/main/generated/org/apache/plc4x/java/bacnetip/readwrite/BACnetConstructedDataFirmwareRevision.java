@@ -79,6 +79,7 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFirmwareRevision");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFirmwareRevision _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (firmwareRevision)
     lengthInBits += firmwareRevision.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFirmwareRevisionBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString firmwareRevision =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataFirmwareRevision");
     // Create the instance
-    return new BACnetConstructedDataFirmwareRevisionBuilder(
+    return new BACnetConstructedDataFirmwareRevisionBuilderImpl(
         firmwareRevision, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFirmwareRevisionBuilder
+  public static class BACnetConstructedDataFirmwareRevisionBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString firmwareRevision;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFirmwareRevisionBuilder(
+    public BACnetConstructedDataFirmwareRevisionBuilderImpl(
         BACnetApplicationTagCharacterString firmwareRevision,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.firmwareRevision = firmwareRevision;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

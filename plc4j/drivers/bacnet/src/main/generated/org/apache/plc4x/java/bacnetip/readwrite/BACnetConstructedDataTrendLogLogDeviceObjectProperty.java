@@ -79,6 +79,7 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataTrendLogLogDeviceObjectProperty _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (logDeviceObjectProperty)
     lengthInBits += logDeviceObjectProperty.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectPropertyReference logDeviceObjectProperty =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataTrendLogLogDeviceObjectProperty extends BACnet
 
     readBuffer.closeContext("BACnetConstructedDataTrendLogLogDeviceObjectProperty");
     // Create the instance
-    return new BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder(
+    return new BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilderImpl(
         logDeviceObjectProperty, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder
+  public static class BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectPropertyReference logDeviceObjectProperty;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilder(
+    public BACnetConstructedDataTrendLogLogDeviceObjectPropertyBuilderImpl(
         BACnetDeviceObjectPropertyReference logDeviceObjectProperty,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.logDeviceObjectProperty = logDeviceObjectProperty;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -42,17 +42,14 @@ public class LRawInd extends CEMI implements Message {
     return (short) 0x2D;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public LRawInd(Integer size) {
-    super(size);
-    this.size = size;
+  public LRawInd() {
+    super();
   }
 
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LRawInd");
 
@@ -68,34 +65,30 @@ public class LRawInd extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LRawInd _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static LRawIndBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LRawInd");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("LRawInd");
     // Create the instance
-    return new LRawIndBuilder(size);
+    return new LRawIndBuilderImpl();
   }
 
-  public static class LRawIndBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class LRawIndBuilderImpl implements CEMI.CEMIBuilder {
 
-    public LRawIndBuilder(Integer size) {
+    public LRawIndBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public LRawInd build(Integer size) {
-
-      LRawInd lRawInd = new LRawInd(size);
-
+    public LRawInd build() {
+      LRawInd lRawInd = new LRawInd();
       return lRawInd;
     }
   }

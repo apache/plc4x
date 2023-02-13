@@ -47,12 +47,13 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
   public static final Byte HEADERLENGTH = 0x5;
   public static final Short DIFFERENTIATEDSERVICESCODEPOINT = 0x00;
   public static final Byte EXPLICITCONGESTIONNOTIFICATION = 0x0;
-  public static final Byte FLAGS = 0x00;
   public static final Integer FRAGMENTOFFSET = 0x00;
   public static final Short PROTOCOL = 0x11;
 
   // Properties.
   protected final int identification;
+  protected final boolean dontFragment;
+  protected final boolean moreFragments;
   protected final short timeToLive;
   protected final IpAddress sourceAddress;
   protected final IpAddress destinationAddress;
@@ -60,8 +61,13 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
   protected final int destinationPort;
   protected final DceRpc_Packet payload;
 
+  // Reserved Fields
+  private Boolean reservedField0;
+
   public Ethernet_FramePayload_IPv4(
       int identification,
+      boolean dontFragment,
+      boolean moreFragments,
       short timeToLive,
       IpAddress sourceAddress,
       IpAddress destinationAddress,
@@ -70,6 +76,8 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
       DceRpc_Packet payload) {
     super();
     this.identification = identification;
+    this.dontFragment = dontFragment;
+    this.moreFragments = moreFragments;
     this.timeToLive = timeToLive;
     this.sourceAddress = sourceAddress;
     this.destinationAddress = destinationAddress;
@@ -80,6 +88,14 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
 
   public int getIdentification() {
     return identification;
+  }
+
+  public boolean getDontFragment() {
+    return dontFragment;
+  }
+
+  public boolean getMoreFragments() {
+    return moreFragments;
   }
 
   public short getTimeToLive() {
@@ -122,10 +138,6 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     return EXPLICITCONGESTIONNOTIFICATION;
   }
 
-  public byte getFlags() {
-    return FLAGS;
-  }
-
   public int getFragmentOffset() {
     return FRAGMENTOFFSET;
   }
@@ -138,6 +150,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
   protected void serializeEthernet_FramePayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Ethernet_FramePayload_IPv4");
 
@@ -167,8 +180,17 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     // Simple Field (identification)
     writeSimpleField("identification", identification, writeUnsignedInt(writeBuffer, 16));
 
-    // Const Field (flags)
-    writeConstField("flags", FLAGS, writeUnsignedByte(writeBuffer, 3));
+    // Reserved Field (reserved)
+    writeReservedField(
+        "reserved",
+        reservedField0 != null ? reservedField0 : (boolean) false,
+        writeBoolean(writeBuffer));
+
+    // Simple Field (dontFragment)
+    writeSimpleField("dontFragment", dontFragment, writeBoolean(writeBuffer));
+
+    // Simple Field (moreFragments)
+    writeSimpleField("moreFragments", moreFragments, writeBoolean(writeBuffer));
 
     // Const Field (fragmentOffset)
     writeConstField("fragmentOffset", FRAGMENTOFFSET, writeUnsignedInt(writeBuffer, 13));
@@ -206,8 +228,21 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
 
     // Implicit Field (packetLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    int packetLength = (int) (getLengthInBytes());
+    int packetLength = (int) ((8) + (getPayload().getLengthInBytes()));
     writeImplicitField("packetLength", packetLength, writeUnsignedInt(writeBuffer, 16));
+
+    // Implicit Field (bodyChecksum) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int bodyChecksum =
+        (int)
+            (org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.calculateUdpChecksum(
+                getSourceAddress(),
+                getDestinationAddress(),
+                getSourcePort(),
+                getDestinationPort(),
+                (8) + (getPayload().getLengthInBytes()),
+                getPayload()));
+    writeImplicitField("bodyChecksum", bodyChecksum, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (payload)
     writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
@@ -224,6 +259,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     Ethernet_FramePayload_IPv4 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (version)
     lengthInBits += 4;
@@ -243,8 +279,14 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     // Simple field (identification)
     lengthInBits += 16;
 
-    // Const Field (flags)
-    lengthInBits += 3;
+    // Reserved Field (reserved)
+    lengthInBits += 1;
+
+    // Simple field (dontFragment)
+    lengthInBits += 1;
+
+    // Simple field (moreFragments)
+    lengthInBits += 1;
 
     // Const Field (fragmentOffset)
     lengthInBits += 13;
@@ -273,18 +315,22 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     // Implicit Field (packetLength)
     lengthInBits += 16;
 
+    // Implicit Field (bodyChecksum)
+    lengthInBits += 16;
+
     // Simple field (payload)
     lengthInBits += payload.getLengthInBits();
 
     return lengthInBits;
   }
 
-  public static Ethernet_FramePayload_IPv4Builder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static Ethernet_FramePayloadBuilder staticParseEthernet_FramePayloadBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_FramePayload_IPv4");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte version =
         readConstField(
@@ -312,8 +358,12 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
 
     int identification = readSimpleField("identification", readUnsignedInt(readBuffer, 16));
 
-    byte flags =
-        readConstField("flags", readUnsignedByte(readBuffer, 3), Ethernet_FramePayload_IPv4.FLAGS);
+    Boolean reservedField0 =
+        readReservedField("reserved", readBoolean(readBuffer), (boolean) false);
+
+    boolean dontFragment = readSimpleField("dontFragment", readBoolean(readBuffer));
+
+    boolean moreFragments = readSimpleField("moreFragments", readBoolean(readBuffer));
 
     int fragmentOffset =
         readConstField(
@@ -345,6 +395,8 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
 
     int packetLength = readImplicitField("packetLength", readUnsignedInt(readBuffer, 16));
 
+    int bodyChecksum = readImplicitField("bodyChecksum", readUnsignedInt(readBuffer, 16));
+
     DceRpc_Packet payload =
         readSimpleField(
             "payload",
@@ -353,54 +405,68 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
 
     readBuffer.closeContext("Ethernet_FramePayload_IPv4");
     // Create the instance
-    return new Ethernet_FramePayload_IPv4Builder(
+    return new Ethernet_FramePayload_IPv4BuilderImpl(
         identification,
+        dontFragment,
+        moreFragments,
         timeToLive,
         sourceAddress,
         destinationAddress,
         sourcePort,
         destinationPort,
-        payload);
+        payload,
+        reservedField0);
   }
 
-  public static class Ethernet_FramePayload_IPv4Builder
+  public static class Ethernet_FramePayload_IPv4BuilderImpl
       implements Ethernet_FramePayload.Ethernet_FramePayloadBuilder {
     private final int identification;
+    private final boolean dontFragment;
+    private final boolean moreFragments;
     private final short timeToLive;
     private final IpAddress sourceAddress;
     private final IpAddress destinationAddress;
     private final int sourcePort;
     private final int destinationPort;
     private final DceRpc_Packet payload;
+    private final Boolean reservedField0;
 
-    public Ethernet_FramePayload_IPv4Builder(
+    public Ethernet_FramePayload_IPv4BuilderImpl(
         int identification,
+        boolean dontFragment,
+        boolean moreFragments,
         short timeToLive,
         IpAddress sourceAddress,
         IpAddress destinationAddress,
         int sourcePort,
         int destinationPort,
-        DceRpc_Packet payload) {
-
+        DceRpc_Packet payload,
+        Boolean reservedField0) {
       this.identification = identification;
+      this.dontFragment = dontFragment;
+      this.moreFragments = moreFragments;
       this.timeToLive = timeToLive;
       this.sourceAddress = sourceAddress;
       this.destinationAddress = destinationAddress;
       this.sourcePort = sourcePort;
       this.destinationPort = destinationPort;
       this.payload = payload;
+      this.reservedField0 = reservedField0;
     }
 
     public Ethernet_FramePayload_IPv4 build() {
       Ethernet_FramePayload_IPv4 ethernet_FramePayload_IPv4 =
           new Ethernet_FramePayload_IPv4(
               identification,
+              dontFragment,
+              moreFragments,
               timeToLive,
               sourceAddress,
               destinationAddress,
               sourcePort,
               destinationPort,
               payload);
+      ethernet_FramePayload_IPv4.reservedField0 = reservedField0;
       return ethernet_FramePayload_IPv4;
     }
   }
@@ -415,6 +481,8 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     }
     Ethernet_FramePayload_IPv4 that = (Ethernet_FramePayload_IPv4) o;
     return (getIdentification() == that.getIdentification())
+        && (getDontFragment() == that.getDontFragment())
+        && (getMoreFragments() == that.getMoreFragments())
         && (getTimeToLive() == that.getTimeToLive())
         && (getSourceAddress() == that.getSourceAddress())
         && (getDestinationAddress() == that.getDestinationAddress())
@@ -430,6 +498,8 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     return Objects.hash(
         super.hashCode(),
         getIdentification(),
+        getDontFragment(),
+        getMoreFragments(),
         getTimeToLive(),
         getSourceAddress(),
         getDestinationAddress(),

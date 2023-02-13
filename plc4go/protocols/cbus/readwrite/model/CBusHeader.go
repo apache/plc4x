@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,11 +102,7 @@ func (m *_CBusHeader) GetTypeName() string {
 	return "CBusHeader"
 }
 
-func (m *_CBusHeader) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CBusHeader) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_CBusHeader) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (priorityClass)
@@ -123,15 +120,15 @@ func (m *_CBusHeader) GetLengthInBitsConditional(lastItem bool) uint16 {
 	return lengthInBits
 }
 
-func (m *_CBusHeader) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusHeader) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusHeaderParse(theBytes []byte) (CBusHeader, error) {
-	return CBusHeaderParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return CBusHeaderParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func CBusHeaderParseWithBuffer(readBuffer utils.ReadBuffer) (CBusHeader, error) {
+func CBusHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusHeader"); pullErr != nil {
@@ -144,7 +141,7 @@ func CBusHeaderParseWithBuffer(readBuffer utils.ReadBuffer) (CBusHeader, error) 
 	if pullErr := readBuffer.PullContext("priorityClass"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for priorityClass")
 	}
-	_priorityClass, _priorityClassErr := PriorityClassParseWithBuffer(readBuffer)
+	_priorityClass, _priorityClassErr := PriorityClassParseWithBuffer(ctx, readBuffer)
 	if _priorityClassErr != nil {
 		return nil, errors.Wrap(_priorityClassErr, "Error parsing 'priorityClass' field of CBusHeader")
 	}
@@ -171,7 +168,7 @@ func CBusHeaderParseWithBuffer(readBuffer utils.ReadBuffer) (CBusHeader, error) 
 	if pullErr := readBuffer.PullContext("destinationAddressType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for destinationAddressType")
 	}
-	_destinationAddressType, _destinationAddressTypeErr := DestinationAddressTypeParseWithBuffer(readBuffer)
+	_destinationAddressType, _destinationAddressTypeErr := DestinationAddressTypeParseWithBuffer(ctx, readBuffer)
 	if _destinationAddressTypeErr != nil {
 		return nil, errors.Wrap(_destinationAddressTypeErr, "Error parsing 'destinationAddressType' field of CBusHeader")
 	}
@@ -194,14 +191,14 @@ func CBusHeaderParseWithBuffer(readBuffer utils.ReadBuffer) (CBusHeader, error) 
 }
 
 func (m *_CBusHeader) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CBusHeader) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("CBusHeader"); pushErr != nil {
@@ -212,7 +209,7 @@ func (m *_CBusHeader) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("priorityClass"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for priorityClass")
 	}
-	_priorityClassErr := writeBuffer.WriteSerializable(m.GetPriorityClass())
+	_priorityClassErr := writeBuffer.WriteSerializable(ctx, m.GetPriorityClass())
 	if popErr := writeBuffer.PopContext("priorityClass"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for priorityClass")
 	}
@@ -238,7 +235,7 @@ func (m *_CBusHeader) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) er
 	if pushErr := writeBuffer.PushContext("destinationAddressType"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for destinationAddressType")
 	}
-	_destinationAddressTypeErr := writeBuffer.WriteSerializable(m.GetDestinationAddressType())
+	_destinationAddressTypeErr := writeBuffer.WriteSerializable(ctx, m.GetDestinationAddressType())
 	if popErr := writeBuffer.PopContext("destinationAddressType"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for destinationAddressType")
 	}
@@ -261,7 +258,7 @@ func (m *_CBusHeader) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

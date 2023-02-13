@@ -78,6 +78,7 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAccompaniment");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAccompaniment _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accompaniment)
     lengthInBits += accompaniment.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAccompanimentBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference accompaniment =
         readSimpleField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataAccompaniment extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataAccompaniment");
     // Create the instance
-    return new BACnetConstructedDataAccompanimentBuilder(
+    return new BACnetConstructedDataAccompanimentBuilderImpl(
         accompaniment, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAccompanimentBuilder
+  public static class BACnetConstructedDataAccompanimentBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference accompaniment;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAccompanimentBuilder(
+    public BACnetConstructedDataAccompanimentBuilderImpl(
         BACnetDeviceObjectReference accompaniment,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.accompaniment = accompaniment;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

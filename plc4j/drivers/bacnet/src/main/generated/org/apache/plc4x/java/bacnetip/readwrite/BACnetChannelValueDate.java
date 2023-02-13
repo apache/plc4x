@@ -56,6 +56,7 @@ public class BACnetChannelValueDate extends BACnetChannelValue implements Messag
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueDate");
 
@@ -74,6 +75,7 @@ public class BACnetChannelValueDate extends BACnetChannelValue implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueDate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dateValue)
     lengthInBits += dateValue.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetChannelValueDate extends BACnetChannelValue implements Messag
     return lengthInBits;
   }
 
-  public static BACnetChannelValueDateBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueDate");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDate dateValue =
         readSimpleField(
@@ -97,15 +100,14 @@ public class BACnetChannelValueDate extends BACnetChannelValue implements Messag
 
     readBuffer.closeContext("BACnetChannelValueDate");
     // Create the instance
-    return new BACnetChannelValueDateBuilder(dateValue);
+    return new BACnetChannelValueDateBuilderImpl(dateValue);
   }
 
-  public static class BACnetChannelValueDateBuilder
+  public static class BACnetChannelValueDateBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagDate dateValue;
 
-    public BACnetChannelValueDateBuilder(BACnetApplicationTagDate dateValue) {
-
+    public BACnetChannelValueDateBuilderImpl(BACnetApplicationTagDate dateValue) {
       this.dateValue = dateValue;
     }
 

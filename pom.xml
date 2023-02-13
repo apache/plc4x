@@ -99,16 +99,16 @@
     <sonar.cfamily.threads>1</sonar.cfamily.threads>
     <sonar.cfamily.cache.enabled>false</sonar.cfamily.cache.enabled>
 
-    <plc4x-code-generation.version>1.6.0</plc4x-code-generation.version>
+    <plc4x-code-generation.version>1.7.0-SNAPSHOT</plc4x-code-generation.version>
 
     <antlr.version>4.11.1</antlr.version>
     <apiguardian.version>1.1.2</apiguardian.version>
-    <assertj.version>3.23.1</assertj.version>
+    <assertj.version>3.24.2</assertj.version>
     <awaitility.version>4.2.0</awaitility.version>
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.70</bouncycastle.version>
-    <byte-buddy.version>1.12.20</byte-buddy.version>
+    <byte-buddy.version>1.13.0</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
@@ -124,43 +124,43 @@
     <commons-net.version>3.9.0</commons-net.version>
     <commons-pool2.version>2.11.1</commons-pool2.version>
     <commons-text.version>1.10.0</commons-text.version>
-    <commons-csv.version>1.9.0</commons-csv.version>
-    <dom4j.version>2.1.3</dom4j.version>
-    <equalsverifier.version>3.12.3</equalsverifier.version>
-    <freemarker.version>2.3.31</freemarker.version>
-    <groovy.version>4.0.6</groovy.version>
-    <gson.version>2.10</gson.version>
+    <commons-csv.version>1.10.0</commons-csv.version>
+    <dom4j.version>2.1.4</dom4j.version>
+    <equalsverifier.version>3.13.1</equalsverifier.version>
+    <freemarker.version>2.3.32</freemarker.version>
+    <groovy.version>4.0.9</groovy.version>
+    <gson.version>2.10.1</gson.version>
     <guava.version>31.1-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
     <!-- ! 2.13.4 has a known CVE and 2.14.0-rc1 seems to fix that, even if not finally released -->
-    <jackson.version>2.14.1</jackson.version>
-    <woodstox-core.version>6.4.0</woodstox-core.version>
+    <jackson.version>2.14.2</jackson.version>
+    <woodstox-core.version>6.5.0</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
-    <jaxb.version>4.0.1</jaxb.version>
+    <jaxb.version>4.0.2</jaxb.version>
     <jetty-util.version>11.0.13</jetty-util.version>
-    <jna.version>5.12.1</jna.version>
+    <jna.version>5.13.0</jna.version>
     <joda-time.version>2.12.2</joda-time.version>
     <jserialcom.version>2.9.3</jserialcom.version>
-    <junit.jupiter.version>5.9.1</junit.jupiter.version>
+    <junit.jupiter.version>5.9.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
     <logback.version>1.4.5</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <!-- version 0.6.7 is newer, however the ExampleServer doesn't seem to run with that -->
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
     <milo.version>0.6.8</milo.version>
-    <mockito.version>4.10.0</mockito.version>
-    <netty.version>4.1.86.Final</netty.version>
+    <mockito.version>5.1.1</mockito.version>
+    <netty.version>4.1.88.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.6</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
-    <xmlunit.version>2.9.0</xmlunit.version>
+    <xmlunit.version>2.9.1</xmlunit.version>
 
     <!-- Site properties -->
     <asciidoctor.maven.plugin.version>2.2.2</asciidoctor.maven.plugin.version>
     <asciidoctorj.version>2.5.7</asciidoctorj.version>
-    <asciidoctorj.diagram.version>2.2.3</asciidoctorj.diagram.version>
+    <asciidoctorj.diagram.version>2.2.4</asciidoctorj.diagram.version>
 
     <skip-code-generation-tests>true</skip-code-generation-tests>
     <enable-all-tests>false</enable-all-tests>
@@ -415,7 +415,7 @@
       <dependency>
         <groupId>net.lingala.zip4j</groupId>
         <artifactId>zip4j</artifactId>
-        <version>2.11.2</version>
+        <version>2.11.4</version>
       </dependency>
 
       <dependency>
@@ -635,7 +635,7 @@
       <dependency>
         <groupId>jakarta.activation</groupId>
         <artifactId>jakarta.activation-api</artifactId>
-        <version>2.1.0</version>
+        <version>2.1.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -759,7 +759,7 @@
             <!-- JEVN local version files -->
             <exclude>**/.java-version</exclude>
 
-            <!-- Asciidoctor generated files -->
+            <!-- ASCIIdoctor generated files -->
             <exclude>**/.asciidoctor/**</exclude>
 
             <!-- Jenkins build related files -->
@@ -1068,7 +1068,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.1.0</version>
+          <version>3.2.1</version>
         </plugin>
 
         <plugin>
@@ -1080,7 +1080,7 @@
         <plugin>
           <groupId>org.apache.karaf.tooling</groupId>
           <artifactId>karaf-maven-plugin</artifactId>
-          <version>4.4.2</version>
+          <version>4.4.3</version>
         </plugin>
 
         <plugin>
@@ -1128,9 +1128,15 @@
           <dependencies>
             <dependency>
               <groupId>org.codehaus.plexus</groupId>
-              <artifactId>plexus-compiler-eclipse</artifactId>
-              <version>2.12.1</version>
+              <artifactId>plexus-compiler-api</artifactId>
+              <version>2.13.0</version>
             </dependency>
+            <dependency>
+              <groupId>org.codehaus.plexus</groupId>
+              <artifactId>plexus-compiler-eclipse</artifactId>
+              <version>2.13.0</version>
+            </dependency>
+            <!-- Redundant import, however we might need to bump this version more often -->
             <dependency>
               <groupId>org.eclipse.jdt</groupId>
               <artifactId>ecj</artifactId>
@@ -1142,7 +1148,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.0.0-M7</version>
+          <version>3.0.0-M8</version>
           <dependencies>
             <dependency>
               <groupId>org.junit.jupiter</groupId>
@@ -1158,7 +1164,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.0.0-M7</version>
+          <version>3.0.0-M8</version>
           <!--version>2.22.2</version-->
           <dependencies>
             <dependency>
@@ -1573,6 +1579,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <python.exe.bin>python3</python.exe.bin>
         <javafx.platform>linux</javafx.platform>
       </properties>
     </profile>
@@ -1592,6 +1599,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-x86_64/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <python.exe.bin>python3</python.exe.bin>
         <javafx.platform>linux</javafx.platform>
       </properties>
     </profile>
@@ -1611,6 +1619,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-linux-${os.arch}/bin/</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <python.exe.bin>python3</python.exe.bin>
         <javafx.platform>linux-aarch64</javafx.platform>
       </properties>
     </profile>
@@ -1630,6 +1639,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <python.exe.bin>python3</python.exe.bin>
         <javafx.platform>mac</javafx.platform>
       </properties>
     </profile>
@@ -1649,6 +1659,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <python.exe.bin>python3</python.exe.bin>
         <javafx.platform>mac</javafx.platform>
       </properties>
     </profile>
@@ -1668,6 +1679,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-macos-universal/CMake.app/Contents/bin</cmake.root>
         <cmake.generator>Unix Makefiles</cmake.generator>
         <python.venv.bin>venv/bin/</python.venv.bin>
+        <python.exe.bin>python3</python.exe.bin>
         <javafx.platform>mac-aarch64</javafx.platform>
       </properties>
     </profile>
@@ -1686,6 +1698,7 @@
         <cmake.root>${project.build.directory}/cmake-${cmake-version}-windows-x86_64/bin</cmake.root>
         <cmake.generator>MinGW Makefiles</cmake.generator>
         <python.venv.bin>venv/Scripts/</python.venv.bin>
+        <python.exe.bin>python</python.exe.bin>
         <javafx.platform>win-x86</javafx.platform>
       </properties>
     </profile>
@@ -1853,30 +1866,51 @@
             <inherited>false</inherited>
             <executions>
               <execution>
+                <phase>verify</phase>
                 <goals>
                   <goal>files</goal>
                 </goals>
+                <configuration>
+                  <algorithms>
+                    <algorithm>SHA-512</algorithm>
+                  </algorithms>
+                  <includeRelativePath>true</includeRelativePath>
+                  <fileSets>
+                    <fileSet>
+                      <directory>${project.build.directory}</directory>
+                      <includes>
+                        <include>apache-plc4x-${project.version}-source-release.zip</include>
+                      </includes>
+                    </fileSet>
+                  </fileSets>
+                </configuration>
               </execution>
             </executions>
+          </plugin>
+          <!--
+            Generate an SBOM for the project
+          -->
+          <plugin>
+            <groupId>org.cyclonedx</groupId>
+            <artifactId>cyclonedx-maven-plugin</artifactId>
+            <version>2.7.4</version>
+            <!-- Only run this in the root module of the project -->
+            <inherited>false</inherited>
             <configuration>
-              <algorithms>
-                <algorithm>SHA-512</algorithm>
-              </algorithms>
-              <includeRelativePath>true</includeRelativePath>
-              <fileSets>
-                <fileSet>
-                  <directory>${project.build.directory}</directory>
-                  <includes>
-                    <include>apache-plc4x-${project.version}-source-release.zip</include>
-                  </includes>
-                </fileSet>
-              </fileSets>
+              <outputName>apache-${project.artifactId}-${project.version}-sbom</outputName>
             </configuration>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>makeAggregateBom</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
     </profile>
-
   </profiles>
 
 </project>

@@ -78,6 +78,7 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataMode");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (mode)
     lengthInBits += mode.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLifeSafetyModeTagged mode =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
 
     readBuffer.closeContext("BACnetConstructedDataMode");
     // Create the instance
-    return new BACnetConstructedDataModeBuilder(mode, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataModeBuilderImpl(mode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataModeBuilder
+  public static class BACnetConstructedDataModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLifeSafetyModeTagged mode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataModeBuilder(
+    public BACnetConstructedDataModeBuilderImpl(
         BACnetLifeSafetyModeTagged mode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.mode = mode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

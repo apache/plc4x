@@ -20,6 +20,8 @@
 package model
 
 import (
+	"context"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,38 +99,34 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetTypeName() st
 	return "BACnetFaultParameterFaultLifeSafetyListOfFaultValues"
 }
 
-func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// Array field
 	if len(m.ListIfFaultValues) > 0 {
 		for _, element := range m.ListIfFaultValues {
-			lengthInBits += element.GetLengthInBits()
+			lengthInBits += element.GetLengthInBits(ctx)
 		}
 	}
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParse(theBytes []byte, tagNumber uint8) (BACnetFaultParameterFaultLifeSafetyListOfFaultValues, error) {
-	return BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultLifeSafetyListOfFaultValues, error) {
+func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultLifeSafetyListOfFaultValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultLifeSafetyListOfFaultValues"); pullErr != nil {
@@ -141,7 +139,7 @@ func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(readBuf
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultLifeSafetyListOfFaultValues")
 	}
@@ -158,7 +156,7 @@ func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(readBuf
 	var listIfFaultValues []BACnetLifeSafetyStateTagged
 	{
 		for !bool(IsBACnetConstructedDataClosingTag(readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLifeSafetyStateTaggedParseWithBuffer(readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
+			_item, _err := BACnetLifeSafetyStateTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'listIfFaultValues' field of BACnetFaultParameterFaultLifeSafetyListOfFaultValues")
 			}
@@ -173,7 +171,7 @@ func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(readBuf
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultLifeSafetyListOfFaultValues")
 	}
@@ -196,14 +194,14 @@ func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(readBuf
 }
 
 func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetFaultParameterFaultLifeSafetyListOfFaultValues"); pushErr != nil {
@@ -214,7 +212,7 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) SerializeWithWri
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -226,8 +224,11 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) SerializeWithWri
 	if pushErr := writeBuffer.PushContext("listIfFaultValues", utils.WithRenderAsList(true)); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for listIfFaultValues")
 	}
-	for _, _element := range m.GetListIfFaultValues() {
-		_elementErr := writeBuffer.WriteSerializable(_element)
+	for _curItem, _element := range m.GetListIfFaultValues() {
+		_ = _curItem
+		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListIfFaultValues()), _curItem)
+		_ = arrayCtx
+		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'listIfFaultValues' field")
 		}
@@ -240,7 +241,7 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) SerializeWithWri
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -273,7 +274,7 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) String() string 
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

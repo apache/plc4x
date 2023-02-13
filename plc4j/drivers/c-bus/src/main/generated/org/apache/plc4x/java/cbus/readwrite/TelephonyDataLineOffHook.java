@@ -65,6 +65,7 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
   protected void serializeTelephonyDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TelephonyDataLineOffHook");
 
@@ -96,6 +97,7 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TelephonyDataLineOffHook _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reason)
     lengthInBits += 8;
@@ -106,13 +108,14 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
     return lengthInBits;
   }
 
-  public static TelephonyDataLineOffHookBuilder staticParseBuilder(
+  public static TelephonyDataBuilder staticParseTelephonyDataBuilder(
       ReadBuffer readBuffer, TelephonyCommandTypeContainer commandTypeContainer)
       throws ParseException {
     readBuffer.pullContext("TelephonyDataLineOffHook");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     LineOffHookReason reason =
         readEnumField(
@@ -127,16 +130,15 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
 
     readBuffer.closeContext("TelephonyDataLineOffHook");
     // Create the instance
-    return new TelephonyDataLineOffHookBuilder(reason, number);
+    return new TelephonyDataLineOffHookBuilderImpl(reason, number);
   }
 
-  public static class TelephonyDataLineOffHookBuilder
+  public static class TelephonyDataLineOffHookBuilderImpl
       implements TelephonyData.TelephonyDataBuilder {
     private final LineOffHookReason reason;
     private final String number;
 
-    public TelephonyDataLineOffHookBuilder(LineOffHookReason reason, String number) {
-
+    public TelephonyDataLineOffHookBuilderImpl(LineOffHookReason reason, String number) {
       this.reason = reason;
       this.number = number;
     }

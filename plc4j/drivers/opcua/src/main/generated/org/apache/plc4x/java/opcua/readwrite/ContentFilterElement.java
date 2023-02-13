@@ -71,6 +71,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ContentFilterElement");
 
@@ -100,6 +101,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ContentFilterElement _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (filterOperator)
     lengthInBits += 32;
@@ -111,7 +113,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
     if (filterOperands != null) {
       int i = 0;
       for (ExtensionObject element : filterOperands) {
-        boolean last = ++i >= filterOperands.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= filterOperands.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -119,12 +121,13 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static ContentFilterElementBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ContentFilterElement");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     FilterOperator filterOperator =
         readEnumField(
@@ -144,20 +147,19 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("ContentFilterElement");
     // Create the instance
-    return new ContentFilterElementBuilder(filterOperator, noOfFilterOperands, filterOperands);
+    return new ContentFilterElementBuilderImpl(filterOperator, noOfFilterOperands, filterOperands);
   }
 
-  public static class ContentFilterElementBuilder
+  public static class ContentFilterElementBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final FilterOperator filterOperator;
     private final int noOfFilterOperands;
     private final List<ExtensionObject> filterOperands;
 
-    public ContentFilterElementBuilder(
+    public ContentFilterElementBuilderImpl(
         FilterOperator filterOperator,
         int noOfFilterOperands,
         List<ExtensionObject> filterOperands) {
-
       this.filterOperator = filterOperator;
       this.noOfFilterOperands = noOfFilterOperands;
       this.filterOperands = filterOperands;

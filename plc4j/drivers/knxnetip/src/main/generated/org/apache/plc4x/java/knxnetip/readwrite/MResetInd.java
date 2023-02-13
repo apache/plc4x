@@ -42,17 +42,14 @@ public class MResetInd extends CEMI implements Message {
     return (short) 0xF0;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public MResetInd(Integer size) {
-    super(size);
-    this.size = size;
+  public MResetInd() {
+    super();
   }
 
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MResetInd");
 
@@ -68,34 +65,30 @@ public class MResetInd extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MResetInd _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static MResetIndBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MResetInd");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MResetInd");
     // Create the instance
-    return new MResetIndBuilder(size);
+    return new MResetIndBuilderImpl();
   }
 
-  public static class MResetIndBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class MResetIndBuilderImpl implements CEMI.CEMIBuilder {
 
-    public MResetIndBuilder(Integer size) {
+    public MResetIndBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public MResetInd build(Integer size) {
-
-      MResetInd mResetInd = new MResetInd(size);
-
+    public MResetInd build() {
+      MResetInd mResetInd = new MResetInd();
       return mResetInd;
     }
   }

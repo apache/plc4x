@@ -71,6 +71,7 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
   protected void serializeBACnetFaultParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultState");
 
@@ -96,6 +97,7 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -109,12 +111,13 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultStateBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetFaultParameterBuilder staticParseBACnetFaultParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -139,20 +142,19 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
 
     readBuffer.closeContext("BACnetFaultParameterFaultState");
     // Create the instance
-    return new BACnetFaultParameterFaultStateBuilder(openingTag, listOfFaultValues, closingTag);
+    return new BACnetFaultParameterFaultStateBuilderImpl(openingTag, listOfFaultValues, closingTag);
   }
 
-  public static class BACnetFaultParameterFaultStateBuilder
+  public static class BACnetFaultParameterFaultStateBuilderImpl
       implements BACnetFaultParameter.BACnetFaultParameterBuilder {
     private final BACnetOpeningTag openingTag;
     private final BACnetFaultParameterFaultStateListOfFaultValues listOfFaultValues;
     private final BACnetClosingTag closingTag;
 
-    public BACnetFaultParameterFaultStateBuilder(
+    public BACnetFaultParameterFaultStateBuilderImpl(
         BACnetOpeningTag openingTag,
         BACnetFaultParameterFaultStateListOfFaultValues listOfFaultValues,
         BACnetClosingTag closingTag) {
-
       this.openingTag = openingTag;
       this.listOfFaultValues = listOfFaultValues;
       this.closingTag = closingTag;

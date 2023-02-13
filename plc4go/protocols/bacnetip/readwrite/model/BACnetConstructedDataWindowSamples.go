@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataWindowSamples) GetWindowSamples() BACnetApplicati
 ///////////////////////
 
 func (m *_BACnetConstructedDataWindowSamples) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetWindowSamples())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataWindowSamples) GetTypeName() string {
 	return "BACnetConstructedDataWindowSamples"
 }
 
-func (m *_BACnetConstructedDataWindowSamples) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataWindowSamples) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataWindowSamples) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (windowSamples)
-	lengthInBits += m.WindowSamples.GetLengthInBits()
+	lengthInBits += m.WindowSamples.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataWindowSamples) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataWindowSamples) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataWindowSamplesParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowSamples, error) {
-	return BACnetConstructedDataWindowSamplesParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataWindowSamplesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataWindowSamplesParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowSamples, error) {
+func BACnetConstructedDataWindowSamplesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowSamples, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataWindowSamples"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataWindowSamplesParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("windowSamples"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for windowSamples")
 	}
-	_windowSamples, _windowSamplesErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_windowSamples, _windowSamplesErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _windowSamplesErr != nil {
 		return nil, errors.Wrap(_windowSamplesErr, "Error parsing 'windowSamples' field of BACnetConstructedDataWindowSamples")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataWindowSamplesParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataWindowSamples) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataWindowSamples) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataWindowSamples) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataWindowSamples) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("windowSamples"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for windowSamples")
 		}
-		_windowSamplesErr := writeBuffer.WriteSerializable(m.GetWindowSamples())
+		_windowSamplesErr := writeBuffer.WriteSerializable(ctx, m.GetWindowSamples())
 		if popErr := writeBuffer.PopContext("windowSamples"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for windowSamples")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataWindowSamples) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_windowSamplesErr, "Error serializing 'windowSamples' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataWindowSamples) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataWindowSamples) isBACnetConstructedDataWindowSamples() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataWindowSamples) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

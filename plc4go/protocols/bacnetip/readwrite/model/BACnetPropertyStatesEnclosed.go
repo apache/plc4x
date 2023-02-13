@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,34 +98,30 @@ func (m *_BACnetPropertyStatesEnclosed) GetTypeName() string {
 	return "BACnetPropertyStatesEnclosed"
 }
 
-func (m *_BACnetPropertyStatesEnclosed) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesEnclosed) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetPropertyStatesEnclosed) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (openingTag)
-	lengthInBits += m.OpeningTag.GetLengthInBits()
+	lengthInBits += m.OpeningTag.GetLengthInBits(ctx)
 
 	// Simple field (propertyState)
-	lengthInBits += m.PropertyState.GetLengthInBits()
+	lengthInBits += m.PropertyState.GetLengthInBits(ctx)
 
 	// Simple field (closingTag)
-	lengthInBits += m.ClosingTag.GetLengthInBits()
+	lengthInBits += m.ClosingTag.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesEnclosed) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesEnclosed) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesEnclosedParse(theBytes []byte, tagNumber uint8) (BACnetPropertyStatesEnclosed, error) {
-	return BACnetPropertyStatesEnclosedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber)
+	return BACnetPropertyStatesEnclosedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
-func BACnetPropertyStatesEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetPropertyStatesEnclosed, error) {
+func BACnetPropertyStatesEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetPropertyStatesEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesEnclosed"); pullErr != nil {
@@ -137,7 +134,7 @@ func BACnetPropertyStatesEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
 	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _openingTagErr != nil {
 		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetPropertyStatesEnclosed")
 	}
@@ -150,7 +147,7 @@ func BACnetPropertyStatesEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("propertyState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for propertyState")
 	}
-	_propertyState, _propertyStateErr := BACnetPropertyStatesParseWithBuffer(readBuffer)
+	_propertyState, _propertyStateErr := BACnetPropertyStatesParseWithBuffer(ctx, readBuffer)
 	if _propertyStateErr != nil {
 		return nil, errors.Wrap(_propertyStateErr, "Error parsing 'propertyState' field of BACnetPropertyStatesEnclosed")
 	}
@@ -163,7 +160,7 @@ func BACnetPropertyStatesEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, ta
 	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
 	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(readBuffer, uint8(tagNumber))
+	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
 	if _closingTagErr != nil {
 		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetPropertyStatesEnclosed")
 	}
@@ -186,14 +183,14 @@ func BACnetPropertyStatesEnclosedParseWithBuffer(readBuffer utils.ReadBuffer, ta
 }
 
 func (m *_BACnetPropertyStatesEnclosed) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesEnclosed) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesEnclosed) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetPropertyStatesEnclosed"); pushErr != nil {
@@ -204,7 +201,7 @@ func (m *_BACnetPropertyStatesEnclosed) SerializeWithWriteBuffer(writeBuffer uti
 	if pushErr := writeBuffer.PushContext("openingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for openingTag")
 	}
-	_openingTagErr := writeBuffer.WriteSerializable(m.GetOpeningTag())
+	_openingTagErr := writeBuffer.WriteSerializable(ctx, m.GetOpeningTag())
 	if popErr := writeBuffer.PopContext("openingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for openingTag")
 	}
@@ -216,7 +213,7 @@ func (m *_BACnetPropertyStatesEnclosed) SerializeWithWriteBuffer(writeBuffer uti
 	if pushErr := writeBuffer.PushContext("propertyState"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for propertyState")
 	}
-	_propertyStateErr := writeBuffer.WriteSerializable(m.GetPropertyState())
+	_propertyStateErr := writeBuffer.WriteSerializable(ctx, m.GetPropertyState())
 	if popErr := writeBuffer.PopContext("propertyState"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for propertyState")
 	}
@@ -228,7 +225,7 @@ func (m *_BACnetPropertyStatesEnclosed) SerializeWithWriteBuffer(writeBuffer uti
 	if pushErr := writeBuffer.PushContext("closingTag"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for closingTag")
 	}
-	_closingTagErr := writeBuffer.WriteSerializable(m.GetClosingTag())
+	_closingTagErr := writeBuffer.WriteSerializable(ctx, m.GetClosingTag())
 	if popErr := writeBuffer.PopContext("closingTag"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for closingTag")
 	}
@@ -261,7 +258,7 @@ func (m *_BACnetPropertyStatesEnclosed) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

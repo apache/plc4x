@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) GetCurrentCommandPriority
 ///////////////////////
 
 func (m *_BACnetConstructedDataCurrentCommandPriority) GetActualValue() BACnetOptionalUnsigned {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetOptionalUnsigned(m.GetCurrentCommandPriority())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) GetTypeName() string {
 	return "BACnetConstructedDataCurrentCommandPriority"
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (currentCommandPriority)
-	lengthInBits += m.CurrentCommandPriority.GetLengthInBits()
+	lengthInBits += m.CurrentCommandPriority.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataCurrentCommandPriority) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataCurrentCommandPriorityParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCurrentCommandPriority, error) {
-	return BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCurrentCommandPriority, error) {
+func BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCurrentCommandPriority, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCurrentCommandPriority"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(readBuffer utils
 	if pullErr := readBuffer.PullContext("currentCommandPriority"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for currentCommandPriority")
 	}
-	_currentCommandPriority, _currentCommandPriorityErr := BACnetOptionalUnsignedParseWithBuffer(readBuffer)
+	_currentCommandPriority, _currentCommandPriorityErr := BACnetOptionalUnsignedParseWithBuffer(ctx, readBuffer)
 	if _currentCommandPriorityErr != nil {
 		return nil, errors.Wrap(_currentCommandPriorityErr, "Error parsing 'currentCommandPriority' field of BACnetConstructedDataCurrentCommandPriority")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(readBuffer utils
 }
 
 func (m *_BACnetConstructedDataCurrentCommandPriority) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataCurrentCommandPriority) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataCurrentCommandPriority) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) SerializeWithWriteBuffer(
 		if pushErr := writeBuffer.PushContext("currentCommandPriority"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for currentCommandPriority")
 		}
-		_currentCommandPriorityErr := writeBuffer.WriteSerializable(m.GetCurrentCommandPriority())
+		_currentCommandPriorityErr := writeBuffer.WriteSerializable(ctx, m.GetCurrentCommandPriority())
 		if popErr := writeBuffer.PopContext("currentCommandPriority"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for currentCommandPriority")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) SerializeWithWriteBuffer(
 			return errors.Wrap(_currentCommandPriorityErr, "Error serializing 'currentCommandPriority' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) SerializeWithWriteBuffer(
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataCurrentCommandPriority) isBACnetConstructedDataCurrentCommandPriority() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataCurrentCommandPriority) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -79,6 +79,7 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLastNotifyRecord");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLastNotifyRecord _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lastNotifyRecord)
     lengthInBits += lastNotifyRecord.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastNotifyRecordBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger lastNotifyRecord =
         readSimpleField(
@@ -137,21 +140,20 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataLastNotifyRecord");
     // Create the instance
-    return new BACnetConstructedDataLastNotifyRecordBuilder(
+    return new BACnetConstructedDataLastNotifyRecordBuilderImpl(
         lastNotifyRecord, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastNotifyRecordBuilder
+  public static class BACnetConstructedDataLastNotifyRecordBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger lastNotifyRecord;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastNotifyRecordBuilder(
+    public BACnetConstructedDataLastNotifyRecordBuilderImpl(
         BACnetApplicationTagUnsignedInteger lastNotifyRecord,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastNotifyRecord = lastNotifyRecord;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

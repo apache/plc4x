@@ -123,6 +123,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SessionSecurityDiagnosticsDataType");
 
@@ -185,6 +186,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SessionSecurityDiagnosticsDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (sessionId)
     lengthInBits += sessionId.getLengthInBits();
@@ -199,7 +201,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     if (clientUserIdHistory != null) {
       int i = 0;
       for (PascalString element : clientUserIdHistory) {
-        boolean last = ++i >= clientUserIdHistory.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= clientUserIdHistory.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -225,12 +227,13 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     return lengthInBits;
   }
 
-  public static SessionSecurityDiagnosticsDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("SessionSecurityDiagnosticsDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =
         readSimpleField(
@@ -286,7 +289,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
 
     readBuffer.closeContext("SessionSecurityDiagnosticsDataType");
     // Create the instance
-    return new SessionSecurityDiagnosticsDataTypeBuilder(
+    return new SessionSecurityDiagnosticsDataTypeBuilderImpl(
         sessionId,
         clientUserIdOfSession,
         noOfClientUserIdHistory,
@@ -299,7 +302,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
         clientCertificate);
   }
 
-  public static class SessionSecurityDiagnosticsDataTypeBuilder
+  public static class SessionSecurityDiagnosticsDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final NodeId sessionId;
     private final PascalString clientUserIdOfSession;
@@ -312,7 +315,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     private final PascalString securityPolicyUri;
     private final PascalByteString clientCertificate;
 
-    public SessionSecurityDiagnosticsDataTypeBuilder(
+    public SessionSecurityDiagnosticsDataTypeBuilderImpl(
         NodeId sessionId,
         PascalString clientUserIdOfSession,
         int noOfClientUserIdHistory,
@@ -323,7 +326,6 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
         MessageSecurityMode securityMode,
         PascalString securityPolicyUri,
         PascalByteString clientCertificate) {
-
       this.sessionId = sessionId;
       this.clientUserIdOfSession = clientUserIdOfSession;
       this.noOfClientUserIdHistory = noOfClientUserIdHistory;

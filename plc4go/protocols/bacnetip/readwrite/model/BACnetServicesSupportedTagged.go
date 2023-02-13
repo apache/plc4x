@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -96,42 +97,62 @@ func (m *_BACnetServicesSupportedTagged) GetPayload() BACnetTagPayloadBitString 
 ///////////////////////
 
 func (m *_BACnetServicesSupportedTagged) GetWriteGroup() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetSubscribeCovPropertyMultiple() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetConfirmedCovNotificationMultiple() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetUnconfirmedCovNotificationMultiple() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (3))), func() interface{} { return bool(m.GetPayload().GetData()[3]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetWhoIs() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (4))), func() interface{} { return bool(m.GetPayload().GetData()[4]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetReadRange() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (5))), func() interface{} { return bool(m.GetPayload().GetData()[5]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetUtcTimeSynchronization() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (6))), func() interface{} { return bool(m.GetPayload().GetData()[6]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetLifeSafetyOperation() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (7))), func() interface{} { return bool(m.GetPayload().GetData()[7]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetSubscribeCovProperty() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (8))), func() interface{} { return bool(m.GetPayload().GetData()[8]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetServicesSupportedTagged) GetGetEventInformation() bool {
+	ctx := context.Background()
+	_ = ctx
 	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (9))), func() interface{} { return bool(m.GetPayload().GetData()[9]) }, func() interface{} { return bool(bool(false)) }).(bool))
 }
 
@@ -160,18 +181,14 @@ func (m *_BACnetServicesSupportedTagged) GetTypeName() string {
 	return "BACnetServicesSupportedTagged"
 }
 
-func (m *_BACnetServicesSupportedTagged) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetServicesSupportedTagged) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetServicesSupportedTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (header)
-	lengthInBits += m.Header.GetLengthInBits()
+	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Simple field (payload)
-	lengthInBits += m.Payload.GetLengthInBits()
+	lengthInBits += m.Payload.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
@@ -196,15 +213,15 @@ func (m *_BACnetServicesSupportedTagged) GetLengthInBitsConditional(lastItem boo
 	return lengthInBits
 }
 
-func (m *_BACnetServicesSupportedTagged) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetServicesSupportedTagged) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetServicesSupportedTaggedParse(theBytes []byte, tagNumber uint8, tagClass TagClass) (BACnetServicesSupportedTagged, error) {
-	return BACnetServicesSupportedTaggedParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
+	return BACnetServicesSupportedTaggedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
-func BACnetServicesSupportedTaggedParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetServicesSupportedTagged, error) {
+func BACnetServicesSupportedTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetServicesSupportedTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetServicesSupportedTagged"); pullErr != nil {
@@ -217,7 +234,7 @@ func BACnetServicesSupportedTaggedParseWithBuffer(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for header")
 	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(readBuffer)
+	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetServicesSupportedTagged")
 	}
@@ -240,7 +257,7 @@ func BACnetServicesSupportedTaggedParseWithBuffer(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for payload")
 	}
-	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(readBuffer, uint32(header.GetActualLength()))
+	_payload, _payloadErr := BACnetTagPayloadBitStringParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
 	if _payloadErr != nil {
 		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetServicesSupportedTagged")
 	}
@@ -313,14 +330,14 @@ func BACnetServicesSupportedTaggedParseWithBuffer(readBuffer utils.ReadBuffer, t
 }
 
 func (m *_BACnetServicesSupportedTagged) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetServicesSupportedTagged) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetServicesSupportedTagged) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetServicesSupportedTagged"); pushErr != nil {
@@ -331,7 +348,7 @@ func (m *_BACnetServicesSupportedTagged) SerializeWithWriteBuffer(writeBuffer ut
 	if pushErr := writeBuffer.PushContext("header"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for header")
 	}
-	_headerErr := writeBuffer.WriteSerializable(m.GetHeader())
+	_headerErr := writeBuffer.WriteSerializable(ctx, m.GetHeader())
 	if popErr := writeBuffer.PopContext("header"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for header")
 	}
@@ -343,7 +360,7 @@ func (m *_BACnetServicesSupportedTagged) SerializeWithWriteBuffer(writeBuffer ut
 	if pushErr := writeBuffer.PushContext("payload"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for payload")
 	}
-	_payloadErr := writeBuffer.WriteSerializable(m.GetPayload())
+	_payloadErr := writeBuffer.WriteSerializable(ctx, m.GetPayload())
 	if popErr := writeBuffer.PopContext("payload"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for payload")
 	}
@@ -351,43 +368,43 @@ func (m *_BACnetServicesSupportedTagged) SerializeWithWriteBuffer(writeBuffer ut
 		return errors.Wrap(_payloadErr, "Error serializing 'payload' field")
 	}
 	// Virtual field
-	if _writeGroupErr := writeBuffer.WriteVirtual("writeGroup", m.GetWriteGroup()); _writeGroupErr != nil {
+	if _writeGroupErr := writeBuffer.WriteVirtual(ctx, "writeGroup", m.GetWriteGroup()); _writeGroupErr != nil {
 		return errors.Wrap(_writeGroupErr, "Error serializing 'writeGroup' field")
 	}
 	// Virtual field
-	if _subscribeCovPropertyMultipleErr := writeBuffer.WriteVirtual("subscribeCovPropertyMultiple", m.GetSubscribeCovPropertyMultiple()); _subscribeCovPropertyMultipleErr != nil {
+	if _subscribeCovPropertyMultipleErr := writeBuffer.WriteVirtual(ctx, "subscribeCovPropertyMultiple", m.GetSubscribeCovPropertyMultiple()); _subscribeCovPropertyMultipleErr != nil {
 		return errors.Wrap(_subscribeCovPropertyMultipleErr, "Error serializing 'subscribeCovPropertyMultiple' field")
 	}
 	// Virtual field
-	if _confirmedCovNotificationMultipleErr := writeBuffer.WriteVirtual("confirmedCovNotificationMultiple", m.GetConfirmedCovNotificationMultiple()); _confirmedCovNotificationMultipleErr != nil {
+	if _confirmedCovNotificationMultipleErr := writeBuffer.WriteVirtual(ctx, "confirmedCovNotificationMultiple", m.GetConfirmedCovNotificationMultiple()); _confirmedCovNotificationMultipleErr != nil {
 		return errors.Wrap(_confirmedCovNotificationMultipleErr, "Error serializing 'confirmedCovNotificationMultiple' field")
 	}
 	// Virtual field
-	if _unconfirmedCovNotificationMultipleErr := writeBuffer.WriteVirtual("unconfirmedCovNotificationMultiple", m.GetUnconfirmedCovNotificationMultiple()); _unconfirmedCovNotificationMultipleErr != nil {
+	if _unconfirmedCovNotificationMultipleErr := writeBuffer.WriteVirtual(ctx, "unconfirmedCovNotificationMultiple", m.GetUnconfirmedCovNotificationMultiple()); _unconfirmedCovNotificationMultipleErr != nil {
 		return errors.Wrap(_unconfirmedCovNotificationMultipleErr, "Error serializing 'unconfirmedCovNotificationMultiple' field")
 	}
 	// Virtual field
-	if _whoIsErr := writeBuffer.WriteVirtual("whoIs", m.GetWhoIs()); _whoIsErr != nil {
+	if _whoIsErr := writeBuffer.WriteVirtual(ctx, "whoIs", m.GetWhoIs()); _whoIsErr != nil {
 		return errors.Wrap(_whoIsErr, "Error serializing 'whoIs' field")
 	}
 	// Virtual field
-	if _readRangeErr := writeBuffer.WriteVirtual("readRange", m.GetReadRange()); _readRangeErr != nil {
+	if _readRangeErr := writeBuffer.WriteVirtual(ctx, "readRange", m.GetReadRange()); _readRangeErr != nil {
 		return errors.Wrap(_readRangeErr, "Error serializing 'readRange' field")
 	}
 	// Virtual field
-	if _utcTimeSynchronizationErr := writeBuffer.WriteVirtual("utcTimeSynchronization", m.GetUtcTimeSynchronization()); _utcTimeSynchronizationErr != nil {
+	if _utcTimeSynchronizationErr := writeBuffer.WriteVirtual(ctx, "utcTimeSynchronization", m.GetUtcTimeSynchronization()); _utcTimeSynchronizationErr != nil {
 		return errors.Wrap(_utcTimeSynchronizationErr, "Error serializing 'utcTimeSynchronization' field")
 	}
 	// Virtual field
-	if _lifeSafetyOperationErr := writeBuffer.WriteVirtual("lifeSafetyOperation", m.GetLifeSafetyOperation()); _lifeSafetyOperationErr != nil {
+	if _lifeSafetyOperationErr := writeBuffer.WriteVirtual(ctx, "lifeSafetyOperation", m.GetLifeSafetyOperation()); _lifeSafetyOperationErr != nil {
 		return errors.Wrap(_lifeSafetyOperationErr, "Error serializing 'lifeSafetyOperation' field")
 	}
 	// Virtual field
-	if _subscribeCovPropertyErr := writeBuffer.WriteVirtual("subscribeCovProperty", m.GetSubscribeCovProperty()); _subscribeCovPropertyErr != nil {
+	if _subscribeCovPropertyErr := writeBuffer.WriteVirtual(ctx, "subscribeCovProperty", m.GetSubscribeCovProperty()); _subscribeCovPropertyErr != nil {
 		return errors.Wrap(_subscribeCovPropertyErr, "Error serializing 'subscribeCovProperty' field")
 	}
 	// Virtual field
-	if _getEventInformationErr := writeBuffer.WriteVirtual("getEventInformation", m.GetGetEventInformation()); _getEventInformationErr != nil {
+	if _getEventInformationErr := writeBuffer.WriteVirtual(ctx, "getEventInformation", m.GetGetEventInformation()); _getEventInformationErr != nil {
 		return errors.Wrap(_getEventInformationErr, "Error serializing 'getEventInformation' field")
 	}
 
@@ -419,7 +436,7 @@ func (m *_BACnetServicesSupportedTagged) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

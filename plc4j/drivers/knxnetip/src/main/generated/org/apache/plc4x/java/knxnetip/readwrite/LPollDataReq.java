@@ -42,17 +42,14 @@ public class LPollDataReq extends CEMI implements Message {
     return (short) 0x13;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public LPollDataReq(Integer size) {
-    super(size);
-    this.size = size;
+  public LPollDataReq() {
+    super();
   }
 
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LPollDataReq");
 
@@ -68,34 +65,30 @@ public class LPollDataReq extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LPollDataReq _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static LPollDataReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LPollDataReq");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("LPollDataReq");
     // Create the instance
-    return new LPollDataReqBuilder(size);
+    return new LPollDataReqBuilderImpl();
   }
 
-  public static class LPollDataReqBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class LPollDataReqBuilderImpl implements CEMI.CEMIBuilder {
 
-    public LPollDataReqBuilder(Integer size) {
+    public LPollDataReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public LPollDataReq build(Integer size) {
-
-      LPollDataReq lPollDataReq = new LPollDataReq(size);
-
+    public LPollDataReq build() {
+      LPollDataReq lPollDataReq = new LPollDataReq();
       return lPollDataReq;
     }
   }

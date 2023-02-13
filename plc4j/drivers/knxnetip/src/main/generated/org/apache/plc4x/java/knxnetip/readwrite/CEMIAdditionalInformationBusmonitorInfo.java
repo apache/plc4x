@@ -102,6 +102,7 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
   protected void serializeCEMIAdditionalInformationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CEMIAdditionalInformationBusmonitorInfo");
 
@@ -138,6 +139,7 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CEMIAdditionalInformationBusmonitorInfo _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (len)
     lengthInBits += 8;
@@ -163,12 +165,13 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
     return lengthInBits;
   }
 
-  public static CEMIAdditionalInformationBusmonitorInfoBuilder staticParseBuilder(
+  public static CEMIAdditionalInformationBuilder staticParseCEMIAdditionalInformationBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CEMIAdditionalInformationBusmonitorInfo");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short len =
         readConstField(
@@ -188,11 +191,11 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
 
     readBuffer.closeContext("CEMIAdditionalInformationBusmonitorInfo");
     // Create the instance
-    return new CEMIAdditionalInformationBusmonitorInfoBuilder(
+    return new CEMIAdditionalInformationBusmonitorInfoBuilderImpl(
         frameErrorFlag, bitErrorFlag, parityErrorFlag, unknownFlag, lostFlag, sequenceNumber);
   }
 
-  public static class CEMIAdditionalInformationBusmonitorInfoBuilder
+  public static class CEMIAdditionalInformationBusmonitorInfoBuilderImpl
       implements CEMIAdditionalInformation.CEMIAdditionalInformationBuilder {
     private final boolean frameErrorFlag;
     private final boolean bitErrorFlag;
@@ -201,14 +204,13 @@ public class CEMIAdditionalInformationBusmonitorInfo extends CEMIAdditionalInfor
     private final boolean lostFlag;
     private final byte sequenceNumber;
 
-    public CEMIAdditionalInformationBusmonitorInfoBuilder(
+    public CEMIAdditionalInformationBusmonitorInfoBuilderImpl(
         boolean frameErrorFlag,
         boolean bitErrorFlag,
         boolean parityErrorFlag,
         boolean unknownFlag,
         boolean lostFlag,
         byte sequenceNumber) {
-
       this.frameErrorFlag = frameErrorFlag;
       this.bitErrorFlag = bitErrorFlag;
       this.parityErrorFlag = parityErrorFlag;

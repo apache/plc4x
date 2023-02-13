@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataMaintenanceRequired) GetMaintenanceRequired() BAC
 ///////////////////////
 
 func (m *_BACnetConstructedDataMaintenanceRequired) GetActualValue() BACnetMaintenanceTagged {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetMaintenanceTagged(m.GetMaintenanceRequired())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataMaintenanceRequired) GetTypeName() string {
 	return "BACnetConstructedDataMaintenanceRequired"
 }
 
-func (m *_BACnetConstructedDataMaintenanceRequired) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataMaintenanceRequired) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataMaintenanceRequired) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (maintenanceRequired)
-	lengthInBits += m.MaintenanceRequired.GetLengthInBits()
+	lengthInBits += m.MaintenanceRequired.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataMaintenanceRequired) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataMaintenanceRequired) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataMaintenanceRequiredParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaintenanceRequired, error) {
-	return BACnetConstructedDataMaintenanceRequiredParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataMaintenanceRequiredParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataMaintenanceRequiredParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaintenanceRequired, error) {
+func BACnetConstructedDataMaintenanceRequiredParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaintenanceRequired, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaintenanceRequired"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataMaintenanceRequiredParseWithBuffer(readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("maintenanceRequired"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for maintenanceRequired")
 	}
-	_maintenanceRequired, _maintenanceRequiredErr := BACnetMaintenanceTaggedParseWithBuffer(readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_maintenanceRequired, _maintenanceRequiredErr := BACnetMaintenanceTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
 	if _maintenanceRequiredErr != nil {
 		return nil, errors.Wrap(_maintenanceRequiredErr, "Error parsing 'maintenanceRequired' field of BACnetConstructedDataMaintenanceRequired")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataMaintenanceRequiredParseWithBuffer(readBuffer utils.Re
 }
 
 func (m *_BACnetConstructedDataMaintenanceRequired) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataMaintenanceRequired) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataMaintenanceRequired) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataMaintenanceRequired) SerializeWithWriteBuffer(wri
 		if pushErr := writeBuffer.PushContext("maintenanceRequired"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for maintenanceRequired")
 		}
-		_maintenanceRequiredErr := writeBuffer.WriteSerializable(m.GetMaintenanceRequired())
+		_maintenanceRequiredErr := writeBuffer.WriteSerializable(ctx, m.GetMaintenanceRequired())
 		if popErr := writeBuffer.PopContext("maintenanceRequired"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for maintenanceRequired")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataMaintenanceRequired) SerializeWithWriteBuffer(wri
 			return errors.Wrap(_maintenanceRequiredErr, "Error serializing 'maintenanceRequired' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataMaintenanceRequired) SerializeWithWriteBuffer(wri
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataMaintenanceRequired) isBACnetConstructedDataMaintenanceRequired() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataMaintenanceRequired) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -75,6 +75,7 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataVirtualMACAddressTable");
 
@@ -93,6 +94,7 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataVirtualMACAddressTable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (virtualMacAddressTable != null) {
@@ -104,7 +106,7 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataVirtualMACAddressTableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -115,6 +117,7 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetVMACEntry> virtualMacAddressTable =
         readTerminatedArrayField(
@@ -128,21 +131,20 @@ public class BACnetConstructedDataVirtualMACAddressTable extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataVirtualMACAddressTable");
     // Create the instance
-    return new BACnetConstructedDataVirtualMACAddressTableBuilder(
+    return new BACnetConstructedDataVirtualMACAddressTableBuilderImpl(
         virtualMacAddressTable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataVirtualMACAddressTableBuilder
+  public static class BACnetConstructedDataVirtualMACAddressTableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetVMACEntry> virtualMacAddressTable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataVirtualMACAddressTableBuilder(
+    public BACnetConstructedDataVirtualMACAddressTableBuilderImpl(
         List<BACnetVMACEntry> virtualMacAddressTable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.virtualMacAddressTable = virtualMacAddressTable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

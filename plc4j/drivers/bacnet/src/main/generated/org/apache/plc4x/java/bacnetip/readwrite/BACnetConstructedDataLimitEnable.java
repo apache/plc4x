@@ -78,6 +78,7 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLimitEnable");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLimitEnable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (limitEnable)
     lengthInBits += limitEnable.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLimitEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLimitEnableTagged limitEnable =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataLimitEnable");
     // Create the instance
-    return new BACnetConstructedDataLimitEnableBuilder(limitEnable, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLimitEnableBuilderImpl(
+        limitEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLimitEnableBuilder
+  public static class BACnetConstructedDataLimitEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetLimitEnableTagged limitEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLimitEnableBuilder(
+    public BACnetConstructedDataLimitEnableBuilderImpl(
         BACnetLimitEnableTagged limitEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.limitEnable = limitEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

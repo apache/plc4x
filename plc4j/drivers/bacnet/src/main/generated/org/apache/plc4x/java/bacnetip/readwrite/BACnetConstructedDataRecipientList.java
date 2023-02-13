@@ -74,6 +74,7 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRecipientList");
 
@@ -92,6 +93,7 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataRecipientList _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (recipientList != null) {
@@ -103,7 +105,7 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataRecipientListBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -114,6 +116,7 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetDestination> recipientList =
         readTerminatedArrayField(
@@ -127,21 +130,20 @@ public class BACnetConstructedDataRecipientList extends BACnetConstructedData im
 
     readBuffer.closeContext("BACnetConstructedDataRecipientList");
     // Create the instance
-    return new BACnetConstructedDataRecipientListBuilder(
+    return new BACnetConstructedDataRecipientListBuilderImpl(
         recipientList, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataRecipientListBuilder
+  public static class BACnetConstructedDataRecipientListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetDestination> recipientList;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRecipientListBuilder(
+    public BACnetConstructedDataRecipientListBuilderImpl(
         List<BACnetDestination> recipientList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.recipientList = recipientList;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -42,17 +42,14 @@ public class LRawCon extends CEMI implements Message {
     return (short) 0x2F;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public LRawCon(Integer size) {
-    super(size);
-    this.size = size;
+  public LRawCon() {
+    super();
   }
 
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LRawCon");
 
@@ -68,34 +65,30 @@ public class LRawCon extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LRawCon _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static LRawConBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("LRawCon");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("LRawCon");
     // Create the instance
-    return new LRawConBuilder(size);
+    return new LRawConBuilderImpl();
   }
 
-  public static class LRawConBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class LRawConBuilderImpl implements CEMI.CEMIBuilder {
 
-    public LRawConBuilder(Integer size) {
+    public LRawConBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public LRawCon build(Integer size) {
-
-      LRawCon lRawCon = new LRawCon(size);
-
+    public LRawCon build() {
+      LRawCon lRawCon = new LRawCon();
       return lRawCon;
     }
   }

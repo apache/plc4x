@@ -79,6 +79,7 @@ public class BACnetConstructedDataIPv6DHCPLeaseTimeRemaining extends BACnetConst
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataIPv6DHCPLeaseTimeRemaining");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataIPv6DHCPLeaseTimeRemaining extends BACnetConst
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataIPv6DHCPLeaseTimeRemaining _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (ipv6DhcpLeaseTimeRemaining)
     lengthInBits += ipv6DhcpLeaseTimeRemaining.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataIPv6DHCPLeaseTimeRemaining extends BACnetConst
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataIPv6DHCPLeaseTimeRemaining extends BACnetConst
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTimeRemaining =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataIPv6DHCPLeaseTimeRemaining extends BACnetConst
 
     readBuffer.closeContext("BACnetConstructedDataIPv6DHCPLeaseTimeRemaining");
     // Create the instance
-    return new BACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilder(
+    return new BACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilderImpl(
         ipv6DhcpLeaseTimeRemaining, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilder
+  public static class BACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTimeRemaining;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilder(
+    public BACnetConstructedDataIPv6DHCPLeaseTimeRemainingBuilderImpl(
         BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTimeRemaining,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.ipv6DhcpLeaseTimeRemaining = ipv6DhcpLeaseTimeRemaining;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

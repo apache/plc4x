@@ -46,6 +46,7 @@ public class MeteringDataMeasureOil extends MeteringData implements Message {
   @Override
   protected void serializeMeteringDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MeteringDataMeasureOil");
 
@@ -61,25 +62,28 @@ public class MeteringDataMeasureOil extends MeteringData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MeteringDataMeasureOil _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static MeteringDataMeasureOilBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static MeteringDataBuilder staticParseMeteringDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("MeteringDataMeasureOil");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MeteringDataMeasureOil");
     // Create the instance
-    return new MeteringDataMeasureOilBuilder();
+    return new MeteringDataMeasureOilBuilderImpl();
   }
 
-  public static class MeteringDataMeasureOilBuilder implements MeteringData.MeteringDataBuilder {
+  public static class MeteringDataMeasureOilBuilderImpl
+      implements MeteringData.MeteringDataBuilder {
 
-    public MeteringDataMeasureOilBuilder() {}
+    public MeteringDataMeasureOilBuilderImpl() {}
 
     public MeteringDataMeasureOil build(
         MeteringCommandTypeContainer commandTypeContainer, byte argument) {

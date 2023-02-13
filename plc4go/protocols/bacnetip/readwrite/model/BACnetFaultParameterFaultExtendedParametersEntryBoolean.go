@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetTypeName()
 	return "BACnetFaultParameterFaultExtendedParametersEntryBoolean"
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (booleanValue)
-	lengthInBits += m.BooleanValue.GetLengthInBits()
+	lengthInBits += m.BooleanValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetFaultParameterFaultExtendedParametersEntryBooleanParse(theBytes []byte) (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
-	return BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
+func BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(read
 	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
 	}
-	_booleanValue, _booleanValueErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_booleanValue, _booleanValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _booleanValueErr != nil {
 		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetFaultParameterFaultExtendedParametersEntryBoolean")
 	}
@@ -162,14 +159,14 @@ func BACnetFaultParameterFaultExtendedParametersEntryBooleanParseWithBuffer(read
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) SerializeWith
 		if pushErr := writeBuffer.PushContext("booleanValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for booleanValue")
 		}
-		_booleanValueErr := writeBuffer.WriteSerializable(m.GetBooleanValue())
+		_booleanValueErr := writeBuffer.WriteSerializable(ctx, m.GetBooleanValue())
 		if popErr := writeBuffer.PopContext("booleanValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for booleanValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) SerializeWith
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) isBACnetFaultParameterFaultExtendedParametersEntryBoolean() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntryBoolean) String() stri
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

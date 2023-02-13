@@ -56,6 +56,7 @@ public class BACnetChannelValueCharacterString extends BACnetChannelValue implem
   protected void serializeBACnetChannelValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetChannelValueCharacterString");
 
@@ -75,6 +76,7 @@ public class BACnetChannelValueCharacterString extends BACnetChannelValue implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetChannelValueCharacterString _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (characterStringValue)
     lengthInBits += characterStringValue.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetChannelValueCharacterString extends BACnetChannelValue implem
     return lengthInBits;
   }
 
-  public static BACnetChannelValueCharacterStringBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetChannelValueBuilder staticParseBACnetChannelValueBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetChannelValueCharacterString");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString characterStringValue =
         readSimpleField(
@@ -100,16 +103,15 @@ public class BACnetChannelValueCharacterString extends BACnetChannelValue implem
 
     readBuffer.closeContext("BACnetChannelValueCharacterString");
     // Create the instance
-    return new BACnetChannelValueCharacterStringBuilder(characterStringValue);
+    return new BACnetChannelValueCharacterStringBuilderImpl(characterStringValue);
   }
 
-  public static class BACnetChannelValueCharacterStringBuilder
+  public static class BACnetChannelValueCharacterStringBuilderImpl
       implements BACnetChannelValue.BACnetChannelValueBuilder {
     private final BACnetApplicationTagCharacterString characterStringValue;
 
-    public BACnetChannelValueCharacterStringBuilder(
+    public BACnetChannelValueCharacterStringBuilderImpl(
         BACnetApplicationTagCharacterString characterStringValue) {
-
       this.characterStringValue = characterStringValue;
     }
 

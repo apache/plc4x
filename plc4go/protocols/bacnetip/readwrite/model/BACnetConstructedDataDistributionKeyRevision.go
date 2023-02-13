@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetDistributionKeyRevisi
 ///////////////////////
 
 func (m *_BACnetConstructedDataDistributionKeyRevision) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetDistributionKeyRevision())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) GetTypeName() string {
 	return "BACnetConstructedDataDistributionKeyRevision"
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (distributionKeyRevision)
-	lengthInBits += m.DistributionKeyRevision.GetLengthInBits()
+	lengthInBits += m.DistributionKeyRevision.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataDistributionKeyRevision) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataDistributionKeyRevisionParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDistributionKeyRevision, error) {
-	return BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDistributionKeyRevision, error) {
+func BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDistributionKeyRevision, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDistributionKeyRevision"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(readBuffer util
 	if pullErr := readBuffer.PullContext("distributionKeyRevision"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for distributionKeyRevision")
 	}
-	_distributionKeyRevision, _distributionKeyRevisionErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_distributionKeyRevision, _distributionKeyRevisionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _distributionKeyRevisionErr != nil {
 		return nil, errors.Wrap(_distributionKeyRevisionErr, "Error parsing 'distributionKeyRevision' field of BACnetConstructedDataDistributionKeyRevision")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(readBuffer util
 }
 
 func (m *_BACnetConstructedDataDistributionKeyRevision) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataDistributionKeyRevision) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDistributionKeyRevision) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) SerializeWithWriteBuffer
 		if pushErr := writeBuffer.PushContext("distributionKeyRevision"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for distributionKeyRevision")
 		}
-		_distributionKeyRevisionErr := writeBuffer.WriteSerializable(m.GetDistributionKeyRevision())
+		_distributionKeyRevisionErr := writeBuffer.WriteSerializable(ctx, m.GetDistributionKeyRevision())
 		if popErr := writeBuffer.PopContext("distributionKeyRevision"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for distributionKeyRevision")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) SerializeWithWriteBuffer
 			return errors.Wrap(_distributionKeyRevisionErr, "Error serializing 'distributionKeyRevision' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) SerializeWithWriteBuffer
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataDistributionKeyRevision) isBACnetConstructedDataDistributionKeyRevision() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataDistributionKeyRevision) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

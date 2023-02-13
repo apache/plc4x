@@ -20,6 +20,7 @@ package org.apache.plc4x.java.profinet.tag;
 
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.model.PlcQuery;
+import org.apache.plc4x.java.profinet.browse.ProfinetPlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 
 public class ProfinetTagHandler implements PlcTagHandler {
@@ -31,7 +32,7 @@ public class ProfinetTagHandler implements PlcTagHandler {
 
     @Override
     public PlcQuery parseQuery(String query) {
-        throw new UnsupportedOperationException("This driver doesn't support browsing");
+        return new ProfinetPlcQuery(query);
     }
 
 }

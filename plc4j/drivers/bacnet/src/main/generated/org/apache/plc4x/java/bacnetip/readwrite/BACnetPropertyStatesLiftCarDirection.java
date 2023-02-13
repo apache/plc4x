@@ -56,6 +56,7 @@ public class BACnetPropertyStatesLiftCarDirection extends BACnetPropertyStates i
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarDirection");
 
@@ -75,6 +76,7 @@ public class BACnetPropertyStatesLiftCarDirection extends BACnetPropertyStates i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesLiftCarDirection _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (liftCarDirection)
     lengthInBits += liftCarDirection.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetPropertyStatesLiftCarDirection extends BACnetPropertyStates i
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesLiftCarDirectionBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesLiftCarDirection");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetLiftCarDirectionTagged liftCarDirection =
         readSimpleField(
@@ -102,16 +105,15 @@ public class BACnetPropertyStatesLiftCarDirection extends BACnetPropertyStates i
 
     readBuffer.closeContext("BACnetPropertyStatesLiftCarDirection");
     // Create the instance
-    return new BACnetPropertyStatesLiftCarDirectionBuilder(liftCarDirection);
+    return new BACnetPropertyStatesLiftCarDirectionBuilderImpl(liftCarDirection);
   }
 
-  public static class BACnetPropertyStatesLiftCarDirectionBuilder
+  public static class BACnetPropertyStatesLiftCarDirectionBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetLiftCarDirectionTagged liftCarDirection;
 
-    public BACnetPropertyStatesLiftCarDirectionBuilder(
+    public BACnetPropertyStatesLiftCarDirectionBuilderImpl(
         BACnetLiftCarDirectionTagged liftCarDirection) {
-
       this.liftCarDirection = liftCarDirection;
     }
 

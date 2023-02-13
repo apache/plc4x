@@ -46,24 +46,13 @@ public abstract class DF1ResponseMessage implements Message {
   protected final short status;
   protected final int transactionCounter;
 
-  // Arguments.
-  protected final Integer payloadLength;
-  // Reserved Fields
-  private Short reservedField0;
-  private Short reservedField1;
-
   public DF1ResponseMessage(
-      short destinationAddress,
-      short sourceAddress,
-      short status,
-      int transactionCounter,
-      Integer payloadLength) {
+      short destinationAddress, short sourceAddress, short status, int transactionCounter) {
     super();
     this.destinationAddress = destinationAddress;
     this.sourceAddress = sourceAddress;
     this.status = status;
     this.transactionCounter = transactionCounter;
-    this.payloadLength = payloadLength;
   }
 
   public short getDestinationAddress() {
@@ -87,14 +76,12 @@ public abstract class DF1ResponseMessage implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DF1ResponseMessage");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (destinationAddress)
     writeSimpleField("destinationAddress", destinationAddress, writeUnsignedShort(writeBuffer, 8));
@@ -103,10 +90,7 @@ public abstract class DF1ResponseMessage implements Message {
     writeSimpleField("sourceAddress", sourceAddress, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Discriminator Field (commandCode) (Used as input to a switch field)
     writeDiscriminatorField("commandCode", getCommandCode(), writeUnsignedShort(writeBuffer, 8));
@@ -132,6 +116,7 @@ public abstract class DF1ResponseMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     DF1ResponseMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 8;
@@ -185,6 +170,7 @@ public abstract class DF1ResponseMessage implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
@@ -207,7 +193,7 @@ public abstract class DF1ResponseMessage implements Message {
     DF1ResponseMessageBuilder builder = null;
     if (EvaluationHelper.equals(commandCode, (short) 0x4F)) {
       builder =
-          DF1CommandResponseMessageProtectedTypedLogicalRead.staticParseBuilder(
+          DF1CommandResponseMessageProtectedTypedLogicalRead.staticParseDF1ResponseMessageBuilder(
               readBuffer, payloadLength);
     }
     if (builder == null) {
@@ -222,19 +208,13 @@ public abstract class DF1ResponseMessage implements Message {
     readBuffer.closeContext("DF1ResponseMessage");
     // Create the instance
     DF1ResponseMessage _dF1ResponseMessage =
-        builder.build(destinationAddress, sourceAddress, status, transactionCounter, payloadLength);
-    _dF1ResponseMessage.reservedField0 = reservedField0;
-    _dF1ResponseMessage.reservedField1 = reservedField1;
+        builder.build(destinationAddress, sourceAddress, status, transactionCounter);
     return _dF1ResponseMessage;
   }
 
-  public static interface DF1ResponseMessageBuilder {
+  public interface DF1ResponseMessageBuilder {
     DF1ResponseMessage build(
-        short destinationAddress,
-        short sourceAddress,
-        short status,
-        int transactionCounter,
-        Integer payloadLength);
+        short destinationAddress, short sourceAddress, short status, int transactionCounter);
   }
 
   @Override

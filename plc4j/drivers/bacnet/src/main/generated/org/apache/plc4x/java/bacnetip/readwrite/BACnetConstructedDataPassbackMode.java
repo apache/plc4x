@@ -78,6 +78,7 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataPassbackMode");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataPassbackMode _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (passbackMode)
     lengthInBits += passbackMode.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataPassbackModeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetAccessPassbackModeTagged passbackMode =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataPassbackMode");
     // Create the instance
-    return new BACnetConstructedDataPassbackModeBuilder(
+    return new BACnetConstructedDataPassbackModeBuilderImpl(
         passbackMode, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataPassbackModeBuilder
+  public static class BACnetConstructedDataPassbackModeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetAccessPassbackModeTagged passbackMode;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataPassbackModeBuilder(
+    public BACnetConstructedDataPassbackModeBuilderImpl(
         BACnetAccessPassbackModeTagged passbackMode,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.passbackMode = passbackMode;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

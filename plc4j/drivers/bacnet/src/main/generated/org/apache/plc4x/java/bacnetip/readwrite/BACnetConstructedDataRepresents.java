@@ -78,6 +78,7 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRepresents");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataRepresents _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (represents)
     lengthInBits += represents.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataRepresentsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference represents =
         readSimpleField(
@@ -131,20 +134,20 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
 
     readBuffer.closeContext("BACnetConstructedDataRepresents");
     // Create the instance
-    return new BACnetConstructedDataRepresentsBuilder(represents, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataRepresentsBuilderImpl(
+        represents, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataRepresentsBuilder
+  public static class BACnetConstructedDataRepresentsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference represents;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRepresentsBuilder(
+    public BACnetConstructedDataRepresentsBuilderImpl(
         BACnetDeviceObjectReference represents,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.represents = represents;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

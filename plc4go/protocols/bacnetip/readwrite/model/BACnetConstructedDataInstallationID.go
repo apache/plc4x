@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataInstallationID) GetInstallationId() BACnetApplica
 ///////////////////////
 
 func (m *_BACnetConstructedDataInstallationID) GetActualValue() BACnetApplicationTagUnsignedInteger {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagUnsignedInteger(m.GetInstallationId())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataInstallationID) GetTypeName() string {
 	return "BACnetConstructedDataInstallationID"
 }
 
-func (m *_BACnetConstructedDataInstallationID) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataInstallationID) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataInstallationID) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (installationId)
-	lengthInBits += m.InstallationId.GetLengthInBits()
+	lengthInBits += m.InstallationId.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataInstallationID) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataInstallationID) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataInstallationIDParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstallationID, error) {
-	return BACnetConstructedDataInstallationIDParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataInstallationIDParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataInstallationIDParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstallationID, error) {
+func BACnetConstructedDataInstallationIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstallationID, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataInstallationID"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataInstallationIDParseWithBuffer(readBuffer utils.ReadBuf
 	if pullErr := readBuffer.PullContext("installationId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for installationId")
 	}
-	_installationId, _installationIdErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_installationId, _installationIdErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _installationIdErr != nil {
 		return nil, errors.Wrap(_installationIdErr, "Error parsing 'installationId' field of BACnetConstructedDataInstallationID")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataInstallationIDParseWithBuffer(readBuffer utils.ReadBuf
 }
 
 func (m *_BACnetConstructedDataInstallationID) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataInstallationID) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataInstallationID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataInstallationID) SerializeWithWriteBuffer(writeBuf
 		if pushErr := writeBuffer.PushContext("installationId"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for installationId")
 		}
-		_installationIdErr := writeBuffer.WriteSerializable(m.GetInstallationId())
+		_installationIdErr := writeBuffer.WriteSerializable(ctx, m.GetInstallationId())
 		if popErr := writeBuffer.PopContext("installationId"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for installationId")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataInstallationID) SerializeWithWriteBuffer(writeBuf
 			return errors.Wrap(_installationIdErr, "Error serializing 'installationId' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataInstallationID) SerializeWithWriteBuffer(writeBuf
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataInstallationID) isBACnetConstructedDataInstallationID() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataInstallationID) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

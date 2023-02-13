@@ -78,6 +78,7 @@ public class BACnetConstructedDataCountChangeTime extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCountChangeTime");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataCountChangeTime extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCountChangeTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (countChangeTime)
     lengthInBits += countChangeTime.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataCountChangeTime extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCountChangeTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataCountChangeTime extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime countChangeTime =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataCountChangeTime extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataCountChangeTime");
     // Create the instance
-    return new BACnetConstructedDataCountChangeTimeBuilder(
+    return new BACnetConstructedDataCountChangeTimeBuilderImpl(
         countChangeTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCountChangeTimeBuilder
+  public static class BACnetConstructedDataCountChangeTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime countChangeTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCountChangeTimeBuilder(
+    public BACnetConstructedDataCountChangeTimeBuilderImpl(
         BACnetDateTime countChangeTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.countChangeTime = countChangeTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

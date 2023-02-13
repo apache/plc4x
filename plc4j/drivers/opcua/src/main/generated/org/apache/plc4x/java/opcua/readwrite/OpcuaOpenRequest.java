@@ -111,6 +111,7 @@ public class OpcuaOpenRequest extends MessagePDU implements Message {
   @Override
   protected void serializeMessagePDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("OpcuaOpenRequest");
 
@@ -159,6 +160,7 @@ public class OpcuaOpenRequest extends MessagePDU implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     OpcuaOpenRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (chunk)
     lengthInBits += 8;
@@ -192,12 +194,13 @@ public class OpcuaOpenRequest extends MessagePDU implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaOpenRequestBuilder staticParseBuilder(ReadBuffer readBuffer, Boolean response)
-      throws ParseException {
+  public static MessagePDUBuilder staticParseMessagePDUBuilder(
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("OpcuaOpenRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     String chunk = readSimpleField("chunk", readString(readBuffer, 8));
 
@@ -244,7 +247,7 @@ public class OpcuaOpenRequest extends MessagePDU implements Message {
 
     readBuffer.closeContext("OpcuaOpenRequest");
     // Create the instance
-    return new OpcuaOpenRequestBuilder(
+    return new OpcuaOpenRequestBuilderImpl(
         chunk,
         secureChannelId,
         endpoint,
@@ -255,7 +258,7 @@ public class OpcuaOpenRequest extends MessagePDU implements Message {
         message);
   }
 
-  public static class OpcuaOpenRequestBuilder implements MessagePDU.MessagePDUBuilder {
+  public static class OpcuaOpenRequestBuilderImpl implements MessagePDU.MessagePDUBuilder {
     private final String chunk;
     private final int secureChannelId;
     private final PascalString endpoint;
@@ -265,7 +268,7 @@ public class OpcuaOpenRequest extends MessagePDU implements Message {
     private final int requestId;
     private final byte[] message;
 
-    public OpcuaOpenRequestBuilder(
+    public OpcuaOpenRequestBuilderImpl(
         String chunk,
         int secureChannelId,
         PascalString endpoint,
@@ -274,7 +277,6 @@ public class OpcuaOpenRequest extends MessagePDU implements Message {
         int sequenceNumber,
         int requestId,
         byte[] message) {
-
       this.chunk = chunk;
       this.secureChannelId = secureChannelId;
       this.endpoint = endpoint;

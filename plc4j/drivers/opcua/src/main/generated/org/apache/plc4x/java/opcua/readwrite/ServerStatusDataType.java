@@ -94,6 +94,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ServerStatusDataType");
 
@@ -133,6 +134,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ServerStatusDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (startTime)
     lengthInBits += 64;
@@ -155,12 +157,13 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static ServerStatusDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ServerStatusDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long startTime = readSimpleField("startTime", readSignedLong(readBuffer, 64));
 
@@ -191,11 +194,11 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("ServerStatusDataType");
     // Create the instance
-    return new ServerStatusDataTypeBuilder(
+    return new ServerStatusDataTypeBuilderImpl(
         startTime, currentTime, state, buildInfo, secondsTillShutdown, shutdownReason);
   }
 
-  public static class ServerStatusDataTypeBuilder
+  public static class ServerStatusDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long startTime;
     private final long currentTime;
@@ -204,14 +207,13 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
     private final long secondsTillShutdown;
     private final LocalizedText shutdownReason;
 
-    public ServerStatusDataTypeBuilder(
+    public ServerStatusDataTypeBuilderImpl(
         long startTime,
         long currentTime,
         ServerState state,
         ExtensionObjectDefinition buildInfo,
         long secondsTillShutdown,
         LocalizedText shutdownReason) {
-
       this.startTime = startTime;
       this.currentTime = currentTime;
       this.state = state;

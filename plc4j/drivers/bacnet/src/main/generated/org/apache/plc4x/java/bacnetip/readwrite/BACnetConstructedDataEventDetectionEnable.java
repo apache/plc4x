@@ -79,6 +79,7 @@ public class BACnetConstructedDataEventDetectionEnable extends BACnetConstructed
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataEventDetectionEnable");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataEventDetectionEnable extends BACnetConstructed
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataEventDetectionEnable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (eventDetectionEnable)
     lengthInBits += eventDetectionEnable.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataEventDetectionEnable extends BACnetConstructed
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataEventDetectionEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataEventDetectionEnable extends BACnetConstructed
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean eventDetectionEnable =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataEventDetectionEnable extends BACnetConstructed
 
     readBuffer.closeContext("BACnetConstructedDataEventDetectionEnable");
     // Create the instance
-    return new BACnetConstructedDataEventDetectionEnableBuilder(
+    return new BACnetConstructedDataEventDetectionEnableBuilderImpl(
         eventDetectionEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataEventDetectionEnableBuilder
+  public static class BACnetConstructedDataEventDetectionEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean eventDetectionEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataEventDetectionEnableBuilder(
+    public BACnetConstructedDataEventDetectionEnableBuilderImpl(
         BACnetApplicationTagBoolean eventDetectionEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.eventDetectionEnable = eventDetectionEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -73,6 +73,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AddNodesRequest");
 
@@ -97,6 +98,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AddNodesRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -108,7 +110,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     if (nodesToAdd != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : nodesToAdd) {
-        boolean last = ++i >= nodesToAdd.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToAdd.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -116,12 +118,13 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     return lengthInBits;
   }
 
-  public static AddNodesRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AddNodesRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -142,20 +145,19 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
 
     readBuffer.closeContext("AddNodesRequest");
     // Create the instance
-    return new AddNodesRequestBuilder(requestHeader, noOfNodesToAdd, nodesToAdd);
+    return new AddNodesRequestBuilderImpl(requestHeader, noOfNodesToAdd, nodesToAdd);
   }
 
-  public static class AddNodesRequestBuilder
+  public static class AddNodesRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfNodesToAdd;
     private final List<ExtensionObjectDefinition> nodesToAdd;
 
-    public AddNodesRequestBuilder(
+    public AddNodesRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfNodesToAdd,
         List<ExtensionObjectDefinition> nodesToAdd) {
-
       this.requestHeader = requestHeader;
       this.noOfNodesToAdd = noOfNodesToAdd;
       this.nodesToAdd = nodesToAdd;

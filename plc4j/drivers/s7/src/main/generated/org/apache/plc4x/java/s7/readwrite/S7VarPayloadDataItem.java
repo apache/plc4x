@@ -64,6 +64,7 @@ public class S7VarPayloadDataItem implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("S7VarPayloadDataItem");
 
@@ -102,7 +103,10 @@ public class S7VarPayloadDataItem implements Message {
 
     // Padding Field (padding)
     writePaddingField(
-        "padding", (int) ((COUNT(data)) % (2)), (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+        "padding",
+        (int) ((((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0)),
+        (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("S7VarPayloadDataItem");
   }
@@ -116,6 +120,7 @@ public class S7VarPayloadDataItem implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     S7VarPayloadDataItem _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (returnCode)
     lengthInBits += 8;
@@ -132,7 +137,7 @@ public class S7VarPayloadDataItem implements Message {
     }
 
     // Padding Field (padding)
-    int _timesPadding = (int) ((COUNT(data)) % (2));
+    int _timesPadding = (int) ((((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0));
     while (_timesPadding-- > 0) {
       lengthInBits += 8;
     }
@@ -151,6 +156,7 @@ public class S7VarPayloadDataItem implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DataTransportErrorCode returnCode =
         readEnumField(
@@ -174,7 +180,8 @@ public class S7VarPayloadDataItem implements Message {
             Math.toIntExact(
                 ((transportSize.getSizeInBits()) ? CEIL((dataLength) / (8.0)) : dataLength)));
 
-    readPaddingField(readUnsignedShort(readBuffer, 8), (int) ((COUNT(data)) % (2)));
+    readPaddingField(
+        readUnsignedShort(readBuffer, 8), (int) ((((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0)));
 
     readBuffer.closeContext("S7VarPayloadDataItem");
     // Create the instance

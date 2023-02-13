@@ -19,6 +19,7 @@
 
 #include <ctype.h>
 #include <plc4c/driver_plc4x.h>
+#include <plc4c/spi/context.h>
 #include <plc4c/spi/types_private.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,14 +34,14 @@ plc4c_return_code plc4c_driver_plc4x_send_packet(plc4c_connection* connection,
   plc4c_return_code return_code;
 
   // Get the size required to contain the serialized form of this packet.
-  packet_size = plc4c_plc4x_read_write_plc4x_message_length_in_bytes(packet);
+  packet_size = plc4c_plc4x_read_write_plc4x_message_length_in_bytes(plc4x_spi_context_background(), packet);
 
   // Serialize this message to a byte-array.
   return_code = plc4c_spi_write_buffer_create(packet_size, &write_buffer);
   if (return_code != OK) {
     return return_code;
   }
-  return_code = plc4c_plc4x_read_write_plc4x_message_serialize(write_buffer, packet);
+  return_code = plc4c_plc4x_read_write_plc4x_message_serialize(plc4x_spi_context_background(), write_buffer, packet);
   if(return_code != OK) {
     return return_code;
   }
@@ -86,7 +87,7 @@ plc4c_return_code plc4c_driver_plc4x_receive_packet(plc4c_connection* connection
 
   // Parse the packet by consuming the read_buffer data.
   *packet = NULL;
-  return_code = plc4c_plc4x_read_write_plc4x_message_parse(read_buffer, packet);
+  return_code = plc4c_plc4x_read_write_plc4x_message_parse(plc4x_spi_context_background(), read_buffer, packet);
   if (return_code != OK) {
     return return_code;
   }

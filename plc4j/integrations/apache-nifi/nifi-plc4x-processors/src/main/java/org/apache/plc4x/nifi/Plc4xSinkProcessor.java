@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.nifi;
 
+import java.util.Map;
+
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.ReadsAttribute;
 import org.apache.nifi.annotation.behavior.ReadsAttributes;
@@ -31,6 +33,7 @@ import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
+import org.apache.plc4x.java.api.model.PlcTag;
 
 @TriggerSerially
 @Tags({"plc4x-sink"})
@@ -49,20 +52,27 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
         }
 
         // Get an instance of a component able to write to a PLC.
-        try(PlcConnection connection = getDriverManager().getConnection(getConnectionString())) {
+        try(PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
             if (!connection.getMetadata().canWrite()) {
                 throw new ProcessException("Writing not supported by connection");
             }
 
             // Prepare the request.
             PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
-            flowFile.getAttributes().forEach((tag, value) -> {
-                String address = getAddress(tag);
-                if (address != null) {
-                    // TODO: Convert the String into the right type ...
-                    builder.addTagAddress(tag, address, Boolean.valueOf(value));
+            Map<String,String> addressMap = getPlcAddressMap(context, flowFile);
+            final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
+
+            if (tags != null){
+                for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
+                    builder.addTag(tag.getKey(), tag.getValue());
                 }
-            });
+            } else {
+                getLogger().debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+                for (Map.Entry<String,String> entry: addressMap.entrySet()){
+                    builder.addTagAddress(entry.getKey(), entry.getValue());
+                }
+            }
+           
             PlcWriteRequest writeRequest = builder.build();
 
             // Send the request to the PLC.
@@ -70,6 +80,16 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
                 final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
                 // TODO: Evaluate the response and create flow files for successful and unsuccessful updates
                 session.transfer(flowFile, REL_SUCCESS);
+
+                if (tags == null){
+                    getLogger().debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+                    getSchemaCache().addSchema(
+                        addressMap, 
+                        writeRequest.getTagNames(),
+                        writeRequest.getTags(),
+                        null
+                    );
+                }
             } catch (Exception e) {
                 flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
                 session.transfer(flowFile, REL_FAILURE);

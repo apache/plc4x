@@ -57,6 +57,7 @@ public class BACnetLogDataLogDataEntryBooleanValue extends BACnetLogDataLogDataE
   protected void serializeBACnetLogDataLogDataEntryChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogDataLogDataEntryBooleanValue");
 
@@ -75,6 +76,7 @@ public class BACnetLogDataLogDataEntryBooleanValue extends BACnetLogDataLogDataE
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogDataLogDataEntryBooleanValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (booleanValue)
     lengthInBits += booleanValue.getLengthInBits();
@@ -82,12 +84,13 @@ public class BACnetLogDataLogDataEntryBooleanValue extends BACnetLogDataLogDataE
     return lengthInBits;
   }
 
-  public static BACnetLogDataLogDataEntryBooleanValueBuilder staticParseBuilder(
+  public static BACnetLogDataLogDataEntryBuilder staticParseBACnetLogDataLogDataEntryBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogDataLogDataEntryBooleanValue");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagBoolean booleanValue =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetLogDataLogDataEntryBooleanValue extends BACnetLogDataLogDataE
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryBooleanValue");
     // Create the instance
-    return new BACnetLogDataLogDataEntryBooleanValueBuilder(booleanValue);
+    return new BACnetLogDataLogDataEntryBooleanValueBuilderImpl(booleanValue);
   }
 
-  public static class BACnetLogDataLogDataEntryBooleanValueBuilder
+  public static class BACnetLogDataLogDataEntryBooleanValueBuilderImpl
       implements BACnetLogDataLogDataEntry.BACnetLogDataLogDataEntryBuilder {
     private final BACnetContextTagBoolean booleanValue;
 
-    public BACnetLogDataLogDataEntryBooleanValueBuilder(BACnetContextTagBoolean booleanValue) {
-
+    public BACnetLogDataLogDataEntryBooleanValueBuilderImpl(BACnetContextTagBoolean booleanValue) {
       this.booleanValue = booleanValue;
     }
 

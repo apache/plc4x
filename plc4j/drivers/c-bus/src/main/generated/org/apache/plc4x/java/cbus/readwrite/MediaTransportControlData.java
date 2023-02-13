@@ -67,6 +67,7 @@ public abstract class MediaTransportControlData implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MediaTransportControlData");
 
@@ -102,6 +103,7 @@ public abstract class MediaTransportControlData implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     MediaTransportControlData _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (commandTypeContainer)
     lengthInBits += 8;
@@ -127,6 +129,7 @@ public abstract class MediaTransportControlData implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!(org.apache.plc4x.java.cbus.readwrite.utils.StaticHelper
         .knowsMediaTransportControlCommandTypeContainer(readBuffer))) {
@@ -151,70 +154,101 @@ public abstract class MediaTransportControlData implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     MediaTransportControlDataBuilder builder = null;
     if (EvaluationHelper.equals(commandType, MediaTransportControlCommandType.STOP)) {
-      builder = MediaTransportControlDataStop.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataStop.staticParseMediaTransportControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(commandType, MediaTransportControlCommandType.PLAY)) {
-      builder = MediaTransportControlDataPlay.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataPlay.staticParseMediaTransportControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.PAUSE_RESUME)) {
-      builder = MediaTransportControlDataPauseResume.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataPauseResume.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.SELECT_CATEGORY)) {
-      builder = MediaTransportControlDataSetCategory.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataSetCategory.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.SELECT_SELECTION)) {
-      builder = MediaTransportControlDataSetSelection.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataSetSelection.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.SELECT_TRACK)) {
-      builder = MediaTransportControlDataSetTrack.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataSetTrack.staticParseMediaTransportControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.SHUFFLE_ON_OFF)) {
-      builder = MediaTransportControlDataShuffleOnOff.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataShuffleOnOff.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.REPEAT_ON_OFF)) {
-      builder = MediaTransportControlDataRepeatOnOff.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataRepeatOnOff.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.NEXT_PREVIOUS_CATEGORY)) {
-      builder = MediaTransportControlDataNextPreviousCategory.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataNextPreviousCategory.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.NEXT_PREVIOUS_SELECTION)) {
-      builder = MediaTransportControlDataNextPreviousSelection.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataNextPreviousSelection
+              .staticParseMediaTransportControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.NEXT_PREVIOUS_TRACK)) {
-      builder = MediaTransportControlDataNextPreviousTrack.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataNextPreviousTrack.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.FAST_FORWARD)) {
-      builder = MediaTransportControlDataFastForward.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataFastForward.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(commandType, MediaTransportControlCommandType.REWIND)) {
-      builder = MediaTransportControlDataRewind.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataRewind.staticParseMediaTransportControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.SOURCE_POWER_CONTROL)) {
-      builder = MediaTransportControlDataSourcePowerControl.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataSourcePowerControl.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.TOTAL_TRACKS)) {
-      builder = MediaTransportControlDataTotalTracks.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataTotalTracks.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.STATUS_REQUEST)) {
-      builder = MediaTransportControlDataStatusRequest.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataStatusRequest.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.ENUMERATE_CATEGORIES_SELECTIONS_TRACKS)) {
       builder =
-          MediaTransportControlDataEnumerateCategoriesSelectionTracks.staticParseBuilder(
-              readBuffer);
+          MediaTransportControlDataEnumerateCategoriesSelectionTracks
+              .staticParseMediaTransportControlDataBuilder(readBuffer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.ENUMERATION_SIZE)) {
-      builder = MediaTransportControlDataEnumerationsSize.staticParseBuilder(readBuffer);
+      builder =
+          MediaTransportControlDataEnumerationsSize.staticParseMediaTransportControlDataBuilder(
+              readBuffer);
     } else if (EvaluationHelper.equals(commandType, MediaTransportControlCommandType.TRACK_NAME)) {
       builder =
-          MediaTransportControlDataTrackName.staticParseBuilder(readBuffer, commandTypeContainer);
+          MediaTransportControlDataTrackName.staticParseMediaTransportControlDataBuilder(
+              readBuffer, commandTypeContainer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.SELECTION_NAME)) {
       builder =
-          MediaTransportControlDataSelectionName.staticParseBuilder(
+          MediaTransportControlDataSelectionName.staticParseMediaTransportControlDataBuilder(
               readBuffer, commandTypeContainer);
     } else if (EvaluationHelper.equals(
         commandType, MediaTransportControlCommandType.CATEGORY_NAME)) {
       builder =
-          MediaTransportControlDataCategoryName.staticParseBuilder(
+          MediaTransportControlDataCategoryName.staticParseMediaTransportControlDataBuilder(
               readBuffer, commandTypeContainer);
     }
     if (builder == null) {
@@ -233,7 +267,7 @@ public abstract class MediaTransportControlData implements Message {
     return _mediaTransportControlData;
   }
 
-  public static interface MediaTransportControlDataBuilder {
+  public interface MediaTransportControlDataBuilder {
     MediaTransportControlData build(
         MediaTransportControlCommandTypeContainer commandTypeContainer, byte mediaLinkGroup);
   }

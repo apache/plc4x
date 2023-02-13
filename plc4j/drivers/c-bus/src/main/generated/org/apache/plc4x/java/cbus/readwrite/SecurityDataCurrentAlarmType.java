@@ -47,6 +47,7 @@ public class SecurityDataCurrentAlarmType extends SecurityData implements Messag
   @Override
   protected void serializeSecurityDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SecurityDataCurrentAlarmType");
 
@@ -62,26 +63,28 @@ public class SecurityDataCurrentAlarmType extends SecurityData implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SecurityDataCurrentAlarmType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SecurityDataCurrentAlarmTypeBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static SecurityDataBuilder staticParseSecurityDataBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SecurityDataCurrentAlarmType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SecurityDataCurrentAlarmType");
     // Create the instance
-    return new SecurityDataCurrentAlarmTypeBuilder();
+    return new SecurityDataCurrentAlarmTypeBuilderImpl();
   }
 
-  public static class SecurityDataCurrentAlarmTypeBuilder
+  public static class SecurityDataCurrentAlarmTypeBuilderImpl
       implements SecurityData.SecurityDataBuilder {
 
-    public SecurityDataCurrentAlarmTypeBuilder() {}
+    public SecurityDataCurrentAlarmTypeBuilderImpl() {}
 
     public SecurityDataCurrentAlarmType build(
         SecurityCommandTypeContainer commandTypeContainer, byte argument) {

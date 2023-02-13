@@ -87,6 +87,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReadRequest");
 
@@ -124,6 +125,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ReadRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -141,7 +143,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     if (nodesToRead != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : nodesToRead) {
-        boolean last = ++i >= nodesToRead.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= nodesToRead.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -149,12 +151,13 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static ReadRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ReadRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -184,11 +187,11 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("ReadRequest");
     // Create the instance
-    return new ReadRequestBuilder(
+    return new ReadRequestBuilderImpl(
         requestHeader, maxAge, timestampsToReturn, noOfNodesToRead, nodesToRead);
   }
 
-  public static class ReadRequestBuilder
+  public static class ReadRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final double maxAge;
@@ -196,13 +199,12 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     private final int noOfNodesToRead;
     private final List<ExtensionObjectDefinition> nodesToRead;
 
-    public ReadRequestBuilder(
+    public ReadRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         double maxAge,
         TimestampsToReturn timestampsToReturn,
         int noOfNodesToRead,
         List<ExtensionObjectDefinition> nodesToRead) {
-
       this.requestHeader = requestHeader;
       this.maxAge = maxAge;
       this.timestampsToReturn = timestampsToReturn;

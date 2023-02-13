@@ -73,6 +73,7 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CallRequest");
 
@@ -97,6 +98,7 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CallRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestHeader)
     lengthInBits += requestHeader.getLengthInBits();
@@ -108,7 +110,7 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
     if (methodsToCall != null) {
       int i = 0;
       for (ExtensionObjectDefinition element : methodsToCall) {
-        boolean last = ++i >= methodsToCall.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= methodsToCall.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -116,12 +118,13 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
     return lengthInBits;
   }
 
-  public static CallRequestBuilder staticParseBuilder(ReadBuffer readBuffer, String identifier)
-      throws ParseException {
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
+      ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("CallRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
@@ -142,20 +145,19 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
 
     readBuffer.closeContext("CallRequest");
     // Create the instance
-    return new CallRequestBuilder(requestHeader, noOfMethodsToCall, methodsToCall);
+    return new CallRequestBuilderImpl(requestHeader, noOfMethodsToCall, methodsToCall);
   }
 
-  public static class CallRequestBuilder
+  public static class CallRequestBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition requestHeader;
     private final int noOfMethodsToCall;
     private final List<ExtensionObjectDefinition> methodsToCall;
 
-    public CallRequestBuilder(
+    public CallRequestBuilderImpl(
         ExtensionObjectDefinition requestHeader,
         int noOfMethodsToCall,
         List<ExtensionObjectDefinition> methodsToCall) {
-
       this.requestHeader = requestHeader;
       this.noOfMethodsToCall = noOfMethodsToCall;
       this.methodsToCall = methodsToCall;

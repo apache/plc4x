@@ -108,6 +108,7 @@ public abstract class LevelInformation implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LevelInformation");
 
@@ -158,6 +159,7 @@ public abstract class LevelInformation implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     LevelInformation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -191,6 +193,7 @@ public abstract class LevelInformation implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int raw = readPeekField("raw", readUnsignedInt(readBuffer, 16));
     byte nibble1 = readVirtualField("nibble1", byte.class, (((raw) & (0xF000))) >> (12));
@@ -238,11 +241,11 @@ public abstract class LevelInformation implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     LevelInformationBuilder builder = null;
     if (EvaluationHelper.equals(isAbsent, (boolean) true)) {
-      builder = LevelInformationAbsent.staticParseBuilder(readBuffer);
+      builder = LevelInformationAbsent.staticParseLevelInformationBuilder(readBuffer);
     } else if (true && EvaluationHelper.equals(isCorrupted, (boolean) true)) {
-      builder = LevelInformationCorrupted.staticParseBuilder(readBuffer);
+      builder = LevelInformationCorrupted.staticParseLevelInformationBuilder(readBuffer);
     } else if (true) {
-      builder = LevelInformationNormal.staticParseBuilder(readBuffer);
+      builder = LevelInformationNormal.staticParseLevelInformationBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -262,7 +265,7 @@ public abstract class LevelInformation implements Message {
     return _levelInformation;
   }
 
-  public static interface LevelInformationBuilder {
+  public interface LevelInformationBuilder {
     LevelInformation build(int raw);
   }
 

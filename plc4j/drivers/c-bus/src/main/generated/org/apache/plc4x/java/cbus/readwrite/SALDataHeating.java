@@ -57,6 +57,7 @@ public class SALDataHeating extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataHeating");
 
@@ -75,6 +76,7 @@ public class SALDataHeating extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataHeating _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (heatingData)
     lengthInBits += heatingData.getLengthInBits();
@@ -82,12 +84,13 @@ public class SALDataHeating extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataHeatingBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataHeating");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     LightingData heatingData =
         readSimpleField(
@@ -96,14 +99,13 @@ public class SALDataHeating extends SALData implements Message {
 
     readBuffer.closeContext("SALDataHeating");
     // Create the instance
-    return new SALDataHeatingBuilder(heatingData);
+    return new SALDataHeatingBuilderImpl(heatingData);
   }
 
-  public static class SALDataHeatingBuilder implements SALData.SALDataBuilder {
+  public static class SALDataHeatingBuilderImpl implements SALData.SALDataBuilder {
     private final LightingData heatingData;
 
-    public SALDataHeatingBuilder(LightingData heatingData) {
-
+    public SALDataHeatingBuilderImpl(LightingData heatingData) {
       this.heatingData = heatingData;
     }
 

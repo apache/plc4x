@@ -78,6 +78,7 @@ public class BACnetConstructedDataLocation extends BACnetConstructedData impleme
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLocation");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLocation extends BACnetConstructedData impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLocation _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (location)
     lengthInBits += location.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLocation extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLocationBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLocation extends BACnetConstructedData impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString location =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataLocation extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataLocation");
     // Create the instance
-    return new BACnetConstructedDataLocationBuilder(location, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLocationBuilderImpl(location, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLocationBuilder
+  public static class BACnetConstructedDataLocationBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString location;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLocationBuilder(
+    public BACnetConstructedDataLocationBuilderImpl(
         BACnetApplicationTagCharacterString location,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.location = location;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

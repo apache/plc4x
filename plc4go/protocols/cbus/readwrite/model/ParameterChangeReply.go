@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_ParameterChangeReply) GetTypeName() string {
 	return "ParameterChangeReply"
 }
 
-func (m *_ParameterChangeReply) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_ParameterChangeReply) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_ParameterChangeReply) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (parameterChange)
-	lengthInBits += m.ParameterChange.GetLengthInBits()
+	lengthInBits += m.ParameterChange.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_ParameterChangeReply) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_ParameterChangeReply) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func ParameterChangeReplyParse(theBytes []byte, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {
-	return ParameterChangeReplyParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
+	return ParameterChangeReplyParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
-func ParameterChangeReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {
+func ParameterChangeReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ParameterChangeReply"); pullErr != nil {
@@ -139,7 +136,7 @@ func ParameterChangeReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOption
 	if pullErr := readBuffer.PullContext("parameterChange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for parameterChange")
 	}
-	_parameterChange, _parameterChangeErr := ParameterChangeParseWithBuffer(readBuffer)
+	_parameterChange, _parameterChangeErr := ParameterChangeParseWithBuffer(ctx, readBuffer)
 	if _parameterChangeErr != nil {
 		return nil, errors.Wrap(_parameterChangeErr, "Error parsing 'parameterChange' field of ParameterChangeReply")
 	}
@@ -165,14 +162,14 @@ func ParameterChangeReplyParseWithBuffer(readBuffer utils.ReadBuffer, cBusOption
 }
 
 func (m *_ParameterChangeReply) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_ParameterChangeReply) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_ParameterChangeReply) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -184,7 +181,7 @@ func (m *_ParameterChangeReply) SerializeWithWriteBuffer(writeBuffer utils.Write
 		if pushErr := writeBuffer.PushContext("parameterChange"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for parameterChange")
 		}
-		_parameterChangeErr := writeBuffer.WriteSerializable(m.GetParameterChange())
+		_parameterChangeErr := writeBuffer.WriteSerializable(ctx, m.GetParameterChange())
 		if popErr := writeBuffer.PopContext("parameterChange"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for parameterChange")
 		}
@@ -197,7 +194,7 @@ func (m *_ParameterChangeReply) SerializeWithWriteBuffer(writeBuffer utils.Write
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_ParameterChangeReply) isParameterChangeReply() bool {
@@ -209,7 +206,7 @@ func (m *_ParameterChangeReply) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

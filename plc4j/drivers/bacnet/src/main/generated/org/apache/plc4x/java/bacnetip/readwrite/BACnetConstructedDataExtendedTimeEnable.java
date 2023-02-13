@@ -79,6 +79,7 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataExtendedTimeEnable");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataExtendedTimeEnable _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (extendedTimeEnable)
     lengthInBits += extendedTimeEnable.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataExtendedTimeEnableBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean extendedTimeEnable =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
 
     readBuffer.closeContext("BACnetConstructedDataExtendedTimeEnable");
     // Create the instance
-    return new BACnetConstructedDataExtendedTimeEnableBuilder(
+    return new BACnetConstructedDataExtendedTimeEnableBuilderImpl(
         extendedTimeEnable, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataExtendedTimeEnableBuilder
+  public static class BACnetConstructedDataExtendedTimeEnableBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean extendedTimeEnable;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataExtendedTimeEnableBuilder(
+    public BACnetConstructedDataExtendedTimeEnableBuilderImpl(
         BACnetApplicationTagBoolean extendedTimeEnable,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.extendedTimeEnable = extendedTimeEnable;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -82,13 +82,6 @@
               <outputDir>${project.basedir}/plc4py/protocols</outputDir>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.plc4x.plugins</groupId>
-        <artifactId>plc4x-maven-plugin</artifactId>
-        <executions>
           <execution>
             <id>generate-simulated-driver</id>
             <phase>generate-sources</phase>
@@ -124,11 +117,29 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>python3</executable>
+              <executable>${python.exe.bin}</executable>
               <arguments>
                 <argument>-m</argument>
                 <argument>venv</argument>
                 <argument>./venv</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>python-upgrade-pip</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${python.venv.bin}${python.exe.bin}</executable>
+              <arguments>
+                <argument>-m</argument>
+                <argument>pip</argument>
+                <argument>install</argument>
+                <argument>--upgrade</argument>
+                <argument>pip</argument>
               </arguments>
             </configuration>
           </execution>
@@ -155,7 +166,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}python3</executable>
+              <executable>${python.venv.bin}${python.exe.bin}</executable>
               <arguments>
                 <argument>-m</argument>
                 <argument>black</argument>
@@ -186,7 +197,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${python.venv.bin}python3</executable>
+              <executable>${python.venv.bin}${python.exe.bin}</executable>
               <arguments>
                 <argument>-m</argument>
                 <argument>pytest</argument>

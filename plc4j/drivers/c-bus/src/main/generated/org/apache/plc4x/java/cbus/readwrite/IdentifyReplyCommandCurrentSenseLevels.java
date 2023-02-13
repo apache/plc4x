@@ -63,6 +63,7 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
   protected void serializeIdentifyReplyCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("IdentifyReplyCommandCurrentSenseLevels");
 
@@ -81,6 +82,7 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     IdentifyReplyCommandCurrentSenseLevels _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (currentSenseLevels != null) {
@@ -90,29 +92,29 @@ public class IdentifyReplyCommandCurrentSenseLevels extends IdentifyReplyCommand
     return lengthInBits;
   }
 
-  public static IdentifyReplyCommandCurrentSenseLevelsBuilder staticParseBuilder(
+  public static IdentifyReplyCommandBuilder staticParseIdentifyReplyCommandBuilder(
       ReadBuffer readBuffer, Attribute attribute, Short numBytes) throws ParseException {
     readBuffer.pullContext("IdentifyReplyCommandCurrentSenseLevels");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte[] currentSenseLevels =
         readBuffer.readByteArray("currentSenseLevels", Math.toIntExact(numBytes));
 
     readBuffer.closeContext("IdentifyReplyCommandCurrentSenseLevels");
     // Create the instance
-    return new IdentifyReplyCommandCurrentSenseLevelsBuilder(currentSenseLevels, numBytes);
+    return new IdentifyReplyCommandCurrentSenseLevelsBuilderImpl(currentSenseLevels, numBytes);
   }
 
-  public static class IdentifyReplyCommandCurrentSenseLevelsBuilder
+  public static class IdentifyReplyCommandCurrentSenseLevelsBuilderImpl
       implements IdentifyReplyCommand.IdentifyReplyCommandBuilder {
     private final byte[] currentSenseLevels;
     private final Short numBytes;
 
-    public IdentifyReplyCommandCurrentSenseLevelsBuilder(
+    public IdentifyReplyCommandCurrentSenseLevelsBuilderImpl(
         byte[] currentSenseLevels, Short numBytes) {
-
       this.currentSenseLevels = currentSenseLevels;
       this.numBytes = numBytes;
     }

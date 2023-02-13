@@ -53,6 +53,7 @@ public class SysexCommandCapabilityResponse extends SysexCommand implements Mess
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandCapabilityResponse");
 
@@ -68,26 +69,28 @@ public class SysexCommandCapabilityResponse extends SysexCommand implements Mess
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandCapabilityResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static SysexCommandCapabilityResponseBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandCapabilityResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("SysexCommandCapabilityResponse");
     // Create the instance
-    return new SysexCommandCapabilityResponseBuilder();
+    return new SysexCommandCapabilityResponseBuilderImpl();
   }
 
-  public static class SysexCommandCapabilityResponseBuilder
+  public static class SysexCommandCapabilityResponseBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
 
-    public SysexCommandCapabilityResponseBuilder() {}
+    public SysexCommandCapabilityResponseBuilderImpl() {}
 
     public SysexCommandCapabilityResponse build() {
       SysexCommandCapabilityResponse sysexCommandCapabilityResponse =

@@ -78,6 +78,7 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAverageValue");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAverageValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (averageValue)
     lengthInBits += averageValue.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAverageValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal averageValue =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
 
     readBuffer.closeContext("BACnetConstructedDataAverageValue");
     // Create the instance
-    return new BACnetConstructedDataAverageValueBuilder(
+    return new BACnetConstructedDataAverageValueBuilderImpl(
         averageValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAverageValueBuilder
+  public static class BACnetConstructedDataAverageValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal averageValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAverageValueBuilder(
+    public BACnetConstructedDataAverageValueBuilderImpl(
         BACnetApplicationTagReal averageValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.averageValue = averageValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

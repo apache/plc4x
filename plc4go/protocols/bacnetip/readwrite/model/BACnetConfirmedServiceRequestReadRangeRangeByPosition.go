@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -115,31 +116,27 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetTypeName() s
 	return "BACnetConfirmedServiceRequestReadRangeRangeByPosition"
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (referenceIndex)
-	lengthInBits += m.ReferenceIndex.GetLengthInBits()
+	lengthInBits += m.ReferenceIndex.GetLengthInBits(ctx)
 
 	// Simple field (count)
-	lengthInBits += m.Count.GetLengthInBits()
+	lengthInBits += m.Count.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConfirmedServiceRequestReadRangeRangeByPositionParse(theBytes []byte) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
-	return BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
+func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition"); pullErr != nil {
@@ -152,7 +149,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(readBu
 	if pullErr := readBuffer.PullContext("referenceIndex"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for referenceIndex")
 	}
-	_referenceIndex, _referenceIndexErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_referenceIndex, _referenceIndexErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _referenceIndexErr != nil {
 		return nil, errors.Wrap(_referenceIndexErr, "Error parsing 'referenceIndex' field of BACnetConfirmedServiceRequestReadRangeRangeByPosition")
 	}
@@ -165,7 +162,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(readBu
 	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for count")
 	}
-	_count, _countErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_count, _countErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _countErr != nil {
 		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeByPosition")
 	}
@@ -189,14 +186,14 @@ func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(readBu
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -208,7 +205,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) SerializeWithWr
 		if pushErr := writeBuffer.PushContext("referenceIndex"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for referenceIndex")
 		}
-		_referenceIndexErr := writeBuffer.WriteSerializable(m.GetReferenceIndex())
+		_referenceIndexErr := writeBuffer.WriteSerializable(ctx, m.GetReferenceIndex())
 		if popErr := writeBuffer.PopContext("referenceIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for referenceIndex")
 		}
@@ -220,7 +217,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) SerializeWithWr
 		if pushErr := writeBuffer.PushContext("count"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for count")
 		}
-		_countErr := writeBuffer.WriteSerializable(m.GetCount())
+		_countErr := writeBuffer.WriteSerializable(ctx, m.GetCount())
 		if popErr := writeBuffer.PopContext("count"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for count")
 		}
@@ -233,7 +230,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) SerializeWithWr
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) isBACnetConfirmedServiceRequestReadRangeRangeByPosition() bool {
@@ -245,7 +242,7 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeByPosition) String() string
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -64,6 +64,7 @@ public class ParameterChangeReply extends Reply implements Message {
   @Override
   protected void serializeReplyChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterChangeReply");
 
@@ -83,6 +84,7 @@ public class ParameterChangeReply extends Reply implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterChangeReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (parameterChange)
     lengthInBits += parameterChange.getLengthInBits();
@@ -90,13 +92,14 @@ public class ParameterChangeReply extends Reply implements Message {
     return lengthInBits;
   }
 
-  public static ParameterChangeReplyBuilder staticParseBuilder(
+  public static ReplyBuilder staticParseReplyBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("ParameterChangeReply");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ParameterChange parameterChange =
         readSimpleField(
@@ -106,17 +109,16 @@ public class ParameterChangeReply extends Reply implements Message {
 
     readBuffer.closeContext("ParameterChangeReply");
     // Create the instance
-    return new ParameterChangeReplyBuilder(parameterChange, cBusOptions, requestContext);
+    return new ParameterChangeReplyBuilderImpl(parameterChange, cBusOptions, requestContext);
   }
 
-  public static class ParameterChangeReplyBuilder implements Reply.ReplyBuilder {
+  public static class ParameterChangeReplyBuilderImpl implements Reply.ReplyBuilder {
     private final ParameterChange parameterChange;
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public ParameterChangeReplyBuilder(
+    public ParameterChangeReplyBuilderImpl(
         ParameterChange parameterChange, CBusOptions cBusOptions, RequestContext requestContext) {
-
       this.parameterChange = parameterChange;
       this.cBusOptions = cBusOptions;
       this.requestContext = requestContext;

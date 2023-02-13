@@ -74,6 +74,7 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDateList");
 
@@ -92,6 +93,7 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDateList _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (dateList != null) {
@@ -103,7 +105,7 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDateListBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -114,6 +116,7 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetCalendarEntry> dateList =
         readTerminatedArrayField(
@@ -127,20 +130,19 @@ public class BACnetConstructedDataDateList extends BACnetConstructedData impleme
 
     readBuffer.closeContext("BACnetConstructedDataDateList");
     // Create the instance
-    return new BACnetConstructedDataDateListBuilder(dateList, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataDateListBuilderImpl(dateList, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDateListBuilder
+  public static class BACnetConstructedDataDateListBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetCalendarEntry> dateList;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDateListBuilder(
+    public BACnetConstructedDataDateListBuilderImpl(
         List<BACnetCalendarEntry> dateList,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.dateList = dateList;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

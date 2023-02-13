@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -113,19 +114,19 @@ func CastClockAndTimekeepingCommandType(structType interface{}) ClockAndTimekeep
 	return castFunc(structType)
 }
 
-func (m ClockAndTimekeepingCommandType) GetLengthInBits() uint16 {
+func (m ClockAndTimekeepingCommandType) GetLengthInBits(ctx context.Context) uint16 {
 	return 4
 }
 
-func (m ClockAndTimekeepingCommandType) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m ClockAndTimekeepingCommandType) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func ClockAndTimekeepingCommandTypeParse(theBytes []byte) (ClockAndTimekeepingCommandType, error) {
-	return ClockAndTimekeepingCommandTypeParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func ClockAndTimekeepingCommandTypeParse(ctx context.Context, theBytes []byte) (ClockAndTimekeepingCommandType, error) {
+	return ClockAndTimekeepingCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func ClockAndTimekeepingCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) (ClockAndTimekeepingCommandType, error) {
+func ClockAndTimekeepingCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingCommandType, error) {
 	val, err := readBuffer.ReadUint8("ClockAndTimekeepingCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading ClockAndTimekeepingCommandType")
@@ -140,13 +141,13 @@ func ClockAndTimekeepingCommandTypeParseWithBuffer(readBuffer utils.ReadBuffer) 
 
 func (e ClockAndTimekeepingCommandType) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e ClockAndTimekeepingCommandType) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e ClockAndTimekeepingCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("ClockAndTimekeepingCommandType", 4, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

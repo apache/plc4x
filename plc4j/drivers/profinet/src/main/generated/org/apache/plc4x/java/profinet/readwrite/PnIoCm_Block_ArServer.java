@@ -42,15 +42,75 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
     return PnIoCm_BlockType.AR_SERVER_BLOCK;
   }
 
-  public PnIoCm_Block_ArServer(short blockVersionHigh, short blockVersionLow) {
-    super(blockVersionHigh, blockVersionLow);
+  // Properties.
+  protected final short blockVersionHigh;
+  protected final short blockVersionLow;
+  protected final PascalString stationName;
+
+  public PnIoCm_Block_ArServer(
+      short blockVersionHigh, short blockVersionLow, PascalString stationName) {
+    super();
+    this.blockVersionHigh = blockVersionHigh;
+    this.blockVersionLow = blockVersionLow;
+    this.stationName = stationName;
+  }
+
+  public short getBlockVersionHigh() {
+    return blockVersionHigh;
+  }
+
+  public short getBlockVersionLow() {
+    return blockVersionLow;
+  }
+
+  public PascalString getStationName() {
+    return stationName;
   }
 
   @Override
   protected void serializePnIoCm_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block_ArServer");
+
+    // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int blockLength = (int) ((getLengthInBytes()) - (4));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionHigh)
+    writeSimpleField(
+        "blockVersionHigh",
+        blockVersionHigh,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (blockVersionLow)
+    writeSimpleField(
+        "blockVersionLow",
+        blockVersionLow,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Simple Field (stationName)
+    writeSimpleField(
+        "stationName",
+        stationName,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    // Padding Field (padding)
+    writePaddingField(
+        "padding",
+        (int) (((20) - (6)) - ((stationName.getStringLength()))),
+        (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_Block_ArServer");
   }
@@ -64,29 +124,86 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnIoCm_Block_ArServer _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    // Implicit Field (blockLength)
+    lengthInBits += 16;
+
+    // Simple field (blockVersionHigh)
+    lengthInBits += 8;
+
+    // Simple field (blockVersionLow)
+    lengthInBits += 8;
+
+    // Simple field (stationName)
+    lengthInBits += stationName.getLengthInBits();
+
+    // Padding Field (padding)
+    int _timesPadding = (int) (((20) - (6)) - ((stationName.getStringLength())));
+    while (_timesPadding-- > 0) {
+      lengthInBits += 8;
+    }
 
     return lengthInBits;
   }
 
-  public static PnIoCm_Block_ArServerBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnIoCm_BlockBuilder staticParsePnIoCm_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_Block_ArServer");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
+
+    int blockLength =
+        readImplicitField(
+            "blockLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionHigh =
+        readSimpleField(
+            "blockVersionHigh",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    short blockVersionLow =
+        readSimpleField(
+            "blockVersionLow",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    PascalString stationName =
+        readSimpleField(
+            "stationName",
+            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+
+    readPaddingField(
+        readUnsignedShort(readBuffer, 8),
+        (int) (((20) - (6)) - ((stationName.getStringLength()))),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_Block_ArServer");
     // Create the instance
-    return new PnIoCm_Block_ArServerBuilder();
+    return new PnIoCm_Block_ArServerBuilderImpl(blockVersionHigh, blockVersionLow, stationName);
   }
 
-  public static class PnIoCm_Block_ArServerBuilder implements PnIoCm_Block.PnIoCm_BlockBuilder {
+  public static class PnIoCm_Block_ArServerBuilderImpl implements PnIoCm_Block.PnIoCm_BlockBuilder {
+    private final short blockVersionHigh;
+    private final short blockVersionLow;
+    private final PascalString stationName;
 
-    public PnIoCm_Block_ArServerBuilder() {}
+    public PnIoCm_Block_ArServerBuilderImpl(
+        short blockVersionHigh, short blockVersionLow, PascalString stationName) {
+      this.blockVersionHigh = blockVersionHigh;
+      this.blockVersionLow = blockVersionLow;
+      this.stationName = stationName;
+    }
 
-    public PnIoCm_Block_ArServer build(short blockVersionHigh, short blockVersionLow) {
+    public PnIoCm_Block_ArServer build() {
       PnIoCm_Block_ArServer pnIoCm_Block_ArServer =
-          new PnIoCm_Block_ArServer(blockVersionHigh, blockVersionLow);
+          new PnIoCm_Block_ArServer(blockVersionHigh, blockVersionLow, stationName);
       return pnIoCm_Block_ArServer;
     }
   }
@@ -100,12 +217,17 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
       return false;
     }
     PnIoCm_Block_ArServer that = (PnIoCm_Block_ArServer) o;
-    return super.equals(that) && true;
+    return (getBlockVersionHigh() == that.getBlockVersionHigh())
+        && (getBlockVersionLow() == that.getBlockVersionLow())
+        && (getStationName() == that.getStationName())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(
+        super.hashCode(), getBlockVersionHigh(), getBlockVersionLow(), getStationName());
   }
 
   @Override

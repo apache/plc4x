@@ -78,6 +78,7 @@ public class BACnetConstructedDataExpirationTime extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataExpirationTime");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataExpirationTime extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataExpirationTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (expirationTime)
     lengthInBits += expirationTime.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataExpirationTime extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataExpirationTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataExpirationTime extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDateTime expirationTime =
         readSimpleField(
@@ -131,21 +134,20 @@ public class BACnetConstructedDataExpirationTime extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataExpirationTime");
     // Create the instance
-    return new BACnetConstructedDataExpirationTimeBuilder(
+    return new BACnetConstructedDataExpirationTimeBuilderImpl(
         expirationTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataExpirationTimeBuilder
+  public static class BACnetConstructedDataExpirationTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDateTime expirationTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataExpirationTimeBuilder(
+    public BACnetConstructedDataExpirationTimeBuilderImpl(
         BACnetDateTime expirationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.expirationTime = expirationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

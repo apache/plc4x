@@ -45,13 +45,9 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
   // Properties.
   protected final short crc;
 
-  // Arguments.
-  protected final Short rest;
-
-  public COTPParameterChecksum(short crc, Short rest) {
-    super(rest);
+  public COTPParameterChecksum(short crc) {
+    super();
     this.crc = crc;
-    this.rest = rest;
   }
 
   public short getCrc() {
@@ -62,6 +58,7 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
   protected void serializeCOTPParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("COTPParameterChecksum");
 
@@ -80,6 +77,7 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     COTPParameterChecksum _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (crc)
     lengthInBits += 8;
@@ -87,33 +85,31 @@ public class COTPParameterChecksum extends COTPParameter implements Message {
     return lengthInBits;
   }
 
-  public static COTPParameterChecksumBuilder staticParseBuilder(ReadBuffer readBuffer, Short rest)
-      throws ParseException {
+  public static COTPParameterBuilder staticParseCOTPParameterBuilder(
+      ReadBuffer readBuffer, Short rest) throws ParseException {
     readBuffer.pullContext("COTPParameterChecksum");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short crc = readSimpleField("crc", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("COTPParameterChecksum");
     // Create the instance
-    return new COTPParameterChecksumBuilder(crc, rest);
+    return new COTPParameterChecksumBuilderImpl(crc);
   }
 
-  public static class COTPParameterChecksumBuilder implements COTPParameter.COTPParameterBuilder {
+  public static class COTPParameterChecksumBuilderImpl
+      implements COTPParameter.COTPParameterBuilder {
     private final short crc;
-    private final Short rest;
 
-    public COTPParameterChecksumBuilder(short crc, Short rest) {
-
+    public COTPParameterChecksumBuilderImpl(short crc) {
       this.crc = crc;
-      this.rest = rest;
     }
 
-    public COTPParameterChecksum build(Short rest) {
-
-      COTPParameterChecksum cOTPParameterChecksum = new COTPParameterChecksum(crc, rest);
+    public COTPParameterChecksum build() {
+      COTPParameterChecksum cOTPParameterChecksum = new COTPParameterChecksum(crc);
       return cOTPParameterChecksum;
     }
   }

@@ -86,6 +86,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
   protected void serializeBACnetUnconfirmedServiceRequestChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestIAm");
 
@@ -120,6 +121,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetUnconfirmedServiceRequestIAm _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (deviceIdentifier)
     lengthInBits += deviceIdentifier.getLengthInBits();
@@ -136,12 +138,14 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     return lengthInBits;
   }
 
-  public static BACnetUnconfirmedServiceRequestIAmBuilder staticParseBuilder(
-      ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
+  public static BACnetUnconfirmedServiceRequestBuilder
+      staticParseBACnetUnconfirmedServiceRequestBuilder(
+          ReadBuffer readBuffer, Integer serviceRequestLength) throws ParseException {
     readBuffer.pullContext("BACnetUnconfirmedServiceRequestIAm");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier deviceIdentifier =
         readSimpleField(
@@ -181,7 +185,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
 
     readBuffer.closeContext("BACnetUnconfirmedServiceRequestIAm");
     // Create the instance
-    return new BACnetUnconfirmedServiceRequestIAmBuilder(
+    return new BACnetUnconfirmedServiceRequestIAmBuilderImpl(
         deviceIdentifier,
         maximumApduLengthAcceptedLength,
         segmentationSupported,
@@ -189,7 +193,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
         serviceRequestLength);
   }
 
-  public static class BACnetUnconfirmedServiceRequestIAmBuilder
+  public static class BACnetUnconfirmedServiceRequestIAmBuilderImpl
       implements BACnetUnconfirmedServiceRequest.BACnetUnconfirmedServiceRequestBuilder {
     private final BACnetApplicationTagObjectIdentifier deviceIdentifier;
     private final BACnetApplicationTagUnsignedInteger maximumApduLengthAcceptedLength;
@@ -197,13 +201,12 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     private final BACnetVendorIdTagged vendorId;
     private final Integer serviceRequestLength;
 
-    public BACnetUnconfirmedServiceRequestIAmBuilder(
+    public BACnetUnconfirmedServiceRequestIAmBuilderImpl(
         BACnetApplicationTagObjectIdentifier deviceIdentifier,
         BACnetApplicationTagUnsignedInteger maximumApduLengthAcceptedLength,
         BACnetSegmentationTagged segmentationSupported,
         BACnetVendorIdTagged vendorId,
         Integer serviceRequestLength) {
-
       this.deviceIdentifier = deviceIdentifier;
       this.maximumApduLengthAcceptedLength = maximumApduLengthAcceptedLength;
       this.segmentationSupported = segmentationSupported;

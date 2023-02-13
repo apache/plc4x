@@ -64,6 +64,7 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
   protected void serializeBACnetLogRecordLogDatumChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetLogRecordLogDatumFailure");
 
@@ -82,6 +83,7 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetLogRecordLogDatumFailure _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (failure)
     lengthInBits += failure.getLengthInBits();
@@ -89,12 +91,13 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
     return lengthInBits;
   }
 
-  public static BACnetLogRecordLogDatumFailureBuilder staticParseBuilder(
+  public static BACnetLogRecordLogDatumBuilder staticParseBACnetLogRecordLogDatumBuilder(
       ReadBuffer readBuffer, Short tagNumber) throws ParseException {
     readBuffer.pullContext("BACnetLogRecordLogDatumFailure");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ErrorEnclosed failure =
         readSimpleField(
@@ -104,16 +107,15 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
 
     readBuffer.closeContext("BACnetLogRecordLogDatumFailure");
     // Create the instance
-    return new BACnetLogRecordLogDatumFailureBuilder(failure, tagNumber);
+    return new BACnetLogRecordLogDatumFailureBuilderImpl(failure, tagNumber);
   }
 
-  public static class BACnetLogRecordLogDatumFailureBuilder
+  public static class BACnetLogRecordLogDatumFailureBuilderImpl
       implements BACnetLogRecordLogDatum.BACnetLogRecordLogDatumBuilder {
     private final ErrorEnclosed failure;
     private final Short tagNumber;
 
-    public BACnetLogRecordLogDatumFailureBuilder(ErrorEnclosed failure, Short tagNumber) {
-
+    public BACnetLogRecordLogDatumFailureBuilderImpl(ErrorEnclosed failure, Short tagNumber) {
       this.failure = failure;
       this.tagNumber = tagNumber;
     }

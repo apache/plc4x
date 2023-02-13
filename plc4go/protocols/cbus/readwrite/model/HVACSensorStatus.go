@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -99,19 +100,19 @@ func CastHVACSensorStatus(structType interface{}) HVACSensorStatus {
 	return castFunc(structType)
 }
 
-func (m HVACSensorStatus) GetLengthInBits() uint16 {
+func (m HVACSensorStatus) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m HVACSensorStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m HVACSensorStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func HVACSensorStatusParse(theBytes []byte) (HVACSensorStatus, error) {
-	return HVACSensorStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func HVACSensorStatusParse(ctx context.Context, theBytes []byte) (HVACSensorStatus, error) {
+	return HVACSensorStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func HVACSensorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (HVACSensorStatus, error) {
+func HVACSensorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACSensorStatus, error) {
 	val, err := readBuffer.ReadUint8("HVACSensorStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HVACSensorStatus")
@@ -126,13 +127,13 @@ func HVACSensorStatusParseWithBuffer(readBuffer utils.ReadBuffer) (HVACSensorSta
 
 func (e HVACSensorStatus) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e HVACSensorStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e HVACSensorStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("HVACSensorStatus", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

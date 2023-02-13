@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,28 +110,24 @@ func (m *_SALDataIrrigationControl) GetTypeName() string {
 	return "SALDataIrrigationControl"
 }
 
-func (m *_SALDataIrrigationControl) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_SALDataIrrigationControl) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_SALDataIrrigationControl) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (irrigationControlData)
-	lengthInBits += m.IrrigationControlData.GetLengthInBits()
+	lengthInBits += m.IrrigationControlData.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_SALDataIrrigationControl) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_SALDataIrrigationControl) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func SALDataIrrigationControlParse(theBytes []byte, applicationId ApplicationId) (SALDataIrrigationControl, error) {
-	return SALDataIrrigationControlParseWithBuffer(utils.NewReadBufferByteBased(theBytes), applicationId)
+	return SALDataIrrigationControlParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
-func SALDataIrrigationControlParseWithBuffer(readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataIrrigationControl, error) {
+func SALDataIrrigationControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataIrrigationControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SALDataIrrigationControl"); pullErr != nil {
@@ -143,7 +140,7 @@ func SALDataIrrigationControlParseWithBuffer(readBuffer utils.ReadBuffer, applic
 	if pullErr := readBuffer.PullContext("irrigationControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for irrigationControlData")
 	}
-	_irrigationControlData, _irrigationControlDataErr := LightingDataParseWithBuffer(readBuffer)
+	_irrigationControlData, _irrigationControlDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
 	if _irrigationControlDataErr != nil {
 		return nil, errors.Wrap(_irrigationControlDataErr, "Error parsing 'irrigationControlData' field of SALDataIrrigationControl")
 	}
@@ -166,14 +163,14 @@ func SALDataIrrigationControlParseWithBuffer(readBuffer utils.ReadBuffer, applic
 }
 
 func (m *_SALDataIrrigationControl) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_SALDataIrrigationControl) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_SALDataIrrigationControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -185,7 +182,7 @@ func (m *_SALDataIrrigationControl) SerializeWithWriteBuffer(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("irrigationControlData"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for irrigationControlData")
 		}
-		_irrigationControlDataErr := writeBuffer.WriteSerializable(m.GetIrrigationControlData())
+		_irrigationControlDataErr := writeBuffer.WriteSerializable(ctx, m.GetIrrigationControlData())
 		if popErr := writeBuffer.PopContext("irrigationControlData"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for irrigationControlData")
 		}
@@ -198,7 +195,7 @@ func (m *_SALDataIrrigationControl) SerializeWithWriteBuffer(writeBuffer utils.W
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_SALDataIrrigationControl) isSALDataIrrigationControl() bool {
@@ -210,7 +207,7 @@ func (m *_SALDataIrrigationControl) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

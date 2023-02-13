@@ -71,6 +71,7 @@ public abstract class CBusPointToPointCommand implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CBusPointToPointCommand");
 
@@ -96,6 +97,7 @@ public abstract class CBusPointToPointCommand implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     CBusPointToPointCommand _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -131,6 +133,7 @@ public abstract class CBusPointToPointCommand implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int bridgeAddressCountPeek =
         readPeekField("bridgeAddressCountPeek", readUnsignedInt(readBuffer, 16));
@@ -141,9 +144,13 @@ public abstract class CBusPointToPointCommand implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     CBusPointToPointCommandBuilder builder = null;
     if (EvaluationHelper.equals(isDirect, (boolean) true)) {
-      builder = CBusPointToPointCommandDirect.staticParseBuilder(readBuffer, cBusOptions);
+      builder =
+          CBusPointToPointCommandDirect.staticParseCBusPointToPointCommandBuilder(
+              readBuffer, cBusOptions);
     } else if (EvaluationHelper.equals(isDirect, (boolean) false)) {
-      builder = CBusPointToPointCommandIndirect.staticParseBuilder(readBuffer, cBusOptions);
+      builder =
+          CBusPointToPointCommandIndirect.staticParseCBusPointToPointCommandBuilder(
+              readBuffer, cBusOptions);
     }
     if (builder == null) {
       throw new ParseException(
@@ -167,7 +174,7 @@ public abstract class CBusPointToPointCommand implements Message {
     return _cBusPointToPointCommand;
   }
 
-  public static interface CBusPointToPointCommandBuilder {
+  public interface CBusPointToPointCommandBuilder {
     CBusPointToPointCommand build(
         int bridgeAddressCountPeek, CALData calData, CBusOptions cBusOptions);
   }

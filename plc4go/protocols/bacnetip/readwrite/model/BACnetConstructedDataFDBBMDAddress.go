@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataFDBBMDAddress) GetFDBBMDAddress() BACnetHostNPort
 ///////////////////////
 
 func (m *_BACnetConstructedDataFDBBMDAddress) GetActualValue() BACnetHostNPort {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetHostNPort(m.GetFDBBMDAddress())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataFDBBMDAddress) GetTypeName() string {
 	return "BACnetConstructedDataFDBBMDAddress"
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (fDBBMDAddress)
-	lengthInBits += m.FDBBMDAddress.GetLengthInBits()
+	lengthInBits += m.FDBBMDAddress.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataFDBBMDAddress) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataFDBBMDAddressParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDBBMDAddress, error) {
-	return BACnetConstructedDataFDBBMDAddressParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataFDBBMDAddressParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataFDBBMDAddressParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDBBMDAddress, error) {
+func BACnetConstructedDataFDBBMDAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDBBMDAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFDBBMDAddress"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataFDBBMDAddressParseWithBuffer(readBuffer utils.ReadBuff
 	if pullErr := readBuffer.PullContext("fDBBMDAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for fDBBMDAddress")
 	}
-	_fDBBMDAddress, _fDBBMDAddressErr := BACnetHostNPortParseWithBuffer(readBuffer)
+	_fDBBMDAddress, _fDBBMDAddressErr := BACnetHostNPortParseWithBuffer(ctx, readBuffer)
 	if _fDBBMDAddressErr != nil {
 		return nil, errors.Wrap(_fDBBMDAddressErr, "Error parsing 'fDBBMDAddress' field of BACnetConstructedDataFDBBMDAddress")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataFDBBMDAddressParseWithBuffer(readBuffer utils.ReadBuff
 }
 
 func (m *_BACnetConstructedDataFDBBMDAddress) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataFDBBMDAddress) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataFDBBMDAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataFDBBMDAddress) SerializeWithWriteBuffer(writeBuff
 		if pushErr := writeBuffer.PushContext("fDBBMDAddress"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for fDBBMDAddress")
 		}
-		_fDBBMDAddressErr := writeBuffer.WriteSerializable(m.GetFDBBMDAddress())
+		_fDBBMDAddressErr := writeBuffer.WriteSerializable(ctx, m.GetFDBBMDAddress())
 		if popErr := writeBuffer.PopContext("fDBBMDAddress"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for fDBBMDAddress")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataFDBBMDAddress) SerializeWithWriteBuffer(writeBuff
 			return errors.Wrap(_fDBBMDAddressErr, "Error serializing 'fDBBMDAddress' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataFDBBMDAddress) SerializeWithWriteBuffer(writeBuff
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataFDBBMDAddress) isBACnetConstructedDataFDBBMDAddress() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataFDBBMDAddress) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

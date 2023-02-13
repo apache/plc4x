@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetChannelValueLightingCommand) GetTypeName() string {
 	return "BACnetChannelValueLightingCommand"
 }
 
-func (m *_BACnetChannelValueLightingCommand) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetChannelValueLightingCommand) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetChannelValueLightingCommand) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (ligthingCommandValue)
-	lengthInBits += m.LigthingCommandValue.GetLengthInBits()
+	lengthInBits += m.LigthingCommandValue.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetChannelValueLightingCommand) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetChannelValueLightingCommand) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetChannelValueLightingCommandParse(theBytes []byte) (BACnetChannelValueLightingCommand, error) {
-	return BACnetChannelValueLightingCommandParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetChannelValueLightingCommandParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetChannelValueLightingCommandParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetChannelValueLightingCommand, error) {
+func BACnetChannelValueLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetChannelValueLightingCommand"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetChannelValueLightingCommandParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("ligthingCommandValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ligthingCommandValue")
 	}
-	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParseWithBuffer(readBuffer, uint8(uint8(0)))
+	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
 	if _ligthingCommandValueErr != nil {
 		return nil, errors.Wrap(_ligthingCommandValueErr, "Error parsing 'ligthingCommandValue' field of BACnetChannelValueLightingCommand")
 	}
@@ -162,14 +159,14 @@ func BACnetChannelValueLightingCommandParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetChannelValueLightingCommand) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetChannelValueLightingCommand) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetChannelValueLightingCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetChannelValueLightingCommand) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("ligthingCommandValue"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for ligthingCommandValue")
 		}
-		_ligthingCommandValueErr := writeBuffer.WriteSerializable(m.GetLigthingCommandValue())
+		_ligthingCommandValueErr := writeBuffer.WriteSerializable(ctx, m.GetLigthingCommandValue())
 		if popErr := writeBuffer.PopContext("ligthingCommandValue"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for ligthingCommandValue")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetChannelValueLightingCommand) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetChannelValueLightingCommand) isBACnetChannelValueLightingCommand() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetChannelValueLightingCommand) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

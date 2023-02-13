@@ -68,6 +68,7 @@ public class NodeIdGuid extends NodeIdTypeDefinition implements Message {
   protected void serializeNodeIdTypeDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NodeIdGuid");
 
@@ -93,6 +94,7 @@ public class NodeIdGuid extends NodeIdTypeDefinition implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NodeIdGuid _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (namespaceIndex)
     lengthInBits += 16;
@@ -107,11 +109,13 @@ public class NodeIdGuid extends NodeIdTypeDefinition implements Message {
     return lengthInBits;
   }
 
-  public static NodeIdGuidBuilder staticParseBuilder(ReadBuffer readBuffer) throws ParseException {
+  public static NodeIdTypeDefinitionBuilder staticParseNodeIdTypeDefinitionBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NodeIdGuid");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int namespaceIndex = readSimpleField("namespaceIndex", readUnsignedInt(readBuffer, 16));
 
@@ -120,16 +124,15 @@ public class NodeIdGuid extends NodeIdTypeDefinition implements Message {
 
     readBuffer.closeContext("NodeIdGuid");
     // Create the instance
-    return new NodeIdGuidBuilder(namespaceIndex, id);
+    return new NodeIdGuidBuilderImpl(namespaceIndex, id);
   }
 
-  public static class NodeIdGuidBuilder
+  public static class NodeIdGuidBuilderImpl
       implements NodeIdTypeDefinition.NodeIdTypeDefinitionBuilder {
     private final int namespaceIndex;
     private final byte[] id;
 
-    public NodeIdGuidBuilder(int namespaceIndex, byte[] id) {
-
+    public NodeIdGuidBuilderImpl(int namespaceIndex, byte[] id) {
       this.namespaceIndex = namespaceIndex;
       this.id = id;
     }

@@ -47,6 +47,7 @@ public abstract class PnIoCm_Submodule implements Message {
   protected final boolean reduceOutputModuleDataLength;
   protected final boolean reduceInputModuleDataLength;
   protected final boolean sharedInput;
+
   // Reserved Fields
   private Integer reservedField0;
 
@@ -95,35 +96,58 @@ public abstract class PnIoCm_Submodule implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Submodule");
 
     // Simple Field (slotNumber)
-    writeSimpleField("slotNumber", slotNumber, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "slotNumber",
+        slotNumber,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (submoduleIdentNumber)
     writeSimpleField(
-        "submoduleIdentNumber", submoduleIdentNumber, writeUnsignedLong(writeBuffer, 32));
+        "submoduleIdentNumber",
+        submoduleIdentNumber,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x000,
-        writeUnsignedInt(writeBuffer, 10));
+        writeUnsignedInt(writeBuffer, 10),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (discardIoxs)
-    writeSimpleField("discardIoxs", discardIoxs, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "discardIoxs",
+        discardIoxs,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (reduceOutputModuleDataLength)
     writeSimpleField(
-        "reduceOutputModuleDataLength", reduceOutputModuleDataLength, writeBoolean(writeBuffer));
+        "reduceOutputModuleDataLength",
+        reduceOutputModuleDataLength,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (reduceInputModuleDataLength)
     writeSimpleField(
-        "reduceInputModuleDataLength", reduceInputModuleDataLength, writeBoolean(writeBuffer));
+        "reduceInputModuleDataLength",
+        reduceInputModuleDataLength,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (sharedInput)
-    writeSimpleField("sharedInput", sharedInput, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "sharedInput",
+        sharedInput,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Discriminator Field (submoduleType) (Used as input to a switch field)
     writeDiscriminatorEnumField(
@@ -133,7 +157,8 @@ public abstract class PnIoCm_Submodule implements Message {
         new DataWriterEnumDefault<>(
             PnIoCm_SubmoduleType::getValue,
             PnIoCm_SubmoduleType::name,
-            writeUnsignedByte(writeBuffer, 2)));
+            writeUnsignedByte(writeBuffer, 2)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializePnIoCm_SubmoduleChild(writeBuffer);
@@ -150,6 +175,7 @@ public abstract class PnIoCm_Submodule implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnIoCm_Submodule _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (slotNumber)
     lengthInBits += 16;
@@ -191,37 +217,64 @@ public abstract class PnIoCm_Submodule implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int slotNumber = readSimpleField("slotNumber", readUnsignedInt(readBuffer, 16));
+    int slotNumber =
+        readSimpleField(
+            "slotNumber",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     long submoduleIdentNumber =
-        readSimpleField("submoduleIdentNumber", readUnsignedLong(readBuffer, 32));
+        readSimpleField(
+            "submoduleIdentNumber",
+            readUnsignedLong(readBuffer, 32),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Integer reservedField0 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 10), (int) 0x000);
+        readReservedField(
+            "reserved",
+            readUnsignedInt(readBuffer, 10),
+            (int) 0x000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean discardIoxs = readSimpleField("discardIoxs", readBoolean(readBuffer));
+    boolean discardIoxs =
+        readSimpleField(
+            "discardIoxs", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean reduceOutputModuleDataLength =
-        readSimpleField("reduceOutputModuleDataLength", readBoolean(readBuffer));
+        readSimpleField(
+            "reduceOutputModuleDataLength",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean reduceInputModuleDataLength =
-        readSimpleField("reduceInputModuleDataLength", readBoolean(readBuffer));
+        readSimpleField(
+            "reduceInputModuleDataLength",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean sharedInput = readSimpleField("sharedInput", readBoolean(readBuffer));
+    boolean sharedInput =
+        readSimpleField(
+            "sharedInput", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnIoCm_SubmoduleType submoduleType =
         readDiscriminatorField(
             "submoduleType",
             new DataReaderEnumDefault<>(
-                PnIoCm_SubmoduleType::enumForValue, readUnsignedByte(readBuffer, 2)));
+                PnIoCm_SubmoduleType::enumForValue, readUnsignedByte(readBuffer, 2)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnIoCm_SubmoduleBuilder builder = null;
     if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.NO_INPUT_NO_OUTPUT_DATA)) {
-      builder = PnIoCm_Submodule_NoInputNoOutputData.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Submodule_NoInputNoOutputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.INPUT_DATA)) {
+      builder = PnIoCm_Submodule_InputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.OUTPUT_DATA)) {
+      builder = PnIoCm_Submodule_OutputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
     } else if (EvaluationHelper.equals(submoduleType, PnIoCm_SubmoduleType.INPUT_AND_OUTPUT_DATA)) {
-      builder = PnIoCm_Submodule_InputAndOutputData.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Submodule_InputAndOutputData.staticParsePnIoCm_SubmoduleBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -246,7 +299,7 @@ public abstract class PnIoCm_Submodule implements Message {
     return _pnIoCm_Submodule;
   }
 
-  public static interface PnIoCm_SubmoduleBuilder {
+  public interface PnIoCm_SubmoduleBuilder {
     PnIoCm_Submodule build(
         int slotNumber,
         long submoduleIdentNumber,

@@ -60,6 +60,7 @@ public abstract class BACnetShedLevel implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetShedLevel");
 
@@ -82,6 +83,7 @@ public abstract class BACnetShedLevel implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetShedLevel _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -101,6 +103,7 @@ public abstract class BACnetShedLevel implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -113,11 +116,11 @@ public abstract class BACnetShedLevel implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetShedLevelBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetShedLevelPercent.staticParseBuilder(readBuffer);
+      builder = BACnetShedLevelPercent.staticParseBACnetShedLevelBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetShedLevelLevel.staticParseBuilder(readBuffer);
+      builder = BACnetShedLevelLevel.staticParseBACnetShedLevelBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetShedLevelAmount.staticParseBuilder(readBuffer);
+      builder = BACnetShedLevelAmount.staticParseBACnetShedLevelBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -134,7 +137,7 @@ public abstract class BACnetShedLevel implements Message {
     return _bACnetShedLevel;
   }
 
-  public static interface BACnetShedLevelBuilder {
+  public interface BACnetShedLevelBuilder {
     BACnetShedLevel build(BACnetTagHeader peekedTagHeader);
   }
 

@@ -65,6 +65,7 @@ public class ModbusPDUReadFifoQueueResponse extends ModbusPDU implements Message
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadFifoQueueResponse");
 
@@ -93,6 +94,7 @@ public class ModbusPDUReadFifoQueueResponse extends ModbusPDU implements Message
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadFifoQueueResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (byteCount)
     lengthInBits += 16;
@@ -108,12 +110,13 @@ public class ModbusPDUReadFifoQueueResponse extends ModbusPDU implements Message
     return lengthInBits;
   }
 
-  public static ModbusPDUReadFifoQueueResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadFifoQueueResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     int byteCount = readImplicitField("byteCount", readUnsignedInt(readBuffer, 16));
 
@@ -124,14 +127,14 @@ public class ModbusPDUReadFifoQueueResponse extends ModbusPDU implements Message
 
     readBuffer.closeContext("ModbusPDUReadFifoQueueResponse");
     // Create the instance
-    return new ModbusPDUReadFifoQueueResponseBuilder(fifoValue);
+    return new ModbusPDUReadFifoQueueResponseBuilderImpl(fifoValue);
   }
 
-  public static class ModbusPDUReadFifoQueueResponseBuilder implements ModbusPDU.ModbusPDUBuilder {
+  public static class ModbusPDUReadFifoQueueResponseBuilderImpl
+      implements ModbusPDU.ModbusPDUBuilder {
     private final List<Integer> fifoValue;
 
-    public ModbusPDUReadFifoQueueResponseBuilder(List<Integer> fifoValue) {
-
+    public ModbusPDUReadFifoQueueResponseBuilderImpl(List<Integer> fifoValue) {
       this.fifoValue = fifoValue;
     }
 

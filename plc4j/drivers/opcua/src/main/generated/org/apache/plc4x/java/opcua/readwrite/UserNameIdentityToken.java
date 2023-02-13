@@ -71,6 +71,7 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
   protected void serializeUserIdentityTokenDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("UserNameIdentityToken");
 
@@ -96,6 +97,7 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     UserNameIdentityToken _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (userName)
     lengthInBits += userName.getLengthInBits();
@@ -109,12 +111,13 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
     return lengthInBits;
   }
 
-  public static UserNameIdentityTokenBuilder staticParseBuilder(
+  public static UserIdentityTokenDefinitionBuilder staticParseUserIdentityTokenDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("UserNameIdentityToken");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PascalString userName =
         readSimpleField(
@@ -134,18 +137,17 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
 
     readBuffer.closeContext("UserNameIdentityToken");
     // Create the instance
-    return new UserNameIdentityTokenBuilder(userName, password, encryptionAlgorithm);
+    return new UserNameIdentityTokenBuilderImpl(userName, password, encryptionAlgorithm);
   }
 
-  public static class UserNameIdentityTokenBuilder
+  public static class UserNameIdentityTokenBuilderImpl
       implements UserIdentityTokenDefinition.UserIdentityTokenDefinitionBuilder {
     private final PascalString userName;
     private final PascalByteString password;
     private final PascalString encryptionAlgorithm;
 
-    public UserNameIdentityTokenBuilder(
+    public UserNameIdentityTokenBuilderImpl(
         PascalString userName, PascalByteString password, PascalString encryptionAlgorithm) {
-
       this.userName = userName;
       this.password = password;
       this.encryptionAlgorithm = encryptionAlgorithm;

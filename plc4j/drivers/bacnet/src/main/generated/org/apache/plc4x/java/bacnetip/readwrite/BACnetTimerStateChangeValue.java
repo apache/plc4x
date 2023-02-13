@@ -69,6 +69,7 @@ public abstract class BACnetTimerStateChangeValue implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValue");
 
@@ -95,6 +96,7 @@ public abstract class BACnetTimerStateChangeValue implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetTimerStateChangeValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -132,6 +134,7 @@ public abstract class BACnetTimerStateChangeValue implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -156,71 +159,88 @@ public abstract class BACnetTimerStateChangeValue implements Message {
     BACnetTimerStateChangeValueBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0x0)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetTimerStateChangeValueNull.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetTimerStateChangeValueNull.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x1)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetTimerStateChangeValueBoolean.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetTimerStateChangeValueBoolean.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x2)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetTimerStateChangeValueUnsigned.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetTimerStateChangeValueUnsigned.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x3)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetTimerStateChangeValueInteger.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetTimerStateChangeValueInteger.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x4)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetTimerStateChangeValueReal.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetTimerStateChangeValueReal.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x5)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetTimerStateChangeValueDouble.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetTimerStateChangeValueDouble.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x6)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetTimerStateChangeValueOctetString.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetTimerStateChangeValueOctetString.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x7)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetTimerStateChangeValueCharacterString.staticParseBuilder(
+          BACnetTimerStateChangeValueCharacterString.staticParseBACnetTimerStateChangeValueBuilder(
               readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x8)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetTimerStateChangeValueBitString.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetTimerStateChangeValueBitString.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0x9)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetTimerStateChangeValueEnumerated.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetTimerStateChangeValueEnumerated.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xA)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetTimerStateChangeValueDate.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetTimerStateChangeValueDate.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xB)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
-      builder = BACnetTimerStateChangeValueTime.staticParseBuilder(readBuffer, objectTypeArgument);
+      builder =
+          BACnetTimerStateChangeValueTime.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0xC)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) false)) {
       builder =
-          BACnetTimerStateChangeValueObjectidentifier.staticParseBuilder(
+          BACnetTimerStateChangeValueObjectidentifier.staticParseBACnetTimerStateChangeValueBuilder(
               readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 0)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) true)) {
       builder =
-          BACnetTimerStateChangeValueNoValue.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetTimerStateChangeValueNoValue.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) true)) {
       builder =
-          BACnetTimerStateChangeValueConstructedValue.staticParseBuilder(
+          BACnetTimerStateChangeValueConstructedValue.staticParseBACnetTimerStateChangeValueBuilder(
               readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) true)) {
       builder =
-          BACnetTimerStateChangeValueDateTime.staticParseBuilder(readBuffer, objectTypeArgument);
+          BACnetTimerStateChangeValueDateTime.staticParseBACnetTimerStateChangeValueBuilder(
+              readBuffer, objectTypeArgument);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 3)
         && EvaluationHelper.equals(peekedIsContextTag, (boolean) true)) {
       builder =
-          BACnetTimerStateChangeValueLightingCommand.staticParseBuilder(
+          BACnetTimerStateChangeValueLightingCommand.staticParseBACnetTimerStateChangeValueBuilder(
               readBuffer, objectTypeArgument);
     }
     if (builder == null) {
@@ -242,7 +262,7 @@ public abstract class BACnetTimerStateChangeValue implements Message {
     return _bACnetTimerStateChangeValue;
   }
 
-  public static interface BACnetTimerStateChangeValueBuilder {
+  public interface BACnetTimerStateChangeValueBuilder {
     BACnetTimerStateChangeValue build(
         BACnetTagHeader peekedTagHeader, BACnetObjectType objectTypeArgument);
   }

@@ -73,6 +73,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("RegisterNodesResponse");
 
@@ -98,6 +99,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     RegisterNodesResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (responseHeader)
     lengthInBits += responseHeader.getLengthInBits();
@@ -109,7 +111,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
     if (registeredNodeIds != null) {
       int i = 0;
       for (NodeId element : registeredNodeIds) {
-        boolean last = ++i >= registeredNodeIds.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= registeredNodeIds.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -117,12 +119,13 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
     return lengthInBits;
   }
 
-  public static RegisterNodesResponseBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("RegisterNodesResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
@@ -142,21 +145,20 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
 
     readBuffer.closeContext("RegisterNodesResponse");
     // Create the instance
-    return new RegisterNodesResponseBuilder(
+    return new RegisterNodesResponseBuilderImpl(
         responseHeader, noOfRegisteredNodeIds, registeredNodeIds);
   }
 
-  public static class RegisterNodesResponseBuilder
+  public static class RegisterNodesResponseBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final ExtensionObjectDefinition responseHeader;
     private final int noOfRegisteredNodeIds;
     private final List<NodeId> registeredNodeIds;
 
-    public RegisterNodesResponseBuilder(
+    public RegisterNodesResponseBuilderImpl(
         ExtensionObjectDefinition responseHeader,
         int noOfRegisteredNodeIds,
         List<NodeId> registeredNodeIds) {
-
       this.responseHeader = responseHeader;
       this.noOfRegisteredNodeIds = noOfRegisteredNodeIds;
       this.registeredNodeIds = registeredNodeIds;

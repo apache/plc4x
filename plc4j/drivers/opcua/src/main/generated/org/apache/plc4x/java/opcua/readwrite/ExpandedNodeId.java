@@ -84,6 +84,7 @@ public class ExpandedNodeId implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ExpandedNodeId");
 
@@ -101,15 +102,10 @@ public class ExpandedNodeId implements Message {
     writeBuffer.writeVirtual("identifier", identifier);
 
     // Optional Field (namespaceURI) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "namespaceURI",
-        namespaceURI,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getNamespaceURISpecified());
+    writeOptionalField("namespaceURI", namespaceURI, new DataWriterComplexDefault<>(writeBuffer));
 
     // Optional Field (serverIndex) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "serverIndex", serverIndex, writeUnsignedLong(writeBuffer, 32), getServerIndexSpecified());
+    writeOptionalField("serverIndex", serverIndex, writeUnsignedLong(writeBuffer, 32));
 
     writeBuffer.popContext("ExpandedNodeId");
   }
@@ -123,6 +119,7 @@ public class ExpandedNodeId implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     ExpandedNodeId _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (namespaceURISpecified)
     lengthInBits += 1;
@@ -159,6 +156,7 @@ public class ExpandedNodeId implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     boolean namespaceURISpecified =
         readSimpleField("namespaceURISpecified", readBoolean(readBuffer));

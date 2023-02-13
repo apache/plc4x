@@ -50,6 +50,7 @@ public class ReaderGroupMessageDataType extends ExtensionObjectDefinition implem
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReaderGroupMessageDataType");
 
@@ -65,26 +66,28 @@ public class ReaderGroupMessageDataType extends ExtensionObjectDefinition implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ReaderGroupMessageDataType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ReaderGroupMessageDataTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ReaderGroupMessageDataType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ReaderGroupMessageDataType");
     // Create the instance
-    return new ReaderGroupMessageDataTypeBuilder();
+    return new ReaderGroupMessageDataTypeBuilderImpl();
   }
 
-  public static class ReaderGroupMessageDataTypeBuilder
+  public static class ReaderGroupMessageDataTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
 
-    public ReaderGroupMessageDataTypeBuilder() {}
+    public ReaderGroupMessageDataTypeBuilderImpl() {}
 
     public ReaderGroupMessageDataType build() {
       ReaderGroupMessageDataType readerGroupMessageDataType = new ReaderGroupMessageDataType();

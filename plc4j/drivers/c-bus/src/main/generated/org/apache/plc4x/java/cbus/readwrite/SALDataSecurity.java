@@ -57,6 +57,7 @@ public class SALDataSecurity extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataSecurity");
 
@@ -75,6 +76,7 @@ public class SALDataSecurity extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataSecurity _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (securityData)
     lengthInBits += securityData.getLengthInBits();
@@ -82,12 +84,13 @@ public class SALDataSecurity extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataSecurityBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataSecurity");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SecurityData securityData =
         readSimpleField(
@@ -96,14 +99,13 @@ public class SALDataSecurity extends SALData implements Message {
 
     readBuffer.closeContext("SALDataSecurity");
     // Create the instance
-    return new SALDataSecurityBuilder(securityData);
+    return new SALDataSecurityBuilderImpl(securityData);
   }
 
-  public static class SALDataSecurityBuilder implements SALData.SALDataBuilder {
+  public static class SALDataSecurityBuilderImpl implements SALData.SALDataBuilder {
     private final SecurityData securityData;
 
-    public SALDataSecurityBuilder(SecurityData securityData) {
-
+    public SALDataSecurityBuilderImpl(SecurityData securityData) {
       this.securityData = securityData;
     }
 

@@ -51,6 +51,7 @@ public abstract class PnDcp_Block implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block");
 
@@ -62,15 +63,24 @@ public abstract class PnDcp_Block implements Message {
         new DataWriterEnumDefault<>(
             PnDcp_BlockOptions::getValue,
             PnDcp_BlockOptions::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Discriminator Field (suboption) (Used as input to a switch field)
-    writeDiscriminatorField("suboption", getSuboption(), writeUnsignedShort(writeBuffer, 8));
+    writeDiscriminatorField(
+        "suboption",
+        getSuboption(),
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int blockLength = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializePnDcp_BlockChild(writeBuffer);
@@ -87,6 +97,7 @@ public abstract class PnDcp_Block implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnDcp_Block _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (option)
     lengthInBits += 8;
@@ -113,106 +124,127 @@ public abstract class PnDcp_Block implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnDcp_BlockOptions option =
         readDiscriminatorField(
             "option",
             new DataReaderEnumDefault<>(
-                PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)));
+                PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short suboption = readDiscriminatorField("suboption", readUnsignedShort(readBuffer, 8));
+    short suboption =
+        readDiscriminatorField(
+            "suboption",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int blockLength = readImplicitField("blockLength", readUnsignedInt(readBuffer, 16));
+    int blockLength =
+        readImplicitField(
+            "blockLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnDcp_BlockBuilder builder = null;
     if (EvaluationHelper.equals(option, PnDcp_BlockOptions.IP_OPTION)
         && EvaluationHelper.equals(suboption, (short) 1)) {
-      builder = PnDcp_Block_IpMacAddress.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_IpMacAddress.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.IP_OPTION)
         && EvaluationHelper.equals(suboption, (short) 2)) {
-      builder = PnDcp_Block_IpParameter.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_IpParameter.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.IP_OPTION)
         && EvaluationHelper.equals(suboption, (short) 3)) {
-      builder = PnDcp_Block_FullIpSuite.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_FullIpSuite.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DEVICE_PROPERTIES_OPTION)
         && EvaluationHelper.equals(suboption, (short) 1)) {
       builder =
-          PnDcp_Block_DevicePropertiesDeviceVendor.staticParseBuilder(readBuffer, blockLength);
+          PnDcp_Block_DevicePropertiesDeviceVendor.staticParsePnDcp_BlockBuilder(
+              readBuffer, blockLength);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DEVICE_PROPERTIES_OPTION)
         && EvaluationHelper.equals(suboption, (short) 2)) {
       builder =
-          PnDcp_Block_DevicePropertiesNameOfStation.staticParseBuilder(readBuffer, blockLength);
+          PnDcp_Block_DevicePropertiesNameOfStation.staticParsePnDcp_BlockBuilder(
+              readBuffer, blockLength);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DEVICE_PROPERTIES_OPTION)
         && EvaluationHelper.equals(suboption, (short) 3)) {
-      builder = PnDcp_Block_DevicePropertiesDeviceId.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_DevicePropertiesDeviceId.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DEVICE_PROPERTIES_OPTION)
         && EvaluationHelper.equals(suboption, (short) 4)) {
-      builder = PnDcp_Block_DevicePropertiesDeviceRole.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_DevicePropertiesDeviceRole.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DEVICE_PROPERTIES_OPTION)
         && EvaluationHelper.equals(suboption, (short) 5)) {
       builder =
-          PnDcp_Block_DevicePropertiesDeviceOptions.staticParseBuilder(readBuffer, blockLength);
+          PnDcp_Block_DevicePropertiesDeviceOptions.staticParsePnDcp_BlockBuilder(
+              readBuffer, blockLength);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DEVICE_PROPERTIES_OPTION)
         && EvaluationHelper.equals(suboption, (short) 6)) {
-      builder = PnDcp_Block_DevicePropertiesAliasName.staticParseBuilder(readBuffer, blockLength);
+      builder =
+          PnDcp_Block_DevicePropertiesAliasName.staticParsePnDcp_BlockBuilder(
+              readBuffer, blockLength);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DEVICE_PROPERTIES_OPTION)
         && EvaluationHelper.equals(suboption, (short) 7)) {
-      builder = PnDcp_Block_DevicePropertiesDeviceInstance.staticParseBuilder(readBuffer);
+      builder =
+          PnDcp_Block_DevicePropertiesDeviceInstance.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DEVICE_PROPERTIES_OPTION)
         && EvaluationHelper.equals(suboption, (short) 8)) {
-      builder = PnDcp_Block_DevicePropertiesOemDeviceId.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_DevicePropertiesOemDeviceId.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DEVICE_PROPERTIES_OPTION)
         && EvaluationHelper.equals(suboption, (short) 9)) {
-      builder = PnDcp_Block_DevicePropertiesStandardGateway.staticParseBuilder(readBuffer);
+      builder =
+          PnDcp_Block_DevicePropertiesStandardGateway.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DCP_OPTION)
         && EvaluationHelper.equals(suboption, (short) 12)) {
-      builder = PnDcp_Block_DhcpOptionHostName.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_DhcpOptionHostName.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DCP_OPTION)
         && EvaluationHelper.equals(suboption, (short) 43)) {
-      builder = PnDcp_Block_DhcpOptionVendorSpecificInformation.staticParseBuilder(readBuffer);
+      builder =
+          PnDcp_Block_DhcpOptionVendorSpecificInformation.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DCP_OPTION)
         && EvaluationHelper.equals(suboption, (short) 54)) {
-      builder = PnDcp_Block_DhcpOptionServerIdentifier.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_DhcpOptionServerIdentifier.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DCP_OPTION)
         && EvaluationHelper.equals(suboption, (short) 55)) {
-      builder = PnDcp_Block_DhcpOptionParameterRequestList.staticParseBuilder(readBuffer);
+      builder =
+          PnDcp_Block_DhcpOptionParameterRequestList.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DCP_OPTION)
         && EvaluationHelper.equals(suboption, (short) 60)) {
-      builder = PnDcp_Block_DhcpOptionClassIdentifier.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_DhcpOptionClassIdentifier.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DCP_OPTION)
         && EvaluationHelper.equals(suboption, (short) 61)) {
-      builder = PnDcp_Block_DhcpOptionDhcpClientIdentifier.staticParseBuilder(readBuffer);
+      builder =
+          PnDcp_Block_DhcpOptionDhcpClientIdentifier.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DCP_OPTION)
         && EvaluationHelper.equals(suboption, (short) 81)) {
-      builder = PnDcp_Block_DhcpOptionFullyQualifiedDomainName.staticParseBuilder(readBuffer);
+      builder =
+          PnDcp_Block_DhcpOptionFullyQualifiedDomainName.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DCP_OPTION)
         && EvaluationHelper.equals(suboption, (short) 97)) {
-      builder = PnDcp_Block_DhcpOptionUuidBasedClient.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_DhcpOptionUuidBasedClient.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.CONTROL_OPTION)
         && EvaluationHelper.equals(suboption, (short) 1)) {
-      builder = PnDcp_Block_ControlOptionStart.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_ControlOptionStart.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.CONTROL_OPTION)
         && EvaluationHelper.equals(suboption, (short) 2)) {
-      builder = PnDcp_Block_ControlOptionStop.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_ControlOptionStop.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.CONTROL_OPTION)
         && EvaluationHelper.equals(suboption, (short) 3)) {
-      builder = PnDcp_Block_ControlOptionSignal.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_ControlOptionSignal.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.CONTROL_OPTION)
         && EvaluationHelper.equals(suboption, (short) 4)) {
-      builder = PnDcp_Block_ControlOptionResponse.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_ControlOptionResponse.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.CONTROL_OPTION)
         && EvaluationHelper.equals(suboption, (short) 5)) {
-      builder = PnDcp_Block_ControlOptionFactoryReset.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_ControlOptionFactoryReset.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.CONTROL_OPTION)
         && EvaluationHelper.equals(suboption, (short) 6)) {
-      builder = PnDcp_Block_ControlOptionResetToFactory.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_ControlOptionResetToFactory.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.DEVICE_INITIATIVE_OPTION)
         && EvaluationHelper.equals(suboption, (short) 1)) {
-      builder = PnDcp_Block_DeviceInitiativeOption.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_DeviceInitiativeOption.staticParsePnDcp_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(option, PnDcp_BlockOptions.ALL_SELECTOR_OPTION)
         && EvaluationHelper.equals(suboption, (short) 0xFF)) {
-      builder = PnDcp_Block_ALLSelector.staticParseBuilder(readBuffer);
+      builder = PnDcp_Block_ALLSelector.staticParsePnDcp_BlockBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -232,7 +264,7 @@ public abstract class PnDcp_Block implements Message {
     return _pnDcp_Block;
   }
 
-  public static interface PnDcp_BlockBuilder {
+  public interface PnDcp_BlockBuilder {
     PnDcp_Block build();
   }
 

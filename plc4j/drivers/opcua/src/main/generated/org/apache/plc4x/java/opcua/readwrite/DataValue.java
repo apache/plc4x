@@ -50,8 +50,6 @@ public class DataValue implements Message {
   protected final Integer sourcePicoseconds;
   protected final Long serverTimestamp;
   protected final Integer serverPicoseconds;
-  // Reserved Fields
-  private Byte reservedField0;
 
   public DataValue(
       boolean serverPicosecondsSpecified,
@@ -131,14 +129,12 @@ public class DataValue implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DataValue");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        reservedField0 != null ? reservedField0 : (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 2));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 2));
 
     // Simple Field (serverPicosecondsSpecified)
     writeSimpleField(
@@ -163,43 +159,22 @@ public class DataValue implements Message {
     writeSimpleField("valueSpecified", valueSpecified, writeBoolean(writeBuffer));
 
     // Optional Field (value) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "value", value, new DataWriterComplexDefault<>(writeBuffer), getValueSpecified());
+    writeOptionalField("value", value, new DataWriterComplexDefault<>(writeBuffer));
 
     // Optional Field (statusCode) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "statusCode",
-        statusCode,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getStatusCodeSpecified());
+    writeOptionalField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
 
     // Optional Field (sourceTimestamp) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "sourceTimestamp",
-        sourceTimestamp,
-        writeSignedLong(writeBuffer, 64),
-        getSourceTimestampSpecified());
+    writeOptionalField("sourceTimestamp", sourceTimestamp, writeSignedLong(writeBuffer, 64));
 
     // Optional Field (sourcePicoseconds) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "sourcePicoseconds",
-        sourcePicoseconds,
-        writeUnsignedInt(writeBuffer, 16),
-        getSourcePicosecondsSpecified());
+    writeOptionalField("sourcePicoseconds", sourcePicoseconds, writeUnsignedInt(writeBuffer, 16));
 
     // Optional Field (serverTimestamp) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "serverTimestamp",
-        serverTimestamp,
-        writeSignedLong(writeBuffer, 64),
-        getServerTimestampSpecified());
+    writeOptionalField("serverTimestamp", serverTimestamp, writeSignedLong(writeBuffer, 64));
 
     // Optional Field (serverPicoseconds) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "serverPicoseconds",
-        serverPicoseconds,
-        writeUnsignedInt(writeBuffer, 16),
-        getServerPicosecondsSpecified());
+    writeOptionalField("serverPicoseconds", serverPicoseconds, writeUnsignedInt(writeBuffer, 16));
 
     writeBuffer.popContext("DataValue");
   }
@@ -213,6 +188,7 @@ public class DataValue implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     DataValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 2;
@@ -278,6 +254,7 @@ public class DataValue implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 2), (byte) 0x00);
@@ -343,7 +320,6 @@ public class DataValue implements Message {
             sourcePicoseconds,
             serverTimestamp,
             serverPicoseconds);
-    _dataValue.reservedField0 = reservedField0;
     return _dataValue;
   }
 

@@ -42,17 +42,14 @@ public class ApduDataExtNetworkParameterResponse extends ApduDataExt implements 
     return (short) 0x1B;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtNetworkParameterResponse(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtNetworkParameterResponse() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtNetworkParameterResponse");
 
@@ -68,35 +65,32 @@ public class ApduDataExtNetworkParameterResponse extends ApduDataExt implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtNetworkParameterResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtNetworkParameterResponseBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtNetworkParameterResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtNetworkParameterResponse");
     // Create the instance
-    return new ApduDataExtNetworkParameterResponseBuilder(length);
+    return new ApduDataExtNetworkParameterResponseBuilderImpl();
   }
 
-  public static class ApduDataExtNetworkParameterResponseBuilder
+  public static class ApduDataExtNetworkParameterResponseBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtNetworkParameterResponseBuilder(Short length) {
+    public ApduDataExtNetworkParameterResponseBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtNetworkParameterResponse build(Short length) {
-
+    public ApduDataExtNetworkParameterResponse build() {
       ApduDataExtNetworkParameterResponse apduDataExtNetworkParameterResponse =
-          new ApduDataExtNetworkParameterResponse(length);
+          new ApduDataExtNetworkParameterResponse();
       return apduDataExtNetworkParameterResponse;
     }
   }

@@ -53,6 +53,7 @@ public class PnDcp_Block_DhcpOptionHostName extends PnDcp_Block implements Messa
   @Override
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DhcpOptionHostName");
 
@@ -68,26 +69,28 @@ public class PnDcp_Block_DhcpOptionHostName extends PnDcp_Block implements Messa
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Block_DhcpOptionHostName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DhcpOptionHostNameBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DhcpOptionHostName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("PnDcp_Block_DhcpOptionHostName");
     // Create the instance
-    return new PnDcp_Block_DhcpOptionHostNameBuilder();
+    return new PnDcp_Block_DhcpOptionHostNameBuilderImpl();
   }
 
-  public static class PnDcp_Block_DhcpOptionHostNameBuilder
+  public static class PnDcp_Block_DhcpOptionHostNameBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
 
-    public PnDcp_Block_DhcpOptionHostNameBuilder() {}
+    public PnDcp_Block_DhcpOptionHostNameBuilderImpl() {}
 
     public PnDcp_Block_DhcpOptionHostName build() {
       PnDcp_Block_DhcpOptionHostName pnDcp_Block_DhcpOptionHostName =

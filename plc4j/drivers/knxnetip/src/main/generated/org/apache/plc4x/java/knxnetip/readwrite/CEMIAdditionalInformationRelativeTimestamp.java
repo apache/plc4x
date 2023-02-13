@@ -66,6 +66,7 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
   protected void serializeCEMIAdditionalInformationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CEMIAdditionalInformationRelativeTimestamp");
 
@@ -88,6 +89,7 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CEMIAdditionalInformationRelativeTimestamp _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Const Field (len)
     lengthInBits += 8;
@@ -98,12 +100,13 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
     return lengthInBits;
   }
 
-  public static CEMIAdditionalInformationRelativeTimestampBuilder staticParseBuilder(
+  public static CEMIAdditionalInformationBuilder staticParseCEMIAdditionalInformationBuilder(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CEMIAdditionalInformationRelativeTimestamp");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short len =
         readConstField(
@@ -119,15 +122,15 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
 
     readBuffer.closeContext("CEMIAdditionalInformationRelativeTimestamp");
     // Create the instance
-    return new CEMIAdditionalInformationRelativeTimestampBuilder(relativeTimestamp);
+    return new CEMIAdditionalInformationRelativeTimestampBuilderImpl(relativeTimestamp);
   }
 
-  public static class CEMIAdditionalInformationRelativeTimestampBuilder
+  public static class CEMIAdditionalInformationRelativeTimestampBuilderImpl
       implements CEMIAdditionalInformation.CEMIAdditionalInformationBuilder {
     private final RelativeTimestamp relativeTimestamp;
 
-    public CEMIAdditionalInformationRelativeTimestampBuilder(RelativeTimestamp relativeTimestamp) {
-
+    public CEMIAdditionalInformationRelativeTimestampBuilderImpl(
+        RelativeTimestamp relativeTimestamp) {
       this.relativeTimestamp = relativeTimestamp;
     }
 

@@ -57,6 +57,7 @@ public abstract class BACnetServiceAck implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetServiceAck");
 
@@ -89,6 +90,7 @@ public abstract class BACnetServiceAck implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetServiceAck _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (serviceChoice)
     lengthInBits += 8;
@@ -126,6 +128,7 @@ public abstract class BACnetServiceAck implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetConfirmedServiceChoice serviceChoice =
         readDiscriminatorField(
@@ -141,53 +144,70 @@ public abstract class BACnetServiceAck implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetServiceAckBuilder builder = null;
     if (EvaluationHelper.equals(serviceChoice, BACnetConfirmedServiceChoice.GET_ALARM_SUMMARY)) {
-      builder = BACnetServiceAckGetAlarmSummary.staticParseBuilder(readBuffer, serviceAckLength);
+      builder =
+          BACnetServiceAckGetAlarmSummary.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetConfirmedServiceChoice.GET_ENROLLMENT_SUMMARY)) {
       builder =
-          BACnetServiceAckGetEnrollmentSummary.staticParseBuilder(readBuffer, serviceAckLength);
+          BACnetServiceAckGetEnrollmentSummary.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetConfirmedServiceChoice.GET_EVENT_INFORMATION)) {
       builder =
-          BACnetServiceAckGetEventInformation.staticParseBuilder(readBuffer, serviceAckLength);
+          BACnetServiceAckGetEventInformation.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetConfirmedServiceChoice.ATOMIC_READ_FILE)) {
-      builder = BACnetServiceAckAtomicReadFile.staticParseBuilder(readBuffer, serviceAckLength);
+      builder =
+          BACnetServiceAckAtomicReadFile.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetConfirmedServiceChoice.ATOMIC_WRITE_FILE)) {
-      builder = BACnetServiceAckAtomicWriteFile.staticParseBuilder(readBuffer, serviceAckLength);
+      builder =
+          BACnetServiceAckAtomicWriteFile.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetConfirmedServiceChoice.CREATE_OBJECT)) {
-      builder = BACnetServiceAckCreateObject.staticParseBuilder(readBuffer, serviceAckLength);
+      builder =
+          BACnetServiceAckCreateObject.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetConfirmedServiceChoice.READ_PROPERTY)) {
-      builder = BACnetServiceAckReadProperty.staticParseBuilder(readBuffer, serviceAckLength);
+      builder =
+          BACnetServiceAckReadProperty.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetConfirmedServiceChoice.READ_PROPERTY_MULTIPLE)) {
       builder =
-          BACnetServiceAckReadPropertyMultiple.staticParseBuilder(
-              readBuffer, serviceAckLength, serviceAckPayloadLength);
+          BACnetServiceAckReadPropertyMultiple.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckPayloadLength, serviceAckLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetConfirmedServiceChoice.READ_RANGE)) {
-      builder = BACnetServiceAckReadRange.staticParseBuilder(readBuffer, serviceAckLength);
+      builder =
+          BACnetServiceAckReadRange.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetConfirmedServiceChoice.CONFIRMED_PRIVATE_TRANSFER)) {
       builder =
-          BACnetServiceAckConfirmedPrivateTransfer.staticParseBuilder(readBuffer, serviceAckLength);
+          BACnetServiceAckConfirmedPrivateTransfer.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetConfirmedServiceChoice.VT_OPEN)) {
-      builder = BACnetServiceAckVTOpen.staticParseBuilder(readBuffer, serviceAckLength);
+      builder =
+          BACnetServiceAckVTOpen.staticParseBACnetServiceAckBuilder(readBuffer, serviceAckLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetConfirmedServiceChoice.VT_DATA)) {
-      builder = BACnetServiceAckVTData.staticParseBuilder(readBuffer, serviceAckLength);
+      builder =
+          BACnetServiceAckVTData.staticParseBACnetServiceAckBuilder(readBuffer, serviceAckLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetConfirmedServiceChoice.AUTHENTICATE)) {
       builder =
-          BACnetServiceAckAuthenticate.staticParseBuilder(
-              readBuffer, serviceAckLength, serviceAckPayloadLength);
+          BACnetServiceAckAuthenticate.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckPayloadLength, serviceAckLength);
     } else if (EvaluationHelper.equals(serviceChoice, BACnetConfirmedServiceChoice.REQUEST_KEY)) {
       builder =
-          BACnetServiceAckRequestKey.staticParseBuilder(
-              readBuffer, serviceAckLength, serviceAckPayloadLength);
+          BACnetServiceAckRequestKey.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckPayloadLength, serviceAckLength);
     } else if (EvaluationHelper.equals(
         serviceChoice, BACnetConfirmedServiceChoice.READ_PROPERTY_CONDITIONAL)) {
       builder =
-          BACnetServiceAckReadPropertyConditional.staticParseBuilder(
-              readBuffer, serviceAckLength, serviceAckPayloadLength);
+          BACnetServiceAckReadPropertyConditional.staticParseBACnetServiceAckBuilder(
+              readBuffer, serviceAckPayloadLength, serviceAckLength);
     }
     if (builder == null) {
       throw new ParseException(
@@ -205,7 +225,7 @@ public abstract class BACnetServiceAck implements Message {
     return _bACnetServiceAck;
   }
 
-  public static interface BACnetServiceAckBuilder {
+  public interface BACnetServiceAckBuilder {
     BACnetServiceAck build(Long serviceAckLength);
   }
 

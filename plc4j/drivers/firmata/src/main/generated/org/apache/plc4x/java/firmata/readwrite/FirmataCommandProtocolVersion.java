@@ -46,14 +46,10 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
   protected final short majorVersion;
   protected final short minorVersion;
 
-  // Arguments.
-  protected final Boolean response;
-
-  public FirmataCommandProtocolVersion(short majorVersion, short minorVersion, Boolean response) {
-    super(response);
+  public FirmataCommandProtocolVersion(short majorVersion, short minorVersion) {
+    super();
     this.majorVersion = majorVersion;
     this.minorVersion = minorVersion;
-    this.response = response;
   }
 
   public short getMajorVersion() {
@@ -68,6 +64,7 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
   protected void serializeFirmataCommandChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("FirmataCommandProtocolVersion");
 
@@ -89,6 +86,7 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     FirmataCommandProtocolVersion _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (majorVersion)
     lengthInBits += 8;
@@ -99,12 +97,13 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
     return lengthInBits;
   }
 
-  public static FirmataCommandProtocolVersionBuilder staticParseBuilder(
+  public static FirmataCommandBuilder staticParseFirmataCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("FirmataCommandProtocolVersion");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short majorVersion = readSimpleField("majorVersion", readUnsignedShort(readBuffer, 8));
 
@@ -112,27 +111,22 @@ public class FirmataCommandProtocolVersion extends FirmataCommand implements Mes
 
     readBuffer.closeContext("FirmataCommandProtocolVersion");
     // Create the instance
-    return new FirmataCommandProtocolVersionBuilder(majorVersion, minorVersion, response);
+    return new FirmataCommandProtocolVersionBuilderImpl(majorVersion, minorVersion);
   }
 
-  public static class FirmataCommandProtocolVersionBuilder
+  public static class FirmataCommandProtocolVersionBuilderImpl
       implements FirmataCommand.FirmataCommandBuilder {
     private final short majorVersion;
     private final short minorVersion;
-    private final Boolean response;
 
-    public FirmataCommandProtocolVersionBuilder(
-        short majorVersion, short minorVersion, Boolean response) {
-
+    public FirmataCommandProtocolVersionBuilderImpl(short majorVersion, short minorVersion) {
       this.majorVersion = majorVersion;
       this.minorVersion = minorVersion;
-      this.response = response;
     }
 
-    public FirmataCommandProtocolVersion build(Boolean response) {
-
+    public FirmataCommandProtocolVersion build() {
       FirmataCommandProtocolVersion firmataCommandProtocolVersion =
-          new FirmataCommandProtocolVersion(majorVersion, minorVersion, response);
+          new FirmataCommandProtocolVersion(majorVersion, minorVersion);
       return firmataCommandProtocolVersion;
     }
   }

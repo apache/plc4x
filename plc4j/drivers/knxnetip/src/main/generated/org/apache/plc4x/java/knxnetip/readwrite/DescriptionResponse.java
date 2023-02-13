@@ -64,6 +64,7 @@ public class DescriptionResponse extends KnxNetIpMessage implements Message {
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DescriptionResponse");
 
@@ -93,6 +94,7 @@ public class DescriptionResponse extends KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DescriptionResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (dibDeviceInfo)
     lengthInBits += dibDeviceInfo.getLengthInBits();
@@ -103,12 +105,13 @@ public class DescriptionResponse extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static DescriptionResponseBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DescriptionResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     DIBDeviceInfo dibDeviceInfo =
         readSimpleField(
@@ -125,16 +128,16 @@ public class DescriptionResponse extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("DescriptionResponse");
     // Create the instance
-    return new DescriptionResponseBuilder(dibDeviceInfo, dibSuppSvcFamilies);
+    return new DescriptionResponseBuilderImpl(dibDeviceInfo, dibSuppSvcFamilies);
   }
 
-  public static class DescriptionResponseBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class DescriptionResponseBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final DIBDeviceInfo dibDeviceInfo;
     private final DIBSuppSvcFamilies dibSuppSvcFamilies;
 
-    public DescriptionResponseBuilder(
+    public DescriptionResponseBuilderImpl(
         DIBDeviceInfo dibDeviceInfo, DIBSuppSvcFamilies dibSuppSvcFamilies) {
-
       this.dibDeviceInfo = dibDeviceInfo;
       this.dibSuppSvcFamilies = dibSuppSvcFamilies;
     }

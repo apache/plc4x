@@ -79,6 +79,7 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDefaultSubordinateRelationship");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDefaultSubordinateRelationship _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (defaultSubordinateRelationship)
     lengthInBits += defaultSubordinateRelationship.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDefaultSubordinateRelationshipBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetRelationshipTagged defaultSubordinateRelationship =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
 
     readBuffer.closeContext("BACnetConstructedDataDefaultSubordinateRelationship");
     // Create the instance
-    return new BACnetConstructedDataDefaultSubordinateRelationshipBuilder(
+    return new BACnetConstructedDataDefaultSubordinateRelationshipBuilderImpl(
         defaultSubordinateRelationship, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDefaultSubordinateRelationshipBuilder
+  public static class BACnetConstructedDataDefaultSubordinateRelationshipBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetRelationshipTagged defaultSubordinateRelationship;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDefaultSubordinateRelationshipBuilder(
+    public BACnetConstructedDataDefaultSubordinateRelationshipBuilderImpl(
         BACnetRelationshipTagged defaultSubordinateRelationship,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.defaultSubordinateRelationship = defaultSubordinateRelationship;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

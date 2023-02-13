@@ -68,6 +68,7 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueSerialNumber");
 
@@ -89,6 +90,7 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueSerialNumber _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += value.getLengthInBits();
@@ -101,12 +103,13 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
     return lengthInBits;
   }
 
-  public static ParameterValueSerialNumberBuilder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueSerialNumber");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (4))) {
       throw new ParseValidationException("SerialNumber has exactly four bytes");
@@ -121,17 +124,16 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
 
     readBuffer.closeContext("ParameterValueSerialNumber");
     // Create the instance
-    return new ParameterValueSerialNumberBuilder(value, data, numBytes);
+    return new ParameterValueSerialNumberBuilderImpl(value, data, numBytes);
   }
 
-  public static class ParameterValueSerialNumberBuilder
+  public static class ParameterValueSerialNumberBuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final SerialNumber value;
     private final byte[] data;
     private final Short numBytes;
 
-    public ParameterValueSerialNumberBuilder(SerialNumber value, byte[] data, Short numBytes) {
-
+    public ParameterValueSerialNumberBuilderImpl(SerialNumber value, byte[] data, Short numBytes) {
       this.value = value;
       this.data = data;
       this.numBytes = numBytes;

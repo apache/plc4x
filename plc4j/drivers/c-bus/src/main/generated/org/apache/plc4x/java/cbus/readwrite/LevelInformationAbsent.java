@@ -38,6 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public class LevelInformationAbsent extends LevelInformation implements Message {
 
   // Accessors for discriminator values.
+
   // Reserved Fields
   private Integer reservedField0;
 
@@ -49,6 +50,7 @@ public class LevelInformationAbsent extends LevelInformation implements Message 
   protected void serializeLevelInformationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("LevelInformationAbsent");
 
@@ -70,6 +72,7 @@ public class LevelInformationAbsent extends LevelInformation implements Message 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     LevelInformationAbsent _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 16;
@@ -77,26 +80,27 @@ public class LevelInformationAbsent extends LevelInformation implements Message 
     return lengthInBits;
   }
 
-  public static LevelInformationAbsentBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static LevelInformationBuilder staticParseLevelInformationBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("LevelInformationAbsent");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
         readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
 
     readBuffer.closeContext("LevelInformationAbsent");
     // Create the instance
-    return new LevelInformationAbsentBuilder(reservedField0);
+    return new LevelInformationAbsentBuilderImpl(reservedField0);
   }
 
-  public static class LevelInformationAbsentBuilder
+  public static class LevelInformationAbsentBuilderImpl
       implements LevelInformation.LevelInformationBuilder {
     private final Integer reservedField0;
 
-    public LevelInformationAbsentBuilder(Integer reservedField0) {
+    public LevelInformationAbsentBuilderImpl(Integer reservedField0) {
       this.reservedField0 = reservedField0;
     }
 

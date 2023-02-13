@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -102,39 +103,35 @@ func (m *_BACnetRouterEntry) GetTypeName() string {
 	return "BACnetRouterEntry"
 }
 
-func (m *_BACnetRouterEntry) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetRouterEntry) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_BACnetRouterEntry) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (networkNumber)
-	lengthInBits += m.NetworkNumber.GetLengthInBits()
+	lengthInBits += m.NetworkNumber.GetLengthInBits(ctx)
 
 	// Simple field (macAddress)
-	lengthInBits += m.MacAddress.GetLengthInBits()
+	lengthInBits += m.MacAddress.GetLengthInBits(ctx)
 
 	// Simple field (status)
-	lengthInBits += m.Status.GetLengthInBits()
+	lengthInBits += m.Status.GetLengthInBits(ctx)
 
 	// Optional Field (performanceIndex)
 	if m.PerformanceIndex != nil {
-		lengthInBits += m.PerformanceIndex.GetLengthInBits()
+		lengthInBits += m.PerformanceIndex.GetLengthInBits(ctx)
 	}
 
 	return lengthInBits
 }
 
-func (m *_BACnetRouterEntry) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetRouterEntry) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetRouterEntryParse(theBytes []byte) (BACnetRouterEntry, error) {
-	return BACnetRouterEntryParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return BACnetRouterEntryParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func BACnetRouterEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {
+func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetRouterEntry"); pullErr != nil {
@@ -147,7 +144,7 @@ func BACnetRouterEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRouter
 	if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for networkNumber")
 	}
-	_networkNumber, _networkNumberErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
+	_networkNumber, _networkNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
 	if _networkNumberErr != nil {
 		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of BACnetRouterEntry")
 	}
@@ -160,7 +157,7 @@ func BACnetRouterEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRouter
 	if pullErr := readBuffer.PullContext("macAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for macAddress")
 	}
-	_macAddress, _macAddressErr := BACnetContextTagParseWithBuffer(readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
+	_macAddress, _macAddressErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
 	if _macAddressErr != nil {
 		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetRouterEntry")
 	}
@@ -173,7 +170,7 @@ func BACnetRouterEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRouter
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for status")
 	}
-	_status, _statusErr := BACnetRouterEntryStatusTaggedParseWithBuffer(readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_status, _statusErr := BACnetRouterEntryStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of BACnetRouterEntry")
 	}
@@ -189,7 +186,7 @@ func BACnetRouterEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRouter
 		if pullErr := readBuffer.PullContext("performanceIndex"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for performanceIndex")
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(readBuffer, uint8(3), BACnetDataType_OCTET_STRING)
+		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_OCTET_STRING)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -218,14 +215,14 @@ func BACnetRouterEntryParseWithBuffer(readBuffer utils.ReadBuffer) (BACnetRouter
 }
 
 func (m *_BACnetRouterEntry) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("BACnetRouterEntry"); pushErr != nil {
@@ -236,7 +233,7 @@ func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("networkNumber"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for networkNumber")
 	}
-	_networkNumberErr := writeBuffer.WriteSerializable(m.GetNetworkNumber())
+	_networkNumberErr := writeBuffer.WriteSerializable(ctx, m.GetNetworkNumber())
 	if popErr := writeBuffer.PopContext("networkNumber"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for networkNumber")
 	}
@@ -248,7 +245,7 @@ func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("macAddress"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for macAddress")
 	}
-	_macAddressErr := writeBuffer.WriteSerializable(m.GetMacAddress())
+	_macAddressErr := writeBuffer.WriteSerializable(ctx, m.GetMacAddress())
 	if popErr := writeBuffer.PopContext("macAddress"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for macAddress")
 	}
@@ -260,7 +257,7 @@ func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 	if pushErr := writeBuffer.PushContext("status"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for status")
 	}
-	_statusErr := writeBuffer.WriteSerializable(m.GetStatus())
+	_statusErr := writeBuffer.WriteSerializable(ctx, m.GetStatus())
 	if popErr := writeBuffer.PopContext("status"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for status")
 	}
@@ -275,7 +272,7 @@ func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(writeBuffer utils.WriteBuf
 			return errors.Wrap(pushErr, "Error pushing for performanceIndex")
 		}
 		performanceIndex = m.GetPerformanceIndex()
-		_performanceIndexErr := writeBuffer.WriteSerializable(performanceIndex)
+		_performanceIndexErr := writeBuffer.WriteSerializable(ctx, performanceIndex)
 		if popErr := writeBuffer.PopContext("performanceIndex"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for performanceIndex")
 		}
@@ -299,7 +296,7 @@ func (m *_BACnetRouterEntry) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

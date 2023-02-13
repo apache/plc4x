@@ -68,6 +68,7 @@ public class ParameterValueInterfaceOptions2 extends ParameterValue implements M
   protected void serializeParameterValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ParameterValueInterfaceOptions2");
 
@@ -89,6 +90,7 @@ public class ParameterValueInterfaceOptions2 extends ParameterValue implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ParameterValueInterfaceOptions2 _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (value)
     lengthInBits += value.getLengthInBits();
@@ -101,12 +103,13 @@ public class ParameterValueInterfaceOptions2 extends ParameterValue implements M
     return lengthInBits;
   }
 
-  public static ParameterValueInterfaceOptions2Builder staticParseBuilder(
+  public static ParameterValueBuilder staticParseParameterValueBuilder(
       ReadBuffer readBuffer, ParameterType parameterType, Short numBytes) throws ParseException {
     readBuffer.pullContext("ParameterValueInterfaceOptions2");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     // Validation
     if (!((numBytes) >= (1))) {
       throw new ParseValidationException("InterfaceOptions2 has exactly one byte");
@@ -122,18 +125,17 @@ public class ParameterValueInterfaceOptions2 extends ParameterValue implements M
 
     readBuffer.closeContext("ParameterValueInterfaceOptions2");
     // Create the instance
-    return new ParameterValueInterfaceOptions2Builder(value, data, numBytes);
+    return new ParameterValueInterfaceOptions2BuilderImpl(value, data, numBytes);
   }
 
-  public static class ParameterValueInterfaceOptions2Builder
+  public static class ParameterValueInterfaceOptions2BuilderImpl
       implements ParameterValue.ParameterValueBuilder {
     private final InterfaceOptions2 value;
     private final byte[] data;
     private final Short numBytes;
 
-    public ParameterValueInterfaceOptions2Builder(
+    public ParameterValueInterfaceOptions2BuilderImpl(
         InterfaceOptions2 value, byte[] data, Short numBytes) {
-
       this.value = value;
       this.data = data;
       this.numBytes = numBytes;

@@ -74,6 +74,7 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataCOVURecipients");
 
@@ -92,6 +93,7 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataCOVURecipients _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (covuRecipients != null) {
@@ -103,7 +105,7 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataCOVURecipientsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -114,6 +116,7 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetRecipient> covuRecipients =
         readTerminatedArrayField(
@@ -127,21 +130,20 @@ public class BACnetConstructedDataCOVURecipients extends BACnetConstructedData i
 
     readBuffer.closeContext("BACnetConstructedDataCOVURecipients");
     // Create the instance
-    return new BACnetConstructedDataCOVURecipientsBuilder(
+    return new BACnetConstructedDataCOVURecipientsBuilderImpl(
         covuRecipients, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataCOVURecipientsBuilder
+  public static class BACnetConstructedDataCOVURecipientsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetRecipient> covuRecipients;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataCOVURecipientsBuilder(
+    public BACnetConstructedDataCOVURecipientsBuilderImpl(
         List<BACnetRecipient> covuRecipients,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.covuRecipients = covuRecipients;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

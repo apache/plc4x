@@ -78,6 +78,7 @@ public class BACnetConstructedDataLowerDeck extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLowerDeck");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataLowerDeck extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLowerDeck _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lowerDeck)
     lengthInBits += lowerDeck.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataLowerDeck extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLowerDeckBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataLowerDeck extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagObjectIdentifier lowerDeck =
         readSimpleField(
@@ -134,20 +137,19 @@ public class BACnetConstructedDataLowerDeck extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataLowerDeck");
     // Create the instance
-    return new BACnetConstructedDataLowerDeckBuilder(lowerDeck, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataLowerDeckBuilderImpl(lowerDeck, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLowerDeckBuilder
+  public static class BACnetConstructedDataLowerDeckBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagObjectIdentifier lowerDeck;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLowerDeckBuilder(
+    public BACnetConstructedDataLowerDeckBuilderImpl(
         BACnetApplicationTagObjectIdentifier lowerDeck,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lowerDeck = lowerDeck;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

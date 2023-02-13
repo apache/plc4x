@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -363,19 +364,19 @@ func CastSimulatedDataTypeSizes(structType interface{}) SimulatedDataTypeSizes {
 	return castFunc(structType)
 }
 
-func (m SimulatedDataTypeSizes) GetLengthInBits() uint16 {
+func (m SimulatedDataTypeSizes) GetLengthInBits(ctx context.Context) uint16 {
 	return 8
 }
 
-func (m SimulatedDataTypeSizes) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m SimulatedDataTypeSizes) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
-func SimulatedDataTypeSizesParse(theBytes []byte) (SimulatedDataTypeSizes, error) {
-	return SimulatedDataTypeSizesParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+func SimulatedDataTypeSizesParse(ctx context.Context, theBytes []byte) (SimulatedDataTypeSizes, error) {
+	return SimulatedDataTypeSizesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
-func SimulatedDataTypeSizesParseWithBuffer(readBuffer utils.ReadBuffer) (SimulatedDataTypeSizes, error) {
+func SimulatedDataTypeSizesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SimulatedDataTypeSizes, error) {
 	val, err := readBuffer.ReadUint8("SimulatedDataTypeSizes", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading SimulatedDataTypeSizes")
@@ -390,13 +391,13 @@ func SimulatedDataTypeSizesParseWithBuffer(readBuffer utils.ReadBuffer) (Simulat
 
 func (e SimulatedDataTypeSizes) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased()
-	if err := e.SerializeWithWriteBuffer(wb); err != nil {
+	if err := e.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (e SimulatedDataTypeSizes) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (e SimulatedDataTypeSizes) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	return writeBuffer.WriteUint8("SimulatedDataTypeSizes", 8, uint8(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 

@@ -79,6 +79,7 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataProtocolServicesSupported");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataProtocolServicesSupported _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (protocolServicesSupported)
     lengthInBits += protocolServicesSupported.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataProtocolServicesSupportedBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetServicesSupportedTagged protocolServicesSupported =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataProtocolServicesSupported");
     // Create the instance
-    return new BACnetConstructedDataProtocolServicesSupportedBuilder(
+    return new BACnetConstructedDataProtocolServicesSupportedBuilderImpl(
         protocolServicesSupported, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataProtocolServicesSupportedBuilder
+  public static class BACnetConstructedDataProtocolServicesSupportedBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetServicesSupportedTagged protocolServicesSupported;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataProtocolServicesSupportedBuilder(
+    public BACnetConstructedDataProtocolServicesSupportedBuilderImpl(
         BACnetServicesSupportedTagged protocolServicesSupported,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.protocolServicesSupported = protocolServicesSupported;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

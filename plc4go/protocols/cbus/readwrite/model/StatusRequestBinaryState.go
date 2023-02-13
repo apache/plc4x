@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -108,12 +109,8 @@ func (m *_StatusRequestBinaryState) GetTypeName() string {
 	return "StatusRequestBinaryState"
 }
 
-func (m *_StatusRequestBinaryState) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_StatusRequestBinaryState) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_StatusRequestBinaryState) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Reserved Field (reserved)
 	lengthInBits += 8
@@ -127,15 +124,15 @@ func (m *_StatusRequestBinaryState) GetLengthInBitsConditional(lastItem bool) ui
 	return lengthInBits
 }
 
-func (m *_StatusRequestBinaryState) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_StatusRequestBinaryState) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func StatusRequestBinaryStateParse(theBytes []byte) (StatusRequestBinaryState, error) {
-	return StatusRequestBinaryStateParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return StatusRequestBinaryStateParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func StatusRequestBinaryStateParseWithBuffer(readBuffer utils.ReadBuffer) (StatusRequestBinaryState, error) {
+func StatusRequestBinaryStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestBinaryState, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("StatusRequestBinaryState"); pullErr != nil {
@@ -165,7 +162,7 @@ func StatusRequestBinaryStateParseWithBuffer(readBuffer utils.ReadBuffer) (Statu
 	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for application")
 	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(readBuffer)
+	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
 	if _applicationErr != nil {
 		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestBinaryState")
 	}
@@ -207,14 +204,14 @@ func StatusRequestBinaryStateParseWithBuffer(readBuffer utils.ReadBuffer) (Statu
 }
 
 func (m *_StatusRequestBinaryState) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_StatusRequestBinaryState) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_StatusRequestBinaryState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -242,7 +239,7 @@ func (m *_StatusRequestBinaryState) SerializeWithWriteBuffer(writeBuffer utils.W
 		if pushErr := writeBuffer.PushContext("application"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for application")
 		}
-		_applicationErr := writeBuffer.WriteSerializable(m.GetApplication())
+		_applicationErr := writeBuffer.WriteSerializable(ctx, m.GetApplication())
 		if popErr := writeBuffer.PopContext("application"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for application")
 		}
@@ -271,7 +268,7 @@ func (m *_StatusRequestBinaryState) SerializeWithWriteBuffer(writeBuffer utils.W
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_StatusRequestBinaryState) isStatusRequestBinaryState() bool {
@@ -283,7 +280,7 @@ func (m *_StatusRequestBinaryState) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -58,6 +58,7 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DescriptionRequest");
 
@@ -80,6 +81,7 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DescriptionRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (hpaiControlEndpoint)
     lengthInBits += hpaiControlEndpoint.getLengthInBits();
@@ -87,12 +89,13 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static DescriptionRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("DescriptionRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     HPAIControlEndpoint hpaiControlEndpoint =
         readSimpleField(
@@ -103,14 +106,14 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("DescriptionRequest");
     // Create the instance
-    return new DescriptionRequestBuilder(hpaiControlEndpoint);
+    return new DescriptionRequestBuilderImpl(hpaiControlEndpoint);
   }
 
-  public static class DescriptionRequestBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class DescriptionRequestBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final HPAIControlEndpoint hpaiControlEndpoint;
 
-    public DescriptionRequestBuilder(HPAIControlEndpoint hpaiControlEndpoint) {
-
+    public DescriptionRequestBuilderImpl(HPAIControlEndpoint hpaiControlEndpoint) {
       this.hpaiControlEndpoint = hpaiControlEndpoint;
     }
 

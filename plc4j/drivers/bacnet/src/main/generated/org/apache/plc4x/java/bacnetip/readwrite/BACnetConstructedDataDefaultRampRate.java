@@ -78,6 +78,7 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataDefaultRampRate");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataDefaultRampRate _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (defaultRampRate)
     lengthInBits += defaultRampRate.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataDefaultRampRateBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal defaultRampRate =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
 
     readBuffer.closeContext("BACnetConstructedDataDefaultRampRate");
     // Create the instance
-    return new BACnetConstructedDataDefaultRampRateBuilder(
+    return new BACnetConstructedDataDefaultRampRateBuilderImpl(
         defaultRampRate, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataDefaultRampRateBuilder
+  public static class BACnetConstructedDataDefaultRampRateBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal defaultRampRate;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataDefaultRampRateBuilder(
+    public BACnetConstructedDataDefaultRampRateBuilderImpl(
         BACnetApplicationTagReal defaultRampRate,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.defaultRampRate = defaultRampRate;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

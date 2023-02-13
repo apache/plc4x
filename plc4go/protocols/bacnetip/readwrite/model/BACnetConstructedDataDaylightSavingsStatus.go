@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) GetDaylightSavingsStatus()
 ///////////////////////
 
 func (m *_BACnetConstructedDataDaylightSavingsStatus) GetActualValue() BACnetApplicationTagBoolean {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetApplicationTagBoolean(m.GetDaylightSavingsStatus())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) GetTypeName() string {
 	return "BACnetConstructedDataDaylightSavingsStatus"
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (daylightSavingsStatus)
-	lengthInBits += m.DaylightSavingsStatus.GetLengthInBits()
+	lengthInBits += m.DaylightSavingsStatus.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataDaylightSavingsStatus) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataDaylightSavingsStatusParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDaylightSavingsStatus, error) {
-	return BACnetConstructedDataDaylightSavingsStatusParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataDaylightSavingsStatusParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataDaylightSavingsStatusParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDaylightSavingsStatus, error) {
+func BACnetConstructedDataDaylightSavingsStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDaylightSavingsStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataDaylightSavingsStatus"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataDaylightSavingsStatusParseWithBuffer(readBuffer utils.
 	if pullErr := readBuffer.PullContext("daylightSavingsStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for daylightSavingsStatus")
 	}
-	_daylightSavingsStatus, _daylightSavingsStatusErr := BACnetApplicationTagParseWithBuffer(readBuffer)
+	_daylightSavingsStatus, _daylightSavingsStatusErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
 	if _daylightSavingsStatusErr != nil {
 		return nil, errors.Wrap(_daylightSavingsStatusErr, "Error parsing 'daylightSavingsStatus' field of BACnetConstructedDataDaylightSavingsStatus")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataDaylightSavingsStatusParseWithBuffer(readBuffer utils.
 }
 
 func (m *_BACnetConstructedDataDaylightSavingsStatus) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataDaylightSavingsStatus) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataDaylightSavingsStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) SerializeWithWriteBuffer(w
 		if pushErr := writeBuffer.PushContext("daylightSavingsStatus"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for daylightSavingsStatus")
 		}
-		_daylightSavingsStatusErr := writeBuffer.WriteSerializable(m.GetDaylightSavingsStatus())
+		_daylightSavingsStatusErr := writeBuffer.WriteSerializable(ctx, m.GetDaylightSavingsStatus())
 		if popErr := writeBuffer.PopContext("daylightSavingsStatus"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for daylightSavingsStatus")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) SerializeWithWriteBuffer(w
 			return errors.Wrap(_daylightSavingsStatusErr, "Error serializing 'daylightSavingsStatus' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) SerializeWithWriteBuffer(w
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataDaylightSavingsStatus) isBACnetConstructedDataDaylightSavingsStatus() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataDaylightSavingsStatus) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

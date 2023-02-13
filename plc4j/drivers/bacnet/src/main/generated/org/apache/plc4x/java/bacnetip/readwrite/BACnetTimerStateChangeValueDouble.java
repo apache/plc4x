@@ -63,6 +63,7 @@ public class BACnetTimerStateChangeValueDouble extends BACnetTimerStateChangeVal
   protected void serializeBACnetTimerStateChangeValueChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetTimerStateChangeValueDouble");
 
@@ -81,6 +82,7 @@ public class BACnetTimerStateChangeValueDouble extends BACnetTimerStateChangeVal
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetTimerStateChangeValueDouble _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (doubleValue)
     lengthInBits += doubleValue.getLengthInBits();
@@ -88,12 +90,13 @@ public class BACnetTimerStateChangeValueDouble extends BACnetTimerStateChangeVal
     return lengthInBits;
   }
 
-  public static BACnetTimerStateChangeValueDoubleBuilder staticParseBuilder(
+  public static BACnetTimerStateChangeValueBuilder staticParseBACnetTimerStateChangeValueBuilder(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetTimerStateChangeValueDouble");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagDouble doubleValue =
         readSimpleField(
@@ -104,17 +107,16 @@ public class BACnetTimerStateChangeValueDouble extends BACnetTimerStateChangeVal
 
     readBuffer.closeContext("BACnetTimerStateChangeValueDouble");
     // Create the instance
-    return new BACnetTimerStateChangeValueDoubleBuilder(doubleValue, objectTypeArgument);
+    return new BACnetTimerStateChangeValueDoubleBuilderImpl(doubleValue, objectTypeArgument);
   }
 
-  public static class BACnetTimerStateChangeValueDoubleBuilder
+  public static class BACnetTimerStateChangeValueDoubleBuilderImpl
       implements BACnetTimerStateChangeValue.BACnetTimerStateChangeValueBuilder {
     private final BACnetApplicationTagDouble doubleValue;
     private final BACnetObjectType objectTypeArgument;
 
-    public BACnetTimerStateChangeValueDoubleBuilder(
+    public BACnetTimerStateChangeValueDoubleBuilderImpl(
         BACnetApplicationTagDouble doubleValue, BACnetObjectType objectTypeArgument) {
-
       this.doubleValue = doubleValue;
       this.objectTypeArgument = objectTypeArgument;
     }

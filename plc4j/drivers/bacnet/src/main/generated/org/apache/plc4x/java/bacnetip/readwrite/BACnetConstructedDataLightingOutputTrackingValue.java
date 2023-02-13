@@ -79,6 +79,7 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLightingOutputTrackingValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLightingOutputTrackingValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (trackingValue)
     lengthInBits += trackingValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLightingOutputTrackingValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal trackingValue =
         readSimpleField(
@@ -133,21 +136,20 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
 
     readBuffer.closeContext("BACnetConstructedDataLightingOutputTrackingValue");
     // Create the instance
-    return new BACnetConstructedDataLightingOutputTrackingValueBuilder(
+    return new BACnetConstructedDataLightingOutputTrackingValueBuilderImpl(
         trackingValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLightingOutputTrackingValueBuilder
+  public static class BACnetConstructedDataLightingOutputTrackingValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal trackingValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLightingOutputTrackingValueBuilder(
+    public BACnetConstructedDataLightingOutputTrackingValueBuilderImpl(
         BACnetApplicationTagReal trackingValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.trackingValue = trackingValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

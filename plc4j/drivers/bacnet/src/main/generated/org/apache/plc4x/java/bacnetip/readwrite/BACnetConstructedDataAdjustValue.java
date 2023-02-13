@@ -78,6 +78,7 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataAdjustValue");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataAdjustValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (adjustValue)
     lengthInBits += adjustValue.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataAdjustValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger adjustValue =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataAdjustValue");
     // Create the instance
-    return new BACnetConstructedDataAdjustValueBuilder(adjustValue, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataAdjustValueBuilderImpl(
+        adjustValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataAdjustValueBuilder
+  public static class BACnetConstructedDataAdjustValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger adjustValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataAdjustValueBuilder(
+    public BACnetConstructedDataAdjustValueBuilderImpl(
         BACnetApplicationTagSignedInteger adjustValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.adjustValue = adjustValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

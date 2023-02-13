@@ -79,6 +79,7 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLifeSafetyZoneMaintenanceRequired _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (maintenanceRequired)
     lengthInBits += maintenanceRequired.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagBoolean maintenanceRequired =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
 
     readBuffer.closeContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired");
     // Create the instance
-    return new BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder(
+    return new BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilderImpl(
         maintenanceRequired, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
+  public static class BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagBoolean maintenanceRequired;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder(
+    public BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilderImpl(
         BACnetApplicationTagBoolean maintenanceRequired,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.maintenanceRequired = maintenanceRequired;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

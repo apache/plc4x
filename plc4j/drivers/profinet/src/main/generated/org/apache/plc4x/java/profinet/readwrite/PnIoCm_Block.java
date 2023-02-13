@@ -40,22 +40,8 @@ public abstract class PnIoCm_Block implements Message {
   // Abstract accessors for discriminator values.
   public abstract PnIoCm_BlockType getBlockType();
 
-  // Properties.
-  protected final short blockVersionHigh;
-  protected final short blockVersionLow;
-
-  public PnIoCm_Block(short blockVersionHigh, short blockVersionLow) {
+  public PnIoCm_Block() {
     super();
-    this.blockVersionHigh = blockVersionHigh;
-    this.blockVersionLow = blockVersionLow;
-  }
-
-  public short getBlockVersionHigh() {
-    return blockVersionHigh;
-  }
-
-  public short getBlockVersionLow() {
-    return blockVersionLow;
   }
 
   protected abstract void serializePnIoCm_BlockChild(WriteBuffer writeBuffer)
@@ -63,6 +49,7 @@ public abstract class PnIoCm_Block implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnIoCm_Block");
 
@@ -72,25 +59,7 @@ public abstract class PnIoCm_Block implements Message {
         "PnIoCm_BlockType",
         getBlockType(),
         new DataWriterEnumDefault<>(
-            PnIoCm_BlockType::getValue, PnIoCm_BlockType::name, writeUnsignedInt(writeBuffer, 16)));
-
-    // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
-    // implicitly given by the objects content)
-    int blockLength = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
-
-    // Simple Field (blockVersionHigh)
-    writeSimpleField(
-        "blockVersionHigh",
-        blockVersionHigh,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    // Simple Field (blockVersionLow)
-    writeSimpleField(
-        "blockVersionLow",
-        blockVersionLow,
-        writeUnsignedShort(writeBuffer, 8),
+            PnIoCm_BlockType::getValue, PnIoCm_BlockType::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
@@ -108,18 +77,10 @@ public abstract class PnIoCm_Block implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     PnIoCm_Block _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Discriminator Field (blockType)
     lengthInBits += 16;
-
-    // Implicit Field (blockLength)
-    lengthInBits += 16;
-
-    // Simple field (blockVersionHigh)
-    lengthInBits += 8;
-
-    // Simple field (blockVersionLow)
-    lengthInBits += 8;
 
     // Length of sub-type elements will be added by sub-type...
 
@@ -137,6 +98,7 @@ public abstract class PnIoCm_Block implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     PnIoCm_BlockType blockType =
         readDiscriminatorField(
@@ -145,44 +107,44 @@ public abstract class PnIoCm_Block implements Message {
                 PnIoCm_BlockType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int blockLength =
-        readImplicitField(
-            "blockLength",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    short blockVersionHigh =
-        readSimpleField(
-            "blockVersionHigh",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    short blockVersionLow =
-        readSimpleField(
-            "blockVersionLow",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnIoCm_BlockBuilder builder = null;
-    if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_BLOCK_REQ)) {
-      builder = PnIoCm_Block_ArReq.staticParseBuilder(readBuffer);
+    if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOD_WRITE_REQUEST_HEADER)) {
+      builder = IODWriteRequestHeader.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOD_WRITE_RESPONSE_HEADER)) {
+      builder = IODWriteResponseHeader.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.PD_INTERFACE_ADJUST)) {
+      builder = PDInterfaceAdjust.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.PD_PORT_DATA_CHECK)) {
+      builder = PDPortDataCheck.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.CHECK_PEERS)) {
+      builder = CheckPeers.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_BLOCK_REQ)) {
+      builder = PnIoCm_Block_ArReq.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_BLOCK_RES)) {
-      builder = PnIoCm_Block_ArRes.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_ArRes.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOD_CONTROL_REQ)) {
+      builder = PnIoCm_Control_Request.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOX_BLOCK_REQ)) {
+      builder = PnIoCM_Block_Request.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOX_BLOCK_RES)) {
+      builder = PnIoCM_Block_Response.staticParsePnIoCm_BlockBuilder(readBuffer);
+    } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IOD_CONTROL_RES)) {
+      builder = PnIoCm_Control_Response.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IO_CR_BLOCK_REQ)) {
-      builder = PnIoCm_Block_IoCrReq.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_IoCrReq.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.IO_CR_BLOCK_RES)) {
-      builder = PnIoCm_Block_IoCrRes.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_IoCrRes.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.ALARM_CR_BLOCK_REQ)) {
-      builder = PnIoCm_Block_AlarmCrReq.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_AlarmCrReq.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.ALARM_CR_BLOCK_RES)) {
-      builder = PnIoCm_Block_AlarmCrRes.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_AlarmCrRes.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.EXPECTED_SUBMODULE_BLOCK_REQ)) {
-      builder = PnIoCm_Block_ExpectedSubmoduleReq.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_ExpectedSubmoduleReq.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.MODULE_DIFF_BLOCK)) {
-      builder = PnIoCm_Block_ModuleDiff.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_ModuleDiff.staticParsePnIoCm_BlockBuilder(readBuffer);
     } else if (EvaluationHelper.equals(blockType, PnIoCm_BlockType.AR_SERVER_BLOCK)) {
-      builder = PnIoCm_Block_ArServer.staticParseBuilder(readBuffer);
+      builder = PnIoCm_Block_ArServer.staticParsePnIoCm_BlockBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -195,12 +157,12 @@ public abstract class PnIoCm_Block implements Message {
 
     readBuffer.closeContext("PnIoCm_Block");
     // Create the instance
-    PnIoCm_Block _pnIoCm_Block = builder.build(blockVersionHigh, blockVersionLow);
+    PnIoCm_Block _pnIoCm_Block = builder.build();
     return _pnIoCm_Block;
   }
 
-  public static interface PnIoCm_BlockBuilder {
-    PnIoCm_Block build(short blockVersionHigh, short blockVersionLow);
+  public interface PnIoCm_BlockBuilder {
+    PnIoCm_Block build();
   }
 
   @Override
@@ -212,14 +174,12 @@ public abstract class PnIoCm_Block implements Message {
       return false;
     }
     PnIoCm_Block that = (PnIoCm_Block) o;
-    return (getBlockVersionHigh() == that.getBlockVersionHigh())
-        && (getBlockVersionLow() == that.getBlockVersionLow())
-        && true;
+    return true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getBlockVersionHigh(), getBlockVersionLow());
+    return Objects.hash();
   }
 
   @Override

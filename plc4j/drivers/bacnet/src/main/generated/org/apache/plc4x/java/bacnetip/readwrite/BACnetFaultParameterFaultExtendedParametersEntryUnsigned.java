@@ -57,6 +57,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryUnsigned
   protected void serializeBACnetFaultParameterFaultExtendedParametersEntryChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryUnsigned");
 
@@ -75,6 +76,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryUnsigned
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetFaultParameterFaultExtendedParametersEntryUnsigned _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (unsignedValue)
     lengthInBits += unsignedValue.getLengthInBits();
@@ -82,12 +84,14 @@ public class BACnetFaultParameterFaultExtendedParametersEntryUnsigned
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetFaultParameterFaultExtendedParametersEntryBuilder
+      staticParseBACnetFaultParameterFaultExtendedParametersEntryBuilder(ReadBuffer readBuffer)
+          throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntryUnsigned");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readSimpleField(
@@ -100,17 +104,16 @@ public class BACnetFaultParameterFaultExtendedParametersEntryUnsigned
 
     readBuffer.closeContext("BACnetFaultParameterFaultExtendedParametersEntryUnsigned");
     // Create the instance
-    return new BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder(unsignedValue);
+    return new BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilderImpl(unsignedValue);
   }
 
-  public static class BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
+  public static class BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilderImpl
       implements BACnetFaultParameterFaultExtendedParametersEntry
           .BACnetFaultParameterFaultExtendedParametersEntryBuilder {
     private final BACnetApplicationTagUnsignedInteger unsignedValue;
 
-    public BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder(
+    public BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilderImpl(
         BACnetApplicationTagUnsignedInteger unsignedValue) {
-
       this.unsignedValue = unsignedValue;
     }
 

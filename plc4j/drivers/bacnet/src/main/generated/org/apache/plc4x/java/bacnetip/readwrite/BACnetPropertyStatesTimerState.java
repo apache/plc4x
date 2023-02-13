@@ -56,6 +56,7 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesTimerState");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesTimerState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (timerState)
     lengthInBits += timerState.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesTimerStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesTimerState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTimerStateTagged timerState =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
 
     readBuffer.closeContext("BACnetPropertyStatesTimerState");
     // Create the instance
-    return new BACnetPropertyStatesTimerStateBuilder(timerState);
+    return new BACnetPropertyStatesTimerStateBuilderImpl(timerState);
   }
 
-  public static class BACnetPropertyStatesTimerStateBuilder
+  public static class BACnetPropertyStatesTimerStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetTimerStateTagged timerState;
 
-    public BACnetPropertyStatesTimerStateBuilder(BACnetTimerStateTagged timerState) {
-
+    public BACnetPropertyStatesTimerStateBuilderImpl(BACnetTimerStateTagged timerState) {
       this.timerState = timerState;
     }
 

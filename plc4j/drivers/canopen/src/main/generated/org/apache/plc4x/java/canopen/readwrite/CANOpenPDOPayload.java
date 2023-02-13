@@ -58,6 +58,7 @@ public class CANOpenPDOPayload extends CANOpenPayload implements Message {
   protected void serializeCANOpenPayloadChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CANOpenPDOPayload");
 
@@ -76,6 +77,7 @@ public class CANOpenPDOPayload extends CANOpenPayload implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     CANOpenPDOPayload _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (pdo)
     lengthInBits += pdo.getLengthInBits();
@@ -83,12 +85,13 @@ public class CANOpenPDOPayload extends CANOpenPayload implements Message {
     return lengthInBits;
   }
 
-  public static CANOpenPDOPayloadBuilder staticParseBuilder(
+  public static CANOpenPayloadBuilder staticParseCANOpenPayloadBuilder(
       ReadBuffer readBuffer, CANOpenService service) throws ParseException {
     readBuffer.pullContext("CANOpenPDOPayload");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CANOpenPDO pdo =
         readSimpleField(
@@ -97,14 +100,13 @@ public class CANOpenPDOPayload extends CANOpenPayload implements Message {
 
     readBuffer.closeContext("CANOpenPDOPayload");
     // Create the instance
-    return new CANOpenPDOPayloadBuilder(pdo);
+    return new CANOpenPDOPayloadBuilderImpl(pdo);
   }
 
-  public static class CANOpenPDOPayloadBuilder implements CANOpenPayload.CANOpenPayloadBuilder {
+  public static class CANOpenPDOPayloadBuilderImpl implements CANOpenPayload.CANOpenPayloadBuilder {
     private final CANOpenPDO pdo;
 
-    public CANOpenPDOPayloadBuilder(CANOpenPDO pdo) {
-
+    public CANOpenPDOPayloadBuilderImpl(CANOpenPDO pdo) {
       this.pdo = pdo;
     }
 

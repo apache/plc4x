@@ -80,6 +80,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("NotificationMessage");
 
@@ -107,6 +108,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     NotificationMessage _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (sequenceNumber)
     lengthInBits += 32;
@@ -121,7 +123,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
     if (notificationData != null) {
       int i = 0;
       for (ExtensionObject element : notificationData) {
-        boolean last = ++i >= notificationData.size();
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= notificationData.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -129,12 +131,13 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
     return lengthInBits;
   }
 
-  public static NotificationMessageBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("NotificationMessage");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long sequenceNumber = readSimpleField("sequenceNumber", readUnsignedLong(readBuffer, 32));
 
@@ -152,23 +155,22 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
 
     readBuffer.closeContext("NotificationMessage");
     // Create the instance
-    return new NotificationMessageBuilder(
+    return new NotificationMessageBuilderImpl(
         sequenceNumber, publishTime, noOfNotificationData, notificationData);
   }
 
-  public static class NotificationMessageBuilder
+  public static class NotificationMessageBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long sequenceNumber;
     private final long publishTime;
     private final int noOfNotificationData;
     private final List<ExtensionObject> notificationData;
 
-    public NotificationMessageBuilder(
+    public NotificationMessageBuilderImpl(
         long sequenceNumber,
         long publishTime,
         int noOfNotificationData,
         List<ExtensionObject> notificationData) {
-
       this.sequenceNumber = sequenceNumber;
       this.publishTime = publishTime;
       this.noOfNotificationData = noOfNotificationData;

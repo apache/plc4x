@@ -80,6 +80,7 @@ public abstract class BACnetNotificationParametersChangeOfValueNewValue implemen
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfValueNewValue");
 
@@ -108,6 +109,7 @@ public abstract class BACnetNotificationParametersChangeOfValueNewValue implemen
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetNotificationParametersChangeOfValueNewValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (openingTag)
     lengthInBits += openingTag.getLengthInBits();
@@ -148,6 +150,7 @@ public abstract class BACnetNotificationParametersChangeOfValueNewValue implemen
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOpeningTag openingTag =
         readSimpleField(
@@ -167,12 +170,14 @@ public abstract class BACnetNotificationParametersChangeOfValueNewValue implemen
     BACnetNotificationParametersChangeOfValueNewValueBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
       builder =
-          BACnetNotificationParametersChangeOfValueNewValueChangedBits.staticParseBuilder(
-              readBuffer, tagNumber, peekedTagNumber);
+          BACnetNotificationParametersChangeOfValueNewValueChangedBits
+              .staticParseBACnetNotificationParametersChangeOfValueNewValueBuilder(
+                  readBuffer, peekedTagNumber, tagNumber);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
       builder =
-          BACnetNotificationParametersChangeOfValueNewValueChangedValue.staticParseBuilder(
-              readBuffer, tagNumber, peekedTagNumber);
+          BACnetNotificationParametersChangeOfValueNewValueChangedValue
+              .staticParseBACnetNotificationParametersChangeOfValueNewValueBuilder(
+                  readBuffer, peekedTagNumber, tagNumber);
     }
     if (builder == null) {
       throw new ParseException(
@@ -197,7 +202,7 @@ public abstract class BACnetNotificationParametersChangeOfValueNewValue implemen
     return _bACnetNotificationParametersChangeOfValueNewValue;
   }
 
-  public static interface BACnetNotificationParametersChangeOfValueNewValueBuilder {
+  public interface BACnetNotificationParametersChangeOfValueNewValueBuilder {
     BACnetNotificationParametersChangeOfValueNewValue build(
         BACnetOpeningTag openingTag,
         BACnetTagHeader peekedTagHeader,

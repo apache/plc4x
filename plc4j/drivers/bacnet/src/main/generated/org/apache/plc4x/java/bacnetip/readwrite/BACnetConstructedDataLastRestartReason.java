@@ -79,6 +79,7 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataLastRestartReason");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataLastRestartReason _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (lastRestartReason)
     lengthInBits += lastRestartReason.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataLastRestartReasonBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetRestartReasonTagged lastRestartReason =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
 
     readBuffer.closeContext("BACnetConstructedDataLastRestartReason");
     // Create the instance
-    return new BACnetConstructedDataLastRestartReasonBuilder(
+    return new BACnetConstructedDataLastRestartReasonBuilderImpl(
         lastRestartReason, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataLastRestartReasonBuilder
+  public static class BACnetConstructedDataLastRestartReasonBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetRestartReasonTagged lastRestartReason;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataLastRestartReasonBuilder(
+    public BACnetConstructedDataLastRestartReasonBuilderImpl(
         BACnetRestartReasonTagged lastRestartReason,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.lastRestartReason = lastRestartReason;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

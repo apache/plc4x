@@ -49,6 +49,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
   protected final int sequenceId;
   protected final long delayInNs;
   protected final MacAddress portMacAddress;
+
   // Reserved Fields
   private Long reservedField0;
   private Long reservedField1;
@@ -94,6 +95,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
   @Override
   protected void serializePnDcp_PduChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PcDcp_Pdu_DelayReq");
 
@@ -101,46 +103,78 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (long) 0x00000000,
-        writeUnsignedLong(writeBuffer, 32));
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (long) 0x00000000,
-        writeUnsignedLong(writeBuffer, 32));
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField2 != null ? reservedField2 : (long) 0x00000000,
-        writeUnsignedLong(writeBuffer, 32));
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (sequenceId)
-    writeSimpleField("sequenceId", sequenceId, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "sequenceId",
+        sequenceId,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField3 != null ? reservedField3 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (delayInNs)
-    writeSimpleField("delayInNs", delayInNs, writeUnsignedLong(writeBuffer, 32));
+    writeSimpleField(
+        "delayInNs",
+        delayInNs,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (parameterType)
-    writeConstField("parameterType", PARAMETERTYPE, writeUnsignedShort(writeBuffer, 7));
+    writeConstField(
+        "parameterType",
+        PARAMETERTYPE,
+        writeUnsignedShort(writeBuffer, 7),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (parameterLength)
-    writeConstField("parameterLength", PARAMETERLENGTH, writeUnsignedInt(writeBuffer, 9));
+    writeConstField(
+        "parameterLength",
+        PARAMETERLENGTH,
+        writeUnsignedInt(writeBuffer, 9),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (portMacAddress)
-    writeSimpleField("portMacAddress", portMacAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField(
+        "portMacAddress",
+        portMacAddress,
+        new DataWriterComplexDefault<>(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (endType)
-    writeConstField("endType", ENDTYPE, writeUnsignedShort(writeBuffer, 7));
+    writeConstField(
+        "endType",
+        ENDTYPE,
+        writeUnsignedShort(writeBuffer, 7),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (endLength)
-    writeConstField("endLength", ENDLENGTH, writeUnsignedInt(writeBuffer, 9));
+    writeConstField(
+        "endLength",
+        ENDLENGTH,
+        writeUnsignedInt(writeBuffer, 9),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PcDcp_Pdu_DelayReq");
   }
@@ -154,6 +188,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PcDcp_Pdu_DelayReq _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 32;
@@ -191,51 +226,91 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     return lengthInBits;
   }
 
-  public static PcDcp_Pdu_DelayReqBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static PnDcp_PduBuilder staticParsePnDcp_PduBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PcDcp_Pdu_DelayReq");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Long reservedField0 =
-        readReservedField("reserved", readUnsignedLong(readBuffer, 32), (long) 0x00000000);
+        readReservedField(
+            "reserved",
+            readUnsignedLong(readBuffer, 32),
+            (long) 0x00000000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Long reservedField1 =
-        readReservedField("reserved", readUnsignedLong(readBuffer, 32), (long) 0x00000000);
+        readReservedField(
+            "reserved",
+            readUnsignedLong(readBuffer, 32),
+            (long) 0x00000000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Long reservedField2 =
-        readReservedField("reserved", readUnsignedLong(readBuffer, 32), (long) 0x00000000);
+        readReservedField(
+            "reserved",
+            readUnsignedLong(readBuffer, 32),
+            (long) 0x00000000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int sequenceId = readSimpleField("sequenceId", readUnsignedInt(readBuffer, 16));
+    int sequenceId =
+        readSimpleField(
+            "sequenceId",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Integer reservedField3 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
+        readReservedField(
+            "reserved",
+            readUnsignedInt(readBuffer, 16),
+            (int) 0x0000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    long delayInNs = readSimpleField("delayInNs", readUnsignedLong(readBuffer, 32));
+    long delayInNs =
+        readSimpleField(
+            "delayInNs",
+            readUnsignedLong(readBuffer, 32),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     short parameterType =
         readConstField(
-            "parameterType", readUnsignedShort(readBuffer, 7), PcDcp_Pdu_DelayReq.PARAMETERTYPE);
+            "parameterType",
+            readUnsignedShort(readBuffer, 7),
+            PcDcp_Pdu_DelayReq.PARAMETERTYPE,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int parameterLength =
         readConstField(
-            "parameterLength", readUnsignedInt(readBuffer, 9), PcDcp_Pdu_DelayReq.PARAMETERLENGTH);
+            "parameterLength",
+            readUnsignedInt(readBuffer, 9),
+            PcDcp_Pdu_DelayReq.PARAMETERLENGTH,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     MacAddress portMacAddress =
         readSimpleField(
             "portMacAddress",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer));
+            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     short endType =
-        readConstField("endType", readUnsignedShort(readBuffer, 7), PcDcp_Pdu_DelayReq.ENDTYPE);
+        readConstField(
+            "endType",
+            readUnsignedShort(readBuffer, 7),
+            PcDcp_Pdu_DelayReq.ENDTYPE,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int endLength =
-        readConstField("endLength", readUnsignedInt(readBuffer, 9), PcDcp_Pdu_DelayReq.ENDLENGTH);
+        readConstField(
+            "endLength",
+            readUnsignedInt(readBuffer, 9),
+            PcDcp_Pdu_DelayReq.ENDLENGTH,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PcDcp_Pdu_DelayReq");
     // Create the instance
-    return new PcDcp_Pdu_DelayReqBuilder(
+    return new PcDcp_Pdu_DelayReqBuilderImpl(
         sequenceId,
         delayInNs,
         portMacAddress,
@@ -245,7 +320,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
         reservedField3);
   }
 
-  public static class PcDcp_Pdu_DelayReqBuilder implements PnDcp_Pdu.PnDcp_PduBuilder {
+  public static class PcDcp_Pdu_DelayReqBuilderImpl implements PnDcp_Pdu.PnDcp_PduBuilder {
     private final int sequenceId;
     private final long delayInNs;
     private final MacAddress portMacAddress;
@@ -254,7 +329,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     private final Long reservedField2;
     private final Integer reservedField3;
 
-    public PcDcp_Pdu_DelayReqBuilder(
+    public PcDcp_Pdu_DelayReqBuilderImpl(
         int sequenceId,
         long delayInNs,
         MacAddress portMacAddress,

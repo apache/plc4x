@@ -42,17 +42,14 @@ public class MFuncPropStateReadReq extends CEMI implements Message {
     return (short) 0xF9;
   }
 
-  // Arguments.
-  protected final Integer size;
-
-  public MFuncPropStateReadReq(Integer size) {
-    super(size);
-    this.size = size;
+  public MFuncPropStateReadReq() {
+    super();
   }
 
   @Override
   protected void serializeCEMIChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("MFuncPropStateReadReq");
 
@@ -68,34 +65,30 @@ public class MFuncPropStateReadReq extends CEMI implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     MFuncPropStateReadReq _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static MFuncPropStateReadReqBuilder staticParseBuilder(ReadBuffer readBuffer, Integer size)
+  public static CEMIBuilder staticParseCEMIBuilder(ReadBuffer readBuffer, Integer size)
       throws ParseException {
     readBuffer.pullContext("MFuncPropStateReadReq");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("MFuncPropStateReadReq");
     // Create the instance
-    return new MFuncPropStateReadReqBuilder(size);
+    return new MFuncPropStateReadReqBuilderImpl();
   }
 
-  public static class MFuncPropStateReadReqBuilder implements CEMI.CEMIBuilder {
-    private final Integer size;
+  public static class MFuncPropStateReadReqBuilderImpl implements CEMI.CEMIBuilder {
 
-    public MFuncPropStateReadReqBuilder(Integer size) {
+    public MFuncPropStateReadReqBuilderImpl() {}
 
-      this.size = size;
-    }
-
-    public MFuncPropStateReadReq build(Integer size) {
-
-      MFuncPropStateReadReq mFuncPropStateReadReq = new MFuncPropStateReadReq(size);
-
+    public MFuncPropStateReadReq build() {
+      MFuncPropStateReadReq mFuncPropStateReadReq = new MFuncPropStateReadReq();
       return mFuncPropStateReadReq;
     }
   }

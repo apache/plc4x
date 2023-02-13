@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -130,12 +131,8 @@ func (m *_CBusCommandDeviceManagement) GetTypeName() string {
 	return "CBusCommandDeviceManagement"
 }
 
-func (m *_CBusCommandDeviceManagement) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_CBusCommandDeviceManagement) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_CBusCommandDeviceManagement) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (paramNo)
 	lengthInBits += 8
@@ -149,15 +146,15 @@ func (m *_CBusCommandDeviceManagement) GetLengthInBitsConditional(lastItem bool)
 	return lengthInBits
 }
 
-func (m *_CBusCommandDeviceManagement) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_CBusCommandDeviceManagement) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func CBusCommandDeviceManagementParse(theBytes []byte, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
-	return CBusCommandDeviceManagementParseWithBuffer(utils.NewReadBufferByteBased(theBytes), cBusOptions)
+	return CBusCommandDeviceManagementParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
-func CBusCommandDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
+func CBusCommandDeviceManagementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CBusCommandDeviceManagement"); pullErr != nil {
@@ -170,7 +167,7 @@ func CBusCommandDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer, cBu
 	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
 	}
-	_paramNo, _paramNoErr := ParameterParseWithBuffer(readBuffer)
+	_paramNo, _paramNoErr := ParameterParseWithBuffer(ctx, readBuffer)
 	if _paramNoErr != nil {
 		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CBusCommandDeviceManagement")
 	}
@@ -212,14 +209,14 @@ func CBusCommandDeviceManagementParseWithBuffer(readBuffer utils.ReadBuffer, cBu
 }
 
 func (m *_CBusCommandDeviceManagement) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_CBusCommandDeviceManagement) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_CBusCommandDeviceManagement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -231,7 +228,7 @@ func (m *_CBusCommandDeviceManagement) SerializeWithWriteBuffer(writeBuffer util
 		if pushErr := writeBuffer.PushContext("paramNo"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for paramNo")
 		}
-		_paramNoErr := writeBuffer.WriteSerializable(m.GetParamNo())
+		_paramNoErr := writeBuffer.WriteSerializable(ctx, m.GetParamNo())
 		if popErr := writeBuffer.PopContext("paramNo"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for paramNo")
 		}
@@ -257,7 +254,7 @@ func (m *_CBusCommandDeviceManagement) SerializeWithWriteBuffer(writeBuffer util
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_CBusCommandDeviceManagement) isCBusCommandDeviceManagement() bool {
@@ -269,7 +266,7 @@ func (m *_CBusCommandDeviceManagement) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

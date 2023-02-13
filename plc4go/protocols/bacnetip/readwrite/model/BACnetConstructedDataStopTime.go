@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -97,6 +98,8 @@ func (m *_BACnetConstructedDataStopTime) GetStopTime() BACnetDateTime {
 ///////////////////////
 
 func (m *_BACnetConstructedDataStopTime) GetActualValue() BACnetDateTime {
+	ctx := context.Background()
+	_ = ctx
 	return CastBACnetDateTime(m.GetStopTime())
 }
 
@@ -130,30 +133,26 @@ func (m *_BACnetConstructedDataStopTime) GetTypeName() string {
 	return "BACnetConstructedDataStopTime"
 }
 
-func (m *_BACnetConstructedDataStopTime) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetConstructedDataStopTime) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetConstructedDataStopTime) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (stopTime)
-	lengthInBits += m.StopTime.GetLengthInBits()
+	lengthInBits += m.StopTime.GetLengthInBits(ctx)
 
 	// A virtual field doesn't have any in- or output.
 
 	return lengthInBits
 }
 
-func (m *_BACnetConstructedDataStopTime) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetConstructedDataStopTime) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetConstructedDataStopTimeParse(theBytes []byte, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopTime, error) {
-	return BACnetConstructedDataStopTimeParseWithBuffer(utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	return BACnetConstructedDataStopTimeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
-func BACnetConstructedDataStopTimeParseWithBuffer(readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopTime, error) {
+func BACnetConstructedDataStopTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStopTime"); pullErr != nil {
@@ -166,7 +165,7 @@ func BACnetConstructedDataStopTimeParseWithBuffer(readBuffer utils.ReadBuffer, t
 	if pullErr := readBuffer.PullContext("stopTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for stopTime")
 	}
-	_stopTime, _stopTimeErr := BACnetDateTimeParseWithBuffer(readBuffer)
+	_stopTime, _stopTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
 	if _stopTimeErr != nil {
 		return nil, errors.Wrap(_stopTimeErr, "Error parsing 'stopTime' field of BACnetConstructedDataStopTime")
 	}
@@ -197,14 +196,14 @@ func BACnetConstructedDataStopTimeParseWithBuffer(readBuffer utils.ReadBuffer, t
 }
 
 func (m *_BACnetConstructedDataStopTime) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetConstructedDataStopTime) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetConstructedDataStopTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -216,7 +215,7 @@ func (m *_BACnetConstructedDataStopTime) SerializeWithWriteBuffer(writeBuffer ut
 		if pushErr := writeBuffer.PushContext("stopTime"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for stopTime")
 		}
-		_stopTimeErr := writeBuffer.WriteSerializable(m.GetStopTime())
+		_stopTimeErr := writeBuffer.WriteSerializable(ctx, m.GetStopTime())
 		if popErr := writeBuffer.PopContext("stopTime"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for stopTime")
 		}
@@ -224,7 +223,7 @@ func (m *_BACnetConstructedDataStopTime) SerializeWithWriteBuffer(writeBuffer ut
 			return errors.Wrap(_stopTimeErr, "Error serializing 'stopTime' field")
 		}
 		// Virtual field
-		if _actualValueErr := writeBuffer.WriteVirtual("actualValue", m.GetActualValue()); _actualValueErr != nil {
+		if _actualValueErr := writeBuffer.WriteVirtual(ctx, "actualValue", m.GetActualValue()); _actualValueErr != nil {
 			return errors.Wrap(_actualValueErr, "Error serializing 'actualValue' field")
 		}
 
@@ -233,7 +232,7 @@ func (m *_BACnetConstructedDataStopTime) SerializeWithWriteBuffer(writeBuffer ut
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetConstructedDataStopTime) isBACnetConstructedDataStopTime() bool {
@@ -245,7 +244,7 @@ func (m *_BACnetConstructedDataStopTime) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

@@ -56,6 +56,7 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
   protected void serializeBACnetPropertyStatesChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetPropertyStatesSilencedState");
 
@@ -74,6 +75,7 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetPropertyStatesSilencedState _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (silencedState)
     lengthInBits += silencedState.getLengthInBits();
@@ -81,12 +83,13 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
     return lengthInBits;
   }
 
-  public static BACnetPropertyStatesSilencedStateBuilder staticParseBuilder(
+  public static BACnetPropertyStatesBuilder staticParseBACnetPropertyStatesBuilder(
       ReadBuffer readBuffer, Short peekedTagNumber) throws ParseException {
     readBuffer.pullContext("BACnetPropertyStatesSilencedState");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetSilencedStateTagged silencedState =
         readSimpleField(
@@ -101,15 +104,14 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
 
     readBuffer.closeContext("BACnetPropertyStatesSilencedState");
     // Create the instance
-    return new BACnetPropertyStatesSilencedStateBuilder(silencedState);
+    return new BACnetPropertyStatesSilencedStateBuilderImpl(silencedState);
   }
 
-  public static class BACnetPropertyStatesSilencedStateBuilder
+  public static class BACnetPropertyStatesSilencedStateBuilderImpl
       implements BACnetPropertyStates.BACnetPropertyStatesBuilder {
     private final BACnetSilencedStateTagged silencedState;
 
-    public BACnetPropertyStatesSilencedStateBuilder(BACnetSilencedStateTagged silencedState) {
-
+    public BACnetPropertyStatesSilencedStateBuilderImpl(BACnetSilencedStateTagged silencedState) {
       this.silencedState = silencedState;
     }
 

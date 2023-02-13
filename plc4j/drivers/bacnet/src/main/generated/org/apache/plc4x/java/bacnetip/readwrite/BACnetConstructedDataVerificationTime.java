@@ -79,6 +79,7 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataVerificationTime");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataVerificationTime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (verificationTime)
     lengthInBits += verificationTime.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataVerificationTimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger verificationTime =
         readSimpleField(
@@ -136,21 +139,20 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataVerificationTime");
     // Create the instance
-    return new BACnetConstructedDataVerificationTimeBuilder(
+    return new BACnetConstructedDataVerificationTimeBuilderImpl(
         verificationTime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataVerificationTimeBuilder
+  public static class BACnetConstructedDataVerificationTimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagSignedInteger verificationTime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataVerificationTimeBuilder(
+    public BACnetConstructedDataVerificationTimeBuilderImpl(
         BACnetApplicationTagSignedInteger verificationTime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.verificationTime = verificationTime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -79,6 +79,7 @@ public class BACnetConstructedDataRequestedUpdateInterval extends BACnetConstruc
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataRequestedUpdateInterval");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataRequestedUpdateInterval extends BACnetConstruc
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataRequestedUpdateInterval _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (requestedUpdateInterval)
     lengthInBits += requestedUpdateInterval.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataRequestedUpdateInterval extends BACnetConstruc
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataRequestedUpdateIntervalBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataRequestedUpdateInterval extends BACnetConstruc
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger requestedUpdateInterval =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataRequestedUpdateInterval extends BACnetConstruc
 
     readBuffer.closeContext("BACnetConstructedDataRequestedUpdateInterval");
     // Create the instance
-    return new BACnetConstructedDataRequestedUpdateIntervalBuilder(
+    return new BACnetConstructedDataRequestedUpdateIntervalBuilderImpl(
         requestedUpdateInterval, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataRequestedUpdateIntervalBuilder
+  public static class BACnetConstructedDataRequestedUpdateIntervalBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger requestedUpdateInterval;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataRequestedUpdateIntervalBuilder(
+    public BACnetConstructedDataRequestedUpdateIntervalBuilderImpl(
         BACnetApplicationTagUnsignedInteger requestedUpdateInterval,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.requestedUpdateInterval = requestedUpdateInterval;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

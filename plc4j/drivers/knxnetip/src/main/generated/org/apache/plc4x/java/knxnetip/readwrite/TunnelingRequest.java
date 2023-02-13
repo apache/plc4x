@@ -46,15 +46,10 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
   protected final TunnelingRequestDataBlock tunnelingRequestDataBlock;
   protected final CEMI cemi;
 
-  // Arguments.
-  protected final Integer totalLength;
-
-  public TunnelingRequest(
-      TunnelingRequestDataBlock tunnelingRequestDataBlock, CEMI cemi, Integer totalLength) {
+  public TunnelingRequest(TunnelingRequestDataBlock tunnelingRequestDataBlock, CEMI cemi) {
     super();
     this.tunnelingRequestDataBlock = tunnelingRequestDataBlock;
     this.cemi = cemi;
-    this.totalLength = totalLength;
   }
 
   public TunnelingRequestDataBlock getTunnelingRequestDataBlock() {
@@ -69,6 +64,7 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("TunnelingRequest");
 
@@ -98,6 +94,7 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     TunnelingRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (tunnelingRequestDataBlock)
     lengthInBits += tunnelingRequestDataBlock.getLengthInBits();
@@ -108,12 +105,13 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static TunnelingRequestBuilder staticParseBuilder(
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(
       ReadBuffer readBuffer, Integer totalLength) throws ParseException {
     readBuffer.pullContext("TunnelingRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     TunnelingRequestDataBlock tunnelingRequestDataBlock =
         readSimpleField(
@@ -137,25 +135,22 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("TunnelingRequest");
     // Create the instance
-    return new TunnelingRequestBuilder(tunnelingRequestDataBlock, cemi, totalLength);
+    return new TunnelingRequestBuilderImpl(tunnelingRequestDataBlock, cemi);
   }
 
-  public static class TunnelingRequestBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class TunnelingRequestBuilderImpl
+      implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final TunnelingRequestDataBlock tunnelingRequestDataBlock;
     private final CEMI cemi;
-    private final Integer totalLength;
 
-    public TunnelingRequestBuilder(
-        TunnelingRequestDataBlock tunnelingRequestDataBlock, CEMI cemi, Integer totalLength) {
-
+    public TunnelingRequestBuilderImpl(
+        TunnelingRequestDataBlock tunnelingRequestDataBlock, CEMI cemi) {
       this.tunnelingRequestDataBlock = tunnelingRequestDataBlock;
       this.cemi = cemi;
-      this.totalLength = totalLength;
     }
 
     public TunnelingRequest build() {
-      TunnelingRequest tunnelingRequest =
-          new TunnelingRequest(tunnelingRequestDataBlock, cemi, totalLength);
+      TunnelingRequest tunnelingRequest = new TunnelingRequest(tunnelingRequestDataBlock, cemi);
       return tunnelingRequest;
     }
   }

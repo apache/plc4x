@@ -79,6 +79,7 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFullDutyBaseline");
 
@@ -102,6 +103,7 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFullDutyBaseline _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fullDutyBaseLine)
     lengthInBits += fullDutyBaseLine.getLengthInBits();
@@ -111,7 +113,7 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFullDutyBaselineBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -122,6 +124,7 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagReal fullDutyBaseLine =
         readSimpleField(
@@ -134,21 +137,20 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
 
     readBuffer.closeContext("BACnetConstructedDataFullDutyBaseline");
     // Create the instance
-    return new BACnetConstructedDataFullDutyBaselineBuilder(
+    return new BACnetConstructedDataFullDutyBaselineBuilderImpl(
         fullDutyBaseLine, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFullDutyBaselineBuilder
+  public static class BACnetConstructedDataFullDutyBaselineBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagReal fullDutyBaseLine;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFullDutyBaselineBuilder(
+    public BACnetConstructedDataFullDutyBaselineBuilderImpl(
         BACnetApplicationTagReal fullDutyBaseLine,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fullDutyBaseLine = fullDutyBaseLine;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -60,6 +60,7 @@ public abstract class BACnetValueSource implements Message {
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetValueSource");
 
@@ -82,6 +83,7 @@ public abstract class BACnetValueSource implements Message {
   public int getLengthInBits() {
     int lengthInBits = 0;
     BACnetValueSource _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // A virtual field doesn't have any in- or output.
 
@@ -101,6 +103,7 @@ public abstract class BACnetValueSource implements Message {
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
@@ -113,11 +116,11 @@ public abstract class BACnetValueSource implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     BACnetValueSourceBuilder builder = null;
     if (EvaluationHelper.equals(peekedTagNumber, (short) 0)) {
-      builder = BACnetValueSourceNone.staticParseBuilder(readBuffer);
+      builder = BACnetValueSourceNone.staticParseBACnetValueSourceBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 1)) {
-      builder = BACnetValueSourceObject.staticParseBuilder(readBuffer);
+      builder = BACnetValueSourceObject.staticParseBACnetValueSourceBuilder(readBuffer);
     } else if (EvaluationHelper.equals(peekedTagNumber, (short) 2)) {
-      builder = BACnetValueSourceAddress.staticParseBuilder(readBuffer);
+      builder = BACnetValueSourceAddress.staticParseBACnetValueSourceBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -134,7 +137,7 @@ public abstract class BACnetValueSource implements Message {
     return _bACnetValueSource;
   }
 
-  public static interface BACnetValueSourceBuilder {
+  public interface BACnetValueSourceBuilder {
     BACnetValueSource build(BACnetTagHeader peekedTagHeader);
   }
 

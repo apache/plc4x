@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,28 +106,24 @@ func (m *_BACnetPropertyStatesProtocolLevel) GetTypeName() string {
 	return "BACnetPropertyStatesProtocolLevel"
 }
 
-func (m *_BACnetPropertyStatesProtocolLevel) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_BACnetPropertyStatesProtocolLevel) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_BACnetPropertyStatesProtocolLevel) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	// Simple field (protocolLevel)
-	lengthInBits += m.ProtocolLevel.GetLengthInBits()
+	lengthInBits += m.ProtocolLevel.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_BACnetPropertyStatesProtocolLevel) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_BACnetPropertyStatesProtocolLevel) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func BACnetPropertyStatesProtocolLevelParse(theBytes []byte, peekedTagNumber uint8) (BACnetPropertyStatesProtocolLevel, error) {
-	return BACnetPropertyStatesProtocolLevelParseWithBuffer(utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
+	return BACnetPropertyStatesProtocolLevelParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
-func BACnetPropertyStatesProtocolLevelParseWithBuffer(readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesProtocolLevel, error) {
+func BACnetPropertyStatesProtocolLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesProtocolLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesProtocolLevel"); pullErr != nil {
@@ -139,7 +136,7 @@ func BACnetPropertyStatesProtocolLevelParseWithBuffer(readBuffer utils.ReadBuffe
 	if pullErr := readBuffer.PullContext("protocolLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for protocolLevel")
 	}
-	_protocolLevel, _protocolLevelErr := BACnetProtocolLevelTaggedParseWithBuffer(readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
+	_protocolLevel, _protocolLevelErr := BACnetProtocolLevelTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
 	if _protocolLevelErr != nil {
 		return nil, errors.Wrap(_protocolLevelErr, "Error parsing 'protocolLevel' field of BACnetPropertyStatesProtocolLevel")
 	}
@@ -162,14 +159,14 @@ func BACnetPropertyStatesProtocolLevelParseWithBuffer(readBuffer utils.ReadBuffe
 }
 
 func (m *_BACnetPropertyStatesProtocolLevel) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_BACnetPropertyStatesProtocolLevel) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_BACnetPropertyStatesProtocolLevel) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -181,7 +178,7 @@ func (m *_BACnetPropertyStatesProtocolLevel) SerializeWithWriteBuffer(writeBuffe
 		if pushErr := writeBuffer.PushContext("protocolLevel"); pushErr != nil {
 			return errors.Wrap(pushErr, "Error pushing for protocolLevel")
 		}
-		_protocolLevelErr := writeBuffer.WriteSerializable(m.GetProtocolLevel())
+		_protocolLevelErr := writeBuffer.WriteSerializable(ctx, m.GetProtocolLevel())
 		if popErr := writeBuffer.PopContext("protocolLevel"); popErr != nil {
 			return errors.Wrap(popErr, "Error popping for protocolLevel")
 		}
@@ -194,7 +191,7 @@ func (m *_BACnetPropertyStatesProtocolLevel) SerializeWithWriteBuffer(writeBuffe
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_BACnetPropertyStatesProtocolLevel) isBACnetPropertyStatesProtocolLevel() bool {
@@ -206,7 +203,7 @@ func (m *_BACnetPropertyStatesProtocolLevel) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

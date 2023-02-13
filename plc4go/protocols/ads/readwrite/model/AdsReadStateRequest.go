@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -100,25 +101,21 @@ func (m *_AdsReadStateRequest) GetTypeName() string {
 	return "AdsReadStateRequest"
 }
 
-func (m *_AdsReadStateRequest) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_AdsReadStateRequest) GetLengthInBitsConditional(lastItem bool) uint16 {
-	lengthInBits := uint16(m.GetParentLengthInBits())
+func (m *_AdsReadStateRequest) GetLengthInBits(ctx context.Context) uint16 {
+	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
 	return lengthInBits
 }
 
-func (m *_AdsReadStateRequest) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_AdsReadStateRequest) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func AdsReadStateRequestParse(theBytes []byte) (AdsReadStateRequest, error) {
-	return AdsReadStateRequestParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return AdsReadStateRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AdsReadStateRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadStateRequest, error) {
+func AdsReadStateRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadStateRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AdsReadStateRequest"); pullErr != nil {
@@ -140,14 +137,14 @@ func AdsReadStateRequestParseWithBuffer(readBuffer utils.ReadBuffer) (AdsReadSta
 }
 
 func (m *_AdsReadStateRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_AdsReadStateRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_AdsReadStateRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	ser := func() error {
@@ -160,7 +157,7 @@ func (m *_AdsReadStateRequest) SerializeWithWriteBuffer(writeBuffer utils.WriteB
 		}
 		return nil
 	}
-	return m.SerializeParent(writeBuffer, m, ser)
+	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
 
 func (m *_AdsReadStateRequest) isAdsReadStateRequest() bool {
@@ -172,7 +169,7 @@ func (m *_AdsReadStateRequest) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

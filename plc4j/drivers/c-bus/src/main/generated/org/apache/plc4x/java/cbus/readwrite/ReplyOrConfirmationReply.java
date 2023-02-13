@@ -72,6 +72,7 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
   protected void serializeReplyOrConfirmationChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ReplyOrConfirmationReply");
 
@@ -93,6 +94,7 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ReplyOrConfirmationReply _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (reply)
     lengthInBits += reply.getLengthInBits();
@@ -103,13 +105,14 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
     return lengthInBits;
   }
 
-  public static ReplyOrConfirmationReplyBuilder staticParseBuilder(
+  public static ReplyOrConfirmationBuilder staticParseReplyOrConfirmationBuilder(
       ReadBuffer readBuffer, CBusOptions cBusOptions, RequestContext requestContext)
       throws ParseException {
     readBuffer.pullContext("ReplyOrConfirmationReply");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Reply reply =
         readSimpleField(
@@ -128,22 +131,21 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
 
     readBuffer.closeContext("ReplyOrConfirmationReply");
     // Create the instance
-    return new ReplyOrConfirmationReplyBuilder(reply, termination, cBusOptions, requestContext);
+    return new ReplyOrConfirmationReplyBuilderImpl(reply, termination, cBusOptions, requestContext);
   }
 
-  public static class ReplyOrConfirmationReplyBuilder
+  public static class ReplyOrConfirmationReplyBuilderImpl
       implements ReplyOrConfirmation.ReplyOrConfirmationBuilder {
     private final Reply reply;
     private final ResponseTermination termination;
     private final CBusOptions cBusOptions;
     private final RequestContext requestContext;
 
-    public ReplyOrConfirmationReplyBuilder(
+    public ReplyOrConfirmationReplyBuilderImpl(
         Reply reply,
         ResponseTermination termination,
         CBusOptions cBusOptions,
         RequestContext requestContext) {
-
       this.reply = reply;
       this.termination = termination;
       this.cBusOptions = cBusOptions;

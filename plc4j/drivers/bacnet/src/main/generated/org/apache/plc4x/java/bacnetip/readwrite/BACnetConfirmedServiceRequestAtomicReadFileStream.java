@@ -67,6 +67,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFileStream
   protected void serializeBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordChild(
       WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConfirmedServiceRequestAtomicReadFileStream");
 
@@ -90,6 +91,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFileStream
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConfirmedServiceRequestAtomicReadFileStream _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fileStartPosition)
     lengthInBits += fileStartPosition.getLengthInBits();
@@ -100,12 +102,14 @@ public class BACnetConfirmedServiceRequestAtomicReadFileStream
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder staticParseBuilder(
-      ReadBuffer readBuffer) throws ParseException {
+  public static BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder
+      staticParseBACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder(
+          ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestAtomicReadFileStream");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagSignedInteger fileStartPosition =
         readSimpleField(
@@ -127,20 +131,19 @@ public class BACnetConfirmedServiceRequestAtomicReadFileStream
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAtomicReadFileStream");
     // Create the instance
-    return new BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder(
+    return new BACnetConfirmedServiceRequestAtomicReadFileStreamBuilderImpl(
         fileStartPosition, requestOctetCount);
   }
 
-  public static class BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder
+  public static class BACnetConfirmedServiceRequestAtomicReadFileStreamBuilderImpl
       implements BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord
           .BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordBuilder {
     private final BACnetApplicationTagSignedInteger fileStartPosition;
     private final BACnetApplicationTagUnsignedInteger requestOctetCount;
 
-    public BACnetConfirmedServiceRequestAtomicReadFileStreamBuilder(
+    public BACnetConfirmedServiceRequestAtomicReadFileStreamBuilderImpl(
         BACnetApplicationTagSignedInteger fileStartPosition,
         BACnetApplicationTagUnsignedInteger requestOctetCount) {
-
       this.fileStartPosition = fileStartPosition;
       this.requestOctetCount = requestOctetCount;
     }

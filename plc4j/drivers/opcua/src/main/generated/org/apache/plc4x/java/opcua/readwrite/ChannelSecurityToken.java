@@ -76,6 +76,7 @@ public class ChannelSecurityToken extends ExtensionObjectDefinition implements M
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ChannelSecurityToken");
 
@@ -103,6 +104,7 @@ public class ChannelSecurityToken extends ExtensionObjectDefinition implements M
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ChannelSecurityToken _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (channelId)
     lengthInBits += 32;
@@ -119,12 +121,13 @@ public class ChannelSecurityToken extends ExtensionObjectDefinition implements M
     return lengthInBits;
   }
 
-  public static ChannelSecurityTokenBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("ChannelSecurityToken");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     long channelId = readSimpleField("channelId", readUnsignedLong(readBuffer, 32));
 
@@ -136,19 +139,18 @@ public class ChannelSecurityToken extends ExtensionObjectDefinition implements M
 
     readBuffer.closeContext("ChannelSecurityToken");
     // Create the instance
-    return new ChannelSecurityTokenBuilder(channelId, tokenId, createdAt, revisedLifetime);
+    return new ChannelSecurityTokenBuilderImpl(channelId, tokenId, createdAt, revisedLifetime);
   }
 
-  public static class ChannelSecurityTokenBuilder
+  public static class ChannelSecurityTokenBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final long channelId;
     private final long tokenId;
     private final long createdAt;
     private final long revisedLifetime;
 
-    public ChannelSecurityTokenBuilder(
+    public ChannelSecurityTokenBuilderImpl(
         long channelId, long tokenId, long createdAt, long revisedLifetime) {
-
       this.channelId = channelId;
       this.tokenId = tokenId;
       this.createdAt = createdAt;

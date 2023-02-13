@@ -58,6 +58,7 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
   protected void serializeKnxNetIpMessageChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SearchRequest");
 
@@ -80,6 +81,7 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SearchRequest _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (hpaiIDiscoveryEndpoint)
     lengthInBits += hpaiIDiscoveryEndpoint.getLengthInBits();
@@ -87,12 +89,13 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
     return lengthInBits;
   }
 
-  public static SearchRequestBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static KnxNetIpMessageBuilder staticParseKnxNetIpMessageBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("SearchRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint =
         readSimpleField(
@@ -103,14 +106,13 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
 
     readBuffer.closeContext("SearchRequest");
     // Create the instance
-    return new SearchRequestBuilder(hpaiIDiscoveryEndpoint);
+    return new SearchRequestBuilderImpl(hpaiIDiscoveryEndpoint);
   }
 
-  public static class SearchRequestBuilder implements KnxNetIpMessage.KnxNetIpMessageBuilder {
+  public static class SearchRequestBuilderImpl implements KnxNetIpMessage.KnxNetIpMessageBuilder {
     private final HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint;
 
-    public SearchRequestBuilder(HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint) {
-
+    public SearchRequestBuilderImpl(HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint) {
       this.hpaiIDiscoveryEndpoint = hpaiIDiscoveryEndpoint;
     }
 

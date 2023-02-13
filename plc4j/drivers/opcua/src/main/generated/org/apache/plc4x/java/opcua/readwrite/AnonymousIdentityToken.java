@@ -50,6 +50,7 @@ public class AnonymousIdentityToken extends UserIdentityTokenDefinition implemen
   protected void serializeUserIdentityTokenDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("AnonymousIdentityToken");
 
@@ -65,26 +66,28 @@ public class AnonymousIdentityToken extends UserIdentityTokenDefinition implemen
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     AnonymousIdentityToken _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static AnonymousIdentityTokenBuilder staticParseBuilder(
+  public static UserIdentityTokenDefinitionBuilder staticParseUserIdentityTokenDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("AnonymousIdentityToken");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("AnonymousIdentityToken");
     // Create the instance
-    return new AnonymousIdentityTokenBuilder();
+    return new AnonymousIdentityTokenBuilderImpl();
   }
 
-  public static class AnonymousIdentityTokenBuilder
+  public static class AnonymousIdentityTokenBuilderImpl
       implements UserIdentityTokenDefinition.UserIdentityTokenDefinitionBuilder {
 
-    public AnonymousIdentityTokenBuilder() {}
+    public AnonymousIdentityTokenBuilderImpl() {}
 
     public AnonymousIdentityToken build() {
       AnonymousIdentityToken anonymousIdentityToken = new AnonymousIdentityToken();

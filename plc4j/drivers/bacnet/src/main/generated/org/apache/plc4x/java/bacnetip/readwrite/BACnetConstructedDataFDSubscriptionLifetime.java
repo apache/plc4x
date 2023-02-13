@@ -79,6 +79,7 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataFDSubscriptionLifetime");
 
@@ -104,6 +105,7 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataFDSubscriptionLifetime _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (fdSubscriptionLifetime)
     lengthInBits += fdSubscriptionLifetime.getLengthInBits();
@@ -113,7 +115,7 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataFDSubscriptionLifetimeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -124,6 +126,7 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime =
         readSimpleField(
@@ -139,21 +142,20 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
 
     readBuffer.closeContext("BACnetConstructedDataFDSubscriptionLifetime");
     // Create the instance
-    return new BACnetConstructedDataFDSubscriptionLifetimeBuilder(
+    return new BACnetConstructedDataFDSubscriptionLifetimeBuilderImpl(
         fdSubscriptionLifetime, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataFDSubscriptionLifetimeBuilder
+  public static class BACnetConstructedDataFDSubscriptionLifetimeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataFDSubscriptionLifetimeBuilder(
+    public BACnetConstructedDataFDSubscriptionLifetimeBuilderImpl(
         BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.fdSubscriptionLifetime = fdSubscriptionLifetime;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

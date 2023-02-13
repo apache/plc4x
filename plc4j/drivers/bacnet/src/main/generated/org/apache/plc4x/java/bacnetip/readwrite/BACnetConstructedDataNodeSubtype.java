@@ -78,6 +78,7 @@ public class BACnetConstructedDataNodeSubtype extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataNodeSubtype");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataNodeSubtype extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataNodeSubtype _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (nodeSubType)
     lengthInBits += nodeSubType.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataNodeSubtype extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataNodeSubtypeBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataNodeSubtype extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetApplicationTagCharacterString nodeSubType =
         readSimpleField(
@@ -134,20 +137,20 @@ public class BACnetConstructedDataNodeSubtype extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataNodeSubtype");
     // Create the instance
-    return new BACnetConstructedDataNodeSubtypeBuilder(nodeSubType, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataNodeSubtypeBuilderImpl(
+        nodeSubType, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataNodeSubtypeBuilder
+  public static class BACnetConstructedDataNodeSubtypeBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetApplicationTagCharacterString nodeSubType;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataNodeSubtypeBuilder(
+    public BACnetConstructedDataNodeSubtypeBuilderImpl(
         BACnetApplicationTagCharacterString nodeSubType,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.nodeSubType = nodeSubType;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

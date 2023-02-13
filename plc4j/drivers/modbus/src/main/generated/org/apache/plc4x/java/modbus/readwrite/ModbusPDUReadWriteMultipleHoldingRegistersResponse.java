@@ -66,6 +66,7 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersResponse extends ModbusPD
   @Override
   protected void serializeModbusPDUChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ModbusPDUReadWriteMultipleHoldingRegistersResponse");
 
@@ -89,6 +90,7 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersResponse extends ModbusPD
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ModbusPDUReadWriteMultipleHoldingRegistersResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Implicit Field (byteCount)
     lengthInBits += 8;
@@ -101,12 +103,13 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersResponse extends ModbusPD
     return lengthInBits;
   }
 
-  public static ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder staticParseBuilder(
+  public static ModbusPDUBuilder staticParseModbusPDUBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ModbusPDUReadWriteMultipleHoldingRegistersResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short byteCount = readImplicitField("byteCount", readUnsignedShort(readBuffer, 8));
 
@@ -114,15 +117,14 @@ public class ModbusPDUReadWriteMultipleHoldingRegistersResponse extends ModbusPD
 
     readBuffer.closeContext("ModbusPDUReadWriteMultipleHoldingRegistersResponse");
     // Create the instance
-    return new ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder(value);
+    return new ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilderImpl(value);
   }
 
-  public static class ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder
+  public static class ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilderImpl
       implements ModbusPDU.ModbusPDUBuilder {
     private final byte[] value;
 
-    public ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilder(byte[] value) {
-
+    public ModbusPDUReadWriteMultipleHoldingRegistersResponseBuilderImpl(byte[] value) {
       this.value = value;
     }
 

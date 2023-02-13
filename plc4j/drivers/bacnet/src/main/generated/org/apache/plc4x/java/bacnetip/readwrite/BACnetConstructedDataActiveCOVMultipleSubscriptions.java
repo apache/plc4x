@@ -75,6 +75,7 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataActiveCOVMultipleSubscriptions");
 
@@ -94,6 +95,7 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataActiveCOVMultipleSubscriptions _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Array field
     if (activeCOVMultipleSubscriptions != null) {
@@ -105,7 +107,7 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -116,6 +118,7 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions =
         readTerminatedArrayField(
@@ -129,21 +132,20 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
 
     readBuffer.closeContext("BACnetConstructedDataActiveCOVMultipleSubscriptions");
     // Create the instance
-    return new BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder(
+    return new BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilderImpl(
         activeCOVMultipleSubscriptions, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder
+  public static class BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilder(
+    public BACnetConstructedDataActiveCOVMultipleSubscriptionsBuilderImpl(
         List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.activeCOVMultipleSubscriptions = activeCOVMultipleSubscriptions;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -78,6 +78,7 @@ public class BACnetConstructedDataBelongsTo extends BACnetConstructedData implem
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBelongsTo");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataBelongsTo extends BACnetConstructedData implem
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBelongsTo _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (belongsTo)
     lengthInBits += belongsTo.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataBelongsTo extends BACnetConstructedData implem
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBelongsToBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataBelongsTo extends BACnetConstructedData implem
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetDeviceObjectReference belongsTo =
         readSimpleField(
@@ -131,20 +134,19 @@ public class BACnetConstructedDataBelongsTo extends BACnetConstructedData implem
 
     readBuffer.closeContext("BACnetConstructedDataBelongsTo");
     // Create the instance
-    return new BACnetConstructedDataBelongsToBuilder(belongsTo, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataBelongsToBuilderImpl(belongsTo, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBelongsToBuilder
+  public static class BACnetConstructedDataBelongsToBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetDeviceObjectReference belongsTo;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBelongsToBuilder(
+    public BACnetConstructedDataBelongsToBuilderImpl(
         BACnetDeviceObjectReference belongsTo,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.belongsTo = belongsTo;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

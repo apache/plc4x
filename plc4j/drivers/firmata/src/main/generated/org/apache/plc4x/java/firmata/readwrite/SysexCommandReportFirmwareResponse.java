@@ -74,6 +74,7 @@ public class SysexCommandReportFirmwareResponse extends SysexCommand implements 
   @Override
   protected void serializeSysexCommandChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SysexCommandReportFirmwareResponse");
 
@@ -104,6 +105,7 @@ public class SysexCommandReportFirmwareResponse extends SysexCommand implements 
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SysexCommandReportFirmwareResponse _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (majorVersion)
     lengthInBits += 8;
@@ -118,12 +120,13 @@ public class SysexCommandReportFirmwareResponse extends SysexCommand implements 
     return lengthInBits;
   }
 
-  public static SysexCommandReportFirmwareResponseBuilder staticParseBuilder(
+  public static SysexCommandBuilder staticParseSysexCommandBuilder(
       ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SysexCommandReportFirmwareResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short majorVersion = readSimpleField("majorVersion", readUnsignedShort(readBuffer, 8));
 
@@ -144,18 +147,17 @@ public class SysexCommandReportFirmwareResponse extends SysexCommand implements 
 
     readBuffer.closeContext("SysexCommandReportFirmwareResponse");
     // Create the instance
-    return new SysexCommandReportFirmwareResponseBuilder(majorVersion, minorVersion, fileName);
+    return new SysexCommandReportFirmwareResponseBuilderImpl(majorVersion, minorVersion, fileName);
   }
 
-  public static class SysexCommandReportFirmwareResponseBuilder
+  public static class SysexCommandReportFirmwareResponseBuilderImpl
       implements SysexCommand.SysexCommandBuilder {
     private final short majorVersion;
     private final short minorVersion;
     private final byte[] fileName;
 
-    public SysexCommandReportFirmwareResponseBuilder(
+    public SysexCommandReportFirmwareResponseBuilderImpl(
         short majorVersion, short minorVersion, byte[] fileName) {
-
       this.majorVersion = majorVersion;
       this.minorVersion = minorVersion;
       this.fileName = fileName;

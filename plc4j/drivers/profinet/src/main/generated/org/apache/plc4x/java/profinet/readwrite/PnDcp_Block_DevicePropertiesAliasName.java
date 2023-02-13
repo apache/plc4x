@@ -67,6 +67,7 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
   @Override
   protected void serializePnDcp_BlockChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("PnDcp_Block_DevicePropertiesAliasName");
 
@@ -74,10 +75,15 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (aliasNameValue)
-    writeByteArrayField("aliasNameValue", aliasNameValue, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "aliasNameValue",
+        aliasNameValue,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Padding Field (padding)
     writePaddingField(
@@ -87,7 +93,8 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
                     aliasNameValue))
                 % (2)),
         (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Block_DevicePropertiesAliasName");
   }
@@ -101,6 +108,7 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     PnDcp_Block_DevicePropertiesAliasName _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Reserved Field (reserved)
     lengthInBits += 16;
@@ -123,39 +131,48 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
     return lengthInBits;
   }
 
-  public static PnDcp_Block_DevicePropertiesAliasNameBuilder staticParseBuilder(
+  public static PnDcp_BlockBuilder staticParsePnDcp_BlockBuilder(
       ReadBuffer readBuffer, Integer blockLength) throws ParseException {
     readBuffer.pullContext("PnDcp_Block_DevicePropertiesAliasName");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
+        readReservedField(
+            "reserved",
+            readUnsignedInt(readBuffer, 16),
+            (int) 0x0000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     byte[] aliasNameValue =
-        readBuffer.readByteArray("aliasNameValue", Math.toIntExact((blockLength) - (2)));
+        readBuffer.readByteArray(
+            "aliasNameValue",
+            Math.toIntExact((blockLength) - (2)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readPaddingField(
         readUnsignedShort(readBuffer, 8),
         (int)
             ((org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.arrayLength(
                     aliasNameValue))
-                % (2)));
+                % (2)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesAliasName");
     // Create the instance
-    return new PnDcp_Block_DevicePropertiesAliasNameBuilder(
+    return new PnDcp_Block_DevicePropertiesAliasNameBuilderImpl(
         aliasNameValue, blockLength, reservedField0);
   }
 
-  public static class PnDcp_Block_DevicePropertiesAliasNameBuilder
+  public static class PnDcp_Block_DevicePropertiesAliasNameBuilderImpl
       implements PnDcp_Block.PnDcp_BlockBuilder {
     private final byte[] aliasNameValue;
     private final Integer blockLength;
     private final Integer reservedField0;
 
-    public PnDcp_Block_DevicePropertiesAliasNameBuilder(
+    public PnDcp_Block_DevicePropertiesAliasNameBuilderImpl(
         byte[] aliasNameValue, Integer blockLength, Integer reservedField0) {
       this.aliasNameValue = aliasNameValue;
       this.blockLength = blockLength;

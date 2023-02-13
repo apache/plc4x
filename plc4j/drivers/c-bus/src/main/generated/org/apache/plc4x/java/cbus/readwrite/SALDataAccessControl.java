@@ -57,6 +57,7 @@ public class SALDataAccessControl extends SALData implements Message {
   @Override
   protected void serializeSALDataChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("SALDataAccessControl");
 
@@ -76,6 +77,7 @@ public class SALDataAccessControl extends SALData implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     SALDataAccessControl _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (accessControlData)
     lengthInBits += accessControlData.getLengthInBits();
@@ -83,12 +85,13 @@ public class SALDataAccessControl extends SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALDataAccessControlBuilder staticParseBuilder(
+  public static SALDataBuilder staticParseSALDataBuilder(
       ReadBuffer readBuffer, ApplicationId applicationId) throws ParseException {
     readBuffer.pullContext("SALDataAccessControl");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     AccessControlData accessControlData =
         readSimpleField(
@@ -98,14 +101,13 @@ public class SALDataAccessControl extends SALData implements Message {
 
     readBuffer.closeContext("SALDataAccessControl");
     // Create the instance
-    return new SALDataAccessControlBuilder(accessControlData);
+    return new SALDataAccessControlBuilderImpl(accessControlData);
   }
 
-  public static class SALDataAccessControlBuilder implements SALData.SALDataBuilder {
+  public static class SALDataAccessControlBuilderImpl implements SALData.SALDataBuilder {
     private final AccessControlData accessControlData;
 
-    public SALDataAccessControlBuilder(AccessControlData accessControlData) {
-
+    public SALDataAccessControlBuilderImpl(AccessControlData accessControlData) {
       this.accessControlData = accessControlData;
     }
 

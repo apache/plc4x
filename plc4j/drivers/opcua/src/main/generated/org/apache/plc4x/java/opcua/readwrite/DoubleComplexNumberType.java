@@ -64,6 +64,7 @@ public class DoubleComplexNumberType extends ExtensionObjectDefinition implement
   protected void serializeExtensionObjectDefinitionChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("DoubleComplexNumberType");
 
@@ -85,6 +86,7 @@ public class DoubleComplexNumberType extends ExtensionObjectDefinition implement
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     DoubleComplexNumberType _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (real)
     lengthInBits += 64;
@@ -95,12 +97,13 @@ public class DoubleComplexNumberType extends ExtensionObjectDefinition implement
     return lengthInBits;
   }
 
-  public static DoubleComplexNumberTypeBuilder staticParseBuilder(
+  public static ExtensionObjectDefinitionBuilder staticParseExtensionObjectDefinitionBuilder(
       ReadBuffer readBuffer, String identifier) throws ParseException {
     readBuffer.pullContext("DoubleComplexNumberType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     double real = readSimpleField("real", readDouble(readBuffer, 64));
 
@@ -108,16 +111,15 @@ public class DoubleComplexNumberType extends ExtensionObjectDefinition implement
 
     readBuffer.closeContext("DoubleComplexNumberType");
     // Create the instance
-    return new DoubleComplexNumberTypeBuilder(real, imaginary);
+    return new DoubleComplexNumberTypeBuilderImpl(real, imaginary);
   }
 
-  public static class DoubleComplexNumberTypeBuilder
+  public static class DoubleComplexNumberTypeBuilderImpl
       implements ExtensionObjectDefinition.ExtensionObjectDefinitionBuilder {
     private final double real;
     private final double imaginary;
 
-    public DoubleComplexNumberTypeBuilder(double real, double imaginary) {
-
+    public DoubleComplexNumberTypeBuilderImpl(double real, double imaginary) {
       this.real = real;
       this.imaginary = imaginary;
     }

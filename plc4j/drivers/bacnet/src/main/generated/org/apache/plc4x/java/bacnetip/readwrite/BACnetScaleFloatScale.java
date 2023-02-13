@@ -54,6 +54,7 @@ public class BACnetScaleFloatScale extends BACnetScale implements Message {
   @Override
   protected void serializeBACnetScaleChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetScaleFloatScale");
 
@@ -72,6 +73,7 @@ public class BACnetScaleFloatScale extends BACnetScale implements Message {
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetScaleFloatScale _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (floatScale)
     lengthInBits += floatScale.getLengthInBits();
@@ -79,12 +81,13 @@ public class BACnetScaleFloatScale extends BACnetScale implements Message {
     return lengthInBits;
   }
 
-  public static BACnetScaleFloatScaleBuilder staticParseBuilder(ReadBuffer readBuffer)
+  public static BACnetScaleBuilder staticParseBACnetScaleBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetScaleFloatScale");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagReal floatScale =
         readSimpleField(
@@ -98,14 +101,13 @@ public class BACnetScaleFloatScale extends BACnetScale implements Message {
 
     readBuffer.closeContext("BACnetScaleFloatScale");
     // Create the instance
-    return new BACnetScaleFloatScaleBuilder(floatScale);
+    return new BACnetScaleFloatScaleBuilderImpl(floatScale);
   }
 
-  public static class BACnetScaleFloatScaleBuilder implements BACnetScale.BACnetScaleBuilder {
+  public static class BACnetScaleFloatScaleBuilderImpl implements BACnetScale.BACnetScaleBuilder {
     private final BACnetContextTagReal floatScale;
 
-    public BACnetScaleFloatScaleBuilder(BACnetContextTagReal floatScale) {
-
+    public BACnetScaleFloatScaleBuilderImpl(BACnetContextTagReal floatScale) {
       this.floatScale = floatScale;
     }
 

@@ -78,6 +78,7 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataValueSource");
 
@@ -100,6 +101,7 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataValueSource _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (valueSource)
     lengthInBits += valueSource.getLengthInBits();
@@ -109,7 +111,7 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataValueSourceBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -120,6 +122,7 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetValueSource valueSource =
         readSimpleField(
@@ -131,20 +134,20 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
 
     readBuffer.closeContext("BACnetConstructedDataValueSource");
     // Create the instance
-    return new BACnetConstructedDataValueSourceBuilder(valueSource, tagNumber, arrayIndexArgument);
+    return new BACnetConstructedDataValueSourceBuilderImpl(
+        valueSource, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataValueSourceBuilder
+  public static class BACnetConstructedDataValueSourceBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetValueSource valueSource;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataValueSourceBuilder(
+    public BACnetConstructedDataValueSourceBuilderImpl(
         BACnetValueSource valueSource,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.valueSource = valueSource;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

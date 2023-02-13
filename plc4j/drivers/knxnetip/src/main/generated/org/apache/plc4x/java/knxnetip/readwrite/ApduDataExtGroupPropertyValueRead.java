@@ -42,17 +42,14 @@ public class ApduDataExtGroupPropertyValueRead extends ApduDataExt implements Me
     return (short) 0x28;
   }
 
-  // Arguments.
-  protected final Short length;
-
-  public ApduDataExtGroupPropertyValueRead(Short length) {
-    super(length);
-    this.length = length;
+  public ApduDataExtGroupPropertyValueRead() {
+    super();
   }
 
   @Override
   protected void serializeApduDataExtChild(WriteBuffer writeBuffer) throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ApduDataExtGroupPropertyValueRead");
 
@@ -68,35 +65,32 @@ public class ApduDataExtGroupPropertyValueRead extends ApduDataExt implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     ApduDataExtGroupPropertyValueRead _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     return lengthInBits;
   }
 
-  public static ApduDataExtGroupPropertyValueReadBuilder staticParseBuilder(
+  public static ApduDataExtBuilder staticParseApduDataExtBuilder(
       ReadBuffer readBuffer, Short length) throws ParseException {
     readBuffer.pullContext("ApduDataExtGroupPropertyValueRead");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     readBuffer.closeContext("ApduDataExtGroupPropertyValueRead");
     // Create the instance
-    return new ApduDataExtGroupPropertyValueReadBuilder(length);
+    return new ApduDataExtGroupPropertyValueReadBuilderImpl();
   }
 
-  public static class ApduDataExtGroupPropertyValueReadBuilder
+  public static class ApduDataExtGroupPropertyValueReadBuilderImpl
       implements ApduDataExt.ApduDataExtBuilder {
-    private final Short length;
 
-    public ApduDataExtGroupPropertyValueReadBuilder(Short length) {
+    public ApduDataExtGroupPropertyValueReadBuilderImpl() {}
 
-      this.length = length;
-    }
-
-    public ApduDataExtGroupPropertyValueRead build(Short length) {
-
+    public ApduDataExtGroupPropertyValueRead build() {
       ApduDataExtGroupPropertyValueRead apduDataExtGroupPropertyValueRead =
-          new ApduDataExtGroupPropertyValueRead(length);
+          new ApduDataExtGroupPropertyValueRead();
       return apduDataExtGroupPropertyValueRead;
     }
   }

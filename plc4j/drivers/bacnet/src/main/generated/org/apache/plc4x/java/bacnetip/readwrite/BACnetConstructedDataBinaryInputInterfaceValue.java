@@ -79,6 +79,7 @@ public class BACnetConstructedDataBinaryInputInterfaceValue extends BACnetConstr
   protected void serializeBACnetConstructedDataChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetConstructedDataBinaryInputInterfaceValue");
 
@@ -101,6 +102,7 @@ public class BACnetConstructedDataBinaryInputInterfaceValue extends BACnetConstr
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetConstructedDataBinaryInputInterfaceValue _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (interfaceValue)
     lengthInBits += interfaceValue.getLengthInBits();
@@ -110,7 +112,7 @@ public class BACnetConstructedDataBinaryInputInterfaceValue extends BACnetConstr
     return lengthInBits;
   }
 
-  public static BACnetConstructedDataBinaryInputInterfaceValueBuilder staticParseBuilder(
+  public static BACnetConstructedDataBuilder staticParseBACnetConstructedDataBuilder(
       ReadBuffer readBuffer,
       Short tagNumber,
       BACnetObjectType objectTypeArgument,
@@ -121,6 +123,7 @@ public class BACnetConstructedDataBinaryInputInterfaceValue extends BACnetConstr
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetOptionalBinaryPV interfaceValue =
         readSimpleField(
@@ -132,21 +135,20 @@ public class BACnetConstructedDataBinaryInputInterfaceValue extends BACnetConstr
 
     readBuffer.closeContext("BACnetConstructedDataBinaryInputInterfaceValue");
     // Create the instance
-    return new BACnetConstructedDataBinaryInputInterfaceValueBuilder(
+    return new BACnetConstructedDataBinaryInputInterfaceValueBuilderImpl(
         interfaceValue, tagNumber, arrayIndexArgument);
   }
 
-  public static class BACnetConstructedDataBinaryInputInterfaceValueBuilder
+  public static class BACnetConstructedDataBinaryInputInterfaceValueBuilderImpl
       implements BACnetConstructedData.BACnetConstructedDataBuilder {
     private final BACnetOptionalBinaryPV interfaceValue;
     private final Short tagNumber;
     private final BACnetTagPayloadUnsignedInteger arrayIndexArgument;
 
-    public BACnetConstructedDataBinaryInputInterfaceValueBuilder(
+    public BACnetConstructedDataBinaryInputInterfaceValueBuilderImpl(
         BACnetOptionalBinaryPV interfaceValue,
         Short tagNumber,
         BACnetTagPayloadUnsignedInteger arrayIndexArgument) {
-
       this.interfaceValue = interfaceValue;
       this.tagNumber = tagNumber;
       this.arrayIndexArgument = arrayIndexArgument;

@@ -20,6 +20,7 @@
 package model
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -80,28 +81,24 @@ func (m *_InterfaceOptions1PowerUpSettings) GetTypeName() string {
 	return "InterfaceOptions1PowerUpSettings"
 }
 
-func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBits() uint16 {
-	return m.GetLengthInBitsConditional(false)
-}
-
-func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBitsConditional(lastItem bool) uint16 {
+func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Simple field (interfaceOptions1)
-	lengthInBits += m.InterfaceOptions1.GetLengthInBits()
+	lengthInBits += m.InterfaceOptions1.GetLengthInBits(ctx)
 
 	return lengthInBits
 }
 
-func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBytes() uint16 {
-	return m.GetLengthInBits() / 8
+func (m *_InterfaceOptions1PowerUpSettings) GetLengthInBytes(ctx context.Context) uint16 {
+	return m.GetLengthInBits(ctx) / 8
 }
 
 func InterfaceOptions1PowerUpSettingsParse(theBytes []byte) (InterfaceOptions1PowerUpSettings, error) {
-	return InterfaceOptions1PowerUpSettingsParseWithBuffer(utils.NewReadBufferByteBased(theBytes))
+	return InterfaceOptions1PowerUpSettingsParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func InterfaceOptions1PowerUpSettingsParseWithBuffer(readBuffer utils.ReadBuffer) (InterfaceOptions1PowerUpSettings, error) {
+func InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions1PowerUpSettings, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("InterfaceOptions1PowerUpSettings"); pullErr != nil {
@@ -114,7 +111,7 @@ func InterfaceOptions1PowerUpSettingsParseWithBuffer(readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("interfaceOptions1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for interfaceOptions1")
 	}
-	_interfaceOptions1, _interfaceOptions1Err := InterfaceOptions1ParseWithBuffer(readBuffer)
+	_interfaceOptions1, _interfaceOptions1Err := InterfaceOptions1ParseWithBuffer(ctx, readBuffer)
 	if _interfaceOptions1Err != nil {
 		return nil, errors.Wrap(_interfaceOptions1Err, "Error parsing 'interfaceOptions1' field of InterfaceOptions1PowerUpSettings")
 	}
@@ -134,14 +131,14 @@ func InterfaceOptions1PowerUpSettingsParseWithBuffer(readBuffer utils.ReadBuffer
 }
 
 func (m *_InterfaceOptions1PowerUpSettings) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes())))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m *_InterfaceOptions1PowerUpSettings) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m *_InterfaceOptions1PowerUpSettings) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	positionAware := writeBuffer
 	_ = positionAware
 	if pushErr := writeBuffer.PushContext("InterfaceOptions1PowerUpSettings"); pushErr != nil {
@@ -152,7 +149,7 @@ func (m *_InterfaceOptions1PowerUpSettings) SerializeWithWriteBuffer(writeBuffer
 	if pushErr := writeBuffer.PushContext("interfaceOptions1"); pushErr != nil {
 		return errors.Wrap(pushErr, "Error pushing for interfaceOptions1")
 	}
-	_interfaceOptions1Err := writeBuffer.WriteSerializable(m.GetInterfaceOptions1())
+	_interfaceOptions1Err := writeBuffer.WriteSerializable(ctx, m.GetInterfaceOptions1())
 	if popErr := writeBuffer.PopContext("interfaceOptions1"); popErr != nil {
 		return errors.Wrap(popErr, "Error popping for interfaceOptions1")
 	}
@@ -175,7 +172,7 @@ func (m *_InterfaceOptions1PowerUpSettings) String() string {
 		return "<nil>"
 	}
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(m); err != nil {
+	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
 	return writeBuffer.GetBox().String()

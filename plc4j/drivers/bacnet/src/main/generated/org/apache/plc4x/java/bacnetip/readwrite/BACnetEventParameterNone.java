@@ -55,6 +55,7 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
   protected void serializeBACnetEventParameterChild(WriteBuffer writeBuffer)
       throws SerializationException {
     PositionAware positionAware = writeBuffer;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("BACnetEventParameterNone");
 
@@ -73,6 +74,7 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
   public int getLengthInBits() {
     int lengthInBits = super.getLengthInBits();
     BACnetEventParameterNone _value = this;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     // Simple field (none)
     lengthInBits += none.getLengthInBits();
@@ -80,12 +82,13 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
     return lengthInBits;
   }
 
-  public static BACnetEventParameterNoneBuilder staticParseBuilder(ReadBuffer readBuffer)
-      throws ParseException {
+  public static BACnetEventParameterBuilder staticParseBACnetEventParameterBuilder(
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameterNone");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
+    boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     BACnetContextTagNull none =
         readSimpleField(
@@ -99,15 +102,14 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
 
     readBuffer.closeContext("BACnetEventParameterNone");
     // Create the instance
-    return new BACnetEventParameterNoneBuilder(none);
+    return new BACnetEventParameterNoneBuilderImpl(none);
   }
 
-  public static class BACnetEventParameterNoneBuilder
+  public static class BACnetEventParameterNoneBuilderImpl
       implements BACnetEventParameter.BACnetEventParameterBuilder {
     private final BACnetContextTagNull none;
 
-    public BACnetEventParameterNoneBuilder(BACnetContextTagNull none) {
-
+    public BACnetEventParameterNoneBuilderImpl(BACnetContextTagNull none) {
       this.none = none;
     }
 
