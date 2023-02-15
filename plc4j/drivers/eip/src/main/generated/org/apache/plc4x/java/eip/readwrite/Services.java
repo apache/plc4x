@@ -38,19 +38,23 @@ import org.apache.plc4x.java.spi.generation.*;
 public class Services implements Message {
 
   // Properties.
-  protected final int serviceNb;
   protected final List<Integer> offsets;
   protected final List<CipService> services;
 
-  public Services(int serviceNb, List<Integer> offsets, List<CipService> services) {
+  // Arguments.
+  protected final Integer servicesLen;
+  protected final IntegerEncoding order;
+
+  public Services(
+      List<Integer> offsets,
+      List<CipService> services,
+      Integer servicesLen,
+      IntegerEncoding order) {
     super();
-    this.serviceNb = serviceNb;
     this.offsets = offsets;
     this.services = services;
-  }
-
-  public int getServiceNb() {
-    return serviceNb;
+    this.servicesLen = servicesLen;
+    this.order = order;
   }
 
   public List<Integer> getOffsets() {
@@ -67,14 +71,37 @@ public class Services implements Message {
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("Services");
 
-    // Simple Field (serviceNb)
-    writeSimpleField("serviceNb", serviceNb, writeUnsignedInt(writeBuffer, 16));
+    // Implicit Field (serviceNb) (Used for parsing, but its value is not stored as it's implicitly
+    // given by the objects content)
+    int serviceNb = (int) (COUNT(getOffsets()));
+    writeImplicitField(
+        "serviceNb",
+        serviceNb,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (offsets)
-    writeSimpleTypeArrayField("offsets", offsets, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleTypeArrayField(
+        "offsets",
+        offsets,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (services)
-    writeComplexTypeArrayField("services", services, writeBuffer);
+    writeComplexTypeArrayField(
+        "services",
+        services,
+        writeBuffer,
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("Services");
   }
@@ -90,7 +117,7 @@ public class Services implements Message {
     Services _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (serviceNb)
+    // Implicit Field (serviceNb)
     lengthInBits += 16;
 
     // Array field
@@ -112,9 +139,9 @@ public class Services implements Message {
 
   public static Services staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
+    if ((args == null) || (args.length != 2)) {
       throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
+          "Wrong number of arguments, expected 2, but got " + args.length);
     }
     Integer servicesLen;
     if (args[0] instanceof Integer) {
@@ -126,34 +153,68 @@ public class Services implements Message {
           "Argument 0 expected to be of type Integer or a string which is parseable but was "
               + args[0].getClass().getName());
     }
-    return staticParse(readBuffer, servicesLen);
+    IntegerEncoding order;
+    if (args[1] instanceof IntegerEncoding) {
+      order = (IntegerEncoding) args[1];
+    } else if (args[1] instanceof String) {
+      order = IntegerEncoding.valueOf((String) args[1]);
+    } else {
+      throw new PlcRuntimeException(
+          "Argument 1 expected to be of type IntegerEncoding or a string which is parseable but was"
+              + " "
+              + args[1].getClass().getName());
+    }
+    return staticParse(readBuffer, servicesLen, order);
   }
 
-  public static Services staticParse(ReadBuffer readBuffer, Integer servicesLen)
-      throws ParseException {
+  public static Services staticParse(
+      ReadBuffer readBuffer, Integer servicesLen, IntegerEncoding order) throws ParseException {
     readBuffer.pullContext("Services");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int serviceNb = readSimpleField("serviceNb", readUnsignedInt(readBuffer, 16));
+    int serviceNb =
+        readImplicitField(
+            "serviceNb",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
     List<Integer> offsets =
-        readCountArrayField("offsets", readUnsignedInt(readBuffer, 16), serviceNb);
+        readCountArrayField(
+            "offsets",
+            readUnsignedInt(readBuffer, 16),
+            serviceNb,
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
     List<CipService> services =
         readCountArrayField(
             "services",
             new DataReaderComplexDefault<>(
-                () -> CipService.staticParse(readBuffer, (int) ((servicesLen) / (serviceNb))),
+                () ->
+                    CipService.staticParse(
+                        readBuffer,
+                        (boolean) (false),
+                        (int) ((servicesLen) / (serviceNb)),
+                        (IntegerEncoding) (order)),
                 readBuffer),
-            serviceNb);
+            serviceNb,
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
     readBuffer.closeContext("Services");
     // Create the instance
     Services _services;
-    _services = new Services(serviceNb, offsets, services);
+    _services = new Services(offsets, services, servicesLen, order);
     return _services;
   }
 
@@ -166,15 +227,12 @@ public class Services implements Message {
       return false;
     }
     Services that = (Services) o;
-    return (getServiceNb() == that.getServiceNb())
-        && (getOffsets() == that.getOffsets())
-        && (getServices() == that.getServices())
-        && true;
+    return (getOffsets() == that.getOffsets()) && (getServices() == that.getServices()) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getServiceNb(), getOffsets(), getServices());
+    return Objects.hash(getOffsets(), getServices());
   }
 
   @Override

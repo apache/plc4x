@@ -40,18 +40,27 @@ public abstract class EipPacket implements Message {
   // Abstract accessors for discriminator values.
   public abstract Integer getCommand();
 
+  public abstract Integer getPacketLength();
+
+  public abstract Boolean getResponse();
+
   // Properties.
   protected final long sessionHandle;
   protected final long status;
-  protected final List<Short> senderContext;
+  protected final byte[] senderContext;
   protected final long options;
 
-  public EipPacket(long sessionHandle, long status, List<Short> senderContext, long options) {
+  // Arguments.
+  protected final IntegerEncoding order;
+
+  public EipPacket(
+      long sessionHandle, long status, byte[] senderContext, long options, IntegerEncoding order) {
     super();
     this.sessionHandle = sessionHandle;
     this.status = status;
     this.senderContext = senderContext;
     this.options = options;
+    this.order = order;
   }
 
   public long getSessionHandle() {
@@ -62,7 +71,7 @@ public abstract class EipPacket implements Message {
     return status;
   }
 
-  public List<Short> getSenderContext() {
+  public byte[] getSenderContext() {
     return senderContext;
   }
 
@@ -84,7 +93,10 @@ public abstract class EipPacket implements Message {
         "command",
         getCommand(),
         writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Implicit Field (packetLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
@@ -93,35 +105,50 @@ public abstract class EipPacket implements Message {
         "packetLength",
         packetLength,
         writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (sessionHandle)
     writeSimpleField(
         "sessionHandle",
         sessionHandle,
         writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (status)
     writeSimpleField(
         "status",
         status,
         writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (senderContext)
-    writeSimpleTypeArrayField(
+    writeByteArrayField(
         "senderContext",
         senderContext,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (options)
     writeSimpleField(
         "options",
         options,
         writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Switch field (Serialize the sub-type)
     serializeEipPacketChild(writeBuffer);
@@ -154,7 +181,7 @@ public abstract class EipPacket implements Message {
 
     // Array field
     if (senderContext != null) {
-      lengthInBits += 8 * senderContext.size();
+      lengthInBits += 8 * senderContext.length;
     }
 
     // Simple field (options)
@@ -167,10 +194,36 @@ public abstract class EipPacket implements Message {
 
   public static EipPacket staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
     PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
+    if ((args == null) || (args.length != 2)) {
+      throw new PlcRuntimeException(
+          "Wrong number of arguments, expected 2, but got " + args.length);
+    }
+    IntegerEncoding order;
+    if (args[0] instanceof IntegerEncoding) {
+      order = (IntegerEncoding) args[0];
+    } else if (args[0] instanceof String) {
+      order = IntegerEncoding.valueOf((String) args[0]);
+    } else {
+      throw new PlcRuntimeException(
+          "Argument 0 expected to be of type IntegerEncoding or a string which is parseable but was"
+              + " "
+              + args[0].getClass().getName());
+    }
+    Boolean response;
+    if (args[1] instanceof Boolean) {
+      response = (Boolean) args[1];
+    } else if (args[1] instanceof String) {
+      response = Boolean.valueOf((String) args[1]);
+    } else {
+      throw new PlcRuntimeException(
+          "Argument 1 expected to be of type Boolean or a string which is parseable but was "
+              + args[1].getClass().getName());
+    }
+    return staticParse(readBuffer, order, response);
   }
 
-  public static EipPacket staticParse(ReadBuffer readBuffer) throws ParseException {
+  public static EipPacket staticParse(
+      ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
     readBuffer.pullContext("EipPacket");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -181,61 +234,115 @@ public abstract class EipPacket implements Message {
         readDiscriminatorField(
             "command",
             readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
     int packetLength =
         readImplicitField(
             "packetLength",
             readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
     long sessionHandle =
         readSimpleField(
             "sessionHandle",
             readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
     long status =
         readSimpleField(
             "status",
             readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
-    List<Short> senderContext =
-        readCountArrayField(
+    byte[] senderContext =
+        readBuffer.readByteArray(
             "senderContext",
-            readUnsignedShort(readBuffer, 8),
-            8,
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+            Math.toIntExact(8),
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
     long options =
         readSimpleField(
             "options",
             readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     EipPacketBuilder builder = null;
-    if (EvaluationHelper.equals(command, (int) 0x0065)) {
-      builder = EipConnectionRequest.staticParseEipPacketBuilder(readBuffer);
+    if (EvaluationHelper.equals(command, (int) 0x0001)
+        && EvaluationHelper.equals(response, (boolean) false)) {
+      builder = NullCommandRequest.staticParseEipPacketBuilder(readBuffer, order, response);
+    } else if (EvaluationHelper.equals(command, (int) 0x0001)
+        && EvaluationHelper.equals(response, (boolean) true)) {
+      builder = NullCommandResponse.staticParseEipPacketBuilder(readBuffer, order, response);
+    } else if (EvaluationHelper.equals(command, (int) 0x0004)
+        && EvaluationHelper.equals(response, (boolean) false)) {
+      builder = ListServicesRequest.staticParseEipPacketBuilder(readBuffer, order, response);
+    } else if (EvaluationHelper.equals(command, (int) 0x0004)
+        && EvaluationHelper.equals(response, (boolean) true)
+        && EvaluationHelper.equals(packetLength, (int) 0)) {
+      builder = NullListServicesResponse.staticParseEipPacketBuilder(readBuffer, order, response);
+    } else if (EvaluationHelper.equals(command, (int) 0x0004)
+        && EvaluationHelper.equals(response, (boolean) true)) {
+      builder = ListServicesResponse.staticParseEipPacketBuilder(readBuffer, order, response);
+    } else if (EvaluationHelper.equals(command, (int) 0x0065)
+        && EvaluationHelper.equals(response, (boolean) false)) {
+      builder = EipConnectionRequest.staticParseEipPacketBuilder(readBuffer, order, response);
+    } else if (EvaluationHelper.equals(command, (int) 0x0065)
+        && EvaluationHelper.equals(response, (boolean) true)
+        && EvaluationHelper.equals(packetLength, (int) 0)) {
+      builder = NullEipConnectionResponse.staticParseEipPacketBuilder(readBuffer, order, response);
+    } else if (EvaluationHelper.equals(command, (int) 0x0065)
+        && EvaluationHelper.equals(response, (boolean) true)) {
+      builder = EipConnectionResponse.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x0066)) {
-      builder = EipDisconnectRequest.staticParseEipPacketBuilder(readBuffer);
+      builder = EipDisconnectRequest.staticParseEipPacketBuilder(readBuffer, order, response);
     } else if (EvaluationHelper.equals(command, (int) 0x006F)) {
-      builder = CipRRData.staticParseEipPacketBuilder(readBuffer, packetLength);
+      builder = CipRRData.staticParseEipPacketBuilder(readBuffer, order, response);
+    } else if (EvaluationHelper.equals(command, (int) 0x0070)) {
+      builder = SendUnitData.staticParseEipPacketBuilder(readBuffer, order, response);
     }
     if (builder == null) {
       throw new ParseException(
-          "Unsupported case for discriminated type" + " parameters [" + "command=" + command + "]");
+          "Unsupported case for discriminated type"
+              + " parameters ["
+              + "command="
+              + command
+              + " "
+              + "response="
+              + response
+              + " "
+              + "packetLength="
+              + packetLength
+              + "]");
     }
 
     readBuffer.closeContext("EipPacket");
     // Create the instance
-    EipPacket _eipPacket = builder.build(sessionHandle, status, senderContext, options);
+    EipPacket _eipPacket = builder.build(sessionHandle, status, senderContext, options, order);
     return _eipPacket;
   }
 
   public interface EipPacketBuilder {
-    EipPacket build(long sessionHandle, long status, List<Short> senderContext, long options);
+    EipPacket build(
+        long sessionHandle, long status, byte[] senderContext, long options, IntegerEncoding order);
   }
 
   @Override

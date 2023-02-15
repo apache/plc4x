@@ -136,7 +136,7 @@ func (m *_EipConnectionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func EipConnectionRequestParse(theBytes []byte) (EipConnectionRequest, error) {
-	return EipConnectionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return EipConnectionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
 func EipConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EipConnectionRequest, error) {
@@ -179,7 +179,7 @@ func EipConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 }
 
 func (m *_EipConnectionRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

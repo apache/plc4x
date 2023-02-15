@@ -39,17 +39,32 @@ public class CipWriteResponse extends CipService implements Message {
 
   // Accessors for discriminator values.
   public Short getService() {
-    return (short) 0xCD;
+    return (short) 0x4D;
+  }
+
+  public Boolean getResponse() {
+    return (boolean) true;
+  }
+
+  public Boolean getConnected() {
+    return false;
   }
 
   // Properties.
   protected final short status;
   protected final short extStatus;
 
-  public CipWriteResponse(short status, short extStatus) {
-    super();
+  // Arguments.
+  protected final Integer serviceLen;
+  protected final IntegerEncoding order;
+
+  public CipWriteResponse(
+      short status, short extStatus, Integer serviceLen, IntegerEncoding order) {
+    super(serviceLen, order);
     this.status = status;
     this.extStatus = extStatus;
+    this.serviceLen = serviceLen;
+    this.order = order;
   }
 
   public short getStatus() {
@@ -68,13 +83,34 @@ public class CipWriteResponse extends CipService implements Message {
     writeBuffer.pushContext("CipWriteResponse");
 
     // Reserved Field (reserved)
-    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
+    writeReservedField(
+        "reserved",
+        (short) 0x00,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (status)
-    writeSimpleField("status", status, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "status",
+        status,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (extStatus)
-    writeSimpleField("extStatus", extStatus, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "extStatus",
+        extStatus,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("CipWriteResponse");
   }
@@ -103,7 +139,8 @@ public class CipWriteResponse extends CipService implements Message {
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Integer serviceLen) throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
+      throws ParseException {
     readBuffer.pullContext("CipWriteResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -111,28 +148,56 @@ public class CipWriteResponse extends CipService implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
+        readReservedField(
+            "reserved",
+            readUnsignedShort(readBuffer, 8),
+            (short) 0x00,
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
-    short status = readSimpleField("status", readUnsignedShort(readBuffer, 8));
+    short status =
+        readSimpleField(
+            "status",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
-    short extStatus = readSimpleField("extStatus", readUnsignedShort(readBuffer, 8));
+    short extStatus =
+        readSimpleField(
+            "extStatus",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
     readBuffer.closeContext("CipWriteResponse");
     // Create the instance
-    return new CipWriteResponseBuilderImpl(status, extStatus);
+    return new CipWriteResponseBuilderImpl(status, extStatus, serviceLen, order);
   }
 
   public static class CipWriteResponseBuilderImpl implements CipService.CipServiceBuilder {
     private final short status;
     private final short extStatus;
+    private final Integer serviceLen;
+    private final IntegerEncoding order;
 
-    public CipWriteResponseBuilderImpl(short status, short extStatus) {
+    public CipWriteResponseBuilderImpl(
+        short status, short extStatus, Integer serviceLen, IntegerEncoding order) {
       this.status = status;
       this.extStatus = extStatus;
+      this.serviceLen = serviceLen;
+      this.order = order;
     }
 
-    public CipWriteResponse build() {
-      CipWriteResponse cipWriteResponse = new CipWriteResponse(status, extStatus);
+    public CipWriteResponse build(Integer serviceLen, IntegerEncoding order) {
+
+      CipWriteResponse cipWriteResponse =
+          new CipWriteResponse(status, extStatus, serviceLen, order);
       return cipWriteResponse;
     }
   }

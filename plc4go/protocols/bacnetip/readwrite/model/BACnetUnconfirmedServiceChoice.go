@@ -34,18 +34,18 @@ type IBACnetUnconfirmedServiceChoice interface {
 	utils.Serializable
 }
 
-const (
-	BACnetUnconfirmedServiceChoice_I_AM                                  BACnetUnconfirmedServiceChoice = 0x00
-	BACnetUnconfirmedServiceChoice_I_HAVE                                BACnetUnconfirmedServiceChoice = 0x01
-	BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION          BACnetUnconfirmedServiceChoice = 0x02
-	BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION        BACnetUnconfirmedServiceChoice = 0x03
-	BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER          BACnetUnconfirmedServiceChoice = 0x04
-	BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE              BACnetUnconfirmedServiceChoice = 0x05
-	BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION                  BACnetUnconfirmedServiceChoice = 0x06
-	BACnetUnconfirmedServiceChoice_WHO_HAS                               BACnetUnconfirmedServiceChoice = 0x07
-	BACnetUnconfirmedServiceChoice_WHO_IS                                BACnetUnconfirmedServiceChoice = 0x08
-	BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION              BACnetUnconfirmedServiceChoice = 0x09
-	BACnetUnconfirmedServiceChoice_WRITE_GROUP                           BACnetUnconfirmedServiceChoice = 0x0A
+const(
+	BACnetUnconfirmedServiceChoice_I_AM BACnetUnconfirmedServiceChoice = 0x00
+	BACnetUnconfirmedServiceChoice_I_HAVE BACnetUnconfirmedServiceChoice = 0x01
+	BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION BACnetUnconfirmedServiceChoice = 0x02
+	BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION BACnetUnconfirmedServiceChoice = 0x03
+	BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER BACnetUnconfirmedServiceChoice = 0x04
+	BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE BACnetUnconfirmedServiceChoice = 0x05
+	BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION BACnetUnconfirmedServiceChoice = 0x06
+	BACnetUnconfirmedServiceChoice_WHO_HAS BACnetUnconfirmedServiceChoice = 0x07
+	BACnetUnconfirmedServiceChoice_WHO_IS BACnetUnconfirmedServiceChoice = 0x08
+	BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION BACnetUnconfirmedServiceChoice = 0x09
+	BACnetUnconfirmedServiceChoice_WRITE_GROUP BACnetUnconfirmedServiceChoice = 0x0A
 	BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE BACnetUnconfirmedServiceChoice = 0x0B
 )
 
@@ -53,7 +53,7 @@ var BACnetUnconfirmedServiceChoiceValues []BACnetUnconfirmedServiceChoice
 
 func init() {
 	_ = errors.New
-	BACnetUnconfirmedServiceChoiceValues = []BACnetUnconfirmedServiceChoice{
+	BACnetUnconfirmedServiceChoiceValues = []BACnetUnconfirmedServiceChoice {
 		BACnetUnconfirmedServiceChoice_I_AM,
 		BACnetUnconfirmedServiceChoice_I_HAVE,
 		BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION,
@@ -71,30 +71,30 @@ func init() {
 
 func BACnetUnconfirmedServiceChoiceByValue(value uint8) (enum BACnetUnconfirmedServiceChoice, ok bool) {
 	switch value {
-	case 0x00:
-		return BACnetUnconfirmedServiceChoice_I_AM, true
-	case 0x01:
-		return BACnetUnconfirmedServiceChoice_I_HAVE, true
-	case 0x02:
-		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION, true
-	case 0x03:
-		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION, true
-	case 0x04:
-		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER, true
-	case 0x05:
-		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE, true
-	case 0x06:
-		return BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION, true
-	case 0x07:
-		return BACnetUnconfirmedServiceChoice_WHO_HAS, true
-	case 0x08:
-		return BACnetUnconfirmedServiceChoice_WHO_IS, true
-	case 0x09:
-		return BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION, true
-	case 0x0A:
-		return BACnetUnconfirmedServiceChoice_WRITE_GROUP, true
-	case 0x0B:
-		return BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE, true
+		case 0x00:
+			return BACnetUnconfirmedServiceChoice_I_AM, true
+		case 0x01:
+			return BACnetUnconfirmedServiceChoice_I_HAVE, true
+		case 0x02:
+			return BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION, true
+		case 0x03:
+			return BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION, true
+		case 0x04:
+			return BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER, true
+		case 0x05:
+			return BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE, true
+		case 0x06:
+			return BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION, true
+		case 0x07:
+			return BACnetUnconfirmedServiceChoice_WHO_HAS, true
+		case 0x08:
+			return BACnetUnconfirmedServiceChoice_WHO_IS, true
+		case 0x09:
+			return BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION, true
+		case 0x0A:
+			return BACnetUnconfirmedServiceChoice_WRITE_GROUP, true
+		case 0x0B:
+			return BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE, true
 	}
 	return 0, false
 }
@@ -129,13 +129,13 @@ func BACnetUnconfirmedServiceChoiceByName(value string) (enum BACnetUnconfirmedS
 	return 0, false
 }
 
-func BACnetUnconfirmedServiceChoiceKnows(value uint8) bool {
+func BACnetUnconfirmedServiceChoiceKnows(value uint8)  bool {
 	for _, typeValue := range BACnetUnconfirmedServiceChoiceValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetUnconfirmedServiceChoice(structType interface{}) BACnetUnconfirmedServiceChoice {
@@ -219,3 +219,4 @@ func (e BACnetUnconfirmedServiceChoice) PLC4XEnumName() string {
 func (e BACnetUnconfirmedServiceChoice) String() string {
 	return e.PLC4XEnumName()
 }
+

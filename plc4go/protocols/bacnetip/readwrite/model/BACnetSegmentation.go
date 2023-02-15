@@ -34,18 +34,18 @@ type IBACnetSegmentation interface {
 	utils.Serializable
 }
 
-const (
-	BACnetSegmentation_SEGMENTED_BOTH     BACnetSegmentation = 0
+const(
+	BACnetSegmentation_SEGMENTED_BOTH BACnetSegmentation = 0
 	BACnetSegmentation_SEGMENTED_TRANSMIT BACnetSegmentation = 1
-	BACnetSegmentation_SEGMENTED_RECEIVE  BACnetSegmentation = 2
-	BACnetSegmentation_NO_SEGMENTATION    BACnetSegmentation = 3
+	BACnetSegmentation_SEGMENTED_RECEIVE BACnetSegmentation = 2
+	BACnetSegmentation_NO_SEGMENTATION BACnetSegmentation = 3
 )
 
 var BACnetSegmentationValues []BACnetSegmentation
 
 func init() {
 	_ = errors.New
-	BACnetSegmentationValues = []BACnetSegmentation{
+	BACnetSegmentationValues = []BACnetSegmentation {
 		BACnetSegmentation_SEGMENTED_BOTH,
 		BACnetSegmentation_SEGMENTED_TRANSMIT,
 		BACnetSegmentation_SEGMENTED_RECEIVE,
@@ -55,14 +55,14 @@ func init() {
 
 func BACnetSegmentationByValue(value uint8) (enum BACnetSegmentation, ok bool) {
 	switch value {
-	case 0:
-		return BACnetSegmentation_SEGMENTED_BOTH, true
-	case 1:
-		return BACnetSegmentation_SEGMENTED_TRANSMIT, true
-	case 2:
-		return BACnetSegmentation_SEGMENTED_RECEIVE, true
-	case 3:
-		return BACnetSegmentation_NO_SEGMENTATION, true
+		case 0:
+			return BACnetSegmentation_SEGMENTED_BOTH, true
+		case 1:
+			return BACnetSegmentation_SEGMENTED_TRANSMIT, true
+		case 2:
+			return BACnetSegmentation_SEGMENTED_RECEIVE, true
+		case 3:
+			return BACnetSegmentation_NO_SEGMENTATION, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func BACnetSegmentationByName(value string) (enum BACnetSegmentation, ok bool) {
 	return 0, false
 }
 
-func BACnetSegmentationKnows(value uint8) bool {
+func BACnetSegmentationKnows(value uint8)  bool {
 	for _, typeValue := range BACnetSegmentationValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetSegmentation(structType interface{}) BACnetSegmentation {
@@ -155,3 +155,4 @@ func (e BACnetSegmentation) PLC4XEnumName() string {
 func (e BACnetSegmentation) String() string {
 	return e.PLC4XEnumName()
 }
+

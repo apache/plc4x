@@ -34,8 +34,8 @@ type IBACnetAccessPassbackMode interface {
 	utils.Serializable
 }
 
-const (
-	BACnetAccessPassbackMode_PASSBACK_OFF  BACnetAccessPassbackMode = 0
+const(
+	BACnetAccessPassbackMode_PASSBACK_OFF BACnetAccessPassbackMode = 0
 	BACnetAccessPassbackMode_HARD_PASSBACK BACnetAccessPassbackMode = 1
 	BACnetAccessPassbackMode_SOFT_PASSBACK BACnetAccessPassbackMode = 2
 )
@@ -44,7 +44,7 @@ var BACnetAccessPassbackModeValues []BACnetAccessPassbackMode
 
 func init() {
 	_ = errors.New
-	BACnetAccessPassbackModeValues = []BACnetAccessPassbackMode{
+	BACnetAccessPassbackModeValues = []BACnetAccessPassbackMode {
 		BACnetAccessPassbackMode_PASSBACK_OFF,
 		BACnetAccessPassbackMode_HARD_PASSBACK,
 		BACnetAccessPassbackMode_SOFT_PASSBACK,
@@ -53,12 +53,12 @@ func init() {
 
 func BACnetAccessPassbackModeByValue(value uint8) (enum BACnetAccessPassbackMode, ok bool) {
 	switch value {
-	case 0:
-		return BACnetAccessPassbackMode_PASSBACK_OFF, true
-	case 1:
-		return BACnetAccessPassbackMode_HARD_PASSBACK, true
-	case 2:
-		return BACnetAccessPassbackMode_SOFT_PASSBACK, true
+		case 0:
+			return BACnetAccessPassbackMode_PASSBACK_OFF, true
+		case 1:
+			return BACnetAccessPassbackMode_HARD_PASSBACK, true
+		case 2:
+			return BACnetAccessPassbackMode_SOFT_PASSBACK, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func BACnetAccessPassbackModeByName(value string) (enum BACnetAccessPassbackMode
 	return 0, false
 }
 
-func BACnetAccessPassbackModeKnows(value uint8) bool {
+func BACnetAccessPassbackModeKnows(value uint8)  bool {
 	for _, typeValue := range BACnetAccessPassbackModeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetAccessPassbackMode(structType interface{}) BACnetAccessPassbackMode {
@@ -147,3 +147,4 @@ func (e BACnetAccessPassbackMode) PLC4XEnumName() string {
 func (e BACnetAccessPassbackMode) String() string {
 	return e.PLC4XEnumName()
 }
+

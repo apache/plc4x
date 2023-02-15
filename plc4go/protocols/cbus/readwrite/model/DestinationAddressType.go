@@ -34,17 +34,17 @@ type IDestinationAddressType interface {
 	utils.Serializable
 }
 
-const (
+const(
 	DestinationAddressType_PointToPointToMultiPoint DestinationAddressType = 0x03
-	DestinationAddressType_PointToMultiPoint        DestinationAddressType = 0x05
-	DestinationAddressType_PointToPoint             DestinationAddressType = 0x06
+	DestinationAddressType_PointToMultiPoint DestinationAddressType = 0x05
+	DestinationAddressType_PointToPoint DestinationAddressType = 0x06
 )
 
 var DestinationAddressTypeValues []DestinationAddressType
 
 func init() {
 	_ = errors.New
-	DestinationAddressTypeValues = []DestinationAddressType{
+	DestinationAddressTypeValues = []DestinationAddressType {
 		DestinationAddressType_PointToPointToMultiPoint,
 		DestinationAddressType_PointToMultiPoint,
 		DestinationAddressType_PointToPoint,
@@ -53,12 +53,12 @@ func init() {
 
 func DestinationAddressTypeByValue(value uint8) (enum DestinationAddressType, ok bool) {
 	switch value {
-	case 0x03:
-		return DestinationAddressType_PointToPointToMultiPoint, true
-	case 0x05:
-		return DestinationAddressType_PointToMultiPoint, true
-	case 0x06:
-		return DestinationAddressType_PointToPoint, true
+		case 0x03:
+			return DestinationAddressType_PointToPointToMultiPoint, true
+		case 0x05:
+			return DestinationAddressType_PointToMultiPoint, true
+		case 0x06:
+			return DestinationAddressType_PointToPoint, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func DestinationAddressTypeByName(value string) (enum DestinationAddressType, ok
 	return 0, false
 }
 
-func DestinationAddressTypeKnows(value uint8) bool {
+func DestinationAddressTypeKnows(value uint8)  bool {
 	for _, typeValue := range DestinationAddressTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDestinationAddressType(structType interface{}) DestinationAddressType {
@@ -147,3 +147,4 @@ func (e DestinationAddressType) PLC4XEnumName() string {
 func (e DestinationAddressType) String() string {
 	return e.PLC4XEnumName()
 }
+

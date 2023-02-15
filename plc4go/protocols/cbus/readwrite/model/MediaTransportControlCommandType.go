@@ -35,35 +35,35 @@ type IMediaTransportControlCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const (
-	MediaTransportControlCommandType_STOP                                   MediaTransportControlCommandType = 0x00
-	MediaTransportControlCommandType_PLAY                                   MediaTransportControlCommandType = 0x01
-	MediaTransportControlCommandType_PAUSE_RESUME                           MediaTransportControlCommandType = 0x02
-	MediaTransportControlCommandType_SELECT_CATEGORY                        MediaTransportControlCommandType = 0x03
-	MediaTransportControlCommandType_SELECT_SELECTION                       MediaTransportControlCommandType = 0x04
-	MediaTransportControlCommandType_SELECT_TRACK                           MediaTransportControlCommandType = 0x05
-	MediaTransportControlCommandType_SHUFFLE_ON_OFF                         MediaTransportControlCommandType = 0x06
-	MediaTransportControlCommandType_REPEAT_ON_OFF                          MediaTransportControlCommandType = 0x07
-	MediaTransportControlCommandType_NEXT_PREVIOUS_CATEGORY                 MediaTransportControlCommandType = 0x08
-	MediaTransportControlCommandType_NEXT_PREVIOUS_SELECTION                MediaTransportControlCommandType = 0x09
-	MediaTransportControlCommandType_NEXT_PREVIOUS_TRACK                    MediaTransportControlCommandType = 0x09
-	MediaTransportControlCommandType_FAST_FORWARD                           MediaTransportControlCommandType = 0x09
-	MediaTransportControlCommandType_REWIND                                 MediaTransportControlCommandType = 0x09
-	MediaTransportControlCommandType_SOURCE_POWER_CONTROL                   MediaTransportControlCommandType = 0x09
-	MediaTransportControlCommandType_TOTAL_TRACKS                           MediaTransportControlCommandType = 0x09
-	MediaTransportControlCommandType_STATUS_REQUEST                         MediaTransportControlCommandType = 0x09
+const(
+	MediaTransportControlCommandType_STOP MediaTransportControlCommandType = 0x00
+	MediaTransportControlCommandType_PLAY MediaTransportControlCommandType = 0x01
+	MediaTransportControlCommandType_PAUSE_RESUME MediaTransportControlCommandType = 0x02
+	MediaTransportControlCommandType_SELECT_CATEGORY MediaTransportControlCommandType = 0x03
+	MediaTransportControlCommandType_SELECT_SELECTION MediaTransportControlCommandType = 0x04
+	MediaTransportControlCommandType_SELECT_TRACK MediaTransportControlCommandType = 0x05
+	MediaTransportControlCommandType_SHUFFLE_ON_OFF MediaTransportControlCommandType = 0x06
+	MediaTransportControlCommandType_REPEAT_ON_OFF MediaTransportControlCommandType = 0x07
+	MediaTransportControlCommandType_NEXT_PREVIOUS_CATEGORY MediaTransportControlCommandType = 0x08
+	MediaTransportControlCommandType_NEXT_PREVIOUS_SELECTION MediaTransportControlCommandType = 0x09
+	MediaTransportControlCommandType_NEXT_PREVIOUS_TRACK MediaTransportControlCommandType = 0x09
+	MediaTransportControlCommandType_FAST_FORWARD MediaTransportControlCommandType = 0x09
+	MediaTransportControlCommandType_REWIND MediaTransportControlCommandType = 0x09
+	MediaTransportControlCommandType_SOURCE_POWER_CONTROL MediaTransportControlCommandType = 0x09
+	MediaTransportControlCommandType_TOTAL_TRACKS MediaTransportControlCommandType = 0x09
+	MediaTransportControlCommandType_STATUS_REQUEST MediaTransportControlCommandType = 0x09
 	MediaTransportControlCommandType_ENUMERATE_CATEGORIES_SELECTIONS_TRACKS MediaTransportControlCommandType = 0x09
-	MediaTransportControlCommandType_ENUMERATION_SIZE                       MediaTransportControlCommandType = 0x0A
-	MediaTransportControlCommandType_TRACK_NAME                             MediaTransportControlCommandType = 0x0B
-	MediaTransportControlCommandType_SELECTION_NAME                         MediaTransportControlCommandType = 0x0C
-	MediaTransportControlCommandType_CATEGORY_NAME                          MediaTransportControlCommandType = 0x0D
+	MediaTransportControlCommandType_ENUMERATION_SIZE MediaTransportControlCommandType = 0x0A
+	MediaTransportControlCommandType_TRACK_NAME MediaTransportControlCommandType = 0x0B
+	MediaTransportControlCommandType_SELECTION_NAME MediaTransportControlCommandType = 0x0C
+	MediaTransportControlCommandType_CATEGORY_NAME MediaTransportControlCommandType = 0x0D
 )
 
 var MediaTransportControlCommandTypeValues []MediaTransportControlCommandType
 
 func init() {
 	_ = errors.New
-	MediaTransportControlCommandTypeValues = []MediaTransportControlCommandType{
+	MediaTransportControlCommandTypeValues = []MediaTransportControlCommandType {
 		MediaTransportControlCommandType_STOP,
 		MediaTransportControlCommandType_PLAY,
 		MediaTransportControlCommandType_PAUSE_RESUME,
@@ -88,66 +88,52 @@ func init() {
 	}
 }
 
+
 func (e MediaTransportControlCommandType) NumberOfArguments() uint8 {
-	switch e {
-	case 0x00:
-		{ /* '0x00' */
-			return 0
+	switch e  {
+		case 0x00: { /* '0x00' */
+            return 0
 		}
-	case 0x01:
-		{ /* '0x01' */
-			return 0
+		case 0x01: { /* '0x01' */
+            return 0
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return 1
+		case 0x02: { /* '0x02' */
+            return 1
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return 1
+		case 0x03: { /* '0x03' */
+            return 1
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return 2
+		case 0x04: { /* '0x04' */
+            return 2
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return 4
+		case 0x05: { /* '0x05' */
+            return 4
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return 1
+		case 0x06: { /* '0x06' */
+            return 1
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return 1
+		case 0x07: { /* '0x07' */
+            return 1
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return 1
+		case 0x08: { /* '0x08' */
+            return 1
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return 1
+		case 0x09: { /* '0x09' */
+            return 1
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return 3
+		case 0x0A: { /* '0x0A' */
+            return 3
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return 1
+		case 0x0B: { /* '0x0B' */
+            return 1
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return 1
+		case 0x0C: { /* '0x0C' */
+            return 1
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return 1
+		case 0x0D: { /* '0x0D' */
+            return 1
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -163,34 +149,34 @@ func MediaTransportControlCommandTypeFirstEnumForFieldNumberOfArguments(value ui
 }
 func MediaTransportControlCommandTypeByValue(value uint8) (enum MediaTransportControlCommandType, ok bool) {
 	switch value {
-	case 0x00:
-		return MediaTransportControlCommandType_STOP, true
-	case 0x01:
-		return MediaTransportControlCommandType_PLAY, true
-	case 0x02:
-		return MediaTransportControlCommandType_PAUSE_RESUME, true
-	case 0x03:
-		return MediaTransportControlCommandType_SELECT_CATEGORY, true
-	case 0x04:
-		return MediaTransportControlCommandType_SELECT_SELECTION, true
-	case 0x05:
-		return MediaTransportControlCommandType_SELECT_TRACK, true
-	case 0x06:
-		return MediaTransportControlCommandType_SHUFFLE_ON_OFF, true
-	case 0x07:
-		return MediaTransportControlCommandType_REPEAT_ON_OFF, true
-	case 0x08:
-		return MediaTransportControlCommandType_NEXT_PREVIOUS_CATEGORY, true
-	case 0x09:
-		return MediaTransportControlCommandType_NEXT_PREVIOUS_SELECTION, true
-	case 0x0A:
-		return MediaTransportControlCommandType_ENUMERATION_SIZE, true
-	case 0x0B:
-		return MediaTransportControlCommandType_TRACK_NAME, true
-	case 0x0C:
-		return MediaTransportControlCommandType_SELECTION_NAME, true
-	case 0x0D:
-		return MediaTransportControlCommandType_CATEGORY_NAME, true
+		case 0x00:
+			return MediaTransportControlCommandType_STOP, true
+		case 0x01:
+			return MediaTransportControlCommandType_PLAY, true
+		case 0x02:
+			return MediaTransportControlCommandType_PAUSE_RESUME, true
+		case 0x03:
+			return MediaTransportControlCommandType_SELECT_CATEGORY, true
+		case 0x04:
+			return MediaTransportControlCommandType_SELECT_SELECTION, true
+		case 0x05:
+			return MediaTransportControlCommandType_SELECT_TRACK, true
+		case 0x06:
+			return MediaTransportControlCommandType_SHUFFLE_ON_OFF, true
+		case 0x07:
+			return MediaTransportControlCommandType_REPEAT_ON_OFF, true
+		case 0x08:
+			return MediaTransportControlCommandType_NEXT_PREVIOUS_CATEGORY, true
+		case 0x09:
+			return MediaTransportControlCommandType_NEXT_PREVIOUS_SELECTION, true
+		case 0x0A:
+			return MediaTransportControlCommandType_ENUMERATION_SIZE, true
+		case 0x0B:
+			return MediaTransportControlCommandType_TRACK_NAME, true
+		case 0x0C:
+			return MediaTransportControlCommandType_SELECTION_NAME, true
+		case 0x0D:
+			return MediaTransportControlCommandType_CATEGORY_NAME, true
 	}
 	return 0, false
 }
@@ -229,13 +215,13 @@ func MediaTransportControlCommandTypeByName(value string) (enum MediaTransportCo
 	return 0, false
 }
 
-func MediaTransportControlCommandTypeKnows(value uint8) bool {
+func MediaTransportControlCommandTypeKnows(value uint8)  bool {
 	for _, typeValue := range MediaTransportControlCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastMediaTransportControlCommandType(structType interface{}) MediaTransportControlCommandType {
@@ -323,3 +309,4 @@ func (e MediaTransportControlCommandType) PLC4XEnumName() string {
 func (e MediaTransportControlCommandType) String() string {
 	return e.PLC4XEnumName()
 }
+

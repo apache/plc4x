@@ -34,21 +34,21 @@ type IBACnetAccessAuthenticationFactorDisable interface {
 	utils.Serializable
 }
 
-const (
-	BACnetAccessAuthenticationFactorDisable_NONE                     BACnetAccessAuthenticationFactorDisable = 0
-	BACnetAccessAuthenticationFactorDisable_DISABLED                 BACnetAccessAuthenticationFactorDisable = 1
-	BACnetAccessAuthenticationFactorDisable_DISABLED_LOST            BACnetAccessAuthenticationFactorDisable = 2
-	BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN          BACnetAccessAuthenticationFactorDisable = 3
-	BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED         BACnetAccessAuthenticationFactorDisable = 4
-	BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED       BACnetAccessAuthenticationFactorDisable = 5
-	BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE BACnetAccessAuthenticationFactorDisable = 0xFFFF
+const(
+	BACnetAccessAuthenticationFactorDisable_NONE BACnetAccessAuthenticationFactorDisable = 0
+	BACnetAccessAuthenticationFactorDisable_DISABLED BACnetAccessAuthenticationFactorDisable = 1
+	BACnetAccessAuthenticationFactorDisable_DISABLED_LOST BACnetAccessAuthenticationFactorDisable = 2
+	BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN BACnetAccessAuthenticationFactorDisable = 3
+	BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED BACnetAccessAuthenticationFactorDisable = 4
+	BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED BACnetAccessAuthenticationFactorDisable = 5
+	BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE BACnetAccessAuthenticationFactorDisable = 0XFFFF
 )
 
 var BACnetAccessAuthenticationFactorDisableValues []BACnetAccessAuthenticationFactorDisable
 
 func init() {
 	_ = errors.New
-	BACnetAccessAuthenticationFactorDisableValues = []BACnetAccessAuthenticationFactorDisable{
+	BACnetAccessAuthenticationFactorDisableValues = []BACnetAccessAuthenticationFactorDisable {
 		BACnetAccessAuthenticationFactorDisable_NONE,
 		BACnetAccessAuthenticationFactorDisable_DISABLED,
 		BACnetAccessAuthenticationFactorDisable_DISABLED_LOST,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetAccessAuthenticationFactorDisableByValue(value uint16) (enum BACnetAccessAuthenticationFactorDisable, ok bool) {
 	switch value {
-	case 0:
-		return BACnetAccessAuthenticationFactorDisable_NONE, true
-	case 0xFFFF:
-		return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED, true
-	case 2:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST, true
-	case 3:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN, true
-	case 4:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED, true
-	case 5:
-		return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED, true
+		case 0:
+			return BACnetAccessAuthenticationFactorDisable_NONE, true
+		case 0XFFFF:
+			return BACnetAccessAuthenticationFactorDisable_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetAccessAuthenticationFactorDisable_DISABLED, true
+		case 2:
+			return BACnetAccessAuthenticationFactorDisable_DISABLED_LOST, true
+		case 3:
+			return BACnetAccessAuthenticationFactorDisable_DISABLED_STOLEN, true
+		case 4:
+			return BACnetAccessAuthenticationFactorDisable_DISABLED_DAMAGED, true
+		case 5:
+			return BACnetAccessAuthenticationFactorDisable_DISABLED_DESTROYED, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetAccessAuthenticationFactorDisableByName(value string) (enum BACnetAcc
 	return 0, false
 }
 
-func BACnetAccessAuthenticationFactorDisableKnows(value uint16) bool {
+func BACnetAccessAuthenticationFactorDisableKnows(value uint16)  bool {
 	for _, typeValue := range BACnetAccessAuthenticationFactorDisableValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetAccessAuthenticationFactorDisable(structType interface{}) BACnetAccessAuthenticationFactorDisable {
@@ -179,3 +179,4 @@ func (e BACnetAccessAuthenticationFactorDisable) PLC4XEnumName() string {
 func (e BACnetAccessAuthenticationFactorDisable) String() string {
 	return e.PLC4XEnumName()
 }
+

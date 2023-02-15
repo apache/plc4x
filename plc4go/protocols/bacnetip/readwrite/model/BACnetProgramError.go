@@ -34,20 +34,20 @@ type IBACnetProgramError interface {
 	utils.Serializable
 }
 
-const (
-	BACnetProgramError_NORMAL                   BACnetProgramError = 0
-	BACnetProgramError_LOAD_FAILED              BACnetProgramError = 1
-	BACnetProgramError_INTERNAL                 BACnetProgramError = 2
-	BACnetProgramError_PROGRAM                  BACnetProgramError = 3
-	BACnetProgramError_OTHER                    BACnetProgramError = 4
-	BACnetProgramError_VENDOR_PROPRIETARY_VALUE BACnetProgramError = 0xFFFF
+const(
+	BACnetProgramError_NORMAL BACnetProgramError = 0
+	BACnetProgramError_LOAD_FAILED BACnetProgramError = 1
+	BACnetProgramError_INTERNAL BACnetProgramError = 2
+	BACnetProgramError_PROGRAM BACnetProgramError = 3
+	BACnetProgramError_OTHER BACnetProgramError = 4
+	BACnetProgramError_VENDOR_PROPRIETARY_VALUE BACnetProgramError = 0XFFFF
 )
 
 var BACnetProgramErrorValues []BACnetProgramError
 
 func init() {
 	_ = errors.New
-	BACnetProgramErrorValues = []BACnetProgramError{
+	BACnetProgramErrorValues = []BACnetProgramError {
 		BACnetProgramError_NORMAL,
 		BACnetProgramError_LOAD_FAILED,
 		BACnetProgramError_INTERNAL,
@@ -59,18 +59,18 @@ func init() {
 
 func BACnetProgramErrorByValue(value uint16) (enum BACnetProgramError, ok bool) {
 	switch value {
-	case 0:
-		return BACnetProgramError_NORMAL, true
-	case 0xFFFF:
-		return BACnetProgramError_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetProgramError_LOAD_FAILED, true
-	case 2:
-		return BACnetProgramError_INTERNAL, true
-	case 3:
-		return BACnetProgramError_PROGRAM, true
-	case 4:
-		return BACnetProgramError_OTHER, true
+		case 0:
+			return BACnetProgramError_NORMAL, true
+		case 0XFFFF:
+			return BACnetProgramError_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetProgramError_LOAD_FAILED, true
+		case 2:
+			return BACnetProgramError_INTERNAL, true
+		case 3:
+			return BACnetProgramError_PROGRAM, true
+		case 4:
+			return BACnetProgramError_OTHER, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func BACnetProgramErrorByName(value string) (enum BACnetProgramError, ok bool) {
 	return 0, false
 }
 
-func BACnetProgramErrorKnows(value uint16) bool {
+func BACnetProgramErrorKnows(value uint16)  bool {
 	for _, typeValue := range BACnetProgramErrorValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetProgramError(structType interface{}) BACnetProgramError {
@@ -171,3 +171,4 @@ func (e BACnetProgramError) PLC4XEnumName() string {
 func (e BACnetProgramError) String() string {
 	return e.PLC4XEnumName()
 }
+

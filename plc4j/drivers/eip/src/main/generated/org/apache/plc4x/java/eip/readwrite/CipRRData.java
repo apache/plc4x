@@ -42,21 +42,55 @@ public class CipRRData extends EipPacket implements Message {
     return (int) 0x006F;
   }
 
+  public Boolean getResponse() {
+    return false;
+  }
+
+  public Integer getPacketLength() {
+    return 0;
+  }
+
   // Properties.
-  protected final CipExchange exchange;
+  protected final long interfaceHandle;
+  protected final int timeout;
+  protected final int itemCount;
+  protected final List<TypeId> typeId;
+
+  // Arguments.
+  protected final IntegerEncoding order;
 
   public CipRRData(
       long sessionHandle,
       long status,
-      List<Short> senderContext,
+      byte[] senderContext,
       long options,
-      CipExchange exchange) {
-    super(sessionHandle, status, senderContext, options);
-    this.exchange = exchange;
+      long interfaceHandle,
+      int timeout,
+      int itemCount,
+      List<TypeId> typeId,
+      IntegerEncoding order) {
+    super(sessionHandle, status, senderContext, options, order);
+    this.interfaceHandle = interfaceHandle;
+    this.timeout = timeout;
+    this.itemCount = itemCount;
+    this.typeId = typeId;
+    this.order = order;
   }
 
-  public CipExchange getExchange() {
-    return exchange;
+  public long getInterfaceHandle() {
+    return interfaceHandle;
+  }
+
+  public int getTimeout() {
+    return timeout;
+  }
+
+  public int getItemCount() {
+    return itemCount;
+  }
+
+  public List<TypeId> getTypeId() {
+    return typeId;
   }
 
   @Override
@@ -66,26 +100,45 @@ public class CipRRData extends EipPacket implements Message {
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipRRData");
 
-    // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (long) 0x00000000,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    // Simple Field (exchange)
+    // Simple Field (interfaceHandle)
     writeSimpleField(
-        "exchange",
-        exchange,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        "interfaceHandle",
+        interfaceHandle,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
+
+    // Simple Field (timeout)
+    writeSimpleField(
+        "timeout",
+        timeout,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
+
+    // Simple Field (itemCount)
+    writeSimpleField(
+        "itemCount",
+        itemCount,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
+
+    // Array Field (typeId)
+    writeComplexTypeArrayField(
+        "typeId",
+        typeId,
+        writeBuffer,
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("CipRRData");
   }
@@ -101,63 +154,115 @@ public class CipRRData extends EipPacket implements Message {
     CipRRData _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Reserved Field (reserved)
+    // Simple field (interfaceHandle)
     lengthInBits += 32;
 
-    // Reserved Field (reserved)
+    // Simple field (timeout)
     lengthInBits += 16;
 
-    // Simple field (exchange)
-    lengthInBits += exchange.getLengthInBits();
+    // Simple field (itemCount)
+    lengthInBits += 16;
+
+    // Array field
+    if (typeId != null) {
+      int i = 0;
+      for (TypeId element : typeId) {
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= typeId.size());
+        lengthInBits += element.getLengthInBits();
+      }
+    }
 
     return lengthInBits;
   }
 
   public static EipPacketBuilder staticParseEipPacketBuilder(
-      ReadBuffer readBuffer, Integer packetLength) throws ParseException {
+      ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
     readBuffer.pullContext("CipRRData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    Long reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedLong(readBuffer, 32),
-            (long) 0x00000000,
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    Integer reservedField1 =
-        readReservedField(
-            "reserved",
-            readUnsignedInt(readBuffer, 16),
-            (int) 0x0000,
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
-
-    CipExchange exchange =
+    long interfaceHandle =
         readSimpleField(
-            "exchange",
+            "interfaceHandle",
+            readUnsignedLong(readBuffer, 32),
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
+
+    int timeout =
+        readSimpleField(
+            "timeout",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
+
+    int itemCount =
+        readSimpleField(
+            "itemCount",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
+
+    List<TypeId> typeId =
+        readCountArrayField(
+            "typeId",
             new DataReaderComplexDefault<>(
-                () -> CipExchange.staticParse(readBuffer, (int) ((packetLength) - (6))),
-                readBuffer),
-            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+                () -> TypeId.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
+            itemCount,
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
     readBuffer.closeContext("CipRRData");
     // Create the instance
-    return new CipRRDataBuilderImpl(exchange);
+    return new CipRRDataBuilderImpl(interfaceHandle, timeout, itemCount, typeId, order);
   }
 
   public static class CipRRDataBuilderImpl implements EipPacket.EipPacketBuilder {
-    private final CipExchange exchange;
+    private final long interfaceHandle;
+    private final int timeout;
+    private final int itemCount;
+    private final List<TypeId> typeId;
+    private final IntegerEncoding order;
 
-    public CipRRDataBuilderImpl(CipExchange exchange) {
-      this.exchange = exchange;
+    public CipRRDataBuilderImpl(
+        long interfaceHandle,
+        int timeout,
+        int itemCount,
+        List<TypeId> typeId,
+        IntegerEncoding order) {
+      this.interfaceHandle = interfaceHandle;
+      this.timeout = timeout;
+      this.itemCount = itemCount;
+      this.typeId = typeId;
+      this.order = order;
     }
 
     public CipRRData build(
-        long sessionHandle, long status, List<Short> senderContext, long options) {
-      CipRRData cipRRData = new CipRRData(sessionHandle, status, senderContext, options, exchange);
+        long sessionHandle,
+        long status,
+        byte[] senderContext,
+        long options,
+        IntegerEncoding order) {
+      CipRRData cipRRData =
+          new CipRRData(
+              sessionHandle,
+              status,
+              senderContext,
+              options,
+              interfaceHandle,
+              timeout,
+              itemCount,
+              typeId,
+              order);
       return cipRRData;
     }
   }
@@ -171,12 +276,18 @@ public class CipRRData extends EipPacket implements Message {
       return false;
     }
     CipRRData that = (CipRRData) o;
-    return (getExchange() == that.getExchange()) && super.equals(that) && true;
+    return (getInterfaceHandle() == that.getInterfaceHandle())
+        && (getTimeout() == that.getTimeout())
+        && (getItemCount() == that.getItemCount())
+        && (getTypeId() == that.getTypeId())
+        && super.equals(that)
+        && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getExchange());
+    return Objects.hash(
+        super.hashCode(), getInterfaceHandle(), getTimeout(), getItemCount(), getTypeId());
   }
 
   @Override

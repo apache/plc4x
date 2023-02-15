@@ -140,7 +140,7 @@ func (m *_CipRRData) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func CipRRDataParse(theBytes []byte, packetLength uint16) (CipRRData, error) {
-	return CipRRDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), packetLength)
+	return CipRRDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), packetLength)
 }
 
 func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData, error) {
@@ -215,7 +215,7 @@ func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 }
 
 func (m *_CipRRData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

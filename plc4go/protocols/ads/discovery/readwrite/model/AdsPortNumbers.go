@@ -34,27 +34,27 @@ type IAdsPortNumbers interface {
 	utils.Serializable
 }
 
-const (
-	AdsPortNumbers_LOGGER               AdsPortNumbers = 100
-	AdsPortNumbers_EVENT_LOGGER         AdsPortNumbers = 110
-	AdsPortNumbers_IO                   AdsPortNumbers = 300
-	AdsPortNumbers_ADDITIONAL_TASK_1    AdsPortNumbers = 301
-	AdsPortNumbers_ADDITIONAL_TASK_2    AdsPortNumbers = 302
-	AdsPortNumbers_NC                   AdsPortNumbers = 500
+const(
+	AdsPortNumbers_LOGGER AdsPortNumbers = 100
+	AdsPortNumbers_EVENT_LOGGER AdsPortNumbers = 110
+	AdsPortNumbers_IO AdsPortNumbers = 300
+	AdsPortNumbers_ADDITIONAL_TASK_1 AdsPortNumbers = 301
+	AdsPortNumbers_ADDITIONAL_TASK_2 AdsPortNumbers = 302
+	AdsPortNumbers_NC AdsPortNumbers = 500
 	AdsPortNumbers_PLC_RUNTIME_SYSTEM_1 AdsPortNumbers = 801
 	AdsPortNumbers_PLC_RUNTIME_SYSTEM_2 AdsPortNumbers = 811
 	AdsPortNumbers_PLC_RUNTIME_SYSTEM_3 AdsPortNumbers = 821
 	AdsPortNumbers_PLC_RUNTIME_SYSTEM_4 AdsPortNumbers = 831
-	AdsPortNumbers_CAM_SWITCH           AdsPortNumbers = 900
-	AdsPortNumbers_SYSTEM_SERVICE       AdsPortNumbers = 10000
-	AdsPortNumbers_SCOPE                AdsPortNumbers = 14000
+	AdsPortNumbers_CAM_SWITCH AdsPortNumbers = 900
+	AdsPortNumbers_SYSTEM_SERVICE AdsPortNumbers = 10000
+	AdsPortNumbers_SCOPE AdsPortNumbers = 14000
 )
 
 var AdsPortNumbersValues []AdsPortNumbers
 
 func init() {
 	_ = errors.New
-	AdsPortNumbersValues = []AdsPortNumbers{
+	AdsPortNumbersValues = []AdsPortNumbers {
 		AdsPortNumbers_LOGGER,
 		AdsPortNumbers_EVENT_LOGGER,
 		AdsPortNumbers_IO,
@@ -73,32 +73,32 @@ func init() {
 
 func AdsPortNumbersByValue(value uint16) (enum AdsPortNumbers, ok bool) {
 	switch value {
-	case 100:
-		return AdsPortNumbers_LOGGER, true
-	case 10000:
-		return AdsPortNumbers_SYSTEM_SERVICE, true
-	case 110:
-		return AdsPortNumbers_EVENT_LOGGER, true
-	case 14000:
-		return AdsPortNumbers_SCOPE, true
-	case 300:
-		return AdsPortNumbers_IO, true
-	case 301:
-		return AdsPortNumbers_ADDITIONAL_TASK_1, true
-	case 302:
-		return AdsPortNumbers_ADDITIONAL_TASK_2, true
-	case 500:
-		return AdsPortNumbers_NC, true
-	case 801:
-		return AdsPortNumbers_PLC_RUNTIME_SYSTEM_1, true
-	case 811:
-		return AdsPortNumbers_PLC_RUNTIME_SYSTEM_2, true
-	case 821:
-		return AdsPortNumbers_PLC_RUNTIME_SYSTEM_3, true
-	case 831:
-		return AdsPortNumbers_PLC_RUNTIME_SYSTEM_4, true
-	case 900:
-		return AdsPortNumbers_CAM_SWITCH, true
+		case 100:
+			return AdsPortNumbers_LOGGER, true
+		case 10000:
+			return AdsPortNumbers_SYSTEM_SERVICE, true
+		case 110:
+			return AdsPortNumbers_EVENT_LOGGER, true
+		case 14000:
+			return AdsPortNumbers_SCOPE, true
+		case 300:
+			return AdsPortNumbers_IO, true
+		case 301:
+			return AdsPortNumbers_ADDITIONAL_TASK_1, true
+		case 302:
+			return AdsPortNumbers_ADDITIONAL_TASK_2, true
+		case 500:
+			return AdsPortNumbers_NC, true
+		case 801:
+			return AdsPortNumbers_PLC_RUNTIME_SYSTEM_1, true
+		case 811:
+			return AdsPortNumbers_PLC_RUNTIME_SYSTEM_2, true
+		case 821:
+			return AdsPortNumbers_PLC_RUNTIME_SYSTEM_3, true
+		case 831:
+			return AdsPortNumbers_PLC_RUNTIME_SYSTEM_4, true
+		case 900:
+			return AdsPortNumbers_CAM_SWITCH, true
 	}
 	return 0, false
 }
@@ -135,13 +135,13 @@ func AdsPortNumbersByName(value string) (enum AdsPortNumbers, ok bool) {
 	return 0, false
 }
 
-func AdsPortNumbersKnows(value uint16) bool {
+func AdsPortNumbersKnows(value uint16)  bool {
 	for _, typeValue := range AdsPortNumbersValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastAdsPortNumbers(structType interface{}) AdsPortNumbers {
@@ -227,3 +227,4 @@ func (e AdsPortNumbers) PLC4XEnumName() string {
 func (e AdsPortNumbers) String() string {
 	return e.PLC4XEnumName()
 }
+

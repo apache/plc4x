@@ -33,8 +33,9 @@ public enum CIPDataTypeCode {
   LINT((int) 0X00C5, (short) 8),
   REAL((int) 0X00CA, (short) 4),
   DWORD((int) 0X00D3, (short) 4),
-  Struct((int) 0X02A0, (short) 88),
-  STRING((int) 0X02A0, (short) 88);
+  STRUCTURED((int) 0X02A0, (short) 88),
+  STRING((int) 0X02A0, (short) 88),
+  STRING36((int) 0X02A0, (short) 40);
   private static final Map<Integer, CIPDataTypeCode> map;
 
   static {

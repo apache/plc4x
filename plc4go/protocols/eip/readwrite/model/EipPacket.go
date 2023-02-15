@@ -157,7 +157,7 @@ func (m *_EipPacket) GetLengthInBytes(ctx context.Context) uint16 {
 }
 
 func EipPacketParse(theBytes []byte) (EipPacket, error) {
-	return EipPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+	return EipPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
 func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EipPacket, error) {

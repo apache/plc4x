@@ -34,16 +34,16 @@ type IAccessControlCategory interface {
 	utils.Serializable
 }
 
-const (
+const(
 	AccessControlCategory_SYSTEM_ACTIVITY AccessControlCategory = 0x00
-	AccessControlCategory_SYSTEM_REQUEST  AccessControlCategory = 0x01
+	AccessControlCategory_SYSTEM_REQUEST AccessControlCategory = 0x01
 )
 
 var AccessControlCategoryValues []AccessControlCategory
 
 func init() {
 	_ = errors.New
-	AccessControlCategoryValues = []AccessControlCategory{
+	AccessControlCategoryValues = []AccessControlCategory {
 		AccessControlCategory_SYSTEM_ACTIVITY,
 		AccessControlCategory_SYSTEM_REQUEST,
 	}
@@ -51,10 +51,10 @@ func init() {
 
 func AccessControlCategoryByValue(value uint8) (enum AccessControlCategory, ok bool) {
 	switch value {
-	case 0x00:
-		return AccessControlCategory_SYSTEM_ACTIVITY, true
-	case 0x01:
-		return AccessControlCategory_SYSTEM_REQUEST, true
+		case 0x00:
+			return AccessControlCategory_SYSTEM_ACTIVITY, true
+		case 0x01:
+			return AccessControlCategory_SYSTEM_REQUEST, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func AccessControlCategoryByName(value string) (enum AccessControlCategory, ok b
 	return 0, false
 }
 
-func AccessControlCategoryKnows(value uint8) bool {
+func AccessControlCategoryKnows(value uint8)  bool {
 	for _, typeValue := range AccessControlCategoryValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastAccessControlCategory(structType interface{}) AccessControlCategory {
@@ -139,3 +139,4 @@ func (e AccessControlCategory) PLC4XEnumName() string {
 func (e AccessControlCategory) String() string {
 	return e.PLC4XEnumName()
 }
+

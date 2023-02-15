@@ -34,144 +34,144 @@ type IErrorCode interface {
 	utils.Serializable
 }
 
-const (
-	ErrorCode_ABORT_APDU_TOO_LONG                     ErrorCode = 123
-	ErrorCode_ABORT_APPLICATION_EXCEEDED_REPLY_TIME   ErrorCode = 124
-	ErrorCode_ABORT_BUFFER_OVERFLOW                   ErrorCode = 51
-	ErrorCode_ABORT_INSUFFICIENT_SECURITY             ErrorCode = 135
-	ErrorCode_ABORT_INVALID_APDU_IN_THIS_STATE        ErrorCode = 52
-	ErrorCode_ABORT_OTHER                             ErrorCode = 56
-	ErrorCode_ABORT_OUT_OF_RESOURCES                  ErrorCode = 125
+const(
+	ErrorCode_ABORT_APDU_TOO_LONG ErrorCode = 123
+	ErrorCode_ABORT_APPLICATION_EXCEEDED_REPLY_TIME ErrorCode = 124
+	ErrorCode_ABORT_BUFFER_OVERFLOW ErrorCode = 51
+	ErrorCode_ABORT_INSUFFICIENT_SECURITY ErrorCode = 135
+	ErrorCode_ABORT_INVALID_APDU_IN_THIS_STATE ErrorCode = 52
+	ErrorCode_ABORT_OTHER ErrorCode = 56
+	ErrorCode_ABORT_OUT_OF_RESOURCES ErrorCode = 125
 	ErrorCode_ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK ErrorCode = 53
-	ErrorCode_ABORT_PROPRIETARY                       ErrorCode = 55
-	ErrorCode_ABORT_SECURITY_ERROR                    ErrorCode = 136
-	ErrorCode_ABORT_SEGMENTATION_NOT_SUPPORTED        ErrorCode = 54
-	ErrorCode_ABORT_TSM_TIMEOUT                       ErrorCode = 126
-	ErrorCode_ABORT_WINDOW_SIZE_OUT_OF_RANGE          ErrorCode = 127
-	ErrorCode_ACCESS_DENIED                           ErrorCode = 85
-	ErrorCode_ADDRESSING_ERROR                        ErrorCode = 115
-	ErrorCode_BAD_DESTINATION_ADDRESS                 ErrorCode = 86
-	ErrorCode_BAD_DESTINATION_DEVICE_ID               ErrorCode = 87
-	ErrorCode_BAD_SIGNATURE                           ErrorCode = 88
-	ErrorCode_BAD_SOURCE_ADDRESS                      ErrorCode = 89
-	ErrorCode_BAD_TIMESTAMP                           ErrorCode = 90
-	ErrorCode_Busy                                    ErrorCode = 82
-	ErrorCode_CANNOT_USE_KEY                          ErrorCode = 91
-	ErrorCode_CANNOT_VERIFY_MESSAGE_ID                ErrorCode = 92
-	ErrorCode_CHARACTER_SET_NOT_SUPPORTED             ErrorCode = 41
-	ErrorCode_COMMUNICATION_DISABLED                  ErrorCode = 83
-	ErrorCode_CONFIGURATION_IN_PROGRESS               ErrorCode = 2
-	ErrorCode_CORRECT_KEY_REVISION                    ErrorCode = 93
-	ErrorCode_COV_SUBSCRIPTION_FAILED                 ErrorCode = 43
-	ErrorCode_DATATYPE_NOT_SUPPORTED                  ErrorCode = 47
-	ErrorCode_DELETE_FDT_ENTRY_FAILED                 ErrorCode = 120
-	ErrorCode_DESTINATION_DEVICE_ID_REQUIRED          ErrorCode = 94
-	ErrorCode_DEVICE_BUSY                             ErrorCode = 3
-	ErrorCode_DISTRIBUTE_BROADCAST_FAILED             ErrorCode = 121
-	ErrorCode_DUPLICATE_ENTRY                         ErrorCode = 137
-	ErrorCode_DUPLICATE_MESSAGE                       ErrorCode = 95
-	ErrorCode_DUPLICATE_NAME                          ErrorCode = 48
-	ErrorCode_DUPLICATE_OBJECT_ID                     ErrorCode = 49
-	ErrorCode_DYNAMIC_CREATION_NOT_SUPPORTED          ErrorCode = 4
-	ErrorCode_ENCRYPTION_NOT_CONFIGURED               ErrorCode = 96
-	ErrorCode_ENCRYPTION_REQUIRED                     ErrorCode = 97
-	ErrorCode_FILE_ACCESS_DENIED                      ErrorCode = 5
-	ErrorCode_FILE_FULL                               ErrorCode = 128
-	ErrorCode_INCONSISTENT_CONFIGURATION              ErrorCode = 129
-	ErrorCode_INCONSISTENT_OBJECT_TYPE                ErrorCode = 130
-	ErrorCode_INCONSISTENT_PARAMETERS                 ErrorCode = 7
-	ErrorCode_INCONSISTENT_SELECTION_CRITERION        ErrorCode = 8
-	ErrorCode_INCORRECT_KEY                           ErrorCode = 98
-	ErrorCode_INTERNAL_ERROR                          ErrorCode = 131
-	ErrorCode_INVALID_ARRAY_INDEX                     ErrorCode = 42
-	ErrorCode_INVALID_CONFIGURATION_DATA              ErrorCode = 46
-	ErrorCode_INVALID_DATA_TYPE                       ErrorCode = 9
-	ErrorCode_D_PARAMETER_DATA_TYPE                   ErrorCode = 13
-	ErrorCode_INVALID_TAG                             ErrorCode = 57
-	ErrorCode_INVALID_TIMESTAMP                       ErrorCode = 14
-	ErrorCode_INVALID_VALUE_IN_THIS_STATE             ErrorCode = 138
-	ErrorCode_KEY_UPDATE_IN_PROGRESS                  ErrorCode = 100
-	ErrorCode_LIST_ELEMENT_NOT_FOUND                  ErrorCode = 81
-	ErrorCode_LOG_BUFFER_FULL                         ErrorCode = 75
-	ErrorCode_LOGGED_VALUE_PURGED                     ErrorCode = 76
-	ErrorCode_MALFORMED_MESSAGE                       ErrorCode = 101
-	ErrorCode_MESSAGE_TOO_LONG                        ErrorCode = 113
-	ErrorCode_MISSING_REQUIRED_PARAMETER              ErrorCode = 16
-	ErrorCode_NETWORK_DOWN                            ErrorCode = 58
-	ErrorCode_NO_ALARM_CONFIGURED                     ErrorCode = 74
-	ErrorCode_NO_OBJECTS_OF_SPECIFIED_TYPE            ErrorCode = 17
-	ErrorCode_NO_PROPERTY_SPECIFIED                   ErrorCode = 77
-	ErrorCode_NO_SPACE_FOR_OBJECT                     ErrorCode = 18
-	ErrorCode_NO_SPACE_TO_ADD_LIST_ELEMENT            ErrorCode = 19
-	ErrorCode_NO_SPACE_TO_WRITE_PROPERTY              ErrorCode = 20
-	ErrorCode_NO_VT_SESSIONS_AVAILABLE                ErrorCode = 21
-	ErrorCode_NOT_CONFIGURED                          ErrorCode = 132
-	ErrorCode_NOT_CONFIGURED_FOR_TRIGGERED_LOGGING    ErrorCode = 78
-	ErrorCode_NOT_COV_PROPERTY                        ErrorCode = 44
-	ErrorCode_NOT_KEY_SERVER                          ErrorCode = 102
-	ErrorCode_NOT_ROUTER_TO_DNET                      ErrorCode = 110
-	ErrorCode_OBJECT_DELETION_NOT_PERMITTED           ErrorCode = 23
-	ErrorCode_OBJECT_IDENTIFIER_ALREADY_EXISTS        ErrorCode = 24
-	ErrorCode_OPERATIONAL_PROBLEM                     ErrorCode = 25
-	ErrorCode_OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED    ErrorCode = 45
-	ErrorCode_OTHER                                   ErrorCode = 0
-	ErrorCode_OUT_OF_MEMORY                           ErrorCode = 133
-	ErrorCode_PARAMETER_OUT_OF_RANGE                  ErrorCode = 80
-	ErrorCode_PASSWORD_FAILURE                        ErrorCode = 26
-	ErrorCode_PROPERTY_IS_NOT_A_LIST                  ErrorCode = 22
-	ErrorCode_PROPERTY_IS_NOT_AN_ARRAY                ErrorCode = 50
-	ErrorCode_READ_ACCESS_DENIED                      ErrorCode = 27
-	ErrorCode_READ_BDT_FAILED                         ErrorCode = 117
-	ErrorCode_READ_FDT_FAILED                         ErrorCode = 119
-	ErrorCode_REGISTER_FOREIGN_DEVICE_FAILED          ErrorCode = 118
-	ErrorCode_REJECT_BUFFER_OVERFLOW                  ErrorCode = 59
-	ErrorCode_REJECT_INCONSISTENT_PARAMETERS          ErrorCode = 60
-	ErrorCode_REJECT_INVALID_PARAMETER_DATA_TYPE      ErrorCode = 61
-	ErrorCode_REJECT_INVALID_TAG                      ErrorCode = 62
-	ErrorCode_REJECT_MISSING_REQUIRED_PARAMETER       ErrorCode = 63
-	ErrorCode_REJECT_OTHER                            ErrorCode = 69
-	ErrorCode_REJECT_PARAMETER_OUT_OF_RANGE           ErrorCode = 64
-	ErrorCode_REJECT_PROPRIETARY                      ErrorCode = 68
-	ErrorCode_REJECT_TOO_MANY_ARGUMENTS               ErrorCode = 65
-	ErrorCode_REJECT_UNDEFINED_ENUMERATION            ErrorCode = 66
-	ErrorCode_REJECT_UNRECOGNIZED_SERVICE             ErrorCode = 67
-	ErrorCode_ROUTER_BUSY                             ErrorCode = 111
-	ErrorCode_SECURITY_ERROR                          ErrorCode = 114
-	ErrorCode_SECURITY_NOT_CONFIGURED                 ErrorCode = 103
-	ErrorCode_SERVICE_REQUEST_DENIED                  ErrorCode = 29
-	ErrorCode_SOURCE_SECURITY_REQUIRED                ErrorCode = 104
-	ErrorCode_SUCCESS                                 ErrorCode = 84
-	ErrorCode_TIMEOUT                                 ErrorCode = 30
-	ErrorCode_TOO_MANY_KEYS                           ErrorCode = 105
-	ErrorCode_UNKNOWN_AUTHENTICATION_TYPE             ErrorCode = 106
-	ErrorCode_UNKNOWN_DEVICE                          ErrorCode = 70
-	ErrorCode_UNKNOWN_FILE_SIZE                       ErrorCode = 122
-	ErrorCode_UNKNOWN_KEY                             ErrorCode = 107
-	ErrorCode_UNKNOWN_KEY_REVISION                    ErrorCode = 108
-	ErrorCode_UNKNOWN_NETWORK_MESSAGE                 ErrorCode = 112
-	ErrorCode_UNKNOWN_OBJECT                          ErrorCode = 31
-	ErrorCode_UNKNOWN_PROPERTY                        ErrorCode = 32
-	ErrorCode_UNKNOWN_ROUTE                           ErrorCode = 71
-	ErrorCode_UNKNOWN_SOURCE_MESSAGE                  ErrorCode = 109
-	ErrorCode_UNKNOWN_SUBSCRIPTION                    ErrorCode = 79
-	ErrorCode_UNKNOWN_VT_CLASS                        ErrorCode = 34
-	ErrorCode_UNKNOWN_VT_SESSION                      ErrorCode = 35
-	ErrorCode_UNSUPPORTED_OBJECT_TYPE                 ErrorCode = 36
-	ErrorCode_VALUE_NOT_INITIALIZED                   ErrorCode = 72
-	ErrorCode_VALUE_OUT_OF_RANGE                      ErrorCode = 37
-	ErrorCode_VALUE_TOO_LONG                          ErrorCode = 134
-	ErrorCode_VT_SESSION_ALREADY_CLOSED               ErrorCode = 38
-	ErrorCode_VT_SESSION_TERMINATION_FAILURE          ErrorCode = 39
-	ErrorCode_WRITE_ACCESS_DENIED                     ErrorCode = 40
-	ErrorCode_WRITE_BDT_FAILED                        ErrorCode = 116
-	ErrorCode_VENDOR_PROPRIETARY_VALUE                ErrorCode = 0xFFFF
+	ErrorCode_ABORT_PROPRIETARY ErrorCode = 55
+	ErrorCode_ABORT_SECURITY_ERROR ErrorCode = 136
+	ErrorCode_ABORT_SEGMENTATION_NOT_SUPPORTED ErrorCode = 54
+	ErrorCode_ABORT_TSM_TIMEOUT ErrorCode = 126
+	ErrorCode_ABORT_WINDOW_SIZE_OUT_OF_RANGE ErrorCode = 127
+	ErrorCode_ACCESS_DENIED ErrorCode = 85
+	ErrorCode_ADDRESSING_ERROR ErrorCode = 115
+	ErrorCode_BAD_DESTINATION_ADDRESS ErrorCode = 86
+	ErrorCode_BAD_DESTINATION_DEVICE_ID ErrorCode = 87
+	ErrorCode_BAD_SIGNATURE ErrorCode = 88
+	ErrorCode_BAD_SOURCE_ADDRESS ErrorCode = 89
+	ErrorCode_BAD_TIMESTAMP ErrorCode = 90
+	ErrorCode_Busy ErrorCode = 82
+	ErrorCode_CANNOT_USE_KEY ErrorCode = 91
+	ErrorCode_CANNOT_VERIFY_MESSAGE_ID ErrorCode = 92
+	ErrorCode_CHARACTER_SET_NOT_SUPPORTED ErrorCode = 41
+	ErrorCode_COMMUNICATION_DISABLED ErrorCode = 83
+	ErrorCode_CONFIGURATION_IN_PROGRESS ErrorCode = 2
+	ErrorCode_CORRECT_KEY_REVISION ErrorCode = 93
+	ErrorCode_COV_SUBSCRIPTION_FAILED ErrorCode = 43
+	ErrorCode_DATATYPE_NOT_SUPPORTED ErrorCode = 47
+	ErrorCode_DELETE_FDT_ENTRY_FAILED ErrorCode = 120
+	ErrorCode_DESTINATION_DEVICE_ID_REQUIRED ErrorCode = 94
+	ErrorCode_DEVICE_BUSY ErrorCode = 3
+	ErrorCode_DISTRIBUTE_BROADCAST_FAILED ErrorCode = 121
+	ErrorCode_DUPLICATE_ENTRY ErrorCode = 137
+	ErrorCode_DUPLICATE_MESSAGE ErrorCode = 95
+	ErrorCode_DUPLICATE_NAME ErrorCode = 48
+	ErrorCode_DUPLICATE_OBJECT_ID ErrorCode = 49
+	ErrorCode_DYNAMIC_CREATION_NOT_SUPPORTED ErrorCode = 4
+	ErrorCode_ENCRYPTION_NOT_CONFIGURED ErrorCode = 96
+	ErrorCode_ENCRYPTION_REQUIRED ErrorCode = 97
+	ErrorCode_FILE_ACCESS_DENIED ErrorCode = 5
+	ErrorCode_FILE_FULL ErrorCode = 128
+	ErrorCode_INCONSISTENT_CONFIGURATION ErrorCode = 129
+	ErrorCode_INCONSISTENT_OBJECT_TYPE ErrorCode = 130
+	ErrorCode_INCONSISTENT_PARAMETERS ErrorCode = 7
+	ErrorCode_INCONSISTENT_SELECTION_CRITERION ErrorCode = 8
+	ErrorCode_INCORRECT_KEY ErrorCode = 98
+	ErrorCode_INTERNAL_ERROR ErrorCode = 131
+	ErrorCode_INVALID_ARRAY_INDEX ErrorCode = 42
+	ErrorCode_INVALID_CONFIGURATION_DATA ErrorCode = 46
+	ErrorCode_INVALID_DATA_TYPE ErrorCode = 9
+	ErrorCode_D_PARAMETER_DATA_TYPE ErrorCode = 13
+	ErrorCode_INVALID_TAG ErrorCode = 57
+	ErrorCode_INVALID_TIMESTAMP ErrorCode = 14
+	ErrorCode_INVALID_VALUE_IN_THIS_STATE ErrorCode = 138
+	ErrorCode_KEY_UPDATE_IN_PROGRESS ErrorCode = 100
+	ErrorCode_LIST_ELEMENT_NOT_FOUND ErrorCode = 81
+	ErrorCode_LOG_BUFFER_FULL ErrorCode = 75
+	ErrorCode_LOGGED_VALUE_PURGED ErrorCode = 76
+	ErrorCode_MALFORMED_MESSAGE ErrorCode = 101
+	ErrorCode_MESSAGE_TOO_LONG ErrorCode = 113
+	ErrorCode_MISSING_REQUIRED_PARAMETER ErrorCode = 16
+	ErrorCode_NETWORK_DOWN ErrorCode = 58
+	ErrorCode_NO_ALARM_CONFIGURED ErrorCode = 74
+	ErrorCode_NO_OBJECTS_OF_SPECIFIED_TYPE ErrorCode = 17
+	ErrorCode_NO_PROPERTY_SPECIFIED ErrorCode = 77
+	ErrorCode_NO_SPACE_FOR_OBJECT ErrorCode = 18
+	ErrorCode_NO_SPACE_TO_ADD_LIST_ELEMENT ErrorCode = 19
+	ErrorCode_NO_SPACE_TO_WRITE_PROPERTY ErrorCode = 20
+	ErrorCode_NO_VT_SESSIONS_AVAILABLE ErrorCode = 21
+	ErrorCode_NOT_CONFIGURED ErrorCode = 132
+	ErrorCode_NOT_CONFIGURED_FOR_TRIGGERED_LOGGING ErrorCode = 78
+	ErrorCode_NOT_COV_PROPERTY ErrorCode = 44
+	ErrorCode_NOT_KEY_SERVER ErrorCode = 102
+	ErrorCode_NOT_ROUTER_TO_DNET ErrorCode = 110
+	ErrorCode_OBJECT_DELETION_NOT_PERMITTED ErrorCode = 23
+	ErrorCode_OBJECT_IDENTIFIER_ALREADY_EXISTS ErrorCode = 24
+	ErrorCode_OPERATIONAL_PROBLEM ErrorCode = 25
+	ErrorCode_OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED ErrorCode = 45
+	ErrorCode_OTHER ErrorCode = 0
+	ErrorCode_OUT_OF_MEMORY ErrorCode = 133
+	ErrorCode_PARAMETER_OUT_OF_RANGE ErrorCode = 80
+	ErrorCode_PASSWORD_FAILURE ErrorCode = 26
+	ErrorCode_PROPERTY_IS_NOT_A_LIST ErrorCode = 22
+	ErrorCode_PROPERTY_IS_NOT_AN_ARRAY ErrorCode = 50
+	ErrorCode_READ_ACCESS_DENIED ErrorCode = 27
+	ErrorCode_READ_BDT_FAILED ErrorCode = 117
+	ErrorCode_READ_FDT_FAILED ErrorCode = 119
+	ErrorCode_REGISTER_FOREIGN_DEVICE_FAILED ErrorCode = 118
+	ErrorCode_REJECT_BUFFER_OVERFLOW ErrorCode = 59
+	ErrorCode_REJECT_INCONSISTENT_PARAMETERS ErrorCode = 60
+	ErrorCode_REJECT_INVALID_PARAMETER_DATA_TYPE ErrorCode = 61
+	ErrorCode_REJECT_INVALID_TAG ErrorCode = 62
+	ErrorCode_REJECT_MISSING_REQUIRED_PARAMETER ErrorCode = 63
+	ErrorCode_REJECT_OTHER ErrorCode = 69
+	ErrorCode_REJECT_PARAMETER_OUT_OF_RANGE ErrorCode = 64
+	ErrorCode_REJECT_PROPRIETARY ErrorCode = 68
+	ErrorCode_REJECT_TOO_MANY_ARGUMENTS ErrorCode = 65
+	ErrorCode_REJECT_UNDEFINED_ENUMERATION ErrorCode = 66
+	ErrorCode_REJECT_UNRECOGNIZED_SERVICE ErrorCode = 67
+	ErrorCode_ROUTER_BUSY ErrorCode = 111
+	ErrorCode_SECURITY_ERROR ErrorCode = 114
+	ErrorCode_SECURITY_NOT_CONFIGURED ErrorCode = 103
+	ErrorCode_SERVICE_REQUEST_DENIED ErrorCode = 29
+	ErrorCode_SOURCE_SECURITY_REQUIRED ErrorCode = 104
+	ErrorCode_SUCCESS ErrorCode = 84
+	ErrorCode_TIMEOUT ErrorCode = 30
+	ErrorCode_TOO_MANY_KEYS ErrorCode = 105
+	ErrorCode_UNKNOWN_AUTHENTICATION_TYPE ErrorCode = 106
+	ErrorCode_UNKNOWN_DEVICE ErrorCode = 70
+	ErrorCode_UNKNOWN_FILE_SIZE ErrorCode = 122
+	ErrorCode_UNKNOWN_KEY ErrorCode = 107
+	ErrorCode_UNKNOWN_KEY_REVISION ErrorCode = 108
+	ErrorCode_UNKNOWN_NETWORK_MESSAGE ErrorCode = 112
+	ErrorCode_UNKNOWN_OBJECT ErrorCode = 31
+	ErrorCode_UNKNOWN_PROPERTY ErrorCode = 32
+	ErrorCode_UNKNOWN_ROUTE ErrorCode = 71
+	ErrorCode_UNKNOWN_SOURCE_MESSAGE ErrorCode = 109
+	ErrorCode_UNKNOWN_SUBSCRIPTION ErrorCode = 79
+	ErrorCode_UNKNOWN_VT_CLASS ErrorCode = 34
+	ErrorCode_UNKNOWN_VT_SESSION ErrorCode = 35
+	ErrorCode_UNSUPPORTED_OBJECT_TYPE ErrorCode = 36
+	ErrorCode_VALUE_NOT_INITIALIZED ErrorCode = 72
+	ErrorCode_VALUE_OUT_OF_RANGE ErrorCode = 37
+	ErrorCode_VALUE_TOO_LONG ErrorCode = 134
+	ErrorCode_VT_SESSION_ALREADY_CLOSED ErrorCode = 38
+	ErrorCode_VT_SESSION_TERMINATION_FAILURE ErrorCode = 39
+	ErrorCode_WRITE_ACCESS_DENIED ErrorCode = 40
+	ErrorCode_WRITE_BDT_FAILED ErrorCode = 116
+	ErrorCode_VENDOR_PROPRIETARY_VALUE ErrorCode = 0XFFFF
 )
 
 var ErrorCodeValues []ErrorCode
 
 func init() {
 	_ = errors.New
-	ErrorCodeValues = []ErrorCode{
+	ErrorCodeValues = []ErrorCode {
 		ErrorCode_ABORT_APDU_TOO_LONG,
 		ErrorCode_ABORT_APPLICATION_EXCEEDED_REPLY_TIME,
 		ErrorCode_ABORT_BUFFER_OVERFLOW,
@@ -307,266 +307,266 @@ func init() {
 
 func ErrorCodeByValue(value uint16) (enum ErrorCode, ok bool) {
 	switch value {
-	case 0:
-		return ErrorCode_OTHER, true
-	case 0xFFFF:
-		return ErrorCode_VENDOR_PROPRIETARY_VALUE, true
-	case 100:
-		return ErrorCode_KEY_UPDATE_IN_PROGRESS, true
-	case 101:
-		return ErrorCode_MALFORMED_MESSAGE, true
-	case 102:
-		return ErrorCode_NOT_KEY_SERVER, true
-	case 103:
-		return ErrorCode_SECURITY_NOT_CONFIGURED, true
-	case 104:
-		return ErrorCode_SOURCE_SECURITY_REQUIRED, true
-	case 105:
-		return ErrorCode_TOO_MANY_KEYS, true
-	case 106:
-		return ErrorCode_UNKNOWN_AUTHENTICATION_TYPE, true
-	case 107:
-		return ErrorCode_UNKNOWN_KEY, true
-	case 108:
-		return ErrorCode_UNKNOWN_KEY_REVISION, true
-	case 109:
-		return ErrorCode_UNKNOWN_SOURCE_MESSAGE, true
-	case 110:
-		return ErrorCode_NOT_ROUTER_TO_DNET, true
-	case 111:
-		return ErrorCode_ROUTER_BUSY, true
-	case 112:
-		return ErrorCode_UNKNOWN_NETWORK_MESSAGE, true
-	case 113:
-		return ErrorCode_MESSAGE_TOO_LONG, true
-	case 114:
-		return ErrorCode_SECURITY_ERROR, true
-	case 115:
-		return ErrorCode_ADDRESSING_ERROR, true
-	case 116:
-		return ErrorCode_WRITE_BDT_FAILED, true
-	case 117:
-		return ErrorCode_READ_BDT_FAILED, true
-	case 118:
-		return ErrorCode_REGISTER_FOREIGN_DEVICE_FAILED, true
-	case 119:
-		return ErrorCode_READ_FDT_FAILED, true
-	case 120:
-		return ErrorCode_DELETE_FDT_ENTRY_FAILED, true
-	case 121:
-		return ErrorCode_DISTRIBUTE_BROADCAST_FAILED, true
-	case 122:
-		return ErrorCode_UNKNOWN_FILE_SIZE, true
-	case 123:
-		return ErrorCode_ABORT_APDU_TOO_LONG, true
-	case 124:
-		return ErrorCode_ABORT_APPLICATION_EXCEEDED_REPLY_TIME, true
-	case 125:
-		return ErrorCode_ABORT_OUT_OF_RESOURCES, true
-	case 126:
-		return ErrorCode_ABORT_TSM_TIMEOUT, true
-	case 127:
-		return ErrorCode_ABORT_WINDOW_SIZE_OUT_OF_RANGE, true
-	case 128:
-		return ErrorCode_FILE_FULL, true
-	case 129:
-		return ErrorCode_INCONSISTENT_CONFIGURATION, true
-	case 13:
-		return ErrorCode_D_PARAMETER_DATA_TYPE, true
-	case 130:
-		return ErrorCode_INCONSISTENT_OBJECT_TYPE, true
-	case 131:
-		return ErrorCode_INTERNAL_ERROR, true
-	case 132:
-		return ErrorCode_NOT_CONFIGURED, true
-	case 133:
-		return ErrorCode_OUT_OF_MEMORY, true
-	case 134:
-		return ErrorCode_VALUE_TOO_LONG, true
-	case 135:
-		return ErrorCode_ABORT_INSUFFICIENT_SECURITY, true
-	case 136:
-		return ErrorCode_ABORT_SECURITY_ERROR, true
-	case 137:
-		return ErrorCode_DUPLICATE_ENTRY, true
-	case 138:
-		return ErrorCode_INVALID_VALUE_IN_THIS_STATE, true
-	case 14:
-		return ErrorCode_INVALID_TIMESTAMP, true
-	case 16:
-		return ErrorCode_MISSING_REQUIRED_PARAMETER, true
-	case 17:
-		return ErrorCode_NO_OBJECTS_OF_SPECIFIED_TYPE, true
-	case 18:
-		return ErrorCode_NO_SPACE_FOR_OBJECT, true
-	case 19:
-		return ErrorCode_NO_SPACE_TO_ADD_LIST_ELEMENT, true
-	case 2:
-		return ErrorCode_CONFIGURATION_IN_PROGRESS, true
-	case 20:
-		return ErrorCode_NO_SPACE_TO_WRITE_PROPERTY, true
-	case 21:
-		return ErrorCode_NO_VT_SESSIONS_AVAILABLE, true
-	case 22:
-		return ErrorCode_PROPERTY_IS_NOT_A_LIST, true
-	case 23:
-		return ErrorCode_OBJECT_DELETION_NOT_PERMITTED, true
-	case 24:
-		return ErrorCode_OBJECT_IDENTIFIER_ALREADY_EXISTS, true
-	case 25:
-		return ErrorCode_OPERATIONAL_PROBLEM, true
-	case 26:
-		return ErrorCode_PASSWORD_FAILURE, true
-	case 27:
-		return ErrorCode_READ_ACCESS_DENIED, true
-	case 29:
-		return ErrorCode_SERVICE_REQUEST_DENIED, true
-	case 3:
-		return ErrorCode_DEVICE_BUSY, true
-	case 30:
-		return ErrorCode_TIMEOUT, true
-	case 31:
-		return ErrorCode_UNKNOWN_OBJECT, true
-	case 32:
-		return ErrorCode_UNKNOWN_PROPERTY, true
-	case 34:
-		return ErrorCode_UNKNOWN_VT_CLASS, true
-	case 35:
-		return ErrorCode_UNKNOWN_VT_SESSION, true
-	case 36:
-		return ErrorCode_UNSUPPORTED_OBJECT_TYPE, true
-	case 37:
-		return ErrorCode_VALUE_OUT_OF_RANGE, true
-	case 38:
-		return ErrorCode_VT_SESSION_ALREADY_CLOSED, true
-	case 39:
-		return ErrorCode_VT_SESSION_TERMINATION_FAILURE, true
-	case 4:
-		return ErrorCode_DYNAMIC_CREATION_NOT_SUPPORTED, true
-	case 40:
-		return ErrorCode_WRITE_ACCESS_DENIED, true
-	case 41:
-		return ErrorCode_CHARACTER_SET_NOT_SUPPORTED, true
-	case 42:
-		return ErrorCode_INVALID_ARRAY_INDEX, true
-	case 43:
-		return ErrorCode_COV_SUBSCRIPTION_FAILED, true
-	case 44:
-		return ErrorCode_NOT_COV_PROPERTY, true
-	case 45:
-		return ErrorCode_OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED, true
-	case 46:
-		return ErrorCode_INVALID_CONFIGURATION_DATA, true
-	case 47:
-		return ErrorCode_DATATYPE_NOT_SUPPORTED, true
-	case 48:
-		return ErrorCode_DUPLICATE_NAME, true
-	case 49:
-		return ErrorCode_DUPLICATE_OBJECT_ID, true
-	case 5:
-		return ErrorCode_FILE_ACCESS_DENIED, true
-	case 50:
-		return ErrorCode_PROPERTY_IS_NOT_AN_ARRAY, true
-	case 51:
-		return ErrorCode_ABORT_BUFFER_OVERFLOW, true
-	case 52:
-		return ErrorCode_ABORT_INVALID_APDU_IN_THIS_STATE, true
-	case 53:
-		return ErrorCode_ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK, true
-	case 54:
-		return ErrorCode_ABORT_SEGMENTATION_NOT_SUPPORTED, true
-	case 55:
-		return ErrorCode_ABORT_PROPRIETARY, true
-	case 56:
-		return ErrorCode_ABORT_OTHER, true
-	case 57:
-		return ErrorCode_INVALID_TAG, true
-	case 58:
-		return ErrorCode_NETWORK_DOWN, true
-	case 59:
-		return ErrorCode_REJECT_BUFFER_OVERFLOW, true
-	case 60:
-		return ErrorCode_REJECT_INCONSISTENT_PARAMETERS, true
-	case 61:
-		return ErrorCode_REJECT_INVALID_PARAMETER_DATA_TYPE, true
-	case 62:
-		return ErrorCode_REJECT_INVALID_TAG, true
-	case 63:
-		return ErrorCode_REJECT_MISSING_REQUIRED_PARAMETER, true
-	case 64:
-		return ErrorCode_REJECT_PARAMETER_OUT_OF_RANGE, true
-	case 65:
-		return ErrorCode_REJECT_TOO_MANY_ARGUMENTS, true
-	case 66:
-		return ErrorCode_REJECT_UNDEFINED_ENUMERATION, true
-	case 67:
-		return ErrorCode_REJECT_UNRECOGNIZED_SERVICE, true
-	case 68:
-		return ErrorCode_REJECT_PROPRIETARY, true
-	case 69:
-		return ErrorCode_REJECT_OTHER, true
-	case 7:
-		return ErrorCode_INCONSISTENT_PARAMETERS, true
-	case 70:
-		return ErrorCode_UNKNOWN_DEVICE, true
-	case 71:
-		return ErrorCode_UNKNOWN_ROUTE, true
-	case 72:
-		return ErrorCode_VALUE_NOT_INITIALIZED, true
-	case 74:
-		return ErrorCode_NO_ALARM_CONFIGURED, true
-	case 75:
-		return ErrorCode_LOG_BUFFER_FULL, true
-	case 76:
-		return ErrorCode_LOGGED_VALUE_PURGED, true
-	case 77:
-		return ErrorCode_NO_PROPERTY_SPECIFIED, true
-	case 78:
-		return ErrorCode_NOT_CONFIGURED_FOR_TRIGGERED_LOGGING, true
-	case 79:
-		return ErrorCode_UNKNOWN_SUBSCRIPTION, true
-	case 8:
-		return ErrorCode_INCONSISTENT_SELECTION_CRITERION, true
-	case 80:
-		return ErrorCode_PARAMETER_OUT_OF_RANGE, true
-	case 81:
-		return ErrorCode_LIST_ELEMENT_NOT_FOUND, true
-	case 82:
-		return ErrorCode_Busy, true
-	case 83:
-		return ErrorCode_COMMUNICATION_DISABLED, true
-	case 84:
-		return ErrorCode_SUCCESS, true
-	case 85:
-		return ErrorCode_ACCESS_DENIED, true
-	case 86:
-		return ErrorCode_BAD_DESTINATION_ADDRESS, true
-	case 87:
-		return ErrorCode_BAD_DESTINATION_DEVICE_ID, true
-	case 88:
-		return ErrorCode_BAD_SIGNATURE, true
-	case 89:
-		return ErrorCode_BAD_SOURCE_ADDRESS, true
-	case 9:
-		return ErrorCode_INVALID_DATA_TYPE, true
-	case 90:
-		return ErrorCode_BAD_TIMESTAMP, true
-	case 91:
-		return ErrorCode_CANNOT_USE_KEY, true
-	case 92:
-		return ErrorCode_CANNOT_VERIFY_MESSAGE_ID, true
-	case 93:
-		return ErrorCode_CORRECT_KEY_REVISION, true
-	case 94:
-		return ErrorCode_DESTINATION_DEVICE_ID_REQUIRED, true
-	case 95:
-		return ErrorCode_DUPLICATE_MESSAGE, true
-	case 96:
-		return ErrorCode_ENCRYPTION_NOT_CONFIGURED, true
-	case 97:
-		return ErrorCode_ENCRYPTION_REQUIRED, true
-	case 98:
-		return ErrorCode_INCORRECT_KEY, true
+		case 0:
+			return ErrorCode_OTHER, true
+		case 0XFFFF:
+			return ErrorCode_VENDOR_PROPRIETARY_VALUE, true
+		case 100:
+			return ErrorCode_KEY_UPDATE_IN_PROGRESS, true
+		case 101:
+			return ErrorCode_MALFORMED_MESSAGE, true
+		case 102:
+			return ErrorCode_NOT_KEY_SERVER, true
+		case 103:
+			return ErrorCode_SECURITY_NOT_CONFIGURED, true
+		case 104:
+			return ErrorCode_SOURCE_SECURITY_REQUIRED, true
+		case 105:
+			return ErrorCode_TOO_MANY_KEYS, true
+		case 106:
+			return ErrorCode_UNKNOWN_AUTHENTICATION_TYPE, true
+		case 107:
+			return ErrorCode_UNKNOWN_KEY, true
+		case 108:
+			return ErrorCode_UNKNOWN_KEY_REVISION, true
+		case 109:
+			return ErrorCode_UNKNOWN_SOURCE_MESSAGE, true
+		case 110:
+			return ErrorCode_NOT_ROUTER_TO_DNET, true
+		case 111:
+			return ErrorCode_ROUTER_BUSY, true
+		case 112:
+			return ErrorCode_UNKNOWN_NETWORK_MESSAGE, true
+		case 113:
+			return ErrorCode_MESSAGE_TOO_LONG, true
+		case 114:
+			return ErrorCode_SECURITY_ERROR, true
+		case 115:
+			return ErrorCode_ADDRESSING_ERROR, true
+		case 116:
+			return ErrorCode_WRITE_BDT_FAILED, true
+		case 117:
+			return ErrorCode_READ_BDT_FAILED, true
+		case 118:
+			return ErrorCode_REGISTER_FOREIGN_DEVICE_FAILED, true
+		case 119:
+			return ErrorCode_READ_FDT_FAILED, true
+		case 120:
+			return ErrorCode_DELETE_FDT_ENTRY_FAILED, true
+		case 121:
+			return ErrorCode_DISTRIBUTE_BROADCAST_FAILED, true
+		case 122:
+			return ErrorCode_UNKNOWN_FILE_SIZE, true
+		case 123:
+			return ErrorCode_ABORT_APDU_TOO_LONG, true
+		case 124:
+			return ErrorCode_ABORT_APPLICATION_EXCEEDED_REPLY_TIME, true
+		case 125:
+			return ErrorCode_ABORT_OUT_OF_RESOURCES, true
+		case 126:
+			return ErrorCode_ABORT_TSM_TIMEOUT, true
+		case 127:
+			return ErrorCode_ABORT_WINDOW_SIZE_OUT_OF_RANGE, true
+		case 128:
+			return ErrorCode_FILE_FULL, true
+		case 129:
+			return ErrorCode_INCONSISTENT_CONFIGURATION, true
+		case 13:
+			return ErrorCode_D_PARAMETER_DATA_TYPE, true
+		case 130:
+			return ErrorCode_INCONSISTENT_OBJECT_TYPE, true
+		case 131:
+			return ErrorCode_INTERNAL_ERROR, true
+		case 132:
+			return ErrorCode_NOT_CONFIGURED, true
+		case 133:
+			return ErrorCode_OUT_OF_MEMORY, true
+		case 134:
+			return ErrorCode_VALUE_TOO_LONG, true
+		case 135:
+			return ErrorCode_ABORT_INSUFFICIENT_SECURITY, true
+		case 136:
+			return ErrorCode_ABORT_SECURITY_ERROR, true
+		case 137:
+			return ErrorCode_DUPLICATE_ENTRY, true
+		case 138:
+			return ErrorCode_INVALID_VALUE_IN_THIS_STATE, true
+		case 14:
+			return ErrorCode_INVALID_TIMESTAMP, true
+		case 16:
+			return ErrorCode_MISSING_REQUIRED_PARAMETER, true
+		case 17:
+			return ErrorCode_NO_OBJECTS_OF_SPECIFIED_TYPE, true
+		case 18:
+			return ErrorCode_NO_SPACE_FOR_OBJECT, true
+		case 19:
+			return ErrorCode_NO_SPACE_TO_ADD_LIST_ELEMENT, true
+		case 2:
+			return ErrorCode_CONFIGURATION_IN_PROGRESS, true
+		case 20:
+			return ErrorCode_NO_SPACE_TO_WRITE_PROPERTY, true
+		case 21:
+			return ErrorCode_NO_VT_SESSIONS_AVAILABLE, true
+		case 22:
+			return ErrorCode_PROPERTY_IS_NOT_A_LIST, true
+		case 23:
+			return ErrorCode_OBJECT_DELETION_NOT_PERMITTED, true
+		case 24:
+			return ErrorCode_OBJECT_IDENTIFIER_ALREADY_EXISTS, true
+		case 25:
+			return ErrorCode_OPERATIONAL_PROBLEM, true
+		case 26:
+			return ErrorCode_PASSWORD_FAILURE, true
+		case 27:
+			return ErrorCode_READ_ACCESS_DENIED, true
+		case 29:
+			return ErrorCode_SERVICE_REQUEST_DENIED, true
+		case 3:
+			return ErrorCode_DEVICE_BUSY, true
+		case 30:
+			return ErrorCode_TIMEOUT, true
+		case 31:
+			return ErrorCode_UNKNOWN_OBJECT, true
+		case 32:
+			return ErrorCode_UNKNOWN_PROPERTY, true
+		case 34:
+			return ErrorCode_UNKNOWN_VT_CLASS, true
+		case 35:
+			return ErrorCode_UNKNOWN_VT_SESSION, true
+		case 36:
+			return ErrorCode_UNSUPPORTED_OBJECT_TYPE, true
+		case 37:
+			return ErrorCode_VALUE_OUT_OF_RANGE, true
+		case 38:
+			return ErrorCode_VT_SESSION_ALREADY_CLOSED, true
+		case 39:
+			return ErrorCode_VT_SESSION_TERMINATION_FAILURE, true
+		case 4:
+			return ErrorCode_DYNAMIC_CREATION_NOT_SUPPORTED, true
+		case 40:
+			return ErrorCode_WRITE_ACCESS_DENIED, true
+		case 41:
+			return ErrorCode_CHARACTER_SET_NOT_SUPPORTED, true
+		case 42:
+			return ErrorCode_INVALID_ARRAY_INDEX, true
+		case 43:
+			return ErrorCode_COV_SUBSCRIPTION_FAILED, true
+		case 44:
+			return ErrorCode_NOT_COV_PROPERTY, true
+		case 45:
+			return ErrorCode_OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED, true
+		case 46:
+			return ErrorCode_INVALID_CONFIGURATION_DATA, true
+		case 47:
+			return ErrorCode_DATATYPE_NOT_SUPPORTED, true
+		case 48:
+			return ErrorCode_DUPLICATE_NAME, true
+		case 49:
+			return ErrorCode_DUPLICATE_OBJECT_ID, true
+		case 5:
+			return ErrorCode_FILE_ACCESS_DENIED, true
+		case 50:
+			return ErrorCode_PROPERTY_IS_NOT_AN_ARRAY, true
+		case 51:
+			return ErrorCode_ABORT_BUFFER_OVERFLOW, true
+		case 52:
+			return ErrorCode_ABORT_INVALID_APDU_IN_THIS_STATE, true
+		case 53:
+			return ErrorCode_ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK, true
+		case 54:
+			return ErrorCode_ABORT_SEGMENTATION_NOT_SUPPORTED, true
+		case 55:
+			return ErrorCode_ABORT_PROPRIETARY, true
+		case 56:
+			return ErrorCode_ABORT_OTHER, true
+		case 57:
+			return ErrorCode_INVALID_TAG, true
+		case 58:
+			return ErrorCode_NETWORK_DOWN, true
+		case 59:
+			return ErrorCode_REJECT_BUFFER_OVERFLOW, true
+		case 60:
+			return ErrorCode_REJECT_INCONSISTENT_PARAMETERS, true
+		case 61:
+			return ErrorCode_REJECT_INVALID_PARAMETER_DATA_TYPE, true
+		case 62:
+			return ErrorCode_REJECT_INVALID_TAG, true
+		case 63:
+			return ErrorCode_REJECT_MISSING_REQUIRED_PARAMETER, true
+		case 64:
+			return ErrorCode_REJECT_PARAMETER_OUT_OF_RANGE, true
+		case 65:
+			return ErrorCode_REJECT_TOO_MANY_ARGUMENTS, true
+		case 66:
+			return ErrorCode_REJECT_UNDEFINED_ENUMERATION, true
+		case 67:
+			return ErrorCode_REJECT_UNRECOGNIZED_SERVICE, true
+		case 68:
+			return ErrorCode_REJECT_PROPRIETARY, true
+		case 69:
+			return ErrorCode_REJECT_OTHER, true
+		case 7:
+			return ErrorCode_INCONSISTENT_PARAMETERS, true
+		case 70:
+			return ErrorCode_UNKNOWN_DEVICE, true
+		case 71:
+			return ErrorCode_UNKNOWN_ROUTE, true
+		case 72:
+			return ErrorCode_VALUE_NOT_INITIALIZED, true
+		case 74:
+			return ErrorCode_NO_ALARM_CONFIGURED, true
+		case 75:
+			return ErrorCode_LOG_BUFFER_FULL, true
+		case 76:
+			return ErrorCode_LOGGED_VALUE_PURGED, true
+		case 77:
+			return ErrorCode_NO_PROPERTY_SPECIFIED, true
+		case 78:
+			return ErrorCode_NOT_CONFIGURED_FOR_TRIGGERED_LOGGING, true
+		case 79:
+			return ErrorCode_UNKNOWN_SUBSCRIPTION, true
+		case 8:
+			return ErrorCode_INCONSISTENT_SELECTION_CRITERION, true
+		case 80:
+			return ErrorCode_PARAMETER_OUT_OF_RANGE, true
+		case 81:
+			return ErrorCode_LIST_ELEMENT_NOT_FOUND, true
+		case 82:
+			return ErrorCode_Busy, true
+		case 83:
+			return ErrorCode_COMMUNICATION_DISABLED, true
+		case 84:
+			return ErrorCode_SUCCESS, true
+		case 85:
+			return ErrorCode_ACCESS_DENIED, true
+		case 86:
+			return ErrorCode_BAD_DESTINATION_ADDRESS, true
+		case 87:
+			return ErrorCode_BAD_DESTINATION_DEVICE_ID, true
+		case 88:
+			return ErrorCode_BAD_SIGNATURE, true
+		case 89:
+			return ErrorCode_BAD_SOURCE_ADDRESS, true
+		case 9:
+			return ErrorCode_INVALID_DATA_TYPE, true
+		case 90:
+			return ErrorCode_BAD_TIMESTAMP, true
+		case 91:
+			return ErrorCode_CANNOT_USE_KEY, true
+		case 92:
+			return ErrorCode_CANNOT_VERIFY_MESSAGE_ID, true
+		case 93:
+			return ErrorCode_CORRECT_KEY_REVISION, true
+		case 94:
+			return ErrorCode_DESTINATION_DEVICE_ID_REQUIRED, true
+		case 95:
+			return ErrorCode_DUPLICATE_MESSAGE, true
+		case 96:
+			return ErrorCode_ENCRYPTION_NOT_CONFIGURED, true
+		case 97:
+			return ErrorCode_ENCRYPTION_REQUIRED, true
+		case 98:
+			return ErrorCode_INCORRECT_KEY, true
 	}
 	return 0, false
 }
@@ -837,13 +837,13 @@ func ErrorCodeByName(value string) (enum ErrorCode, ok bool) {
 	return 0, false
 }
 
-func ErrorCodeKnows(value uint16) bool {
+func ErrorCodeKnows(value uint16)  bool {
 	for _, typeValue := range ErrorCodeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastErrorCode(structType interface{}) ErrorCode {
@@ -1163,3 +1163,4 @@ func (e ErrorCode) PLC4XEnumName() string {
 func (e ErrorCode) String() string {
 	return e.PLC4XEnumName()
 }
+

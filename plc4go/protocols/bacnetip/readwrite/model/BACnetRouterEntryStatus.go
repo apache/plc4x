@@ -34,9 +34,9 @@ type IBACnetRouterEntryStatus interface {
 	utils.Serializable
 }
 
-const (
-	BACnetRouterEntryStatus_AVAILABLE    BACnetRouterEntryStatus = 0
-	BACnetRouterEntryStatus_BUSY         BACnetRouterEntryStatus = 1
+const(
+	BACnetRouterEntryStatus_AVAILABLE BACnetRouterEntryStatus = 0
+	BACnetRouterEntryStatus_BUSY BACnetRouterEntryStatus = 1
 	BACnetRouterEntryStatus_DISCONNECTED BACnetRouterEntryStatus = 2
 )
 
@@ -44,7 +44,7 @@ var BACnetRouterEntryStatusValues []BACnetRouterEntryStatus
 
 func init() {
 	_ = errors.New
-	BACnetRouterEntryStatusValues = []BACnetRouterEntryStatus{
+	BACnetRouterEntryStatusValues = []BACnetRouterEntryStatus {
 		BACnetRouterEntryStatus_AVAILABLE,
 		BACnetRouterEntryStatus_BUSY,
 		BACnetRouterEntryStatus_DISCONNECTED,
@@ -53,12 +53,12 @@ func init() {
 
 func BACnetRouterEntryStatusByValue(value uint8) (enum BACnetRouterEntryStatus, ok bool) {
 	switch value {
-	case 0:
-		return BACnetRouterEntryStatus_AVAILABLE, true
-	case 1:
-		return BACnetRouterEntryStatus_BUSY, true
-	case 2:
-		return BACnetRouterEntryStatus_DISCONNECTED, true
+		case 0:
+			return BACnetRouterEntryStatus_AVAILABLE, true
+		case 1:
+			return BACnetRouterEntryStatus_BUSY, true
+		case 2:
+			return BACnetRouterEntryStatus_DISCONNECTED, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func BACnetRouterEntryStatusByName(value string) (enum BACnetRouterEntryStatus, 
 	return 0, false
 }
 
-func BACnetRouterEntryStatusKnows(value uint8) bool {
+func BACnetRouterEntryStatusKnows(value uint8)  bool {
 	for _, typeValue := range BACnetRouterEntryStatusValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetRouterEntryStatus(structType interface{}) BACnetRouterEntryStatus {
@@ -147,3 +147,4 @@ func (e BACnetRouterEntryStatus) PLC4XEnumName() string {
 func (e BACnetRouterEntryStatus) String() string {
 	return e.PLC4XEnumName()
 }
+

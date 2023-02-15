@@ -16,26 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.eip.readwrite.tag;
+package org.apache.plc4x.java.eip.readwrite.utils;
 
-import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
+import org.apache.plc4x.java.eip.readwrite.PathSegment;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
 
-public class EipTagHandler implements PlcTagHandler {
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-    @Override
-    public PlcTag parseTag(String tagAddress) throws PlcInvalidTagException {
-       if(EipTag.matches(tagAddress)){
-           return EipTag.of(tagAddress);
-       }
-       else throw new PlcInvalidTagException("Invalid tag "+ tagAddress);
-    }
 
-    @Override
-    public PlcQuery parseQuery(String query) {
-        throw new UnsupportedOperationException("This driver doesn't support browsing");
+
+public class StaticHelper {
+
+    public static boolean isStillAPathSegment(ReadBuffer io, IntegerEncoding order) {
+        int initialPosition = io.getPos();
+        try {
+            PathSegment ps = PathSegment.staticParse(io, order);
+            return false;
+        } catch (Exception e) {
+            return true;
+        } finally {
+            io.reset(initialPosition);
+        }
     }
 
 }

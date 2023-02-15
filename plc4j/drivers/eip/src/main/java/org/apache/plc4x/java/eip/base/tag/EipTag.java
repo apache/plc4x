@@ -16,7 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.eip.readwrite.tag;
+
+package org.apache.plc4x.java.eip.base.tag;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
@@ -36,7 +37,7 @@ import java.util.regex.Pattern;
 public class EipTag implements PlcTag, Serializable {
 
     private static final Pattern ADDRESS_PATTERN =
-        Pattern.compile("^%(?<tag>[a-zA-Z_.0-9]+\\[?[0-9]*\\]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
+        Pattern.compile("^(?<tag>[a-zA-Z_.0-9]+\\[?[0-9]*\\]?):?(?<dataType>[A-Z]*):?(?<elementNb>[0-9]*)");
 
     private static final String TAG = "tag";
     private static final String ELEMENTS = "elementNb";
@@ -111,12 +112,14 @@ public class EipTag implements PlcTag, Serializable {
         if (matcher.matches()) {
             String tag = matcher.group(TAG);
             int nb = 0;
-            CIPDataTypeCode type = null;
+            CIPDataTypeCode type;
             if (!matcher.group(ELEMENTS).isEmpty()) {
                 nb = Integer.parseInt(matcher.group(ELEMENTS));
             }
             if (!matcher.group(TYPE).isEmpty()) {
                 type = CIPDataTypeCode.valueOf(matcher.group(TYPE));
+            } else {
+                type = CIPDataTypeCode.DINT;
             }
             if (nb != 0) {
                 if (type != null) {
@@ -137,20 +140,14 @@ public class EipTag implements PlcTag, Serializable {
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext(getClass().getSimpleName());
 
-        writeBuffer.writeString("node",
-            tag.getBytes(StandardCharsets.UTF_8).length * 8,
-            tag, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+        writeBuffer.writeString("node", tag.getBytes(StandardCharsets.UTF_8).length * 8, tag, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         if (type != null) {
-            writeBuffer.writeString("type",
-                type.name().getBytes(StandardCharsets.UTF_8).length * 8,
-                type.name(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+            writeBuffer.writeString("type", type.name().getBytes(StandardCharsets.UTF_8).length * 8, type.name(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         }
         writeBuffer.writeUnsignedInt("elementNb", 16, elementNb);
         // TODO: remove this (not language agnostic)
         String defaultJavaType = (type == null ? Object.class : getPlcValueType().getDefaultJavaType()).getName();
-        writeBuffer.writeString("defaultJavaType",
-            defaultJavaType.getBytes(StandardCharsets.UTF_8).length * 8,
-            defaultJavaType, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+        writeBuffer.writeString("defaultJavaType", defaultJavaType.getBytes(StandardCharsets.UTF_8).length * 8, defaultJavaType, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
 
         writeBuffer.popContext(getClass().getSimpleName());
     }

@@ -35,19 +35,19 @@ type ILightingCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const (
-	LightingCommandType_OFF            LightingCommandType = 0x00
-	LightingCommandType_ON             LightingCommandType = 0x01
-	LightingCommandType_RAMP_TO_LEVEL  LightingCommandType = 0x02
+const(
+	LightingCommandType_OFF LightingCommandType = 0x00
+	LightingCommandType_ON LightingCommandType = 0x01
+	LightingCommandType_RAMP_TO_LEVEL LightingCommandType = 0x02
 	LightingCommandType_TERMINATE_RAMP LightingCommandType = 0x03
-	LightingCommandType_LABEL          LightingCommandType = 0x04
+	LightingCommandType_LABEL LightingCommandType = 0x04
 )
 
 var LightingCommandTypeValues []LightingCommandType
 
 func init() {
 	_ = errors.New
-	LightingCommandTypeValues = []LightingCommandType{
+	LightingCommandTypeValues = []LightingCommandType {
 		LightingCommandType_OFF,
 		LightingCommandType_ON,
 		LightingCommandType_RAMP_TO_LEVEL,
@@ -56,30 +56,25 @@ func init() {
 	}
 }
 
+
 func (e LightingCommandType) NumberOfArguments() uint8 {
-	switch e {
-	case 0x00:
-		{ /* '0x00' */
-			return 1
+	switch e  {
+		case 0x00: { /* '0x00' */
+            return 1
 		}
-	case 0x01:
-		{ /* '0x01' */
-			return 1
+		case 0x01: { /* '0x01' */
+            return 1
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return 2
+		case 0x02: { /* '0x02' */
+            return 2
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return 1
+		case 0x03: { /* '0x03' */
+            return 1
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return 4
+		case 0x04: { /* '0x04' */
+            return 4
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -95,16 +90,16 @@ func LightingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (Lightin
 }
 func LightingCommandTypeByValue(value uint8) (enum LightingCommandType, ok bool) {
 	switch value {
-	case 0x00:
-		return LightingCommandType_OFF, true
-	case 0x01:
-		return LightingCommandType_ON, true
-	case 0x02:
-		return LightingCommandType_RAMP_TO_LEVEL, true
-	case 0x03:
-		return LightingCommandType_TERMINATE_RAMP, true
-	case 0x04:
-		return LightingCommandType_LABEL, true
+		case 0x00:
+			return LightingCommandType_OFF, true
+		case 0x01:
+			return LightingCommandType_ON, true
+		case 0x02:
+			return LightingCommandType_RAMP_TO_LEVEL, true
+		case 0x03:
+			return LightingCommandType_TERMINATE_RAMP, true
+		case 0x04:
+			return LightingCommandType_LABEL, true
 	}
 	return 0, false
 }
@@ -125,13 +120,13 @@ func LightingCommandTypeByName(value string) (enum LightingCommandType, ok bool)
 	return 0, false
 }
 
-func LightingCommandTypeKnows(value uint8) bool {
+func LightingCommandTypeKnows(value uint8)  bool {
 	for _, typeValue := range LightingCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastLightingCommandType(structType interface{}) LightingCommandType {
@@ -201,3 +196,4 @@ func (e LightingCommandType) PLC4XEnumName() string {
 func (e LightingCommandType) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,7 +34,7 @@ type IPriorityClass interface {
 	utils.Serializable
 }
 
-const (
+const(
 	PriorityClass_Class4 PriorityClass = 0x00
 	PriorityClass_Class3 PriorityClass = 0x01
 	PriorityClass_Class2 PriorityClass = 0x02
@@ -45,7 +45,7 @@ var PriorityClassValues []PriorityClass
 
 func init() {
 	_ = errors.New
-	PriorityClassValues = []PriorityClass{
+	PriorityClassValues = []PriorityClass {
 		PriorityClass_Class4,
 		PriorityClass_Class3,
 		PriorityClass_Class2,
@@ -55,14 +55,14 @@ func init() {
 
 func PriorityClassByValue(value uint8) (enum PriorityClass, ok bool) {
 	switch value {
-	case 0x00:
-		return PriorityClass_Class4, true
-	case 0x01:
-		return PriorityClass_Class3, true
-	case 0x02:
-		return PriorityClass_Class2, true
-	case 0x03:
-		return PriorityClass_Class1, true
+		case 0x00:
+			return PriorityClass_Class4, true
+		case 0x01:
+			return PriorityClass_Class3, true
+		case 0x02:
+			return PriorityClass_Class2, true
+		case 0x03:
+			return PriorityClass_Class1, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func PriorityClassByName(value string) (enum PriorityClass, ok bool) {
 	return 0, false
 }
 
-func PriorityClassKnows(value uint8) bool {
+func PriorityClassKnows(value uint8)  bool {
 	for _, typeValue := range PriorityClassValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastPriorityClass(structType interface{}) PriorityClass {
@@ -155,3 +155,4 @@ func (e PriorityClass) PLC4XEnumName() string {
 func (e PriorityClass) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,154 +34,154 @@ type IHVACError interface {
 	utils.Serializable
 }
 
-const (
-	HVACError_NO_ERROR                    HVACError = 0x00
-	HVACError_HEATER_TOTAL_FAILURE        HVACError = 0x01
-	HVACError_COOLER_TOTAL_FAILURE        HVACError = 0x02
-	HVACError_FAN_TOTAL_FAILURE           HVACError = 0x03
-	HVACError_TEMPERATURE_SENSOR_FAILURE  HVACError = 0x04
-	HVACError_HEATER_TEMPORARY_PROBLEM    HVACError = 0x05
-	HVACError_COOLER_TEMPORARY_PROBLEM    HVACError = 0x06
-	HVACError_FAN_TEMPORARY_PROBLEM       HVACError = 0x07
-	HVACError_HEATER_SERVICE_REQUIRED     HVACError = 0x08
-	HVACError_COOLER_SERVICE_REQUIRED     HVACError = 0x09
-	HVACError_FAN_SERVICE_REQUIRED        HVACError = 0x0A
+const(
+	HVACError_NO_ERROR HVACError = 0x00
+	HVACError_HEATER_TOTAL_FAILURE HVACError = 0x01
+	HVACError_COOLER_TOTAL_FAILURE HVACError = 0x02
+	HVACError_FAN_TOTAL_FAILURE HVACError = 0x03
+	HVACError_TEMPERATURE_SENSOR_FAILURE HVACError = 0x04
+	HVACError_HEATER_TEMPORARY_PROBLEM HVACError = 0x05
+	HVACError_COOLER_TEMPORARY_PROBLEM HVACError = 0x06
+	HVACError_FAN_TEMPORARY_PROBLEM HVACError = 0x07
+	HVACError_HEATER_SERVICE_REQUIRED HVACError = 0x08
+	HVACError_COOLER_SERVICE_REQUIRED HVACError = 0x09
+	HVACError_FAN_SERVICE_REQUIRED HVACError = 0x0A
 	HVACError_FILTER_REPLACEMENT_REQUIRED HVACError = 0x0B
-	HVACError_CUSTOM_ERROR_0              HVACError = 0x80
-	HVACError_CUSTOM_ERROR_1              HVACError = 0x81
-	HVACError_CUSTOM_ERROR_2              HVACError = 0x82
-	HVACError_CUSTOM_ERROR_3              HVACError = 0x83
-	HVACError_CUSTOM_ERROR_4              HVACError = 0x84
-	HVACError_CUSTOM_ERROR_5              HVACError = 0x85
-	HVACError_CUSTOM_ERROR_6              HVACError = 0x86
-	HVACError_CUSTOM_ERROR_7              HVACError = 0x87
-	HVACError_CUSTOM_ERROR_8              HVACError = 0x88
-	HVACError_CUSTOM_ERROR_9              HVACError = 0x89
-	HVACError_CUSTOM_ERROR_10             HVACError = 0x8A
-	HVACError_CUSTOM_ERROR_11             HVACError = 0x8B
-	HVACError_CUSTOM_ERROR_12             HVACError = 0x8C
-	HVACError_CUSTOM_ERROR_13             HVACError = 0x8D
-	HVACError_CUSTOM_ERROR_14             HVACError = 0x8E
-	HVACError_CUSTOM_ERROR_15             HVACError = 0x8F
-	HVACError_CUSTOM_ERROR_16             HVACError = 0x90
-	HVACError_CUSTOM_ERROR_17             HVACError = 0x91
-	HVACError_CUSTOM_ERROR_18             HVACError = 0x92
-	HVACError_CUSTOM_ERROR_19             HVACError = 0x93
-	HVACError_CUSTOM_ERROR_20             HVACError = 0x94
-	HVACError_CUSTOM_ERROR_21             HVACError = 0x95
-	HVACError_CUSTOM_ERROR_22             HVACError = 0x96
-	HVACError_CUSTOM_ERROR_23             HVACError = 0x97
-	HVACError_CUSTOM_ERROR_24             HVACError = 0x98
-	HVACError_CUSTOM_ERROR_25             HVACError = 0x99
-	HVACError_CUSTOM_ERROR_26             HVACError = 0x9A
-	HVACError_CUSTOM_ERROR_27             HVACError = 0x9B
-	HVACError_CUSTOM_ERROR_28             HVACError = 0x9C
-	HVACError_CUSTOM_ERROR_29             HVACError = 0x9D
-	HVACError_CUSTOM_ERROR_30             HVACError = 0x9E
-	HVACError_CUSTOM_ERROR_31             HVACError = 0x9F
-	HVACError_CUSTOM_ERROR_32             HVACError = 0xA0
-	HVACError_CUSTOM_ERROR_33             HVACError = 0xA1
-	HVACError_CUSTOM_ERROR_34             HVACError = 0xA2
-	HVACError_CUSTOM_ERROR_35             HVACError = 0xA3
-	HVACError_CUSTOM_ERROR_36             HVACError = 0xA4
-	HVACError_CUSTOM_ERROR_37             HVACError = 0xA5
-	HVACError_CUSTOM_ERROR_38             HVACError = 0xA6
-	HVACError_CUSTOM_ERROR_39             HVACError = 0xA7
-	HVACError_CUSTOM_ERROR_40             HVACError = 0xA8
-	HVACError_CUSTOM_ERROR_41             HVACError = 0xA9
-	HVACError_CUSTOM_ERROR_42             HVACError = 0xAA
-	HVACError_CUSTOM_ERROR_43             HVACError = 0xAB
-	HVACError_CUSTOM_ERROR_44             HVACError = 0xAC
-	HVACError_CUSTOM_ERROR_45             HVACError = 0xAD
-	HVACError_CUSTOM_ERROR_46             HVACError = 0xAE
-	HVACError_CUSTOM_ERROR_47             HVACError = 0xAF
-	HVACError_CUSTOM_ERROR_48             HVACError = 0xB0
-	HVACError_CUSTOM_ERROR_49             HVACError = 0xB1
-	HVACError_CUSTOM_ERROR_50             HVACError = 0xB2
-	HVACError_CUSTOM_ERROR_51             HVACError = 0xB3
-	HVACError_CUSTOM_ERROR_52             HVACError = 0xB4
-	HVACError_CUSTOM_ERROR_53             HVACError = 0xB5
-	HVACError_CUSTOM_ERROR_54             HVACError = 0xB6
-	HVACError_CUSTOM_ERROR_55             HVACError = 0xB7
-	HVACError_CUSTOM_ERROR_56             HVACError = 0xB8
-	HVACError_CUSTOM_ERROR_57             HVACError = 0xB9
-	HVACError_CUSTOM_ERROR_58             HVACError = 0xBA
-	HVACError_CUSTOM_ERROR_59             HVACError = 0xBB
-	HVACError_CUSTOM_ERROR_60             HVACError = 0xBC
-	HVACError_CUSTOM_ERROR_61             HVACError = 0xBD
-	HVACError_CUSTOM_ERROR_62             HVACError = 0xBE
-	HVACError_CUSTOM_ERROR_63             HVACError = 0xBF
-	HVACError_CUSTOM_ERROR_64             HVACError = 0xC0
-	HVACError_CUSTOM_ERROR_65             HVACError = 0xC1
-	HVACError_CUSTOM_ERROR_66             HVACError = 0xC2
-	HVACError_CUSTOM_ERROR_67             HVACError = 0xC3
-	HVACError_CUSTOM_ERROR_68             HVACError = 0xC4
-	HVACError_CUSTOM_ERROR_69             HVACError = 0xC5
-	HVACError_CUSTOM_ERROR_70             HVACError = 0xC6
-	HVACError_CUSTOM_ERROR_71             HVACError = 0xC7
-	HVACError_CUSTOM_ERROR_72             HVACError = 0xC8
-	HVACError_CUSTOM_ERROR_73             HVACError = 0xC9
-	HVACError_CUSTOM_ERROR_74             HVACError = 0xCA
-	HVACError_CUSTOM_ERROR_75             HVACError = 0xCB
-	HVACError_CUSTOM_ERROR_76             HVACError = 0xCC
-	HVACError_CUSTOM_ERROR_77             HVACError = 0xCD
-	HVACError_CUSTOM_ERROR_78             HVACError = 0xCE
-	HVACError_CUSTOM_ERROR_79             HVACError = 0xCF
-	HVACError_CUSTOM_ERROR_80             HVACError = 0xD0
-	HVACError_CUSTOM_ERROR_81             HVACError = 0xD1
-	HVACError_CUSTOM_ERROR_82             HVACError = 0xD2
-	HVACError_CUSTOM_ERROR_83             HVACError = 0xD3
-	HVACError_CUSTOM_ERROR_84             HVACError = 0xD4
-	HVACError_CUSTOM_ERROR_85             HVACError = 0xD5
-	HVACError_CUSTOM_ERROR_86             HVACError = 0xD6
-	HVACError_CUSTOM_ERROR_87             HVACError = 0xD7
-	HVACError_CUSTOM_ERROR_88             HVACError = 0xD8
-	HVACError_CUSTOM_ERROR_89             HVACError = 0xD9
-	HVACError_CUSTOM_ERROR_90             HVACError = 0xDA
-	HVACError_CUSTOM_ERROR_91             HVACError = 0xDB
-	HVACError_CUSTOM_ERROR_92             HVACError = 0xDC
-	HVACError_CUSTOM_ERROR_93             HVACError = 0xDD
-	HVACError_CUSTOM_ERROR_94             HVACError = 0xDE
-	HVACError_CUSTOM_ERROR_95             HVACError = 0xDF
-	HVACError_CUSTOM_ERROR_96             HVACError = 0xE0
-	HVACError_CUSTOM_ERROR_97             HVACError = 0xE1
-	HVACError_CUSTOM_ERROR_98             HVACError = 0xE2
-	HVACError_CUSTOM_ERROR_99             HVACError = 0xE3
-	HVACError_CUSTOM_ERROR_100            HVACError = 0xE4
-	HVACError_CUSTOM_ERROR_101            HVACError = 0xE5
-	HVACError_CUSTOM_ERROR_102            HVACError = 0xE6
-	HVACError_CUSTOM_ERROR_103            HVACError = 0xE7
-	HVACError_CUSTOM_ERROR_104            HVACError = 0xE8
-	HVACError_CUSTOM_ERROR_105            HVACError = 0xE9
-	HVACError_CUSTOM_ERROR_106            HVACError = 0xEA
-	HVACError_CUSTOM_ERROR_107            HVACError = 0xEB
-	HVACError_CUSTOM_ERROR_108            HVACError = 0xEC
-	HVACError_CUSTOM_ERROR_109            HVACError = 0xED
-	HVACError_CUSTOM_ERROR_110            HVACError = 0xEE
-	HVACError_CUSTOM_ERROR_111            HVACError = 0xEF
-	HVACError_CUSTOM_ERROR_112            HVACError = 0xF0
-	HVACError_CUSTOM_ERROR_113            HVACError = 0xF1
-	HVACError_CUSTOM_ERROR_114            HVACError = 0xF2
-	HVACError_CUSTOM_ERROR_115            HVACError = 0xF3
-	HVACError_CUSTOM_ERROR_116            HVACError = 0xF4
-	HVACError_CUSTOM_ERROR_117            HVACError = 0xF5
-	HVACError_CUSTOM_ERROR_118            HVACError = 0xF6
-	HVACError_CUSTOM_ERROR_119            HVACError = 0xF7
-	HVACError_CUSTOM_ERROR_120            HVACError = 0xF8
-	HVACError_CUSTOM_ERROR_121            HVACError = 0xF9
-	HVACError_CUSTOM_ERROR_122            HVACError = 0xFA
-	HVACError_CUSTOM_ERROR_123            HVACError = 0xFB
-	HVACError_CUSTOM_ERROR_124            HVACError = 0xFC
-	HVACError_CUSTOM_ERROR_125            HVACError = 0xFD
-	HVACError_CUSTOM_ERROR_126            HVACError = 0xFE
-	HVACError_CUSTOM_ERROR_127            HVACError = 0xFF
+	HVACError_CUSTOM_ERROR_0 HVACError = 0x80
+	HVACError_CUSTOM_ERROR_1 HVACError = 0x81
+	HVACError_CUSTOM_ERROR_2 HVACError = 0x82
+	HVACError_CUSTOM_ERROR_3 HVACError = 0x83
+	HVACError_CUSTOM_ERROR_4 HVACError = 0x84
+	HVACError_CUSTOM_ERROR_5 HVACError = 0x85
+	HVACError_CUSTOM_ERROR_6 HVACError = 0x86
+	HVACError_CUSTOM_ERROR_7 HVACError = 0x87
+	HVACError_CUSTOM_ERROR_8 HVACError = 0x88
+	HVACError_CUSTOM_ERROR_9 HVACError = 0x89
+	HVACError_CUSTOM_ERROR_10 HVACError = 0x8A
+	HVACError_CUSTOM_ERROR_11 HVACError = 0x8B
+	HVACError_CUSTOM_ERROR_12 HVACError = 0x8C
+	HVACError_CUSTOM_ERROR_13 HVACError = 0x8D
+	HVACError_CUSTOM_ERROR_14 HVACError = 0x8E
+	HVACError_CUSTOM_ERROR_15 HVACError = 0x8F
+	HVACError_CUSTOM_ERROR_16 HVACError = 0x90
+	HVACError_CUSTOM_ERROR_17 HVACError = 0x91
+	HVACError_CUSTOM_ERROR_18 HVACError = 0x92
+	HVACError_CUSTOM_ERROR_19 HVACError = 0x93
+	HVACError_CUSTOM_ERROR_20 HVACError = 0x94
+	HVACError_CUSTOM_ERROR_21 HVACError = 0x95
+	HVACError_CUSTOM_ERROR_22 HVACError = 0x96
+	HVACError_CUSTOM_ERROR_23 HVACError = 0x97
+	HVACError_CUSTOM_ERROR_24 HVACError = 0x98
+	HVACError_CUSTOM_ERROR_25 HVACError = 0x99
+	HVACError_CUSTOM_ERROR_26 HVACError = 0x9A
+	HVACError_CUSTOM_ERROR_27 HVACError = 0x9B
+	HVACError_CUSTOM_ERROR_28 HVACError = 0x9C
+	HVACError_CUSTOM_ERROR_29 HVACError = 0x9D
+	HVACError_CUSTOM_ERROR_30 HVACError = 0x9E
+	HVACError_CUSTOM_ERROR_31 HVACError = 0x9F
+	HVACError_CUSTOM_ERROR_32 HVACError = 0xA0
+	HVACError_CUSTOM_ERROR_33 HVACError = 0xA1
+	HVACError_CUSTOM_ERROR_34 HVACError = 0xA2
+	HVACError_CUSTOM_ERROR_35 HVACError = 0xA3
+	HVACError_CUSTOM_ERROR_36 HVACError = 0xA4
+	HVACError_CUSTOM_ERROR_37 HVACError = 0xA5
+	HVACError_CUSTOM_ERROR_38 HVACError = 0xA6
+	HVACError_CUSTOM_ERROR_39 HVACError = 0xA7
+	HVACError_CUSTOM_ERROR_40 HVACError = 0xA8
+	HVACError_CUSTOM_ERROR_41 HVACError = 0xA9
+	HVACError_CUSTOM_ERROR_42 HVACError = 0xAA
+	HVACError_CUSTOM_ERROR_43 HVACError = 0xAB
+	HVACError_CUSTOM_ERROR_44 HVACError = 0xAC
+	HVACError_CUSTOM_ERROR_45 HVACError = 0xAD
+	HVACError_CUSTOM_ERROR_46 HVACError = 0xAE
+	HVACError_CUSTOM_ERROR_47 HVACError = 0xAF
+	HVACError_CUSTOM_ERROR_48 HVACError = 0xB0
+	HVACError_CUSTOM_ERROR_49 HVACError = 0xB1
+	HVACError_CUSTOM_ERROR_50 HVACError = 0xB2
+	HVACError_CUSTOM_ERROR_51 HVACError = 0xB3
+	HVACError_CUSTOM_ERROR_52 HVACError = 0xB4
+	HVACError_CUSTOM_ERROR_53 HVACError = 0xB5
+	HVACError_CUSTOM_ERROR_54 HVACError = 0xB6
+	HVACError_CUSTOM_ERROR_55 HVACError = 0xB7
+	HVACError_CUSTOM_ERROR_56 HVACError = 0xB8
+	HVACError_CUSTOM_ERROR_57 HVACError = 0xB9
+	HVACError_CUSTOM_ERROR_58 HVACError = 0xBA
+	HVACError_CUSTOM_ERROR_59 HVACError = 0xBB
+	HVACError_CUSTOM_ERROR_60 HVACError = 0xBC
+	HVACError_CUSTOM_ERROR_61 HVACError = 0xBD
+	HVACError_CUSTOM_ERROR_62 HVACError = 0xBE
+	HVACError_CUSTOM_ERROR_63 HVACError = 0xBF
+	HVACError_CUSTOM_ERROR_64 HVACError = 0xC0
+	HVACError_CUSTOM_ERROR_65 HVACError = 0xC1
+	HVACError_CUSTOM_ERROR_66 HVACError = 0xC2
+	HVACError_CUSTOM_ERROR_67 HVACError = 0xC3
+	HVACError_CUSTOM_ERROR_68 HVACError = 0xC4
+	HVACError_CUSTOM_ERROR_69 HVACError = 0xC5
+	HVACError_CUSTOM_ERROR_70 HVACError = 0xC6
+	HVACError_CUSTOM_ERROR_71 HVACError = 0xC7
+	HVACError_CUSTOM_ERROR_72 HVACError = 0xC8
+	HVACError_CUSTOM_ERROR_73 HVACError = 0xC9
+	HVACError_CUSTOM_ERROR_74 HVACError = 0xCA
+	HVACError_CUSTOM_ERROR_75 HVACError = 0xCB
+	HVACError_CUSTOM_ERROR_76 HVACError = 0xCC
+	HVACError_CUSTOM_ERROR_77 HVACError = 0xCD
+	HVACError_CUSTOM_ERROR_78 HVACError = 0xCE
+	HVACError_CUSTOM_ERROR_79 HVACError = 0xCF
+	HVACError_CUSTOM_ERROR_80 HVACError = 0xD0
+	HVACError_CUSTOM_ERROR_81 HVACError = 0xD1
+	HVACError_CUSTOM_ERROR_82 HVACError = 0xD2
+	HVACError_CUSTOM_ERROR_83 HVACError = 0xD3
+	HVACError_CUSTOM_ERROR_84 HVACError = 0xD4
+	HVACError_CUSTOM_ERROR_85 HVACError = 0xD5
+	HVACError_CUSTOM_ERROR_86 HVACError = 0xD6
+	HVACError_CUSTOM_ERROR_87 HVACError = 0xD7
+	HVACError_CUSTOM_ERROR_88 HVACError = 0xD8
+	HVACError_CUSTOM_ERROR_89 HVACError = 0xD9
+	HVACError_CUSTOM_ERROR_90 HVACError = 0xDA
+	HVACError_CUSTOM_ERROR_91 HVACError = 0xDB
+	HVACError_CUSTOM_ERROR_92 HVACError = 0xDC
+	HVACError_CUSTOM_ERROR_93 HVACError = 0xDD
+	HVACError_CUSTOM_ERROR_94 HVACError = 0xDE
+	HVACError_CUSTOM_ERROR_95 HVACError = 0xDF
+	HVACError_CUSTOM_ERROR_96 HVACError = 0xE0
+	HVACError_CUSTOM_ERROR_97 HVACError = 0xE1
+	HVACError_CUSTOM_ERROR_98 HVACError = 0xE2
+	HVACError_CUSTOM_ERROR_99 HVACError = 0xE3
+	HVACError_CUSTOM_ERROR_100 HVACError = 0xE4
+	HVACError_CUSTOM_ERROR_101 HVACError = 0xE5
+	HVACError_CUSTOM_ERROR_102 HVACError = 0xE6
+	HVACError_CUSTOM_ERROR_103 HVACError = 0xE7
+	HVACError_CUSTOM_ERROR_104 HVACError = 0xE8
+	HVACError_CUSTOM_ERROR_105 HVACError = 0xE9
+	HVACError_CUSTOM_ERROR_106 HVACError = 0xEA
+	HVACError_CUSTOM_ERROR_107 HVACError = 0xEB
+	HVACError_CUSTOM_ERROR_108 HVACError = 0xEC
+	HVACError_CUSTOM_ERROR_109 HVACError = 0xED
+	HVACError_CUSTOM_ERROR_110 HVACError = 0xEE
+	HVACError_CUSTOM_ERROR_111 HVACError = 0xEF
+	HVACError_CUSTOM_ERROR_112 HVACError = 0xF0
+	HVACError_CUSTOM_ERROR_113 HVACError = 0xF1
+	HVACError_CUSTOM_ERROR_114 HVACError = 0xF2
+	HVACError_CUSTOM_ERROR_115 HVACError = 0xF3
+	HVACError_CUSTOM_ERROR_116 HVACError = 0xF4
+	HVACError_CUSTOM_ERROR_117 HVACError = 0xF5
+	HVACError_CUSTOM_ERROR_118 HVACError = 0xF6
+	HVACError_CUSTOM_ERROR_119 HVACError = 0xF7
+	HVACError_CUSTOM_ERROR_120 HVACError = 0xF8
+	HVACError_CUSTOM_ERROR_121 HVACError = 0xF9
+	HVACError_CUSTOM_ERROR_122 HVACError = 0xFA
+	HVACError_CUSTOM_ERROR_123 HVACError = 0xFB
+	HVACError_CUSTOM_ERROR_124 HVACError = 0xFC
+	HVACError_CUSTOM_ERROR_125 HVACError = 0xFD
+	HVACError_CUSTOM_ERROR_126 HVACError = 0xFE
+	HVACError_CUSTOM_ERROR_127 HVACError = 0xFF
 )
 
 var HVACErrorValues []HVACError
 
 func init() {
 	_ = errors.New
-	HVACErrorValues = []HVACError{
+	HVACErrorValues = []HVACError {
 		HVACError_NO_ERROR,
 		HVACError_HEATER_TOTAL_FAILURE,
 		HVACError_COOLER_TOTAL_FAILURE,
@@ -327,286 +327,286 @@ func init() {
 
 func HVACErrorByValue(value uint8) (enum HVACError, ok bool) {
 	switch value {
-	case 0x00:
-		return HVACError_NO_ERROR, true
-	case 0x01:
-		return HVACError_HEATER_TOTAL_FAILURE, true
-	case 0x02:
-		return HVACError_COOLER_TOTAL_FAILURE, true
-	case 0x03:
-		return HVACError_FAN_TOTAL_FAILURE, true
-	case 0x04:
-		return HVACError_TEMPERATURE_SENSOR_FAILURE, true
-	case 0x05:
-		return HVACError_HEATER_TEMPORARY_PROBLEM, true
-	case 0x06:
-		return HVACError_COOLER_TEMPORARY_PROBLEM, true
-	case 0x07:
-		return HVACError_FAN_TEMPORARY_PROBLEM, true
-	case 0x08:
-		return HVACError_HEATER_SERVICE_REQUIRED, true
-	case 0x09:
-		return HVACError_COOLER_SERVICE_REQUIRED, true
-	case 0x0A:
-		return HVACError_FAN_SERVICE_REQUIRED, true
-	case 0x0B:
-		return HVACError_FILTER_REPLACEMENT_REQUIRED, true
-	case 0x80:
-		return HVACError_CUSTOM_ERROR_0, true
-	case 0x81:
-		return HVACError_CUSTOM_ERROR_1, true
-	case 0x82:
-		return HVACError_CUSTOM_ERROR_2, true
-	case 0x83:
-		return HVACError_CUSTOM_ERROR_3, true
-	case 0x84:
-		return HVACError_CUSTOM_ERROR_4, true
-	case 0x85:
-		return HVACError_CUSTOM_ERROR_5, true
-	case 0x86:
-		return HVACError_CUSTOM_ERROR_6, true
-	case 0x87:
-		return HVACError_CUSTOM_ERROR_7, true
-	case 0x88:
-		return HVACError_CUSTOM_ERROR_8, true
-	case 0x89:
-		return HVACError_CUSTOM_ERROR_9, true
-	case 0x8A:
-		return HVACError_CUSTOM_ERROR_10, true
-	case 0x8B:
-		return HVACError_CUSTOM_ERROR_11, true
-	case 0x8C:
-		return HVACError_CUSTOM_ERROR_12, true
-	case 0x8D:
-		return HVACError_CUSTOM_ERROR_13, true
-	case 0x8E:
-		return HVACError_CUSTOM_ERROR_14, true
-	case 0x8F:
-		return HVACError_CUSTOM_ERROR_15, true
-	case 0x90:
-		return HVACError_CUSTOM_ERROR_16, true
-	case 0x91:
-		return HVACError_CUSTOM_ERROR_17, true
-	case 0x92:
-		return HVACError_CUSTOM_ERROR_18, true
-	case 0x93:
-		return HVACError_CUSTOM_ERROR_19, true
-	case 0x94:
-		return HVACError_CUSTOM_ERROR_20, true
-	case 0x95:
-		return HVACError_CUSTOM_ERROR_21, true
-	case 0x96:
-		return HVACError_CUSTOM_ERROR_22, true
-	case 0x97:
-		return HVACError_CUSTOM_ERROR_23, true
-	case 0x98:
-		return HVACError_CUSTOM_ERROR_24, true
-	case 0x99:
-		return HVACError_CUSTOM_ERROR_25, true
-	case 0x9A:
-		return HVACError_CUSTOM_ERROR_26, true
-	case 0x9B:
-		return HVACError_CUSTOM_ERROR_27, true
-	case 0x9C:
-		return HVACError_CUSTOM_ERROR_28, true
-	case 0x9D:
-		return HVACError_CUSTOM_ERROR_29, true
-	case 0x9E:
-		return HVACError_CUSTOM_ERROR_30, true
-	case 0x9F:
-		return HVACError_CUSTOM_ERROR_31, true
-	case 0xA0:
-		return HVACError_CUSTOM_ERROR_32, true
-	case 0xA1:
-		return HVACError_CUSTOM_ERROR_33, true
-	case 0xA2:
-		return HVACError_CUSTOM_ERROR_34, true
-	case 0xA3:
-		return HVACError_CUSTOM_ERROR_35, true
-	case 0xA4:
-		return HVACError_CUSTOM_ERROR_36, true
-	case 0xA5:
-		return HVACError_CUSTOM_ERROR_37, true
-	case 0xA6:
-		return HVACError_CUSTOM_ERROR_38, true
-	case 0xA7:
-		return HVACError_CUSTOM_ERROR_39, true
-	case 0xA8:
-		return HVACError_CUSTOM_ERROR_40, true
-	case 0xA9:
-		return HVACError_CUSTOM_ERROR_41, true
-	case 0xAA:
-		return HVACError_CUSTOM_ERROR_42, true
-	case 0xAB:
-		return HVACError_CUSTOM_ERROR_43, true
-	case 0xAC:
-		return HVACError_CUSTOM_ERROR_44, true
-	case 0xAD:
-		return HVACError_CUSTOM_ERROR_45, true
-	case 0xAE:
-		return HVACError_CUSTOM_ERROR_46, true
-	case 0xAF:
-		return HVACError_CUSTOM_ERROR_47, true
-	case 0xB0:
-		return HVACError_CUSTOM_ERROR_48, true
-	case 0xB1:
-		return HVACError_CUSTOM_ERROR_49, true
-	case 0xB2:
-		return HVACError_CUSTOM_ERROR_50, true
-	case 0xB3:
-		return HVACError_CUSTOM_ERROR_51, true
-	case 0xB4:
-		return HVACError_CUSTOM_ERROR_52, true
-	case 0xB5:
-		return HVACError_CUSTOM_ERROR_53, true
-	case 0xB6:
-		return HVACError_CUSTOM_ERROR_54, true
-	case 0xB7:
-		return HVACError_CUSTOM_ERROR_55, true
-	case 0xB8:
-		return HVACError_CUSTOM_ERROR_56, true
-	case 0xB9:
-		return HVACError_CUSTOM_ERROR_57, true
-	case 0xBA:
-		return HVACError_CUSTOM_ERROR_58, true
-	case 0xBB:
-		return HVACError_CUSTOM_ERROR_59, true
-	case 0xBC:
-		return HVACError_CUSTOM_ERROR_60, true
-	case 0xBD:
-		return HVACError_CUSTOM_ERROR_61, true
-	case 0xBE:
-		return HVACError_CUSTOM_ERROR_62, true
-	case 0xBF:
-		return HVACError_CUSTOM_ERROR_63, true
-	case 0xC0:
-		return HVACError_CUSTOM_ERROR_64, true
-	case 0xC1:
-		return HVACError_CUSTOM_ERROR_65, true
-	case 0xC2:
-		return HVACError_CUSTOM_ERROR_66, true
-	case 0xC3:
-		return HVACError_CUSTOM_ERROR_67, true
-	case 0xC4:
-		return HVACError_CUSTOM_ERROR_68, true
-	case 0xC5:
-		return HVACError_CUSTOM_ERROR_69, true
-	case 0xC6:
-		return HVACError_CUSTOM_ERROR_70, true
-	case 0xC7:
-		return HVACError_CUSTOM_ERROR_71, true
-	case 0xC8:
-		return HVACError_CUSTOM_ERROR_72, true
-	case 0xC9:
-		return HVACError_CUSTOM_ERROR_73, true
-	case 0xCA:
-		return HVACError_CUSTOM_ERROR_74, true
-	case 0xCB:
-		return HVACError_CUSTOM_ERROR_75, true
-	case 0xCC:
-		return HVACError_CUSTOM_ERROR_76, true
-	case 0xCD:
-		return HVACError_CUSTOM_ERROR_77, true
-	case 0xCE:
-		return HVACError_CUSTOM_ERROR_78, true
-	case 0xCF:
-		return HVACError_CUSTOM_ERROR_79, true
-	case 0xD0:
-		return HVACError_CUSTOM_ERROR_80, true
-	case 0xD1:
-		return HVACError_CUSTOM_ERROR_81, true
-	case 0xD2:
-		return HVACError_CUSTOM_ERROR_82, true
-	case 0xD3:
-		return HVACError_CUSTOM_ERROR_83, true
-	case 0xD4:
-		return HVACError_CUSTOM_ERROR_84, true
-	case 0xD5:
-		return HVACError_CUSTOM_ERROR_85, true
-	case 0xD6:
-		return HVACError_CUSTOM_ERROR_86, true
-	case 0xD7:
-		return HVACError_CUSTOM_ERROR_87, true
-	case 0xD8:
-		return HVACError_CUSTOM_ERROR_88, true
-	case 0xD9:
-		return HVACError_CUSTOM_ERROR_89, true
-	case 0xDA:
-		return HVACError_CUSTOM_ERROR_90, true
-	case 0xDB:
-		return HVACError_CUSTOM_ERROR_91, true
-	case 0xDC:
-		return HVACError_CUSTOM_ERROR_92, true
-	case 0xDD:
-		return HVACError_CUSTOM_ERROR_93, true
-	case 0xDE:
-		return HVACError_CUSTOM_ERROR_94, true
-	case 0xDF:
-		return HVACError_CUSTOM_ERROR_95, true
-	case 0xE0:
-		return HVACError_CUSTOM_ERROR_96, true
-	case 0xE1:
-		return HVACError_CUSTOM_ERROR_97, true
-	case 0xE2:
-		return HVACError_CUSTOM_ERROR_98, true
-	case 0xE3:
-		return HVACError_CUSTOM_ERROR_99, true
-	case 0xE4:
-		return HVACError_CUSTOM_ERROR_100, true
-	case 0xE5:
-		return HVACError_CUSTOM_ERROR_101, true
-	case 0xE6:
-		return HVACError_CUSTOM_ERROR_102, true
-	case 0xE7:
-		return HVACError_CUSTOM_ERROR_103, true
-	case 0xE8:
-		return HVACError_CUSTOM_ERROR_104, true
-	case 0xE9:
-		return HVACError_CUSTOM_ERROR_105, true
-	case 0xEA:
-		return HVACError_CUSTOM_ERROR_106, true
-	case 0xEB:
-		return HVACError_CUSTOM_ERROR_107, true
-	case 0xEC:
-		return HVACError_CUSTOM_ERROR_108, true
-	case 0xED:
-		return HVACError_CUSTOM_ERROR_109, true
-	case 0xEE:
-		return HVACError_CUSTOM_ERROR_110, true
-	case 0xEF:
-		return HVACError_CUSTOM_ERROR_111, true
-	case 0xF0:
-		return HVACError_CUSTOM_ERROR_112, true
-	case 0xF1:
-		return HVACError_CUSTOM_ERROR_113, true
-	case 0xF2:
-		return HVACError_CUSTOM_ERROR_114, true
-	case 0xF3:
-		return HVACError_CUSTOM_ERROR_115, true
-	case 0xF4:
-		return HVACError_CUSTOM_ERROR_116, true
-	case 0xF5:
-		return HVACError_CUSTOM_ERROR_117, true
-	case 0xF6:
-		return HVACError_CUSTOM_ERROR_118, true
-	case 0xF7:
-		return HVACError_CUSTOM_ERROR_119, true
-	case 0xF8:
-		return HVACError_CUSTOM_ERROR_120, true
-	case 0xF9:
-		return HVACError_CUSTOM_ERROR_121, true
-	case 0xFA:
-		return HVACError_CUSTOM_ERROR_122, true
-	case 0xFB:
-		return HVACError_CUSTOM_ERROR_123, true
-	case 0xFC:
-		return HVACError_CUSTOM_ERROR_124, true
-	case 0xFD:
-		return HVACError_CUSTOM_ERROR_125, true
-	case 0xFE:
-		return HVACError_CUSTOM_ERROR_126, true
-	case 0xFF:
-		return HVACError_CUSTOM_ERROR_127, true
+		case 0x00:
+			return HVACError_NO_ERROR, true
+		case 0x01:
+			return HVACError_HEATER_TOTAL_FAILURE, true
+		case 0x02:
+			return HVACError_COOLER_TOTAL_FAILURE, true
+		case 0x03:
+			return HVACError_FAN_TOTAL_FAILURE, true
+		case 0x04:
+			return HVACError_TEMPERATURE_SENSOR_FAILURE, true
+		case 0x05:
+			return HVACError_HEATER_TEMPORARY_PROBLEM, true
+		case 0x06:
+			return HVACError_COOLER_TEMPORARY_PROBLEM, true
+		case 0x07:
+			return HVACError_FAN_TEMPORARY_PROBLEM, true
+		case 0x08:
+			return HVACError_HEATER_SERVICE_REQUIRED, true
+		case 0x09:
+			return HVACError_COOLER_SERVICE_REQUIRED, true
+		case 0x0A:
+			return HVACError_FAN_SERVICE_REQUIRED, true
+		case 0x0B:
+			return HVACError_FILTER_REPLACEMENT_REQUIRED, true
+		case 0x80:
+			return HVACError_CUSTOM_ERROR_0, true
+		case 0x81:
+			return HVACError_CUSTOM_ERROR_1, true
+		case 0x82:
+			return HVACError_CUSTOM_ERROR_2, true
+		case 0x83:
+			return HVACError_CUSTOM_ERROR_3, true
+		case 0x84:
+			return HVACError_CUSTOM_ERROR_4, true
+		case 0x85:
+			return HVACError_CUSTOM_ERROR_5, true
+		case 0x86:
+			return HVACError_CUSTOM_ERROR_6, true
+		case 0x87:
+			return HVACError_CUSTOM_ERROR_7, true
+		case 0x88:
+			return HVACError_CUSTOM_ERROR_8, true
+		case 0x89:
+			return HVACError_CUSTOM_ERROR_9, true
+		case 0x8A:
+			return HVACError_CUSTOM_ERROR_10, true
+		case 0x8B:
+			return HVACError_CUSTOM_ERROR_11, true
+		case 0x8C:
+			return HVACError_CUSTOM_ERROR_12, true
+		case 0x8D:
+			return HVACError_CUSTOM_ERROR_13, true
+		case 0x8E:
+			return HVACError_CUSTOM_ERROR_14, true
+		case 0x8F:
+			return HVACError_CUSTOM_ERROR_15, true
+		case 0x90:
+			return HVACError_CUSTOM_ERROR_16, true
+		case 0x91:
+			return HVACError_CUSTOM_ERROR_17, true
+		case 0x92:
+			return HVACError_CUSTOM_ERROR_18, true
+		case 0x93:
+			return HVACError_CUSTOM_ERROR_19, true
+		case 0x94:
+			return HVACError_CUSTOM_ERROR_20, true
+		case 0x95:
+			return HVACError_CUSTOM_ERROR_21, true
+		case 0x96:
+			return HVACError_CUSTOM_ERROR_22, true
+		case 0x97:
+			return HVACError_CUSTOM_ERROR_23, true
+		case 0x98:
+			return HVACError_CUSTOM_ERROR_24, true
+		case 0x99:
+			return HVACError_CUSTOM_ERROR_25, true
+		case 0x9A:
+			return HVACError_CUSTOM_ERROR_26, true
+		case 0x9B:
+			return HVACError_CUSTOM_ERROR_27, true
+		case 0x9C:
+			return HVACError_CUSTOM_ERROR_28, true
+		case 0x9D:
+			return HVACError_CUSTOM_ERROR_29, true
+		case 0x9E:
+			return HVACError_CUSTOM_ERROR_30, true
+		case 0x9F:
+			return HVACError_CUSTOM_ERROR_31, true
+		case 0xA0:
+			return HVACError_CUSTOM_ERROR_32, true
+		case 0xA1:
+			return HVACError_CUSTOM_ERROR_33, true
+		case 0xA2:
+			return HVACError_CUSTOM_ERROR_34, true
+		case 0xA3:
+			return HVACError_CUSTOM_ERROR_35, true
+		case 0xA4:
+			return HVACError_CUSTOM_ERROR_36, true
+		case 0xA5:
+			return HVACError_CUSTOM_ERROR_37, true
+		case 0xA6:
+			return HVACError_CUSTOM_ERROR_38, true
+		case 0xA7:
+			return HVACError_CUSTOM_ERROR_39, true
+		case 0xA8:
+			return HVACError_CUSTOM_ERROR_40, true
+		case 0xA9:
+			return HVACError_CUSTOM_ERROR_41, true
+		case 0xAA:
+			return HVACError_CUSTOM_ERROR_42, true
+		case 0xAB:
+			return HVACError_CUSTOM_ERROR_43, true
+		case 0xAC:
+			return HVACError_CUSTOM_ERROR_44, true
+		case 0xAD:
+			return HVACError_CUSTOM_ERROR_45, true
+		case 0xAE:
+			return HVACError_CUSTOM_ERROR_46, true
+		case 0xAF:
+			return HVACError_CUSTOM_ERROR_47, true
+		case 0xB0:
+			return HVACError_CUSTOM_ERROR_48, true
+		case 0xB1:
+			return HVACError_CUSTOM_ERROR_49, true
+		case 0xB2:
+			return HVACError_CUSTOM_ERROR_50, true
+		case 0xB3:
+			return HVACError_CUSTOM_ERROR_51, true
+		case 0xB4:
+			return HVACError_CUSTOM_ERROR_52, true
+		case 0xB5:
+			return HVACError_CUSTOM_ERROR_53, true
+		case 0xB6:
+			return HVACError_CUSTOM_ERROR_54, true
+		case 0xB7:
+			return HVACError_CUSTOM_ERROR_55, true
+		case 0xB8:
+			return HVACError_CUSTOM_ERROR_56, true
+		case 0xB9:
+			return HVACError_CUSTOM_ERROR_57, true
+		case 0xBA:
+			return HVACError_CUSTOM_ERROR_58, true
+		case 0xBB:
+			return HVACError_CUSTOM_ERROR_59, true
+		case 0xBC:
+			return HVACError_CUSTOM_ERROR_60, true
+		case 0xBD:
+			return HVACError_CUSTOM_ERROR_61, true
+		case 0xBE:
+			return HVACError_CUSTOM_ERROR_62, true
+		case 0xBF:
+			return HVACError_CUSTOM_ERROR_63, true
+		case 0xC0:
+			return HVACError_CUSTOM_ERROR_64, true
+		case 0xC1:
+			return HVACError_CUSTOM_ERROR_65, true
+		case 0xC2:
+			return HVACError_CUSTOM_ERROR_66, true
+		case 0xC3:
+			return HVACError_CUSTOM_ERROR_67, true
+		case 0xC4:
+			return HVACError_CUSTOM_ERROR_68, true
+		case 0xC5:
+			return HVACError_CUSTOM_ERROR_69, true
+		case 0xC6:
+			return HVACError_CUSTOM_ERROR_70, true
+		case 0xC7:
+			return HVACError_CUSTOM_ERROR_71, true
+		case 0xC8:
+			return HVACError_CUSTOM_ERROR_72, true
+		case 0xC9:
+			return HVACError_CUSTOM_ERROR_73, true
+		case 0xCA:
+			return HVACError_CUSTOM_ERROR_74, true
+		case 0xCB:
+			return HVACError_CUSTOM_ERROR_75, true
+		case 0xCC:
+			return HVACError_CUSTOM_ERROR_76, true
+		case 0xCD:
+			return HVACError_CUSTOM_ERROR_77, true
+		case 0xCE:
+			return HVACError_CUSTOM_ERROR_78, true
+		case 0xCF:
+			return HVACError_CUSTOM_ERROR_79, true
+		case 0xD0:
+			return HVACError_CUSTOM_ERROR_80, true
+		case 0xD1:
+			return HVACError_CUSTOM_ERROR_81, true
+		case 0xD2:
+			return HVACError_CUSTOM_ERROR_82, true
+		case 0xD3:
+			return HVACError_CUSTOM_ERROR_83, true
+		case 0xD4:
+			return HVACError_CUSTOM_ERROR_84, true
+		case 0xD5:
+			return HVACError_CUSTOM_ERROR_85, true
+		case 0xD6:
+			return HVACError_CUSTOM_ERROR_86, true
+		case 0xD7:
+			return HVACError_CUSTOM_ERROR_87, true
+		case 0xD8:
+			return HVACError_CUSTOM_ERROR_88, true
+		case 0xD9:
+			return HVACError_CUSTOM_ERROR_89, true
+		case 0xDA:
+			return HVACError_CUSTOM_ERROR_90, true
+		case 0xDB:
+			return HVACError_CUSTOM_ERROR_91, true
+		case 0xDC:
+			return HVACError_CUSTOM_ERROR_92, true
+		case 0xDD:
+			return HVACError_CUSTOM_ERROR_93, true
+		case 0xDE:
+			return HVACError_CUSTOM_ERROR_94, true
+		case 0xDF:
+			return HVACError_CUSTOM_ERROR_95, true
+		case 0xE0:
+			return HVACError_CUSTOM_ERROR_96, true
+		case 0xE1:
+			return HVACError_CUSTOM_ERROR_97, true
+		case 0xE2:
+			return HVACError_CUSTOM_ERROR_98, true
+		case 0xE3:
+			return HVACError_CUSTOM_ERROR_99, true
+		case 0xE4:
+			return HVACError_CUSTOM_ERROR_100, true
+		case 0xE5:
+			return HVACError_CUSTOM_ERROR_101, true
+		case 0xE6:
+			return HVACError_CUSTOM_ERROR_102, true
+		case 0xE7:
+			return HVACError_CUSTOM_ERROR_103, true
+		case 0xE8:
+			return HVACError_CUSTOM_ERROR_104, true
+		case 0xE9:
+			return HVACError_CUSTOM_ERROR_105, true
+		case 0xEA:
+			return HVACError_CUSTOM_ERROR_106, true
+		case 0xEB:
+			return HVACError_CUSTOM_ERROR_107, true
+		case 0xEC:
+			return HVACError_CUSTOM_ERROR_108, true
+		case 0xED:
+			return HVACError_CUSTOM_ERROR_109, true
+		case 0xEE:
+			return HVACError_CUSTOM_ERROR_110, true
+		case 0xEF:
+			return HVACError_CUSTOM_ERROR_111, true
+		case 0xF0:
+			return HVACError_CUSTOM_ERROR_112, true
+		case 0xF1:
+			return HVACError_CUSTOM_ERROR_113, true
+		case 0xF2:
+			return HVACError_CUSTOM_ERROR_114, true
+		case 0xF3:
+			return HVACError_CUSTOM_ERROR_115, true
+		case 0xF4:
+			return HVACError_CUSTOM_ERROR_116, true
+		case 0xF5:
+			return HVACError_CUSTOM_ERROR_117, true
+		case 0xF6:
+			return HVACError_CUSTOM_ERROR_118, true
+		case 0xF7:
+			return HVACError_CUSTOM_ERROR_119, true
+		case 0xF8:
+			return HVACError_CUSTOM_ERROR_120, true
+		case 0xF9:
+			return HVACError_CUSTOM_ERROR_121, true
+		case 0xFA:
+			return HVACError_CUSTOM_ERROR_122, true
+		case 0xFB:
+			return HVACError_CUSTOM_ERROR_123, true
+		case 0xFC:
+			return HVACError_CUSTOM_ERROR_124, true
+		case 0xFD:
+			return HVACError_CUSTOM_ERROR_125, true
+		case 0xFE:
+			return HVACError_CUSTOM_ERROR_126, true
+		case 0xFF:
+			return HVACError_CUSTOM_ERROR_127, true
 	}
 	return 0, false
 }
@@ -897,13 +897,13 @@ func HVACErrorByName(value string) (enum HVACError, ok bool) {
 	return 0, false
 }
 
-func HVACErrorKnows(value uint8) bool {
+func HVACErrorKnows(value uint8)  bool {
 	for _, typeValue := range HVACErrorValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastHVACError(structType interface{}) HVACError {
@@ -1243,3 +1243,4 @@ func (e HVACError) PLC4XEnumName() string {
 func (e HVACError) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,15 +34,15 @@ type IAdsDiscoveryBlockType interface {
 	utils.Serializable
 }
 
-const (
-	AdsDiscoveryBlockType_STATUS      AdsDiscoveryBlockType = 0x0001
-	AdsDiscoveryBlockType_PASSWORD    AdsDiscoveryBlockType = 0x0002
-	AdsDiscoveryBlockType_VERSION     AdsDiscoveryBlockType = 0x0003
-	AdsDiscoveryBlockType_OS_DATA     AdsDiscoveryBlockType = 0x0004
-	AdsDiscoveryBlockType_HOST_NAME   AdsDiscoveryBlockType = 0x0005
-	AdsDiscoveryBlockType_AMS_NET_ID  AdsDiscoveryBlockType = 0x0007
-	AdsDiscoveryBlockType_ROUTE_NAME  AdsDiscoveryBlockType = 0x000C
-	AdsDiscoveryBlockType_USER_NAME   AdsDiscoveryBlockType = 0x000D
+const(
+	AdsDiscoveryBlockType_STATUS AdsDiscoveryBlockType = 0x0001
+	AdsDiscoveryBlockType_PASSWORD AdsDiscoveryBlockType = 0x0002
+	AdsDiscoveryBlockType_VERSION AdsDiscoveryBlockType = 0x0003
+	AdsDiscoveryBlockType_OS_DATA AdsDiscoveryBlockType = 0x0004
+	AdsDiscoveryBlockType_HOST_NAME AdsDiscoveryBlockType = 0x0005
+	AdsDiscoveryBlockType_AMS_NET_ID AdsDiscoveryBlockType = 0x0007
+	AdsDiscoveryBlockType_ROUTE_NAME AdsDiscoveryBlockType = 0x000C
+	AdsDiscoveryBlockType_USER_NAME AdsDiscoveryBlockType = 0x000D
 	AdsDiscoveryBlockType_FINGERPRINT AdsDiscoveryBlockType = 0x0012
 )
 
@@ -50,7 +50,7 @@ var AdsDiscoveryBlockTypeValues []AdsDiscoveryBlockType
 
 func init() {
 	_ = errors.New
-	AdsDiscoveryBlockTypeValues = []AdsDiscoveryBlockType{
+	AdsDiscoveryBlockTypeValues = []AdsDiscoveryBlockType {
 		AdsDiscoveryBlockType_STATUS,
 		AdsDiscoveryBlockType_PASSWORD,
 		AdsDiscoveryBlockType_VERSION,
@@ -65,24 +65,24 @@ func init() {
 
 func AdsDiscoveryBlockTypeByValue(value uint16) (enum AdsDiscoveryBlockType, ok bool) {
 	switch value {
-	case 0x0001:
-		return AdsDiscoveryBlockType_STATUS, true
-	case 0x0002:
-		return AdsDiscoveryBlockType_PASSWORD, true
-	case 0x0003:
-		return AdsDiscoveryBlockType_VERSION, true
-	case 0x0004:
-		return AdsDiscoveryBlockType_OS_DATA, true
-	case 0x0005:
-		return AdsDiscoveryBlockType_HOST_NAME, true
-	case 0x0007:
-		return AdsDiscoveryBlockType_AMS_NET_ID, true
-	case 0x000C:
-		return AdsDiscoveryBlockType_ROUTE_NAME, true
-	case 0x000D:
-		return AdsDiscoveryBlockType_USER_NAME, true
-	case 0x0012:
-		return AdsDiscoveryBlockType_FINGERPRINT, true
+		case 0x0001:
+			return AdsDiscoveryBlockType_STATUS, true
+		case 0x0002:
+			return AdsDiscoveryBlockType_PASSWORD, true
+		case 0x0003:
+			return AdsDiscoveryBlockType_VERSION, true
+		case 0x0004:
+			return AdsDiscoveryBlockType_OS_DATA, true
+		case 0x0005:
+			return AdsDiscoveryBlockType_HOST_NAME, true
+		case 0x0007:
+			return AdsDiscoveryBlockType_AMS_NET_ID, true
+		case 0x000C:
+			return AdsDiscoveryBlockType_ROUTE_NAME, true
+		case 0x000D:
+			return AdsDiscoveryBlockType_USER_NAME, true
+		case 0x0012:
+			return AdsDiscoveryBlockType_FINGERPRINT, true
 	}
 	return 0, false
 }
@@ -111,13 +111,13 @@ func AdsDiscoveryBlockTypeByName(value string) (enum AdsDiscoveryBlockType, ok b
 	return 0, false
 }
 
-func AdsDiscoveryBlockTypeKnows(value uint16) bool {
+func AdsDiscoveryBlockTypeKnows(value uint16)  bool {
 	for _, typeValue := range AdsDiscoveryBlockTypeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastAdsDiscoveryBlockType(structType interface{}) AdsDiscoveryBlockType {
@@ -195,3 +195,4 @@ func (e AdsDiscoveryBlockType) PLC4XEnumName() string {
 func (e AdsDiscoveryBlockType) String() string {
 	return e.PLC4XEnumName()
 }
+

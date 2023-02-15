@@ -34,10 +34,10 @@ type IHVACHumidityType interface {
 	utils.Serializable
 }
 
-const (
-	HVACHumidityType_NONE                     HVACHumidityType = 0x00
-	HVACHumidityType_EVAPORATOR               HVACHumidityType = 0x01
-	HVACHumidityType_REFRIGERATIVE            HVACHumidityType = 0x02
+const(
+	HVACHumidityType_NONE HVACHumidityType = 0x00
+	HVACHumidityType_EVAPORATOR HVACHumidityType = 0x01
+	HVACHumidityType_REFRIGERATIVE HVACHumidityType = 0x02
 	HVACHumidityType_EVAPORATOR_REFRIGERATIVE HVACHumidityType = 0x03
 )
 
@@ -45,7 +45,7 @@ var HVACHumidityTypeValues []HVACHumidityType
 
 func init() {
 	_ = errors.New
-	HVACHumidityTypeValues = []HVACHumidityType{
+	HVACHumidityTypeValues = []HVACHumidityType {
 		HVACHumidityType_NONE,
 		HVACHumidityType_EVAPORATOR,
 		HVACHumidityType_REFRIGERATIVE,
@@ -55,14 +55,14 @@ func init() {
 
 func HVACHumidityTypeByValue(value uint8) (enum HVACHumidityType, ok bool) {
 	switch value {
-	case 0x00:
-		return HVACHumidityType_NONE, true
-	case 0x01:
-		return HVACHumidityType_EVAPORATOR, true
-	case 0x02:
-		return HVACHumidityType_REFRIGERATIVE, true
-	case 0x03:
-		return HVACHumidityType_EVAPORATOR_REFRIGERATIVE, true
+		case 0x00:
+			return HVACHumidityType_NONE, true
+		case 0x01:
+			return HVACHumidityType_EVAPORATOR, true
+		case 0x02:
+			return HVACHumidityType_REFRIGERATIVE, true
+		case 0x03:
+			return HVACHumidityType_EVAPORATOR_REFRIGERATIVE, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func HVACHumidityTypeByName(value string) (enum HVACHumidityType, ok bool) {
 	return 0, false
 }
 
-func HVACHumidityTypeKnows(value uint8) bool {
+func HVACHumidityTypeKnows(value uint8)  bool {
 	for _, typeValue := range HVACHumidityTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastHVACHumidityType(structType interface{}) HVACHumidityType {
@@ -155,3 +155,4 @@ func (e HVACHumidityType) PLC4XEnumName() string {
 func (e HVACHumidityType) String() string {
 	return e.PLC4XEnumName()
 }
+

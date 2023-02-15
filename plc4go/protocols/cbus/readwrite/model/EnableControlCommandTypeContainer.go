@@ -36,17 +36,17 @@ type IEnableControlCommandTypeContainer interface {
 	CommandType() EnableControlCommandType
 }
 
-const (
-	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable0_2Bytes  EnableControlCommandTypeContainer = 0x02
-	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable1_2Bytes  EnableControlCommandTypeContainer = 0x0A
-	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable2_2Bytes  EnableControlCommandTypeContainer = 0x12
-	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable3_2Bytes  EnableControlCommandTypeContainer = 0x1A
-	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable4_2Bytes  EnableControlCommandTypeContainer = 0x22
-	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable5_2Bytes  EnableControlCommandTypeContainer = 0x2A
-	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable6_2Bytes  EnableControlCommandTypeContainer = 0x32
-	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable7_2Bytes  EnableControlCommandTypeContainer = 0x3A
-	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable8_2Bytes  EnableControlCommandTypeContainer = 0x42
-	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable9_2Bytes  EnableControlCommandTypeContainer = 0x4A
+const(
+	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable0_2Bytes EnableControlCommandTypeContainer = 0x02
+	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable1_2Bytes EnableControlCommandTypeContainer = 0x0A
+	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable2_2Bytes EnableControlCommandTypeContainer = 0x12
+	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable3_2Bytes EnableControlCommandTypeContainer = 0x1A
+	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable4_2Bytes EnableControlCommandTypeContainer = 0x22
+	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable5_2Bytes EnableControlCommandTypeContainer = 0x2A
+	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable6_2Bytes EnableControlCommandTypeContainer = 0x32
+	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable7_2Bytes EnableControlCommandTypeContainer = 0x3A
+	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable8_2Bytes EnableControlCommandTypeContainer = 0x42
+	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable9_2Bytes EnableControlCommandTypeContainer = 0x4A
 	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable10_2Bytes EnableControlCommandTypeContainer = 0x52
 	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable11_2Bytes EnableControlCommandTypeContainer = 0x5A
 	EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable12_2Bytes EnableControlCommandTypeContainer = 0x62
@@ -59,7 +59,7 @@ var EnableControlCommandTypeContainerValues []EnableControlCommandTypeContainer
 
 func init() {
 	_ = errors.New
-	EnableControlCommandTypeContainerValues = []EnableControlCommandTypeContainer{
+	EnableControlCommandTypeContainerValues = []EnableControlCommandTypeContainer {
 		EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable0_2Bytes,
 		EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable1_2Bytes,
 		EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable2_2Bytes,
@@ -79,74 +79,58 @@ func init() {
 	}
 }
 
+
 func (e EnableControlCommandTypeContainer) NumBytes() uint8 {
-	switch e {
-	case 0x02:
-		{ /* '0x02' */
-			return 2
+	switch e  {
+		case 0x02: { /* '0x02' */
+            return 2
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return 2
+		case 0x0A: { /* '0x0A' */
+            return 2
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return 2
+		case 0x12: { /* '0x12' */
+            return 2
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return 2
+		case 0x1A: { /* '0x1A' */
+            return 2
 		}
-	case 0x22:
-		{ /* '0x22' */
-			return 2
+		case 0x22: { /* '0x22' */
+            return 2
 		}
-	case 0x2A:
-		{ /* '0x2A' */
-			return 2
+		case 0x2A: { /* '0x2A' */
+            return 2
 		}
-	case 0x32:
-		{ /* '0x32' */
-			return 2
+		case 0x32: { /* '0x32' */
+            return 2
 		}
-	case 0x3A:
-		{ /* '0x3A' */
-			return 2
+		case 0x3A: { /* '0x3A' */
+            return 2
 		}
-	case 0x42:
-		{ /* '0x42' */
-			return 2
+		case 0x42: { /* '0x42' */
+            return 2
 		}
-	case 0x4A:
-		{ /* '0x4A' */
-			return 2
+		case 0x4A: { /* '0x4A' */
+            return 2
 		}
-	case 0x52:
-		{ /* '0x52' */
-			return 2
+		case 0x52: { /* '0x52' */
+            return 2
 		}
-	case 0x5A:
-		{ /* '0x5A' */
-			return 2
+		case 0x5A: { /* '0x5A' */
+            return 2
 		}
-	case 0x62:
-		{ /* '0x62' */
-			return 2
+		case 0x62: { /* '0x62' */
+            return 2
 		}
-	case 0x6A:
-		{ /* '0x6A' */
-			return 2
+		case 0x6A: { /* '0x6A' */
+            return 2
 		}
-	case 0x72:
-		{ /* '0x72' */
-			return 2
+		case 0x72: { /* '0x72' */
+            return 2
 		}
-	case 0x7A:
-		{ /* '0x7A' */
-			return 2
+		case 0x7A: { /* '0x7A' */
+            return 2
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -162,73 +146,56 @@ func EnableControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (En
 }
 
 func (e EnableControlCommandTypeContainer) CommandType() EnableControlCommandType {
-	switch e {
-	case 0x02:
-		{ /* '0x02' */
+	switch e  {
+		case 0x02: { /* '0x02' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x0A:
-		{ /* '0x0A' */
+		case 0x0A: { /* '0x0A' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x12:
-		{ /* '0x12' */
+		case 0x12: { /* '0x12' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x1A:
-		{ /* '0x1A' */
+		case 0x1A: { /* '0x1A' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x22:
-		{ /* '0x22' */
+		case 0x22: { /* '0x22' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x2A:
-		{ /* '0x2A' */
+		case 0x2A: { /* '0x2A' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x32:
-		{ /* '0x32' */
+		case 0x32: { /* '0x32' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x3A:
-		{ /* '0x3A' */
+		case 0x3A: { /* '0x3A' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x42:
-		{ /* '0x42' */
+		case 0x42: { /* '0x42' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x4A:
-		{ /* '0x4A' */
+		case 0x4A: { /* '0x4A' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x52:
-		{ /* '0x52' */
+		case 0x52: { /* '0x52' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x5A:
-		{ /* '0x5A' */
+		case 0x5A: { /* '0x5A' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x62:
-		{ /* '0x62' */
+		case 0x62: { /* '0x62' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x6A:
-		{ /* '0x6A' */
+		case 0x6A: { /* '0x6A' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x72:
-		{ /* '0x72' */
+		case 0x72: { /* '0x72' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	case 0x7A:
-		{ /* '0x7A' */
+		case 0x7A: { /* '0x7A' */
 			return EnableControlCommandType_SET_NETWORK_VARIABLE
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -244,38 +211,38 @@ func EnableControlCommandTypeContainerFirstEnumForFieldCommandType(value EnableC
 }
 func EnableControlCommandTypeContainerByValue(value uint8) (enum EnableControlCommandTypeContainer, ok bool) {
 	switch value {
-	case 0x02:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable0_2Bytes, true
-	case 0x0A:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable1_2Bytes, true
-	case 0x12:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable2_2Bytes, true
-	case 0x1A:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable3_2Bytes, true
-	case 0x22:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable4_2Bytes, true
-	case 0x2A:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable5_2Bytes, true
-	case 0x32:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable6_2Bytes, true
-	case 0x3A:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable7_2Bytes, true
-	case 0x42:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable8_2Bytes, true
-	case 0x4A:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable9_2Bytes, true
-	case 0x52:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable10_2Bytes, true
-	case 0x5A:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable11_2Bytes, true
-	case 0x62:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable12_2Bytes, true
-	case 0x6A:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable13_2Bytes, true
-	case 0x72:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable14_2Bytes, true
-	case 0x7A:
-		return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable15_2Bytes, true
+		case 0x02:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable0_2Bytes, true
+		case 0x0A:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable1_2Bytes, true
+		case 0x12:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable2_2Bytes, true
+		case 0x1A:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable3_2Bytes, true
+		case 0x22:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable4_2Bytes, true
+		case 0x2A:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable5_2Bytes, true
+		case 0x32:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable6_2Bytes, true
+		case 0x3A:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable7_2Bytes, true
+		case 0x42:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable8_2Bytes, true
+		case 0x4A:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable9_2Bytes, true
+		case 0x52:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable10_2Bytes, true
+		case 0x5A:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable11_2Bytes, true
+		case 0x62:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable12_2Bytes, true
+		case 0x6A:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable13_2Bytes, true
+		case 0x72:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable14_2Bytes, true
+		case 0x7A:
+			return EnableControlCommandTypeContainer_EnableControlCommandSetNetworkVariable15_2Bytes, true
 	}
 	return 0, false
 }
@@ -318,13 +285,13 @@ func EnableControlCommandTypeContainerByName(value string) (enum EnableControlCo
 	return 0, false
 }
 
-func EnableControlCommandTypeContainerKnows(value uint8) bool {
+func EnableControlCommandTypeContainerKnows(value uint8)  bool {
 	for _, typeValue := range EnableControlCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastEnableControlCommandTypeContainer(structType interface{}) EnableControlCommandTypeContainer {
@@ -416,3 +383,4 @@ func (e EnableControlCommandTypeContainer) PLC4XEnumName() string {
 func (e EnableControlCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
+

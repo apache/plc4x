@@ -16,38 +16,47 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.eip.readwrite;
+package org.apache.plc4x.java.eip.logix;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.eip.readwrite.configuration.EIPConfiguration;
-import org.apache.plc4x.java.eip.readwrite.tag.EipTag;
-import org.apache.plc4x.java.eip.readwrite.tag.EipTagHandler;
-import org.apache.plc4x.java.eip.readwrite.protocol.EipProtocolLogic;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
+import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.eip.base.tag.EipTag;
+import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
+import org.apache.plc4x.java.eip.logix.configuration.LogixConfiguration;
+import org.apache.plc4x.java.eip.readwrite.EipPacket;
+import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
+import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
-import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
-import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.connection.*;
+import org.apache.plc4x.java.spi.transport.Transport;
 
+import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class EIPDriver extends GeneratedDriverBase<EipPacket> {
+import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
+
+public class LogixDriver extends GeneratedDriverBase<EipPacket> {
     public static final int PORT = 44818;
+
     @Override
     public String getProtocolCode() {
-        return "eip";
+        return "logix";
     }
 
     @Override
     public String getProtocolName() {
-        return "EthernetIP";
+        return "Logix CIP";
     }
 
     @Override
     protected Class<? extends Configuration> getConfigurationType() {
-        return EIPConfiguration.class;
+        return LogixConfiguration.class;
     }
 
     @Override
@@ -56,17 +65,13 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    protected org.apache.plc4x.java.api.value.PlcValueHandler getValueHandler() {
-        return new PlcValueHandler();
+    protected PlcValueHandler getValueHandler() {
+        return new org.apache.plc4x.java.spi.values.PlcValueHandler();
     }
 
-    /**
-     * This protocol doesn't have a disconnect procedure, so there is no need to wait for a login to finish.
-     * @return false
-     */
     @Override
     protected boolean awaitDisconnectComplete() {
-        return false;
+        return true;
     }
 
     @Override
@@ -89,6 +94,8 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacket::staticParse)
             .withProtocol(EipProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
+            .withParserArgs(IntegerEncoding.LITTLE_ENDIAN, true)
+            .withCorruptPacketRemover(CorruptPackageCleaner.class)
             .littleEndian()
             .build();
     }
@@ -98,8 +105,8 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
-                //Second byte for the size and then add the header size 24
-                int size = byteBuf.getUnsignedShort(byteBuf.readerIndex()+2)+24;
+                //Second word for the size and then add the header size 24
+                int size = byteBuf.getUnsignedShortLE(byteBuf.readerIndex()+2)+24;
                 return size;
             }
             return -1;
@@ -118,8 +125,8 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     @Override
-    public EipTag prepareTag(String tagAddress){
-        return EipTag.of(tagAddress);
+    public EipTag prepareTag(String query){
+        return EipTag.of(query);
     }
 
 }

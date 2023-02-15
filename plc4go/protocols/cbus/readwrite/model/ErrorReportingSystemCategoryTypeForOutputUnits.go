@@ -34,30 +34,30 @@ type IErrorReportingSystemCategoryTypeForOutputUnits interface {
 	utils.Serializable
 }
 
-const (
-	ErrorReportingSystemCategoryTypeForOutputUnits_LE_MONOBLOCK_DIMMERS                        ErrorReportingSystemCategoryTypeForOutputUnits = 0x0
-	ErrorReportingSystemCategoryTypeForOutputUnits_TE_MONOBLOCK_DIMMERS                        ErrorReportingSystemCategoryTypeForOutputUnits = 0x1
-	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_2                                  ErrorReportingSystemCategoryTypeForOutputUnits = 0x2
-	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_3                                  ErrorReportingSystemCategoryTypeForOutputUnits = 0x3
-	ErrorReportingSystemCategoryTypeForOutputUnits_RELAYS_AND_OTHER_ON_OFF_SWITCHING_DEVICES   ErrorReportingSystemCategoryTypeForOutputUnits = 0x4
-	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_5                                  ErrorReportingSystemCategoryTypeForOutputUnits = 0x5
-	ErrorReportingSystemCategoryTypeForOutputUnits_PWM_DIMMERS_INCLUDES_LED_CONTROL            ErrorReportingSystemCategoryTypeForOutputUnits = 0x6
-	ErrorReportingSystemCategoryTypeForOutputUnits_SINEWAVE_MONOBLOCK_DIMMERS                  ErrorReportingSystemCategoryTypeForOutputUnits = 0x7
-	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_8                                  ErrorReportingSystemCategoryTypeForOutputUnits = 0x8
-	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_9                                  ErrorReportingSystemCategoryTypeForOutputUnits = 0x9
+const(
+	ErrorReportingSystemCategoryTypeForOutputUnits_LE_MONOBLOCK_DIMMERS ErrorReportingSystemCategoryTypeForOutputUnits = 0x0
+	ErrorReportingSystemCategoryTypeForOutputUnits_TE_MONOBLOCK_DIMMERS ErrorReportingSystemCategoryTypeForOutputUnits = 0x1
+	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_2 ErrorReportingSystemCategoryTypeForOutputUnits = 0x2
+	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_3 ErrorReportingSystemCategoryTypeForOutputUnits = 0x3
+	ErrorReportingSystemCategoryTypeForOutputUnits_RELAYS_AND_OTHER_ON_OFF_SWITCHING_DEVICES ErrorReportingSystemCategoryTypeForOutputUnits = 0x4
+	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_5 ErrorReportingSystemCategoryTypeForOutputUnits = 0x5
+	ErrorReportingSystemCategoryTypeForOutputUnits_PWM_DIMMERS_INCLUDES_LED_CONTROL ErrorReportingSystemCategoryTypeForOutputUnits = 0x6
+	ErrorReportingSystemCategoryTypeForOutputUnits_SINEWAVE_MONOBLOCK_DIMMERS ErrorReportingSystemCategoryTypeForOutputUnits = 0x7
+	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_8 ErrorReportingSystemCategoryTypeForOutputUnits = 0x8
+	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_9 ErrorReportingSystemCategoryTypeForOutputUnits = 0x9
 	ErrorReportingSystemCategoryTypeForOutputUnits_DALI_DSI_AND_OTHER_BALLAST_CONTROL_GATEWAYS ErrorReportingSystemCategoryTypeForOutputUnits = 0xA
-	ErrorReportingSystemCategoryTypeForOutputUnits_MODULAR_DIMMERS                             ErrorReportingSystemCategoryTypeForOutputUnits = 0xB
-	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_12                                 ErrorReportingSystemCategoryTypeForOutputUnits = 0xC
-	ErrorReportingSystemCategoryTypeForOutputUnits_UNIVERSAL_MONOBLOCK_DIMMERS                 ErrorReportingSystemCategoryTypeForOutputUnits = 0xD
-	ErrorReportingSystemCategoryTypeForOutputUnits_DEVICE_CONTROLLERS_IR_RS_232_etc            ErrorReportingSystemCategoryTypeForOutputUnits = 0xE
-	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_15                                 ErrorReportingSystemCategoryTypeForOutputUnits = 0xF
+	ErrorReportingSystemCategoryTypeForOutputUnits_MODULAR_DIMMERS ErrorReportingSystemCategoryTypeForOutputUnits = 0xB
+	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_12 ErrorReportingSystemCategoryTypeForOutputUnits = 0xC
+	ErrorReportingSystemCategoryTypeForOutputUnits_UNIVERSAL_MONOBLOCK_DIMMERS ErrorReportingSystemCategoryTypeForOutputUnits = 0xD
+	ErrorReportingSystemCategoryTypeForOutputUnits_DEVICE_CONTROLLERS_IR_RS_232_etc ErrorReportingSystemCategoryTypeForOutputUnits = 0xE
+	ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_15 ErrorReportingSystemCategoryTypeForOutputUnits = 0xF
 )
 
 var ErrorReportingSystemCategoryTypeForOutputUnitsValues []ErrorReportingSystemCategoryTypeForOutputUnits
 
 func init() {
 	_ = errors.New
-	ErrorReportingSystemCategoryTypeForOutputUnitsValues = []ErrorReportingSystemCategoryTypeForOutputUnits{
+	ErrorReportingSystemCategoryTypeForOutputUnitsValues = []ErrorReportingSystemCategoryTypeForOutputUnits {
 		ErrorReportingSystemCategoryTypeForOutputUnits_LE_MONOBLOCK_DIMMERS,
 		ErrorReportingSystemCategoryTypeForOutputUnits_TE_MONOBLOCK_DIMMERS,
 		ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_2,
@@ -79,38 +79,38 @@ func init() {
 
 func ErrorReportingSystemCategoryTypeForOutputUnitsByValue(value uint8) (enum ErrorReportingSystemCategoryTypeForOutputUnits, ok bool) {
 	switch value {
-	case 0x0:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_LE_MONOBLOCK_DIMMERS, true
-	case 0x1:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_TE_MONOBLOCK_DIMMERS, true
-	case 0x2:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_2, true
-	case 0x3:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_3, true
-	case 0x4:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_RELAYS_AND_OTHER_ON_OFF_SWITCHING_DEVICES, true
-	case 0x5:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_5, true
-	case 0x6:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_PWM_DIMMERS_INCLUDES_LED_CONTROL, true
-	case 0x7:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_SINEWAVE_MONOBLOCK_DIMMERS, true
-	case 0x8:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_8, true
-	case 0x9:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_9, true
-	case 0xA:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_DALI_DSI_AND_OTHER_BALLAST_CONTROL_GATEWAYS, true
-	case 0xB:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_MODULAR_DIMMERS, true
-	case 0xC:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_12, true
-	case 0xD:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_UNIVERSAL_MONOBLOCK_DIMMERS, true
-	case 0xE:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_DEVICE_CONTROLLERS_IR_RS_232_etc, true
-	case 0xF:
-		return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_15, true
+		case 0x0:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_LE_MONOBLOCK_DIMMERS, true
+		case 0x1:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_TE_MONOBLOCK_DIMMERS, true
+		case 0x2:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_2, true
+		case 0x3:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_3, true
+		case 0x4:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_RELAYS_AND_OTHER_ON_OFF_SWITCHING_DEVICES, true
+		case 0x5:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_5, true
+		case 0x6:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_PWM_DIMMERS_INCLUDES_LED_CONTROL, true
+		case 0x7:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_SINEWAVE_MONOBLOCK_DIMMERS, true
+		case 0x8:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_8, true
+		case 0x9:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_9, true
+		case 0xA:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_DALI_DSI_AND_OTHER_BALLAST_CONTROL_GATEWAYS, true
+		case 0xB:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_MODULAR_DIMMERS, true
+		case 0xC:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_12, true
+		case 0xD:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_UNIVERSAL_MONOBLOCK_DIMMERS, true
+		case 0xE:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_DEVICE_CONTROLLERS_IR_RS_232_etc, true
+		case 0xF:
+			return ErrorReportingSystemCategoryTypeForOutputUnits_RESERVED_15, true
 	}
 	return 0, false
 }
@@ -153,13 +153,13 @@ func ErrorReportingSystemCategoryTypeForOutputUnitsByName(value string) (enum Er
 	return 0, false
 }
 
-func ErrorReportingSystemCategoryTypeForOutputUnitsKnows(value uint8) bool {
+func ErrorReportingSystemCategoryTypeForOutputUnitsKnows(value uint8)  bool {
 	for _, typeValue := range ErrorReportingSystemCategoryTypeForOutputUnitsValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastErrorReportingSystemCategoryTypeForOutputUnits(structType interface{}) ErrorReportingSystemCategoryTypeForOutputUnits {
@@ -251,3 +251,4 @@ func (e ErrorReportingSystemCategoryTypeForOutputUnits) PLC4XEnumName() string {
 func (e ErrorReportingSystemCategoryTypeForOutputUnits) String() string {
 	return e.PLC4XEnumName()
 }
+

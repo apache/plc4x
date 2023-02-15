@@ -34,24 +34,24 @@ type IBACnetDoorAlarmState interface {
 	utils.Serializable
 }
 
-const (
-	BACnetDoorAlarmState_NORMAL                   BACnetDoorAlarmState = 0
-	BACnetDoorAlarmState_ALARM                    BACnetDoorAlarmState = 1
-	BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG       BACnetDoorAlarmState = 2
-	BACnetDoorAlarmState_FORCED_OPEN              BACnetDoorAlarmState = 3
-	BACnetDoorAlarmState_TAMPER                   BACnetDoorAlarmState = 4
-	BACnetDoorAlarmState_DOOR_FAULT               BACnetDoorAlarmState = 5
-	BACnetDoorAlarmState_LOCK_DOWN                BACnetDoorAlarmState = 6
-	BACnetDoorAlarmState_FREE_ACCESS              BACnetDoorAlarmState = 7
-	BACnetDoorAlarmState_EGRESS_OPEN              BACnetDoorAlarmState = 8
-	BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE BACnetDoorAlarmState = 0xFF
+const(
+	BACnetDoorAlarmState_NORMAL BACnetDoorAlarmState = 0
+	BACnetDoorAlarmState_ALARM BACnetDoorAlarmState = 1
+	BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG BACnetDoorAlarmState = 2
+	BACnetDoorAlarmState_FORCED_OPEN BACnetDoorAlarmState = 3
+	BACnetDoorAlarmState_TAMPER BACnetDoorAlarmState = 4
+	BACnetDoorAlarmState_DOOR_FAULT BACnetDoorAlarmState = 5
+	BACnetDoorAlarmState_LOCK_DOWN BACnetDoorAlarmState = 6
+	BACnetDoorAlarmState_FREE_ACCESS BACnetDoorAlarmState = 7
+	BACnetDoorAlarmState_EGRESS_OPEN BACnetDoorAlarmState = 8
+	BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE BACnetDoorAlarmState = 0XFF
 )
 
 var BACnetDoorAlarmStateValues []BACnetDoorAlarmState
 
 func init() {
 	_ = errors.New
-	BACnetDoorAlarmStateValues = []BACnetDoorAlarmState{
+	BACnetDoorAlarmStateValues = []BACnetDoorAlarmState {
 		BACnetDoorAlarmState_NORMAL,
 		BACnetDoorAlarmState_ALARM,
 		BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG,
@@ -67,26 +67,26 @@ func init() {
 
 func BACnetDoorAlarmStateByValue(value uint8) (enum BACnetDoorAlarmState, ok bool) {
 	switch value {
-	case 0:
-		return BACnetDoorAlarmState_NORMAL, true
-	case 0xFF:
-		return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetDoorAlarmState_ALARM, true
-	case 2:
-		return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG, true
-	case 3:
-		return BACnetDoorAlarmState_FORCED_OPEN, true
-	case 4:
-		return BACnetDoorAlarmState_TAMPER, true
-	case 5:
-		return BACnetDoorAlarmState_DOOR_FAULT, true
-	case 6:
-		return BACnetDoorAlarmState_LOCK_DOWN, true
-	case 7:
-		return BACnetDoorAlarmState_FREE_ACCESS, true
-	case 8:
-		return BACnetDoorAlarmState_EGRESS_OPEN, true
+		case 0:
+			return BACnetDoorAlarmState_NORMAL, true
+		case 0XFF:
+			return BACnetDoorAlarmState_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetDoorAlarmState_ALARM, true
+		case 2:
+			return BACnetDoorAlarmState_DOOR_OPEN_TOO_LONG, true
+		case 3:
+			return BACnetDoorAlarmState_FORCED_OPEN, true
+		case 4:
+			return BACnetDoorAlarmState_TAMPER, true
+		case 5:
+			return BACnetDoorAlarmState_DOOR_FAULT, true
+		case 6:
+			return BACnetDoorAlarmState_LOCK_DOWN, true
+		case 7:
+			return BACnetDoorAlarmState_FREE_ACCESS, true
+		case 8:
+			return BACnetDoorAlarmState_EGRESS_OPEN, true
 	}
 	return 0, false
 }
@@ -117,13 +117,13 @@ func BACnetDoorAlarmStateByName(value string) (enum BACnetDoorAlarmState, ok boo
 	return 0, false
 }
 
-func BACnetDoorAlarmStateKnows(value uint8) bool {
+func BACnetDoorAlarmStateKnows(value uint8)  bool {
 	for _, typeValue := range BACnetDoorAlarmStateValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetDoorAlarmState(structType interface{}) BACnetDoorAlarmState {
@@ -203,3 +203,4 @@ func (e BACnetDoorAlarmState) PLC4XEnumName() string {
 func (e BACnetDoorAlarmState) String() string {
 	return e.PLC4XEnumName()
 }
+

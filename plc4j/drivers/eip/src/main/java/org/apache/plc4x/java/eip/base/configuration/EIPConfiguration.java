@@ -16,9 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.eip.readwrite.configuration;
+package org.apache.plc4x.java.eip.base.configuration;
 
-import org.apache.plc4x.java.eip.readwrite.EIPDriver;
+import org.apache.plc4x.java.eip.base.EIPDriver;
+import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
@@ -26,10 +27,13 @@ import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 public class EIPConfiguration implements Configuration, TcpTransportConfiguration {
 
     @ConfigurationParameter
-    private int backplane;
+    private int backplane = 1;
 
     @ConfigurationParameter
-    private int slot;
+    private int slot = 0;
+
+    @ConfigurationParameter
+    private boolean bigEndian = true;
 
     public int getBackplane() {
         return backplane;
@@ -45,6 +49,14 @@ public class EIPConfiguration implements Configuration, TcpTransportConfiguratio
 
     public void setSlot(int slot) {
         this.slot = slot;
+    }
+
+    public IntegerEncoding getByteOrder() {
+        return this.bigEndian ? IntegerEncoding.BIG_ENDIAN : IntegerEncoding.LITTLE_ENDIAN;
+    }
+
+    public void setByteOrder(IntegerEncoding byteOrder) {
+        this.bigEndian = byteOrder == IntegerEncoding.BIG_ENDIAN;
     }
 
     @Override

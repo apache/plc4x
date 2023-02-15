@@ -35,14 +35,14 @@ type IMaxSegmentsAccepted interface {
 	MaxSegments() uint8
 }
 
-const (
-	MaxSegmentsAccepted_UNSPECIFIED           MaxSegmentsAccepted = 0x0
-	MaxSegmentsAccepted_NUM_SEGMENTS_02       MaxSegmentsAccepted = 0x1
-	MaxSegmentsAccepted_NUM_SEGMENTS_04       MaxSegmentsAccepted = 0x2
-	MaxSegmentsAccepted_NUM_SEGMENTS_08       MaxSegmentsAccepted = 0x3
-	MaxSegmentsAccepted_NUM_SEGMENTS_16       MaxSegmentsAccepted = 0x4
-	MaxSegmentsAccepted_NUM_SEGMENTS_32       MaxSegmentsAccepted = 0x5
-	MaxSegmentsAccepted_NUM_SEGMENTS_64       MaxSegmentsAccepted = 0x6
+const(
+	MaxSegmentsAccepted_UNSPECIFIED MaxSegmentsAccepted = 0x0
+	MaxSegmentsAccepted_NUM_SEGMENTS_02 MaxSegmentsAccepted = 0x1
+	MaxSegmentsAccepted_NUM_SEGMENTS_04 MaxSegmentsAccepted = 0x2
+	MaxSegmentsAccepted_NUM_SEGMENTS_08 MaxSegmentsAccepted = 0x3
+	MaxSegmentsAccepted_NUM_SEGMENTS_16 MaxSegmentsAccepted = 0x4
+	MaxSegmentsAccepted_NUM_SEGMENTS_32 MaxSegmentsAccepted = 0x5
+	MaxSegmentsAccepted_NUM_SEGMENTS_64 MaxSegmentsAccepted = 0x6
 	MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS MaxSegmentsAccepted = 0x7
 )
 
@@ -50,7 +50,7 @@ var MaxSegmentsAcceptedValues []MaxSegmentsAccepted
 
 func init() {
 	_ = errors.New
-	MaxSegmentsAcceptedValues = []MaxSegmentsAccepted{
+	MaxSegmentsAcceptedValues = []MaxSegmentsAccepted {
 		MaxSegmentsAccepted_UNSPECIFIED,
 		MaxSegmentsAccepted_NUM_SEGMENTS_02,
 		MaxSegmentsAccepted_NUM_SEGMENTS_04,
@@ -62,42 +62,34 @@ func init() {
 	}
 }
 
+
 func (e MaxSegmentsAccepted) MaxSegments() uint8 {
-	switch e {
-	case 0x0:
-		{ /* '0x0' */
-			return 255
+	switch e  {
+		case 0x0: { /* '0x0' */
+            return 255
 		}
-	case 0x1:
-		{ /* '0x1' */
-			return 2
+		case 0x1: { /* '0x1' */
+            return 2
 		}
-	case 0x2:
-		{ /* '0x2' */
-			return 4
+		case 0x2: { /* '0x2' */
+            return 4
 		}
-	case 0x3:
-		{ /* '0x3' */
-			return 8
+		case 0x3: { /* '0x3' */
+            return 8
 		}
-	case 0x4:
-		{ /* '0x4' */
-			return 16
+		case 0x4: { /* '0x4' */
+            return 16
 		}
-	case 0x5:
-		{ /* '0x5' */
-			return 32
+		case 0x5: { /* '0x5' */
+            return 32
 		}
-	case 0x6:
-		{ /* '0x6' */
-			return 64
+		case 0x6: { /* '0x6' */
+            return 64
 		}
-	case 0x7:
-		{ /* '0x7' */
-			return 255
+		case 0x7: { /* '0x7' */
+            return 255
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -113,22 +105,22 @@ func MaxSegmentsAcceptedFirstEnumForFieldMaxSegments(value uint8) (MaxSegmentsAc
 }
 func MaxSegmentsAcceptedByValue(value uint8) (enum MaxSegmentsAccepted, ok bool) {
 	switch value {
-	case 0x0:
-		return MaxSegmentsAccepted_UNSPECIFIED, true
-	case 0x1:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_02, true
-	case 0x2:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_04, true
-	case 0x3:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_08, true
-	case 0x4:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_16, true
-	case 0x5:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_32, true
-	case 0x6:
-		return MaxSegmentsAccepted_NUM_SEGMENTS_64, true
-	case 0x7:
-		return MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, true
+		case 0x0:
+			return MaxSegmentsAccepted_UNSPECIFIED, true
+		case 0x1:
+			return MaxSegmentsAccepted_NUM_SEGMENTS_02, true
+		case 0x2:
+			return MaxSegmentsAccepted_NUM_SEGMENTS_04, true
+		case 0x3:
+			return MaxSegmentsAccepted_NUM_SEGMENTS_08, true
+		case 0x4:
+			return MaxSegmentsAccepted_NUM_SEGMENTS_16, true
+		case 0x5:
+			return MaxSegmentsAccepted_NUM_SEGMENTS_32, true
+		case 0x6:
+			return MaxSegmentsAccepted_NUM_SEGMENTS_64, true
+		case 0x7:
+			return MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, true
 	}
 	return 0, false
 }
@@ -155,13 +147,13 @@ func MaxSegmentsAcceptedByName(value string) (enum MaxSegmentsAccepted, ok bool)
 	return 0, false
 }
 
-func MaxSegmentsAcceptedKnows(value uint8) bool {
+func MaxSegmentsAcceptedKnows(value uint8)  bool {
 	for _, typeValue := range MaxSegmentsAcceptedValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastMaxSegmentsAccepted(structType interface{}) MaxSegmentsAccepted {
@@ -237,3 +229,4 @@ func (e MaxSegmentsAccepted) PLC4XEnumName() string {
 func (e MaxSegmentsAccepted) String() string {
 	return e.PLC4XEnumName()
 }
+

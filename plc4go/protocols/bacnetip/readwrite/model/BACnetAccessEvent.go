@@ -34,69 +34,69 @@ type IBACnetAccessEvent interface {
 	utils.Serializable
 }
 
-const (
-	BACnetAccessEvent_NONE                                   BACnetAccessEvent = 0
-	BACnetAccessEvent_GRANTED                                BACnetAccessEvent = 1
-	BACnetAccessEvent_MUSTER                                 BACnetAccessEvent = 2
-	BACnetAccessEvent_PASSBACK_DETECTED                      BACnetAccessEvent = 3
-	BACnetAccessEvent_DURESS                                 BACnetAccessEvent = 4
-	BACnetAccessEvent_TRACE                                  BACnetAccessEvent = 5
-	BACnetAccessEvent_LOCKOUT_MAX_ATTEMPTS                   BACnetAccessEvent = 6
-	BACnetAccessEvent_LOCKOUT_OTHER                          BACnetAccessEvent = 7
-	BACnetAccessEvent_LOCKOUT_RELINQUISHED                   BACnetAccessEvent = 8
-	BACnetAccessEvent_LOCKED_BY_HIGHER_PRIORITY              BACnetAccessEvent = 9
-	BACnetAccessEvent_OUT_OF_SERVICE                         BACnetAccessEvent = 10
-	BACnetAccessEvent_OUT_OF_SERVICE_RELINQUISHED            BACnetAccessEvent = 11
-	BACnetAccessEvent_ACCOMPANIMENT_BY                       BACnetAccessEvent = 12
-	BACnetAccessEvent_AUTHENTICATION_FACTOR_READ             BACnetAccessEvent = 13
-	BACnetAccessEvent_AUTHORIZATION_DELAYED                  BACnetAccessEvent = 14
-	BACnetAccessEvent_VERIFICATION_REQUIRED                  BACnetAccessEvent = 15
-	BACnetAccessEvent_NO_ENTRY_AFTER_GRANTED                 BACnetAccessEvent = 16
-	BACnetAccessEvent_DENIED_DENY_ALL                        BACnetAccessEvent = 128
-	BACnetAccessEvent_DENIED_UNKNOWN_CREDENTIAL              BACnetAccessEvent = 129
-	BACnetAccessEvent_DENIED_AUTHENTICATION_UNAVAILABLE      BACnetAccessEvent = 130
-	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_TIMEOUT   BACnetAccessEvent = 131
+const(
+	BACnetAccessEvent_NONE BACnetAccessEvent = 0
+	BACnetAccessEvent_GRANTED BACnetAccessEvent = 1
+	BACnetAccessEvent_MUSTER BACnetAccessEvent = 2
+	BACnetAccessEvent_PASSBACK_DETECTED BACnetAccessEvent = 3
+	BACnetAccessEvent_DURESS BACnetAccessEvent = 4
+	BACnetAccessEvent_TRACE BACnetAccessEvent = 5
+	BACnetAccessEvent_LOCKOUT_MAX_ATTEMPTS BACnetAccessEvent = 6
+	BACnetAccessEvent_LOCKOUT_OTHER BACnetAccessEvent = 7
+	BACnetAccessEvent_LOCKOUT_RELINQUISHED BACnetAccessEvent = 8
+	BACnetAccessEvent_LOCKED_BY_HIGHER_PRIORITY BACnetAccessEvent = 9
+	BACnetAccessEvent_OUT_OF_SERVICE BACnetAccessEvent = 10
+	BACnetAccessEvent_OUT_OF_SERVICE_RELINQUISHED BACnetAccessEvent = 11
+	BACnetAccessEvent_ACCOMPANIMENT_BY BACnetAccessEvent = 12
+	BACnetAccessEvent_AUTHENTICATION_FACTOR_READ BACnetAccessEvent = 13
+	BACnetAccessEvent_AUTHORIZATION_DELAYED BACnetAccessEvent = 14
+	BACnetAccessEvent_VERIFICATION_REQUIRED BACnetAccessEvent = 15
+	BACnetAccessEvent_NO_ENTRY_AFTER_GRANTED BACnetAccessEvent = 16
+	BACnetAccessEvent_DENIED_DENY_ALL BACnetAccessEvent = 128
+	BACnetAccessEvent_DENIED_UNKNOWN_CREDENTIAL BACnetAccessEvent = 129
+	BACnetAccessEvent_DENIED_AUTHENTICATION_UNAVAILABLE BACnetAccessEvent = 130
+	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_TIMEOUT BACnetAccessEvent = 131
 	BACnetAccessEvent_DENIED_INCORRECT_AUTHENTICATION_FACTOR BACnetAccessEvent = 132
-	BACnetAccessEvent_DENIED_ZONE_NO_ACCESS_RIGHTS           BACnetAccessEvent = 133
-	BACnetAccessEvent_DENIED_POINT_NO_ACCESS_RIGHTS          BACnetAccessEvent = 134
-	BACnetAccessEvent_DENIED_NO_ACCESS_RIGHTS                BACnetAccessEvent = 135
-	BACnetAccessEvent_DENIED_OUT_OF_TIME_RANGE               BACnetAccessEvent = 136
-	BACnetAccessEvent_DENIED_THREAT_LEVEL                    BACnetAccessEvent = 137
-	BACnetAccessEvent_DENIED_PASSBACK                        BACnetAccessEvent = 138
-	BACnetAccessEvent_DENIED_UNEXPECTED_LOCATION_USAGE       BACnetAccessEvent = 139
-	BACnetAccessEvent_DENIED_MAX_ATTEMPTS                    BACnetAccessEvent = 140
-	BACnetAccessEvent_DENIED_LOWER_OCCUPANCY_LIMIT           BACnetAccessEvent = 141
-	BACnetAccessEvent_DENIED_UPPER_OCCUPANCY_LIMIT           BACnetAccessEvent = 142
-	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_LOST      BACnetAccessEvent = 143
-	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_STOLEN    BACnetAccessEvent = 144
-	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DAMAGED   BACnetAccessEvent = 145
+	BACnetAccessEvent_DENIED_ZONE_NO_ACCESS_RIGHTS BACnetAccessEvent = 133
+	BACnetAccessEvent_DENIED_POINT_NO_ACCESS_RIGHTS BACnetAccessEvent = 134
+	BACnetAccessEvent_DENIED_NO_ACCESS_RIGHTS BACnetAccessEvent = 135
+	BACnetAccessEvent_DENIED_OUT_OF_TIME_RANGE BACnetAccessEvent = 136
+	BACnetAccessEvent_DENIED_THREAT_LEVEL BACnetAccessEvent = 137
+	BACnetAccessEvent_DENIED_PASSBACK BACnetAccessEvent = 138
+	BACnetAccessEvent_DENIED_UNEXPECTED_LOCATION_USAGE BACnetAccessEvent = 139
+	BACnetAccessEvent_DENIED_MAX_ATTEMPTS BACnetAccessEvent = 140
+	BACnetAccessEvent_DENIED_LOWER_OCCUPANCY_LIMIT BACnetAccessEvent = 141
+	BACnetAccessEvent_DENIED_UPPER_OCCUPANCY_LIMIT BACnetAccessEvent = 142
+	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_LOST BACnetAccessEvent = 143
+	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_STOLEN BACnetAccessEvent = 144
+	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DAMAGED BACnetAccessEvent = 145
 	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DESTROYED BACnetAccessEvent = 146
-	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DISABLED  BACnetAccessEvent = 147
-	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_ERROR     BACnetAccessEvent = 148
-	BACnetAccessEvent_DENIED_CREDENTIAL_UNASSIGNED           BACnetAccessEvent = 149
-	BACnetAccessEvent_DENIED_CREDENTIAL_NOT_PROVISIONED      BACnetAccessEvent = 150
-	BACnetAccessEvent_DENIED_CREDENTIAL_NOT_YET_ACTIVE       BACnetAccessEvent = 151
-	BACnetAccessEvent_DENIED_CREDENTIAL_EXPIRED              BACnetAccessEvent = 152
-	BACnetAccessEvent_DENIED_CREDENTIAL_MANUAL_DISABLE       BACnetAccessEvent = 153
-	BACnetAccessEvent_DENIED_CREDENTIAL_LOCKOUT              BACnetAccessEvent = 154
-	BACnetAccessEvent_DENIED_CREDENTIAL_MAX_DAYS             BACnetAccessEvent = 155
-	BACnetAccessEvent_DENIED_CREDENTIAL_MAX_USES             BACnetAccessEvent = 156
-	BACnetAccessEvent_DENIED_CREDENTIAL_INACTIVITY           BACnetAccessEvent = 157
-	BACnetAccessEvent_DENIED_CREDENTIAL_DISABLED             BACnetAccessEvent = 158
-	BACnetAccessEvent_DENIED_NO_ACCOMPANIMENT                BACnetAccessEvent = 159
-	BACnetAccessEvent_DENIED_INCORRECT_ACCOMPANIMENT         BACnetAccessEvent = 160
-	BACnetAccessEvent_DENIED_LOCKOUT                         BACnetAccessEvent = 161
-	BACnetAccessEvent_DENIED_VERIFICATION_FAILED             BACnetAccessEvent = 162
-	BACnetAccessEvent_DENIED_VERIFICATION_TIMEOUT            BACnetAccessEvent = 163
-	BACnetAccessEvent_DENIED_OTHER                           BACnetAccessEvent = 164
-	BACnetAccessEvent_VENDOR_PROPRIETARY_VALUE               BACnetAccessEvent = 0xFFFF
+	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DISABLED BACnetAccessEvent = 147
+	BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_ERROR BACnetAccessEvent = 148
+	BACnetAccessEvent_DENIED_CREDENTIAL_UNASSIGNED BACnetAccessEvent = 149
+	BACnetAccessEvent_DENIED_CREDENTIAL_NOT_PROVISIONED BACnetAccessEvent = 150
+	BACnetAccessEvent_DENIED_CREDENTIAL_NOT_YET_ACTIVE BACnetAccessEvent = 151
+	BACnetAccessEvent_DENIED_CREDENTIAL_EXPIRED BACnetAccessEvent = 152
+	BACnetAccessEvent_DENIED_CREDENTIAL_MANUAL_DISABLE BACnetAccessEvent = 153
+	BACnetAccessEvent_DENIED_CREDENTIAL_LOCKOUT BACnetAccessEvent = 154
+	BACnetAccessEvent_DENIED_CREDENTIAL_MAX_DAYS BACnetAccessEvent = 155
+	BACnetAccessEvent_DENIED_CREDENTIAL_MAX_USES BACnetAccessEvent = 156
+	BACnetAccessEvent_DENIED_CREDENTIAL_INACTIVITY BACnetAccessEvent = 157
+	BACnetAccessEvent_DENIED_CREDENTIAL_DISABLED BACnetAccessEvent = 158
+	BACnetAccessEvent_DENIED_NO_ACCOMPANIMENT BACnetAccessEvent = 159
+	BACnetAccessEvent_DENIED_INCORRECT_ACCOMPANIMENT BACnetAccessEvent = 160
+	BACnetAccessEvent_DENIED_LOCKOUT BACnetAccessEvent = 161
+	BACnetAccessEvent_DENIED_VERIFICATION_FAILED BACnetAccessEvent = 162
+	BACnetAccessEvent_DENIED_VERIFICATION_TIMEOUT BACnetAccessEvent = 163
+	BACnetAccessEvent_DENIED_OTHER BACnetAccessEvent = 164
+	BACnetAccessEvent_VENDOR_PROPRIETARY_VALUE BACnetAccessEvent = 0XFFFF
 )
 
 var BACnetAccessEventValues []BACnetAccessEvent
 
 func init() {
 	_ = errors.New
-	BACnetAccessEventValues = []BACnetAccessEvent{
+	BACnetAccessEventValues = []BACnetAccessEvent {
 		BACnetAccessEvent_NONE,
 		BACnetAccessEvent_GRANTED,
 		BACnetAccessEvent_MUSTER,
@@ -157,116 +157,116 @@ func init() {
 
 func BACnetAccessEventByValue(value uint16) (enum BACnetAccessEvent, ok bool) {
 	switch value {
-	case 0:
-		return BACnetAccessEvent_NONE, true
-	case 0xFFFF:
-		return BACnetAccessEvent_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetAccessEvent_GRANTED, true
-	case 10:
-		return BACnetAccessEvent_OUT_OF_SERVICE, true
-	case 11:
-		return BACnetAccessEvent_OUT_OF_SERVICE_RELINQUISHED, true
-	case 12:
-		return BACnetAccessEvent_ACCOMPANIMENT_BY, true
-	case 128:
-		return BACnetAccessEvent_DENIED_DENY_ALL, true
-	case 129:
-		return BACnetAccessEvent_DENIED_UNKNOWN_CREDENTIAL, true
-	case 13:
-		return BACnetAccessEvent_AUTHENTICATION_FACTOR_READ, true
-	case 130:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_UNAVAILABLE, true
-	case 131:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_TIMEOUT, true
-	case 132:
-		return BACnetAccessEvent_DENIED_INCORRECT_AUTHENTICATION_FACTOR, true
-	case 133:
-		return BACnetAccessEvent_DENIED_ZONE_NO_ACCESS_RIGHTS, true
-	case 134:
-		return BACnetAccessEvent_DENIED_POINT_NO_ACCESS_RIGHTS, true
-	case 135:
-		return BACnetAccessEvent_DENIED_NO_ACCESS_RIGHTS, true
-	case 136:
-		return BACnetAccessEvent_DENIED_OUT_OF_TIME_RANGE, true
-	case 137:
-		return BACnetAccessEvent_DENIED_THREAT_LEVEL, true
-	case 138:
-		return BACnetAccessEvent_DENIED_PASSBACK, true
-	case 139:
-		return BACnetAccessEvent_DENIED_UNEXPECTED_LOCATION_USAGE, true
-	case 14:
-		return BACnetAccessEvent_AUTHORIZATION_DELAYED, true
-	case 140:
-		return BACnetAccessEvent_DENIED_MAX_ATTEMPTS, true
-	case 141:
-		return BACnetAccessEvent_DENIED_LOWER_OCCUPANCY_LIMIT, true
-	case 142:
-		return BACnetAccessEvent_DENIED_UPPER_OCCUPANCY_LIMIT, true
-	case 143:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_LOST, true
-	case 144:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_STOLEN, true
-	case 145:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DAMAGED, true
-	case 146:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DESTROYED, true
-	case 147:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DISABLED, true
-	case 148:
-		return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_ERROR, true
-	case 149:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_UNASSIGNED, true
-	case 15:
-		return BACnetAccessEvent_VERIFICATION_REQUIRED, true
-	case 150:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_NOT_PROVISIONED, true
-	case 151:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_NOT_YET_ACTIVE, true
-	case 152:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_EXPIRED, true
-	case 153:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_MANUAL_DISABLE, true
-	case 154:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_LOCKOUT, true
-	case 155:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_MAX_DAYS, true
-	case 156:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_MAX_USES, true
-	case 157:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_INACTIVITY, true
-	case 158:
-		return BACnetAccessEvent_DENIED_CREDENTIAL_DISABLED, true
-	case 159:
-		return BACnetAccessEvent_DENIED_NO_ACCOMPANIMENT, true
-	case 16:
-		return BACnetAccessEvent_NO_ENTRY_AFTER_GRANTED, true
-	case 160:
-		return BACnetAccessEvent_DENIED_INCORRECT_ACCOMPANIMENT, true
-	case 161:
-		return BACnetAccessEvent_DENIED_LOCKOUT, true
-	case 162:
-		return BACnetAccessEvent_DENIED_VERIFICATION_FAILED, true
-	case 163:
-		return BACnetAccessEvent_DENIED_VERIFICATION_TIMEOUT, true
-	case 164:
-		return BACnetAccessEvent_DENIED_OTHER, true
-	case 2:
-		return BACnetAccessEvent_MUSTER, true
-	case 3:
-		return BACnetAccessEvent_PASSBACK_DETECTED, true
-	case 4:
-		return BACnetAccessEvent_DURESS, true
-	case 5:
-		return BACnetAccessEvent_TRACE, true
-	case 6:
-		return BACnetAccessEvent_LOCKOUT_MAX_ATTEMPTS, true
-	case 7:
-		return BACnetAccessEvent_LOCKOUT_OTHER, true
-	case 8:
-		return BACnetAccessEvent_LOCKOUT_RELINQUISHED, true
-	case 9:
-		return BACnetAccessEvent_LOCKED_BY_HIGHER_PRIORITY, true
+		case 0:
+			return BACnetAccessEvent_NONE, true
+		case 0XFFFF:
+			return BACnetAccessEvent_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetAccessEvent_GRANTED, true
+		case 10:
+			return BACnetAccessEvent_OUT_OF_SERVICE, true
+		case 11:
+			return BACnetAccessEvent_OUT_OF_SERVICE_RELINQUISHED, true
+		case 12:
+			return BACnetAccessEvent_ACCOMPANIMENT_BY, true
+		case 128:
+			return BACnetAccessEvent_DENIED_DENY_ALL, true
+		case 129:
+			return BACnetAccessEvent_DENIED_UNKNOWN_CREDENTIAL, true
+		case 13:
+			return BACnetAccessEvent_AUTHENTICATION_FACTOR_READ, true
+		case 130:
+			return BACnetAccessEvent_DENIED_AUTHENTICATION_UNAVAILABLE, true
+		case 131:
+			return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_TIMEOUT, true
+		case 132:
+			return BACnetAccessEvent_DENIED_INCORRECT_AUTHENTICATION_FACTOR, true
+		case 133:
+			return BACnetAccessEvent_DENIED_ZONE_NO_ACCESS_RIGHTS, true
+		case 134:
+			return BACnetAccessEvent_DENIED_POINT_NO_ACCESS_RIGHTS, true
+		case 135:
+			return BACnetAccessEvent_DENIED_NO_ACCESS_RIGHTS, true
+		case 136:
+			return BACnetAccessEvent_DENIED_OUT_OF_TIME_RANGE, true
+		case 137:
+			return BACnetAccessEvent_DENIED_THREAT_LEVEL, true
+		case 138:
+			return BACnetAccessEvent_DENIED_PASSBACK, true
+		case 139:
+			return BACnetAccessEvent_DENIED_UNEXPECTED_LOCATION_USAGE, true
+		case 14:
+			return BACnetAccessEvent_AUTHORIZATION_DELAYED, true
+		case 140:
+			return BACnetAccessEvent_DENIED_MAX_ATTEMPTS, true
+		case 141:
+			return BACnetAccessEvent_DENIED_LOWER_OCCUPANCY_LIMIT, true
+		case 142:
+			return BACnetAccessEvent_DENIED_UPPER_OCCUPANCY_LIMIT, true
+		case 143:
+			return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_LOST, true
+		case 144:
+			return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_STOLEN, true
+		case 145:
+			return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DAMAGED, true
+		case 146:
+			return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DESTROYED, true
+		case 147:
+			return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_DISABLED, true
+		case 148:
+			return BACnetAccessEvent_DENIED_AUTHENTICATION_FACTOR_ERROR, true
+		case 149:
+			return BACnetAccessEvent_DENIED_CREDENTIAL_UNASSIGNED, true
+		case 15:
+			return BACnetAccessEvent_VERIFICATION_REQUIRED, true
+		case 150:
+			return BACnetAccessEvent_DENIED_CREDENTIAL_NOT_PROVISIONED, true
+		case 151:
+			return BACnetAccessEvent_DENIED_CREDENTIAL_NOT_YET_ACTIVE, true
+		case 152:
+			return BACnetAccessEvent_DENIED_CREDENTIAL_EXPIRED, true
+		case 153:
+			return BACnetAccessEvent_DENIED_CREDENTIAL_MANUAL_DISABLE, true
+		case 154:
+			return BACnetAccessEvent_DENIED_CREDENTIAL_LOCKOUT, true
+		case 155:
+			return BACnetAccessEvent_DENIED_CREDENTIAL_MAX_DAYS, true
+		case 156:
+			return BACnetAccessEvent_DENIED_CREDENTIAL_MAX_USES, true
+		case 157:
+			return BACnetAccessEvent_DENIED_CREDENTIAL_INACTIVITY, true
+		case 158:
+			return BACnetAccessEvent_DENIED_CREDENTIAL_DISABLED, true
+		case 159:
+			return BACnetAccessEvent_DENIED_NO_ACCOMPANIMENT, true
+		case 16:
+			return BACnetAccessEvent_NO_ENTRY_AFTER_GRANTED, true
+		case 160:
+			return BACnetAccessEvent_DENIED_INCORRECT_ACCOMPANIMENT, true
+		case 161:
+			return BACnetAccessEvent_DENIED_LOCKOUT, true
+		case 162:
+			return BACnetAccessEvent_DENIED_VERIFICATION_FAILED, true
+		case 163:
+			return BACnetAccessEvent_DENIED_VERIFICATION_TIMEOUT, true
+		case 164:
+			return BACnetAccessEvent_DENIED_OTHER, true
+		case 2:
+			return BACnetAccessEvent_MUSTER, true
+		case 3:
+			return BACnetAccessEvent_PASSBACK_DETECTED, true
+		case 4:
+			return BACnetAccessEvent_DURESS, true
+		case 5:
+			return BACnetAccessEvent_TRACE, true
+		case 6:
+			return BACnetAccessEvent_LOCKOUT_MAX_ATTEMPTS, true
+		case 7:
+			return BACnetAccessEvent_LOCKOUT_OTHER, true
+		case 8:
+			return BACnetAccessEvent_LOCKOUT_RELINQUISHED, true
+		case 9:
+			return BACnetAccessEvent_LOCKED_BY_HIGHER_PRIORITY, true
 	}
 	return 0, false
 }
@@ -387,13 +387,13 @@ func BACnetAccessEventByName(value string) (enum BACnetAccessEvent, ok bool) {
 	return 0, false
 }
 
-func BACnetAccessEventKnows(value uint16) bool {
+func BACnetAccessEventKnows(value uint16)  bool {
 	for _, typeValue := range BACnetAccessEventValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetAccessEvent(structType interface{}) BACnetAccessEvent {
@@ -563,3 +563,4 @@ func (e BACnetAccessEvent) PLC4XEnumName() string {
 func (e BACnetAccessEvent) String() string {
 	return e.PLC4XEnumName()
 }
+

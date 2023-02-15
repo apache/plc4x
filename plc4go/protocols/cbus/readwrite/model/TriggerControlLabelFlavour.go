@@ -34,7 +34,7 @@ type ITriggerControlLabelFlavour interface {
 	utils.Serializable
 }
 
-const (
+const(
 	TriggerControlLabelFlavour_FLAVOUR_0 TriggerControlLabelFlavour = 0
 	TriggerControlLabelFlavour_FLAVOUR_1 TriggerControlLabelFlavour = 1
 	TriggerControlLabelFlavour_FLAVOUR_2 TriggerControlLabelFlavour = 2
@@ -45,7 +45,7 @@ var TriggerControlLabelFlavourValues []TriggerControlLabelFlavour
 
 func init() {
 	_ = errors.New
-	TriggerControlLabelFlavourValues = []TriggerControlLabelFlavour{
+	TriggerControlLabelFlavourValues = []TriggerControlLabelFlavour {
 		TriggerControlLabelFlavour_FLAVOUR_0,
 		TriggerControlLabelFlavour_FLAVOUR_1,
 		TriggerControlLabelFlavour_FLAVOUR_2,
@@ -55,14 +55,14 @@ func init() {
 
 func TriggerControlLabelFlavourByValue(value uint8) (enum TriggerControlLabelFlavour, ok bool) {
 	switch value {
-	case 0:
-		return TriggerControlLabelFlavour_FLAVOUR_0, true
-	case 1:
-		return TriggerControlLabelFlavour_FLAVOUR_1, true
-	case 2:
-		return TriggerControlLabelFlavour_FLAVOUR_2, true
-	case 3:
-		return TriggerControlLabelFlavour_FLAVOUR_3, true
+		case 0:
+			return TriggerControlLabelFlavour_FLAVOUR_0, true
+		case 1:
+			return TriggerControlLabelFlavour_FLAVOUR_1, true
+		case 2:
+			return TriggerControlLabelFlavour_FLAVOUR_2, true
+		case 3:
+			return TriggerControlLabelFlavour_FLAVOUR_3, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func TriggerControlLabelFlavourByName(value string) (enum TriggerControlLabelFla
 	return 0, false
 }
 
-func TriggerControlLabelFlavourKnows(value uint8) bool {
+func TriggerControlLabelFlavourKnows(value uint8)  bool {
 	for _, typeValue := range TriggerControlLabelFlavourValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastTriggerControlLabelFlavour(structType interface{}) TriggerControlLabelFlavour {
@@ -155,3 +155,4 @@ func (e TriggerControlLabelFlavour) PLC4XEnumName() string {
 func (e TriggerControlLabelFlavour) String() string {
 	return e.PLC4XEnumName()
 }
+

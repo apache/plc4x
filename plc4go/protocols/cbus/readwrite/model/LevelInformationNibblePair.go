@@ -35,7 +35,7 @@ type ILevelInformationNibblePair interface {
 	NibbleValue() uint8
 }
 
-const (
+const(
 	LevelInformationNibblePair_Value_F LevelInformationNibblePair = 0x55
 	LevelInformationNibblePair_Value_E LevelInformationNibblePair = 0x56
 	LevelInformationNibblePair_Value_D LevelInformationNibblePair = 0x59
@@ -58,7 +58,7 @@ var LevelInformationNibblePairValues []LevelInformationNibblePair
 
 func init() {
 	_ = errors.New
-	LevelInformationNibblePairValues = []LevelInformationNibblePair{
+	LevelInformationNibblePairValues = []LevelInformationNibblePair {
 		LevelInformationNibblePair_Value_F,
 		LevelInformationNibblePair_Value_E,
 		LevelInformationNibblePair_Value_D,
@@ -78,74 +78,58 @@ func init() {
 	}
 }
 
+
 func (e LevelInformationNibblePair) NibbleValue() uint8 {
-	switch e {
-	case 0x55:
-		{ /* '0x55' */
-			return 0xF
+	switch e  {
+		case 0x55: { /* '0x55' */
+            return 0xF
 		}
-	case 0x56:
-		{ /* '0x56' */
-			return 0xE
+		case 0x56: { /* '0x56' */
+            return 0xE
 		}
-	case 0x59:
-		{ /* '0x59' */
-			return 0xD
+		case 0x59: { /* '0x59' */
+            return 0xD
 		}
-	case 0x5A:
-		{ /* '0x5A' */
-			return 0xC
+		case 0x5A: { /* '0x5A' */
+            return 0xC
 		}
-	case 0x65:
-		{ /* '0x65' */
-			return 0xB
+		case 0x65: { /* '0x65' */
+            return 0xB
 		}
-	case 0x66:
-		{ /* '0x66' */
-			return 0xA
+		case 0x66: { /* '0x66' */
+            return 0xA
 		}
-	case 0x69:
-		{ /* '0x69' */
-			return 0x9
+		case 0x69: { /* '0x69' */
+            return 0x9
 		}
-	case 0x6A:
-		{ /* '0x6A' */
-			return 0x8
+		case 0x6A: { /* '0x6A' */
+            return 0x8
 		}
-	case 0x95:
-		{ /* '0x95' */
-			return 0x7
+		case 0x95: { /* '0x95' */
+            return 0x7
 		}
-	case 0x96:
-		{ /* '0x96' */
-			return 0x6
+		case 0x96: { /* '0x96' */
+            return 0x6
 		}
-	case 0x99:
-		{ /* '0x99' */
-			return 0x5
+		case 0x99: { /* '0x99' */
+            return 0x5
 		}
-	case 0x9A:
-		{ /* '0x9A' */
-			return 0x4
+		case 0x9A: { /* '0x9A' */
+            return 0x4
 		}
-	case 0xA5:
-		{ /* '0xA5' */
-			return 0x3
+		case 0xA5: { /* '0xA5' */
+            return 0x3
 		}
-	case 0xA6:
-		{ /* '0xA6' */
-			return 0x2
+		case 0xA6: { /* '0xA6' */
+            return 0x2
 		}
-	case 0xA9:
-		{ /* '0xA9' */
-			return 0x1
+		case 0xA9: { /* '0xA9' */
+            return 0x1
 		}
-	case 0xAA:
-		{ /* '0xAA' */
-			return 0x0
+		case 0xAA: { /* '0xAA' */
+            return 0x0
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -161,38 +145,38 @@ func LevelInformationNibblePairFirstEnumForFieldNibbleValue(value uint8) (LevelI
 }
 func LevelInformationNibblePairByValue(value uint8) (enum LevelInformationNibblePair, ok bool) {
 	switch value {
-	case 0x55:
-		return LevelInformationNibblePair_Value_F, true
-	case 0x56:
-		return LevelInformationNibblePair_Value_E, true
-	case 0x59:
-		return LevelInformationNibblePair_Value_D, true
-	case 0x5A:
-		return LevelInformationNibblePair_Value_C, true
-	case 0x65:
-		return LevelInformationNibblePair_Value_B, true
-	case 0x66:
-		return LevelInformationNibblePair_Value_A, true
-	case 0x69:
-		return LevelInformationNibblePair_Value_9, true
-	case 0x6A:
-		return LevelInformationNibblePair_Value_8, true
-	case 0x95:
-		return LevelInformationNibblePair_Value_7, true
-	case 0x96:
-		return LevelInformationNibblePair_Value_6, true
-	case 0x99:
-		return LevelInformationNibblePair_Value_5, true
-	case 0x9A:
-		return LevelInformationNibblePair_Value_4, true
-	case 0xA5:
-		return LevelInformationNibblePair_Value_3, true
-	case 0xA6:
-		return LevelInformationNibblePair_Value_2, true
-	case 0xA9:
-		return LevelInformationNibblePair_Value_1, true
-	case 0xAA:
-		return LevelInformationNibblePair_Value_0, true
+		case 0x55:
+			return LevelInformationNibblePair_Value_F, true
+		case 0x56:
+			return LevelInformationNibblePair_Value_E, true
+		case 0x59:
+			return LevelInformationNibblePair_Value_D, true
+		case 0x5A:
+			return LevelInformationNibblePair_Value_C, true
+		case 0x65:
+			return LevelInformationNibblePair_Value_B, true
+		case 0x66:
+			return LevelInformationNibblePair_Value_A, true
+		case 0x69:
+			return LevelInformationNibblePair_Value_9, true
+		case 0x6A:
+			return LevelInformationNibblePair_Value_8, true
+		case 0x95:
+			return LevelInformationNibblePair_Value_7, true
+		case 0x96:
+			return LevelInformationNibblePair_Value_6, true
+		case 0x99:
+			return LevelInformationNibblePair_Value_5, true
+		case 0x9A:
+			return LevelInformationNibblePair_Value_4, true
+		case 0xA5:
+			return LevelInformationNibblePair_Value_3, true
+		case 0xA6:
+			return LevelInformationNibblePair_Value_2, true
+		case 0xA9:
+			return LevelInformationNibblePair_Value_1, true
+		case 0xAA:
+			return LevelInformationNibblePair_Value_0, true
 	}
 	return 0, false
 }
@@ -235,13 +219,13 @@ func LevelInformationNibblePairByName(value string) (enum LevelInformationNibble
 	return 0, false
 }
 
-func LevelInformationNibblePairKnows(value uint8) bool {
+func LevelInformationNibblePairKnows(value uint8)  bool {
 	for _, typeValue := range LevelInformationNibblePairValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastLevelInformationNibblePair(structType interface{}) LevelInformationNibblePair {
@@ -333,3 +317,4 @@ func (e LevelInformationNibblePair) PLC4XEnumName() string {
 func (e LevelInformationNibblePair) String() string {
 	return e.PLC4XEnumName()
 }
+

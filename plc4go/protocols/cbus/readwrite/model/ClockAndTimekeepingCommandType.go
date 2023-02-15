@@ -35,33 +35,31 @@ type IClockAndTimekeepingCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const (
+const(
 	ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE ClockAndTimekeepingCommandType = 0x00
-	ClockAndTimekeepingCommandType_REQUEST_REFRESH         ClockAndTimekeepingCommandType = 0x01
+	ClockAndTimekeepingCommandType_REQUEST_REFRESH ClockAndTimekeepingCommandType = 0x01
 )
 
 var ClockAndTimekeepingCommandTypeValues []ClockAndTimekeepingCommandType
 
 func init() {
 	_ = errors.New
-	ClockAndTimekeepingCommandTypeValues = []ClockAndTimekeepingCommandType{
+	ClockAndTimekeepingCommandTypeValues = []ClockAndTimekeepingCommandType {
 		ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE,
 		ClockAndTimekeepingCommandType_REQUEST_REFRESH,
 	}
 }
 
+
 func (e ClockAndTimekeepingCommandType) NumberOfArguments() uint8 {
-	switch e {
-	case 0x00:
-		{ /* '0x00' */
-			return 0xFF
+	switch e  {
+		case 0x00: { /* '0x00' */
+            return 0xFF
 		}
-	case 0x01:
-		{ /* '0x01' */
-			return 0
+		case 0x01: { /* '0x01' */
+            return 0
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -77,10 +75,10 @@ func ClockAndTimekeepingCommandTypeFirstEnumForFieldNumberOfArguments(value uint
 }
 func ClockAndTimekeepingCommandTypeByValue(value uint8) (enum ClockAndTimekeepingCommandType, ok bool) {
 	switch value {
-	case 0x00:
-		return ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE, true
-	case 0x01:
-		return ClockAndTimekeepingCommandType_REQUEST_REFRESH, true
+		case 0x00:
+			return ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE, true
+		case 0x01:
+			return ClockAndTimekeepingCommandType_REQUEST_REFRESH, true
 	}
 	return 0, false
 }
@@ -95,13 +93,13 @@ func ClockAndTimekeepingCommandTypeByName(value string) (enum ClockAndTimekeepin
 	return 0, false
 }
 
-func ClockAndTimekeepingCommandTypeKnows(value uint8) bool {
+func ClockAndTimekeepingCommandTypeKnows(value uint8)  bool {
 	for _, typeValue := range ClockAndTimekeepingCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastClockAndTimekeepingCommandType(structType interface{}) ClockAndTimekeepingCommandType {
@@ -165,3 +163,4 @@ func (e ClockAndTimekeepingCommandType) PLC4XEnumName() string {
 func (e ClockAndTimekeepingCommandType) String() string {
 	return e.PLC4XEnumName()
 }
+

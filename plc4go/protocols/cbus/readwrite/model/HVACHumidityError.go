@@ -34,154 +34,154 @@ type IHVACHumidityError interface {
 	utils.Serializable
 }
 
-const (
-	HVACHumidityError_NO_ERROR                       HVACHumidityError = 0x00
-	HVACHumidityError_HUMIDIFIER_TOTAL_FAILURE       HVACHumidityError = 0x01
-	HVACHumidityError_DEHUMIDIFIER_TOTAL_FAILURE     HVACHumidityError = 0x02
-	HVACHumidityError_FAN_TOTAL_FAILURE              HVACHumidityError = 0x03
-	HVACHumidityError_HUMIDITY_SENSOR_FAILURE        HVACHumidityError = 0x04
-	HVACHumidityError_HUMIDIFIER_TEMPORARY_PROBLEM   HVACHumidityError = 0x05
+const(
+	HVACHumidityError_NO_ERROR HVACHumidityError = 0x00
+	HVACHumidityError_HUMIDIFIER_TOTAL_FAILURE HVACHumidityError = 0x01
+	HVACHumidityError_DEHUMIDIFIER_TOTAL_FAILURE HVACHumidityError = 0x02
+	HVACHumidityError_FAN_TOTAL_FAILURE HVACHumidityError = 0x03
+	HVACHumidityError_HUMIDITY_SENSOR_FAILURE HVACHumidityError = 0x04
+	HVACHumidityError_HUMIDIFIER_TEMPORARY_PROBLEM HVACHumidityError = 0x05
 	HVACHumidityError_DEHUMIDIFIER_TEMPORARY_PROBLEM HVACHumidityError = 0x06
-	HVACHumidityError_FAN_TEMPORARY_PROBLEM          HVACHumidityError = 0x07
-	HVACHumidityError_HUMIDIFIER_SERVICE_REQUIRED    HVACHumidityError = 0x08
-	HVACHumidityError_DEHUMIDIFIER_SERVICE_REQUIRED  HVACHumidityError = 0x09
-	HVACHumidityError_FAN_SERVICE_REQUIRED           HVACHumidityError = 0x0A
-	HVACHumidityError_FILTER_REPLACEMENT_REQUIRED    HVACHumidityError = 0x0B
-	HVACHumidityError_CUSTOM_ERROR_0                 HVACHumidityError = 0x80
-	HVACHumidityError_CUSTOM_ERROR_1                 HVACHumidityError = 0x81
-	HVACHumidityError_CUSTOM_ERROR_2                 HVACHumidityError = 0x82
-	HVACHumidityError_CUSTOM_ERROR_3                 HVACHumidityError = 0x83
-	HVACHumidityError_CUSTOM_ERROR_4                 HVACHumidityError = 0x84
-	HVACHumidityError_CUSTOM_ERROR_5                 HVACHumidityError = 0x85
-	HVACHumidityError_CUSTOM_ERROR_6                 HVACHumidityError = 0x86
-	HVACHumidityError_CUSTOM_ERROR_7                 HVACHumidityError = 0x87
-	HVACHumidityError_CUSTOM_ERROR_8                 HVACHumidityError = 0x88
-	HVACHumidityError_CUSTOM_ERROR_9                 HVACHumidityError = 0x89
-	HVACHumidityError_CUSTOM_ERROR_10                HVACHumidityError = 0x8A
-	HVACHumidityError_CUSTOM_ERROR_11                HVACHumidityError = 0x8B
-	HVACHumidityError_CUSTOM_ERROR_12                HVACHumidityError = 0x8C
-	HVACHumidityError_CUSTOM_ERROR_13                HVACHumidityError = 0x8D
-	HVACHumidityError_CUSTOM_ERROR_14                HVACHumidityError = 0x8E
-	HVACHumidityError_CUSTOM_ERROR_15                HVACHumidityError = 0x8F
-	HVACHumidityError_CUSTOM_ERROR_16                HVACHumidityError = 0x90
-	HVACHumidityError_CUSTOM_ERROR_17                HVACHumidityError = 0x91
-	HVACHumidityError_CUSTOM_ERROR_18                HVACHumidityError = 0x92
-	HVACHumidityError_CUSTOM_ERROR_19                HVACHumidityError = 0x93
-	HVACHumidityError_CUSTOM_ERROR_20                HVACHumidityError = 0x94
-	HVACHumidityError_CUSTOM_ERROR_21                HVACHumidityError = 0x95
-	HVACHumidityError_CUSTOM_ERROR_22                HVACHumidityError = 0x96
-	HVACHumidityError_CUSTOM_ERROR_23                HVACHumidityError = 0x97
-	HVACHumidityError_CUSTOM_ERROR_24                HVACHumidityError = 0x98
-	HVACHumidityError_CUSTOM_ERROR_25                HVACHumidityError = 0x99
-	HVACHumidityError_CUSTOM_ERROR_26                HVACHumidityError = 0x9A
-	HVACHumidityError_CUSTOM_ERROR_27                HVACHumidityError = 0x9B
-	HVACHumidityError_CUSTOM_ERROR_28                HVACHumidityError = 0x9C
-	HVACHumidityError_CUSTOM_ERROR_29                HVACHumidityError = 0x9D
-	HVACHumidityError_CUSTOM_ERROR_30                HVACHumidityError = 0x9E
-	HVACHumidityError_CUSTOM_ERROR_31                HVACHumidityError = 0x9F
-	HVACHumidityError_CUSTOM_ERROR_32                HVACHumidityError = 0xA0
-	HVACHumidityError_CUSTOM_ERROR_33                HVACHumidityError = 0xA1
-	HVACHumidityError_CUSTOM_ERROR_34                HVACHumidityError = 0xA2
-	HVACHumidityError_CUSTOM_ERROR_35                HVACHumidityError = 0xA3
-	HVACHumidityError_CUSTOM_ERROR_36                HVACHumidityError = 0xA4
-	HVACHumidityError_CUSTOM_ERROR_37                HVACHumidityError = 0xA5
-	HVACHumidityError_CUSTOM_ERROR_38                HVACHumidityError = 0xA6
-	HVACHumidityError_CUSTOM_ERROR_39                HVACHumidityError = 0xA7
-	HVACHumidityError_CUSTOM_ERROR_40                HVACHumidityError = 0xA8
-	HVACHumidityError_CUSTOM_ERROR_41                HVACHumidityError = 0xA9
-	HVACHumidityError_CUSTOM_ERROR_42                HVACHumidityError = 0xAA
-	HVACHumidityError_CUSTOM_ERROR_43                HVACHumidityError = 0xAB
-	HVACHumidityError_CUSTOM_ERROR_44                HVACHumidityError = 0xAC
-	HVACHumidityError_CUSTOM_ERROR_45                HVACHumidityError = 0xAD
-	HVACHumidityError_CUSTOM_ERROR_46                HVACHumidityError = 0xAE
-	HVACHumidityError_CUSTOM_ERROR_47                HVACHumidityError = 0xAF
-	HVACHumidityError_CUSTOM_ERROR_48                HVACHumidityError = 0xB0
-	HVACHumidityError_CUSTOM_ERROR_49                HVACHumidityError = 0xB1
-	HVACHumidityError_CUSTOM_ERROR_50                HVACHumidityError = 0xB2
-	HVACHumidityError_CUSTOM_ERROR_51                HVACHumidityError = 0xB3
-	HVACHumidityError_CUSTOM_ERROR_52                HVACHumidityError = 0xB4
-	HVACHumidityError_CUSTOM_ERROR_53                HVACHumidityError = 0xB5
-	HVACHumidityError_CUSTOM_ERROR_54                HVACHumidityError = 0xB6
-	HVACHumidityError_CUSTOM_ERROR_55                HVACHumidityError = 0xB7
-	HVACHumidityError_CUSTOM_ERROR_56                HVACHumidityError = 0xB8
-	HVACHumidityError_CUSTOM_ERROR_57                HVACHumidityError = 0xB9
-	HVACHumidityError_CUSTOM_ERROR_58                HVACHumidityError = 0xBA
-	HVACHumidityError_CUSTOM_ERROR_59                HVACHumidityError = 0xBB
-	HVACHumidityError_CUSTOM_ERROR_60                HVACHumidityError = 0xBC
-	HVACHumidityError_CUSTOM_ERROR_61                HVACHumidityError = 0xBD
-	HVACHumidityError_CUSTOM_ERROR_62                HVACHumidityError = 0xBE
-	HVACHumidityError_CUSTOM_ERROR_63                HVACHumidityError = 0xBF
-	HVACHumidityError_CUSTOM_ERROR_64                HVACHumidityError = 0xC0
-	HVACHumidityError_CUSTOM_ERROR_65                HVACHumidityError = 0xC1
-	HVACHumidityError_CUSTOM_ERROR_66                HVACHumidityError = 0xC2
-	HVACHumidityError_CUSTOM_ERROR_67                HVACHumidityError = 0xC3
-	HVACHumidityError_CUSTOM_ERROR_68                HVACHumidityError = 0xC4
-	HVACHumidityError_CUSTOM_ERROR_69                HVACHumidityError = 0xC5
-	HVACHumidityError_CUSTOM_ERROR_70                HVACHumidityError = 0xC6
-	HVACHumidityError_CUSTOM_ERROR_71                HVACHumidityError = 0xC7
-	HVACHumidityError_CUSTOM_ERROR_72                HVACHumidityError = 0xC8
-	HVACHumidityError_CUSTOM_ERROR_73                HVACHumidityError = 0xC9
-	HVACHumidityError_CUSTOM_ERROR_74                HVACHumidityError = 0xCA
-	HVACHumidityError_CUSTOM_ERROR_75                HVACHumidityError = 0xCB
-	HVACHumidityError_CUSTOM_ERROR_76                HVACHumidityError = 0xCC
-	HVACHumidityError_CUSTOM_ERROR_77                HVACHumidityError = 0xCD
-	HVACHumidityError_CUSTOM_ERROR_78                HVACHumidityError = 0xCE
-	HVACHumidityError_CUSTOM_ERROR_79                HVACHumidityError = 0xCF
-	HVACHumidityError_CUSTOM_ERROR_80                HVACHumidityError = 0xD0
-	HVACHumidityError_CUSTOM_ERROR_81                HVACHumidityError = 0xD1
-	HVACHumidityError_CUSTOM_ERROR_82                HVACHumidityError = 0xD2
-	HVACHumidityError_CUSTOM_ERROR_83                HVACHumidityError = 0xD3
-	HVACHumidityError_CUSTOM_ERROR_84                HVACHumidityError = 0xD4
-	HVACHumidityError_CUSTOM_ERROR_85                HVACHumidityError = 0xD5
-	HVACHumidityError_CUSTOM_ERROR_86                HVACHumidityError = 0xD6
-	HVACHumidityError_CUSTOM_ERROR_87                HVACHumidityError = 0xD7
-	HVACHumidityError_CUSTOM_ERROR_88                HVACHumidityError = 0xD8
-	HVACHumidityError_CUSTOM_ERROR_89                HVACHumidityError = 0xD9
-	HVACHumidityError_CUSTOM_ERROR_90                HVACHumidityError = 0xDA
-	HVACHumidityError_CUSTOM_ERROR_91                HVACHumidityError = 0xDB
-	HVACHumidityError_CUSTOM_ERROR_92                HVACHumidityError = 0xDC
-	HVACHumidityError_CUSTOM_ERROR_93                HVACHumidityError = 0xDD
-	HVACHumidityError_CUSTOM_ERROR_94                HVACHumidityError = 0xDE
-	HVACHumidityError_CUSTOM_ERROR_95                HVACHumidityError = 0xDF
-	HVACHumidityError_CUSTOM_ERROR_96                HVACHumidityError = 0xE0
-	HVACHumidityError_CUSTOM_ERROR_97                HVACHumidityError = 0xE1
-	HVACHumidityError_CUSTOM_ERROR_98                HVACHumidityError = 0xE2
-	HVACHumidityError_CUSTOM_ERROR_99                HVACHumidityError = 0xE3
-	HVACHumidityError_CUSTOM_ERROR_100               HVACHumidityError = 0xE4
-	HVACHumidityError_CUSTOM_ERROR_101               HVACHumidityError = 0xE5
-	HVACHumidityError_CUSTOM_ERROR_102               HVACHumidityError = 0xE6
-	HVACHumidityError_CUSTOM_ERROR_103               HVACHumidityError = 0xE7
-	HVACHumidityError_CUSTOM_ERROR_104               HVACHumidityError = 0xE8
-	HVACHumidityError_CUSTOM_ERROR_105               HVACHumidityError = 0xE9
-	HVACHumidityError_CUSTOM_ERROR_106               HVACHumidityError = 0xEA
-	HVACHumidityError_CUSTOM_ERROR_107               HVACHumidityError = 0xEB
-	HVACHumidityError_CUSTOM_ERROR_108               HVACHumidityError = 0xEC
-	HVACHumidityError_CUSTOM_ERROR_109               HVACHumidityError = 0xED
-	HVACHumidityError_CUSTOM_ERROR_110               HVACHumidityError = 0xEE
-	HVACHumidityError_CUSTOM_ERROR_111               HVACHumidityError = 0xEF
-	HVACHumidityError_CUSTOM_ERROR_112               HVACHumidityError = 0xF0
-	HVACHumidityError_CUSTOM_ERROR_113               HVACHumidityError = 0xF1
-	HVACHumidityError_CUSTOM_ERROR_114               HVACHumidityError = 0xF2
-	HVACHumidityError_CUSTOM_ERROR_115               HVACHumidityError = 0xF3
-	HVACHumidityError_CUSTOM_ERROR_116               HVACHumidityError = 0xF4
-	HVACHumidityError_CUSTOM_ERROR_117               HVACHumidityError = 0xF5
-	HVACHumidityError_CUSTOM_ERROR_118               HVACHumidityError = 0xF6
-	HVACHumidityError_CUSTOM_ERROR_119               HVACHumidityError = 0xF7
-	HVACHumidityError_CUSTOM_ERROR_120               HVACHumidityError = 0xF8
-	HVACHumidityError_CUSTOM_ERROR_121               HVACHumidityError = 0xF9
-	HVACHumidityError_CUSTOM_ERROR_122               HVACHumidityError = 0xFA
-	HVACHumidityError_CUSTOM_ERROR_123               HVACHumidityError = 0xFB
-	HVACHumidityError_CUSTOM_ERROR_124               HVACHumidityError = 0xFC
-	HVACHumidityError_CUSTOM_ERROR_125               HVACHumidityError = 0xFD
-	HVACHumidityError_CUSTOM_ERROR_126               HVACHumidityError = 0xFE
-	HVACHumidityError_CUSTOM_ERROR_127               HVACHumidityError = 0xFF
+	HVACHumidityError_FAN_TEMPORARY_PROBLEM HVACHumidityError = 0x07
+	HVACHumidityError_HUMIDIFIER_SERVICE_REQUIRED HVACHumidityError = 0x08
+	HVACHumidityError_DEHUMIDIFIER_SERVICE_REQUIRED HVACHumidityError = 0x09
+	HVACHumidityError_FAN_SERVICE_REQUIRED HVACHumidityError = 0x0A
+	HVACHumidityError_FILTER_REPLACEMENT_REQUIRED HVACHumidityError = 0x0B
+	HVACHumidityError_CUSTOM_ERROR_0 HVACHumidityError = 0x80
+	HVACHumidityError_CUSTOM_ERROR_1 HVACHumidityError = 0x81
+	HVACHumidityError_CUSTOM_ERROR_2 HVACHumidityError = 0x82
+	HVACHumidityError_CUSTOM_ERROR_3 HVACHumidityError = 0x83
+	HVACHumidityError_CUSTOM_ERROR_4 HVACHumidityError = 0x84
+	HVACHumidityError_CUSTOM_ERROR_5 HVACHumidityError = 0x85
+	HVACHumidityError_CUSTOM_ERROR_6 HVACHumidityError = 0x86
+	HVACHumidityError_CUSTOM_ERROR_7 HVACHumidityError = 0x87
+	HVACHumidityError_CUSTOM_ERROR_8 HVACHumidityError = 0x88
+	HVACHumidityError_CUSTOM_ERROR_9 HVACHumidityError = 0x89
+	HVACHumidityError_CUSTOM_ERROR_10 HVACHumidityError = 0x8A
+	HVACHumidityError_CUSTOM_ERROR_11 HVACHumidityError = 0x8B
+	HVACHumidityError_CUSTOM_ERROR_12 HVACHumidityError = 0x8C
+	HVACHumidityError_CUSTOM_ERROR_13 HVACHumidityError = 0x8D
+	HVACHumidityError_CUSTOM_ERROR_14 HVACHumidityError = 0x8E
+	HVACHumidityError_CUSTOM_ERROR_15 HVACHumidityError = 0x8F
+	HVACHumidityError_CUSTOM_ERROR_16 HVACHumidityError = 0x90
+	HVACHumidityError_CUSTOM_ERROR_17 HVACHumidityError = 0x91
+	HVACHumidityError_CUSTOM_ERROR_18 HVACHumidityError = 0x92
+	HVACHumidityError_CUSTOM_ERROR_19 HVACHumidityError = 0x93
+	HVACHumidityError_CUSTOM_ERROR_20 HVACHumidityError = 0x94
+	HVACHumidityError_CUSTOM_ERROR_21 HVACHumidityError = 0x95
+	HVACHumidityError_CUSTOM_ERROR_22 HVACHumidityError = 0x96
+	HVACHumidityError_CUSTOM_ERROR_23 HVACHumidityError = 0x97
+	HVACHumidityError_CUSTOM_ERROR_24 HVACHumidityError = 0x98
+	HVACHumidityError_CUSTOM_ERROR_25 HVACHumidityError = 0x99
+	HVACHumidityError_CUSTOM_ERROR_26 HVACHumidityError = 0x9A
+	HVACHumidityError_CUSTOM_ERROR_27 HVACHumidityError = 0x9B
+	HVACHumidityError_CUSTOM_ERROR_28 HVACHumidityError = 0x9C
+	HVACHumidityError_CUSTOM_ERROR_29 HVACHumidityError = 0x9D
+	HVACHumidityError_CUSTOM_ERROR_30 HVACHumidityError = 0x9E
+	HVACHumidityError_CUSTOM_ERROR_31 HVACHumidityError = 0x9F
+	HVACHumidityError_CUSTOM_ERROR_32 HVACHumidityError = 0xA0
+	HVACHumidityError_CUSTOM_ERROR_33 HVACHumidityError = 0xA1
+	HVACHumidityError_CUSTOM_ERROR_34 HVACHumidityError = 0xA2
+	HVACHumidityError_CUSTOM_ERROR_35 HVACHumidityError = 0xA3
+	HVACHumidityError_CUSTOM_ERROR_36 HVACHumidityError = 0xA4
+	HVACHumidityError_CUSTOM_ERROR_37 HVACHumidityError = 0xA5
+	HVACHumidityError_CUSTOM_ERROR_38 HVACHumidityError = 0xA6
+	HVACHumidityError_CUSTOM_ERROR_39 HVACHumidityError = 0xA7
+	HVACHumidityError_CUSTOM_ERROR_40 HVACHumidityError = 0xA8
+	HVACHumidityError_CUSTOM_ERROR_41 HVACHumidityError = 0xA9
+	HVACHumidityError_CUSTOM_ERROR_42 HVACHumidityError = 0xAA
+	HVACHumidityError_CUSTOM_ERROR_43 HVACHumidityError = 0xAB
+	HVACHumidityError_CUSTOM_ERROR_44 HVACHumidityError = 0xAC
+	HVACHumidityError_CUSTOM_ERROR_45 HVACHumidityError = 0xAD
+	HVACHumidityError_CUSTOM_ERROR_46 HVACHumidityError = 0xAE
+	HVACHumidityError_CUSTOM_ERROR_47 HVACHumidityError = 0xAF
+	HVACHumidityError_CUSTOM_ERROR_48 HVACHumidityError = 0xB0
+	HVACHumidityError_CUSTOM_ERROR_49 HVACHumidityError = 0xB1
+	HVACHumidityError_CUSTOM_ERROR_50 HVACHumidityError = 0xB2
+	HVACHumidityError_CUSTOM_ERROR_51 HVACHumidityError = 0xB3
+	HVACHumidityError_CUSTOM_ERROR_52 HVACHumidityError = 0xB4
+	HVACHumidityError_CUSTOM_ERROR_53 HVACHumidityError = 0xB5
+	HVACHumidityError_CUSTOM_ERROR_54 HVACHumidityError = 0xB6
+	HVACHumidityError_CUSTOM_ERROR_55 HVACHumidityError = 0xB7
+	HVACHumidityError_CUSTOM_ERROR_56 HVACHumidityError = 0xB8
+	HVACHumidityError_CUSTOM_ERROR_57 HVACHumidityError = 0xB9
+	HVACHumidityError_CUSTOM_ERROR_58 HVACHumidityError = 0xBA
+	HVACHumidityError_CUSTOM_ERROR_59 HVACHumidityError = 0xBB
+	HVACHumidityError_CUSTOM_ERROR_60 HVACHumidityError = 0xBC
+	HVACHumidityError_CUSTOM_ERROR_61 HVACHumidityError = 0xBD
+	HVACHumidityError_CUSTOM_ERROR_62 HVACHumidityError = 0xBE
+	HVACHumidityError_CUSTOM_ERROR_63 HVACHumidityError = 0xBF
+	HVACHumidityError_CUSTOM_ERROR_64 HVACHumidityError = 0xC0
+	HVACHumidityError_CUSTOM_ERROR_65 HVACHumidityError = 0xC1
+	HVACHumidityError_CUSTOM_ERROR_66 HVACHumidityError = 0xC2
+	HVACHumidityError_CUSTOM_ERROR_67 HVACHumidityError = 0xC3
+	HVACHumidityError_CUSTOM_ERROR_68 HVACHumidityError = 0xC4
+	HVACHumidityError_CUSTOM_ERROR_69 HVACHumidityError = 0xC5
+	HVACHumidityError_CUSTOM_ERROR_70 HVACHumidityError = 0xC6
+	HVACHumidityError_CUSTOM_ERROR_71 HVACHumidityError = 0xC7
+	HVACHumidityError_CUSTOM_ERROR_72 HVACHumidityError = 0xC8
+	HVACHumidityError_CUSTOM_ERROR_73 HVACHumidityError = 0xC9
+	HVACHumidityError_CUSTOM_ERROR_74 HVACHumidityError = 0xCA
+	HVACHumidityError_CUSTOM_ERROR_75 HVACHumidityError = 0xCB
+	HVACHumidityError_CUSTOM_ERROR_76 HVACHumidityError = 0xCC
+	HVACHumidityError_CUSTOM_ERROR_77 HVACHumidityError = 0xCD
+	HVACHumidityError_CUSTOM_ERROR_78 HVACHumidityError = 0xCE
+	HVACHumidityError_CUSTOM_ERROR_79 HVACHumidityError = 0xCF
+	HVACHumidityError_CUSTOM_ERROR_80 HVACHumidityError = 0xD0
+	HVACHumidityError_CUSTOM_ERROR_81 HVACHumidityError = 0xD1
+	HVACHumidityError_CUSTOM_ERROR_82 HVACHumidityError = 0xD2
+	HVACHumidityError_CUSTOM_ERROR_83 HVACHumidityError = 0xD3
+	HVACHumidityError_CUSTOM_ERROR_84 HVACHumidityError = 0xD4
+	HVACHumidityError_CUSTOM_ERROR_85 HVACHumidityError = 0xD5
+	HVACHumidityError_CUSTOM_ERROR_86 HVACHumidityError = 0xD6
+	HVACHumidityError_CUSTOM_ERROR_87 HVACHumidityError = 0xD7
+	HVACHumidityError_CUSTOM_ERROR_88 HVACHumidityError = 0xD8
+	HVACHumidityError_CUSTOM_ERROR_89 HVACHumidityError = 0xD9
+	HVACHumidityError_CUSTOM_ERROR_90 HVACHumidityError = 0xDA
+	HVACHumidityError_CUSTOM_ERROR_91 HVACHumidityError = 0xDB
+	HVACHumidityError_CUSTOM_ERROR_92 HVACHumidityError = 0xDC
+	HVACHumidityError_CUSTOM_ERROR_93 HVACHumidityError = 0xDD
+	HVACHumidityError_CUSTOM_ERROR_94 HVACHumidityError = 0xDE
+	HVACHumidityError_CUSTOM_ERROR_95 HVACHumidityError = 0xDF
+	HVACHumidityError_CUSTOM_ERROR_96 HVACHumidityError = 0xE0
+	HVACHumidityError_CUSTOM_ERROR_97 HVACHumidityError = 0xE1
+	HVACHumidityError_CUSTOM_ERROR_98 HVACHumidityError = 0xE2
+	HVACHumidityError_CUSTOM_ERROR_99 HVACHumidityError = 0xE3
+	HVACHumidityError_CUSTOM_ERROR_100 HVACHumidityError = 0xE4
+	HVACHumidityError_CUSTOM_ERROR_101 HVACHumidityError = 0xE5
+	HVACHumidityError_CUSTOM_ERROR_102 HVACHumidityError = 0xE6
+	HVACHumidityError_CUSTOM_ERROR_103 HVACHumidityError = 0xE7
+	HVACHumidityError_CUSTOM_ERROR_104 HVACHumidityError = 0xE8
+	HVACHumidityError_CUSTOM_ERROR_105 HVACHumidityError = 0xE9
+	HVACHumidityError_CUSTOM_ERROR_106 HVACHumidityError = 0xEA
+	HVACHumidityError_CUSTOM_ERROR_107 HVACHumidityError = 0xEB
+	HVACHumidityError_CUSTOM_ERROR_108 HVACHumidityError = 0xEC
+	HVACHumidityError_CUSTOM_ERROR_109 HVACHumidityError = 0xED
+	HVACHumidityError_CUSTOM_ERROR_110 HVACHumidityError = 0xEE
+	HVACHumidityError_CUSTOM_ERROR_111 HVACHumidityError = 0xEF
+	HVACHumidityError_CUSTOM_ERROR_112 HVACHumidityError = 0xF0
+	HVACHumidityError_CUSTOM_ERROR_113 HVACHumidityError = 0xF1
+	HVACHumidityError_CUSTOM_ERROR_114 HVACHumidityError = 0xF2
+	HVACHumidityError_CUSTOM_ERROR_115 HVACHumidityError = 0xF3
+	HVACHumidityError_CUSTOM_ERROR_116 HVACHumidityError = 0xF4
+	HVACHumidityError_CUSTOM_ERROR_117 HVACHumidityError = 0xF5
+	HVACHumidityError_CUSTOM_ERROR_118 HVACHumidityError = 0xF6
+	HVACHumidityError_CUSTOM_ERROR_119 HVACHumidityError = 0xF7
+	HVACHumidityError_CUSTOM_ERROR_120 HVACHumidityError = 0xF8
+	HVACHumidityError_CUSTOM_ERROR_121 HVACHumidityError = 0xF9
+	HVACHumidityError_CUSTOM_ERROR_122 HVACHumidityError = 0xFA
+	HVACHumidityError_CUSTOM_ERROR_123 HVACHumidityError = 0xFB
+	HVACHumidityError_CUSTOM_ERROR_124 HVACHumidityError = 0xFC
+	HVACHumidityError_CUSTOM_ERROR_125 HVACHumidityError = 0xFD
+	HVACHumidityError_CUSTOM_ERROR_126 HVACHumidityError = 0xFE
+	HVACHumidityError_CUSTOM_ERROR_127 HVACHumidityError = 0xFF
 )
 
 var HVACHumidityErrorValues []HVACHumidityError
 
 func init() {
 	_ = errors.New
-	HVACHumidityErrorValues = []HVACHumidityError{
+	HVACHumidityErrorValues = []HVACHumidityError {
 		HVACHumidityError_NO_ERROR,
 		HVACHumidityError_HUMIDIFIER_TOTAL_FAILURE,
 		HVACHumidityError_DEHUMIDIFIER_TOTAL_FAILURE,
@@ -327,286 +327,286 @@ func init() {
 
 func HVACHumidityErrorByValue(value uint8) (enum HVACHumidityError, ok bool) {
 	switch value {
-	case 0x00:
-		return HVACHumidityError_NO_ERROR, true
-	case 0x01:
-		return HVACHumidityError_HUMIDIFIER_TOTAL_FAILURE, true
-	case 0x02:
-		return HVACHumidityError_DEHUMIDIFIER_TOTAL_FAILURE, true
-	case 0x03:
-		return HVACHumidityError_FAN_TOTAL_FAILURE, true
-	case 0x04:
-		return HVACHumidityError_HUMIDITY_SENSOR_FAILURE, true
-	case 0x05:
-		return HVACHumidityError_HUMIDIFIER_TEMPORARY_PROBLEM, true
-	case 0x06:
-		return HVACHumidityError_DEHUMIDIFIER_TEMPORARY_PROBLEM, true
-	case 0x07:
-		return HVACHumidityError_FAN_TEMPORARY_PROBLEM, true
-	case 0x08:
-		return HVACHumidityError_HUMIDIFIER_SERVICE_REQUIRED, true
-	case 0x09:
-		return HVACHumidityError_DEHUMIDIFIER_SERVICE_REQUIRED, true
-	case 0x0A:
-		return HVACHumidityError_FAN_SERVICE_REQUIRED, true
-	case 0x0B:
-		return HVACHumidityError_FILTER_REPLACEMENT_REQUIRED, true
-	case 0x80:
-		return HVACHumidityError_CUSTOM_ERROR_0, true
-	case 0x81:
-		return HVACHumidityError_CUSTOM_ERROR_1, true
-	case 0x82:
-		return HVACHumidityError_CUSTOM_ERROR_2, true
-	case 0x83:
-		return HVACHumidityError_CUSTOM_ERROR_3, true
-	case 0x84:
-		return HVACHumidityError_CUSTOM_ERROR_4, true
-	case 0x85:
-		return HVACHumidityError_CUSTOM_ERROR_5, true
-	case 0x86:
-		return HVACHumidityError_CUSTOM_ERROR_6, true
-	case 0x87:
-		return HVACHumidityError_CUSTOM_ERROR_7, true
-	case 0x88:
-		return HVACHumidityError_CUSTOM_ERROR_8, true
-	case 0x89:
-		return HVACHumidityError_CUSTOM_ERROR_9, true
-	case 0x8A:
-		return HVACHumidityError_CUSTOM_ERROR_10, true
-	case 0x8B:
-		return HVACHumidityError_CUSTOM_ERROR_11, true
-	case 0x8C:
-		return HVACHumidityError_CUSTOM_ERROR_12, true
-	case 0x8D:
-		return HVACHumidityError_CUSTOM_ERROR_13, true
-	case 0x8E:
-		return HVACHumidityError_CUSTOM_ERROR_14, true
-	case 0x8F:
-		return HVACHumidityError_CUSTOM_ERROR_15, true
-	case 0x90:
-		return HVACHumidityError_CUSTOM_ERROR_16, true
-	case 0x91:
-		return HVACHumidityError_CUSTOM_ERROR_17, true
-	case 0x92:
-		return HVACHumidityError_CUSTOM_ERROR_18, true
-	case 0x93:
-		return HVACHumidityError_CUSTOM_ERROR_19, true
-	case 0x94:
-		return HVACHumidityError_CUSTOM_ERROR_20, true
-	case 0x95:
-		return HVACHumidityError_CUSTOM_ERROR_21, true
-	case 0x96:
-		return HVACHumidityError_CUSTOM_ERROR_22, true
-	case 0x97:
-		return HVACHumidityError_CUSTOM_ERROR_23, true
-	case 0x98:
-		return HVACHumidityError_CUSTOM_ERROR_24, true
-	case 0x99:
-		return HVACHumidityError_CUSTOM_ERROR_25, true
-	case 0x9A:
-		return HVACHumidityError_CUSTOM_ERROR_26, true
-	case 0x9B:
-		return HVACHumidityError_CUSTOM_ERROR_27, true
-	case 0x9C:
-		return HVACHumidityError_CUSTOM_ERROR_28, true
-	case 0x9D:
-		return HVACHumidityError_CUSTOM_ERROR_29, true
-	case 0x9E:
-		return HVACHumidityError_CUSTOM_ERROR_30, true
-	case 0x9F:
-		return HVACHumidityError_CUSTOM_ERROR_31, true
-	case 0xA0:
-		return HVACHumidityError_CUSTOM_ERROR_32, true
-	case 0xA1:
-		return HVACHumidityError_CUSTOM_ERROR_33, true
-	case 0xA2:
-		return HVACHumidityError_CUSTOM_ERROR_34, true
-	case 0xA3:
-		return HVACHumidityError_CUSTOM_ERROR_35, true
-	case 0xA4:
-		return HVACHumidityError_CUSTOM_ERROR_36, true
-	case 0xA5:
-		return HVACHumidityError_CUSTOM_ERROR_37, true
-	case 0xA6:
-		return HVACHumidityError_CUSTOM_ERROR_38, true
-	case 0xA7:
-		return HVACHumidityError_CUSTOM_ERROR_39, true
-	case 0xA8:
-		return HVACHumidityError_CUSTOM_ERROR_40, true
-	case 0xA9:
-		return HVACHumidityError_CUSTOM_ERROR_41, true
-	case 0xAA:
-		return HVACHumidityError_CUSTOM_ERROR_42, true
-	case 0xAB:
-		return HVACHumidityError_CUSTOM_ERROR_43, true
-	case 0xAC:
-		return HVACHumidityError_CUSTOM_ERROR_44, true
-	case 0xAD:
-		return HVACHumidityError_CUSTOM_ERROR_45, true
-	case 0xAE:
-		return HVACHumidityError_CUSTOM_ERROR_46, true
-	case 0xAF:
-		return HVACHumidityError_CUSTOM_ERROR_47, true
-	case 0xB0:
-		return HVACHumidityError_CUSTOM_ERROR_48, true
-	case 0xB1:
-		return HVACHumidityError_CUSTOM_ERROR_49, true
-	case 0xB2:
-		return HVACHumidityError_CUSTOM_ERROR_50, true
-	case 0xB3:
-		return HVACHumidityError_CUSTOM_ERROR_51, true
-	case 0xB4:
-		return HVACHumidityError_CUSTOM_ERROR_52, true
-	case 0xB5:
-		return HVACHumidityError_CUSTOM_ERROR_53, true
-	case 0xB6:
-		return HVACHumidityError_CUSTOM_ERROR_54, true
-	case 0xB7:
-		return HVACHumidityError_CUSTOM_ERROR_55, true
-	case 0xB8:
-		return HVACHumidityError_CUSTOM_ERROR_56, true
-	case 0xB9:
-		return HVACHumidityError_CUSTOM_ERROR_57, true
-	case 0xBA:
-		return HVACHumidityError_CUSTOM_ERROR_58, true
-	case 0xBB:
-		return HVACHumidityError_CUSTOM_ERROR_59, true
-	case 0xBC:
-		return HVACHumidityError_CUSTOM_ERROR_60, true
-	case 0xBD:
-		return HVACHumidityError_CUSTOM_ERROR_61, true
-	case 0xBE:
-		return HVACHumidityError_CUSTOM_ERROR_62, true
-	case 0xBF:
-		return HVACHumidityError_CUSTOM_ERROR_63, true
-	case 0xC0:
-		return HVACHumidityError_CUSTOM_ERROR_64, true
-	case 0xC1:
-		return HVACHumidityError_CUSTOM_ERROR_65, true
-	case 0xC2:
-		return HVACHumidityError_CUSTOM_ERROR_66, true
-	case 0xC3:
-		return HVACHumidityError_CUSTOM_ERROR_67, true
-	case 0xC4:
-		return HVACHumidityError_CUSTOM_ERROR_68, true
-	case 0xC5:
-		return HVACHumidityError_CUSTOM_ERROR_69, true
-	case 0xC6:
-		return HVACHumidityError_CUSTOM_ERROR_70, true
-	case 0xC7:
-		return HVACHumidityError_CUSTOM_ERROR_71, true
-	case 0xC8:
-		return HVACHumidityError_CUSTOM_ERROR_72, true
-	case 0xC9:
-		return HVACHumidityError_CUSTOM_ERROR_73, true
-	case 0xCA:
-		return HVACHumidityError_CUSTOM_ERROR_74, true
-	case 0xCB:
-		return HVACHumidityError_CUSTOM_ERROR_75, true
-	case 0xCC:
-		return HVACHumidityError_CUSTOM_ERROR_76, true
-	case 0xCD:
-		return HVACHumidityError_CUSTOM_ERROR_77, true
-	case 0xCE:
-		return HVACHumidityError_CUSTOM_ERROR_78, true
-	case 0xCF:
-		return HVACHumidityError_CUSTOM_ERROR_79, true
-	case 0xD0:
-		return HVACHumidityError_CUSTOM_ERROR_80, true
-	case 0xD1:
-		return HVACHumidityError_CUSTOM_ERROR_81, true
-	case 0xD2:
-		return HVACHumidityError_CUSTOM_ERROR_82, true
-	case 0xD3:
-		return HVACHumidityError_CUSTOM_ERROR_83, true
-	case 0xD4:
-		return HVACHumidityError_CUSTOM_ERROR_84, true
-	case 0xD5:
-		return HVACHumidityError_CUSTOM_ERROR_85, true
-	case 0xD6:
-		return HVACHumidityError_CUSTOM_ERROR_86, true
-	case 0xD7:
-		return HVACHumidityError_CUSTOM_ERROR_87, true
-	case 0xD8:
-		return HVACHumidityError_CUSTOM_ERROR_88, true
-	case 0xD9:
-		return HVACHumidityError_CUSTOM_ERROR_89, true
-	case 0xDA:
-		return HVACHumidityError_CUSTOM_ERROR_90, true
-	case 0xDB:
-		return HVACHumidityError_CUSTOM_ERROR_91, true
-	case 0xDC:
-		return HVACHumidityError_CUSTOM_ERROR_92, true
-	case 0xDD:
-		return HVACHumidityError_CUSTOM_ERROR_93, true
-	case 0xDE:
-		return HVACHumidityError_CUSTOM_ERROR_94, true
-	case 0xDF:
-		return HVACHumidityError_CUSTOM_ERROR_95, true
-	case 0xE0:
-		return HVACHumidityError_CUSTOM_ERROR_96, true
-	case 0xE1:
-		return HVACHumidityError_CUSTOM_ERROR_97, true
-	case 0xE2:
-		return HVACHumidityError_CUSTOM_ERROR_98, true
-	case 0xE3:
-		return HVACHumidityError_CUSTOM_ERROR_99, true
-	case 0xE4:
-		return HVACHumidityError_CUSTOM_ERROR_100, true
-	case 0xE5:
-		return HVACHumidityError_CUSTOM_ERROR_101, true
-	case 0xE6:
-		return HVACHumidityError_CUSTOM_ERROR_102, true
-	case 0xE7:
-		return HVACHumidityError_CUSTOM_ERROR_103, true
-	case 0xE8:
-		return HVACHumidityError_CUSTOM_ERROR_104, true
-	case 0xE9:
-		return HVACHumidityError_CUSTOM_ERROR_105, true
-	case 0xEA:
-		return HVACHumidityError_CUSTOM_ERROR_106, true
-	case 0xEB:
-		return HVACHumidityError_CUSTOM_ERROR_107, true
-	case 0xEC:
-		return HVACHumidityError_CUSTOM_ERROR_108, true
-	case 0xED:
-		return HVACHumidityError_CUSTOM_ERROR_109, true
-	case 0xEE:
-		return HVACHumidityError_CUSTOM_ERROR_110, true
-	case 0xEF:
-		return HVACHumidityError_CUSTOM_ERROR_111, true
-	case 0xF0:
-		return HVACHumidityError_CUSTOM_ERROR_112, true
-	case 0xF1:
-		return HVACHumidityError_CUSTOM_ERROR_113, true
-	case 0xF2:
-		return HVACHumidityError_CUSTOM_ERROR_114, true
-	case 0xF3:
-		return HVACHumidityError_CUSTOM_ERROR_115, true
-	case 0xF4:
-		return HVACHumidityError_CUSTOM_ERROR_116, true
-	case 0xF5:
-		return HVACHumidityError_CUSTOM_ERROR_117, true
-	case 0xF6:
-		return HVACHumidityError_CUSTOM_ERROR_118, true
-	case 0xF7:
-		return HVACHumidityError_CUSTOM_ERROR_119, true
-	case 0xF8:
-		return HVACHumidityError_CUSTOM_ERROR_120, true
-	case 0xF9:
-		return HVACHumidityError_CUSTOM_ERROR_121, true
-	case 0xFA:
-		return HVACHumidityError_CUSTOM_ERROR_122, true
-	case 0xFB:
-		return HVACHumidityError_CUSTOM_ERROR_123, true
-	case 0xFC:
-		return HVACHumidityError_CUSTOM_ERROR_124, true
-	case 0xFD:
-		return HVACHumidityError_CUSTOM_ERROR_125, true
-	case 0xFE:
-		return HVACHumidityError_CUSTOM_ERROR_126, true
-	case 0xFF:
-		return HVACHumidityError_CUSTOM_ERROR_127, true
+		case 0x00:
+			return HVACHumidityError_NO_ERROR, true
+		case 0x01:
+			return HVACHumidityError_HUMIDIFIER_TOTAL_FAILURE, true
+		case 0x02:
+			return HVACHumidityError_DEHUMIDIFIER_TOTAL_FAILURE, true
+		case 0x03:
+			return HVACHumidityError_FAN_TOTAL_FAILURE, true
+		case 0x04:
+			return HVACHumidityError_HUMIDITY_SENSOR_FAILURE, true
+		case 0x05:
+			return HVACHumidityError_HUMIDIFIER_TEMPORARY_PROBLEM, true
+		case 0x06:
+			return HVACHumidityError_DEHUMIDIFIER_TEMPORARY_PROBLEM, true
+		case 0x07:
+			return HVACHumidityError_FAN_TEMPORARY_PROBLEM, true
+		case 0x08:
+			return HVACHumidityError_HUMIDIFIER_SERVICE_REQUIRED, true
+		case 0x09:
+			return HVACHumidityError_DEHUMIDIFIER_SERVICE_REQUIRED, true
+		case 0x0A:
+			return HVACHumidityError_FAN_SERVICE_REQUIRED, true
+		case 0x0B:
+			return HVACHumidityError_FILTER_REPLACEMENT_REQUIRED, true
+		case 0x80:
+			return HVACHumidityError_CUSTOM_ERROR_0, true
+		case 0x81:
+			return HVACHumidityError_CUSTOM_ERROR_1, true
+		case 0x82:
+			return HVACHumidityError_CUSTOM_ERROR_2, true
+		case 0x83:
+			return HVACHumidityError_CUSTOM_ERROR_3, true
+		case 0x84:
+			return HVACHumidityError_CUSTOM_ERROR_4, true
+		case 0x85:
+			return HVACHumidityError_CUSTOM_ERROR_5, true
+		case 0x86:
+			return HVACHumidityError_CUSTOM_ERROR_6, true
+		case 0x87:
+			return HVACHumidityError_CUSTOM_ERROR_7, true
+		case 0x88:
+			return HVACHumidityError_CUSTOM_ERROR_8, true
+		case 0x89:
+			return HVACHumidityError_CUSTOM_ERROR_9, true
+		case 0x8A:
+			return HVACHumidityError_CUSTOM_ERROR_10, true
+		case 0x8B:
+			return HVACHumidityError_CUSTOM_ERROR_11, true
+		case 0x8C:
+			return HVACHumidityError_CUSTOM_ERROR_12, true
+		case 0x8D:
+			return HVACHumidityError_CUSTOM_ERROR_13, true
+		case 0x8E:
+			return HVACHumidityError_CUSTOM_ERROR_14, true
+		case 0x8F:
+			return HVACHumidityError_CUSTOM_ERROR_15, true
+		case 0x90:
+			return HVACHumidityError_CUSTOM_ERROR_16, true
+		case 0x91:
+			return HVACHumidityError_CUSTOM_ERROR_17, true
+		case 0x92:
+			return HVACHumidityError_CUSTOM_ERROR_18, true
+		case 0x93:
+			return HVACHumidityError_CUSTOM_ERROR_19, true
+		case 0x94:
+			return HVACHumidityError_CUSTOM_ERROR_20, true
+		case 0x95:
+			return HVACHumidityError_CUSTOM_ERROR_21, true
+		case 0x96:
+			return HVACHumidityError_CUSTOM_ERROR_22, true
+		case 0x97:
+			return HVACHumidityError_CUSTOM_ERROR_23, true
+		case 0x98:
+			return HVACHumidityError_CUSTOM_ERROR_24, true
+		case 0x99:
+			return HVACHumidityError_CUSTOM_ERROR_25, true
+		case 0x9A:
+			return HVACHumidityError_CUSTOM_ERROR_26, true
+		case 0x9B:
+			return HVACHumidityError_CUSTOM_ERROR_27, true
+		case 0x9C:
+			return HVACHumidityError_CUSTOM_ERROR_28, true
+		case 0x9D:
+			return HVACHumidityError_CUSTOM_ERROR_29, true
+		case 0x9E:
+			return HVACHumidityError_CUSTOM_ERROR_30, true
+		case 0x9F:
+			return HVACHumidityError_CUSTOM_ERROR_31, true
+		case 0xA0:
+			return HVACHumidityError_CUSTOM_ERROR_32, true
+		case 0xA1:
+			return HVACHumidityError_CUSTOM_ERROR_33, true
+		case 0xA2:
+			return HVACHumidityError_CUSTOM_ERROR_34, true
+		case 0xA3:
+			return HVACHumidityError_CUSTOM_ERROR_35, true
+		case 0xA4:
+			return HVACHumidityError_CUSTOM_ERROR_36, true
+		case 0xA5:
+			return HVACHumidityError_CUSTOM_ERROR_37, true
+		case 0xA6:
+			return HVACHumidityError_CUSTOM_ERROR_38, true
+		case 0xA7:
+			return HVACHumidityError_CUSTOM_ERROR_39, true
+		case 0xA8:
+			return HVACHumidityError_CUSTOM_ERROR_40, true
+		case 0xA9:
+			return HVACHumidityError_CUSTOM_ERROR_41, true
+		case 0xAA:
+			return HVACHumidityError_CUSTOM_ERROR_42, true
+		case 0xAB:
+			return HVACHumidityError_CUSTOM_ERROR_43, true
+		case 0xAC:
+			return HVACHumidityError_CUSTOM_ERROR_44, true
+		case 0xAD:
+			return HVACHumidityError_CUSTOM_ERROR_45, true
+		case 0xAE:
+			return HVACHumidityError_CUSTOM_ERROR_46, true
+		case 0xAF:
+			return HVACHumidityError_CUSTOM_ERROR_47, true
+		case 0xB0:
+			return HVACHumidityError_CUSTOM_ERROR_48, true
+		case 0xB1:
+			return HVACHumidityError_CUSTOM_ERROR_49, true
+		case 0xB2:
+			return HVACHumidityError_CUSTOM_ERROR_50, true
+		case 0xB3:
+			return HVACHumidityError_CUSTOM_ERROR_51, true
+		case 0xB4:
+			return HVACHumidityError_CUSTOM_ERROR_52, true
+		case 0xB5:
+			return HVACHumidityError_CUSTOM_ERROR_53, true
+		case 0xB6:
+			return HVACHumidityError_CUSTOM_ERROR_54, true
+		case 0xB7:
+			return HVACHumidityError_CUSTOM_ERROR_55, true
+		case 0xB8:
+			return HVACHumidityError_CUSTOM_ERROR_56, true
+		case 0xB9:
+			return HVACHumidityError_CUSTOM_ERROR_57, true
+		case 0xBA:
+			return HVACHumidityError_CUSTOM_ERROR_58, true
+		case 0xBB:
+			return HVACHumidityError_CUSTOM_ERROR_59, true
+		case 0xBC:
+			return HVACHumidityError_CUSTOM_ERROR_60, true
+		case 0xBD:
+			return HVACHumidityError_CUSTOM_ERROR_61, true
+		case 0xBE:
+			return HVACHumidityError_CUSTOM_ERROR_62, true
+		case 0xBF:
+			return HVACHumidityError_CUSTOM_ERROR_63, true
+		case 0xC0:
+			return HVACHumidityError_CUSTOM_ERROR_64, true
+		case 0xC1:
+			return HVACHumidityError_CUSTOM_ERROR_65, true
+		case 0xC2:
+			return HVACHumidityError_CUSTOM_ERROR_66, true
+		case 0xC3:
+			return HVACHumidityError_CUSTOM_ERROR_67, true
+		case 0xC4:
+			return HVACHumidityError_CUSTOM_ERROR_68, true
+		case 0xC5:
+			return HVACHumidityError_CUSTOM_ERROR_69, true
+		case 0xC6:
+			return HVACHumidityError_CUSTOM_ERROR_70, true
+		case 0xC7:
+			return HVACHumidityError_CUSTOM_ERROR_71, true
+		case 0xC8:
+			return HVACHumidityError_CUSTOM_ERROR_72, true
+		case 0xC9:
+			return HVACHumidityError_CUSTOM_ERROR_73, true
+		case 0xCA:
+			return HVACHumidityError_CUSTOM_ERROR_74, true
+		case 0xCB:
+			return HVACHumidityError_CUSTOM_ERROR_75, true
+		case 0xCC:
+			return HVACHumidityError_CUSTOM_ERROR_76, true
+		case 0xCD:
+			return HVACHumidityError_CUSTOM_ERROR_77, true
+		case 0xCE:
+			return HVACHumidityError_CUSTOM_ERROR_78, true
+		case 0xCF:
+			return HVACHumidityError_CUSTOM_ERROR_79, true
+		case 0xD0:
+			return HVACHumidityError_CUSTOM_ERROR_80, true
+		case 0xD1:
+			return HVACHumidityError_CUSTOM_ERROR_81, true
+		case 0xD2:
+			return HVACHumidityError_CUSTOM_ERROR_82, true
+		case 0xD3:
+			return HVACHumidityError_CUSTOM_ERROR_83, true
+		case 0xD4:
+			return HVACHumidityError_CUSTOM_ERROR_84, true
+		case 0xD5:
+			return HVACHumidityError_CUSTOM_ERROR_85, true
+		case 0xD6:
+			return HVACHumidityError_CUSTOM_ERROR_86, true
+		case 0xD7:
+			return HVACHumidityError_CUSTOM_ERROR_87, true
+		case 0xD8:
+			return HVACHumidityError_CUSTOM_ERROR_88, true
+		case 0xD9:
+			return HVACHumidityError_CUSTOM_ERROR_89, true
+		case 0xDA:
+			return HVACHumidityError_CUSTOM_ERROR_90, true
+		case 0xDB:
+			return HVACHumidityError_CUSTOM_ERROR_91, true
+		case 0xDC:
+			return HVACHumidityError_CUSTOM_ERROR_92, true
+		case 0xDD:
+			return HVACHumidityError_CUSTOM_ERROR_93, true
+		case 0xDE:
+			return HVACHumidityError_CUSTOM_ERROR_94, true
+		case 0xDF:
+			return HVACHumidityError_CUSTOM_ERROR_95, true
+		case 0xE0:
+			return HVACHumidityError_CUSTOM_ERROR_96, true
+		case 0xE1:
+			return HVACHumidityError_CUSTOM_ERROR_97, true
+		case 0xE2:
+			return HVACHumidityError_CUSTOM_ERROR_98, true
+		case 0xE3:
+			return HVACHumidityError_CUSTOM_ERROR_99, true
+		case 0xE4:
+			return HVACHumidityError_CUSTOM_ERROR_100, true
+		case 0xE5:
+			return HVACHumidityError_CUSTOM_ERROR_101, true
+		case 0xE6:
+			return HVACHumidityError_CUSTOM_ERROR_102, true
+		case 0xE7:
+			return HVACHumidityError_CUSTOM_ERROR_103, true
+		case 0xE8:
+			return HVACHumidityError_CUSTOM_ERROR_104, true
+		case 0xE9:
+			return HVACHumidityError_CUSTOM_ERROR_105, true
+		case 0xEA:
+			return HVACHumidityError_CUSTOM_ERROR_106, true
+		case 0xEB:
+			return HVACHumidityError_CUSTOM_ERROR_107, true
+		case 0xEC:
+			return HVACHumidityError_CUSTOM_ERROR_108, true
+		case 0xED:
+			return HVACHumidityError_CUSTOM_ERROR_109, true
+		case 0xEE:
+			return HVACHumidityError_CUSTOM_ERROR_110, true
+		case 0xEF:
+			return HVACHumidityError_CUSTOM_ERROR_111, true
+		case 0xF0:
+			return HVACHumidityError_CUSTOM_ERROR_112, true
+		case 0xF1:
+			return HVACHumidityError_CUSTOM_ERROR_113, true
+		case 0xF2:
+			return HVACHumidityError_CUSTOM_ERROR_114, true
+		case 0xF3:
+			return HVACHumidityError_CUSTOM_ERROR_115, true
+		case 0xF4:
+			return HVACHumidityError_CUSTOM_ERROR_116, true
+		case 0xF5:
+			return HVACHumidityError_CUSTOM_ERROR_117, true
+		case 0xF6:
+			return HVACHumidityError_CUSTOM_ERROR_118, true
+		case 0xF7:
+			return HVACHumidityError_CUSTOM_ERROR_119, true
+		case 0xF8:
+			return HVACHumidityError_CUSTOM_ERROR_120, true
+		case 0xF9:
+			return HVACHumidityError_CUSTOM_ERROR_121, true
+		case 0xFA:
+			return HVACHumidityError_CUSTOM_ERROR_122, true
+		case 0xFB:
+			return HVACHumidityError_CUSTOM_ERROR_123, true
+		case 0xFC:
+			return HVACHumidityError_CUSTOM_ERROR_124, true
+		case 0xFD:
+			return HVACHumidityError_CUSTOM_ERROR_125, true
+		case 0xFE:
+			return HVACHumidityError_CUSTOM_ERROR_126, true
+		case 0xFF:
+			return HVACHumidityError_CUSTOM_ERROR_127, true
 	}
 	return 0, false
 }
@@ -897,13 +897,13 @@ func HVACHumidityErrorByName(value string) (enum HVACHumidityError, ok bool) {
 	return 0, false
 }
 
-func HVACHumidityErrorKnows(value uint8) bool {
+func HVACHumidityErrorKnows(value uint8)  bool {
 	for _, typeValue := range HVACHumidityErrorValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastHVACHumidityError(structType interface{}) HVACHumidityError {
@@ -1243,3 +1243,4 @@ func (e HVACHumidityError) PLC4XEnumName() string {
 func (e HVACHumidityError) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,21 +34,21 @@ type INLMRejectRouterToNetworkRejectReason interface {
 	utils.Serializable
 }
 
-const (
-	NLMRejectRouterToNetworkRejectReason_OTHER                  NLMRejectRouterToNetworkRejectReason = 0
+const(
+	NLMRejectRouterToNetworkRejectReason_OTHER NLMRejectRouterToNetworkRejectReason = 0
 	NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED NLMRejectRouterToNetworkRejectReason = 1
-	NLMRejectRouterToNetworkRejectReason_BUSY                   NLMRejectRouterToNetworkRejectReason = 2
-	NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT           NLMRejectRouterToNetworkRejectReason = 3
-	NLMRejectRouterToNetworkRejectReason_TOO_LONG               NLMRejectRouterToNetworkRejectReason = 4
-	NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR         NLMRejectRouterToNetworkRejectReason = 5
-	NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR       NLMRejectRouterToNetworkRejectReason = 6
+	NLMRejectRouterToNetworkRejectReason_BUSY NLMRejectRouterToNetworkRejectReason = 2
+	NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT NLMRejectRouterToNetworkRejectReason = 3
+	NLMRejectRouterToNetworkRejectReason_TOO_LONG NLMRejectRouterToNetworkRejectReason = 4
+	NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR NLMRejectRouterToNetworkRejectReason = 5
+	NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR NLMRejectRouterToNetworkRejectReason = 6
 )
 
 var NLMRejectRouterToNetworkRejectReasonValues []NLMRejectRouterToNetworkRejectReason
 
 func init() {
 	_ = errors.New
-	NLMRejectRouterToNetworkRejectReasonValues = []NLMRejectRouterToNetworkRejectReason{
+	NLMRejectRouterToNetworkRejectReasonValues = []NLMRejectRouterToNetworkRejectReason {
 		NLMRejectRouterToNetworkRejectReason_OTHER,
 		NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED,
 		NLMRejectRouterToNetworkRejectReason_BUSY,
@@ -61,20 +61,20 @@ func init() {
 
 func NLMRejectRouterToNetworkRejectReasonByValue(value uint8) (enum NLMRejectRouterToNetworkRejectReason, ok bool) {
 	switch value {
-	case 0:
-		return NLMRejectRouterToNetworkRejectReason_OTHER, true
-	case 1:
-		return NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED, true
-	case 2:
-		return NLMRejectRouterToNetworkRejectReason_BUSY, true
-	case 3:
-		return NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT, true
-	case 4:
-		return NLMRejectRouterToNetworkRejectReason_TOO_LONG, true
-	case 5:
-		return NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR, true
-	case 6:
-		return NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR, true
+		case 0:
+			return NLMRejectRouterToNetworkRejectReason_OTHER, true
+		case 1:
+			return NLMRejectRouterToNetworkRejectReason_NOT_DIRECTLY_CONNECTED, true
+		case 2:
+			return NLMRejectRouterToNetworkRejectReason_BUSY, true
+		case 3:
+			return NLMRejectRouterToNetworkRejectReason_UNKNOWN_NLMT, true
+		case 4:
+			return NLMRejectRouterToNetworkRejectReason_TOO_LONG, true
+		case 5:
+			return NLMRejectRouterToNetworkRejectReason_SECURITY_ERROR, true
+		case 6:
+			return NLMRejectRouterToNetworkRejectReason_ADDRESSING_ERROR, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func NLMRejectRouterToNetworkRejectReasonByName(value string) (enum NLMRejectRou
 	return 0, false
 }
 
-func NLMRejectRouterToNetworkRejectReasonKnows(value uint8) bool {
+func NLMRejectRouterToNetworkRejectReasonKnows(value uint8)  bool {
 	for _, typeValue := range NLMRejectRouterToNetworkRejectReasonValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastNLMRejectRouterToNetworkRejectReason(structType interface{}) NLMRejectRouterToNetworkRejectReason {
@@ -179,3 +179,4 @@ func (e NLMRejectRouterToNetworkRejectReason) PLC4XEnumName() string {
 func (e NLMRejectRouterToNetworkRejectReason) String() string {
 	return e.PLC4XEnumName()
 }
+

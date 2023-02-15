@@ -21,8 +21,8 @@ package readwrite
 
 import (
 	"context"
-	"strconv"
 	"strings"
+	"strconv"
 
 	"github.com/apache/plc4x/plc4go/protocols/df1/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -43,11 +43,11 @@ func init() {
 }
 
 func (m Df1XmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
-	switch typeName {
-	case "DF1Symbol":
-		return model.DF1SymbolParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "DF1Command":
-		return model.DF1CommandParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
+    switch typeName {
+        case "DF1Symbol":
+			return model.DF1SymbolParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "DF1Command":
+			return model.DF1CommandParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+    }
+    return nil, errors.Errorf("Unsupported type %s", typeName)
 }

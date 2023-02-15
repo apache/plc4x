@@ -42,20 +42,28 @@ public class CipReadRequest extends CipService implements Message {
     return (short) 0x4C;
   }
 
+  public Boolean getResponse() {
+    return (boolean) false;
+  }
+
+  public Boolean getConnected() {
+    return false;
+  }
+
   // Properties.
-  protected final byte requestPathSize;
   protected final byte[] tag;
   protected final int elementNb;
 
-  public CipReadRequest(byte requestPathSize, byte[] tag, int elementNb) {
-    super();
-    this.requestPathSize = requestPathSize;
+  // Arguments.
+  protected final Integer serviceLen;
+  protected final IntegerEncoding order;
+
+  public CipReadRequest(byte[] tag, int elementNb, Integer serviceLen, IntegerEncoding order) {
+    super(serviceLen, order);
     this.tag = tag;
     this.elementNb = elementNb;
-  }
-
-  public byte getRequestPathSize() {
-    return requestPathSize;
+    this.serviceLen = serviceLen;
+    this.order = order;
   }
 
   public byte[] getTag() {
@@ -73,14 +81,37 @@ public class CipReadRequest extends CipService implements Message {
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("CipReadRequest");
 
-    // Simple Field (requestPathSize)
-    writeSimpleField("requestPathSize", requestPathSize, writeSignedByte(writeBuffer, 8));
+    // Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    byte requestPathSize = (byte) ((COUNT(getTag())) / (2));
+    writeImplicitField(
+        "requestPathSize",
+        requestPathSize,
+        writeSignedByte(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Array Field (tag)
-    writeByteArrayField("tag", tag, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "tag",
+        tag,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     // Simple Field (elementNb)
-    writeSimpleField("elementNb", elementNb, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "elementNb",
+        elementNb,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(
+            (((order) == (IntegerEncoding.BIG_ENDIAN))
+                ? ByteOrder.BIG_ENDIAN
+                : ByteOrder.LITTLE_ENDIAN)));
 
     writeBuffer.popContext("CipReadRequest");
   }
@@ -96,7 +127,7 @@ public class CipReadRequest extends CipService implements Message {
     CipReadRequest _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (requestPathSize)
+    // Implicit Field (requestPathSize)
     lengthInBits += 8;
 
     // Array field
@@ -111,37 +142,63 @@ public class CipReadRequest extends CipService implements Message {
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Integer serviceLen) throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
+      throws ParseException {
     readBuffer.pullContext("CipReadRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte requestPathSize = readSimpleField("requestPathSize", readSignedByte(readBuffer, 8));
+    byte requestPathSize =
+        readImplicitField(
+            "requestPathSize",
+            readSignedByte(readBuffer, 8),
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
-    byte[] tag = readBuffer.readByteArray("tag", Math.toIntExact(((requestPathSize) * (2))));
+    byte[] tag =
+        readBuffer.readByteArray(
+            "tag",
+            Math.toIntExact(((requestPathSize) * (2))),
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
-    int elementNb = readSimpleField("elementNb", readUnsignedInt(readBuffer, 16));
+    int elementNb =
+        readSimpleField(
+            "elementNb",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(
+                (((order) == (IntegerEncoding.BIG_ENDIAN))
+                    ? ByteOrder.BIG_ENDIAN
+                    : ByteOrder.LITTLE_ENDIAN)));
 
     readBuffer.closeContext("CipReadRequest");
     // Create the instance
-    return new CipReadRequestBuilderImpl(requestPathSize, tag, elementNb);
+    return new CipReadRequestBuilderImpl(tag, elementNb, serviceLen, order);
   }
 
   public static class CipReadRequestBuilderImpl implements CipService.CipServiceBuilder {
-    private final byte requestPathSize;
     private final byte[] tag;
     private final int elementNb;
+    private final Integer serviceLen;
+    private final IntegerEncoding order;
 
-    public CipReadRequestBuilderImpl(byte requestPathSize, byte[] tag, int elementNb) {
-      this.requestPathSize = requestPathSize;
+    public CipReadRequestBuilderImpl(
+        byte[] tag, int elementNb, Integer serviceLen, IntegerEncoding order) {
       this.tag = tag;
       this.elementNb = elementNb;
+      this.serviceLen = serviceLen;
+      this.order = order;
     }
 
-    public CipReadRequest build() {
-      CipReadRequest cipReadRequest = new CipReadRequest(requestPathSize, tag, elementNb);
+    public CipReadRequest build(Integer serviceLen, IntegerEncoding order) {
+
+      CipReadRequest cipReadRequest = new CipReadRequest(tag, elementNb, serviceLen, order);
       return cipReadRequest;
     }
   }
@@ -155,8 +212,7 @@ public class CipReadRequest extends CipService implements Message {
       return false;
     }
     CipReadRequest that = (CipReadRequest) o;
-    return (getRequestPathSize() == that.getRequestPathSize())
-        && (getTag() == that.getTag())
+    return (getTag() == that.getTag())
         && (getElementNb() == that.getElementNb())
         && super.equals(that)
         && true;
@@ -164,7 +220,7 @@ public class CipReadRequest extends CipService implements Message {
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getRequestPathSize(), getTag(), getElementNb());
+    return Objects.hash(super.hashCode(), getTag(), getElementNb());
   }
 
   @Override

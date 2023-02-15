@@ -35,7 +35,7 @@ type IEnableControlCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const (
+const(
 	EnableControlCommandType_SET_NETWORK_VARIABLE EnableControlCommandType = 0x00
 )
 
@@ -43,19 +43,18 @@ var EnableControlCommandTypeValues []EnableControlCommandType
 
 func init() {
 	_ = errors.New
-	EnableControlCommandTypeValues = []EnableControlCommandType{
+	EnableControlCommandTypeValues = []EnableControlCommandType {
 		EnableControlCommandType_SET_NETWORK_VARIABLE,
 	}
 }
 
+
 func (e EnableControlCommandType) NumberOfArguments() uint8 {
-	switch e {
-	case 0x00:
-		{ /* '0x00' */
-			return 1
+	switch e  {
+		case 0x00: { /* '0x00' */
+            return 1
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -71,8 +70,8 @@ func EnableControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (En
 }
 func EnableControlCommandTypeByValue(value uint8) (enum EnableControlCommandType, ok bool) {
 	switch value {
-	case 0x00:
-		return EnableControlCommandType_SET_NETWORK_VARIABLE, true
+		case 0x00:
+			return EnableControlCommandType_SET_NETWORK_VARIABLE, true
 	}
 	return 0, false
 }
@@ -85,13 +84,13 @@ func EnableControlCommandTypeByName(value string) (enum EnableControlCommandType
 	return 0, false
 }
 
-func EnableControlCommandTypeKnows(value uint8) bool {
+func EnableControlCommandTypeKnows(value uint8)  bool {
 	for _, typeValue := range EnableControlCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastEnableControlCommandType(structType interface{}) EnableControlCommandType {
@@ -153,3 +152,4 @@ func (e EnableControlCommandType) PLC4XEnumName() string {
 func (e EnableControlCommandType) String() string {
 	return e.PLC4XEnumName()
 }
+

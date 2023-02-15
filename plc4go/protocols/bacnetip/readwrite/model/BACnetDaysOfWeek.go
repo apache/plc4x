@@ -34,21 +34,21 @@ type IBACnetDaysOfWeek interface {
 	utils.Serializable
 }
 
-const (
-	BACnetDaysOfWeek_MONDAY    BACnetDaysOfWeek = 0
-	BACnetDaysOfWeek_TUESDAY   BACnetDaysOfWeek = 1
+const(
+	BACnetDaysOfWeek_MONDAY BACnetDaysOfWeek = 0
+	BACnetDaysOfWeek_TUESDAY BACnetDaysOfWeek = 1
 	BACnetDaysOfWeek_WEDNESDAY BACnetDaysOfWeek = 2
-	BACnetDaysOfWeek_THURSDAY  BACnetDaysOfWeek = 3
-	BACnetDaysOfWeek_FRIDAY    BACnetDaysOfWeek = 4
-	BACnetDaysOfWeek_SATURDAY  BACnetDaysOfWeek = 5
-	BACnetDaysOfWeek_SUNDAY    BACnetDaysOfWeek = 6
+	BACnetDaysOfWeek_THURSDAY BACnetDaysOfWeek = 3
+	BACnetDaysOfWeek_FRIDAY BACnetDaysOfWeek = 4
+	BACnetDaysOfWeek_SATURDAY BACnetDaysOfWeek = 5
+	BACnetDaysOfWeek_SUNDAY BACnetDaysOfWeek = 6
 )
 
 var BACnetDaysOfWeekValues []BACnetDaysOfWeek
 
 func init() {
 	_ = errors.New
-	BACnetDaysOfWeekValues = []BACnetDaysOfWeek{
+	BACnetDaysOfWeekValues = []BACnetDaysOfWeek {
 		BACnetDaysOfWeek_MONDAY,
 		BACnetDaysOfWeek_TUESDAY,
 		BACnetDaysOfWeek_WEDNESDAY,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetDaysOfWeekByValue(value uint8) (enum BACnetDaysOfWeek, ok bool) {
 	switch value {
-	case 0:
-		return BACnetDaysOfWeek_MONDAY, true
-	case 1:
-		return BACnetDaysOfWeek_TUESDAY, true
-	case 2:
-		return BACnetDaysOfWeek_WEDNESDAY, true
-	case 3:
-		return BACnetDaysOfWeek_THURSDAY, true
-	case 4:
-		return BACnetDaysOfWeek_FRIDAY, true
-	case 5:
-		return BACnetDaysOfWeek_SATURDAY, true
-	case 6:
-		return BACnetDaysOfWeek_SUNDAY, true
+		case 0:
+			return BACnetDaysOfWeek_MONDAY, true
+		case 1:
+			return BACnetDaysOfWeek_TUESDAY, true
+		case 2:
+			return BACnetDaysOfWeek_WEDNESDAY, true
+		case 3:
+			return BACnetDaysOfWeek_THURSDAY, true
+		case 4:
+			return BACnetDaysOfWeek_FRIDAY, true
+		case 5:
+			return BACnetDaysOfWeek_SATURDAY, true
+		case 6:
+			return BACnetDaysOfWeek_SUNDAY, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetDaysOfWeekByName(value string) (enum BACnetDaysOfWeek, ok bool) {
 	return 0, false
 }
 
-func BACnetDaysOfWeekKnows(value uint8) bool {
+func BACnetDaysOfWeekKnows(value uint8)  bool {
 	for _, typeValue := range BACnetDaysOfWeekValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetDaysOfWeek(structType interface{}) BACnetDaysOfWeek {
@@ -179,3 +179,4 @@ func (e BACnetDaysOfWeek) PLC4XEnumName() string {
 func (e BACnetDaysOfWeek) String() string {
 	return e.PLC4XEnumName()
 }
+

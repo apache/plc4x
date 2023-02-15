@@ -34,8 +34,8 @@ type IStatus interface {
 	utils.Serializable
 }
 
-const (
-	Status_SUCCESS              Status = 0x00000000
+const(
+	Status_SUCCESS Status = 0x00000000
 	Status_FAILURE_INVALID_DATA Status = 0x00000704
 	Status_FAILURE_MISSING_DATA Status = 0x00000706
 )
@@ -44,7 +44,7 @@ var StatusValues []Status
 
 func init() {
 	_ = errors.New
-	StatusValues = []Status{
+	StatusValues = []Status {
 		Status_SUCCESS,
 		Status_FAILURE_INVALID_DATA,
 		Status_FAILURE_MISSING_DATA,
@@ -53,12 +53,12 @@ func init() {
 
 func StatusByValue(value uint32) (enum Status, ok bool) {
 	switch value {
-	case 0x00000000:
-		return Status_SUCCESS, true
-	case 0x00000704:
-		return Status_FAILURE_INVALID_DATA, true
-	case 0x00000706:
-		return Status_FAILURE_MISSING_DATA, true
+		case 0x00000000:
+			return Status_SUCCESS, true
+		case 0x00000704:
+			return Status_FAILURE_INVALID_DATA, true
+		case 0x00000706:
+			return Status_FAILURE_MISSING_DATA, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func StatusByName(value string) (enum Status, ok bool) {
 	return 0, false
 }
 
-func StatusKnows(value uint32) bool {
+func StatusKnows(value uint32)  bool {
 	for _, typeValue := range StatusValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastStatus(structType interface{}) Status {
@@ -147,3 +147,4 @@ func (e Status) PLC4XEnumName() string {
 func (e Status) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,36 +34,36 @@ type IBACnetNodeType interface {
 	utils.Serializable
 }
 
-const (
-	BACnetNodeType_UNKNOWN        BACnetNodeType = 0x00
-	BACnetNodeType_SYSTEM         BACnetNodeType = 0x01
-	BACnetNodeType_NETWORK        BACnetNodeType = 0x02
-	BACnetNodeType_DEVICE         BACnetNodeType = 0x03
+const(
+	BACnetNodeType_UNKNOWN BACnetNodeType = 0x00
+	BACnetNodeType_SYSTEM BACnetNodeType = 0x01
+	BACnetNodeType_NETWORK BACnetNodeType = 0x02
+	BACnetNodeType_DEVICE BACnetNodeType = 0x03
 	BACnetNodeType_ORGANIZATIONAL BACnetNodeType = 0x04
-	BACnetNodeType_AREA           BACnetNodeType = 0x05
-	BACnetNodeType_EQUIPMENT      BACnetNodeType = 0x06
-	BACnetNodeType_POINT          BACnetNodeType = 0x07
-	BACnetNodeType_COLLECTION     BACnetNodeType = 0x08
-	BACnetNodeType_PROPERTY       BACnetNodeType = 0x09
-	BACnetNodeType_FUNCTIONAL     BACnetNodeType = 0x0A
-	BACnetNodeType_OTHER          BACnetNodeType = 0x0B
-	BACnetNodeType_SUBSYSTEM      BACnetNodeType = 0x0C
-	BACnetNodeType_BUILDING       BACnetNodeType = 0x0D
-	BACnetNodeType_FLOOR          BACnetNodeType = 0x0E
-	BACnetNodeType_SECTION        BACnetNodeType = 0x0F
-	BACnetNodeType_MODULE         BACnetNodeType = 0x10
-	BACnetNodeType_TREE           BACnetNodeType = 0x11
-	BACnetNodeType_MEMBER         BACnetNodeType = 0x12
-	BACnetNodeType_PROTOCOL       BACnetNodeType = 0x13
-	BACnetNodeType_ROOM           BACnetNodeType = 0x14
-	BACnetNodeType_ZONE           BACnetNodeType = 0x15
+	BACnetNodeType_AREA BACnetNodeType = 0x05
+	BACnetNodeType_EQUIPMENT BACnetNodeType = 0x06
+	BACnetNodeType_POINT BACnetNodeType = 0x07
+	BACnetNodeType_COLLECTION BACnetNodeType = 0x08
+	BACnetNodeType_PROPERTY BACnetNodeType = 0x09
+	BACnetNodeType_FUNCTIONAL BACnetNodeType = 0x0A
+	BACnetNodeType_OTHER BACnetNodeType = 0x0B
+	BACnetNodeType_SUBSYSTEM BACnetNodeType = 0x0C
+	BACnetNodeType_BUILDING BACnetNodeType = 0x0D
+	BACnetNodeType_FLOOR BACnetNodeType = 0x0E
+	BACnetNodeType_SECTION BACnetNodeType = 0x0F
+	BACnetNodeType_MODULE BACnetNodeType = 0x10
+	BACnetNodeType_TREE BACnetNodeType = 0x11
+	BACnetNodeType_MEMBER BACnetNodeType = 0x12
+	BACnetNodeType_PROTOCOL BACnetNodeType = 0x13
+	BACnetNodeType_ROOM BACnetNodeType = 0x14
+	BACnetNodeType_ZONE BACnetNodeType = 0x15
 )
 
 var BACnetNodeTypeValues []BACnetNodeType
 
 func init() {
 	_ = errors.New
-	BACnetNodeTypeValues = []BACnetNodeType{
+	BACnetNodeTypeValues = []BACnetNodeType {
 		BACnetNodeType_UNKNOWN,
 		BACnetNodeType_SYSTEM,
 		BACnetNodeType_NETWORK,
@@ -91,50 +91,50 @@ func init() {
 
 func BACnetNodeTypeByValue(value uint8) (enum BACnetNodeType, ok bool) {
 	switch value {
-	case 0x00:
-		return BACnetNodeType_UNKNOWN, true
-	case 0x01:
-		return BACnetNodeType_SYSTEM, true
-	case 0x02:
-		return BACnetNodeType_NETWORK, true
-	case 0x03:
-		return BACnetNodeType_DEVICE, true
-	case 0x04:
-		return BACnetNodeType_ORGANIZATIONAL, true
-	case 0x05:
-		return BACnetNodeType_AREA, true
-	case 0x06:
-		return BACnetNodeType_EQUIPMENT, true
-	case 0x07:
-		return BACnetNodeType_POINT, true
-	case 0x08:
-		return BACnetNodeType_COLLECTION, true
-	case 0x09:
-		return BACnetNodeType_PROPERTY, true
-	case 0x0A:
-		return BACnetNodeType_FUNCTIONAL, true
-	case 0x0B:
-		return BACnetNodeType_OTHER, true
-	case 0x0C:
-		return BACnetNodeType_SUBSYSTEM, true
-	case 0x0D:
-		return BACnetNodeType_BUILDING, true
-	case 0x0E:
-		return BACnetNodeType_FLOOR, true
-	case 0x0F:
-		return BACnetNodeType_SECTION, true
-	case 0x10:
-		return BACnetNodeType_MODULE, true
-	case 0x11:
-		return BACnetNodeType_TREE, true
-	case 0x12:
-		return BACnetNodeType_MEMBER, true
-	case 0x13:
-		return BACnetNodeType_PROTOCOL, true
-	case 0x14:
-		return BACnetNodeType_ROOM, true
-	case 0x15:
-		return BACnetNodeType_ZONE, true
+		case 0x00:
+			return BACnetNodeType_UNKNOWN, true
+		case 0x01:
+			return BACnetNodeType_SYSTEM, true
+		case 0x02:
+			return BACnetNodeType_NETWORK, true
+		case 0x03:
+			return BACnetNodeType_DEVICE, true
+		case 0x04:
+			return BACnetNodeType_ORGANIZATIONAL, true
+		case 0x05:
+			return BACnetNodeType_AREA, true
+		case 0x06:
+			return BACnetNodeType_EQUIPMENT, true
+		case 0x07:
+			return BACnetNodeType_POINT, true
+		case 0x08:
+			return BACnetNodeType_COLLECTION, true
+		case 0x09:
+			return BACnetNodeType_PROPERTY, true
+		case 0x0A:
+			return BACnetNodeType_FUNCTIONAL, true
+		case 0x0B:
+			return BACnetNodeType_OTHER, true
+		case 0x0C:
+			return BACnetNodeType_SUBSYSTEM, true
+		case 0x0D:
+			return BACnetNodeType_BUILDING, true
+		case 0x0E:
+			return BACnetNodeType_FLOOR, true
+		case 0x0F:
+			return BACnetNodeType_SECTION, true
+		case 0x10:
+			return BACnetNodeType_MODULE, true
+		case 0x11:
+			return BACnetNodeType_TREE, true
+		case 0x12:
+			return BACnetNodeType_MEMBER, true
+		case 0x13:
+			return BACnetNodeType_PROTOCOL, true
+		case 0x14:
+			return BACnetNodeType_ROOM, true
+		case 0x15:
+			return BACnetNodeType_ZONE, true
 	}
 	return 0, false
 }
@@ -189,13 +189,13 @@ func BACnetNodeTypeByName(value string) (enum BACnetNodeType, ok bool) {
 	return 0, false
 }
 
-func BACnetNodeTypeKnows(value uint8) bool {
+func BACnetNodeTypeKnows(value uint8)  bool {
 	for _, typeValue := range BACnetNodeTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetNodeType(structType interface{}) BACnetNodeType {
@@ -299,3 +299,4 @@ func (e BACnetNodeType) PLC4XEnumName() string {
 func (e BACnetNodeType) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,8 +34,8 @@ type IBACnetTimerState interface {
 	utils.Serializable
 }
 
-const (
-	BACnetTimerState_IDLE    BACnetTimerState = 0
+const(
+	BACnetTimerState_IDLE BACnetTimerState = 0
 	BACnetTimerState_RUNNING BACnetTimerState = 1
 	BACnetTimerState_EXPIRED BACnetTimerState = 2
 )
@@ -44,7 +44,7 @@ var BACnetTimerStateValues []BACnetTimerState
 
 func init() {
 	_ = errors.New
-	BACnetTimerStateValues = []BACnetTimerState{
+	BACnetTimerStateValues = []BACnetTimerState {
 		BACnetTimerState_IDLE,
 		BACnetTimerState_RUNNING,
 		BACnetTimerState_EXPIRED,
@@ -53,12 +53,12 @@ func init() {
 
 func BACnetTimerStateByValue(value uint8) (enum BACnetTimerState, ok bool) {
 	switch value {
-	case 0:
-		return BACnetTimerState_IDLE, true
-	case 1:
-		return BACnetTimerState_RUNNING, true
-	case 2:
-		return BACnetTimerState_EXPIRED, true
+		case 0:
+			return BACnetTimerState_IDLE, true
+		case 1:
+			return BACnetTimerState_RUNNING, true
+		case 2:
+			return BACnetTimerState_EXPIRED, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func BACnetTimerStateByName(value string) (enum BACnetTimerState, ok bool) {
 	return 0, false
 }
 
-func BACnetTimerStateKnows(value uint8) bool {
+func BACnetTimerStateKnows(value uint8)  bool {
 	for _, typeValue := range BACnetTimerStateValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetTimerState(structType interface{}) BACnetTimerState {
@@ -147,3 +147,4 @@ func (e BACnetTimerState) PLC4XEnumName() string {
 func (e BACnetTimerState) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,20 +34,20 @@ type IConfirmationType interface {
 	utils.Serializable
 }
 
-const (
-	ConfirmationType_CONFIRMATION_SUCCESSFUL                  ConfirmationType = 0x2E
+const(
+	ConfirmationType_CONFIRMATION_SUCCESSFUL ConfirmationType = 0x2E
 	ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS ConfirmationType = 0x23
-	ConfirmationType_NOT_TRANSMITTED_CORRUPTION               ConfirmationType = 0x24
-	ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS                ConfirmationType = 0x25
-	ConfirmationType_NOT_TRANSMITTED_TOO_LONG                 ConfirmationType = 0x27
-	ConfirmationType_CHECKSUM_FAILURE                         ConfirmationType = 0x21
+	ConfirmationType_NOT_TRANSMITTED_CORRUPTION ConfirmationType = 0x24
+	ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS ConfirmationType = 0x25
+	ConfirmationType_NOT_TRANSMITTED_TOO_LONG ConfirmationType = 0x27
+	ConfirmationType_CHECKSUM_FAILURE ConfirmationType = 0x21
 )
 
 var ConfirmationTypeValues []ConfirmationType
 
 func init() {
 	_ = errors.New
-	ConfirmationTypeValues = []ConfirmationType{
+	ConfirmationTypeValues = []ConfirmationType {
 		ConfirmationType_CONFIRMATION_SUCCESSFUL,
 		ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS,
 		ConfirmationType_NOT_TRANSMITTED_CORRUPTION,
@@ -59,18 +59,18 @@ func init() {
 
 func ConfirmationTypeByValue(value byte) (enum ConfirmationType, ok bool) {
 	switch value {
-	case 0x21:
-		return ConfirmationType_CHECKSUM_FAILURE, true
-	case 0x23:
-		return ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS, true
-	case 0x24:
-		return ConfirmationType_NOT_TRANSMITTED_CORRUPTION, true
-	case 0x25:
-		return ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS, true
-	case 0x27:
-		return ConfirmationType_NOT_TRANSMITTED_TOO_LONG, true
-	case 0x2E:
-		return ConfirmationType_CONFIRMATION_SUCCESSFUL, true
+		case 0x21:
+			return ConfirmationType_CHECKSUM_FAILURE, true
+		case 0x23:
+			return ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS, true
+		case 0x24:
+			return ConfirmationType_NOT_TRANSMITTED_CORRUPTION, true
+		case 0x25:
+			return ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS, true
+		case 0x27:
+			return ConfirmationType_NOT_TRANSMITTED_TOO_LONG, true
+		case 0x2E:
+			return ConfirmationType_CONFIRMATION_SUCCESSFUL, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func ConfirmationTypeByName(value string) (enum ConfirmationType, ok bool) {
 	return 0, false
 }
 
-func ConfirmationTypeKnows(value byte) bool {
+func ConfirmationTypeKnows(value byte)  bool {
 	for _, typeValue := range ConfirmationTypeValues {
 		if byte(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastConfirmationType(structType interface{}) ConfirmationType {
@@ -171,3 +171,4 @@ func (e ConfirmationType) PLC4XEnumName() string {
 func (e ConfirmationType) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,18 +34,18 @@ type IBACnetNetworkNumberQuality interface {
 	utils.Serializable
 }
 
-const (
-	BACnetNetworkNumberQuality_UNKNOWN            BACnetNetworkNumberQuality = 0
-	BACnetNetworkNumberQuality_LEARNED            BACnetNetworkNumberQuality = 1
+const(
+	BACnetNetworkNumberQuality_UNKNOWN BACnetNetworkNumberQuality = 0
+	BACnetNetworkNumberQuality_LEARNED BACnetNetworkNumberQuality = 1
 	BACnetNetworkNumberQuality_LEARNED_CONFIGURED BACnetNetworkNumberQuality = 2
-	BACnetNetworkNumberQuality_CONFIGURED         BACnetNetworkNumberQuality = 3
+	BACnetNetworkNumberQuality_CONFIGURED BACnetNetworkNumberQuality = 3
 )
 
 var BACnetNetworkNumberQualityValues []BACnetNetworkNumberQuality
 
 func init() {
 	_ = errors.New
-	BACnetNetworkNumberQualityValues = []BACnetNetworkNumberQuality{
+	BACnetNetworkNumberQualityValues = []BACnetNetworkNumberQuality {
 		BACnetNetworkNumberQuality_UNKNOWN,
 		BACnetNetworkNumberQuality_LEARNED,
 		BACnetNetworkNumberQuality_LEARNED_CONFIGURED,
@@ -55,14 +55,14 @@ func init() {
 
 func BACnetNetworkNumberQualityByValue(value uint8) (enum BACnetNetworkNumberQuality, ok bool) {
 	switch value {
-	case 0:
-		return BACnetNetworkNumberQuality_UNKNOWN, true
-	case 1:
-		return BACnetNetworkNumberQuality_LEARNED, true
-	case 2:
-		return BACnetNetworkNumberQuality_LEARNED_CONFIGURED, true
-	case 3:
-		return BACnetNetworkNumberQuality_CONFIGURED, true
+		case 0:
+			return BACnetNetworkNumberQuality_UNKNOWN, true
+		case 1:
+			return BACnetNetworkNumberQuality_LEARNED, true
+		case 2:
+			return BACnetNetworkNumberQuality_LEARNED_CONFIGURED, true
+		case 3:
+			return BACnetNetworkNumberQuality_CONFIGURED, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func BACnetNetworkNumberQualityByName(value string) (enum BACnetNetworkNumberQua
 	return 0, false
 }
 
-func BACnetNetworkNumberQualityKnows(value uint8) bool {
+func BACnetNetworkNumberQualityKnows(value uint8)  bool {
 	for _, typeValue := range BACnetNetworkNumberQualityValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetNetworkNumberQuality(structType interface{}) BACnetNetworkNumberQuality {
@@ -155,3 +155,4 @@ func (e BACnetNetworkNumberQuality) PLC4XEnumName() string {
 func (e BACnetNetworkNumberQuality) String() string {
 	return e.PLC4XEnumName()
 }
+

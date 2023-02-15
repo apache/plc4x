@@ -34,13 +34,13 @@ type IBACnetEventState interface {
 	utils.Serializable
 }
 
-const (
-	BACnetEventState_NORMAL                   BACnetEventState = 0
-	BACnetEventState_FAULT                    BACnetEventState = 1
-	BACnetEventState_OFFNORMAL                BACnetEventState = 2
-	BACnetEventState_HIGH_LIMIT               BACnetEventState = 3
-	BACnetEventState_LOW_LIMIT                BACnetEventState = 4
-	BACnetEventState_LIFE_SAVETY_ALARM        BACnetEventState = 5
+const(
+	BACnetEventState_NORMAL BACnetEventState = 0
+	BACnetEventState_FAULT BACnetEventState = 1
+	BACnetEventState_OFFNORMAL BACnetEventState = 2
+	BACnetEventState_HIGH_LIMIT BACnetEventState = 3
+	BACnetEventState_LOW_LIMIT BACnetEventState = 4
+	BACnetEventState_LIFE_SAVETY_ALARM BACnetEventState = 5
 	BACnetEventState_VENDOR_PROPRIETARY_VALUE BACnetEventState = 0xFFFF
 )
 
@@ -48,7 +48,7 @@ var BACnetEventStateValues []BACnetEventState
 
 func init() {
 	_ = errors.New
-	BACnetEventStateValues = []BACnetEventState{
+	BACnetEventStateValues = []BACnetEventState {
 		BACnetEventState_NORMAL,
 		BACnetEventState_FAULT,
 		BACnetEventState_OFFNORMAL,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetEventStateByValue(value uint16) (enum BACnetEventState, ok bool) {
 	switch value {
-	case 0:
-		return BACnetEventState_NORMAL, true
-	case 0xFFFF:
-		return BACnetEventState_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetEventState_FAULT, true
-	case 2:
-		return BACnetEventState_OFFNORMAL, true
-	case 3:
-		return BACnetEventState_HIGH_LIMIT, true
-	case 4:
-		return BACnetEventState_LOW_LIMIT, true
-	case 5:
-		return BACnetEventState_LIFE_SAVETY_ALARM, true
+		case 0:
+			return BACnetEventState_NORMAL, true
+		case 0xFFFF:
+			return BACnetEventState_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetEventState_FAULT, true
+		case 2:
+			return BACnetEventState_OFFNORMAL, true
+		case 3:
+			return BACnetEventState_HIGH_LIMIT, true
+		case 4:
+			return BACnetEventState_LOW_LIMIT, true
+		case 5:
+			return BACnetEventState_LIFE_SAVETY_ALARM, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetEventStateByName(value string) (enum BACnetEventState, ok bool) {
 	return 0, false
 }
 
-func BACnetEventStateKnows(value uint16) bool {
+func BACnetEventStateKnows(value uint16)  bool {
 	for _, typeValue := range BACnetEventStateValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetEventState(structType interface{}) BACnetEventState {
@@ -179,3 +179,4 @@ func (e BACnetEventState) PLC4XEnumName() string {
 func (e BACnetEventState) String() string {
 	return e.PLC4XEnumName()
 }
+

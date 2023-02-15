@@ -34,23 +34,23 @@ type IBACnetNetworkPortCommand interface {
 	utils.Serializable
 }
 
-const (
-	BACnetNetworkPortCommand_IDLE                     BACnetNetworkPortCommand = 0
-	BACnetNetworkPortCommand_DISCARD_CHANGES          BACnetNetworkPortCommand = 1
-	BACnetNetworkPortCommand_RENEW_FD_REGISTRATION    BACnetNetworkPortCommand = 2
-	BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY  BACnetNetworkPortCommand = 3
-	BACnetNetworkPortCommand_RENEW_DHCP               BACnetNetworkPortCommand = 4
-	BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION  BACnetNetworkPortCommand = 5
-	BACnetNetworkPortCommand_DISCONNECT               BACnetNetworkPortCommand = 6
-	BACnetNetworkPortCommand_RESTART_PORT             BACnetNetworkPortCommand = 7
-	BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE BACnetNetworkPortCommand = 0xFF
+const(
+	BACnetNetworkPortCommand_IDLE BACnetNetworkPortCommand = 0
+	BACnetNetworkPortCommand_DISCARD_CHANGES BACnetNetworkPortCommand = 1
+	BACnetNetworkPortCommand_RENEW_FD_REGISTRATION BACnetNetworkPortCommand = 2
+	BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY BACnetNetworkPortCommand = 3
+	BACnetNetworkPortCommand_RENEW_DHCP BACnetNetworkPortCommand = 4
+	BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION BACnetNetworkPortCommand = 5
+	BACnetNetworkPortCommand_DISCONNECT BACnetNetworkPortCommand = 6
+	BACnetNetworkPortCommand_RESTART_PORT BACnetNetworkPortCommand = 7
+	BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE BACnetNetworkPortCommand = 0XFF
 )
 
 var BACnetNetworkPortCommandValues []BACnetNetworkPortCommand
 
 func init() {
 	_ = errors.New
-	BACnetNetworkPortCommandValues = []BACnetNetworkPortCommand{
+	BACnetNetworkPortCommandValues = []BACnetNetworkPortCommand {
 		BACnetNetworkPortCommand_IDLE,
 		BACnetNetworkPortCommand_DISCARD_CHANGES,
 		BACnetNetworkPortCommand_RENEW_FD_REGISTRATION,
@@ -65,24 +65,24 @@ func init() {
 
 func BACnetNetworkPortCommandByValue(value uint8) (enum BACnetNetworkPortCommand, ok bool) {
 	switch value {
-	case 0:
-		return BACnetNetworkPortCommand_IDLE, true
-	case 0xFF:
-		return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetNetworkPortCommand_DISCARD_CHANGES, true
-	case 2:
-		return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION, true
-	case 3:
-		return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY, true
-	case 4:
-		return BACnetNetworkPortCommand_RENEW_DHCP, true
-	case 5:
-		return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION, true
-	case 6:
-		return BACnetNetworkPortCommand_DISCONNECT, true
-	case 7:
-		return BACnetNetworkPortCommand_RESTART_PORT, true
+		case 0:
+			return BACnetNetworkPortCommand_IDLE, true
+		case 0XFF:
+			return BACnetNetworkPortCommand_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetNetworkPortCommand_DISCARD_CHANGES, true
+		case 2:
+			return BACnetNetworkPortCommand_RENEW_FD_REGISTRATION, true
+		case 3:
+			return BACnetNetworkPortCommand_RESTART_SLAVE_DISCOVERY, true
+		case 4:
+			return BACnetNetworkPortCommand_RENEW_DHCP, true
+		case 5:
+			return BACnetNetworkPortCommand_RESTART_AUTONEGOTIATION, true
+		case 6:
+			return BACnetNetworkPortCommand_DISCONNECT, true
+		case 7:
+			return BACnetNetworkPortCommand_RESTART_PORT, true
 	}
 	return 0, false
 }
@@ -111,13 +111,13 @@ func BACnetNetworkPortCommandByName(value string) (enum BACnetNetworkPortCommand
 	return 0, false
 }
 
-func BACnetNetworkPortCommandKnows(value uint8) bool {
+func BACnetNetworkPortCommandKnows(value uint8)  bool {
 	for _, typeValue := range BACnetNetworkPortCommandValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetNetworkPortCommand(structType interface{}) BACnetNetworkPortCommand {
@@ -195,3 +195,4 @@ func (e BACnetNetworkPortCommand) PLC4XEnumName() string {
 func (e BACnetNetworkPortCommand) String() string {
 	return e.PLC4XEnumName()
 }
+

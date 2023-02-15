@@ -34,7 +34,7 @@ type IErrorReportingSystemCategoryVariant interface {
 	utils.Serializable
 }
 
-const (
+const(
 	ErrorReportingSystemCategoryVariant_RESERVED_0 ErrorReportingSystemCategoryVariant = 0x0
 	ErrorReportingSystemCategoryVariant_RESERVED_1 ErrorReportingSystemCategoryVariant = 0x1
 	ErrorReportingSystemCategoryVariant_RESERVED_2 ErrorReportingSystemCategoryVariant = 0x2
@@ -45,7 +45,7 @@ var ErrorReportingSystemCategoryVariantValues []ErrorReportingSystemCategoryVari
 
 func init() {
 	_ = errors.New
-	ErrorReportingSystemCategoryVariantValues = []ErrorReportingSystemCategoryVariant{
+	ErrorReportingSystemCategoryVariantValues = []ErrorReportingSystemCategoryVariant {
 		ErrorReportingSystemCategoryVariant_RESERVED_0,
 		ErrorReportingSystemCategoryVariant_RESERVED_1,
 		ErrorReportingSystemCategoryVariant_RESERVED_2,
@@ -55,14 +55,14 @@ func init() {
 
 func ErrorReportingSystemCategoryVariantByValue(value uint8) (enum ErrorReportingSystemCategoryVariant, ok bool) {
 	switch value {
-	case 0x0:
-		return ErrorReportingSystemCategoryVariant_RESERVED_0, true
-	case 0x1:
-		return ErrorReportingSystemCategoryVariant_RESERVED_1, true
-	case 0x2:
-		return ErrorReportingSystemCategoryVariant_RESERVED_2, true
-	case 0x3:
-		return ErrorReportingSystemCategoryVariant_RESERVED_3, true
+		case 0x0:
+			return ErrorReportingSystemCategoryVariant_RESERVED_0, true
+		case 0x1:
+			return ErrorReportingSystemCategoryVariant_RESERVED_1, true
+		case 0x2:
+			return ErrorReportingSystemCategoryVariant_RESERVED_2, true
+		case 0x3:
+			return ErrorReportingSystemCategoryVariant_RESERVED_3, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func ErrorReportingSystemCategoryVariantByName(value string) (enum ErrorReportin
 	return 0, false
 }
 
-func ErrorReportingSystemCategoryVariantKnows(value uint8) bool {
+func ErrorReportingSystemCategoryVariantKnows(value uint8)  bool {
 	for _, typeValue := range ErrorReportingSystemCategoryVariantValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastErrorReportingSystemCategoryVariant(structType interface{}) ErrorReportingSystemCategoryVariant {
@@ -155,3 +155,4 @@ func (e ErrorReportingSystemCategoryVariant) PLC4XEnumName() string {
 func (e ErrorReportingSystemCategoryVariant) String() string {
 	return e.PLC4XEnumName()
 }
+

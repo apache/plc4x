@@ -34,24 +34,24 @@ type IBACnetRestartReason interface {
 	utils.Serializable
 }
 
-const (
-	BACnetRestartReason_UNKNOWN                  BACnetRestartReason = 0
-	BACnetRestartReason_COLDSTART                BACnetRestartReason = 1
-	BACnetRestartReason_WARMSTART                BACnetRestartReason = 2
-	BACnetRestartReason_DETECTED_POWER_LOST      BACnetRestartReason = 3
-	BACnetRestartReason_DETECTED_POWERED_OFF     BACnetRestartReason = 4
-	BACnetRestartReason_HARDWARE_WATCHDOG        BACnetRestartReason = 5
-	BACnetRestartReason_SOFTWARE_WATCHDOG        BACnetRestartReason = 6
-	BACnetRestartReason_SUSPENDED                BACnetRestartReason = 7
-	BACnetRestartReason_ACTIVATE_CHANGES         BACnetRestartReason = 8
-	BACnetRestartReason_VENDOR_PROPRIETARY_VALUE BACnetRestartReason = 0xFF
+const(
+	BACnetRestartReason_UNKNOWN BACnetRestartReason = 0
+	BACnetRestartReason_COLDSTART BACnetRestartReason = 1
+	BACnetRestartReason_WARMSTART BACnetRestartReason = 2
+	BACnetRestartReason_DETECTED_POWER_LOST BACnetRestartReason = 3
+	BACnetRestartReason_DETECTED_POWERED_OFF BACnetRestartReason = 4
+	BACnetRestartReason_HARDWARE_WATCHDOG BACnetRestartReason = 5
+	BACnetRestartReason_SOFTWARE_WATCHDOG BACnetRestartReason = 6
+	BACnetRestartReason_SUSPENDED BACnetRestartReason = 7
+	BACnetRestartReason_ACTIVATE_CHANGES BACnetRestartReason = 8
+	BACnetRestartReason_VENDOR_PROPRIETARY_VALUE BACnetRestartReason = 0XFF
 )
 
 var BACnetRestartReasonValues []BACnetRestartReason
 
 func init() {
 	_ = errors.New
-	BACnetRestartReasonValues = []BACnetRestartReason{
+	BACnetRestartReasonValues = []BACnetRestartReason {
 		BACnetRestartReason_UNKNOWN,
 		BACnetRestartReason_COLDSTART,
 		BACnetRestartReason_WARMSTART,
@@ -67,26 +67,26 @@ func init() {
 
 func BACnetRestartReasonByValue(value uint8) (enum BACnetRestartReason, ok bool) {
 	switch value {
-	case 0:
-		return BACnetRestartReason_UNKNOWN, true
-	case 0xFF:
-		return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetRestartReason_COLDSTART, true
-	case 2:
-		return BACnetRestartReason_WARMSTART, true
-	case 3:
-		return BACnetRestartReason_DETECTED_POWER_LOST, true
-	case 4:
-		return BACnetRestartReason_DETECTED_POWERED_OFF, true
-	case 5:
-		return BACnetRestartReason_HARDWARE_WATCHDOG, true
-	case 6:
-		return BACnetRestartReason_SOFTWARE_WATCHDOG, true
-	case 7:
-		return BACnetRestartReason_SUSPENDED, true
-	case 8:
-		return BACnetRestartReason_ACTIVATE_CHANGES, true
+		case 0:
+			return BACnetRestartReason_UNKNOWN, true
+		case 0XFF:
+			return BACnetRestartReason_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetRestartReason_COLDSTART, true
+		case 2:
+			return BACnetRestartReason_WARMSTART, true
+		case 3:
+			return BACnetRestartReason_DETECTED_POWER_LOST, true
+		case 4:
+			return BACnetRestartReason_DETECTED_POWERED_OFF, true
+		case 5:
+			return BACnetRestartReason_HARDWARE_WATCHDOG, true
+		case 6:
+			return BACnetRestartReason_SOFTWARE_WATCHDOG, true
+		case 7:
+			return BACnetRestartReason_SUSPENDED, true
+		case 8:
+			return BACnetRestartReason_ACTIVATE_CHANGES, true
 	}
 	return 0, false
 }
@@ -117,13 +117,13 @@ func BACnetRestartReasonByName(value string) (enum BACnetRestartReason, ok bool)
 	return 0, false
 }
 
-func BACnetRestartReasonKnows(value uint8) bool {
+func BACnetRestartReasonKnows(value uint8)  bool {
 	for _, typeValue := range BACnetRestartReasonValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetRestartReason(structType interface{}) BACnetRestartReason {
@@ -203,3 +203,4 @@ func (e BACnetRestartReason) PLC4XEnumName() string {
 func (e BACnetRestartReason) String() string {
 	return e.PLC4XEnumName()
 }
+
