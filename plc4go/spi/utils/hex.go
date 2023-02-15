@@ -48,12 +48,12 @@ const pipeWidth = 1
 var DebugHex bool
 
 // Dump dumps a 56 char wide hex string
-func Dump(data []byte) string {
-	return DumpFixedWidth(data, DefaultWidth)
+func Dump(data []byte, highlights ...int) string {
+	return DumpFixedWidth(data, DefaultWidth, highlights...)
 }
 
 // DumpFixedWidth dumps hex as hex string. Min width of string returned is 18 up to supplied charWidth
-func DumpFixedWidth(data []byte, desiredCharWidth int) string {
+func DumpFixedWidth(data []byte, desiredCharWidth int, highlights ...int) string {
 	if data == nil || len(data) < 1 {
 		return ""
 	}
@@ -61,14 +61,23 @@ func DumpFixedWidth(data []byte, desiredCharWidth int) string {
 	data = append(data[:0:0], data...)
 	hexString := ""
 	maxBytesPerRow, indexWidth := calculateBytesPerRowAndIndexWidth(len(data), desiredCharWidth)
-
+	highlightsSet := map[int]struct{}{}
+	for _, highlight := range highlights {
+		highlightsSet[highlight] = struct{}{}
+	}
 	for byteIndex, rowIndex := 0, 0; byteIndex < len(data); byteIndex, rowIndex = byteIndex+maxBytesPerRow, rowIndex+1 {
 		indexString := fmt.Sprintf("%0*d|", indexWidth, byteIndex)
 		hexString += indexString
 		for columnIndex := 0; columnIndex < maxBytesPerRow; columnIndex++ {
 			absoluteIndex := byteIndex + columnIndex
 			if absoluteIndex < len(data) {
+				if _, ok := highlightsSet[absoluteIndex]; ok {
+					hexString += "\033[0;31m"
+				}
 				hexString += fmt.Sprintf("%02x ", data[absoluteIndex])
+				if _, ok := highlightsSet[absoluteIndex]; ok {
+					hexString += "\033[0m"
+				}
 			} else {
 				// align with empty byte representation
 				hexString += strings.Repeat(" ", byteWidth)
@@ -86,6 +95,25 @@ func DumpFixedWidth(data []byte, desiredCharWidth int) string {
 	}
 	// remove last newline
 	return hexString[:len(hexString)-1]
+}
+
+// DiffHex produces a hex diff AsciiBox of two byte arrays
+func DiffHex(expectedBytes, actualBytes []byte) AsciiBox {
+	numBytes := int(math.Min(float64(len(expectedBytes)), float64(len(actualBytes))))
+	brokenAt := -1
+	var diffIndexes []int
+	for i := 0; i < numBytes; i++ {
+		if expectedBytes[i] != actualBytes[i] {
+			if brokenAt < 0 {
+				brokenAt = i
+			}
+			diffIndexes = append(diffIndexes, i)
+		}
+	}
+	expectedHex := DumpFixedWidth(expectedBytes, 46, diffIndexes...)
+	actialHex := DumpFixedWidth(actualBytes, 46, diffIndexes...)
+	return AsciiBoxWriterDefault.BoxSideBySide(AsciiBoxWriterDefault.BoxString("expected", expectedHex, 0), AsciiBoxWriterDefault.BoxString("actual", actialHex, 0))
+
 }
 
 func calculateBytesPerRowAndIndexWidth(numberOfBytes, desiredStringWidth int) (int, int) {
