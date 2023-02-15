@@ -28,6 +28,7 @@ import org.apache.nifi.annotation.behavior.WritesAttributes;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.flowfile.FlowFile;
+import org.apache.nifi.logging.ComponentLog;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
@@ -36,7 +37,7 @@ import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 
-@Tags({"plc4x-source"})
+@Tags({"plc4x", "get", "input", "source", "attributes"})
 @InputRequirement(InputRequirement.Requirement.INPUT_FORBIDDEN)
 @CapabilityDescription("Processor able to read data from industrial PLCs using Apache PLC4X")
 @WritesAttributes({@WritesAttribute(attribute="value", description="some value")})
@@ -44,6 +45,8 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
 
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
+
+        final ComponentLog logger = getLogger();
         // Get an instance of a component able to read from a PLC.
         try(PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
 
@@ -63,7 +66,8 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
                         builder.addTag(tag.getKey(), tag.getValue());
                     }
                 } else {
-                    getLogger().debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+                    if (debugEnabled)
+                        logger.debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
                     for (Map.Entry<String,String> entry: addressMap.entrySet()){
                         builder.addTagAddress(entry.getKey(), entry.getValue());
                     }
@@ -81,7 +85,8 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
                 flowFile = session.putAllAttributes(flowFile, attributes); 
                 
                 if (tags == null){
-                    getLogger().debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+                    if (debugEnabled)
+                        logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
                     getSchemaCache().addSchema(
                         addressMap, 
                         readRequest.getTagNames(),

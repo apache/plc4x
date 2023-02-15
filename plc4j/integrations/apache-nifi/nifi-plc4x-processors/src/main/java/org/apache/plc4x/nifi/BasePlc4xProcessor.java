@@ -54,6 +54,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 
     protected List<PropertyDescriptor> properties;
     protected Set<Relationship> relationships;
+    protected volatile boolean debugEnabled;
   
     protected String connectionString;
     protected Map<String, String> addressMap;
@@ -155,6 +156,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
     public void onScheduled(final ProcessContext context) {
 		connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         schemaCache.restartCache(context.getProperty(PLC_SCHEMA_CACHE_SIZE).asInteger());
+        debugEnabled = getLogger().isDebugEnabled();
     }
 
     @Override

@@ -55,7 +55,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 
 @TriggerSerially
-@Tags({ "plc4x-sink" })
+@Tags({"plc4x", "put", "sink", "record"})
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 @CapabilityDescription("Processor able to write data to industrial PLCs using Apache PLC4X")
 @WritesAttributes({ @WritesAttribute(attribute = "value", description = "some value") })
@@ -120,22 +120,16 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 
 		InputStream in = session.read(originalFlowFile);
 
-		RecordReader recordReader;
-		try {
-			recordReader = context.getProperty(PLC_RECORD_READER_FACTORY)
-					.asControllerService(RecordReaderFactory.class)
-					.createRecordReader(originalFlowFile, in, logger);
-		} catch (Exception e) {
-			throw new ProcessException(e);
-		} 
 		Record record = null;
 		
-		
-		try {
+		try (RecordReader recordReader = context.getProperty(PLC_RECORD_READER_FACTORY)
+			.asControllerService(RecordReaderFactory.class)
+			.createRecordReader(originalFlowFile, in, logger)){
+
 			while ((record = recordReader.nextRecord()) != null) {
 				long nrOfRowsHere = 0L;
-				PlcWriteResponse plcWriteResponse = null;
-				PlcWriteRequest writeRequest = null;
+				PlcWriteResponse plcWriteResponse;
+				PlcWriteRequest writeRequest;
 
 				Map<String,String> addressMap = getPlcAddressMap(context, fileToProcess);
 				final Map<String, PlcTag> tags = getSchemaCache().retrieveTags(addressMap);
@@ -150,17 +144,20 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 								builder.addTag(tag.getKey(), tag.getValue(), record.getValue(tag.getKey()));
 								nrOfRowsHere++;
 							} else {
-								logger.debug("PlcTag " + tag + " is declared as address but was not found on input record.");
+								if (debugEnabled)
+                    				logger.debug("PlcTag " + tag + " is declared as address but was not found on input record.");
 							}
 						}
 					} else {
-						logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+						if (debugEnabled)
+                   			logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
 						for (Map.Entry<String,String> entry: addressMap.entrySet()){
 							if (record.toMap().containsKey(entry.getKey())) {
 								builder.addTagAddress(entry.getKey(), entry.getValue(), record.getValue(entry.getKey()));
 								nrOfRowsHere++;
 							} else {
-								logger.debug("PlcTag " + entry.getKey() + " with address " + entry.getValue() + " was not found on input record.");
+								if (debugEnabled)
+                    				logger.debug("PlcTag " + entry.getKey() + " with address " + entry.getValue() + " was not found on input record.");
 							}
 						}
 					}
@@ -178,8 +175,9 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 					throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 				}
 
-				if (tags == null){
-					getLogger().debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+				if (tags == null && writeRequest != null){
+					if (debugEnabled)
+                    	logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
 					getSchemaCache().addSchema(
 						addressMap, 
 						writeRequest.getTagNames(),
@@ -189,19 +187,20 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 				}
 
 				// Response check if values were written
-				PlcResponseCode code = null;
+				if (plcWriteResponse != null){
+					PlcResponseCode code = null;
 
-				for (String tag : plcWriteResponse.getTagNames()) {
-					code = plcWriteResponse.getResponseCode(tag);
-					if (!code.equals(PlcResponseCode.OK)) {
-						logger.error("Not OK code when writing the data to PLC for tag " + tag 
-							+ " with value  " + record.getValue(tag).toString() 
-							+ " in addresss " + plcWriteResponse.getTag(tag).getAddressString());
-						throw new ProcessException("Writing response code for " + plcWriteResponse.getTag(tag).getAddressString() + "was " + code.name() + ", expected OK");
+					for (String tag : plcWriteResponse.getTagNames()) {
+						code = plcWriteResponse.getResponseCode(tag);
+						if (!code.equals(PlcResponseCode.OK)) {
+							logger.error("Not OK code when writing the data to PLC for tag " + tag 
+								+ " with value  " + record.getValue(tag).toString() 
+								+ " in addresss " + plcWriteResponse.getTag(tag).getAddressString());
+							throw new ProcessException("Writing response code for " + plcWriteResponse.getTag(tag).getAddressString() + "was " + code.name() + ", expected OK");
+						}
 					}
+					nrOfRows.getAndAdd(nrOfRowsHere);
 				}
-				
-				nrOfRows.getAndAdd(nrOfRowsHere);
 			}
 			in.close();
 		} catch (Exception e) {

@@ -27,6 +27,7 @@ import org.apache.nifi.annotation.behavior.TriggerSerially;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.flowfile.FlowFile;
+import org.apache.nifi.logging.ComponentLog;
 import org.apache.nifi.processor.ProcessContext;
 import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.exception.ProcessException;
@@ -37,7 +38,7 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.model.PlcTag;
 
 @TriggerSerially
-@Tags({"plc4x-sink"})
+@Tags({"plc4x", "put", "sink"})
 @InputRequirement(InputRequirement.Requirement.INPUT_REQUIRED)
 @CapabilityDescription("Processor able to write data to industrial PLCs using Apache PLC4X")
 @ReadsAttributes({@ReadsAttribute(attribute="value", description="some value")})
@@ -46,6 +47,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
     @Override
     public void onTrigger(final ProcessContext context, final ProcessSession session) throws ProcessException {
         FlowFile flowFile = session.get();
+        final ComponentLog logger = getLogger();
 
         // Abort if there's nothing to do.
         if (flowFile == null) {
@@ -68,7 +70,8 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
                     builder.addTag(tag.getKey(), tag.getValue(), flowFile.getAttribute(tag.getKey()));
                 }
             } else {
-                getLogger().debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+                if (debugEnabled)
+                    logger.debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
                 for (Map.Entry<String,String> entry: addressMap.entrySet()){
                     builder.addTagAddress(entry.getKey(), entry.getValue(), flowFile.getAttribute(entry.getKey()));
                 }
@@ -94,7 +97,8 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
             }
 
             if (tags == null){
-                getLogger().debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+                if (debugEnabled)
+                    logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
                 getSchemaCache().addSchema(
                     addressMap, 
                     writeRequest.getTagNames(),
