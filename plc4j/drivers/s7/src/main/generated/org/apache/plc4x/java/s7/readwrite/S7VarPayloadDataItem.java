@@ -116,7 +116,7 @@ public class S7VarPayloadDataItem implements Message {
     // Padding Field (padding)
     writePaddingField(
         "padding",
-	(int) ((((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0)),
+        (int) ((((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0)),
         (short) 0x00,
         writeUnsignedShort(writeBuffer, 8));
 
