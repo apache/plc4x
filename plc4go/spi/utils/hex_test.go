@@ -256,6 +256,49 @@ func TestDumpFixedWidth(t *testing.T) {
 	}
 }
 
+func TestDiffHex(t *testing.T) {
+	type args struct {
+		expectedBytes, actualBytes []byte
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "two identical",
+			args: args{
+				expectedBytes: []byte{1, 2, 3, 4},
+				actualBytes:   []byte{1, 2, 3, 4},
+			},
+			want: `
+╔═expected═══════════════════════════════════╗╔═actual═════════════════════════════════════╗
+║0|01 02 03 04                   '....      '║║0|01 02 03 04                   '....      '║
+╚════════════════════════════════════════════╝╚════════════════════════════════════════════╝
+`,
+		},
+		{
+			name: "two different",
+			args: args{
+				expectedBytes: []byte{1, 2, 3, 4},
+				actualBytes:   []byte{1, 2, 6, 4},
+			},
+			want: `
+╔═expected═══════════════════════════════════╗╔═actual═════════════════════════════════════╗
+║0|01 02 [0;31m03 [0m04                   '....      '║║0|01 02 [0;31m06 [0m04                   '....      '║
+╚════════════════════════════════════════════╝╚════════════════════════════════════════════╝
+`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DiffHex(tt.args.expectedBytes, tt.args.actualBytes); got.String() != strings.Trim(tt.want, "\n") {
+				t.Errorf("Dump() = \n%v\n, want \n%v\n", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_maskString(t *testing.T) {
 	type args struct {
 		data []byte

@@ -151,7 +151,7 @@
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
     <milo.version>0.6.8</milo.version>
     <mockito.version>5.1.1</mockito.version>
-    <netty.version>4.1.88.Final</netty.version>
+    <netty.version>4.1.89.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.6</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
@@ -1148,7 +1148,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.0.0-M8</version>
+          <version>3.0.0-M9</version>
           <dependencies>
             <dependency>
               <groupId>org.junit.jupiter</groupId>
@@ -1164,7 +1164,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.0.0-M8</version>
+          <version>3.0.0-M9</version>
           <!--version>2.22.2</version-->
           <dependencies>
             <dependency>
@@ -1286,7 +1286,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.4.1</version>
+          <version>3.5.0</version>
           <configuration>
             <!--
               This will suppress the generation of a hidden timestamp at the top of each generated html page
@@ -1893,7 +1893,7 @@
           <plugin>
             <groupId>org.cyclonedx</groupId>
             <artifactId>cyclonedx-maven-plugin</artifactId>
-            <version>2.7.4</version>
+            <version>2.7.5</version>
             <!-- Only run this in the root module of the project -->
             <inherited>false</inherited>
             <configuration>

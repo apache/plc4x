@@ -66,7 +66,11 @@ public abstract class PnDcp_Pdu implements Message {
     writeBuffer.pushContext("PnDcp_Pdu");
 
     // Simple Field (frameIdValue)
-    writeSimpleField("frameIdValue", frameIdValue, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "frameIdValue",
+        frameIdValue,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     PnDcp_FrameId frameId = getFrameId();
@@ -111,12 +115,17 @@ public abstract class PnDcp_Pdu implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int frameIdValue = readSimpleField("frameIdValue", readUnsignedInt(readBuffer, 16));
+    int frameIdValue =
+        readSimpleField(
+            "frameIdValue",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
     PnDcp_FrameId frameId =
         readVirtualField(
             "frameId",
             PnDcp_FrameId.class,
-            org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.getFrameId(frameIdValue));
+            org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.getFrameId(frameIdValue),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnDcp_PduBuilder builder = null;

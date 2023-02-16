@@ -85,24 +85,45 @@ public class PnIoCm_ExpectedSubmoduleBlockReqApi implements Message {
     writeBuffer.pushContext("PnIoCm_ExpectedSubmoduleBlockReqApi");
 
     // Const Field (api)
-    writeConstField("api", API, writeUnsignedLong(writeBuffer, 32));
+    writeConstField(
+        "api",
+        API,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (slotNumber)
-    writeSimpleField("slotNumber", slotNumber, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "slotNumber",
+        slotNumber,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (moduleIdentNumber)
-    writeSimpleField("moduleIdentNumber", moduleIdentNumber, writeUnsignedLong(writeBuffer, 32));
+    writeSimpleField(
+        "moduleIdentNumber",
+        moduleIdentNumber,
+        writeUnsignedLong(writeBuffer, 32),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (moduleProperties)
-    writeSimpleField("moduleProperties", moduleProperties, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "moduleProperties",
+        moduleProperties,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (numSubmodules) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int numSubmodules = (int) (COUNT(getSubmodules()));
-    writeImplicitField("numSubmodules", numSubmodules, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "numSubmodules",
+        numSubmodules,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (submodules)
-    writeComplexTypeArrayField("submodules", submodules, writeBuffer);
+    writeComplexTypeArrayField(
+        "submodules", submodules, writeBuffer, WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_ExpectedSubmoduleBlockReqApi");
   }
@@ -161,22 +182,42 @@ public class PnIoCm_ExpectedSubmoduleBlockReqApi implements Message {
 
     long api =
         readConstField(
-            "api", readUnsignedLong(readBuffer, 32), PnIoCm_ExpectedSubmoduleBlockReqApi.API);
+            "api",
+            readUnsignedLong(readBuffer, 32),
+            PnIoCm_ExpectedSubmoduleBlockReqApi.API,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int slotNumber = readSimpleField("slotNumber", readUnsignedInt(readBuffer, 16));
+    int slotNumber =
+        readSimpleField(
+            "slotNumber",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    long moduleIdentNumber = readSimpleField("moduleIdentNumber", readUnsignedLong(readBuffer, 32));
+    long moduleIdentNumber =
+        readSimpleField(
+            "moduleIdentNumber",
+            readUnsignedLong(readBuffer, 32),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int moduleProperties = readSimpleField("moduleProperties", readUnsignedInt(readBuffer, 16));
+    int moduleProperties =
+        readSimpleField(
+            "moduleProperties",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int numSubmodules = readImplicitField("numSubmodules", readUnsignedInt(readBuffer, 16));
+    int numSubmodules =
+        readImplicitField(
+            "numSubmodules",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     List<PnIoCm_Submodule> submodules =
         readCountArrayField(
             "submodules",
             new DataReaderComplexDefault<>(
                 () -> PnIoCm_Submodule.staticParse(readBuffer), readBuffer),
-            numSubmodules);
+            numSubmodules,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_ExpectedSubmoduleBlockReqApi");
     // Create the instance

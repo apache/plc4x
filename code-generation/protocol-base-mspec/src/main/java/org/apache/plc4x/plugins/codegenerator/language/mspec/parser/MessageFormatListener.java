@@ -880,17 +880,32 @@ public class MessageFormatListener extends MSpecBaseListener implements LazyType
 
         types.put(typeName, type);
 
+        while (typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>()).size() != 0) {
+
+            consumerDispatchType(typeName, type);
+        }
+
+        typeDefinitionConsumers.remove(typeName);
+    }
+
+    private void consumerDispatchType(String typeName, TypeDefinition type) {
         List<Consumer<TypeDefinition>> waitingConsumers = typeDefinitionConsumers.getOrDefault(typeName, new LinkedList<>());
         LOGGER.debug("{} waiting for {}", waitingConsumers.size(), typeName);
 
         Iterator<Consumer<TypeDefinition>> consumerIterator = waitingConsumers.iterator();
+        List<Consumer<TypeDefinition>> removedItems = new ArrayList<>();
+
         while (consumerIterator.hasNext()) {
             Consumer<TypeDefinition> setter = consumerIterator.next();
             LOGGER.debug("setting {} for {}", typeName, setter);
-            setter.accept(type);
-            consumerIterator.remove();
+            removedItems.add(setter);
         }
-        typeDefinitionConsumers.remove(typeName);
+
+        waitingConsumers.removeAll(removedItems);
+
+        for (Consumer<TypeDefinition> setter : removedItems) {
+            setter.accept(type);
+        }
     }
 
     @Override

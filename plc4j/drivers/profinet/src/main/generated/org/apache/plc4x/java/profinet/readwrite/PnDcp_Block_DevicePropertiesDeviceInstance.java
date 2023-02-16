@@ -79,13 +79,22 @@ public class PnDcp_Block_DevicePropertiesDeviceInstance extends PnDcp_Block impl
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (deviceInstanceHigh)
-    writeSimpleField("deviceInstanceHigh", deviceInstanceHigh, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "deviceInstanceHigh",
+        deviceInstanceHigh,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (deviceInstanceLow)
-    writeSimpleField("deviceInstanceLow", deviceInstanceLow, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "deviceInstanceLow",
+        deviceInstanceLow,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Block_DevicePropertiesDeviceInstance");
   }
@@ -122,13 +131,23 @@ public class PnDcp_Block_DevicePropertiesDeviceInstance extends PnDcp_Block impl
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
+        readReservedField(
+            "reserved",
+            readUnsignedInt(readBuffer, 16),
+            (int) 0x0000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     short deviceInstanceHigh =
-        readSimpleField("deviceInstanceHigh", readUnsignedShort(readBuffer, 8));
+        readSimpleField(
+            "deviceInstanceHigh",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     short deviceInstanceLow =
-        readSimpleField("deviceInstanceLow", readUnsignedShort(readBuffer, 8));
+        readSimpleField(
+            "deviceInstanceLow",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceInstance");
     // Create the instance

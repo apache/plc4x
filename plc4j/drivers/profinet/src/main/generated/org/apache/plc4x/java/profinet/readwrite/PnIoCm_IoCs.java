@@ -68,13 +68,25 @@ public class PnIoCm_IoCs implements Message {
     writeBuffer.pushContext("PnIoCm_IoCs");
 
     // Simple Field (slotNumber)
-    writeSimpleField("slotNumber", slotNumber, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "slotNumber",
+        slotNumber,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (subSlotNumber)
-    writeSimpleField("subSlotNumber", subSlotNumber, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "subSlotNumber",
+        subSlotNumber,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (ioFrameOffset)
-    writeSimpleField("ioFrameOffset", ioFrameOffset, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "ioFrameOffset",
+        ioFrameOffset,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_IoCs");
   }
@@ -115,11 +127,23 @@ public class PnIoCm_IoCs implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int slotNumber = readSimpleField("slotNumber", readUnsignedInt(readBuffer, 16));
+    int slotNumber =
+        readSimpleField(
+            "slotNumber",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int subSlotNumber = readSimpleField("subSlotNumber", readUnsignedInt(readBuffer, 16));
+    int subSlotNumber =
+        readSimpleField(
+            "subSlotNumber",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int ioFrameOffset = readSimpleField("ioFrameOffset", readUnsignedInt(readBuffer, 16));
+    int ioFrameOffset =
+        readSimpleField(
+            "ioFrameOffset",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_IoCs");
     // Create the instance

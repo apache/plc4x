@@ -76,10 +76,15 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (supportedOptions)
-    writeComplexTypeArrayField("supportedOptions", supportedOptions, writeBuffer);
+    writeComplexTypeArrayField(
+        "supportedOptions",
+        supportedOptions,
+        writeBuffer,
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Block_DevicePropertiesDeviceOptions");
   }
@@ -117,14 +122,19 @@ public class PnDcp_Block_DevicePropertiesDeviceOptions extends PnDcp_Block imple
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
+        readReservedField(
+            "reserved",
+            readUnsignedInt(readBuffer, 16),
+            (int) 0x0000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     List<PnDcp_SupportedDeviceOption> supportedOptions =
         readLengthArrayField(
             "supportedOptions",
             new DataReaderComplexDefault<>(
                 () -> PnDcp_SupportedDeviceOption.staticParse(readBuffer), readBuffer),
-            (blockLength) - (2));
+            (blockLength) - (2),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceOptions");
     // Create the instance

@@ -92,25 +92,43 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (long) 0x000000,
-        writeUnsignedLong(writeBuffer, 20));
+        writeUnsignedLong(writeBuffer, 20),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (pnioSupervisor)
-    writeSimpleField("pnioSupervisor", pnioSupervisor, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "pnioSupervisor",
+        pnioSupervisor,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (pnioMultidevive)
-    writeSimpleField("pnioMultidevive", pnioMultidevive, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "pnioMultidevive",
+        pnioMultidevive,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (pnioController)
-    writeSimpleField("pnioController", pnioController, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "pnioController",
+        pnioController,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (pnioDevice)
-    writeSimpleField("pnioDevice", pnioDevice, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "pnioDevice",
+        pnioDevice,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Block_DevicePropertiesDeviceRole");
   }
@@ -156,18 +174,40 @@ public class PnDcp_Block_DevicePropertiesDeviceRole extends PnDcp_Block implemen
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Long reservedField0 =
-        readReservedField("reserved", readUnsignedLong(readBuffer, 20), (long) 0x000000);
+        readReservedField(
+            "reserved",
+            readUnsignedLong(readBuffer, 20),
+            (long) 0x000000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean pnioSupervisor = readSimpleField("pnioSupervisor", readBoolean(readBuffer));
+    boolean pnioSupervisor =
+        readSimpleField(
+            "pnioSupervisor",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean pnioMultidevive = readSimpleField("pnioMultidevive", readBoolean(readBuffer));
+    boolean pnioMultidevive =
+        readSimpleField(
+            "pnioMultidevive",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean pnioController = readSimpleField("pnioController", readBoolean(readBuffer));
+    boolean pnioController =
+        readSimpleField(
+            "pnioController",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean pnioDevice = readSimpleField("pnioDevice", readBoolean(readBuffer));
+    boolean pnioDevice =
+        readSimpleField(
+            "pnioDevice", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Short reservedField1 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
+        readReservedField(
+            "reserved",
+            readUnsignedShort(readBuffer, 8),
+            (short) 0x00,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesDeviceRole");
     // Create the instance

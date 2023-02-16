@@ -75,10 +75,15 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16));
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (aliasNameValue)
-    writeByteArrayField("aliasNameValue", aliasNameValue, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "aliasNameValue",
+        aliasNameValue,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Padding Field (padding)
     writePaddingField(
@@ -88,7 +93,8 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
                     aliasNameValue))
                 % (2)),
         (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Block_DevicePropertiesAliasName");
   }
@@ -134,17 +140,25 @@ public class PnDcp_Block_DevicePropertiesAliasName extends PnDcp_Block implement
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
-        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
+        readReservedField(
+            "reserved",
+            readUnsignedInt(readBuffer, 16),
+            (int) 0x0000,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     byte[] aliasNameValue =
-        readBuffer.readByteArray("aliasNameValue", Math.toIntExact((blockLength) - (2)));
+        readBuffer.readByteArray(
+            "aliasNameValue",
+            Math.toIntExact((blockLength) - (2)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readPaddingField(
         readUnsignedShort(readBuffer, 8),
         (int)
             ((org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.arrayLength(
                     aliasNameValue))
-                % (2)));
+                % (2)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Block_DevicePropertiesAliasName");
     // Create the instance

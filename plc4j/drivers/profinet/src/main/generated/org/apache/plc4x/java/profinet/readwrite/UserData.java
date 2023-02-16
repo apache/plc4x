@@ -60,7 +60,11 @@ public class UserData implements Message {
     writeBuffer.pushContext("UserData");
 
     // Array Field (data)
-    writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "data",
+        data,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("UserData");
   }
@@ -111,7 +115,11 @@ public class UserData implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte[] data = readBuffer.readByteArray("data", Math.toIntExact(recordDataLength));
+    byte[] data =
+        readBuffer.readByteArray(
+            "data",
+            Math.toIntExact(recordDataLength),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("UserData");
     // Create the instance

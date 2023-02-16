@@ -198,7 +198,7 @@ func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(ctx context.Context, read
 	if pullErr := readBuffer.PullContext("segmentationSupported"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for segmentationSupported")
 	}
-	_segmentationSupported, _segmentationSupportedErr := BACnetSegmentationTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
+	_segmentationSupported, _segmentationSupportedErr := BACnetSegmentationTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(9)), TagClass(TagClass_APPLICATION_TAGS))
 	if _segmentationSupportedErr != nil {
 		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field of BACnetUnconfirmedServiceRequestIAm")
 	}
