@@ -119,6 +119,7 @@ public class S7VarPayloadDataItem implements Message {
         (int) ((((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0)),
         (short) 0x00,
         writeUnsignedShort(writeBuffer, 8));
+
     writeBuffer.popContext("S7VarPayloadDataItem");
   }
 
