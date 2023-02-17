@@ -56,6 +56,8 @@ public class PlcLINT extends PlcIECValue<Long> {
             return new PlcLINT((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcLINT((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcLINT(((Number) value).intValue());
         } else {
             return new PlcLINT((String) value);
         }

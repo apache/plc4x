@@ -34,20 +34,20 @@ type IDataTransportErrorCode interface {
 	utils.Serializable
 }
 
-const (
-	DataTransportErrorCode_RESERVED                DataTransportErrorCode = 0x00
-	DataTransportErrorCode_OK                      DataTransportErrorCode = 0xFF
-	DataTransportErrorCode_ACCESS_DENIED           DataTransportErrorCode = 0x03
-	DataTransportErrorCode_INVALID_ADDRESS         DataTransportErrorCode = 0x05
+const(
+	DataTransportErrorCode_RESERVED DataTransportErrorCode = 0x00
+	DataTransportErrorCode_OK DataTransportErrorCode = 0xFF
+	DataTransportErrorCode_ACCESS_DENIED DataTransportErrorCode = 0x03
+	DataTransportErrorCode_INVALID_ADDRESS DataTransportErrorCode = 0x05
 	DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED DataTransportErrorCode = 0x06
-	DataTransportErrorCode_NOT_FOUND               DataTransportErrorCode = 0x0A
+	DataTransportErrorCode_NOT_FOUND DataTransportErrorCode = 0x0A
 )
 
 var DataTransportErrorCodeValues []DataTransportErrorCode
 
 func init() {
 	_ = errors.New
-	DataTransportErrorCodeValues = []DataTransportErrorCode{
+	DataTransportErrorCodeValues = []DataTransportErrorCode {
 		DataTransportErrorCode_RESERVED,
 		DataTransportErrorCode_OK,
 		DataTransportErrorCode_ACCESS_DENIED,
@@ -59,18 +59,18 @@ func init() {
 
 func DataTransportErrorCodeByValue(value uint8) (enum DataTransportErrorCode, ok bool) {
 	switch value {
-	case 0x00:
-		return DataTransportErrorCode_RESERVED, true
-	case 0x03:
-		return DataTransportErrorCode_ACCESS_DENIED, true
-	case 0x05:
-		return DataTransportErrorCode_INVALID_ADDRESS, true
-	case 0x06:
-		return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED, true
-	case 0x0A:
-		return DataTransportErrorCode_NOT_FOUND, true
-	case 0xFF:
-		return DataTransportErrorCode_OK, true
+		case 0x00:
+			return DataTransportErrorCode_RESERVED, true
+		case 0x03:
+			return DataTransportErrorCode_ACCESS_DENIED, true
+		case 0x05:
+			return DataTransportErrorCode_INVALID_ADDRESS, true
+		case 0x06:
+			return DataTransportErrorCode_DATA_TYPE_NOT_SUPPORTED, true
+		case 0x0A:
+			return DataTransportErrorCode_NOT_FOUND, true
+		case 0xFF:
+			return DataTransportErrorCode_OK, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func DataTransportErrorCodeByName(value string) (enum DataTransportErrorCode, ok
 	return 0, false
 }
 
-func DataTransportErrorCodeKnows(value uint8) bool {
+func DataTransportErrorCodeKnows(value uint8)  bool {
 	for _, typeValue := range DataTransportErrorCodeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDataTransportErrorCode(structType interface{}) DataTransportErrorCode {
@@ -171,3 +171,4 @@ func (e DataTransportErrorCode) PLC4XEnumName() string {
 func (e DataTransportErrorCode) String() string {
 	return e.PLC4XEnumName()
 }
+

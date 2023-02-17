@@ -34,21 +34,21 @@ type IBACnetEscalatorMode interface {
 	utils.Serializable
 }
 
-const (
-	BACnetEscalatorMode_UNKNOWN                  BACnetEscalatorMode = 0
-	BACnetEscalatorMode_STOP                     BACnetEscalatorMode = 1
-	BACnetEscalatorMode_UP                       BACnetEscalatorMode = 2
-	BACnetEscalatorMode_DOWN                     BACnetEscalatorMode = 3
-	BACnetEscalatorMode_INSPECTION               BACnetEscalatorMode = 4
-	BACnetEscalatorMode_OUT_OF_SERVICE           BACnetEscalatorMode = 5
-	BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE BACnetEscalatorMode = 0xFFFF
+const(
+	BACnetEscalatorMode_UNKNOWN BACnetEscalatorMode = 0
+	BACnetEscalatorMode_STOP BACnetEscalatorMode = 1
+	BACnetEscalatorMode_UP BACnetEscalatorMode = 2
+	BACnetEscalatorMode_DOWN BACnetEscalatorMode = 3
+	BACnetEscalatorMode_INSPECTION BACnetEscalatorMode = 4
+	BACnetEscalatorMode_OUT_OF_SERVICE BACnetEscalatorMode = 5
+	BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE BACnetEscalatorMode = 0XFFFF
 )
 
 var BACnetEscalatorModeValues []BACnetEscalatorMode
 
 func init() {
 	_ = errors.New
-	BACnetEscalatorModeValues = []BACnetEscalatorMode{
+	BACnetEscalatorModeValues = []BACnetEscalatorMode {
 		BACnetEscalatorMode_UNKNOWN,
 		BACnetEscalatorMode_STOP,
 		BACnetEscalatorMode_UP,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetEscalatorModeByValue(value uint16) (enum BACnetEscalatorMode, ok bool) {
 	switch value {
-	case 0:
-		return BACnetEscalatorMode_UNKNOWN, true
-	case 0xFFFF:
-		return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetEscalatorMode_STOP, true
-	case 2:
-		return BACnetEscalatorMode_UP, true
-	case 3:
-		return BACnetEscalatorMode_DOWN, true
-	case 4:
-		return BACnetEscalatorMode_INSPECTION, true
-	case 5:
-		return BACnetEscalatorMode_OUT_OF_SERVICE, true
+		case 0:
+			return BACnetEscalatorMode_UNKNOWN, true
+		case 0XFFFF:
+			return BACnetEscalatorMode_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetEscalatorMode_STOP, true
+		case 2:
+			return BACnetEscalatorMode_UP, true
+		case 3:
+			return BACnetEscalatorMode_DOWN, true
+		case 4:
+			return BACnetEscalatorMode_INSPECTION, true
+		case 5:
+			return BACnetEscalatorMode_OUT_OF_SERVICE, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetEscalatorModeByName(value string) (enum BACnetEscalatorMode, ok bool)
 	return 0, false
 }
 
-func BACnetEscalatorModeKnows(value uint16) bool {
+func BACnetEscalatorModeKnows(value uint16)  bool {
 	for _, typeValue := range BACnetEscalatorModeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetEscalatorMode(structType interface{}) BACnetEscalatorMode {
@@ -179,3 +179,4 @@ func (e BACnetEscalatorMode) PLC4XEnumName() string {
 func (e BACnetEscalatorMode) String() string {
 	return e.PLC4XEnumName()
 }
+

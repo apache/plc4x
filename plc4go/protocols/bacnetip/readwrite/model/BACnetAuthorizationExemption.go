@@ -34,22 +34,22 @@ type IBACnetAuthorizationExemption interface {
 	utils.Serializable
 }
 
-const (
-	BACnetAuthorizationExemption_PASSBACK                 BACnetAuthorizationExemption = 0
-	BACnetAuthorizationExemption_OCCUPANCY_CHECK          BACnetAuthorizationExemption = 1
-	BACnetAuthorizationExemption_ACCESS_RIGHTS            BACnetAuthorizationExemption = 2
-	BACnetAuthorizationExemption_LOCKOUT                  BACnetAuthorizationExemption = 3
-	BACnetAuthorizationExemption_DENY                     BACnetAuthorizationExemption = 4
-	BACnetAuthorizationExemption_VERIFICATION             BACnetAuthorizationExemption = 5
-	BACnetAuthorizationExemption_AUTHORIZATION_DELAY      BACnetAuthorizationExemption = 6
-	BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE BACnetAuthorizationExemption = 0xFF
+const(
+	BACnetAuthorizationExemption_PASSBACK BACnetAuthorizationExemption = 0
+	BACnetAuthorizationExemption_OCCUPANCY_CHECK BACnetAuthorizationExemption = 1
+	BACnetAuthorizationExemption_ACCESS_RIGHTS BACnetAuthorizationExemption = 2
+	BACnetAuthorizationExemption_LOCKOUT BACnetAuthorizationExemption = 3
+	BACnetAuthorizationExemption_DENY BACnetAuthorizationExemption = 4
+	BACnetAuthorizationExemption_VERIFICATION BACnetAuthorizationExemption = 5
+	BACnetAuthorizationExemption_AUTHORIZATION_DELAY BACnetAuthorizationExemption = 6
+	BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE BACnetAuthorizationExemption = 0XFF
 )
 
 var BACnetAuthorizationExemptionValues []BACnetAuthorizationExemption
 
 func init() {
 	_ = errors.New
-	BACnetAuthorizationExemptionValues = []BACnetAuthorizationExemption{
+	BACnetAuthorizationExemptionValues = []BACnetAuthorizationExemption {
 		BACnetAuthorizationExemption_PASSBACK,
 		BACnetAuthorizationExemption_OCCUPANCY_CHECK,
 		BACnetAuthorizationExemption_ACCESS_RIGHTS,
@@ -63,22 +63,22 @@ func init() {
 
 func BACnetAuthorizationExemptionByValue(value uint8) (enum BACnetAuthorizationExemption, ok bool) {
 	switch value {
-	case 0:
-		return BACnetAuthorizationExemption_PASSBACK, true
-	case 0xFF:
-		return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetAuthorizationExemption_OCCUPANCY_CHECK, true
-	case 2:
-		return BACnetAuthorizationExemption_ACCESS_RIGHTS, true
-	case 3:
-		return BACnetAuthorizationExemption_LOCKOUT, true
-	case 4:
-		return BACnetAuthorizationExemption_DENY, true
-	case 5:
-		return BACnetAuthorizationExemption_VERIFICATION, true
-	case 6:
-		return BACnetAuthorizationExemption_AUTHORIZATION_DELAY, true
+		case 0:
+			return BACnetAuthorizationExemption_PASSBACK, true
+		case 0XFF:
+			return BACnetAuthorizationExemption_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetAuthorizationExemption_OCCUPANCY_CHECK, true
+		case 2:
+			return BACnetAuthorizationExemption_ACCESS_RIGHTS, true
+		case 3:
+			return BACnetAuthorizationExemption_LOCKOUT, true
+		case 4:
+			return BACnetAuthorizationExemption_DENY, true
+		case 5:
+			return BACnetAuthorizationExemption_VERIFICATION, true
+		case 6:
+			return BACnetAuthorizationExemption_AUTHORIZATION_DELAY, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func BACnetAuthorizationExemptionByName(value string) (enum BACnetAuthorizationE
 	return 0, false
 }
 
-func BACnetAuthorizationExemptionKnows(value uint8) bool {
+func BACnetAuthorizationExemptionKnows(value uint8)  bool {
 	for _, typeValue := range BACnetAuthorizationExemptionValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetAuthorizationExemption(structType interface{}) BACnetAuthorizationExemption {
@@ -187,3 +187,4 @@ func (e BACnetAuthorizationExemption) PLC4XEnumName() string {
 func (e BACnetAuthorizationExemption) String() string {
 	return e.PLC4XEnumName()
 }
+

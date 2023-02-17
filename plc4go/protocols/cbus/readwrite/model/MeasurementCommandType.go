@@ -35,7 +35,7 @@ type IMeasurementCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const (
+const(
 	MeasurementCommandType_MEASUREMENT_EVENT MeasurementCommandType = 0x00
 )
 
@@ -43,19 +43,18 @@ var MeasurementCommandTypeValues []MeasurementCommandType
 
 func init() {
 	_ = errors.New
-	MeasurementCommandTypeValues = []MeasurementCommandType{
+	MeasurementCommandTypeValues = []MeasurementCommandType {
 		MeasurementCommandType_MEASUREMENT_EVENT,
 	}
 }
 
+
 func (e MeasurementCommandType) NumberOfArguments() uint8 {
-	switch e {
-	case 0x00:
-		{ /* '0x00' */
-			return 6
+	switch e  {
+		case 0x00: { /* '0x00' */
+            return 6
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -71,8 +70,8 @@ func MeasurementCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (Meas
 }
 func MeasurementCommandTypeByValue(value uint8) (enum MeasurementCommandType, ok bool) {
 	switch value {
-	case 0x00:
-		return MeasurementCommandType_MEASUREMENT_EVENT, true
+		case 0x00:
+			return MeasurementCommandType_MEASUREMENT_EVENT, true
 	}
 	return 0, false
 }
@@ -85,13 +84,13 @@ func MeasurementCommandTypeByName(value string) (enum MeasurementCommandType, ok
 	return 0, false
 }
 
-func MeasurementCommandTypeKnows(value uint8) bool {
+func MeasurementCommandTypeKnows(value uint8)  bool {
 	for _, typeValue := range MeasurementCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastMeasurementCommandType(structType interface{}) MeasurementCommandType {
@@ -153,3 +152,4 @@ func (e MeasurementCommandType) PLC4XEnumName() string {
 func (e MeasurementCommandType) String() string {
 	return e.PLC4XEnumName()
 }
+

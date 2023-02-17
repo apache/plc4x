@@ -34,26 +34,26 @@ type IPinMode interface {
 	utils.Serializable
 }
 
-const (
-	PinMode_PinModeInput   PinMode = 0x0
-	PinMode_PinModeOutput  PinMode = 0x1
-	PinMode_PinModeAnalog  PinMode = 0x2
-	PinMode_PinModePwm     PinMode = 0x3
-	PinMode_PinModeServo   PinMode = 0x4
-	PinMode_PinModeShift   PinMode = 0x5
-	PinMode_PinModeI2C     PinMode = 0x6
+const(
+	PinMode_PinModeInput PinMode = 0x0
+	PinMode_PinModeOutput PinMode = 0x1
+	PinMode_PinModeAnalog PinMode = 0x2
+	PinMode_PinModePwm PinMode = 0x3
+	PinMode_PinModeServo PinMode = 0x4
+	PinMode_PinModeShift PinMode = 0x5
+	PinMode_PinModeI2C PinMode = 0x6
 	PinMode_PinModeOneWire PinMode = 0x7
 	PinMode_PinModeStepper PinMode = 0x8
 	PinMode_PinModeEncoder PinMode = 0x9
-	PinMode_PinModeSerial  PinMode = 0xA
-	PinMode_PinModePullup  PinMode = 0xB
+	PinMode_PinModeSerial PinMode = 0xA
+	PinMode_PinModePullup PinMode = 0xB
 )
 
 var PinModeValues []PinMode
 
 func init() {
 	_ = errors.New
-	PinModeValues = []PinMode{
+	PinModeValues = []PinMode {
 		PinMode_PinModeInput,
 		PinMode_PinModeOutput,
 		PinMode_PinModeAnalog,
@@ -71,30 +71,30 @@ func init() {
 
 func PinModeByValue(value uint8) (enum PinMode, ok bool) {
 	switch value {
-	case 0x0:
-		return PinMode_PinModeInput, true
-	case 0x1:
-		return PinMode_PinModeOutput, true
-	case 0x2:
-		return PinMode_PinModeAnalog, true
-	case 0x3:
-		return PinMode_PinModePwm, true
-	case 0x4:
-		return PinMode_PinModeServo, true
-	case 0x5:
-		return PinMode_PinModeShift, true
-	case 0x6:
-		return PinMode_PinModeI2C, true
-	case 0x7:
-		return PinMode_PinModeOneWire, true
-	case 0x8:
-		return PinMode_PinModeStepper, true
-	case 0x9:
-		return PinMode_PinModeEncoder, true
-	case 0xA:
-		return PinMode_PinModeSerial, true
-	case 0xB:
-		return PinMode_PinModePullup, true
+		case 0x0:
+			return PinMode_PinModeInput, true
+		case 0x1:
+			return PinMode_PinModeOutput, true
+		case 0x2:
+			return PinMode_PinModeAnalog, true
+		case 0x3:
+			return PinMode_PinModePwm, true
+		case 0x4:
+			return PinMode_PinModeServo, true
+		case 0x5:
+			return PinMode_PinModeShift, true
+		case 0x6:
+			return PinMode_PinModeI2C, true
+		case 0x7:
+			return PinMode_PinModeOneWire, true
+		case 0x8:
+			return PinMode_PinModeStepper, true
+		case 0x9:
+			return PinMode_PinModeEncoder, true
+		case 0xA:
+			return PinMode_PinModeSerial, true
+		case 0xB:
+			return PinMode_PinModePullup, true
 	}
 	return 0, false
 }
@@ -129,13 +129,13 @@ func PinModeByName(value string) (enum PinMode, ok bool) {
 	return 0, false
 }
 
-func PinModeKnows(value uint8) bool {
+func PinModeKnows(value uint8)  bool {
 	for _, typeValue := range PinModeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastPinMode(structType interface{}) PinMode {
@@ -219,3 +219,4 @@ func (e PinMode) PLC4XEnumName() string {
 func (e PinMode) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -36,11 +36,11 @@ type IAccessLevel interface {
 	NeedsAuthentication() bool
 }
 
-const (
-	AccessLevel_Level0  AccessLevel = 0x0
-	AccessLevel_Level1  AccessLevel = 0x1
-	AccessLevel_Level2  AccessLevel = 0x2
-	AccessLevel_Level3  AccessLevel = 0x3
+const(
+	AccessLevel_Level0 AccessLevel = 0x0
+	AccessLevel_Level1 AccessLevel = 0x1
+	AccessLevel_Level2 AccessLevel = 0x2
+	AccessLevel_Level3 AccessLevel = 0x3
 	AccessLevel_Level15 AccessLevel = 0xF
 )
 
@@ -48,7 +48,7 @@ var AccessLevelValues []AccessLevel
 
 func init() {
 	_ = errors.New
-	AccessLevelValues = []AccessLevel{
+	AccessLevelValues = []AccessLevel {
 		AccessLevel_Level0,
 		AccessLevel_Level1,
 		AccessLevel_Level2,
@@ -57,30 +57,25 @@ func init() {
 	}
 }
 
+
 func (e AccessLevel) Purpose() string {
-	switch e {
-	case 0x0:
-		{ /* '0x0' */
-			return "system manufacturer"
+	switch e  {
+		case 0x0: { /* '0x0' */
+            return "system manufacturer"
 		}
-	case 0x1:
-		{ /* '0x1' */
-			return "product manufacturer"
+		case 0x1: { /* '0x1' */
+            return "product manufacturer"
 		}
-	case 0x2:
-		{ /* '0x2' */
-			return "configuration"
+		case 0x2: { /* '0x2' */
+            return "configuration"
 		}
-	case 0x3:
-		{ /* '0x3' */
-			return "end-user"
+		case 0x3: { /* '0x3' */
+            return "end-user"
 		}
-	case 0xF:
-		{ /* '0xF' */
-			return "read access"
+		case 0xF: { /* '0xF' */
+            return "read access"
 		}
-	default:
-		{
+		default: {
 			return ""
 		}
 	}
@@ -96,29 +91,23 @@ func AccessLevelFirstEnumForFieldPurpose(value string) (AccessLevel, error) {
 }
 
 func (e AccessLevel) NeedsAuthentication() bool {
-	switch e {
-	case 0x0:
-		{ /* '0x0' */
-			return true
+	switch e  {
+		case 0x0: { /* '0x0' */
+            return true
 		}
-	case 0x1:
-		{ /* '0x1' */
-			return true
+		case 0x1: { /* '0x1' */
+            return true
 		}
-	case 0x2:
-		{ /* '0x2' */
-			return true
+		case 0x2: { /* '0x2' */
+            return true
 		}
-	case 0x3:
-		{ /* '0x3' */
-			return false
+		case 0x3: { /* '0x3' */
+            return false
 		}
-	case 0xF:
-		{ /* '0xF' */
-			return false
+		case 0xF: { /* '0xF' */
+            return false
 		}
-	default:
-		{
+		default: {
 			return false
 		}
 	}
@@ -134,16 +123,16 @@ func AccessLevelFirstEnumForFieldNeedsAuthentication(value bool) (AccessLevel, e
 }
 func AccessLevelByValue(value uint8) (enum AccessLevel, ok bool) {
 	switch value {
-	case 0x0:
-		return AccessLevel_Level0, true
-	case 0x1:
-		return AccessLevel_Level1, true
-	case 0x2:
-		return AccessLevel_Level2, true
-	case 0x3:
-		return AccessLevel_Level3, true
-	case 0xF:
-		return AccessLevel_Level15, true
+		case 0x0:
+			return AccessLevel_Level0, true
+		case 0x1:
+			return AccessLevel_Level1, true
+		case 0x2:
+			return AccessLevel_Level2, true
+		case 0x3:
+			return AccessLevel_Level3, true
+		case 0xF:
+			return AccessLevel_Level15, true
 	}
 	return 0, false
 }
@@ -164,13 +153,13 @@ func AccessLevelByName(value string) (enum AccessLevel, ok bool) {
 	return 0, false
 }
 
-func AccessLevelKnows(value uint8) bool {
+func AccessLevelKnows(value uint8)  bool {
 	for _, typeValue := range AccessLevelValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastAccessLevel(structType interface{}) AccessLevel {
@@ -240,3 +229,4 @@ func (e AccessLevel) PLC4XEnumName() string {
 func (e AccessLevel) String() string {
 	return e.PLC4XEnumName()
 }
+

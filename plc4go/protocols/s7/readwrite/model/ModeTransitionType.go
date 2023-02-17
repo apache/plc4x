@@ -34,23 +34,23 @@ type IModeTransitionType interface {
 	utils.Serializable
 }
 
-const (
-	ModeTransitionType_STOP         ModeTransitionType = 0x00
+const(
+	ModeTransitionType_STOP ModeTransitionType = 0x00
 	ModeTransitionType_WARM_RESTART ModeTransitionType = 0x01
-	ModeTransitionType_RUN          ModeTransitionType = 0x02
-	ModeTransitionType_HOT_RESTART  ModeTransitionType = 0x03
-	ModeTransitionType_HOLD         ModeTransitionType = 0x04
+	ModeTransitionType_RUN ModeTransitionType = 0x02
+	ModeTransitionType_HOT_RESTART ModeTransitionType = 0x03
+	ModeTransitionType_HOLD ModeTransitionType = 0x04
 	ModeTransitionType_COLD_RESTART ModeTransitionType = 0x06
-	ModeTransitionType_RUN_R        ModeTransitionType = 0x09
-	ModeTransitionType_LINK_UP      ModeTransitionType = 0x11
-	ModeTransitionType_UPDATE       ModeTransitionType = 0x12
+	ModeTransitionType_RUN_R ModeTransitionType = 0x09
+	ModeTransitionType_LINK_UP ModeTransitionType = 0x11
+	ModeTransitionType_UPDATE ModeTransitionType = 0x12
 )
 
 var ModeTransitionTypeValues []ModeTransitionType
 
 func init() {
 	_ = errors.New
-	ModeTransitionTypeValues = []ModeTransitionType{
+	ModeTransitionTypeValues = []ModeTransitionType {
 		ModeTransitionType_STOP,
 		ModeTransitionType_WARM_RESTART,
 		ModeTransitionType_RUN,
@@ -65,24 +65,24 @@ func init() {
 
 func ModeTransitionTypeByValue(value uint8) (enum ModeTransitionType, ok bool) {
 	switch value {
-	case 0x00:
-		return ModeTransitionType_STOP, true
-	case 0x01:
-		return ModeTransitionType_WARM_RESTART, true
-	case 0x02:
-		return ModeTransitionType_RUN, true
-	case 0x03:
-		return ModeTransitionType_HOT_RESTART, true
-	case 0x04:
-		return ModeTransitionType_HOLD, true
-	case 0x06:
-		return ModeTransitionType_COLD_RESTART, true
-	case 0x09:
-		return ModeTransitionType_RUN_R, true
-	case 0x11:
-		return ModeTransitionType_LINK_UP, true
-	case 0x12:
-		return ModeTransitionType_UPDATE, true
+		case 0x00:
+			return ModeTransitionType_STOP, true
+		case 0x01:
+			return ModeTransitionType_WARM_RESTART, true
+		case 0x02:
+			return ModeTransitionType_RUN, true
+		case 0x03:
+			return ModeTransitionType_HOT_RESTART, true
+		case 0x04:
+			return ModeTransitionType_HOLD, true
+		case 0x06:
+			return ModeTransitionType_COLD_RESTART, true
+		case 0x09:
+			return ModeTransitionType_RUN_R, true
+		case 0x11:
+			return ModeTransitionType_LINK_UP, true
+		case 0x12:
+			return ModeTransitionType_UPDATE, true
 	}
 	return 0, false
 }
@@ -111,13 +111,13 @@ func ModeTransitionTypeByName(value string) (enum ModeTransitionType, ok bool) {
 	return 0, false
 }
 
-func ModeTransitionTypeKnows(value uint8) bool {
+func ModeTransitionTypeKnows(value uint8)  bool {
 	for _, typeValue := range ModeTransitionTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastModeTransitionType(structType interface{}) ModeTransitionType {
@@ -195,3 +195,4 @@ func (e ModeTransitionType) PLC4XEnumName() string {
 func (e ModeTransitionType) String() string {
 	return e.PLC4XEnumName()
 }
+

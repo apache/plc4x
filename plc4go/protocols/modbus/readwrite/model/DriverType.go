@@ -34,9 +34,9 @@ type IDriverType interface {
 	utils.Serializable
 }
 
-const (
-	DriverType_MODBUS_TCP   DriverType = 0x01
-	DriverType_MODBUS_RTU   DriverType = 0x02
+const(
+	DriverType_MODBUS_TCP DriverType = 0x01
+	DriverType_MODBUS_RTU DriverType = 0x02
 	DriverType_MODBUS_ASCII DriverType = 0x03
 )
 
@@ -44,7 +44,7 @@ var DriverTypeValues []DriverType
 
 func init() {
 	_ = errors.New
-	DriverTypeValues = []DriverType{
+	DriverTypeValues = []DriverType {
 		DriverType_MODBUS_TCP,
 		DriverType_MODBUS_RTU,
 		DriverType_MODBUS_ASCII,
@@ -53,12 +53,12 @@ func init() {
 
 func DriverTypeByValue(value uint32) (enum DriverType, ok bool) {
 	switch value {
-	case 0x01:
-		return DriverType_MODBUS_TCP, true
-	case 0x02:
-		return DriverType_MODBUS_RTU, true
-	case 0x03:
-		return DriverType_MODBUS_ASCII, true
+		case 0x01:
+			return DriverType_MODBUS_TCP, true
+		case 0x02:
+			return DriverType_MODBUS_RTU, true
+		case 0x03:
+			return DriverType_MODBUS_ASCII, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func DriverTypeByName(value string) (enum DriverType, ok bool) {
 	return 0, false
 }
 
-func DriverTypeKnows(value uint32) bool {
+func DriverTypeKnows(value uint32)  bool {
 	for _, typeValue := range DriverTypeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDriverType(structType interface{}) DriverType {
@@ -147,3 +147,4 @@ func (e DriverType) PLC4XEnumName() string {
 func (e DriverType) String() string {
 	return e.PLC4XEnumName()
 }
+

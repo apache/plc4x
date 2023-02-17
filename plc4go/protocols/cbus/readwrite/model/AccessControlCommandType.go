@@ -35,22 +35,22 @@ type IAccessControlCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const (
-	AccessControlCommandType_CLOSE_ACCESS_POINT       AccessControlCommandType = 0x00
-	AccessControlCommandType_LOCK_ACCESS_POINT        AccessControlCommandType = 0x01
-	AccessControlCommandType_ACCESS_POINT_LEFT_OPEN   AccessControlCommandType = 0x02
+const(
+	AccessControlCommandType_CLOSE_ACCESS_POINT AccessControlCommandType = 0x00
+	AccessControlCommandType_LOCK_ACCESS_POINT AccessControlCommandType = 0x01
+	AccessControlCommandType_ACCESS_POINT_LEFT_OPEN AccessControlCommandType = 0x02
 	AccessControlCommandType_ACCESS_POINT_FORCED_OPEN AccessControlCommandType = 0x03
-	AccessControlCommandType_ACCESS_POINT_CLOSED      AccessControlCommandType = 0x04
-	AccessControlCommandType_REQUEST_TO_EXIT          AccessControlCommandType = 0x05
-	AccessControlCommandType_VALID_ACCESS             AccessControlCommandType = 0x06
-	AccessControlCommandType_INVALID_ACCESS           AccessControlCommandType = 0x07
+	AccessControlCommandType_ACCESS_POINT_CLOSED AccessControlCommandType = 0x04
+	AccessControlCommandType_REQUEST_TO_EXIT AccessControlCommandType = 0x05
+	AccessControlCommandType_VALID_ACCESS AccessControlCommandType = 0x06
+	AccessControlCommandType_INVALID_ACCESS AccessControlCommandType = 0x07
 )
 
 var AccessControlCommandTypeValues []AccessControlCommandType
 
 func init() {
 	_ = errors.New
-	AccessControlCommandTypeValues = []AccessControlCommandType{
+	AccessControlCommandTypeValues = []AccessControlCommandType {
 		AccessControlCommandType_CLOSE_ACCESS_POINT,
 		AccessControlCommandType_LOCK_ACCESS_POINT,
 		AccessControlCommandType_ACCESS_POINT_LEFT_OPEN,
@@ -62,42 +62,34 @@ func init() {
 	}
 }
 
+
 func (e AccessControlCommandType) NumberOfArguments() uint8 {
-	switch e {
-	case 0x00:
-		{ /* '0x00' */
-			return 0
+	switch e  {
+		case 0x00: { /* '0x00' */
+            return 0
 		}
-	case 0x01:
-		{ /* '0x01' */
-			return 0
+		case 0x01: { /* '0x01' */
+            return 0
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return 0
+		case 0x02: { /* '0x02' */
+            return 0
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return 0
+		case 0x03: { /* '0x03' */
+            return 0
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return 0
+		case 0x04: { /* '0x04' */
+            return 0
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return 0
+		case 0x05: { /* '0x05' */
+            return 0
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return 2
+		case 0x06: { /* '0x06' */
+            return 2
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return 2
+		case 0x07: { /* '0x07' */
+            return 2
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -113,22 +105,22 @@ func AccessControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (Ac
 }
 func AccessControlCommandTypeByValue(value uint8) (enum AccessControlCommandType, ok bool) {
 	switch value {
-	case 0x00:
-		return AccessControlCommandType_CLOSE_ACCESS_POINT, true
-	case 0x01:
-		return AccessControlCommandType_LOCK_ACCESS_POINT, true
-	case 0x02:
-		return AccessControlCommandType_ACCESS_POINT_LEFT_OPEN, true
-	case 0x03:
-		return AccessControlCommandType_ACCESS_POINT_FORCED_OPEN, true
-	case 0x04:
-		return AccessControlCommandType_ACCESS_POINT_CLOSED, true
-	case 0x05:
-		return AccessControlCommandType_REQUEST_TO_EXIT, true
-	case 0x06:
-		return AccessControlCommandType_VALID_ACCESS, true
-	case 0x07:
-		return AccessControlCommandType_INVALID_ACCESS, true
+		case 0x00:
+			return AccessControlCommandType_CLOSE_ACCESS_POINT, true
+		case 0x01:
+			return AccessControlCommandType_LOCK_ACCESS_POINT, true
+		case 0x02:
+			return AccessControlCommandType_ACCESS_POINT_LEFT_OPEN, true
+		case 0x03:
+			return AccessControlCommandType_ACCESS_POINT_FORCED_OPEN, true
+		case 0x04:
+			return AccessControlCommandType_ACCESS_POINT_CLOSED, true
+		case 0x05:
+			return AccessControlCommandType_REQUEST_TO_EXIT, true
+		case 0x06:
+			return AccessControlCommandType_VALID_ACCESS, true
+		case 0x07:
+			return AccessControlCommandType_INVALID_ACCESS, true
 	}
 	return 0, false
 }
@@ -155,13 +147,13 @@ func AccessControlCommandTypeByName(value string) (enum AccessControlCommandType
 	return 0, false
 }
 
-func AccessControlCommandTypeKnows(value uint8) bool {
+func AccessControlCommandTypeKnows(value uint8)  bool {
 	for _, typeValue := range AccessControlCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastAccessControlCommandType(structType interface{}) AccessControlCommandType {
@@ -237,3 +229,4 @@ func (e AccessControlCommandType) PLC4XEnumName() string {
 func (e AccessControlCommandType) String() string {
 	return e.PLC4XEnumName()
 }
+

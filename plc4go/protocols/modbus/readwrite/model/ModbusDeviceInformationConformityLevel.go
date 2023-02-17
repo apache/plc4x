@@ -34,9 +34,9 @@ type IModbusDeviceInformationConformityLevel interface {
 	utils.Serializable
 }
 
-const (
-	ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY    ModbusDeviceInformationConformityLevel = 0x01
-	ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY  ModbusDeviceInformationConformityLevel = 0x02
+const(
+	ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY ModbusDeviceInformationConformityLevel = 0x01
+	ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY ModbusDeviceInformationConformityLevel = 0x02
 	ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY ModbusDeviceInformationConformityLevel = 0x03
 )
 
@@ -44,7 +44,7 @@ var ModbusDeviceInformationConformityLevelValues []ModbusDeviceInformationConfor
 
 func init() {
 	_ = errors.New
-	ModbusDeviceInformationConformityLevelValues = []ModbusDeviceInformationConformityLevel{
+	ModbusDeviceInformationConformityLevelValues = []ModbusDeviceInformationConformityLevel {
 		ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY,
 		ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY,
 		ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY,
@@ -53,12 +53,12 @@ func init() {
 
 func ModbusDeviceInformationConformityLevelByValue(value uint8) (enum ModbusDeviceInformationConformityLevel, ok bool) {
 	switch value {
-	case 0x01:
-		return ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY, true
-	case 0x02:
-		return ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY, true
-	case 0x03:
-		return ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY, true
+		case 0x01:
+			return ModbusDeviceInformationConformityLevel_BASIC_STREAM_ONLY, true
+		case 0x02:
+			return ModbusDeviceInformationConformityLevel_REGULAR_STREAM_ONLY, true
+		case 0x03:
+			return ModbusDeviceInformationConformityLevel_EXTENDED_STREAM_ONLY, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func ModbusDeviceInformationConformityLevelByName(value string) (enum ModbusDevi
 	return 0, false
 }
 
-func ModbusDeviceInformationConformityLevelKnows(value uint8) bool {
+func ModbusDeviceInformationConformityLevelKnows(value uint8)  bool {
 	for _, typeValue := range ModbusDeviceInformationConformityLevelValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastModbusDeviceInformationConformityLevel(structType interface{}) ModbusDeviceInformationConformityLevel {
@@ -147,3 +147,4 @@ func (e ModbusDeviceInformationConformityLevel) PLC4XEnumName() string {
 func (e ModbusDeviceInformationConformityLevel) String() string {
 	return e.PLC4XEnumName()
 }
+

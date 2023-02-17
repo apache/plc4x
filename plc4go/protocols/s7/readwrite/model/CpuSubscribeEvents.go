@@ -34,18 +34,18 @@ type ICpuSubscribeEvents interface {
 	utils.Serializable
 }
 
-const (
+const(
 	CpuSubscribeEvents_CPU CpuSubscribeEvents = 0x01
-	CpuSubscribeEvents_IM  CpuSubscribeEvents = 0x02
-	CpuSubscribeEvents_FM  CpuSubscribeEvents = 0x04
-	CpuSubscribeEvents_CP  CpuSubscribeEvents = 0x80
+	CpuSubscribeEvents_IM CpuSubscribeEvents = 0x02
+	CpuSubscribeEvents_FM CpuSubscribeEvents = 0x04
+	CpuSubscribeEvents_CP CpuSubscribeEvents = 0x80
 )
 
 var CpuSubscribeEventsValues []CpuSubscribeEvents
 
 func init() {
 	_ = errors.New
-	CpuSubscribeEventsValues = []CpuSubscribeEvents{
+	CpuSubscribeEventsValues = []CpuSubscribeEvents {
 		CpuSubscribeEvents_CPU,
 		CpuSubscribeEvents_IM,
 		CpuSubscribeEvents_FM,
@@ -55,14 +55,14 @@ func init() {
 
 func CpuSubscribeEventsByValue(value uint8) (enum CpuSubscribeEvents, ok bool) {
 	switch value {
-	case 0x01:
-		return CpuSubscribeEvents_CPU, true
-	case 0x02:
-		return CpuSubscribeEvents_IM, true
-	case 0x04:
-		return CpuSubscribeEvents_FM, true
-	case 0x80:
-		return CpuSubscribeEvents_CP, true
+		case 0x01:
+			return CpuSubscribeEvents_CPU, true
+		case 0x02:
+			return CpuSubscribeEvents_IM, true
+		case 0x04:
+			return CpuSubscribeEvents_FM, true
+		case 0x80:
+			return CpuSubscribeEvents_CP, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func CpuSubscribeEventsByName(value string) (enum CpuSubscribeEvents, ok bool) {
 	return 0, false
 }
 
-func CpuSubscribeEventsKnows(value uint8) bool {
+func CpuSubscribeEventsKnows(value uint8)  bool {
 	for _, typeValue := range CpuSubscribeEventsValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastCpuSubscribeEvents(structType interface{}) CpuSubscribeEvents {
@@ -155,3 +155,4 @@ func (e CpuSubscribeEvents) PLC4XEnumName() string {
 func (e CpuSubscribeEvents) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -35,20 +35,20 @@ type IComObjectValueType interface {
 	SizeInBytes() uint8
 }
 
-const (
-	ComObjectValueType_BIT1   ComObjectValueType = 0x00
-	ComObjectValueType_BIT2   ComObjectValueType = 0x01
-	ComObjectValueType_BIT3   ComObjectValueType = 0x02
-	ComObjectValueType_BIT4   ComObjectValueType = 0x03
-	ComObjectValueType_BIT5   ComObjectValueType = 0x04
-	ComObjectValueType_BIT6   ComObjectValueType = 0x05
-	ComObjectValueType_BIT7   ComObjectValueType = 0x06
-	ComObjectValueType_BYTE1  ComObjectValueType = 0x07
-	ComObjectValueType_BYTE2  ComObjectValueType = 0x08
-	ComObjectValueType_BYTE3  ComObjectValueType = 0x09
-	ComObjectValueType_BYTE4  ComObjectValueType = 0x0A
-	ComObjectValueType_BYTE6  ComObjectValueType = 0x0B
-	ComObjectValueType_BYTE8  ComObjectValueType = 0x0C
+const(
+	ComObjectValueType_BIT1 ComObjectValueType = 0x00
+	ComObjectValueType_BIT2 ComObjectValueType = 0x01
+	ComObjectValueType_BIT3 ComObjectValueType = 0x02
+	ComObjectValueType_BIT4 ComObjectValueType = 0x03
+	ComObjectValueType_BIT5 ComObjectValueType = 0x04
+	ComObjectValueType_BIT6 ComObjectValueType = 0x05
+	ComObjectValueType_BIT7 ComObjectValueType = 0x06
+	ComObjectValueType_BYTE1 ComObjectValueType = 0x07
+	ComObjectValueType_BYTE2 ComObjectValueType = 0x08
+	ComObjectValueType_BYTE3 ComObjectValueType = 0x09
+	ComObjectValueType_BYTE4 ComObjectValueType = 0x0A
+	ComObjectValueType_BYTE6 ComObjectValueType = 0x0B
+	ComObjectValueType_BYTE8 ComObjectValueType = 0x0C
 	ComObjectValueType_BYTE10 ComObjectValueType = 0x0D
 	ComObjectValueType_BYTE14 ComObjectValueType = 0x0E
 )
@@ -57,7 +57,7 @@ var ComObjectValueTypeValues []ComObjectValueType
 
 func init() {
 	_ = errors.New
-	ComObjectValueTypeValues = []ComObjectValueType{
+	ComObjectValueTypeValues = []ComObjectValueType {
 		ComObjectValueType_BIT1,
 		ComObjectValueType_BIT2,
 		ComObjectValueType_BIT3,
@@ -76,70 +76,55 @@ func init() {
 	}
 }
 
+
 func (e ComObjectValueType) SizeInBytes() uint8 {
-	switch e {
-	case 0x00:
-		{ /* '0x00' */
-			return 1
+	switch e  {
+		case 0x00: { /* '0x00' */
+            return 1
 		}
-	case 0x01:
-		{ /* '0x01' */
-			return 1
+		case 0x01: { /* '0x01' */
+            return 1
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return 1
+		case 0x02: { /* '0x02' */
+            return 1
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return 1
+		case 0x03: { /* '0x03' */
+            return 1
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return 1
+		case 0x04: { /* '0x04' */
+            return 1
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return 1
+		case 0x05: { /* '0x05' */
+            return 1
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return 1
+		case 0x06: { /* '0x06' */
+            return 1
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return 1
+		case 0x07: { /* '0x07' */
+            return 1
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return 2
+		case 0x08: { /* '0x08' */
+            return 2
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return 3
+		case 0x09: { /* '0x09' */
+            return 3
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return 4
+		case 0x0A: { /* '0x0A' */
+            return 4
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return 6
+		case 0x0B: { /* '0x0B' */
+            return 6
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return 8
+		case 0x0C: { /* '0x0C' */
+            return 8
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return 10
+		case 0x0D: { /* '0x0D' */
+            return 10
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return 14
+		case 0x0E: { /* '0x0E' */
+            return 14
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -155,36 +140,36 @@ func ComObjectValueTypeFirstEnumForFieldSizeInBytes(value uint8) (ComObjectValue
 }
 func ComObjectValueTypeByValue(value uint8) (enum ComObjectValueType, ok bool) {
 	switch value {
-	case 0x00:
-		return ComObjectValueType_BIT1, true
-	case 0x01:
-		return ComObjectValueType_BIT2, true
-	case 0x02:
-		return ComObjectValueType_BIT3, true
-	case 0x03:
-		return ComObjectValueType_BIT4, true
-	case 0x04:
-		return ComObjectValueType_BIT5, true
-	case 0x05:
-		return ComObjectValueType_BIT6, true
-	case 0x06:
-		return ComObjectValueType_BIT7, true
-	case 0x07:
-		return ComObjectValueType_BYTE1, true
-	case 0x08:
-		return ComObjectValueType_BYTE2, true
-	case 0x09:
-		return ComObjectValueType_BYTE3, true
-	case 0x0A:
-		return ComObjectValueType_BYTE4, true
-	case 0x0B:
-		return ComObjectValueType_BYTE6, true
-	case 0x0C:
-		return ComObjectValueType_BYTE8, true
-	case 0x0D:
-		return ComObjectValueType_BYTE10, true
-	case 0x0E:
-		return ComObjectValueType_BYTE14, true
+		case 0x00:
+			return ComObjectValueType_BIT1, true
+		case 0x01:
+			return ComObjectValueType_BIT2, true
+		case 0x02:
+			return ComObjectValueType_BIT3, true
+		case 0x03:
+			return ComObjectValueType_BIT4, true
+		case 0x04:
+			return ComObjectValueType_BIT5, true
+		case 0x05:
+			return ComObjectValueType_BIT6, true
+		case 0x06:
+			return ComObjectValueType_BIT7, true
+		case 0x07:
+			return ComObjectValueType_BYTE1, true
+		case 0x08:
+			return ComObjectValueType_BYTE2, true
+		case 0x09:
+			return ComObjectValueType_BYTE3, true
+		case 0x0A:
+			return ComObjectValueType_BYTE4, true
+		case 0x0B:
+			return ComObjectValueType_BYTE6, true
+		case 0x0C:
+			return ComObjectValueType_BYTE8, true
+		case 0x0D:
+			return ComObjectValueType_BYTE10, true
+		case 0x0E:
+			return ComObjectValueType_BYTE14, true
 	}
 	return 0, false
 }
@@ -225,13 +210,13 @@ func ComObjectValueTypeByName(value string) (enum ComObjectValueType, ok bool) {
 	return 0, false
 }
 
-func ComObjectValueTypeKnows(value uint8) bool {
+func ComObjectValueTypeKnows(value uint8)  bool {
 	for _, typeValue := range ComObjectValueTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastComObjectValueType(structType interface{}) ComObjectValueType {
@@ -321,3 +306,4 @@ func (e ComObjectValueType) PLC4XEnumName() string {
 func (e ComObjectValueType) String() string {
 	return e.PLC4XEnumName()
 }
+

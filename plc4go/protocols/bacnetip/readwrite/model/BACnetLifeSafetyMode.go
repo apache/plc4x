@@ -34,30 +34,30 @@ type IBACnetLifeSafetyMode interface {
 	utils.Serializable
 }
 
-const (
-	BACnetLifeSafetyMode_OFF                        BACnetLifeSafetyMode = 0
-	BACnetLifeSafetyMode_ON                         BACnetLifeSafetyMode = 1
-	BACnetLifeSafetyMode_TEST                       BACnetLifeSafetyMode = 2
-	BACnetLifeSafetyMode_MANNED                     BACnetLifeSafetyMode = 3
-	BACnetLifeSafetyMode_UNMANNED                   BACnetLifeSafetyMode = 4
-	BACnetLifeSafetyMode_ARMED                      BACnetLifeSafetyMode = 5
-	BACnetLifeSafetyMode_DISARMED                   BACnetLifeSafetyMode = 6
-	BACnetLifeSafetyMode_PREARMED                   BACnetLifeSafetyMode = 7
-	BACnetLifeSafetyMode_SLOW                       BACnetLifeSafetyMode = 8
-	BACnetLifeSafetyMode_FAST                       BACnetLifeSafetyMode = 9
-	BACnetLifeSafetyMode_DISCONNECTED               BACnetLifeSafetyMode = 10
-	BACnetLifeSafetyMode_ENABLED                    BACnetLifeSafetyMode = 11
-	BACnetLifeSafetyMode_DISABLED                   BACnetLifeSafetyMode = 12
+const(
+	BACnetLifeSafetyMode_OFF BACnetLifeSafetyMode = 0
+	BACnetLifeSafetyMode_ON BACnetLifeSafetyMode = 1
+	BACnetLifeSafetyMode_TEST BACnetLifeSafetyMode = 2
+	BACnetLifeSafetyMode_MANNED BACnetLifeSafetyMode = 3
+	BACnetLifeSafetyMode_UNMANNED BACnetLifeSafetyMode = 4
+	BACnetLifeSafetyMode_ARMED BACnetLifeSafetyMode = 5
+	BACnetLifeSafetyMode_DISARMED BACnetLifeSafetyMode = 6
+	BACnetLifeSafetyMode_PREARMED BACnetLifeSafetyMode = 7
+	BACnetLifeSafetyMode_SLOW BACnetLifeSafetyMode = 8
+	BACnetLifeSafetyMode_FAST BACnetLifeSafetyMode = 9
+	BACnetLifeSafetyMode_DISCONNECTED BACnetLifeSafetyMode = 10
+	BACnetLifeSafetyMode_ENABLED BACnetLifeSafetyMode = 11
+	BACnetLifeSafetyMode_DISABLED BACnetLifeSafetyMode = 12
 	BACnetLifeSafetyMode_AUTOMATIC_RELEASE_DISABLED BACnetLifeSafetyMode = 13
-	BACnetLifeSafetyMode_DEFAULT                    BACnetLifeSafetyMode = 14
-	BACnetLifeSafetyMode_VENDOR_PROPRIETARY_VALUE   BACnetLifeSafetyMode = 0xFFFF
+	BACnetLifeSafetyMode_DEFAULT BACnetLifeSafetyMode = 14
+	BACnetLifeSafetyMode_VENDOR_PROPRIETARY_VALUE BACnetLifeSafetyMode = 0XFFFF
 )
 
 var BACnetLifeSafetyModeValues []BACnetLifeSafetyMode
 
 func init() {
 	_ = errors.New
-	BACnetLifeSafetyModeValues = []BACnetLifeSafetyMode{
+	BACnetLifeSafetyModeValues = []BACnetLifeSafetyMode {
 		BACnetLifeSafetyMode_OFF,
 		BACnetLifeSafetyMode_ON,
 		BACnetLifeSafetyMode_TEST,
@@ -79,38 +79,38 @@ func init() {
 
 func BACnetLifeSafetyModeByValue(value uint16) (enum BACnetLifeSafetyMode, ok bool) {
 	switch value {
-	case 0:
-		return BACnetLifeSafetyMode_OFF, true
-	case 0xFFFF:
-		return BACnetLifeSafetyMode_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetLifeSafetyMode_ON, true
-	case 10:
-		return BACnetLifeSafetyMode_DISCONNECTED, true
-	case 11:
-		return BACnetLifeSafetyMode_ENABLED, true
-	case 12:
-		return BACnetLifeSafetyMode_DISABLED, true
-	case 13:
-		return BACnetLifeSafetyMode_AUTOMATIC_RELEASE_DISABLED, true
-	case 14:
-		return BACnetLifeSafetyMode_DEFAULT, true
-	case 2:
-		return BACnetLifeSafetyMode_TEST, true
-	case 3:
-		return BACnetLifeSafetyMode_MANNED, true
-	case 4:
-		return BACnetLifeSafetyMode_UNMANNED, true
-	case 5:
-		return BACnetLifeSafetyMode_ARMED, true
-	case 6:
-		return BACnetLifeSafetyMode_DISARMED, true
-	case 7:
-		return BACnetLifeSafetyMode_PREARMED, true
-	case 8:
-		return BACnetLifeSafetyMode_SLOW, true
-	case 9:
-		return BACnetLifeSafetyMode_FAST, true
+		case 0:
+			return BACnetLifeSafetyMode_OFF, true
+		case 0XFFFF:
+			return BACnetLifeSafetyMode_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetLifeSafetyMode_ON, true
+		case 10:
+			return BACnetLifeSafetyMode_DISCONNECTED, true
+		case 11:
+			return BACnetLifeSafetyMode_ENABLED, true
+		case 12:
+			return BACnetLifeSafetyMode_DISABLED, true
+		case 13:
+			return BACnetLifeSafetyMode_AUTOMATIC_RELEASE_DISABLED, true
+		case 14:
+			return BACnetLifeSafetyMode_DEFAULT, true
+		case 2:
+			return BACnetLifeSafetyMode_TEST, true
+		case 3:
+			return BACnetLifeSafetyMode_MANNED, true
+		case 4:
+			return BACnetLifeSafetyMode_UNMANNED, true
+		case 5:
+			return BACnetLifeSafetyMode_ARMED, true
+		case 6:
+			return BACnetLifeSafetyMode_DISARMED, true
+		case 7:
+			return BACnetLifeSafetyMode_PREARMED, true
+		case 8:
+			return BACnetLifeSafetyMode_SLOW, true
+		case 9:
+			return BACnetLifeSafetyMode_FAST, true
 	}
 	return 0, false
 }
@@ -153,13 +153,13 @@ func BACnetLifeSafetyModeByName(value string) (enum BACnetLifeSafetyMode, ok boo
 	return 0, false
 }
 
-func BACnetLifeSafetyModeKnows(value uint16) bool {
+func BACnetLifeSafetyModeKnows(value uint16)  bool {
 	for _, typeValue := range BACnetLifeSafetyModeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetLifeSafetyMode(structType interface{}) BACnetLifeSafetyMode {
@@ -251,3 +251,4 @@ func (e BACnetLifeSafetyMode) PLC4XEnumName() string {
 func (e BACnetLifeSafetyMode) String() string {
 	return e.PLC4XEnumName()
 }
+

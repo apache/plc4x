@@ -34,25 +34,25 @@ type IBACnetLifeSafetyOperation interface {
 	utils.Serializable
 }
 
-const (
-	BACnetLifeSafetyOperation_NONE                     BACnetLifeSafetyOperation = 0
-	BACnetLifeSafetyOperation_SILENCE                  BACnetLifeSafetyOperation = 1
-	BACnetLifeSafetyOperation_SILENCE_AUDIBLE          BACnetLifeSafetyOperation = 2
-	BACnetLifeSafetyOperation_SILENCE_VISUAL           BACnetLifeSafetyOperation = 3
-	BACnetLifeSafetyOperation_RESET                    BACnetLifeSafetyOperation = 4
-	BACnetLifeSafetyOperation_RESET_ALARM              BACnetLifeSafetyOperation = 5
-	BACnetLifeSafetyOperation_RESET_FAULT              BACnetLifeSafetyOperation = 6
-	BACnetLifeSafetyOperation_UNSILENCE                BACnetLifeSafetyOperation = 7
-	BACnetLifeSafetyOperation_UNSILENCE_AUDIBLE        BACnetLifeSafetyOperation = 8
-	BACnetLifeSafetyOperation_UNSILENCE_VISUAL         BACnetLifeSafetyOperation = 9
-	BACnetLifeSafetyOperation_VENDOR_PROPRIETARY_VALUE BACnetLifeSafetyOperation = 0xFFFF
+const(
+	BACnetLifeSafetyOperation_NONE BACnetLifeSafetyOperation = 0
+	BACnetLifeSafetyOperation_SILENCE BACnetLifeSafetyOperation = 1
+	BACnetLifeSafetyOperation_SILENCE_AUDIBLE BACnetLifeSafetyOperation = 2
+	BACnetLifeSafetyOperation_SILENCE_VISUAL BACnetLifeSafetyOperation = 3
+	BACnetLifeSafetyOperation_RESET BACnetLifeSafetyOperation = 4
+	BACnetLifeSafetyOperation_RESET_ALARM BACnetLifeSafetyOperation = 5
+	BACnetLifeSafetyOperation_RESET_FAULT BACnetLifeSafetyOperation = 6
+	BACnetLifeSafetyOperation_UNSILENCE BACnetLifeSafetyOperation = 7
+	BACnetLifeSafetyOperation_UNSILENCE_AUDIBLE BACnetLifeSafetyOperation = 8
+	BACnetLifeSafetyOperation_UNSILENCE_VISUAL BACnetLifeSafetyOperation = 9
+	BACnetLifeSafetyOperation_VENDOR_PROPRIETARY_VALUE BACnetLifeSafetyOperation = 0XFFFF
 )
 
 var BACnetLifeSafetyOperationValues []BACnetLifeSafetyOperation
 
 func init() {
 	_ = errors.New
-	BACnetLifeSafetyOperationValues = []BACnetLifeSafetyOperation{
+	BACnetLifeSafetyOperationValues = []BACnetLifeSafetyOperation {
 		BACnetLifeSafetyOperation_NONE,
 		BACnetLifeSafetyOperation_SILENCE,
 		BACnetLifeSafetyOperation_SILENCE_AUDIBLE,
@@ -69,28 +69,28 @@ func init() {
 
 func BACnetLifeSafetyOperationByValue(value uint16) (enum BACnetLifeSafetyOperation, ok bool) {
 	switch value {
-	case 0:
-		return BACnetLifeSafetyOperation_NONE, true
-	case 0xFFFF:
-		return BACnetLifeSafetyOperation_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetLifeSafetyOperation_SILENCE, true
-	case 2:
-		return BACnetLifeSafetyOperation_SILENCE_AUDIBLE, true
-	case 3:
-		return BACnetLifeSafetyOperation_SILENCE_VISUAL, true
-	case 4:
-		return BACnetLifeSafetyOperation_RESET, true
-	case 5:
-		return BACnetLifeSafetyOperation_RESET_ALARM, true
-	case 6:
-		return BACnetLifeSafetyOperation_RESET_FAULT, true
-	case 7:
-		return BACnetLifeSafetyOperation_UNSILENCE, true
-	case 8:
-		return BACnetLifeSafetyOperation_UNSILENCE_AUDIBLE, true
-	case 9:
-		return BACnetLifeSafetyOperation_UNSILENCE_VISUAL, true
+		case 0:
+			return BACnetLifeSafetyOperation_NONE, true
+		case 0XFFFF:
+			return BACnetLifeSafetyOperation_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetLifeSafetyOperation_SILENCE, true
+		case 2:
+			return BACnetLifeSafetyOperation_SILENCE_AUDIBLE, true
+		case 3:
+			return BACnetLifeSafetyOperation_SILENCE_VISUAL, true
+		case 4:
+			return BACnetLifeSafetyOperation_RESET, true
+		case 5:
+			return BACnetLifeSafetyOperation_RESET_ALARM, true
+		case 6:
+			return BACnetLifeSafetyOperation_RESET_FAULT, true
+		case 7:
+			return BACnetLifeSafetyOperation_UNSILENCE, true
+		case 8:
+			return BACnetLifeSafetyOperation_UNSILENCE_AUDIBLE, true
+		case 9:
+			return BACnetLifeSafetyOperation_UNSILENCE_VISUAL, true
 	}
 	return 0, false
 }
@@ -123,13 +123,13 @@ func BACnetLifeSafetyOperationByName(value string) (enum BACnetLifeSafetyOperati
 	return 0, false
 }
 
-func BACnetLifeSafetyOperationKnows(value uint16) bool {
+func BACnetLifeSafetyOperationKnows(value uint16)  bool {
 	for _, typeValue := range BACnetLifeSafetyOperationValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetLifeSafetyOperation(structType interface{}) BACnetLifeSafetyOperation {
@@ -211,3 +211,4 @@ func (e BACnetLifeSafetyOperation) PLC4XEnumName() string {
 func (e BACnetLifeSafetyOperation) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,22 +34,22 @@ type IBACnetVTClass interface {
 	utils.Serializable
 }
 
-const (
-	BACnetVTClass_DEFAULT_TERMINAL         BACnetVTClass = 0
-	BACnetVTClass_ANSI_X3_64               BACnetVTClass = 1
-	BACnetVTClass_DEC_VT52                 BACnetVTClass = 2
-	BACnetVTClass_DEC_VT100                BACnetVTClass = 3
-	BACnetVTClass_DEC_VT220                BACnetVTClass = 4
-	BACnetVTClass_HP_700_94                BACnetVTClass = 5
-	BACnetVTClass_IBM_3130                 BACnetVTClass = 6
-	BACnetVTClass_VENDOR_PROPRIETARY_VALUE BACnetVTClass = 0xFFFF
+const(
+	BACnetVTClass_DEFAULT_TERMINAL BACnetVTClass = 0
+	BACnetVTClass_ANSI_X3_64 BACnetVTClass = 1
+	BACnetVTClass_DEC_VT52 BACnetVTClass = 2
+	BACnetVTClass_DEC_VT100 BACnetVTClass = 3
+	BACnetVTClass_DEC_VT220 BACnetVTClass = 4
+	BACnetVTClass_HP_700_94 BACnetVTClass = 5
+	BACnetVTClass_IBM_3130 BACnetVTClass = 6
+	BACnetVTClass_VENDOR_PROPRIETARY_VALUE BACnetVTClass = 0XFFFF
 )
 
 var BACnetVTClassValues []BACnetVTClass
 
 func init() {
 	_ = errors.New
-	BACnetVTClassValues = []BACnetVTClass{
+	BACnetVTClassValues = []BACnetVTClass {
 		BACnetVTClass_DEFAULT_TERMINAL,
 		BACnetVTClass_ANSI_X3_64,
 		BACnetVTClass_DEC_VT52,
@@ -63,22 +63,22 @@ func init() {
 
 func BACnetVTClassByValue(value uint16) (enum BACnetVTClass, ok bool) {
 	switch value {
-	case 0:
-		return BACnetVTClass_DEFAULT_TERMINAL, true
-	case 0xFFFF:
-		return BACnetVTClass_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetVTClass_ANSI_X3_64, true
-	case 2:
-		return BACnetVTClass_DEC_VT52, true
-	case 3:
-		return BACnetVTClass_DEC_VT100, true
-	case 4:
-		return BACnetVTClass_DEC_VT220, true
-	case 5:
-		return BACnetVTClass_HP_700_94, true
-	case 6:
-		return BACnetVTClass_IBM_3130, true
+		case 0:
+			return BACnetVTClass_DEFAULT_TERMINAL, true
+		case 0XFFFF:
+			return BACnetVTClass_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetVTClass_ANSI_X3_64, true
+		case 2:
+			return BACnetVTClass_DEC_VT52, true
+		case 3:
+			return BACnetVTClass_DEC_VT100, true
+		case 4:
+			return BACnetVTClass_DEC_VT220, true
+		case 5:
+			return BACnetVTClass_HP_700_94, true
+		case 6:
+			return BACnetVTClass_IBM_3130, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func BACnetVTClassByName(value string) (enum BACnetVTClass, ok bool) {
 	return 0, false
 }
 
-func BACnetVTClassKnows(value uint16) bool {
+func BACnetVTClassKnows(value uint16)  bool {
 	for _, typeValue := range BACnetVTClassValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetVTClass(structType interface{}) BACnetVTClass {
@@ -187,3 +187,4 @@ func (e BACnetVTClass) PLC4XEnumName() string {
 func (e BACnetVTClass) String() string {
 	return e.PLC4XEnumName()
 }
+

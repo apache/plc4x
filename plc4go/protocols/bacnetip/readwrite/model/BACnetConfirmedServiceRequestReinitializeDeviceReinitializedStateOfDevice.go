@@ -34,15 +34,15 @@ type IBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice 
 	utils.Serializable
 }
 
-const (
-	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_COLDSTART                BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x0
-	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_WARMSTART                BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x1
-	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ACTIVATE_CHANGES         BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x2
-	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTBACKUP              BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x3
-	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDBACKUP                BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x4
-	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTRESTORE             BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x5
-	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDRESTORE               BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x6
-	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ABORTRESTORE             BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x7
+const(
+	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_COLDSTART BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x0
+	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_WARMSTART BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x1
+	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ACTIVATE_CHANGES BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x2
+	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTBACKUP BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x3
+	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDBACKUP BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x4
+	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTRESTORE BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x5
+	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDRESTORE BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x6
+	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ABORTRESTORE BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0x7
 	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_VENDOR_PROPRIETARY_VALUE BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice = 0xFF
 )
 
@@ -50,7 +50,7 @@ var BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceVal
 
 func init() {
 	_ = errors.New
-	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceValues = []BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice{
+	BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceValues = []BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice {
 		BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_COLDSTART,
 		BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_WARMSTART,
 		BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ACTIVATE_CHANGES,
@@ -65,24 +65,24 @@ func init() {
 
 func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceByValue(value uint8) (enum BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, ok bool) {
 	switch value {
-	case 0x0:
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_COLDSTART, true
-	case 0x1:
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_WARMSTART, true
-	case 0x2:
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ACTIVATE_CHANGES, true
-	case 0x3:
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTBACKUP, true
-	case 0x4:
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDBACKUP, true
-	case 0x5:
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTRESTORE, true
-	case 0x6:
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDRESTORE, true
-	case 0x7:
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ABORTRESTORE, true
-	case 0xFF:
-		return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_VENDOR_PROPRIETARY_VALUE, true
+		case 0x0:
+			return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_COLDSTART, true
+		case 0x1:
+			return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_WARMSTART, true
+		case 0x2:
+			return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ACTIVATE_CHANGES, true
+		case 0x3:
+			return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTBACKUP, true
+		case 0x4:
+			return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDBACKUP, true
+		case 0x5:
+			return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_STARTRESTORE, true
+		case 0x6:
+			return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ENDRESTORE, true
+		case 0x7:
+			return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_ABORTRESTORE, true
+		case 0xFF:
+			return BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_VENDOR_PROPRIETARY_VALUE, true
 	}
 	return 0, false
 }
@@ -111,13 +111,13 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceBy
 	return 0, false
 }
 
-func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceKnows(value uint8) bool {
+func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceKnows(value uint8)  bool {
 	for _, typeValue := range BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(structType interface{}) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice {
@@ -195,3 +195,4 @@ func (e BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevic
 func (e BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) String() string {
 	return e.PLC4XEnumName()
 }
+

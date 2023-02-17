@@ -35,41 +35,41 @@ type IModbusDataType interface {
 	DataTypeSize() uint8
 }
 
-const (
-	ModbusDataType_BOOL           ModbusDataType = 1
-	ModbusDataType_BYTE           ModbusDataType = 2
-	ModbusDataType_WORD           ModbusDataType = 3
-	ModbusDataType_DWORD          ModbusDataType = 4
-	ModbusDataType_LWORD          ModbusDataType = 5
-	ModbusDataType_SINT           ModbusDataType = 6
-	ModbusDataType_INT            ModbusDataType = 7
-	ModbusDataType_DINT           ModbusDataType = 8
-	ModbusDataType_LINT           ModbusDataType = 9
-	ModbusDataType_USINT          ModbusDataType = 10
-	ModbusDataType_UINT           ModbusDataType = 11
-	ModbusDataType_UDINT          ModbusDataType = 12
-	ModbusDataType_ULINT          ModbusDataType = 13
-	ModbusDataType_REAL           ModbusDataType = 14
-	ModbusDataType_LREAL          ModbusDataType = 15
-	ModbusDataType_TIME           ModbusDataType = 16
-	ModbusDataType_LTIME          ModbusDataType = 17
-	ModbusDataType_DATE           ModbusDataType = 18
-	ModbusDataType_LDATE          ModbusDataType = 19
-	ModbusDataType_TIME_OF_DAY    ModbusDataType = 20
-	ModbusDataType_LTIME_OF_DAY   ModbusDataType = 21
-	ModbusDataType_DATE_AND_TIME  ModbusDataType = 22
+const(
+	ModbusDataType_BOOL ModbusDataType = 1
+	ModbusDataType_BYTE ModbusDataType = 2
+	ModbusDataType_WORD ModbusDataType = 3
+	ModbusDataType_DWORD ModbusDataType = 4
+	ModbusDataType_LWORD ModbusDataType = 5
+	ModbusDataType_SINT ModbusDataType = 6
+	ModbusDataType_INT ModbusDataType = 7
+	ModbusDataType_DINT ModbusDataType = 8
+	ModbusDataType_LINT ModbusDataType = 9
+	ModbusDataType_USINT ModbusDataType = 10
+	ModbusDataType_UINT ModbusDataType = 11
+	ModbusDataType_UDINT ModbusDataType = 12
+	ModbusDataType_ULINT ModbusDataType = 13
+	ModbusDataType_REAL ModbusDataType = 14
+	ModbusDataType_LREAL ModbusDataType = 15
+	ModbusDataType_TIME ModbusDataType = 16
+	ModbusDataType_LTIME ModbusDataType = 17
+	ModbusDataType_DATE ModbusDataType = 18
+	ModbusDataType_LDATE ModbusDataType = 19
+	ModbusDataType_TIME_OF_DAY ModbusDataType = 20
+	ModbusDataType_LTIME_OF_DAY ModbusDataType = 21
+	ModbusDataType_DATE_AND_TIME ModbusDataType = 22
 	ModbusDataType_LDATE_AND_TIME ModbusDataType = 23
-	ModbusDataType_CHAR           ModbusDataType = 24
-	ModbusDataType_WCHAR          ModbusDataType = 25
-	ModbusDataType_STRING         ModbusDataType = 26
-	ModbusDataType_WSTRING        ModbusDataType = 27
+	ModbusDataType_CHAR ModbusDataType = 24
+	ModbusDataType_WCHAR ModbusDataType = 25
+	ModbusDataType_STRING ModbusDataType = 26
+	ModbusDataType_WSTRING ModbusDataType = 27
 )
 
 var ModbusDataTypeValues []ModbusDataType
 
 func init() {
 	_ = errors.New
-	ModbusDataTypeValues = []ModbusDataType{
+	ModbusDataTypeValues = []ModbusDataType {
 		ModbusDataType_BOOL,
 		ModbusDataType_BYTE,
 		ModbusDataType_WORD,
@@ -100,118 +100,91 @@ func init() {
 	}
 }
 
+
 func (e ModbusDataType) DataTypeSize() uint8 {
-	switch e {
-	case 1:
-		{ /* '1' */
-			return 2
+	switch e  {
+		case 1: { /* '1' */
+            return 2
 		}
-	case 10:
-		{ /* '10' */
-			return 2
+		case 10: { /* '10' */
+            return 2
 		}
-	case 11:
-		{ /* '11' */
-			return 2
+		case 11: { /* '11' */
+            return 2
 		}
-	case 12:
-		{ /* '12' */
-			return 4
+		case 12: { /* '12' */
+            return 4
 		}
-	case 13:
-		{ /* '13' */
-			return 8
+		case 13: { /* '13' */
+            return 8
 		}
-	case 14:
-		{ /* '14' */
-			return 4
+		case 14: { /* '14' */
+            return 4
 		}
-	case 15:
-		{ /* '15' */
-			return 8
+		case 15: { /* '15' */
+            return 8
 		}
-	case 16:
-		{ /* '16' */
-			return 8
+		case 16: { /* '16' */
+            return 8
 		}
-	case 17:
-		{ /* '17' */
-			return 8
+		case 17: { /* '17' */
+            return 8
 		}
-	case 18:
-		{ /* '18' */
-			return 8
+		case 18: { /* '18' */
+            return 8
 		}
-	case 19:
-		{ /* '19' */
-			return 8
+		case 19: { /* '19' */
+            return 8
 		}
-	case 2:
-		{ /* '2' */
-			return 2
+		case 2: { /* '2' */
+            return 2
 		}
-	case 20:
-		{ /* '20' */
-			return 8
+		case 20: { /* '20' */
+            return 8
 		}
-	case 21:
-		{ /* '21' */
-			return 8
+		case 21: { /* '21' */
+            return 8
 		}
-	case 22:
-		{ /* '22' */
-			return 8
+		case 22: { /* '22' */
+            return 8
 		}
-	case 23:
-		{ /* '23' */
-			return 8
+		case 23: { /* '23' */
+            return 8
 		}
-	case 24:
-		{ /* '24' */
-			return 1
+		case 24: { /* '24' */
+            return 1
 		}
-	case 25:
-		{ /* '25' */
-			return 2
+		case 25: { /* '25' */
+            return 2
 		}
-	case 26:
-		{ /* '26' */
-			return 1
+		case 26: { /* '26' */
+            return 1
 		}
-	case 27:
-		{ /* '27' */
-			return 2
+		case 27: { /* '27' */
+            return 2
 		}
-	case 3:
-		{ /* '3' */
-			return 2
+		case 3: { /* '3' */
+            return 2
 		}
-	case 4:
-		{ /* '4' */
-			return 4
+		case 4: { /* '4' */
+            return 4
 		}
-	case 5:
-		{ /* '5' */
-			return 8
+		case 5: { /* '5' */
+            return 8
 		}
-	case 6:
-		{ /* '6' */
-			return 2
+		case 6: { /* '6' */
+            return 2
 		}
-	case 7:
-		{ /* '7' */
-			return 2
+		case 7: { /* '7' */
+            return 2
 		}
-	case 8:
-		{ /* '8' */
-			return 4
+		case 8: { /* '8' */
+            return 4
 		}
-	case 9:
-		{ /* '9' */
-			return 8
+		case 9: { /* '9' */
+            return 8
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -227,60 +200,60 @@ func ModbusDataTypeFirstEnumForFieldDataTypeSize(value uint8) (ModbusDataType, e
 }
 func ModbusDataTypeByValue(value uint8) (enum ModbusDataType, ok bool) {
 	switch value {
-	case 1:
-		return ModbusDataType_BOOL, true
-	case 10:
-		return ModbusDataType_USINT, true
-	case 11:
-		return ModbusDataType_UINT, true
-	case 12:
-		return ModbusDataType_UDINT, true
-	case 13:
-		return ModbusDataType_ULINT, true
-	case 14:
-		return ModbusDataType_REAL, true
-	case 15:
-		return ModbusDataType_LREAL, true
-	case 16:
-		return ModbusDataType_TIME, true
-	case 17:
-		return ModbusDataType_LTIME, true
-	case 18:
-		return ModbusDataType_DATE, true
-	case 19:
-		return ModbusDataType_LDATE, true
-	case 2:
-		return ModbusDataType_BYTE, true
-	case 20:
-		return ModbusDataType_TIME_OF_DAY, true
-	case 21:
-		return ModbusDataType_LTIME_OF_DAY, true
-	case 22:
-		return ModbusDataType_DATE_AND_TIME, true
-	case 23:
-		return ModbusDataType_LDATE_AND_TIME, true
-	case 24:
-		return ModbusDataType_CHAR, true
-	case 25:
-		return ModbusDataType_WCHAR, true
-	case 26:
-		return ModbusDataType_STRING, true
-	case 27:
-		return ModbusDataType_WSTRING, true
-	case 3:
-		return ModbusDataType_WORD, true
-	case 4:
-		return ModbusDataType_DWORD, true
-	case 5:
-		return ModbusDataType_LWORD, true
-	case 6:
-		return ModbusDataType_SINT, true
-	case 7:
-		return ModbusDataType_INT, true
-	case 8:
-		return ModbusDataType_DINT, true
-	case 9:
-		return ModbusDataType_LINT, true
+		case 1:
+			return ModbusDataType_BOOL, true
+		case 10:
+			return ModbusDataType_USINT, true
+		case 11:
+			return ModbusDataType_UINT, true
+		case 12:
+			return ModbusDataType_UDINT, true
+		case 13:
+			return ModbusDataType_ULINT, true
+		case 14:
+			return ModbusDataType_REAL, true
+		case 15:
+			return ModbusDataType_LREAL, true
+		case 16:
+			return ModbusDataType_TIME, true
+		case 17:
+			return ModbusDataType_LTIME, true
+		case 18:
+			return ModbusDataType_DATE, true
+		case 19:
+			return ModbusDataType_LDATE, true
+		case 2:
+			return ModbusDataType_BYTE, true
+		case 20:
+			return ModbusDataType_TIME_OF_DAY, true
+		case 21:
+			return ModbusDataType_LTIME_OF_DAY, true
+		case 22:
+			return ModbusDataType_DATE_AND_TIME, true
+		case 23:
+			return ModbusDataType_LDATE_AND_TIME, true
+		case 24:
+			return ModbusDataType_CHAR, true
+		case 25:
+			return ModbusDataType_WCHAR, true
+		case 26:
+			return ModbusDataType_STRING, true
+		case 27:
+			return ModbusDataType_WSTRING, true
+		case 3:
+			return ModbusDataType_WORD, true
+		case 4:
+			return ModbusDataType_DWORD, true
+		case 5:
+			return ModbusDataType_LWORD, true
+		case 6:
+			return ModbusDataType_SINT, true
+		case 7:
+			return ModbusDataType_INT, true
+		case 8:
+			return ModbusDataType_DINT, true
+		case 9:
+			return ModbusDataType_LINT, true
 	}
 	return 0, false
 }
@@ -345,13 +318,13 @@ func ModbusDataTypeByName(value string) (enum ModbusDataType, ok bool) {
 	return 0, false
 }
 
-func ModbusDataTypeKnows(value uint8) bool {
+func ModbusDataTypeKnows(value uint8)  bool {
 	for _, typeValue := range ModbusDataTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastModbusDataType(structType interface{}) ModbusDataType {
@@ -465,3 +438,4 @@ func (e ModbusDataType) PLC4XEnumName() string {
 func (e ModbusDataType) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,30 +34,30 @@ type IFirmwareType interface {
 	utils.Serializable
 }
 
-const (
-	FirmwareType_SYSTEM_1                   FirmwareType = 0x0010
-	FirmwareType_SYSTEM_2                   FirmwareType = 0x0020
-	FirmwareType_SYSTEM_300                 FirmwareType = 0x0300
-	FirmwareType_SYSTEM_7                   FirmwareType = 0x0700
-	FirmwareType_SYSTEM_B                   FirmwareType = 0x07B0
-	FirmwareType_IR_DECODER                 FirmwareType = 0x0810
-	FirmwareType_COUPLER                    FirmwareType = 0x0910
-	FirmwareType_NONE                       FirmwareType = 0x0AF0
-	FirmwareType_SYSTEM_1_PL110             FirmwareType = 0x10B0
-	FirmwareType_SYSTEM_B_PL110             FirmwareType = 0x17B0
-	FirmwareType_MEDIA_COUPLER_PL_TP        FirmwareType = 0x1900
-	FirmwareType_RF_BI_DIRECTIONAL_DEVICES  FirmwareType = 0x2000
+const(
+	FirmwareType_SYSTEM_1 FirmwareType = 0x0010
+	FirmwareType_SYSTEM_2 FirmwareType = 0x0020
+	FirmwareType_SYSTEM_300 FirmwareType = 0x0300
+	FirmwareType_SYSTEM_7 FirmwareType = 0x0700
+	FirmwareType_SYSTEM_B FirmwareType = 0x07B0
+	FirmwareType_IR_DECODER FirmwareType = 0x0810
+	FirmwareType_COUPLER FirmwareType = 0x0910
+	FirmwareType_NONE FirmwareType = 0x0AF0
+	FirmwareType_SYSTEM_1_PL110 FirmwareType = 0x10B0
+	FirmwareType_SYSTEM_B_PL110 FirmwareType = 0x17B0
+	FirmwareType_MEDIA_COUPLER_PL_TP FirmwareType = 0x1900
+	FirmwareType_RF_BI_DIRECTIONAL_DEVICES FirmwareType = 0x2000
 	FirmwareType_RF_UNI_DIRECTIONAL_DEVICES FirmwareType = 0x2100
-	FirmwareType_SYSTEM_1_TP0               FirmwareType = 0x3000
-	FirmwareType_SYSTEM_1_PL132             FirmwareType = 0x4000
-	FirmwareType_SYSTEM_7_KNX_NET_IP        FirmwareType = 0x5700
+	FirmwareType_SYSTEM_1_TP0 FirmwareType = 0x3000
+	FirmwareType_SYSTEM_1_PL132 FirmwareType = 0x4000
+	FirmwareType_SYSTEM_7_KNX_NET_IP FirmwareType = 0x5700
 )
 
 var FirmwareTypeValues []FirmwareType
 
 func init() {
 	_ = errors.New
-	FirmwareTypeValues = []FirmwareType{
+	FirmwareTypeValues = []FirmwareType {
 		FirmwareType_SYSTEM_1,
 		FirmwareType_SYSTEM_2,
 		FirmwareType_SYSTEM_300,
@@ -79,38 +79,38 @@ func init() {
 
 func FirmwareTypeByValue(value uint16) (enum FirmwareType, ok bool) {
 	switch value {
-	case 0x0010:
-		return FirmwareType_SYSTEM_1, true
-	case 0x0020:
-		return FirmwareType_SYSTEM_2, true
-	case 0x0300:
-		return FirmwareType_SYSTEM_300, true
-	case 0x0700:
-		return FirmwareType_SYSTEM_7, true
-	case 0x07B0:
-		return FirmwareType_SYSTEM_B, true
-	case 0x0810:
-		return FirmwareType_IR_DECODER, true
-	case 0x0910:
-		return FirmwareType_COUPLER, true
-	case 0x0AF0:
-		return FirmwareType_NONE, true
-	case 0x10B0:
-		return FirmwareType_SYSTEM_1_PL110, true
-	case 0x17B0:
-		return FirmwareType_SYSTEM_B_PL110, true
-	case 0x1900:
-		return FirmwareType_MEDIA_COUPLER_PL_TP, true
-	case 0x2000:
-		return FirmwareType_RF_BI_DIRECTIONAL_DEVICES, true
-	case 0x2100:
-		return FirmwareType_RF_UNI_DIRECTIONAL_DEVICES, true
-	case 0x3000:
-		return FirmwareType_SYSTEM_1_TP0, true
-	case 0x4000:
-		return FirmwareType_SYSTEM_1_PL132, true
-	case 0x5700:
-		return FirmwareType_SYSTEM_7_KNX_NET_IP, true
+		case 0x0010:
+			return FirmwareType_SYSTEM_1, true
+		case 0x0020:
+			return FirmwareType_SYSTEM_2, true
+		case 0x0300:
+			return FirmwareType_SYSTEM_300, true
+		case 0x0700:
+			return FirmwareType_SYSTEM_7, true
+		case 0x07B0:
+			return FirmwareType_SYSTEM_B, true
+		case 0x0810:
+			return FirmwareType_IR_DECODER, true
+		case 0x0910:
+			return FirmwareType_COUPLER, true
+		case 0x0AF0:
+			return FirmwareType_NONE, true
+		case 0x10B0:
+			return FirmwareType_SYSTEM_1_PL110, true
+		case 0x17B0:
+			return FirmwareType_SYSTEM_B_PL110, true
+		case 0x1900:
+			return FirmwareType_MEDIA_COUPLER_PL_TP, true
+		case 0x2000:
+			return FirmwareType_RF_BI_DIRECTIONAL_DEVICES, true
+		case 0x2100:
+			return FirmwareType_RF_UNI_DIRECTIONAL_DEVICES, true
+		case 0x3000:
+			return FirmwareType_SYSTEM_1_TP0, true
+		case 0x4000:
+			return FirmwareType_SYSTEM_1_PL132, true
+		case 0x5700:
+			return FirmwareType_SYSTEM_7_KNX_NET_IP, true
 	}
 	return 0, false
 }
@@ -153,13 +153,13 @@ func FirmwareTypeByName(value string) (enum FirmwareType, ok bool) {
 	return 0, false
 }
 
-func FirmwareTypeKnows(value uint16) bool {
+func FirmwareTypeKnows(value uint16)  bool {
 	for _, typeValue := range FirmwareTypeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastFirmwareType(structType interface{}) FirmwareType {
@@ -251,3 +251,4 @@ func (e FirmwareType) PLC4XEnumName() string {
 func (e FirmwareType) String() string {
 	return e.PLC4XEnumName()
 }
+

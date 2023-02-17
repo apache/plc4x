@@ -21,8 +21,8 @@ package readwrite
 
 import (
 	"context"
-	"strconv"
 	"strings"
+	"strconv"
 
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -43,34 +43,34 @@ func init() {
 }
 
 func (m ModbusXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
-	switch typeName {
-	case "ModbusPDUWriteFileRecordRequestItem":
-		return model.ModbusPDUWriteFileRecordRequestItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "DataItem":
-		dataType, _ := model.ModbusDataTypeByName(parserArguments[0])
-		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 16)
-		if err != nil {
-			return nil, err
-		}
-		numberOfValues := uint16(parsedUint1)
-		return model.DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType, numberOfValues)
-	case "ModbusPDUReadFileRecordResponseItem":
-		return model.ModbusPDUReadFileRecordResponseItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ModbusDeviceInformationObject":
-		return model.ModbusDeviceInformationObjectParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ModbusConstants":
-		return model.ModbusConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ModbusPDUWriteFileRecordResponseItem":
-		return model.ModbusPDUWriteFileRecordResponseItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ModbusPDU":
-		response := parserArguments[0] == "true"
-		return model.ModbusPDUParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
-	case "ModbusPDUReadFileRecordRequestItem":
-		return model.ModbusPDUReadFileRecordRequestItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ModbusADU":
-		driverType, _ := model.DriverTypeByName(parserArguments[0])
-		response := parserArguments[1] == "true"
-		return model.ModbusADUParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), driverType, response)
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
+    switch typeName {
+        case "ModbusPDUWriteFileRecordRequestItem":
+			return model.ModbusPDUWriteFileRecordRequestItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "DataItem":
+            dataType, _ := model.ModbusDataTypeByName(parserArguments[0])
+			parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 16)
+			if err!=nil {
+				return nil, err
+			}
+			numberOfValues := uint16(parsedUint1)
+            return model.DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType,  numberOfValues  )
+        case "ModbusPDUReadFileRecordResponseItem":
+			return model.ModbusPDUReadFileRecordResponseItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ModbusDeviceInformationObject":
+			return model.ModbusDeviceInformationObjectParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ModbusConstants":
+			return model.ModbusConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ModbusPDUWriteFileRecordResponseItem":
+			return model.ModbusPDUWriteFileRecordResponseItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ModbusPDU":
+            response := parserArguments[0] == "true"
+            return model.ModbusPDUParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response  )
+        case "ModbusPDUReadFileRecordRequestItem":
+			return model.ModbusPDUReadFileRecordRequestItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ModbusADU":
+            driverType, _ := model.DriverTypeByName(parserArguments[0])
+            response := parserArguments[1] == "true"
+            return model.ModbusADUParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), driverType,  response  )
+    }
+    return nil, errors.Errorf("Unsupported type %s", typeName)
 }

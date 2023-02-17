@@ -227,10 +227,6 @@ public abstract class ExtensionObjectDefinition implements Message {
     } else if (EvaluationHelper.equals(identifier, (String) "23470")) {
       builder =
           AliasNameDataType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "24109")) {
-      builder =
-          UnsignedRationalNumber.staticParseExtensionObjectDefinitionBuilder(
-              readBuffer, identifier);
     } else if (EvaluationHelper.equals(identifier, (String) "98")) {
       builder =
           RolePermissionType.staticParseExtensionObjectDefinitionBuilder(readBuffer, identifier);
@@ -770,7 +766,7 @@ public abstract class ExtensionObjectDefinition implements Message {
       builder =
           ProgramDiagnosticDataType.staticParseExtensionObjectDefinitionBuilder(
               readBuffer, identifier);
-    } else if (EvaluationHelper.equals(identifier, (String) "24035")) {
+    } else if (EvaluationHelper.equals(identifier, (String) "15398")) {
       builder =
           ProgramDiagnostic2DataType.staticParseExtensionObjectDefinitionBuilder(
               readBuffer, identifier);

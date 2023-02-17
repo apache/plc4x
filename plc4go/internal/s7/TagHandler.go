@@ -57,11 +57,11 @@ func NewTagHandler() TagHandler {
 	return TagHandler{
 		addressPattern: regexp.MustCompile(`^%(?P<memoryArea>.)(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
 		//blockNumber usually has its max hat around 64000 --> 5digits
-		dataBlockAddressPattern:       regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
-		dataBlockShortPattern:         regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?`),
-		dataBlockStringAddressPattern: regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?`),
-		dataBlockStringShortPattern:   regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?`),
-		plcProxyAddressPattern:        regexp.MustCompile(`[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}`),
+		dataBlockAddressPattern:       regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?`),
+		dataBlockShortPattern:         regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>[a-zA-Z_]+)(\[(?P<numElements>\d+)])?(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?`),
+		dataBlockStringAddressPattern: regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}).DB(?P<transferSizeCode>[XBWD]?)(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?`),
+		dataBlockStringShortPattern:   regexp.MustCompile(`^%DB(?P<blockNumber>\d{1,5}):(?P<byteOffset>\d{1,7})(.(?P<bitOffset>[0-7]))?:(?P<dataType>STRING|WSTRING)\((?P<stringLength>\d{1,3})\)(\[(?P<numElements>\d+)])?(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?`),
+		plcProxyAddressPattern:        regexp.MustCompile(`[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}-[0-9A-F]{2}(\|(?P<stringEncoding>[a-z0-9A-Z_-]+))?`),
 	}
 }
 
@@ -119,8 +119,15 @@ func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
 		if (transferSizeCode != 0) && (dataType.ShortName() != transferSizeCode) {
 			return nil, errors.Errorf("Transfer size code '%d' doesn't match specified data type '%s'", transferSizeCode, dataType)
 		}
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if dataType == readWriteModel.TransportSize_WSTRING || dataType == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
 
-		return NewStringTag(memoryArea, 0, byteOffset, bitOffset, numElements, stringLength, dataType), nil
+		return NewStringTag(memoryArea, 0, byteOffset, bitOffset, numElements, stringLength, dataType, stringEncoding), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockStringShortPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -157,8 +164,14 @@ func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
 			}
 			numElements = uint16(parsedNumElements)
 		}
-
-		return NewStringTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType), nil
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if dataType == readWriteModel.TransportSize_WSTRING || dataType == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
+		return NewStringTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, stringLength, dataType, stringEncoding), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockAddressPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -204,8 +217,14 @@ func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
 		if (transferSizeCode != 0) && (dataType.ShortName() != transferSizeCode) {
 			return nil, errors.Errorf("Transfer size code '%d' doesn't match specified data type '%s'", transferSizeCode, dataType)
 		}
-
-		return NewTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType), nil
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if dataType == readWriteModel.TransportSize_WSTRING || dataType == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
+		return NewTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType, stringEncoding), nil
 	} else if match := utils.GetSubgroupMatches(m.dataBlockShortPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
 		if !ok {
@@ -246,8 +265,14 @@ func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
 			}
 			numElements = uint16(parsedNumElements)
 		}
-
-		return NewTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType), nil
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if dataType == readWriteModel.TransportSize_WSTRING || dataType == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
+		return NewTag(memoryArea, blockNumber, byteOffset, bitOffset, numElements, dataType, stringEncoding), nil
 	} else if match := utils.GetSubgroupMatches(m.plcProxyAddressPattern, tagAddress); match != nil {
 		addressData, err := hex.DecodeString(strings.ReplaceAll(tagAddress, "[-]", ""))
 		if err != nil {
@@ -261,7 +286,13 @@ func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
 		if (s7AddressAny.GetTransportSize() != readWriteModel.TransportSize_BOOL) && s7AddressAny.GetBitAddress() != 0 {
 			return nil, errors.New("A bit offset other than 0 is only supported for type BOOL")
 		}
-
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if s7AddressAny.GetTransportSize() == readWriteModel.TransportSize_WSTRING || s7AddressAny.GetTransportSize() == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
 		return NewTag(
 			s7AddressAny.GetArea(),
 			s7AddressAny.GetDbNumber(),
@@ -269,6 +300,7 @@ func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
 			s7AddressAny.GetBitAddress(),
 			s7AddressAny.GetNumberOfElements(),
 			s7AddressAny.GetTransportSize(),
+			stringEncoding,
 		), nil
 	} else if match := utils.GetSubgroupMatches(m.addressPattern, tagAddress); match != nil {
 		dataType, ok := readWriteModel.TransportSizeByName(match[DATA_TYPE])
@@ -313,8 +345,14 @@ func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
 		if (dataType != readWriteModel.TransportSize_BOOL) && bitOffset != 0 {
 			return nil, errors.New("A bit offset other than 0 is only supported for type BOOL")
 		}
-
-		return NewTag(memoryArea, 0, byteOffset, bitOffset, numElements, dataType), nil
+		stringEncoding := match["stringEncoding"]
+		if stringEncoding == "" {
+			stringEncoding = "UTF-8"
+			if dataType == readWriteModel.TransportSize_WSTRING || dataType == readWriteModel.TransportSize_WCHAR {
+				stringEncoding = "UTF-16"
+			}
+		}
+		return NewTag(memoryArea, 0, byteOffset, bitOffset, numElements, dataType, stringEncoding), nil
 	}
 	return nil, errors.Errorf("Unable to parse %s", tagAddress)
 }

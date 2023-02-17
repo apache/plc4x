@@ -34,8 +34,8 @@ type IAlarmType interface {
 	utils.Serializable
 }
 
-const (
-	AlarmType_SCAN    AlarmType = 0x01
+const(
+	AlarmType_SCAN AlarmType = 0x01
 	AlarmType_ALARM_8 AlarmType = 0x02
 	AlarmType_ALARM_S AlarmType = 0x04
 )
@@ -44,7 +44,7 @@ var AlarmTypeValues []AlarmType
 
 func init() {
 	_ = errors.New
-	AlarmTypeValues = []AlarmType{
+	AlarmTypeValues = []AlarmType {
 		AlarmType_SCAN,
 		AlarmType_ALARM_8,
 		AlarmType_ALARM_S,
@@ -53,12 +53,12 @@ func init() {
 
 func AlarmTypeByValue(value uint8) (enum AlarmType, ok bool) {
 	switch value {
-	case 0x01:
-		return AlarmType_SCAN, true
-	case 0x02:
-		return AlarmType_ALARM_8, true
-	case 0x04:
-		return AlarmType_ALARM_S, true
+		case 0x01:
+			return AlarmType_SCAN, true
+		case 0x02:
+			return AlarmType_ALARM_8, true
+		case 0x04:
+			return AlarmType_ALARM_S, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func AlarmTypeByName(value string) (enum AlarmType, ok bool) {
 	return 0, false
 }
 
-func AlarmTypeKnows(value uint8) bool {
+func AlarmTypeKnows(value uint8)  bool {
 	for _, typeValue := range AlarmTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastAlarmType(structType interface{}) AlarmType {
@@ -147,3 +147,4 @@ func (e AlarmType) PLC4XEnumName() string {
 func (e AlarmType) String() string {
 	return e.PLC4XEnumName()
 }
+

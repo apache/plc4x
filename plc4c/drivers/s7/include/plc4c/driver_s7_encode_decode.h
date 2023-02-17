@@ -26,7 +26,11 @@ extern "C" {
 
 #include "plc4c/driver_s7.h"
 #include "s7_var_request_parameter_item.h"
-
+struct plc4c_s7_read_write_s7_var_request_parameter_item_field {
+  plc4c_s7_read_write_s7_var_request_parameter_item* parameter_item;
+  char* s7_address_any_encoding_of_string;
+};
+typedef struct plc4c_s7_read_write_s7_var_request_parameter_item_field plc4c_s7_read_write_s7_var_request_parameter_item_field;
 uint16_t plc4c_driver_s7_encode_tsap_id(
     plc4c_driver_s7_device_group device_group, uint8_t rack, uint8_t slot);
 

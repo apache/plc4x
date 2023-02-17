@@ -35,23 +35,23 @@ type IMemoryArea interface {
 	ShortName() string
 }
 
-const (
-	MemoryArea_COUNTERS                 MemoryArea = 0x1C
-	MemoryArea_TIMERS                   MemoryArea = 0x1D
+const(
+	MemoryArea_COUNTERS MemoryArea = 0x1C
+	MemoryArea_TIMERS MemoryArea = 0x1D
 	MemoryArea_DIRECT_PERIPHERAL_ACCESS MemoryArea = 0x80
-	MemoryArea_INPUTS                   MemoryArea = 0x81
-	MemoryArea_OUTPUTS                  MemoryArea = 0x82
-	MemoryArea_FLAGS_MARKERS            MemoryArea = 0x83
-	MemoryArea_DATA_BLOCKS              MemoryArea = 0x84
-	MemoryArea_INSTANCE_DATA_BLOCKS     MemoryArea = 0x85
-	MemoryArea_LOCAL_DATA               MemoryArea = 0x86
+	MemoryArea_INPUTS MemoryArea = 0x81
+	MemoryArea_OUTPUTS MemoryArea = 0x82
+	MemoryArea_FLAGS_MARKERS MemoryArea = 0x83
+	MemoryArea_DATA_BLOCKS MemoryArea = 0x84
+	MemoryArea_INSTANCE_DATA_BLOCKS MemoryArea = 0x85
+	MemoryArea_LOCAL_DATA MemoryArea = 0x86
 )
 
 var MemoryAreaValues []MemoryArea
 
 func init() {
 	_ = errors.New
-	MemoryAreaValues = []MemoryArea{
+	MemoryAreaValues = []MemoryArea {
 		MemoryArea_COUNTERS,
 		MemoryArea_TIMERS,
 		MemoryArea_DIRECT_PERIPHERAL_ACCESS,
@@ -64,46 +64,37 @@ func init() {
 	}
 }
 
+
 func (e MemoryArea) ShortName() string {
-	switch e {
-	case 0x1C:
-		{ /* '0x1C' */
-			return "C"
+	switch e  {
+		case 0x1C: { /* '0x1C' */
+            return "C"
 		}
-	case 0x1D:
-		{ /* '0x1D' */
-			return "T"
+		case 0x1D: { /* '0x1D' */
+            return "T"
 		}
-	case 0x80:
-		{ /* '0x80' */
-			return "D"
+		case 0x80: { /* '0x80' */
+            return "D"
 		}
-	case 0x81:
-		{ /* '0x81' */
-			return "I"
+		case 0x81: { /* '0x81' */
+            return "I"
 		}
-	case 0x82:
-		{ /* '0x82' */
-			return "Q"
+		case 0x82: { /* '0x82' */
+            return "Q"
 		}
-	case 0x83:
-		{ /* '0x83' */
-			return "M"
+		case 0x83: { /* '0x83' */
+            return "M"
 		}
-	case 0x84:
-		{ /* '0x84' */
-			return "DB"
+		case 0x84: { /* '0x84' */
+            return "DB"
 		}
-	case 0x85:
-		{ /* '0x85' */
-			return "DBI"
+		case 0x85: { /* '0x85' */
+            return "DBI"
 		}
-	case 0x86:
-		{ /* '0x86' */
-			return "LD"
+		case 0x86: { /* '0x86' */
+            return "LD"
 		}
-	default:
-		{
+		default: {
 			return ""
 		}
 	}
@@ -119,24 +110,24 @@ func MemoryAreaFirstEnumForFieldShortName(value string) (MemoryArea, error) {
 }
 func MemoryAreaByValue(value uint8) (enum MemoryArea, ok bool) {
 	switch value {
-	case 0x1C:
-		return MemoryArea_COUNTERS, true
-	case 0x1D:
-		return MemoryArea_TIMERS, true
-	case 0x80:
-		return MemoryArea_DIRECT_PERIPHERAL_ACCESS, true
-	case 0x81:
-		return MemoryArea_INPUTS, true
-	case 0x82:
-		return MemoryArea_OUTPUTS, true
-	case 0x83:
-		return MemoryArea_FLAGS_MARKERS, true
-	case 0x84:
-		return MemoryArea_DATA_BLOCKS, true
-	case 0x85:
-		return MemoryArea_INSTANCE_DATA_BLOCKS, true
-	case 0x86:
-		return MemoryArea_LOCAL_DATA, true
+		case 0x1C:
+			return MemoryArea_COUNTERS, true
+		case 0x1D:
+			return MemoryArea_TIMERS, true
+		case 0x80:
+			return MemoryArea_DIRECT_PERIPHERAL_ACCESS, true
+		case 0x81:
+			return MemoryArea_INPUTS, true
+		case 0x82:
+			return MemoryArea_OUTPUTS, true
+		case 0x83:
+			return MemoryArea_FLAGS_MARKERS, true
+		case 0x84:
+			return MemoryArea_DATA_BLOCKS, true
+		case 0x85:
+			return MemoryArea_INSTANCE_DATA_BLOCKS, true
+		case 0x86:
+			return MemoryArea_LOCAL_DATA, true
 	}
 	return 0, false
 }
@@ -165,13 +156,13 @@ func MemoryAreaByName(value string) (enum MemoryArea, ok bool) {
 	return 0, false
 }
 
-func MemoryAreaKnows(value uint8) bool {
+func MemoryAreaKnows(value uint8)  bool {
 	for _, typeValue := range MemoryAreaValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastMemoryArea(structType interface{}) MemoryArea {
@@ -249,3 +240,4 @@ func (e MemoryArea) PLC4XEnumName() string {
 func (e MemoryArea) String() string {
 	return e.PLC4XEnumName()
 }
+

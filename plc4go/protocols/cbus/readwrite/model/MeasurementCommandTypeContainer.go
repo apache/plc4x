@@ -36,7 +36,7 @@ type IMeasurementCommandTypeContainer interface {
 	CommandType() MeasurementCommandType
 }
 
-const (
+const(
 	MeasurementCommandTypeContainer_MeasurementCommandChannelMeasurementData MeasurementCommandTypeContainer = 0x0E
 )
 
@@ -44,19 +44,18 @@ var MeasurementCommandTypeContainerValues []MeasurementCommandTypeContainer
 
 func init() {
 	_ = errors.New
-	MeasurementCommandTypeContainerValues = []MeasurementCommandTypeContainer{
+	MeasurementCommandTypeContainerValues = []MeasurementCommandTypeContainer {
 		MeasurementCommandTypeContainer_MeasurementCommandChannelMeasurementData,
 	}
 }
 
+
 func (e MeasurementCommandTypeContainer) NumBytes() uint8 {
-	switch e {
-	case 0x0E:
-		{ /* '0x0E' */
-			return 6
+	switch e  {
+		case 0x0E: { /* '0x0E' */
+            return 6
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -72,13 +71,11 @@ func MeasurementCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (Meas
 }
 
 func (e MeasurementCommandTypeContainer) CommandType() MeasurementCommandType {
-	switch e {
-	case 0x0E:
-		{ /* '0x0E' */
+	switch e  {
+		case 0x0E: { /* '0x0E' */
 			return MeasurementCommandType_MEASUREMENT_EVENT
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -94,8 +91,8 @@ func MeasurementCommandTypeContainerFirstEnumForFieldCommandType(value Measureme
 }
 func MeasurementCommandTypeContainerByValue(value uint8) (enum MeasurementCommandTypeContainer, ok bool) {
 	switch value {
-	case 0x0E:
-		return MeasurementCommandTypeContainer_MeasurementCommandChannelMeasurementData, true
+		case 0x0E:
+			return MeasurementCommandTypeContainer_MeasurementCommandChannelMeasurementData, true
 	}
 	return 0, false
 }
@@ -108,13 +105,13 @@ func MeasurementCommandTypeContainerByName(value string) (enum MeasurementComman
 	return 0, false
 }
 
-func MeasurementCommandTypeContainerKnows(value uint8) bool {
+func MeasurementCommandTypeContainerKnows(value uint8)  bool {
 	for _, typeValue := range MeasurementCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastMeasurementCommandTypeContainer(structType interface{}) MeasurementCommandTypeContainer {
@@ -176,3 +173,4 @@ func (e MeasurementCommandTypeContainer) PLC4XEnumName() string {
 func (e MeasurementCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
+

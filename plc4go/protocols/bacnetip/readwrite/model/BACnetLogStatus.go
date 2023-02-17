@@ -34,9 +34,9 @@ type IBACnetLogStatus interface {
 	utils.Serializable
 }
 
-const (
-	BACnetLogStatus_LOG_DISABLED    BACnetLogStatus = 0
-	BACnetLogStatus_BUFFER_PURGED   BACnetLogStatus = 1
+const(
+	BACnetLogStatus_LOG_DISABLED BACnetLogStatus = 0
+	BACnetLogStatus_BUFFER_PURGED BACnetLogStatus = 1
 	BACnetLogStatus_LOG_INTERRUPTED BACnetLogStatus = 2
 )
 
@@ -44,7 +44,7 @@ var BACnetLogStatusValues []BACnetLogStatus
 
 func init() {
 	_ = errors.New
-	BACnetLogStatusValues = []BACnetLogStatus{
+	BACnetLogStatusValues = []BACnetLogStatus {
 		BACnetLogStatus_LOG_DISABLED,
 		BACnetLogStatus_BUFFER_PURGED,
 		BACnetLogStatus_LOG_INTERRUPTED,
@@ -53,12 +53,12 @@ func init() {
 
 func BACnetLogStatusByValue(value uint8) (enum BACnetLogStatus, ok bool) {
 	switch value {
-	case 0:
-		return BACnetLogStatus_LOG_DISABLED, true
-	case 1:
-		return BACnetLogStatus_BUFFER_PURGED, true
-	case 2:
-		return BACnetLogStatus_LOG_INTERRUPTED, true
+		case 0:
+			return BACnetLogStatus_LOG_DISABLED, true
+		case 1:
+			return BACnetLogStatus_BUFFER_PURGED, true
+		case 2:
+			return BACnetLogStatus_LOG_INTERRUPTED, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func BACnetLogStatusByName(value string) (enum BACnetLogStatus, ok bool) {
 	return 0, false
 }
 
-func BACnetLogStatusKnows(value uint8) bool {
+func BACnetLogStatusKnows(value uint8)  bool {
 	for _, typeValue := range BACnetLogStatusValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetLogStatus(structType interface{}) BACnetLogStatus {
@@ -147,3 +147,4 @@ func (e BACnetLogStatus) PLC4XEnumName() string {
 func (e BACnetLogStatus) String() string {
 	return e.PLC4XEnumName()
 }
+

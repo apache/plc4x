@@ -36,43 +36,43 @@ type IDeviceDescriptor interface {
 	MediumType() DeviceDescriptorMediumType
 }
 
-const (
-	DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0       DeviceDescriptor = 0x0010
-	DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1       DeviceDescriptor = 0x0011
-	DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2       DeviceDescriptor = 0x0012
-	DeviceDescriptor_TP1_BCU_1_SYSTEM_1_3       DeviceDescriptor = 0x0013
-	DeviceDescriptor_TP1_BCU_2_SYSTEM_2_0       DeviceDescriptor = 0x0020
-	DeviceDescriptor_TP1_BCU_2_SYSTEM_2_1       DeviceDescriptor = 0x0021
-	DeviceDescriptor_TP1_BCU_2_SYSTEM_2_5       DeviceDescriptor = 0x0025
-	DeviceDescriptor_TP1_SYSTEM_300             DeviceDescriptor = 0x0300
-	DeviceDescriptor_TP1_BIM_M112_0             DeviceDescriptor = 0x0700
-	DeviceDescriptor_TP1_BIM_M112_1             DeviceDescriptor = 0x0701
-	DeviceDescriptor_TP1_BIM_M112_5             DeviceDescriptor = 0x0705
-	DeviceDescriptor_TP1_SYSTEM_B               DeviceDescriptor = 0x07B0
-	DeviceDescriptor_TP1_IR_DECODER_0           DeviceDescriptor = 0x0810
-	DeviceDescriptor_TP1_IR_DECODER_1           DeviceDescriptor = 0x0811
-	DeviceDescriptor_TP1_COUPLER_0              DeviceDescriptor = 0x0910
-	DeviceDescriptor_TP1_COUPLER_1              DeviceDescriptor = 0x0911
-	DeviceDescriptor_TP1_COUPLER_2              DeviceDescriptor = 0x0912
-	DeviceDescriptor_TP1_KNXNETIP_ROUTER        DeviceDescriptor = 0x091A
-	DeviceDescriptor_TP1_NONE_D                 DeviceDescriptor = 0x0AFD
-	DeviceDescriptor_TP1_NONE_E                 DeviceDescriptor = 0x0AFE
-	DeviceDescriptor_PL110_BCU_1_2              DeviceDescriptor = 0x1012
-	DeviceDescriptor_PL110_BCU_1_3              DeviceDescriptor = 0x1013
-	DeviceDescriptor_PL110_SYSTEM_B             DeviceDescriptor = 0x17B0
-	DeviceDescriptor_PL110_MEDIA_COUPLER_PL_TP  DeviceDescriptor = 0x1900
-	DeviceDescriptor_RF_BI_DIRECTIONAL_DEVICES  DeviceDescriptor = 0x2010
+const(
+	DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0 DeviceDescriptor = 0x0010
+	DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1 DeviceDescriptor = 0x0011
+	DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2 DeviceDescriptor = 0x0012
+	DeviceDescriptor_TP1_BCU_1_SYSTEM_1_3 DeviceDescriptor = 0x0013
+	DeviceDescriptor_TP1_BCU_2_SYSTEM_2_0 DeviceDescriptor = 0x0020
+	DeviceDescriptor_TP1_BCU_2_SYSTEM_2_1 DeviceDescriptor = 0x0021
+	DeviceDescriptor_TP1_BCU_2_SYSTEM_2_5 DeviceDescriptor = 0x0025
+	DeviceDescriptor_TP1_SYSTEM_300 DeviceDescriptor = 0x0300
+	DeviceDescriptor_TP1_BIM_M112_0 DeviceDescriptor = 0x0700
+	DeviceDescriptor_TP1_BIM_M112_1 DeviceDescriptor = 0x0701
+	DeviceDescriptor_TP1_BIM_M112_5 DeviceDescriptor = 0x0705
+	DeviceDescriptor_TP1_SYSTEM_B DeviceDescriptor = 0x07B0
+	DeviceDescriptor_TP1_IR_DECODER_0 DeviceDescriptor = 0x0810
+	DeviceDescriptor_TP1_IR_DECODER_1 DeviceDescriptor = 0x0811
+	DeviceDescriptor_TP1_COUPLER_0 DeviceDescriptor = 0x0910
+	DeviceDescriptor_TP1_COUPLER_1 DeviceDescriptor = 0x0911
+	DeviceDescriptor_TP1_COUPLER_2 DeviceDescriptor = 0x0912
+	DeviceDescriptor_TP1_KNXNETIP_ROUTER DeviceDescriptor = 0x091A
+	DeviceDescriptor_TP1_NONE_D DeviceDescriptor = 0x0AFD
+	DeviceDescriptor_TP1_NONE_E DeviceDescriptor = 0x0AFE
+	DeviceDescriptor_PL110_BCU_1_2 DeviceDescriptor = 0x1012
+	DeviceDescriptor_PL110_BCU_1_3 DeviceDescriptor = 0x1013
+	DeviceDescriptor_PL110_SYSTEM_B DeviceDescriptor = 0x17B0
+	DeviceDescriptor_PL110_MEDIA_COUPLER_PL_TP DeviceDescriptor = 0x1900
+	DeviceDescriptor_RF_BI_DIRECTIONAL_DEVICES DeviceDescriptor = 0x2010
 	DeviceDescriptor_RF_UNI_DIRECTIONAL_DEVICES DeviceDescriptor = 0x2110
-	DeviceDescriptor_TP0_BCU_1                  DeviceDescriptor = 0x3012
-	DeviceDescriptor_PL132_BCU_1                DeviceDescriptor = 0x4012
-	DeviceDescriptor_KNX_IP_SYSTEM7             DeviceDescriptor = 0x5705
+	DeviceDescriptor_TP0_BCU_1 DeviceDescriptor = 0x3012
+	DeviceDescriptor_PL132_BCU_1 DeviceDescriptor = 0x4012
+	DeviceDescriptor_KNX_IP_SYSTEM7 DeviceDescriptor = 0x5705
 )
 
 var DeviceDescriptorValues []DeviceDescriptor
 
 func init() {
 	_ = errors.New
-	DeviceDescriptorValues = []DeviceDescriptor{
+	DeviceDescriptorValues = []DeviceDescriptor {
 		DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0,
 		DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1,
 		DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2,
@@ -105,126 +105,97 @@ func init() {
 	}
 }
 
+
 func (e DeviceDescriptor) FirmwareType() FirmwareType {
-	switch e {
-	case 0x0010:
-		{ /* '0x0010' */
+	switch e  {
+		case 0x0010: { /* '0x0010' */
 			return FirmwareType_SYSTEM_1
 		}
-	case 0x0011:
-		{ /* '0x0011' */
+		case 0x0011: { /* '0x0011' */
 			return FirmwareType_SYSTEM_1
 		}
-	case 0x0012:
-		{ /* '0x0012' */
+		case 0x0012: { /* '0x0012' */
 			return FirmwareType_SYSTEM_1
 		}
-	case 0x0013:
-		{ /* '0x0013' */
+		case 0x0013: { /* '0x0013' */
 			return FirmwareType_SYSTEM_1
 		}
-	case 0x0020:
-		{ /* '0x0020' */
+		case 0x0020: { /* '0x0020' */
 			return FirmwareType_SYSTEM_2
 		}
-	case 0x0021:
-		{ /* '0x0021' */
+		case 0x0021: { /* '0x0021' */
 			return FirmwareType_SYSTEM_2
 		}
-	case 0x0025:
-		{ /* '0x0025' */
+		case 0x0025: { /* '0x0025' */
 			return FirmwareType_SYSTEM_2
 		}
-	case 0x0300:
-		{ /* '0x0300' */
+		case 0x0300: { /* '0x0300' */
 			return FirmwareType_SYSTEM_300
 		}
-	case 0x0700:
-		{ /* '0x0700' */
+		case 0x0700: { /* '0x0700' */
 			return FirmwareType_SYSTEM_7
 		}
-	case 0x0701:
-		{ /* '0x0701' */
+		case 0x0701: { /* '0x0701' */
 			return FirmwareType_SYSTEM_7
 		}
-	case 0x0705:
-		{ /* '0x0705' */
+		case 0x0705: { /* '0x0705' */
 			return FirmwareType_SYSTEM_7
 		}
-	case 0x07B0:
-		{ /* '0x07B0' */
+		case 0x07B0: { /* '0x07B0' */
 			return FirmwareType_SYSTEM_B
 		}
-	case 0x0810:
-		{ /* '0x0810' */
+		case 0x0810: { /* '0x0810' */
 			return FirmwareType_IR_DECODER
 		}
-	case 0x0811:
-		{ /* '0x0811' */
+		case 0x0811: { /* '0x0811' */
 			return FirmwareType_IR_DECODER
 		}
-	case 0x0910:
-		{ /* '0x0910' */
+		case 0x0910: { /* '0x0910' */
 			return FirmwareType_COUPLER
 		}
-	case 0x0911:
-		{ /* '0x0911' */
+		case 0x0911: { /* '0x0911' */
 			return FirmwareType_COUPLER
 		}
-	case 0x0912:
-		{ /* '0x0912' */
+		case 0x0912: { /* '0x0912' */
 			return FirmwareType_COUPLER
 		}
-	case 0x091A:
-		{ /* '0x091A' */
+		case 0x091A: { /* '0x091A' */
 			return FirmwareType_COUPLER
 		}
-	case 0x0AFD:
-		{ /* '0x0AFD' */
+		case 0x0AFD: { /* '0x0AFD' */
 			return FirmwareType_NONE
 		}
-	case 0x0AFE:
-		{ /* '0x0AFE' */
+		case 0x0AFE: { /* '0x0AFE' */
 			return FirmwareType_NONE
 		}
-	case 0x1012:
-		{ /* '0x1012' */
+		case 0x1012: { /* '0x1012' */
 			return FirmwareType_SYSTEM_1
 		}
-	case 0x1013:
-		{ /* '0x1013' */
+		case 0x1013: { /* '0x1013' */
 			return FirmwareType_SYSTEM_1
 		}
-	case 0x17B0:
-		{ /* '0x17B0' */
+		case 0x17B0: { /* '0x17B0' */
 			return FirmwareType_SYSTEM_B
 		}
-	case 0x1900:
-		{ /* '0x1900' */
+		case 0x1900: { /* '0x1900' */
 			return FirmwareType_MEDIA_COUPLER_PL_TP
 		}
-	case 0x2010:
-		{ /* '0x2010' */
+		case 0x2010: { /* '0x2010' */
 			return FirmwareType_RF_BI_DIRECTIONAL_DEVICES
 		}
-	case 0x2110:
-		{ /* '0x2110' */
+		case 0x2110: { /* '0x2110' */
 			return FirmwareType_RF_UNI_DIRECTIONAL_DEVICES
 		}
-	case 0x3012:
-		{ /* '0x3012' */
+		case 0x3012: { /* '0x3012' */
 			return FirmwareType_SYSTEM_1
 		}
-	case 0x4012:
-		{ /* '0x4012' */
+		case 0x4012: { /* '0x4012' */
 			return FirmwareType_SYSTEM_1
 		}
-	case 0x5705:
-		{ /* '0x5705' */
+		case 0x5705: { /* '0x5705' */
 			return FirmwareType_SYSTEM_7
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -240,125 +211,95 @@ func DeviceDescriptorFirstEnumForFieldFirmwareType(value FirmwareType) (DeviceDe
 }
 
 func (e DeviceDescriptor) MediumType() DeviceDescriptorMediumType {
-	switch e {
-	case 0x0010:
-		{ /* '0x0010' */
+	switch e  {
+		case 0x0010: { /* '0x0010' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0011:
-		{ /* '0x0011' */
+		case 0x0011: { /* '0x0011' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0012:
-		{ /* '0x0012' */
+		case 0x0012: { /* '0x0012' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0013:
-		{ /* '0x0013' */
+		case 0x0013: { /* '0x0013' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0020:
-		{ /* '0x0020' */
+		case 0x0020: { /* '0x0020' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0021:
-		{ /* '0x0021' */
+		case 0x0021: { /* '0x0021' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0025:
-		{ /* '0x0025' */
+		case 0x0025: { /* '0x0025' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0300:
-		{ /* '0x0300' */
+		case 0x0300: { /* '0x0300' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0700:
-		{ /* '0x0700' */
+		case 0x0700: { /* '0x0700' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0701:
-		{ /* '0x0701' */
+		case 0x0701: { /* '0x0701' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0705:
-		{ /* '0x0705' */
+		case 0x0705: { /* '0x0705' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x07B0:
-		{ /* '0x07B0' */
+		case 0x07B0: { /* '0x07B0' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0810:
-		{ /* '0x0810' */
+		case 0x0810: { /* '0x0810' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0811:
-		{ /* '0x0811' */
+		case 0x0811: { /* '0x0811' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0910:
-		{ /* '0x0910' */
+		case 0x0910: { /* '0x0910' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0911:
-		{ /* '0x0911' */
+		case 0x0911: { /* '0x0911' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0912:
-		{ /* '0x0912' */
+		case 0x0912: { /* '0x0912' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x091A:
-		{ /* '0x091A' */
+		case 0x091A: { /* '0x091A' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0AFD:
-		{ /* '0x0AFD' */
+		case 0x0AFD: { /* '0x0AFD' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x0AFE:
-		{ /* '0x0AFE' */
+		case 0x0AFE: { /* '0x0AFE' */
 			return DeviceDescriptorMediumType_TP1
 		}
-	case 0x1012:
-		{ /* '0x1012' */
+		case 0x1012: { /* '0x1012' */
 			return DeviceDescriptorMediumType_PL110
 		}
-	case 0x1013:
-		{ /* '0x1013' */
+		case 0x1013: { /* '0x1013' */
 			return DeviceDescriptorMediumType_PL110
 		}
-	case 0x17B0:
-		{ /* '0x17B0' */
+		case 0x17B0: { /* '0x17B0' */
 			return DeviceDescriptorMediumType_PL110
 		}
-	case 0x1900:
-		{ /* '0x1900' */
+		case 0x1900: { /* '0x1900' */
 			return DeviceDescriptorMediumType_PL110
 		}
-	case 0x2010:
-		{ /* '0x2010' */
+		case 0x2010: { /* '0x2010' */
 			return DeviceDescriptorMediumType_RF
 		}
-	case 0x2110:
-		{ /* '0x2110' */
+		case 0x2110: { /* '0x2110' */
 			return DeviceDescriptorMediumType_RF
 		}
-	case 0x3012:
-		{ /* '0x3012' */
+		case 0x3012: { /* '0x3012' */
 			return DeviceDescriptorMediumType_TP0
 		}
-	case 0x4012:
-		{ /* '0x4012' */
+		case 0x4012: { /* '0x4012' */
 			return DeviceDescriptorMediumType_PL132
 		}
-	case 0x5705:
-		{ /* '0x5705' */
+		case 0x5705: { /* '0x5705' */
 			return DeviceDescriptorMediumType_KNX_IP
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -374,64 +315,64 @@ func DeviceDescriptorFirstEnumForFieldMediumType(value DeviceDescriptorMediumTyp
 }
 func DeviceDescriptorByValue(value uint16) (enum DeviceDescriptor, ok bool) {
 	switch value {
-	case 0x0010:
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0, true
-	case 0x0011:
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1, true
-	case 0x0012:
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2, true
-	case 0x0013:
-		return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_3, true
-	case 0x0020:
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_0, true
-	case 0x0021:
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_1, true
-	case 0x0025:
-		return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_5, true
-	case 0x0300:
-		return DeviceDescriptor_TP1_SYSTEM_300, true
-	case 0x0700:
-		return DeviceDescriptor_TP1_BIM_M112_0, true
-	case 0x0701:
-		return DeviceDescriptor_TP1_BIM_M112_1, true
-	case 0x0705:
-		return DeviceDescriptor_TP1_BIM_M112_5, true
-	case 0x07B0:
-		return DeviceDescriptor_TP1_SYSTEM_B, true
-	case 0x0810:
-		return DeviceDescriptor_TP1_IR_DECODER_0, true
-	case 0x0811:
-		return DeviceDescriptor_TP1_IR_DECODER_1, true
-	case 0x0910:
-		return DeviceDescriptor_TP1_COUPLER_0, true
-	case 0x0911:
-		return DeviceDescriptor_TP1_COUPLER_1, true
-	case 0x0912:
-		return DeviceDescriptor_TP1_COUPLER_2, true
-	case 0x091A:
-		return DeviceDescriptor_TP1_KNXNETIP_ROUTER, true
-	case 0x0AFD:
-		return DeviceDescriptor_TP1_NONE_D, true
-	case 0x0AFE:
-		return DeviceDescriptor_TP1_NONE_E, true
-	case 0x1012:
-		return DeviceDescriptor_PL110_BCU_1_2, true
-	case 0x1013:
-		return DeviceDescriptor_PL110_BCU_1_3, true
-	case 0x17B0:
-		return DeviceDescriptor_PL110_SYSTEM_B, true
-	case 0x1900:
-		return DeviceDescriptor_PL110_MEDIA_COUPLER_PL_TP, true
-	case 0x2010:
-		return DeviceDescriptor_RF_BI_DIRECTIONAL_DEVICES, true
-	case 0x2110:
-		return DeviceDescriptor_RF_UNI_DIRECTIONAL_DEVICES, true
-	case 0x3012:
-		return DeviceDescriptor_TP0_BCU_1, true
-	case 0x4012:
-		return DeviceDescriptor_PL132_BCU_1, true
-	case 0x5705:
-		return DeviceDescriptor_KNX_IP_SYSTEM7, true
+		case 0x0010:
+			return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_0, true
+		case 0x0011:
+			return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_1, true
+		case 0x0012:
+			return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_2, true
+		case 0x0013:
+			return DeviceDescriptor_TP1_BCU_1_SYSTEM_1_3, true
+		case 0x0020:
+			return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_0, true
+		case 0x0021:
+			return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_1, true
+		case 0x0025:
+			return DeviceDescriptor_TP1_BCU_2_SYSTEM_2_5, true
+		case 0x0300:
+			return DeviceDescriptor_TP1_SYSTEM_300, true
+		case 0x0700:
+			return DeviceDescriptor_TP1_BIM_M112_0, true
+		case 0x0701:
+			return DeviceDescriptor_TP1_BIM_M112_1, true
+		case 0x0705:
+			return DeviceDescriptor_TP1_BIM_M112_5, true
+		case 0x07B0:
+			return DeviceDescriptor_TP1_SYSTEM_B, true
+		case 0x0810:
+			return DeviceDescriptor_TP1_IR_DECODER_0, true
+		case 0x0811:
+			return DeviceDescriptor_TP1_IR_DECODER_1, true
+		case 0x0910:
+			return DeviceDescriptor_TP1_COUPLER_0, true
+		case 0x0911:
+			return DeviceDescriptor_TP1_COUPLER_1, true
+		case 0x0912:
+			return DeviceDescriptor_TP1_COUPLER_2, true
+		case 0x091A:
+			return DeviceDescriptor_TP1_KNXNETIP_ROUTER, true
+		case 0x0AFD:
+			return DeviceDescriptor_TP1_NONE_D, true
+		case 0x0AFE:
+			return DeviceDescriptor_TP1_NONE_E, true
+		case 0x1012:
+			return DeviceDescriptor_PL110_BCU_1_2, true
+		case 0x1013:
+			return DeviceDescriptor_PL110_BCU_1_3, true
+		case 0x17B0:
+			return DeviceDescriptor_PL110_SYSTEM_B, true
+		case 0x1900:
+			return DeviceDescriptor_PL110_MEDIA_COUPLER_PL_TP, true
+		case 0x2010:
+			return DeviceDescriptor_RF_BI_DIRECTIONAL_DEVICES, true
+		case 0x2110:
+			return DeviceDescriptor_RF_UNI_DIRECTIONAL_DEVICES, true
+		case 0x3012:
+			return DeviceDescriptor_TP0_BCU_1, true
+		case 0x4012:
+			return DeviceDescriptor_PL132_BCU_1, true
+		case 0x5705:
+			return DeviceDescriptor_KNX_IP_SYSTEM7, true
 	}
 	return 0, false
 }
@@ -500,13 +441,13 @@ func DeviceDescriptorByName(value string) (enum DeviceDescriptor, ok bool) {
 	return 0, false
 }
 
-func DeviceDescriptorKnows(value uint16) bool {
+func DeviceDescriptorKnows(value uint16)  bool {
 	for _, typeValue := range DeviceDescriptorValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDeviceDescriptor(structType interface{}) DeviceDescriptor {
@@ -624,3 +565,4 @@ func (e DeviceDescriptor) PLC4XEnumName() string {
 func (e DeviceDescriptor) String() string {
 	return e.PLC4XEnumName()
 }
+

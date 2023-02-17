@@ -58,6 +58,8 @@ public class PlcWCHAR extends PlcIECValue<Integer> {
             return new PlcWCHAR((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcWCHAR((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcWCHAR(((Number) value).intValue());
         } else {
             return new PlcWCHAR((String) value);
         }

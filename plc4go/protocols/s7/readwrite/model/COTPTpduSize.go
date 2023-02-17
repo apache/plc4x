@@ -35,10 +35,10 @@ type ICOTPTpduSize interface {
 	SizeInBytes() uint16
 }
 
-const (
-	COTPTpduSize_SIZE_128  COTPTpduSize = 0x07
-	COTPTpduSize_SIZE_256  COTPTpduSize = 0x08
-	COTPTpduSize_SIZE_512  COTPTpduSize = 0x09
+const(
+	COTPTpduSize_SIZE_128 COTPTpduSize = 0x07
+	COTPTpduSize_SIZE_256 COTPTpduSize = 0x08
+	COTPTpduSize_SIZE_512 COTPTpduSize = 0x09
 	COTPTpduSize_SIZE_1024 COTPTpduSize = 0x0a
 	COTPTpduSize_SIZE_2048 COTPTpduSize = 0x0b
 	COTPTpduSize_SIZE_4096 COTPTpduSize = 0x0c
@@ -49,7 +49,7 @@ var COTPTpduSizeValues []COTPTpduSize
 
 func init() {
 	_ = errors.New
-	COTPTpduSizeValues = []COTPTpduSize{
+	COTPTpduSizeValues = []COTPTpduSize {
 		COTPTpduSize_SIZE_128,
 		COTPTpduSize_SIZE_256,
 		COTPTpduSize_SIZE_512,
@@ -60,38 +60,31 @@ func init() {
 	}
 }
 
+
 func (e COTPTpduSize) SizeInBytes() uint16 {
-	switch e {
-	case 0x07:
-		{ /* '0x07' */
-			return 128
+	switch e  {
+		case 0x07: { /* '0x07' */
+            return 128
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return 256
+		case 0x08: { /* '0x08' */
+            return 256
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return 512
+		case 0x09: { /* '0x09' */
+            return 512
 		}
-	case 0x0a:
-		{ /* '0x0a' */
-			return 1024
+		case 0x0a: { /* '0x0a' */
+            return 1024
 		}
-	case 0x0b:
-		{ /* '0x0b' */
-			return 2048
+		case 0x0b: { /* '0x0b' */
+            return 2048
 		}
-	case 0x0c:
-		{ /* '0x0c' */
-			return 4096
+		case 0x0c: { /* '0x0c' */
+            return 4096
 		}
-	case 0x0d:
-		{ /* '0x0d' */
-			return 8192
+		case 0x0d: { /* '0x0d' */
+            return 8192
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -107,20 +100,20 @@ func COTPTpduSizeFirstEnumForFieldSizeInBytes(value uint16) (COTPTpduSize, error
 }
 func COTPTpduSizeByValue(value uint8) (enum COTPTpduSize, ok bool) {
 	switch value {
-	case 0x07:
-		return COTPTpduSize_SIZE_128, true
-	case 0x08:
-		return COTPTpduSize_SIZE_256, true
-	case 0x09:
-		return COTPTpduSize_SIZE_512, true
-	case 0x0a:
-		return COTPTpduSize_SIZE_1024, true
-	case 0x0b:
-		return COTPTpduSize_SIZE_2048, true
-	case 0x0c:
-		return COTPTpduSize_SIZE_4096, true
-	case 0x0d:
-		return COTPTpduSize_SIZE_8192, true
+		case 0x07:
+			return COTPTpduSize_SIZE_128, true
+		case 0x08:
+			return COTPTpduSize_SIZE_256, true
+		case 0x09:
+			return COTPTpduSize_SIZE_512, true
+		case 0x0a:
+			return COTPTpduSize_SIZE_1024, true
+		case 0x0b:
+			return COTPTpduSize_SIZE_2048, true
+		case 0x0c:
+			return COTPTpduSize_SIZE_4096, true
+		case 0x0d:
+			return COTPTpduSize_SIZE_8192, true
 	}
 	return 0, false
 }
@@ -145,13 +138,13 @@ func COTPTpduSizeByName(value string) (enum COTPTpduSize, ok bool) {
 	return 0, false
 }
 
-func COTPTpduSizeKnows(value uint8) bool {
+func COTPTpduSizeKnows(value uint8)  bool {
 	for _, typeValue := range COTPTpduSizeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastCOTPTpduSize(structType interface{}) COTPTpduSize {
@@ -225,3 +218,4 @@ func (e COTPTpduSize) PLC4XEnumName() string {
 func (e COTPTpduSize) String() string {
 	return e.PLC4XEnumName()
 }
+

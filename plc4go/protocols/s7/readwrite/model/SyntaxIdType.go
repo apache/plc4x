@@ -34,27 +34,27 @@ type ISyntaxIdType interface {
 	utils.Serializable
 }
 
-const (
-	SyntaxIdType_S7ANY             SyntaxIdType = 0x01
-	SyntaxIdType_PBC_ID            SyntaxIdType = 0x13
+const(
+	SyntaxIdType_S7ANY SyntaxIdType = 0x01
+	SyntaxIdType_PBC_ID SyntaxIdType = 0x13
 	SyntaxIdType_ALARM_LOCKFREESET SyntaxIdType = 0x15
-	SyntaxIdType_ALARM_INDSET      SyntaxIdType = 0x16
-	SyntaxIdType_ALARM_ACKSET      SyntaxIdType = 0x19
+	SyntaxIdType_ALARM_INDSET SyntaxIdType = 0x16
+	SyntaxIdType_ALARM_ACKSET SyntaxIdType = 0x19
 	SyntaxIdType_ALARM_QUERYREQSET SyntaxIdType = 0x1A
-	SyntaxIdType_NOTIFY_INDSET     SyntaxIdType = 0x1C
-	SyntaxIdType_NCK               SyntaxIdType = 0x82
-	SyntaxIdType_NCK_METRIC        SyntaxIdType = 0x83
-	SyntaxIdType_NCK_INCH          SyntaxIdType = 0x84
-	SyntaxIdType_DRIVEESANY        SyntaxIdType = 0xA2
-	SyntaxIdType_SYM1200           SyntaxIdType = 0xB2
-	SyntaxIdType_DBREAD            SyntaxIdType = 0xB0
+	SyntaxIdType_NOTIFY_INDSET SyntaxIdType = 0x1C
+	SyntaxIdType_NCK SyntaxIdType = 0x82
+	SyntaxIdType_NCK_METRIC SyntaxIdType = 0x83
+	SyntaxIdType_NCK_INCH SyntaxIdType = 0x84
+	SyntaxIdType_DRIVEESANY SyntaxIdType = 0xA2
+	SyntaxIdType_SYM1200 SyntaxIdType = 0xB2
+	SyntaxIdType_DBREAD SyntaxIdType = 0xB0
 )
 
 var SyntaxIdTypeValues []SyntaxIdType
 
 func init() {
 	_ = errors.New
-	SyntaxIdTypeValues = []SyntaxIdType{
+	SyntaxIdTypeValues = []SyntaxIdType {
 		SyntaxIdType_S7ANY,
 		SyntaxIdType_PBC_ID,
 		SyntaxIdType_ALARM_LOCKFREESET,
@@ -73,32 +73,32 @@ func init() {
 
 func SyntaxIdTypeByValue(value uint8) (enum SyntaxIdType, ok bool) {
 	switch value {
-	case 0x01:
-		return SyntaxIdType_S7ANY, true
-	case 0x13:
-		return SyntaxIdType_PBC_ID, true
-	case 0x15:
-		return SyntaxIdType_ALARM_LOCKFREESET, true
-	case 0x16:
-		return SyntaxIdType_ALARM_INDSET, true
-	case 0x19:
-		return SyntaxIdType_ALARM_ACKSET, true
-	case 0x1A:
-		return SyntaxIdType_ALARM_QUERYREQSET, true
-	case 0x1C:
-		return SyntaxIdType_NOTIFY_INDSET, true
-	case 0x82:
-		return SyntaxIdType_NCK, true
-	case 0x83:
-		return SyntaxIdType_NCK_METRIC, true
-	case 0x84:
-		return SyntaxIdType_NCK_INCH, true
-	case 0xA2:
-		return SyntaxIdType_DRIVEESANY, true
-	case 0xB0:
-		return SyntaxIdType_DBREAD, true
-	case 0xB2:
-		return SyntaxIdType_SYM1200, true
+		case 0x01:
+			return SyntaxIdType_S7ANY, true
+		case 0x13:
+			return SyntaxIdType_PBC_ID, true
+		case 0x15:
+			return SyntaxIdType_ALARM_LOCKFREESET, true
+		case 0x16:
+			return SyntaxIdType_ALARM_INDSET, true
+		case 0x19:
+			return SyntaxIdType_ALARM_ACKSET, true
+		case 0x1A:
+			return SyntaxIdType_ALARM_QUERYREQSET, true
+		case 0x1C:
+			return SyntaxIdType_NOTIFY_INDSET, true
+		case 0x82:
+			return SyntaxIdType_NCK, true
+		case 0x83:
+			return SyntaxIdType_NCK_METRIC, true
+		case 0x84:
+			return SyntaxIdType_NCK_INCH, true
+		case 0xA2:
+			return SyntaxIdType_DRIVEESANY, true
+		case 0xB0:
+			return SyntaxIdType_DBREAD, true
+		case 0xB2:
+			return SyntaxIdType_SYM1200, true
 	}
 	return 0, false
 }
@@ -135,13 +135,13 @@ func SyntaxIdTypeByName(value string) (enum SyntaxIdType, ok bool) {
 	return 0, false
 }
 
-func SyntaxIdTypeKnows(value uint8) bool {
+func SyntaxIdTypeKnows(value uint8)  bool {
 	for _, typeValue := range SyntaxIdTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastSyntaxIdType(structType interface{}) SyntaxIdType {
@@ -227,3 +227,4 @@ func (e SyntaxIdType) PLC4XEnumName() string {
 func (e SyntaxIdType) String() string {
 	return e.PLC4XEnumName()
 }
+

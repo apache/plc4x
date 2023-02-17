@@ -56,6 +56,8 @@ public class PlcSINT extends PlcIECValue<Byte> {
             return new PlcSINT((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcSINT((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcSINT(((Number) value).longValue());
         } else {
             return new PlcSINT((String) value);
         }

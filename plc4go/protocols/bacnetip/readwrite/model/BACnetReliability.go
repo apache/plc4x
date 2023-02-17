@@ -34,39 +34,39 @@ type IBACnetReliability interface {
 	utils.Serializable
 }
 
-const (
-	BACnetReliability_NO_FAULT_DETECTED                BACnetReliability = 0
-	BACnetReliability_NO_SENSOR                        BACnetReliability = 1
-	BACnetReliability_OVER_RANGE                       BACnetReliability = 2
-	BACnetReliability_UNDER_RANGE                      BACnetReliability = 3
-	BACnetReliability_OPEN_LOOP                        BACnetReliability = 4
-	BACnetReliability_SHORTED_LOOP                     BACnetReliability = 5
-	BACnetReliability_NO_OUTPUT                        BACnetReliability = 6
-	BACnetReliability_UNRELIABLE_OTHER                 BACnetReliability = 7
-	BACnetReliability_PROCESS_ERROR                    BACnetReliability = 8
-	BACnetReliability_MULTI_STATE_FAULT                BACnetReliability = 9
-	BACnetReliability_CONFIGURATION_ERROR              BACnetReliability = 10
-	BACnetReliability_COMMUNICATION_FAILURE            BACnetReliability = 12
-	BACnetReliability_MEMBER_FAULT                     BACnetReliability = 13
-	BACnetReliability_MONITORED_OBJECT_FAULT           BACnetReliability = 14
-	BACnetReliability_TRIPPED                          BACnetReliability = 15
-	BACnetReliability_LAMP_FAILURE                     BACnetReliability = 16
-	BACnetReliability_ACTIVATION_FAILURE               BACnetReliability = 17
-	BACnetReliability_RENEW_DHCP_FAILURE               BACnetReliability = 18
-	BACnetReliability_RENEW_FD_REGISTRATION_FAILURE    BACnetReliability = 19
+const(
+	BACnetReliability_NO_FAULT_DETECTED BACnetReliability = 0
+	BACnetReliability_NO_SENSOR BACnetReliability = 1
+	BACnetReliability_OVER_RANGE BACnetReliability = 2
+	BACnetReliability_UNDER_RANGE BACnetReliability = 3
+	BACnetReliability_OPEN_LOOP BACnetReliability = 4
+	BACnetReliability_SHORTED_LOOP BACnetReliability = 5
+	BACnetReliability_NO_OUTPUT BACnetReliability = 6
+	BACnetReliability_UNRELIABLE_OTHER BACnetReliability = 7
+	BACnetReliability_PROCESS_ERROR BACnetReliability = 8
+	BACnetReliability_MULTI_STATE_FAULT BACnetReliability = 9
+	BACnetReliability_CONFIGURATION_ERROR BACnetReliability = 10
+	BACnetReliability_COMMUNICATION_FAILURE BACnetReliability = 12
+	BACnetReliability_MEMBER_FAULT BACnetReliability = 13
+	BACnetReliability_MONITORED_OBJECT_FAULT BACnetReliability = 14
+	BACnetReliability_TRIPPED BACnetReliability = 15
+	BACnetReliability_LAMP_FAILURE BACnetReliability = 16
+	BACnetReliability_ACTIVATION_FAILURE BACnetReliability = 17
+	BACnetReliability_RENEW_DHCP_FAILURE BACnetReliability = 18
+	BACnetReliability_RENEW_FD_REGISTRATION_FAILURE BACnetReliability = 19
 	BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE BACnetReliability = 20
-	BACnetReliability_RESTART_FAILURE                  BACnetReliability = 21
-	BACnetReliability_PROPRIETARY_COMMAND_FAILURE      BACnetReliability = 22
-	BACnetReliability_FAULTS_LISTED                    BACnetReliability = 23
-	BACnetReliability_REFERENCED_OBJECT_FAULT          BACnetReliability = 24
-	BACnetReliability_VENDOR_PROPRIETARY_VALUE         BACnetReliability = 0xFFFF
+	BACnetReliability_RESTART_FAILURE BACnetReliability = 21
+	BACnetReliability_PROPRIETARY_COMMAND_FAILURE BACnetReliability = 22
+	BACnetReliability_FAULTS_LISTED BACnetReliability = 23
+	BACnetReliability_REFERENCED_OBJECT_FAULT BACnetReliability = 24
+	BACnetReliability_VENDOR_PROPRIETARY_VALUE BACnetReliability = 0XFFFF
 )
 
 var BACnetReliabilityValues []BACnetReliability
 
 func init() {
 	_ = errors.New
-	BACnetReliabilityValues = []BACnetReliability{
+	BACnetReliabilityValues = []BACnetReliability {
 		BACnetReliability_NO_FAULT_DETECTED,
 		BACnetReliability_NO_SENSOR,
 		BACnetReliability_OVER_RANGE,
@@ -97,56 +97,56 @@ func init() {
 
 func BACnetReliabilityByValue(value uint16) (enum BACnetReliability, ok bool) {
 	switch value {
-	case 0:
-		return BACnetReliability_NO_FAULT_DETECTED, true
-	case 0xFFFF:
-		return BACnetReliability_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetReliability_NO_SENSOR, true
-	case 10:
-		return BACnetReliability_CONFIGURATION_ERROR, true
-	case 12:
-		return BACnetReliability_COMMUNICATION_FAILURE, true
-	case 13:
-		return BACnetReliability_MEMBER_FAULT, true
-	case 14:
-		return BACnetReliability_MONITORED_OBJECT_FAULT, true
-	case 15:
-		return BACnetReliability_TRIPPED, true
-	case 16:
-		return BACnetReliability_LAMP_FAILURE, true
-	case 17:
-		return BACnetReliability_ACTIVATION_FAILURE, true
-	case 18:
-		return BACnetReliability_RENEW_DHCP_FAILURE, true
-	case 19:
-		return BACnetReliability_RENEW_FD_REGISTRATION_FAILURE, true
-	case 2:
-		return BACnetReliability_OVER_RANGE, true
-	case 20:
-		return BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE, true
-	case 21:
-		return BACnetReliability_RESTART_FAILURE, true
-	case 22:
-		return BACnetReliability_PROPRIETARY_COMMAND_FAILURE, true
-	case 23:
-		return BACnetReliability_FAULTS_LISTED, true
-	case 24:
-		return BACnetReliability_REFERENCED_OBJECT_FAULT, true
-	case 3:
-		return BACnetReliability_UNDER_RANGE, true
-	case 4:
-		return BACnetReliability_OPEN_LOOP, true
-	case 5:
-		return BACnetReliability_SHORTED_LOOP, true
-	case 6:
-		return BACnetReliability_NO_OUTPUT, true
-	case 7:
-		return BACnetReliability_UNRELIABLE_OTHER, true
-	case 8:
-		return BACnetReliability_PROCESS_ERROR, true
-	case 9:
-		return BACnetReliability_MULTI_STATE_FAULT, true
+		case 0:
+			return BACnetReliability_NO_FAULT_DETECTED, true
+		case 0XFFFF:
+			return BACnetReliability_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetReliability_NO_SENSOR, true
+		case 10:
+			return BACnetReliability_CONFIGURATION_ERROR, true
+		case 12:
+			return BACnetReliability_COMMUNICATION_FAILURE, true
+		case 13:
+			return BACnetReliability_MEMBER_FAULT, true
+		case 14:
+			return BACnetReliability_MONITORED_OBJECT_FAULT, true
+		case 15:
+			return BACnetReliability_TRIPPED, true
+		case 16:
+			return BACnetReliability_LAMP_FAILURE, true
+		case 17:
+			return BACnetReliability_ACTIVATION_FAILURE, true
+		case 18:
+			return BACnetReliability_RENEW_DHCP_FAILURE, true
+		case 19:
+			return BACnetReliability_RENEW_FD_REGISTRATION_FAILURE, true
+		case 2:
+			return BACnetReliability_OVER_RANGE, true
+		case 20:
+			return BACnetReliability_RESTART_AUTO_NEGOTIATION_FAILURE, true
+		case 21:
+			return BACnetReliability_RESTART_FAILURE, true
+		case 22:
+			return BACnetReliability_PROPRIETARY_COMMAND_FAILURE, true
+		case 23:
+			return BACnetReliability_FAULTS_LISTED, true
+		case 24:
+			return BACnetReliability_REFERENCED_OBJECT_FAULT, true
+		case 3:
+			return BACnetReliability_UNDER_RANGE, true
+		case 4:
+			return BACnetReliability_OPEN_LOOP, true
+		case 5:
+			return BACnetReliability_SHORTED_LOOP, true
+		case 6:
+			return BACnetReliability_NO_OUTPUT, true
+		case 7:
+			return BACnetReliability_UNRELIABLE_OTHER, true
+		case 8:
+			return BACnetReliability_PROCESS_ERROR, true
+		case 9:
+			return BACnetReliability_MULTI_STATE_FAULT, true
 	}
 	return 0, false
 }
@@ -207,13 +207,13 @@ func BACnetReliabilityByName(value string) (enum BACnetReliability, ok bool) {
 	return 0, false
 }
 
-func BACnetReliabilityKnows(value uint16) bool {
+func BACnetReliabilityKnows(value uint16)  bool {
 	for _, typeValue := range BACnetReliabilityValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetReliability(structType interface{}) BACnetReliability {
@@ -323,3 +323,4 @@ func (e BACnetReliability) PLC4XEnumName() string {
 func (e BACnetReliability) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -21,8 +21,8 @@ package readwrite
 
 import (
 	"context"
-	"strconv"
 	"strings"
+	"strconv"
 
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -43,30 +43,30 @@ func init() {
 }
 
 func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
-	switch typeName {
-	case "CipService":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
-		if err != nil {
-			return nil, err
-		}
-		serviceLen := uint16(parsedUint0)
-		return model.CipServiceParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceLen)
-	case "EipPacket":
-		return model.EipPacketParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Services":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
-		if err != nil {
-			return nil, err
-		}
-		servicesLen := uint16(parsedUint0)
-		return model.ServicesParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), servicesLen)
-	case "CipExchange":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
-		if err != nil {
-			return nil, err
-		}
-		exchangeLen := uint16(parsedUint0)
-		return model.CipExchangeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), exchangeLen)
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
+    switch typeName {
+        case "CipService":
+			parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+			if err!=nil {
+				return nil, err
+			}
+			serviceLen := uint16(parsedUint0)
+            return model.CipServiceParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), serviceLen  )
+        case "EipPacket":
+			return model.EipPacketParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "Services":
+			parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+			if err!=nil {
+				return nil, err
+			}
+			servicesLen := uint16(parsedUint0)
+            return model.ServicesParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), servicesLen  )
+        case "CipExchange":
+			parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+			if err!=nil {
+				return nil, err
+			}
+			exchangeLen := uint16(parsedUint0)
+            return model.CipExchangeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), exchangeLen  )
+    }
+    return nil, errors.Errorf("Unsupported type %s", typeName)
 }

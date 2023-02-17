@@ -34,25 +34,25 @@ type IBACnetRejectReason interface {
 	utils.Serializable
 }
 
-const (
-	BACnetRejectReason_OTHER                       BACnetRejectReason = 0x0
-	BACnetRejectReason_BUFFER_OVERFLOW             BACnetRejectReason = 0x1
-	BACnetRejectReason_INCONSISTENT_PARAMETERS     BACnetRejectReason = 0x2
+const(
+	BACnetRejectReason_OTHER BACnetRejectReason = 0x0
+	BACnetRejectReason_BUFFER_OVERFLOW BACnetRejectReason = 0x1
+	BACnetRejectReason_INCONSISTENT_PARAMETERS BACnetRejectReason = 0x2
 	BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE BACnetRejectReason = 0x3
-	BACnetRejectReason_INVALID_TAG                 BACnetRejectReason = 0x4
-	BACnetRejectReason_MISSING_REQUIRED_PARAMETER  BACnetRejectReason = 0x5
-	BACnetRejectReason_PARAMETER_OUT_OF_RANGE      BACnetRejectReason = 0x6
-	BACnetRejectReason_TOO_MANY_ARGUMENTS          BACnetRejectReason = 0x7
-	BACnetRejectReason_UNDEFINED_ENUMERATION       BACnetRejectReason = 0x8
-	BACnetRejectReason_UNRECOGNIZED_SERVICE        BACnetRejectReason = 0x9
-	BACnetRejectReason_VENDOR_PROPRIETARY_VALUE    BACnetRejectReason = 0xFF
+	BACnetRejectReason_INVALID_TAG BACnetRejectReason = 0x4
+	BACnetRejectReason_MISSING_REQUIRED_PARAMETER BACnetRejectReason = 0x5
+	BACnetRejectReason_PARAMETER_OUT_OF_RANGE BACnetRejectReason = 0x6
+	BACnetRejectReason_TOO_MANY_ARGUMENTS BACnetRejectReason = 0x7
+	BACnetRejectReason_UNDEFINED_ENUMERATION BACnetRejectReason = 0x8
+	BACnetRejectReason_UNRECOGNIZED_SERVICE BACnetRejectReason = 0x9
+	BACnetRejectReason_VENDOR_PROPRIETARY_VALUE BACnetRejectReason = 0xFF
 )
 
 var BACnetRejectReasonValues []BACnetRejectReason
 
 func init() {
 	_ = errors.New
-	BACnetRejectReasonValues = []BACnetRejectReason{
+	BACnetRejectReasonValues = []BACnetRejectReason {
 		BACnetRejectReason_OTHER,
 		BACnetRejectReason_BUFFER_OVERFLOW,
 		BACnetRejectReason_INCONSISTENT_PARAMETERS,
@@ -69,28 +69,28 @@ func init() {
 
 func BACnetRejectReasonByValue(value uint8) (enum BACnetRejectReason, ok bool) {
 	switch value {
-	case 0x0:
-		return BACnetRejectReason_OTHER, true
-	case 0x1:
-		return BACnetRejectReason_BUFFER_OVERFLOW, true
-	case 0x2:
-		return BACnetRejectReason_INCONSISTENT_PARAMETERS, true
-	case 0x3:
-		return BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE, true
-	case 0x4:
-		return BACnetRejectReason_INVALID_TAG, true
-	case 0x5:
-		return BACnetRejectReason_MISSING_REQUIRED_PARAMETER, true
-	case 0x6:
-		return BACnetRejectReason_PARAMETER_OUT_OF_RANGE, true
-	case 0x7:
-		return BACnetRejectReason_TOO_MANY_ARGUMENTS, true
-	case 0x8:
-		return BACnetRejectReason_UNDEFINED_ENUMERATION, true
-	case 0x9:
-		return BACnetRejectReason_UNRECOGNIZED_SERVICE, true
-	case 0xFF:
-		return BACnetRejectReason_VENDOR_PROPRIETARY_VALUE, true
+		case 0x0:
+			return BACnetRejectReason_OTHER, true
+		case 0x1:
+			return BACnetRejectReason_BUFFER_OVERFLOW, true
+		case 0x2:
+			return BACnetRejectReason_INCONSISTENT_PARAMETERS, true
+		case 0x3:
+			return BACnetRejectReason_INVALID_PARAMETER_DATA_TYPE, true
+		case 0x4:
+			return BACnetRejectReason_INVALID_TAG, true
+		case 0x5:
+			return BACnetRejectReason_MISSING_REQUIRED_PARAMETER, true
+		case 0x6:
+			return BACnetRejectReason_PARAMETER_OUT_OF_RANGE, true
+		case 0x7:
+			return BACnetRejectReason_TOO_MANY_ARGUMENTS, true
+		case 0x8:
+			return BACnetRejectReason_UNDEFINED_ENUMERATION, true
+		case 0x9:
+			return BACnetRejectReason_UNRECOGNIZED_SERVICE, true
+		case 0xFF:
+			return BACnetRejectReason_VENDOR_PROPRIETARY_VALUE, true
 	}
 	return 0, false
 }
@@ -123,13 +123,13 @@ func BACnetRejectReasonByName(value string) (enum BACnetRejectReason, ok bool) {
 	return 0, false
 }
 
-func BACnetRejectReasonKnows(value uint8) bool {
+func BACnetRejectReasonKnows(value uint8)  bool {
 	for _, typeValue := range BACnetRejectReasonValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetRejectReason(structType interface{}) BACnetRejectReason {
@@ -211,3 +211,4 @@ func (e BACnetRejectReason) PLC4XEnumName() string {
 func (e BACnetRejectReason) String() string {
 	return e.PLC4XEnumName()
 }
+

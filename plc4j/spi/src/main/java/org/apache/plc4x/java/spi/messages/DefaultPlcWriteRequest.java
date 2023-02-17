@@ -27,6 +27,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
@@ -93,6 +94,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
         return tags.values().stream().map(TagValueItem::getTag).collect(Collectors.toCollection(LinkedList::new));
     }
 
+    @Override
     @JsonIgnore
     public PlcValue getPlcValue(String name) {
         return tags.get(name).getValue();
@@ -194,6 +196,9 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
                 PlcTag tag = tagValues.getLeft().get();
                 Object[] value = tagValues.getRight();
                 PlcValue plcValue = valueHandler.newPlcValue(tag, value);
+                if(tag.getPlcValueType()== PlcValueType.NULL){
+                    tag.setPlcValueType(plcValue.getPlcValueType());
+                }
                 parsedTags.put(name, new TagValueItem(tag, plcValue));
             });
             return new DefaultPlcWriteRequest(writer, parsedTags);

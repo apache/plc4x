@@ -37,64 +37,64 @@ type IKnxPropertyDataType interface {
 	Name() string
 }
 
-const (
-	KnxPropertyDataType_PDT_UNKNOWN             KnxPropertyDataType = 0
-	KnxPropertyDataType_PDT_CONTROL             KnxPropertyDataType = 1
-	KnxPropertyDataType_PDT_CHAR                KnxPropertyDataType = 2
-	KnxPropertyDataType_PDT_UNSIGNED_CHAR       KnxPropertyDataType = 3
-	KnxPropertyDataType_PDT_INT                 KnxPropertyDataType = 4
-	KnxPropertyDataType_PDT_UNSIGNED_INT        KnxPropertyDataType = 5
-	KnxPropertyDataType_PDT_KNX_FLOAT           KnxPropertyDataType = 6
-	KnxPropertyDataType_PDT_DATE                KnxPropertyDataType = 7
-	KnxPropertyDataType_PDT_TIME                KnxPropertyDataType = 8
-	KnxPropertyDataType_PDT_LONG                KnxPropertyDataType = 9
-	KnxPropertyDataType_PDT_UNSIGNED_LONG       KnxPropertyDataType = 10
-	KnxPropertyDataType_PDT_FLOAT               KnxPropertyDataType = 11
-	KnxPropertyDataType_PDT_DOUBLE              KnxPropertyDataType = 12
-	KnxPropertyDataType_PDT_CHAR_BLOCK          KnxPropertyDataType = 13
+const(
+	KnxPropertyDataType_PDT_UNKNOWN KnxPropertyDataType = 0
+	KnxPropertyDataType_PDT_CONTROL KnxPropertyDataType = 1
+	KnxPropertyDataType_PDT_CHAR KnxPropertyDataType = 2
+	KnxPropertyDataType_PDT_UNSIGNED_CHAR KnxPropertyDataType = 3
+	KnxPropertyDataType_PDT_INT KnxPropertyDataType = 4
+	KnxPropertyDataType_PDT_UNSIGNED_INT KnxPropertyDataType = 5
+	KnxPropertyDataType_PDT_KNX_FLOAT KnxPropertyDataType = 6
+	KnxPropertyDataType_PDT_DATE KnxPropertyDataType = 7
+	KnxPropertyDataType_PDT_TIME KnxPropertyDataType = 8
+	KnxPropertyDataType_PDT_LONG KnxPropertyDataType = 9
+	KnxPropertyDataType_PDT_UNSIGNED_LONG KnxPropertyDataType = 10
+	KnxPropertyDataType_PDT_FLOAT KnxPropertyDataType = 11
+	KnxPropertyDataType_PDT_DOUBLE KnxPropertyDataType = 12
+	KnxPropertyDataType_PDT_CHAR_BLOCK KnxPropertyDataType = 13
 	KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS KnxPropertyDataType = 14
-	KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK    KnxPropertyDataType = 15
-	KnxPropertyDataType_PDT_DATE_TIME           KnxPropertyDataType = 16
-	KnxPropertyDataType_PDT_VARIABLE_LENGTH     KnxPropertyDataType = 17
-	KnxPropertyDataType_PDT_GENERIC_01          KnxPropertyDataType = 18
-	KnxPropertyDataType_PDT_GENERIC_02          KnxPropertyDataType = 19
-	KnxPropertyDataType_PDT_GENERIC_03          KnxPropertyDataType = 20
-	KnxPropertyDataType_PDT_GENERIC_04          KnxPropertyDataType = 21
-	KnxPropertyDataType_PDT_GENERIC_05          KnxPropertyDataType = 22
-	KnxPropertyDataType_PDT_GENERIC_06          KnxPropertyDataType = 23
-	KnxPropertyDataType_PDT_GENERIC_07          KnxPropertyDataType = 24
-	KnxPropertyDataType_PDT_GENERIC_08          KnxPropertyDataType = 25
-	KnxPropertyDataType_PDT_GENERIC_09          KnxPropertyDataType = 26
-	KnxPropertyDataType_PDT_GENERIC_10          KnxPropertyDataType = 27
-	KnxPropertyDataType_PDT_GENERIC_11          KnxPropertyDataType = 28
-	KnxPropertyDataType_PDT_GENERIC_12          KnxPropertyDataType = 29
-	KnxPropertyDataType_PDT_GENERIC_13          KnxPropertyDataType = 30
-	KnxPropertyDataType_PDT_GENERIC_14          KnxPropertyDataType = 31
-	KnxPropertyDataType_PDT_GENERIC_15          KnxPropertyDataType = 32
-	KnxPropertyDataType_PDT_GENERIC_16          KnxPropertyDataType = 33
-	KnxPropertyDataType_PDT_GENERIC_17          KnxPropertyDataType = 34
-	KnxPropertyDataType_PDT_GENERIC_18          KnxPropertyDataType = 35
-	KnxPropertyDataType_PDT_GENERIC_19          KnxPropertyDataType = 36
-	KnxPropertyDataType_PDT_GENERIC_20          KnxPropertyDataType = 37
-	KnxPropertyDataType_PDT_UTF_8               KnxPropertyDataType = 38
-	KnxPropertyDataType_PDT_VERSION             KnxPropertyDataType = 39
-	KnxPropertyDataType_PDT_ALARM_INFO          KnxPropertyDataType = 40
-	KnxPropertyDataType_PDT_BINARY_INFORMATION  KnxPropertyDataType = 41
-	KnxPropertyDataType_PDT_BITSET8             KnxPropertyDataType = 42
-	KnxPropertyDataType_PDT_BITSET16            KnxPropertyDataType = 43
-	KnxPropertyDataType_PDT_ENUM8               KnxPropertyDataType = 44
-	KnxPropertyDataType_PDT_SCALING             KnxPropertyDataType = 45
-	KnxPropertyDataType_PDT_NE_VL               KnxPropertyDataType = 46
-	KnxPropertyDataType_PDT_NE_FL               KnxPropertyDataType = 47
-	KnxPropertyDataType_PDT_FUNCTION            KnxPropertyDataType = 48
-	KnxPropertyDataType_PDT_ESCAPE              KnxPropertyDataType = 49
+	KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK KnxPropertyDataType = 15
+	KnxPropertyDataType_PDT_DATE_TIME KnxPropertyDataType = 16
+	KnxPropertyDataType_PDT_VARIABLE_LENGTH KnxPropertyDataType = 17
+	KnxPropertyDataType_PDT_GENERIC_01 KnxPropertyDataType = 18
+	KnxPropertyDataType_PDT_GENERIC_02 KnxPropertyDataType = 19
+	KnxPropertyDataType_PDT_GENERIC_03 KnxPropertyDataType = 20
+	KnxPropertyDataType_PDT_GENERIC_04 KnxPropertyDataType = 21
+	KnxPropertyDataType_PDT_GENERIC_05 KnxPropertyDataType = 22
+	KnxPropertyDataType_PDT_GENERIC_06 KnxPropertyDataType = 23
+	KnxPropertyDataType_PDT_GENERIC_07 KnxPropertyDataType = 24
+	KnxPropertyDataType_PDT_GENERIC_08 KnxPropertyDataType = 25
+	KnxPropertyDataType_PDT_GENERIC_09 KnxPropertyDataType = 26
+	KnxPropertyDataType_PDT_GENERIC_10 KnxPropertyDataType = 27
+	KnxPropertyDataType_PDT_GENERIC_11 KnxPropertyDataType = 28
+	KnxPropertyDataType_PDT_GENERIC_12 KnxPropertyDataType = 29
+	KnxPropertyDataType_PDT_GENERIC_13 KnxPropertyDataType = 30
+	KnxPropertyDataType_PDT_GENERIC_14 KnxPropertyDataType = 31
+	KnxPropertyDataType_PDT_GENERIC_15 KnxPropertyDataType = 32
+	KnxPropertyDataType_PDT_GENERIC_16 KnxPropertyDataType = 33
+	KnxPropertyDataType_PDT_GENERIC_17 KnxPropertyDataType = 34
+	KnxPropertyDataType_PDT_GENERIC_18 KnxPropertyDataType = 35
+	KnxPropertyDataType_PDT_GENERIC_19 KnxPropertyDataType = 36
+	KnxPropertyDataType_PDT_GENERIC_20 KnxPropertyDataType = 37
+	KnxPropertyDataType_PDT_UTF_8 KnxPropertyDataType = 38
+	KnxPropertyDataType_PDT_VERSION KnxPropertyDataType = 39
+	KnxPropertyDataType_PDT_ALARM_INFO KnxPropertyDataType = 40
+	KnxPropertyDataType_PDT_BINARY_INFORMATION KnxPropertyDataType = 41
+	KnxPropertyDataType_PDT_BITSET8 KnxPropertyDataType = 42
+	KnxPropertyDataType_PDT_BITSET16 KnxPropertyDataType = 43
+	KnxPropertyDataType_PDT_ENUM8 KnxPropertyDataType = 44
+	KnxPropertyDataType_PDT_SCALING KnxPropertyDataType = 45
+	KnxPropertyDataType_PDT_NE_VL KnxPropertyDataType = 46
+	KnxPropertyDataType_PDT_NE_FL KnxPropertyDataType = 47
+	KnxPropertyDataType_PDT_FUNCTION KnxPropertyDataType = 48
+	KnxPropertyDataType_PDT_ESCAPE KnxPropertyDataType = 49
 )
 
 var KnxPropertyDataTypeValues []KnxPropertyDataType
 
 func init() {
 	_ = errors.New
-	KnxPropertyDataTypeValues = []KnxPropertyDataType{
+	KnxPropertyDataTypeValues = []KnxPropertyDataType {
 		KnxPropertyDataType_PDT_UNKNOWN,
 		KnxPropertyDataType_PDT_CONTROL,
 		KnxPropertyDataType_PDT_CHAR,
@@ -148,210 +148,160 @@ func init() {
 	}
 }
 
+
 func (e KnxPropertyDataType) Number() uint8 {
-	switch e {
-	case 0:
-		{ /* '0' */
-			return 0
+	switch e  {
+		case 0: { /* '0' */
+            return 0
 		}
-	case 1:
-		{ /* '1' */
-			return 0
+		case 1: { /* '1' */
+            return 0
 		}
-	case 10:
-		{ /* '10' */
-			return 9
+		case 10: { /* '10' */
+            return 9
 		}
-	case 11:
-		{ /* '11' */
-			return 10
+		case 11: { /* '11' */
+            return 10
 		}
-	case 12:
-		{ /* '12' */
-			return 11
+		case 12: { /* '12' */
+            return 11
 		}
-	case 13:
-		{ /* '13' */
-			return 12
+		case 13: { /* '13' */
+            return 12
 		}
-	case 14:
-		{ /* '14' */
-			return 13
+		case 14: { /* '14' */
+            return 13
 		}
-	case 15:
-		{ /* '15' */
-			return 14
+		case 15: { /* '15' */
+            return 14
 		}
-	case 16:
-		{ /* '16' */
-			return 15
+		case 16: { /* '16' */
+            return 15
 		}
-	case 17:
-		{ /* '17' */
-			return 16
+		case 17: { /* '17' */
+            return 16
 		}
-	case 18:
-		{ /* '18' */
-			return 17
+		case 18: { /* '18' */
+            return 17
 		}
-	case 19:
-		{ /* '19' */
-			return 18
+		case 19: { /* '19' */
+            return 18
 		}
-	case 2:
-		{ /* '2' */
-			return 1
+		case 2: { /* '2' */
+            return 1
 		}
-	case 20:
-		{ /* '20' */
-			return 19
+		case 20: { /* '20' */
+            return 19
 		}
-	case 21:
-		{ /* '21' */
-			return 20
+		case 21: { /* '21' */
+            return 20
 		}
-	case 22:
-		{ /* '22' */
-			return 21
+		case 22: { /* '22' */
+            return 21
 		}
-	case 23:
-		{ /* '23' */
-			return 22
+		case 23: { /* '23' */
+            return 22
 		}
-	case 24:
-		{ /* '24' */
-			return 23
+		case 24: { /* '24' */
+            return 23
 		}
-	case 25:
-		{ /* '25' */
-			return 24
+		case 25: { /* '25' */
+            return 24
 		}
-	case 26:
-		{ /* '26' */
-			return 25
+		case 26: { /* '26' */
+            return 25
 		}
-	case 27:
-		{ /* '27' */
-			return 26
+		case 27: { /* '27' */
+            return 26
 		}
-	case 28:
-		{ /* '28' */
-			return 27
+		case 28: { /* '28' */
+            return 27
 		}
-	case 29:
-		{ /* '29' */
-			return 28
+		case 29: { /* '29' */
+            return 28
 		}
-	case 3:
-		{ /* '3' */
-			return 2
+		case 3: { /* '3' */
+            return 2
 		}
-	case 30:
-		{ /* '30' */
-			return 29
+		case 30: { /* '30' */
+            return 29
 		}
-	case 31:
-		{ /* '31' */
-			return 30
+		case 31: { /* '31' */
+            return 30
 		}
-	case 32:
-		{ /* '32' */
-			return 31
+		case 32: { /* '32' */
+            return 31
 		}
-	case 33:
-		{ /* '33' */
-			return 32
+		case 33: { /* '33' */
+            return 32
 		}
-	case 34:
-		{ /* '34' */
-			return 33
+		case 34: { /* '34' */
+            return 33
 		}
-	case 35:
-		{ /* '35' */
-			return 34
+		case 35: { /* '35' */
+            return 34
 		}
-	case 36:
-		{ /* '36' */
-			return 35
+		case 36: { /* '36' */
+            return 35
 		}
-	case 37:
-		{ /* '37' */
-			return 36
+		case 37: { /* '37' */
+            return 36
 		}
-	case 38:
-		{ /* '38' */
-			return 47
+		case 38: { /* '38' */
+            return 47
 		}
-	case 39:
-		{ /* '39' */
-			return 48
+		case 39: { /* '39' */
+            return 48
 		}
-	case 4:
-		{ /* '4' */
-			return 3
+		case 4: { /* '4' */
+            return 3
 		}
-	case 40:
-		{ /* '40' */
-			return 49
+		case 40: { /* '40' */
+            return 49
 		}
-	case 41:
-		{ /* '41' */
-			return 50
+		case 41: { /* '41' */
+            return 50
 		}
-	case 42:
-		{ /* '42' */
-			return 51
+		case 42: { /* '42' */
+            return 51
 		}
-	case 43:
-		{ /* '43' */
-			return 52
+		case 43: { /* '43' */
+            return 52
 		}
-	case 44:
-		{ /* '44' */
-			return 53
+		case 44: { /* '44' */
+            return 53
 		}
-	case 45:
-		{ /* '45' */
-			return 54
+		case 45: { /* '45' */
+            return 54
 		}
-	case 46:
-		{ /* '46' */
-			return 60
+		case 46: { /* '46' */
+            return 60
 		}
-	case 47:
-		{ /* '47' */
-			return 61
+		case 47: { /* '47' */
+            return 61
 		}
-	case 48:
-		{ /* '48' */
-			return 62
+		case 48: { /* '48' */
+            return 62
 		}
-	case 49:
-		{ /* '49' */
-			return 63
+		case 49: { /* '49' */
+            return 63
 		}
-	case 5:
-		{ /* '5' */
-			return 4
+		case 5: { /* '5' */
+            return 4
 		}
-	case 6:
-		{ /* '6' */
-			return 5
+		case 6: { /* '6' */
+            return 5
 		}
-	case 7:
-		{ /* '7' */
-			return 6
+		case 7: { /* '7' */
+            return 6
 		}
-	case 8:
-		{ /* '8' */
-			return 7
+		case 8: { /* '8' */
+            return 7
 		}
-	case 9:
-		{ /* '9' */
-			return 8
+		case 9: { /* '9' */
+            return 8
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -367,209 +317,158 @@ func KnxPropertyDataTypeFirstEnumForFieldNumber(value uint8) (KnxPropertyDataTyp
 }
 
 func (e KnxPropertyDataType) SizeInBytes() uint8 {
-	switch e {
-	case 0:
-		{ /* '0' */
-			return 0
+	switch e  {
+		case 0: { /* '0' */
+            return 0
 		}
-	case 1:
-		{ /* '1' */
-			return 10
+		case 1: { /* '1' */
+            return 10
 		}
-	case 10:
-		{ /* '10' */
-			return 4
+		case 10: { /* '10' */
+            return 4
 		}
-	case 11:
-		{ /* '11' */
-			return 4
+		case 11: { /* '11' */
+            return 4
 		}
-	case 12:
-		{ /* '12' */
-			return 8
+		case 12: { /* '12' */
+            return 8
 		}
-	case 13:
-		{ /* '13' */
-			return 10
+		case 13: { /* '13' */
+            return 10
 		}
-	case 14:
-		{ /* '14' */
-			return 3
+		case 14: { /* '14' */
+            return 3
 		}
-	case 15:
-		{ /* '15' */
-			return 5
+		case 15: { /* '15' */
+            return 5
 		}
-	case 16:
-		{ /* '16' */
-			return 8
+		case 16: { /* '16' */
+            return 8
 		}
-	case 17:
-		{ /* '17' */
-			return 0
+		case 17: { /* '17' */
+            return 0
 		}
-	case 18:
-		{ /* '18' */
-			return 1
+		case 18: { /* '18' */
+            return 1
 		}
-	case 19:
-		{ /* '19' */
-			return 2
+		case 19: { /* '19' */
+            return 2
 		}
-	case 2:
-		{ /* '2' */
-			return 1
+		case 2: { /* '2' */
+            return 1
 		}
-	case 20:
-		{ /* '20' */
-			return 3
+		case 20: { /* '20' */
+            return 3
 		}
-	case 21:
-		{ /* '21' */
-			return 4
+		case 21: { /* '21' */
+            return 4
 		}
-	case 22:
-		{ /* '22' */
-			return 5
+		case 22: { /* '22' */
+            return 5
 		}
-	case 23:
-		{ /* '23' */
-			return 6
+		case 23: { /* '23' */
+            return 6
 		}
-	case 24:
-		{ /* '24' */
-			return 7
+		case 24: { /* '24' */
+            return 7
 		}
-	case 25:
-		{ /* '25' */
-			return 8
+		case 25: { /* '25' */
+            return 8
 		}
-	case 26:
-		{ /* '26' */
-			return 9
+		case 26: { /* '26' */
+            return 9
 		}
-	case 27:
-		{ /* '27' */
-			return 10
+		case 27: { /* '27' */
+            return 10
 		}
-	case 28:
-		{ /* '28' */
-			return 11
+		case 28: { /* '28' */
+            return 11
 		}
-	case 29:
-		{ /* '29' */
-			return 12
+		case 29: { /* '29' */
+            return 12
 		}
-	case 3:
-		{ /* '3' */
-			return 1
+		case 3: { /* '3' */
+            return 1
 		}
-	case 30:
-		{ /* '30' */
-			return 13
+		case 30: { /* '30' */
+            return 13
 		}
-	case 31:
-		{ /* '31' */
-			return 14
+		case 31: { /* '31' */
+            return 14
 		}
-	case 32:
-		{ /* '32' */
-			return 15
+		case 32: { /* '32' */
+            return 15
 		}
-	case 33:
-		{ /* '33' */
-			return 16
+		case 33: { /* '33' */
+            return 16
 		}
-	case 34:
-		{ /* '34' */
-			return 17
+		case 34: { /* '34' */
+            return 17
 		}
-	case 35:
-		{ /* '35' */
-			return 18
+		case 35: { /* '35' */
+            return 18
 		}
-	case 36:
-		{ /* '36' */
-			return 19
+		case 36: { /* '36' */
+            return 19
 		}
-	case 37:
-		{ /* '37' */
-			return 20
+		case 37: { /* '37' */
+            return 20
 		}
-	case 38:
-		{ /* '38' */
-			return 0
+		case 38: { /* '38' */
+            return 0
 		}
-	case 39:
-		{ /* '39' */
-			return 2
+		case 39: { /* '39' */
+            return 2
 		}
-	case 4:
-		{ /* '4' */
-			return 2
+		case 4: { /* '4' */
+            return 2
 		}
-	case 40:
-		{ /* '40' */
-			return 6
+		case 40: { /* '40' */
+            return 6
 		}
-	case 41:
-		{ /* '41' */
-			return 1
+		case 41: { /* '41' */
+            return 1
 		}
-	case 42:
-		{ /* '42' */
-			return 1
+		case 42: { /* '42' */
+            return 1
 		}
-	case 43:
-		{ /* '43' */
-			return 2
+		case 43: { /* '43' */
+            return 2
 		}
-	case 44:
-		{ /* '44' */
-			return 1
+		case 44: { /* '44' */
+            return 1
 		}
-	case 45:
-		{ /* '45' */
-			return 1
+		case 45: { /* '45' */
+            return 1
 		}
-	case 46:
-		{ /* '46' */
-			return 0
+		case 46: { /* '46' */
+            return 0
 		}
-	case 47:
-		{ /* '47' */
-			return 0
+		case 47: { /* '47' */
+            return 0
 		}
-	case 48:
-		{ /* '48' */
-			return 0
+		case 48: { /* '48' */
+            return 0
 		}
-	case 49:
-		{ /* '49' */
-			return 0
+		case 49: { /* '49' */
+            return 0
 		}
-	case 5:
-		{ /* '5' */
-			return 2
+		case 5: { /* '5' */
+            return 2
 		}
-	case 6:
-		{ /* '6' */
-			return 2
+		case 6: { /* '6' */
+            return 2
 		}
-	case 7:
-		{ /* '7' */
-			return 3
+		case 7: { /* '7' */
+            return 3
 		}
-	case 8:
-		{ /* '8' */
-			return 3
+		case 8: { /* '8' */
+            return 3
 		}
-	case 9:
-		{ /* '9' */
-			return 4
+		case 9: { /* '9' */
+            return 4
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -585,209 +484,158 @@ func KnxPropertyDataTypeFirstEnumForFieldSizeInBytes(value uint8) (KnxPropertyDa
 }
 
 func (e KnxPropertyDataType) Name() string {
-	switch e {
-	case 0:
-		{ /* '0' */
-			return "Unknown Property Data Type"
+	switch e  {
+		case 0: { /* '0' */
+            return "Unknown Property Data Type"
 		}
-	case 1:
-		{ /* '1' */
-			return "PDT_CONTROL"
+		case 1: { /* '1' */
+            return "PDT_CONTROL"
 		}
-	case 10:
-		{ /* '10' */
-			return "PDT_UNSIGNED_LONG"
+		case 10: { /* '10' */
+            return "PDT_UNSIGNED_LONG"
 		}
-	case 11:
-		{ /* '11' */
-			return "PDT_FLOAT"
+		case 11: { /* '11' */
+            return "PDT_FLOAT"
 		}
-	case 12:
-		{ /* '12' */
-			return "PDT_DOUBLE"
+		case 12: { /* '12' */
+            return "PDT_DOUBLE"
 		}
-	case 13:
-		{ /* '13' */
-			return "PDT_CHAR_BLOCK"
+		case 13: { /* '13' */
+            return "PDT_CHAR_BLOCK"
 		}
-	case 14:
-		{ /* '14' */
-			return "PDT_POLL_GROUP_SETTINGS"
+		case 14: { /* '14' */
+            return "PDT_POLL_GROUP_SETTINGS"
 		}
-	case 15:
-		{ /* '15' */
-			return "PDT_SHORT_CHAR_BLOCK"
+		case 15: { /* '15' */
+            return "PDT_SHORT_CHAR_BLOCK"
 		}
-	case 16:
-		{ /* '16' */
-			return "PDT_DATE_TIME"
+		case 16: { /* '16' */
+            return "PDT_DATE_TIME"
 		}
-	case 17:
-		{ /* '17' */
-			return "PDT_VARIABLE_LENGTH"
+		case 17: { /* '17' */
+            return "PDT_VARIABLE_LENGTH"
 		}
-	case 18:
-		{ /* '18' */
-			return "PDT_GENERIC_01"
+		case 18: { /* '18' */
+            return "PDT_GENERIC_01"
 		}
-	case 19:
-		{ /* '19' */
-			return "PDT_GENERIC_02"
+		case 19: { /* '19' */
+            return "PDT_GENERIC_02"
 		}
-	case 2:
-		{ /* '2' */
-			return "PDT_CHAR"
+		case 2: { /* '2' */
+            return "PDT_CHAR"
 		}
-	case 20:
-		{ /* '20' */
-			return "PDT_GENERIC_03"
+		case 20: { /* '20' */
+            return "PDT_GENERIC_03"
 		}
-	case 21:
-		{ /* '21' */
-			return "PDT_GENERIC_04"
+		case 21: { /* '21' */
+            return "PDT_GENERIC_04"
 		}
-	case 22:
-		{ /* '22' */
-			return "PDT_GENERIC_05"
+		case 22: { /* '22' */
+            return "PDT_GENERIC_05"
 		}
-	case 23:
-		{ /* '23' */
-			return "PDT_GENERIC_06"
+		case 23: { /* '23' */
+            return "PDT_GENERIC_06"
 		}
-	case 24:
-		{ /* '24' */
-			return "PDT_GENERIC_07"
+		case 24: { /* '24' */
+            return "PDT_GENERIC_07"
 		}
-	case 25:
-		{ /* '25' */
-			return "PDT_GENERIC_08"
+		case 25: { /* '25' */
+            return "PDT_GENERIC_08"
 		}
-	case 26:
-		{ /* '26' */
-			return "PDT_GENERIC_09"
+		case 26: { /* '26' */
+            return "PDT_GENERIC_09"
 		}
-	case 27:
-		{ /* '27' */
-			return "PDT_GENERIC_10"
+		case 27: { /* '27' */
+            return "PDT_GENERIC_10"
 		}
-	case 28:
-		{ /* '28' */
-			return "PDT_GENERIC_11"
+		case 28: { /* '28' */
+            return "PDT_GENERIC_11"
 		}
-	case 29:
-		{ /* '29' */
-			return "PDT_GENERIC_12"
+		case 29: { /* '29' */
+            return "PDT_GENERIC_12"
 		}
-	case 3:
-		{ /* '3' */
-			return "PDT_UNSIGNED_CHAR"
+		case 3: { /* '3' */
+            return "PDT_UNSIGNED_CHAR"
 		}
-	case 30:
-		{ /* '30' */
-			return "PDT_GENERIC_13"
+		case 30: { /* '30' */
+            return "PDT_GENERIC_13"
 		}
-	case 31:
-		{ /* '31' */
-			return "PDT_GENERIC_14"
+		case 31: { /* '31' */
+            return "PDT_GENERIC_14"
 		}
-	case 32:
-		{ /* '32' */
-			return "PDT_GENERIC_15"
+		case 32: { /* '32' */
+            return "PDT_GENERIC_15"
 		}
-	case 33:
-		{ /* '33' */
-			return "PDT_GENERIC_16"
+		case 33: { /* '33' */
+            return "PDT_GENERIC_16"
 		}
-	case 34:
-		{ /* '34' */
-			return "PDT_GENERIC_17"
+		case 34: { /* '34' */
+            return "PDT_GENERIC_17"
 		}
-	case 35:
-		{ /* '35' */
-			return "PDT_GENERIC_18"
+		case 35: { /* '35' */
+            return "PDT_GENERIC_18"
 		}
-	case 36:
-		{ /* '36' */
-			return "PDT_GENERIC_19"
+		case 36: { /* '36' */
+            return "PDT_GENERIC_19"
 		}
-	case 37:
-		{ /* '37' */
-			return "PDT_GENERIC_20"
+		case 37: { /* '37' */
+            return "PDT_GENERIC_20"
 		}
-	case 38:
-		{ /* '38' */
-			return "PDT_UTF-8"
+		case 38: { /* '38' */
+            return "PDT_UTF-8"
 		}
-	case 39:
-		{ /* '39' */
-			return "PDT_VERSION"
+		case 39: { /* '39' */
+            return "PDT_VERSION"
 		}
-	case 4:
-		{ /* '4' */
-			return "PDT_INT"
+		case 4: { /* '4' */
+            return "PDT_INT"
 		}
-	case 40:
-		{ /* '40' */
-			return "PDT_ALARM_INFO"
+		case 40: { /* '40' */
+            return "PDT_ALARM_INFO"
 		}
-	case 41:
-		{ /* '41' */
-			return "PDT_BINARY_INFORMATION"
+		case 41: { /* '41' */
+            return "PDT_BINARY_INFORMATION"
 		}
-	case 42:
-		{ /* '42' */
-			return "PDT_BITSET8"
+		case 42: { /* '42' */
+            return "PDT_BITSET8"
 		}
-	case 43:
-		{ /* '43' */
-			return "PDT_BITSET16"
+		case 43: { /* '43' */
+            return "PDT_BITSET16"
 		}
-	case 44:
-		{ /* '44' */
-			return "PDT_ENUM8"
+		case 44: { /* '44' */
+            return "PDT_ENUM8"
 		}
-	case 45:
-		{ /* '45' */
-			return "PDT_SCALING"
+		case 45: { /* '45' */
+            return "PDT_SCALING"
 		}
-	case 46:
-		{ /* '46' */
-			return "PDT_NE_VL"
+		case 46: { /* '46' */
+            return "PDT_NE_VL"
 		}
-	case 47:
-		{ /* '47' */
-			return "PDT_NE_FL"
+		case 47: { /* '47' */
+            return "PDT_NE_FL"
 		}
-	case 48:
-		{ /* '48' */
-			return "PDT_FUNCTION"
+		case 48: { /* '48' */
+            return "PDT_FUNCTION"
 		}
-	case 49:
-		{ /* '49' */
-			return "PDT_ESCAPE"
+		case 49: { /* '49' */
+            return "PDT_ESCAPE"
 		}
-	case 5:
-		{ /* '5' */
-			return "PDT_UNSIGNED_INT"
+		case 5: { /* '5' */
+            return "PDT_UNSIGNED_INT"
 		}
-	case 6:
-		{ /* '6' */
-			return "PDT_KNX_FLOAT"
+		case 6: { /* '6' */
+            return "PDT_KNX_FLOAT"
 		}
-	case 7:
-		{ /* '7' */
-			return "PDT_DATE"
+		case 7: { /* '7' */
+            return "PDT_DATE"
 		}
-	case 8:
-		{ /* '8' */
-			return "PDT_TIME"
+		case 8: { /* '8' */
+            return "PDT_TIME"
 		}
-	case 9:
-		{ /* '9' */
-			return "PDT_LONG"
+		case 9: { /* '9' */
+            return "PDT_LONG"
 		}
-	default:
-		{
+		default: {
 			return ""
 		}
 	}
@@ -803,106 +651,106 @@ func KnxPropertyDataTypeFirstEnumForFieldName(value string) (KnxPropertyDataType
 }
 func KnxPropertyDataTypeByValue(value uint8) (enum KnxPropertyDataType, ok bool) {
 	switch value {
-	case 0:
-		return KnxPropertyDataType_PDT_UNKNOWN, true
-	case 1:
-		return KnxPropertyDataType_PDT_CONTROL, true
-	case 10:
-		return KnxPropertyDataType_PDT_UNSIGNED_LONG, true
-	case 11:
-		return KnxPropertyDataType_PDT_FLOAT, true
-	case 12:
-		return KnxPropertyDataType_PDT_DOUBLE, true
-	case 13:
-		return KnxPropertyDataType_PDT_CHAR_BLOCK, true
-	case 14:
-		return KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS, true
-	case 15:
-		return KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK, true
-	case 16:
-		return KnxPropertyDataType_PDT_DATE_TIME, true
-	case 17:
-		return KnxPropertyDataType_PDT_VARIABLE_LENGTH, true
-	case 18:
-		return KnxPropertyDataType_PDT_GENERIC_01, true
-	case 19:
-		return KnxPropertyDataType_PDT_GENERIC_02, true
-	case 2:
-		return KnxPropertyDataType_PDT_CHAR, true
-	case 20:
-		return KnxPropertyDataType_PDT_GENERIC_03, true
-	case 21:
-		return KnxPropertyDataType_PDT_GENERIC_04, true
-	case 22:
-		return KnxPropertyDataType_PDT_GENERIC_05, true
-	case 23:
-		return KnxPropertyDataType_PDT_GENERIC_06, true
-	case 24:
-		return KnxPropertyDataType_PDT_GENERIC_07, true
-	case 25:
-		return KnxPropertyDataType_PDT_GENERIC_08, true
-	case 26:
-		return KnxPropertyDataType_PDT_GENERIC_09, true
-	case 27:
-		return KnxPropertyDataType_PDT_GENERIC_10, true
-	case 28:
-		return KnxPropertyDataType_PDT_GENERIC_11, true
-	case 29:
-		return KnxPropertyDataType_PDT_GENERIC_12, true
-	case 3:
-		return KnxPropertyDataType_PDT_UNSIGNED_CHAR, true
-	case 30:
-		return KnxPropertyDataType_PDT_GENERIC_13, true
-	case 31:
-		return KnxPropertyDataType_PDT_GENERIC_14, true
-	case 32:
-		return KnxPropertyDataType_PDT_GENERIC_15, true
-	case 33:
-		return KnxPropertyDataType_PDT_GENERIC_16, true
-	case 34:
-		return KnxPropertyDataType_PDT_GENERIC_17, true
-	case 35:
-		return KnxPropertyDataType_PDT_GENERIC_18, true
-	case 36:
-		return KnxPropertyDataType_PDT_GENERIC_19, true
-	case 37:
-		return KnxPropertyDataType_PDT_GENERIC_20, true
-	case 38:
-		return KnxPropertyDataType_PDT_UTF_8, true
-	case 39:
-		return KnxPropertyDataType_PDT_VERSION, true
-	case 4:
-		return KnxPropertyDataType_PDT_INT, true
-	case 40:
-		return KnxPropertyDataType_PDT_ALARM_INFO, true
-	case 41:
-		return KnxPropertyDataType_PDT_BINARY_INFORMATION, true
-	case 42:
-		return KnxPropertyDataType_PDT_BITSET8, true
-	case 43:
-		return KnxPropertyDataType_PDT_BITSET16, true
-	case 44:
-		return KnxPropertyDataType_PDT_ENUM8, true
-	case 45:
-		return KnxPropertyDataType_PDT_SCALING, true
-	case 46:
-		return KnxPropertyDataType_PDT_NE_VL, true
-	case 47:
-		return KnxPropertyDataType_PDT_NE_FL, true
-	case 48:
-		return KnxPropertyDataType_PDT_FUNCTION, true
-	case 49:
-		return KnxPropertyDataType_PDT_ESCAPE, true
-	case 5:
-		return KnxPropertyDataType_PDT_UNSIGNED_INT, true
-	case 6:
-		return KnxPropertyDataType_PDT_KNX_FLOAT, true
-	case 7:
-		return KnxPropertyDataType_PDT_DATE, true
-	case 8:
-		return KnxPropertyDataType_PDT_TIME, true
-	case 9:
-		return KnxPropertyDataType_PDT_LONG, true
+		case 0:
+			return KnxPropertyDataType_PDT_UNKNOWN, true
+		case 1:
+			return KnxPropertyDataType_PDT_CONTROL, true
+		case 10:
+			return KnxPropertyDataType_PDT_UNSIGNED_LONG, true
+		case 11:
+			return KnxPropertyDataType_PDT_FLOAT, true
+		case 12:
+			return KnxPropertyDataType_PDT_DOUBLE, true
+		case 13:
+			return KnxPropertyDataType_PDT_CHAR_BLOCK, true
+		case 14:
+			return KnxPropertyDataType_PDT_POLL_GROUP_SETTINGS, true
+		case 15:
+			return KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK, true
+		case 16:
+			return KnxPropertyDataType_PDT_DATE_TIME, true
+		case 17:
+			return KnxPropertyDataType_PDT_VARIABLE_LENGTH, true
+		case 18:
+			return KnxPropertyDataType_PDT_GENERIC_01, true
+		case 19:
+			return KnxPropertyDataType_PDT_GENERIC_02, true
+		case 2:
+			return KnxPropertyDataType_PDT_CHAR, true
+		case 20:
+			return KnxPropertyDataType_PDT_GENERIC_03, true
+		case 21:
+			return KnxPropertyDataType_PDT_GENERIC_04, true
+		case 22:
+			return KnxPropertyDataType_PDT_GENERIC_05, true
+		case 23:
+			return KnxPropertyDataType_PDT_GENERIC_06, true
+		case 24:
+			return KnxPropertyDataType_PDT_GENERIC_07, true
+		case 25:
+			return KnxPropertyDataType_PDT_GENERIC_08, true
+		case 26:
+			return KnxPropertyDataType_PDT_GENERIC_09, true
+		case 27:
+			return KnxPropertyDataType_PDT_GENERIC_10, true
+		case 28:
+			return KnxPropertyDataType_PDT_GENERIC_11, true
+		case 29:
+			return KnxPropertyDataType_PDT_GENERIC_12, true
+		case 3:
+			return KnxPropertyDataType_PDT_UNSIGNED_CHAR, true
+		case 30:
+			return KnxPropertyDataType_PDT_GENERIC_13, true
+		case 31:
+			return KnxPropertyDataType_PDT_GENERIC_14, true
+		case 32:
+			return KnxPropertyDataType_PDT_GENERIC_15, true
+		case 33:
+			return KnxPropertyDataType_PDT_GENERIC_16, true
+		case 34:
+			return KnxPropertyDataType_PDT_GENERIC_17, true
+		case 35:
+			return KnxPropertyDataType_PDT_GENERIC_18, true
+		case 36:
+			return KnxPropertyDataType_PDT_GENERIC_19, true
+		case 37:
+			return KnxPropertyDataType_PDT_GENERIC_20, true
+		case 38:
+			return KnxPropertyDataType_PDT_UTF_8, true
+		case 39:
+			return KnxPropertyDataType_PDT_VERSION, true
+		case 4:
+			return KnxPropertyDataType_PDT_INT, true
+		case 40:
+			return KnxPropertyDataType_PDT_ALARM_INFO, true
+		case 41:
+			return KnxPropertyDataType_PDT_BINARY_INFORMATION, true
+		case 42:
+			return KnxPropertyDataType_PDT_BITSET8, true
+		case 43:
+			return KnxPropertyDataType_PDT_BITSET16, true
+		case 44:
+			return KnxPropertyDataType_PDT_ENUM8, true
+		case 45:
+			return KnxPropertyDataType_PDT_SCALING, true
+		case 46:
+			return KnxPropertyDataType_PDT_NE_VL, true
+		case 47:
+			return KnxPropertyDataType_PDT_NE_FL, true
+		case 48:
+			return KnxPropertyDataType_PDT_FUNCTION, true
+		case 49:
+			return KnxPropertyDataType_PDT_ESCAPE, true
+		case 5:
+			return KnxPropertyDataType_PDT_UNSIGNED_INT, true
+		case 6:
+			return KnxPropertyDataType_PDT_KNX_FLOAT, true
+		case 7:
+			return KnxPropertyDataType_PDT_DATE, true
+		case 8:
+			return KnxPropertyDataType_PDT_TIME, true
+		case 9:
+			return KnxPropertyDataType_PDT_LONG, true
 	}
 	return 0, false
 }
@@ -1013,13 +861,13 @@ func KnxPropertyDataTypeByName(value string) (enum KnxPropertyDataType, ok bool)
 	return 0, false
 }
 
-func KnxPropertyDataTypeKnows(value uint8) bool {
+func KnxPropertyDataTypeKnows(value uint8)  bool {
 	for _, typeValue := range KnxPropertyDataTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastKnxPropertyDataType(structType interface{}) KnxPropertyDataType {
@@ -1179,3 +1027,4 @@ func (e KnxPropertyDataType) PLC4XEnumName() string {
 func (e KnxPropertyDataType) String() string {
 	return e.PLC4XEnumName()
 }
+

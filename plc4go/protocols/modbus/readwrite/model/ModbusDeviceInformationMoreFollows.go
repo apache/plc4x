@@ -34,16 +34,16 @@ type IModbusDeviceInformationMoreFollows interface {
 	utils.Serializable
 }
 
-const (
+const(
 	ModbusDeviceInformationMoreFollows_NO_MORE_OBJECTS_AVAILABLE ModbusDeviceInformationMoreFollows = 0x00
-	ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE    ModbusDeviceInformationMoreFollows = 0xFF
+	ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE ModbusDeviceInformationMoreFollows = 0xFF
 )
 
 var ModbusDeviceInformationMoreFollowsValues []ModbusDeviceInformationMoreFollows
 
 func init() {
 	_ = errors.New
-	ModbusDeviceInformationMoreFollowsValues = []ModbusDeviceInformationMoreFollows{
+	ModbusDeviceInformationMoreFollowsValues = []ModbusDeviceInformationMoreFollows {
 		ModbusDeviceInformationMoreFollows_NO_MORE_OBJECTS_AVAILABLE,
 		ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE,
 	}
@@ -51,10 +51,10 @@ func init() {
 
 func ModbusDeviceInformationMoreFollowsByValue(value uint8) (enum ModbusDeviceInformationMoreFollows, ok bool) {
 	switch value {
-	case 0x00:
-		return ModbusDeviceInformationMoreFollows_NO_MORE_OBJECTS_AVAILABLE, true
-	case 0xFF:
-		return ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE, true
+		case 0x00:
+			return ModbusDeviceInformationMoreFollows_NO_MORE_OBJECTS_AVAILABLE, true
+		case 0xFF:
+			return ModbusDeviceInformationMoreFollows_MORE_OBJECTS_AVAILABLE, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func ModbusDeviceInformationMoreFollowsByName(value string) (enum ModbusDeviceIn
 	return 0, false
 }
 
-func ModbusDeviceInformationMoreFollowsKnows(value uint8) bool {
+func ModbusDeviceInformationMoreFollowsKnows(value uint8)  bool {
 	for _, typeValue := range ModbusDeviceInformationMoreFollowsValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastModbusDeviceInformationMoreFollows(structType interface{}) ModbusDeviceInformationMoreFollows {
@@ -139,3 +139,4 @@ func (e ModbusDeviceInformationMoreFollows) PLC4XEnumName() string {
 func (e ModbusDeviceInformationMoreFollows) String() string {
 	return e.PLC4XEnumName()
 }
+

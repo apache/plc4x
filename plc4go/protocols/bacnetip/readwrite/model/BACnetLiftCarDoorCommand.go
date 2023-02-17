@@ -34,9 +34,9 @@ type IBACnetLiftCarDoorCommand interface {
 	utils.Serializable
 }
 
-const (
-	BACnetLiftCarDoorCommand_NONE  BACnetLiftCarDoorCommand = 0
-	BACnetLiftCarDoorCommand_OPEN  BACnetLiftCarDoorCommand = 1
+const(
+	BACnetLiftCarDoorCommand_NONE BACnetLiftCarDoorCommand = 0
+	BACnetLiftCarDoorCommand_OPEN BACnetLiftCarDoorCommand = 1
 	BACnetLiftCarDoorCommand_CLOSE BACnetLiftCarDoorCommand = 2
 )
 
@@ -44,7 +44,7 @@ var BACnetLiftCarDoorCommandValues []BACnetLiftCarDoorCommand
 
 func init() {
 	_ = errors.New
-	BACnetLiftCarDoorCommandValues = []BACnetLiftCarDoorCommand{
+	BACnetLiftCarDoorCommandValues = []BACnetLiftCarDoorCommand {
 		BACnetLiftCarDoorCommand_NONE,
 		BACnetLiftCarDoorCommand_OPEN,
 		BACnetLiftCarDoorCommand_CLOSE,
@@ -53,12 +53,12 @@ func init() {
 
 func BACnetLiftCarDoorCommandByValue(value uint8) (enum BACnetLiftCarDoorCommand, ok bool) {
 	switch value {
-	case 0:
-		return BACnetLiftCarDoorCommand_NONE, true
-	case 1:
-		return BACnetLiftCarDoorCommand_OPEN, true
-	case 2:
-		return BACnetLiftCarDoorCommand_CLOSE, true
+		case 0:
+			return BACnetLiftCarDoorCommand_NONE, true
+		case 1:
+			return BACnetLiftCarDoorCommand_OPEN, true
+		case 2:
+			return BACnetLiftCarDoorCommand_CLOSE, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func BACnetLiftCarDoorCommandByName(value string) (enum BACnetLiftCarDoorCommand
 	return 0, false
 }
 
-func BACnetLiftCarDoorCommandKnows(value uint8) bool {
+func BACnetLiftCarDoorCommandKnows(value uint8)  bool {
 	for _, typeValue := range BACnetLiftCarDoorCommandValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetLiftCarDoorCommand(structType interface{}) BACnetLiftCarDoorCommand {
@@ -147,3 +147,4 @@ func (e BACnetLiftCarDoorCommand) PLC4XEnumName() string {
 func (e BACnetLiftCarDoorCommand) String() string {
 	return e.PLC4XEnumName()
 }
+

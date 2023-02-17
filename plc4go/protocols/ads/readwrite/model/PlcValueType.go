@@ -34,37 +34,37 @@ type IPlcValueType interface {
 	utils.Serializable
 }
 
-const (
-	PlcValueType_NULL           PlcValueType = 0x00
-	PlcValueType_BOOL           PlcValueType = 0x01
-	PlcValueType_BYTE           PlcValueType = 0x02
-	PlcValueType_WORD           PlcValueType = 0x03
-	PlcValueType_DWORD          PlcValueType = 0x04
-	PlcValueType_LWORD          PlcValueType = 0x05
-	PlcValueType_USINT          PlcValueType = 0x11
-	PlcValueType_UINT           PlcValueType = 0x12
-	PlcValueType_UDINT          PlcValueType = 0x13
-	PlcValueType_ULINT          PlcValueType = 0x14
-	PlcValueType_SINT           PlcValueType = 0x21
-	PlcValueType_INT            PlcValueType = 0x22
-	PlcValueType_DINT           PlcValueType = 0x23
-	PlcValueType_LINT           PlcValueType = 0x24
-	PlcValueType_REAL           PlcValueType = 0x31
-	PlcValueType_LREAL          PlcValueType = 0x32
-	PlcValueType_CHAR           PlcValueType = 0x41
-	PlcValueType_WCHAR          PlcValueType = 0x42
-	PlcValueType_STRING         PlcValueType = 0x43
-	PlcValueType_WSTRING        PlcValueType = 0x44
-	PlcValueType_TIME           PlcValueType = 0x51
-	PlcValueType_LTIME          PlcValueType = 0x52
-	PlcValueType_DATE           PlcValueType = 0x53
-	PlcValueType_LDATE          PlcValueType = 0x54
-	PlcValueType_TIME_OF_DAY    PlcValueType = 0x55
-	PlcValueType_LTIME_OF_DAY   PlcValueType = 0x56
-	PlcValueType_DATE_AND_TIME  PlcValueType = 0x57
+const(
+	PlcValueType_NULL PlcValueType = 0x00
+	PlcValueType_BOOL PlcValueType = 0x01
+	PlcValueType_BYTE PlcValueType = 0x02
+	PlcValueType_WORD PlcValueType = 0x03
+	PlcValueType_DWORD PlcValueType = 0x04
+	PlcValueType_LWORD PlcValueType = 0x05
+	PlcValueType_USINT PlcValueType = 0x11
+	PlcValueType_UINT PlcValueType = 0x12
+	PlcValueType_UDINT PlcValueType = 0x13
+	PlcValueType_ULINT PlcValueType = 0x14
+	PlcValueType_SINT PlcValueType = 0x21
+	PlcValueType_INT PlcValueType = 0x22
+	PlcValueType_DINT PlcValueType = 0x23
+	PlcValueType_LINT PlcValueType = 0x24
+	PlcValueType_REAL PlcValueType = 0x31
+	PlcValueType_LREAL PlcValueType = 0x32
+	PlcValueType_CHAR PlcValueType = 0x41
+	PlcValueType_WCHAR PlcValueType = 0x42
+	PlcValueType_STRING PlcValueType = 0x43
+	PlcValueType_WSTRING PlcValueType = 0x44
+	PlcValueType_TIME PlcValueType = 0x51
+	PlcValueType_LTIME PlcValueType = 0x52
+	PlcValueType_DATE PlcValueType = 0x53
+	PlcValueType_LDATE PlcValueType = 0x54
+	PlcValueType_TIME_OF_DAY PlcValueType = 0x55
+	PlcValueType_LTIME_OF_DAY PlcValueType = 0x56
+	PlcValueType_DATE_AND_TIME PlcValueType = 0x57
 	PlcValueType_LDATE_AND_TIME PlcValueType = 0x58
-	PlcValueType_Struct         PlcValueType = 0x61
-	PlcValueType_List           PlcValueType = 0x62
+	PlcValueType_Struct PlcValueType = 0x61
+	PlcValueType_List PlcValueType = 0x62
 	PlcValueType_RAW_BYTE_ARRAY PlcValueType = 0x71
 )
 
@@ -72,7 +72,7 @@ var PlcValueTypeValues []PlcValueType
 
 func init() {
 	_ = errors.New
-	PlcValueTypeValues = []PlcValueType{
+	PlcValueTypeValues = []PlcValueType {
 		PlcValueType_NULL,
 		PlcValueType_BOOL,
 		PlcValueType_BYTE,
@@ -109,68 +109,68 @@ func init() {
 
 func PlcValueTypeByValue(value uint8) (enum PlcValueType, ok bool) {
 	switch value {
-	case 0x00:
-		return PlcValueType_NULL, true
-	case 0x01:
-		return PlcValueType_BOOL, true
-	case 0x02:
-		return PlcValueType_BYTE, true
-	case 0x03:
-		return PlcValueType_WORD, true
-	case 0x04:
-		return PlcValueType_DWORD, true
-	case 0x05:
-		return PlcValueType_LWORD, true
-	case 0x11:
-		return PlcValueType_USINT, true
-	case 0x12:
-		return PlcValueType_UINT, true
-	case 0x13:
-		return PlcValueType_UDINT, true
-	case 0x14:
-		return PlcValueType_ULINT, true
-	case 0x21:
-		return PlcValueType_SINT, true
-	case 0x22:
-		return PlcValueType_INT, true
-	case 0x23:
-		return PlcValueType_DINT, true
-	case 0x24:
-		return PlcValueType_LINT, true
-	case 0x31:
-		return PlcValueType_REAL, true
-	case 0x32:
-		return PlcValueType_LREAL, true
-	case 0x41:
-		return PlcValueType_CHAR, true
-	case 0x42:
-		return PlcValueType_WCHAR, true
-	case 0x43:
-		return PlcValueType_STRING, true
-	case 0x44:
-		return PlcValueType_WSTRING, true
-	case 0x51:
-		return PlcValueType_TIME, true
-	case 0x52:
-		return PlcValueType_LTIME, true
-	case 0x53:
-		return PlcValueType_DATE, true
-	case 0x54:
-		return PlcValueType_LDATE, true
-	case 0x55:
-		return PlcValueType_TIME_OF_DAY, true
-	case 0x56:
-		return PlcValueType_LTIME_OF_DAY, true
-	case 0x57:
-		return PlcValueType_DATE_AND_TIME, true
-	case 0x58:
-		return PlcValueType_LDATE_AND_TIME, true
-	case 0x61:
-		return PlcValueType_Struct, true
-	case 0x62:
-		return PlcValueType_List, true
-	case 0x71:
-		return PlcValueType_RAW_BYTE_ARRAY, true
+		case 0x00:
+			return PlcValueType_NULL, true
+		case 0x01:
+			return PlcValueType_BOOL, true
+		case 0x02:
+			return PlcValueType_BYTE, true
+		case 0x03:
+			return PlcValueType_WORD, true
+		case 0x04:
+			return PlcValueType_DWORD, true
+		case 0x05:
+			return PlcValueType_LWORD, true
+		case 0x11:
+			return PlcValueType_USINT, true
+		case 0x12:
+			return PlcValueType_UINT, true
+		case 0x13:
+			return PlcValueType_UDINT, true
+		case 0x14:
+			return PlcValueType_ULINT, true
+		case 0x21:
+			return PlcValueType_SINT, true
+		case 0x22:
+			return PlcValueType_INT, true
+		case 0x23:
+			return PlcValueType_DINT, true
+		case 0x24:
+			return PlcValueType_LINT, true
+		case 0x31:
+			return PlcValueType_REAL, true
+		case 0x32:
+			return PlcValueType_LREAL, true
+		case 0x41:
+			return PlcValueType_CHAR, true
+		case 0x42:
+			return PlcValueType_WCHAR, true
+		case 0x43:
+			return PlcValueType_STRING, true
+		case 0x44:
+			return PlcValueType_WSTRING, true
+		case 0x51:
+			return PlcValueType_TIME, true
+		case 0x52:
+			return PlcValueType_LTIME, true
+		case 0x53:
+			return PlcValueType_DATE, true
+		case 0x54:
+			return PlcValueType_LDATE, true
+		case 0x55:
+			return PlcValueType_TIME_OF_DAY, true
+		case 0x56:
+			return PlcValueType_LTIME_OF_DAY, true
+		case 0x57:
+			return PlcValueType_DATE_AND_TIME, true
+		case 0x58:
+			return PlcValueType_LDATE_AND_TIME, true
+		case 0x61:
+			return PlcValueType_Struct, true
+		case 0x62:
+			return PlcValueType_List, true
+		case 0x71:
+			return PlcValueType_RAW_BYTE_ARRAY, true
 	}
 	return 0, false
 }
@@ -243,13 +243,13 @@ func PlcValueTypeByName(value string) (enum PlcValueType, ok bool) {
 	return 0, false
 }
 
-func PlcValueTypeKnows(value uint8) bool {
+func PlcValueTypeKnows(value uint8)  bool {
 	for _, typeValue := range PlcValueTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastPlcValueType(structType interface{}) PlcValueType {
@@ -371,3 +371,4 @@ func (e PlcValueType) PLC4XEnumName() string {
 func (e PlcValueType) String() string {
 	return e.PLC4XEnumName()
 }
+

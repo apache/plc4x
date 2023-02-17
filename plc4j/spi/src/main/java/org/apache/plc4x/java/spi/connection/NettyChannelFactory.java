@@ -24,6 +24,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timer;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +44,14 @@ public abstract class NettyChannelFactory implements ChannelFactory {
 
     private static final Logger logger = LoggerFactory.getLogger(NettyChannelFactory.class);
 
+    protected static HashedWheelTimer timer = new HashedWheelTimer();
+    @Override
+    public Timer getTimer(){
+        if(timer==null){
+            timer = new HashedWheelTimer();
+        }
+        return timer;
+    }
     private final Map<Channel, EventLoopGroup> eventLoops = new ConcurrentHashMap<>();
 
     /**
@@ -151,6 +161,8 @@ public abstract class NettyChannelFactory implements ChannelFactory {
             EventLoopGroup eventExecutors = eventLoops.get(channel);
             eventLoops.remove(channel);
             eventExecutors.shutdownGracefully().awaitUninterruptibly();
+            timer.stop();
+            timer = null;
             logger.info("Worker Group was closed successfully!");
         } else {
             logger.warn("Trying to remove EventLoop for Channel {} but have none stored", channel);

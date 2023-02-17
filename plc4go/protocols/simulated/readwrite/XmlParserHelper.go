@@ -21,8 +21,8 @@ package readwrite
 
 import (
 	"context"
-	"strconv"
 	"strings"
+	"strconv"
 
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -43,18 +43,18 @@ func init() {
 }
 
 func (m SimulatedXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
-	switch typeName {
-	case "DataItem":
-		// TODO: find a way to parse the sub types
-		var dataType string
-		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 16)
-		if err != nil {
-			return nil, err
-		}
-		numberOfValues := uint16(parsedUint1)
-		return model.DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType, numberOfValues)
-	case "Dummy":
-		return model.DummyParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
+    switch typeName {
+        case "DataItem":
+			// TODO: find a way to parse the sub types
+            var dataType string
+			parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 16)
+			if err!=nil {
+				return nil, err
+			}
+			numberOfValues := uint16(parsedUint1)
+            return model.DataItemParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataType,  numberOfValues  )
+        case "Dummy":
+			return model.DummyParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+    }
+    return nil, errors.Errorf("Unsupported type %s", typeName)
 }

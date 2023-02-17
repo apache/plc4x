@@ -34,16 +34,16 @@ type IModbusErrorCode interface {
 	utils.Serializable
 }
 
-const (
-	ModbusErrorCode_ILLEGAL_FUNCTION                        ModbusErrorCode = 1
-	ModbusErrorCode_ILLEGAL_DATA_ADDRESS                    ModbusErrorCode = 2
-	ModbusErrorCode_ILLEGAL_DATA_VALUE                      ModbusErrorCode = 3
-	ModbusErrorCode_SLAVE_DEVICE_FAILURE                    ModbusErrorCode = 4
-	ModbusErrorCode_ACKNOWLEDGE                             ModbusErrorCode = 5
-	ModbusErrorCode_SLAVE_DEVICE_BUSY                       ModbusErrorCode = 6
-	ModbusErrorCode_NEGATIVE_ACKNOWLEDGE                    ModbusErrorCode = 7
-	ModbusErrorCode_MEMORY_PARITY_ERROR                     ModbusErrorCode = 8
-	ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE                ModbusErrorCode = 10
+const(
+	ModbusErrorCode_ILLEGAL_FUNCTION ModbusErrorCode = 1
+	ModbusErrorCode_ILLEGAL_DATA_ADDRESS ModbusErrorCode = 2
+	ModbusErrorCode_ILLEGAL_DATA_VALUE ModbusErrorCode = 3
+	ModbusErrorCode_SLAVE_DEVICE_FAILURE ModbusErrorCode = 4
+	ModbusErrorCode_ACKNOWLEDGE ModbusErrorCode = 5
+	ModbusErrorCode_SLAVE_DEVICE_BUSY ModbusErrorCode = 6
+	ModbusErrorCode_NEGATIVE_ACKNOWLEDGE ModbusErrorCode = 7
+	ModbusErrorCode_MEMORY_PARITY_ERROR ModbusErrorCode = 8
+	ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE ModbusErrorCode = 10
 	ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND ModbusErrorCode = 11
 )
 
@@ -51,7 +51,7 @@ var ModbusErrorCodeValues []ModbusErrorCode
 
 func init() {
 	_ = errors.New
-	ModbusErrorCodeValues = []ModbusErrorCode{
+	ModbusErrorCodeValues = []ModbusErrorCode {
 		ModbusErrorCode_ILLEGAL_FUNCTION,
 		ModbusErrorCode_ILLEGAL_DATA_ADDRESS,
 		ModbusErrorCode_ILLEGAL_DATA_VALUE,
@@ -67,26 +67,26 @@ func init() {
 
 func ModbusErrorCodeByValue(value uint8) (enum ModbusErrorCode, ok bool) {
 	switch value {
-	case 1:
-		return ModbusErrorCode_ILLEGAL_FUNCTION, true
-	case 10:
-		return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE, true
-	case 11:
-		return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND, true
-	case 2:
-		return ModbusErrorCode_ILLEGAL_DATA_ADDRESS, true
-	case 3:
-		return ModbusErrorCode_ILLEGAL_DATA_VALUE, true
-	case 4:
-		return ModbusErrorCode_SLAVE_DEVICE_FAILURE, true
-	case 5:
-		return ModbusErrorCode_ACKNOWLEDGE, true
-	case 6:
-		return ModbusErrorCode_SLAVE_DEVICE_BUSY, true
-	case 7:
-		return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE, true
-	case 8:
-		return ModbusErrorCode_MEMORY_PARITY_ERROR, true
+		case 1:
+			return ModbusErrorCode_ILLEGAL_FUNCTION, true
+		case 10:
+			return ModbusErrorCode_GATEWAY_PATH_UNAVAILABLE, true
+		case 11:
+			return ModbusErrorCode_GATEWAY_TARGET_DEVICE_FAILED_TO_RESPOND, true
+		case 2:
+			return ModbusErrorCode_ILLEGAL_DATA_ADDRESS, true
+		case 3:
+			return ModbusErrorCode_ILLEGAL_DATA_VALUE, true
+		case 4:
+			return ModbusErrorCode_SLAVE_DEVICE_FAILURE, true
+		case 5:
+			return ModbusErrorCode_ACKNOWLEDGE, true
+		case 6:
+			return ModbusErrorCode_SLAVE_DEVICE_BUSY, true
+		case 7:
+			return ModbusErrorCode_NEGATIVE_ACKNOWLEDGE, true
+		case 8:
+			return ModbusErrorCode_MEMORY_PARITY_ERROR, true
 	}
 	return 0, false
 }
@@ -117,13 +117,13 @@ func ModbusErrorCodeByName(value string) (enum ModbusErrorCode, ok bool) {
 	return 0, false
 }
 
-func ModbusErrorCodeKnows(value uint8) bool {
+func ModbusErrorCodeKnows(value uint8)  bool {
 	for _, typeValue := range ModbusErrorCodeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastModbusErrorCode(structType interface{}) ModbusErrorCode {
@@ -203,3 +203,4 @@ func (e ModbusErrorCode) PLC4XEnumName() string {
 func (e ModbusErrorCode) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,18 +34,18 @@ type IHVACSensorStatus interface {
 	utils.Serializable
 }
 
-const (
-	HVACSensorStatus_NO_ERROR_OPERATING_NORMALLY               HVACSensorStatus = 0x00
+const(
+	HVACSensorStatus_NO_ERROR_OPERATING_NORMALLY HVACSensorStatus = 0x00
 	HVACSensorStatus_SENSOR_OPERATING_IN_RELAXED_ACCURACY_BAND HVACSensorStatus = 0x01
-	HVACSensorStatus_SENSOR_OUT_OF_CALIBRATION                 HVACSensorStatus = 0x02
-	HVACSensorStatus_SENSOR_TOTAL_FAILURE                      HVACSensorStatus = 0x03
+	HVACSensorStatus_SENSOR_OUT_OF_CALIBRATION HVACSensorStatus = 0x02
+	HVACSensorStatus_SENSOR_TOTAL_FAILURE HVACSensorStatus = 0x03
 )
 
 var HVACSensorStatusValues []HVACSensorStatus
 
 func init() {
 	_ = errors.New
-	HVACSensorStatusValues = []HVACSensorStatus{
+	HVACSensorStatusValues = []HVACSensorStatus {
 		HVACSensorStatus_NO_ERROR_OPERATING_NORMALLY,
 		HVACSensorStatus_SENSOR_OPERATING_IN_RELAXED_ACCURACY_BAND,
 		HVACSensorStatus_SENSOR_OUT_OF_CALIBRATION,
@@ -55,14 +55,14 @@ func init() {
 
 func HVACSensorStatusByValue(value uint8) (enum HVACSensorStatus, ok bool) {
 	switch value {
-	case 0x00:
-		return HVACSensorStatus_NO_ERROR_OPERATING_NORMALLY, true
-	case 0x01:
-		return HVACSensorStatus_SENSOR_OPERATING_IN_RELAXED_ACCURACY_BAND, true
-	case 0x02:
-		return HVACSensorStatus_SENSOR_OUT_OF_CALIBRATION, true
-	case 0x03:
-		return HVACSensorStatus_SENSOR_TOTAL_FAILURE, true
+		case 0x00:
+			return HVACSensorStatus_NO_ERROR_OPERATING_NORMALLY, true
+		case 0x01:
+			return HVACSensorStatus_SENSOR_OPERATING_IN_RELAXED_ACCURACY_BAND, true
+		case 0x02:
+			return HVACSensorStatus_SENSOR_OUT_OF_CALIBRATION, true
+		case 0x03:
+			return HVACSensorStatus_SENSOR_TOTAL_FAILURE, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func HVACSensorStatusByName(value string) (enum HVACSensorStatus, ok bool) {
 	return 0, false
 }
 
-func HVACSensorStatusKnows(value uint8) bool {
+func HVACSensorStatusKnows(value uint8)  bool {
 	for _, typeValue := range HVACSensorStatusValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastHVACSensorStatus(structType interface{}) HVACSensorStatus {
@@ -155,3 +155,4 @@ func (e HVACSensorStatus) PLC4XEnumName() string {
 func (e HVACSensorStatus) String() string {
 	return e.PLC4XEnumName()
 }
+

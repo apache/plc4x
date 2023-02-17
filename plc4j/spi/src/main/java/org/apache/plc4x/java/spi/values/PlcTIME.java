@@ -28,8 +28,11 @@ import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.Period;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
@@ -42,6 +45,19 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
             return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
         } else if (value instanceof Long) {
             return new PlcTIME(Duration.of((long) value, ChronoUnit.MILLIS));
+        } else if (value instanceof Number) {
+            return new PlcTIME(((Number) value).longValue());
+        } else if (value instanceof String) {
+            try {
+                return new PlcTIME(Duration.parse((String) value));
+            } catch (DateTimeParseException e) {
+                try {
+                    return new PlcTIME(Period.parse((String) value).get(ChronoUnit.MILLIS));
+                }catch (DateTimeParseException e1)
+                {
+                    return new PlcTIME(new BigDecimal((String) value).longValue());
+                }
+            }
         }
         throw new PlcRuntimeException("Invalid value type");
     }

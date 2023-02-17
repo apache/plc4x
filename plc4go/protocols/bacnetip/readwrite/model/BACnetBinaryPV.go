@@ -34,16 +34,16 @@ type IBACnetBinaryPV interface {
 	utils.Serializable
 }
 
-const (
+const(
 	BACnetBinaryPV_INACTIVE BACnetBinaryPV = 0
-	BACnetBinaryPV_ACTIVE   BACnetBinaryPV = 1
+	BACnetBinaryPV_ACTIVE BACnetBinaryPV = 1
 )
 
 var BACnetBinaryPVValues []BACnetBinaryPV
 
 func init() {
 	_ = errors.New
-	BACnetBinaryPVValues = []BACnetBinaryPV{
+	BACnetBinaryPVValues = []BACnetBinaryPV {
 		BACnetBinaryPV_INACTIVE,
 		BACnetBinaryPV_ACTIVE,
 	}
@@ -51,10 +51,10 @@ func init() {
 
 func BACnetBinaryPVByValue(value uint8) (enum BACnetBinaryPV, ok bool) {
 	switch value {
-	case 0:
-		return BACnetBinaryPV_INACTIVE, true
-	case 1:
-		return BACnetBinaryPV_ACTIVE, true
+		case 0:
+			return BACnetBinaryPV_INACTIVE, true
+		case 1:
+			return BACnetBinaryPV_ACTIVE, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func BACnetBinaryPVByName(value string) (enum BACnetBinaryPV, ok bool) {
 	return 0, false
 }
 
-func BACnetBinaryPVKnows(value uint8) bool {
+func BACnetBinaryPVKnows(value uint8)  bool {
 	for _, typeValue := range BACnetBinaryPVValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetBinaryPV(structType interface{}) BACnetBinaryPV {
@@ -139,3 +139,4 @@ func (e BACnetBinaryPV) PLC4XEnumName() string {
 func (e BACnetBinaryPV) String() string {
 	return e.PLC4XEnumName()
 }
+

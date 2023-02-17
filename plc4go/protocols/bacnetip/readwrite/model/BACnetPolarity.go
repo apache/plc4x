@@ -34,8 +34,8 @@ type IBACnetPolarity interface {
 	utils.Serializable
 }
 
-const (
-	BACnetPolarity_NORMAL  BACnetPolarity = 0
+const(
+	BACnetPolarity_NORMAL BACnetPolarity = 0
 	BACnetPolarity_REVERSE BACnetPolarity = 1
 )
 
@@ -43,7 +43,7 @@ var BACnetPolarityValues []BACnetPolarity
 
 func init() {
 	_ = errors.New
-	BACnetPolarityValues = []BACnetPolarity{
+	BACnetPolarityValues = []BACnetPolarity {
 		BACnetPolarity_NORMAL,
 		BACnetPolarity_REVERSE,
 	}
@@ -51,10 +51,10 @@ func init() {
 
 func BACnetPolarityByValue(value uint8) (enum BACnetPolarity, ok bool) {
 	switch value {
-	case 0:
-		return BACnetPolarity_NORMAL, true
-	case 1:
-		return BACnetPolarity_REVERSE, true
+		case 0:
+			return BACnetPolarity_NORMAL, true
+		case 1:
+			return BACnetPolarity_REVERSE, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func BACnetPolarityByName(value string) (enum BACnetPolarity, ok bool) {
 	return 0, false
 }
 
-func BACnetPolarityKnows(value uint8) bool {
+func BACnetPolarityKnows(value uint8)  bool {
 	for _, typeValue := range BACnetPolarityValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetPolarity(structType interface{}) BACnetPolarity {
@@ -139,3 +139,4 @@ func (e BACnetPolarity) PLC4XEnumName() string {
 func (e BACnetPolarity) String() string {
 	return e.PLC4XEnumName()
 }
+

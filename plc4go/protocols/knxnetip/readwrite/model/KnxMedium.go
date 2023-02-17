@@ -34,20 +34,20 @@ type IKnxMedium interface {
 	utils.Serializable
 }
 
-const (
+const(
 	KnxMedium_MEDIUM_RESERVED_1 KnxMedium = 0x01
-	KnxMedium_MEDIUM_TP1        KnxMedium = 0x02
-	KnxMedium_MEDIUM_PL110      KnxMedium = 0x04
+	KnxMedium_MEDIUM_TP1 KnxMedium = 0x02
+	KnxMedium_MEDIUM_PL110 KnxMedium = 0x04
 	KnxMedium_MEDIUM_RESERVED_2 KnxMedium = 0x08
-	KnxMedium_MEDIUM_RF         KnxMedium = 0x10
-	KnxMedium_MEDIUM_KNX_IP     KnxMedium = 0x20
+	KnxMedium_MEDIUM_RF KnxMedium = 0x10
+	KnxMedium_MEDIUM_KNX_IP KnxMedium = 0x20
 )
 
 var KnxMediumValues []KnxMedium
 
 func init() {
 	_ = errors.New
-	KnxMediumValues = []KnxMedium{
+	KnxMediumValues = []KnxMedium {
 		KnxMedium_MEDIUM_RESERVED_1,
 		KnxMedium_MEDIUM_TP1,
 		KnxMedium_MEDIUM_PL110,
@@ -59,18 +59,18 @@ func init() {
 
 func KnxMediumByValue(value uint8) (enum KnxMedium, ok bool) {
 	switch value {
-	case 0x01:
-		return KnxMedium_MEDIUM_RESERVED_1, true
-	case 0x02:
-		return KnxMedium_MEDIUM_TP1, true
-	case 0x04:
-		return KnxMedium_MEDIUM_PL110, true
-	case 0x08:
-		return KnxMedium_MEDIUM_RESERVED_2, true
-	case 0x10:
-		return KnxMedium_MEDIUM_RF, true
-	case 0x20:
-		return KnxMedium_MEDIUM_KNX_IP, true
+		case 0x01:
+			return KnxMedium_MEDIUM_RESERVED_1, true
+		case 0x02:
+			return KnxMedium_MEDIUM_TP1, true
+		case 0x04:
+			return KnxMedium_MEDIUM_PL110, true
+		case 0x08:
+			return KnxMedium_MEDIUM_RESERVED_2, true
+		case 0x10:
+			return KnxMedium_MEDIUM_RF, true
+		case 0x20:
+			return KnxMedium_MEDIUM_KNX_IP, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func KnxMediumByName(value string) (enum KnxMedium, ok bool) {
 	return 0, false
 }
 
-func KnxMediumKnows(value uint8) bool {
+func KnxMediumKnows(value uint8)  bool {
 	for _, typeValue := range KnxMediumValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastKnxMedium(structType interface{}) KnxMedium {
@@ -171,3 +171,4 @@ func (e KnxMedium) PLC4XEnumName() string {
 func (e KnxMedium) String() string {
 	return e.PLC4XEnumName()
 }
+

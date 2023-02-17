@@ -37,75 +37,75 @@ type IKnxDatapointMainType interface {
 	SizeInBits() uint8
 }
 
-const (
-	KnxDatapointMainType_DPT_UNKNOWN                                       KnxDatapointMainType = 0
-	KnxDatapointMainType_DPT_64_BIT_SET                                    KnxDatapointMainType = 1
-	KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE                         KnxDatapointMainType = 2
-	KnxDatapointMainType_DPT_8_BYTE_SIGNED_VALUE                           KnxDatapointMainType = 3
-	KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE                          KnxDatapointMainType = 4
-	KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE                            KnxDatapointMainType = 5
-	KnxDatapointMainType_DPT_1_BIT                                         KnxDatapointMainType = 6
-	KnxDatapointMainType_DPT_1_BIT_CONTROLLED                              KnxDatapointMainType = 7
-	KnxDatapointMainType_DPT_3_BIT_CONTROLLED                              KnxDatapointMainType = 8
-	KnxDatapointMainType_DPT_CHARACTER                                     KnxDatapointMainType = 9
-	KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE                          KnxDatapointMainType = 10
-	KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE                            KnxDatapointMainType = 11
-	KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE                         KnxDatapointMainType = 12
-	KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE                           KnxDatapointMainType = 13
-	KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE                            KnxDatapointMainType = 14
-	KnxDatapointMainType_DPT_TIME                                          KnxDatapointMainType = 15
-	KnxDatapointMainType_DPT_DATE                                          KnxDatapointMainType = 16
-	KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE                         KnxDatapointMainType = 17
-	KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE                           KnxDatapointMainType = 18
-	KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE                            KnxDatapointMainType = 19
-	KnxDatapointMainType_DPT_ENTRANCE_ACCESS                               KnxDatapointMainType = 20
-	KnxDatapointMainType_DPT_CHARACTER_STRING                              KnxDatapointMainType = 21
-	KnxDatapointMainType_DPT_SCENE_NUMBER                                  KnxDatapointMainType = 22
-	KnxDatapointMainType_DPT_SCENE_CONTROL                                 KnxDatapointMainType = 23
-	KnxDatapointMainType_DPT_DATE_TIME                                     KnxDatapointMainType = 24
-	KnxDatapointMainType_DPT_1_BYTE                                        KnxDatapointMainType = 25
-	KnxDatapointMainType_DPT_8_BIT_SET                                     KnxDatapointMainType = 26
-	KnxDatapointMainType_DPT_16_BIT_SET                                    KnxDatapointMainType = 27
-	KnxDatapointMainType_DPT_2_BIT_SET                                     KnxDatapointMainType = 28
-	KnxDatapointMainType_DPT_2_NIBBLE_SET                                  KnxDatapointMainType = 29
-	KnxDatapointMainType_DPT_8_BIT_SET_2                                   KnxDatapointMainType = 30
-	KnxDatapointMainType_DPT_32_BIT_SET                                    KnxDatapointMainType = 31
-	KnxDatapointMainType_DPT_ELECTRICAL_ENERGY                             KnxDatapointMainType = 32
-	KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION                   KnxDatapointMainType = 33
-	KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM          KnxDatapointMainType = 34
-	KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM           KnxDatapointMainType = 35
-	KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION                        KnxDatapointMainType = 36
-	KnxDatapointMainType_DPT_ALARM_INFO                                    KnxDatapointMainType = 37
-	KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE                         KnxDatapointMainType = 38
-	KnxDatapointMainType_DPT_SCALING_SPEED                                 KnxDatapointMainType = 39
-	KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION               KnxDatapointMainType = 40
-	KnxDatapointMainType_DPT_MBUS_ADDRESS                                  KnxDatapointMainType = 41
-	KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB                             KnxDatapointMainType = 42
-	KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1                       KnxDatapointMainType = 43
+const(
+	KnxDatapointMainType_DPT_UNKNOWN KnxDatapointMainType = 0
+	KnxDatapointMainType_DPT_64_BIT_SET KnxDatapointMainType = 1
+	KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE KnxDatapointMainType = 2
+	KnxDatapointMainType_DPT_8_BYTE_SIGNED_VALUE KnxDatapointMainType = 3
+	KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE KnxDatapointMainType = 4
+	KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE KnxDatapointMainType = 5
+	KnxDatapointMainType_DPT_1_BIT KnxDatapointMainType = 6
+	KnxDatapointMainType_DPT_1_BIT_CONTROLLED KnxDatapointMainType = 7
+	KnxDatapointMainType_DPT_3_BIT_CONTROLLED KnxDatapointMainType = 8
+	KnxDatapointMainType_DPT_CHARACTER KnxDatapointMainType = 9
+	KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE KnxDatapointMainType = 10
+	KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE KnxDatapointMainType = 11
+	KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE KnxDatapointMainType = 12
+	KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE KnxDatapointMainType = 13
+	KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE KnxDatapointMainType = 14
+	KnxDatapointMainType_DPT_TIME KnxDatapointMainType = 15
+	KnxDatapointMainType_DPT_DATE KnxDatapointMainType = 16
+	KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE KnxDatapointMainType = 17
+	KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE KnxDatapointMainType = 18
+	KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE KnxDatapointMainType = 19
+	KnxDatapointMainType_DPT_ENTRANCE_ACCESS KnxDatapointMainType = 20
+	KnxDatapointMainType_DPT_CHARACTER_STRING KnxDatapointMainType = 21
+	KnxDatapointMainType_DPT_SCENE_NUMBER KnxDatapointMainType = 22
+	KnxDatapointMainType_DPT_SCENE_CONTROL KnxDatapointMainType = 23
+	KnxDatapointMainType_DPT_DATE_TIME KnxDatapointMainType = 24
+	KnxDatapointMainType_DPT_1_BYTE KnxDatapointMainType = 25
+	KnxDatapointMainType_DPT_8_BIT_SET KnxDatapointMainType = 26
+	KnxDatapointMainType_DPT_16_BIT_SET KnxDatapointMainType = 27
+	KnxDatapointMainType_DPT_2_BIT_SET KnxDatapointMainType = 28
+	KnxDatapointMainType_DPT_2_NIBBLE_SET KnxDatapointMainType = 29
+	KnxDatapointMainType_DPT_8_BIT_SET_2 KnxDatapointMainType = 30
+	KnxDatapointMainType_DPT_32_BIT_SET KnxDatapointMainType = 31
+	KnxDatapointMainType_DPT_ELECTRICAL_ENERGY KnxDatapointMainType = 32
+	KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION KnxDatapointMainType = 33
+	KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM KnxDatapointMainType = 34
+	KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM KnxDatapointMainType = 35
+	KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION KnxDatapointMainType = 36
+	KnxDatapointMainType_DPT_ALARM_INFO KnxDatapointMainType = 37
+	KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE KnxDatapointMainType = 38
+	KnxDatapointMainType_DPT_SCALING_SPEED KnxDatapointMainType = 39
+	KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION KnxDatapointMainType = 40
+	KnxDatapointMainType_DPT_MBUS_ADDRESS KnxDatapointMainType = 41
+	KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB KnxDatapointMainType = 42
+	KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1 KnxDatapointMainType = 43
 	KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY KnxDatapointMainType = 44
-	KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL                      KnxDatapointMainType = 45
-	KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT              KnxDatapointMainType = 46
-	KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT               KnxDatapointMainType = 47
-	KnxDatapointMainType_DPT_POSITIONS                                     KnxDatapointMainType = 48
-	KnxDatapointMainType_DPT_STATUS_32_BIT                                 KnxDatapointMainType = 49
-	KnxDatapointMainType_DPT_STATUS_48_BIT                                 KnxDatapointMainType = 50
-	KnxDatapointMainType_DPT_CONVERTER_STATUS                              KnxDatapointMainType = 51
-	KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT                         KnxDatapointMainType = 52
-	KnxDatapointMainType_DPT_BATTERY_INFORMATION                           KnxDatapointMainType = 53
-	KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION      KnxDatapointMainType = 54
-	KnxDatapointMainType_DPT_STATUS_24_BIT                                 KnxDatapointMainType = 55
-	KnxDatapointMainType_DPT_COLOUR_RGBW                                   KnxDatapointMainType = 56
-	KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW                         KnxDatapointMainType = 57
-	KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB                          KnxDatapointMainType = 58
-	KnxDatapointMainType_DPT_F32F32                                        KnxDatapointMainType = 59
-	KnxDatapointMainType_DPT_F16F16F16F16                                  KnxDatapointMainType = 60
+	KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL KnxDatapointMainType = 45
+	KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT KnxDatapointMainType = 46
+	KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT KnxDatapointMainType = 47
+	KnxDatapointMainType_DPT_POSITIONS KnxDatapointMainType = 48
+	KnxDatapointMainType_DPT_STATUS_32_BIT KnxDatapointMainType = 49
+	KnxDatapointMainType_DPT_STATUS_48_BIT KnxDatapointMainType = 50
+	KnxDatapointMainType_DPT_CONVERTER_STATUS KnxDatapointMainType = 51
+	KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT KnxDatapointMainType = 52
+	KnxDatapointMainType_DPT_BATTERY_INFORMATION KnxDatapointMainType = 53
+	KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION KnxDatapointMainType = 54
+	KnxDatapointMainType_DPT_STATUS_24_BIT KnxDatapointMainType = 55
+	KnxDatapointMainType_DPT_COLOUR_RGBW KnxDatapointMainType = 56
+	KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW KnxDatapointMainType = 57
+	KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB KnxDatapointMainType = 58
+	KnxDatapointMainType_DPT_F32F32 KnxDatapointMainType = 59
+	KnxDatapointMainType_DPT_F16F16F16F16 KnxDatapointMainType = 60
 )
 
 var KnxDatapointMainTypeValues []KnxDatapointMainType
 
 func init() {
 	_ = errors.New
-	KnxDatapointMainTypeValues = []KnxDatapointMainType{
+	KnxDatapointMainTypeValues = []KnxDatapointMainType {
 		KnxDatapointMainType_DPT_UNKNOWN,
 		KnxDatapointMainType_DPT_64_BIT_SET,
 		KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE,
@@ -170,254 +170,193 @@ func init() {
 	}
 }
 
+
 func (e KnxDatapointMainType) Number() uint16 {
-	switch e {
-	case 0:
-		{ /* '0' */
-			return 0
+	switch e  {
+		case 0: { /* '0' */
+            return 0
 		}
-	case 1:
-		{ /* '1' */
-			return 0
+		case 1: { /* '1' */
+            return 0
 		}
-	case 10:
-		{ /* '10' */
-			return 5
+		case 10: { /* '10' */
+            return 5
 		}
-	case 11:
-		{ /* '11' */
-			return 6
+		case 11: { /* '11' */
+            return 6
 		}
-	case 12:
-		{ /* '12' */
-			return 7
+		case 12: { /* '12' */
+            return 7
 		}
-	case 13:
-		{ /* '13' */
-			return 8
+		case 13: { /* '13' */
+            return 8
 		}
-	case 14:
-		{ /* '14' */
-			return 9
+		case 14: { /* '14' */
+            return 9
 		}
-	case 15:
-		{ /* '15' */
-			return 10
+		case 15: { /* '15' */
+            return 10
 		}
-	case 16:
-		{ /* '16' */
-			return 11
+		case 16: { /* '16' */
+            return 11
 		}
-	case 17:
-		{ /* '17' */
-			return 12
+		case 17: { /* '17' */
+            return 12
 		}
-	case 18:
-		{ /* '18' */
-			return 13
+		case 18: { /* '18' */
+            return 13
 		}
-	case 19:
-		{ /* '19' */
-			return 14
+		case 19: { /* '19' */
+            return 14
 		}
-	case 2:
-		{ /* '2' */
-			return 0
+		case 2: { /* '2' */
+            return 0
 		}
-	case 20:
-		{ /* '20' */
-			return 15
+		case 20: { /* '20' */
+            return 15
 		}
-	case 21:
-		{ /* '21' */
-			return 16
+		case 21: { /* '21' */
+            return 16
 		}
-	case 22:
-		{ /* '22' */
-			return 17
+		case 22: { /* '22' */
+            return 17
 		}
-	case 23:
-		{ /* '23' */
-			return 18
+		case 23: { /* '23' */
+            return 18
 		}
-	case 24:
-		{ /* '24' */
-			return 19
+		case 24: { /* '24' */
+            return 19
 		}
-	case 25:
-		{ /* '25' */
-			return 20
+		case 25: { /* '25' */
+            return 20
 		}
-	case 26:
-		{ /* '26' */
-			return 21
+		case 26: { /* '26' */
+            return 21
 		}
-	case 27:
-		{ /* '27' */
-			return 22
+		case 27: { /* '27' */
+            return 22
 		}
-	case 28:
-		{ /* '28' */
-			return 23
+		case 28: { /* '28' */
+            return 23
 		}
-	case 29:
-		{ /* '29' */
-			return 25
+		case 29: { /* '29' */
+            return 25
 		}
-	case 3:
-		{ /* '3' */
-			return 0
+		case 3: { /* '3' */
+            return 0
 		}
-	case 30:
-		{ /* '30' */
-			return 26
+		case 30: { /* '30' */
+            return 26
 		}
-	case 31:
-		{ /* '31' */
-			return 27
+		case 31: { /* '31' */
+            return 27
 		}
-	case 32:
-		{ /* '32' */
-			return 29
+		case 32: { /* '32' */
+            return 29
 		}
-	case 33:
-		{ /* '33' */
-			return 30
+		case 33: { /* '33' */
+            return 30
 		}
-	case 34:
-		{ /* '34' */
-			return 206
+		case 34: { /* '34' */
+            return 206
 		}
-	case 35:
-		{ /* '35' */
-			return 207
+		case 35: { /* '35' */
+            return 207
 		}
-	case 36:
-		{ /* '36' */
-			return 217
+		case 36: { /* '36' */
+            return 217
 		}
-	case 37:
-		{ /* '37' */
-			return 219
+		case 37: { /* '37' */
+            return 219
 		}
-	case 38:
-		{ /* '38' */
-			return 222
+		case 38: { /* '38' */
+            return 222
 		}
-	case 39:
-		{ /* '39' */
-			return 225
+		case 39: { /* '39' */
+            return 225
 		}
-	case 4:
-		{ /* '4' */
-			return 0
+		case 4: { /* '4' */
+            return 0
 		}
-	case 40:
-		{ /* '40' */
-			return 229
+		case 40: { /* '40' */
+            return 229
 		}
-	case 41:
-		{ /* '41' */
-			return 230
+		case 41: { /* '41' */
+            return 230
 		}
-	case 42:
-		{ /* '42' */
-			return 232
+		case 42: { /* '42' */
+            return 232
 		}
-	case 43:
-		{ /* '43' */
-			return 234
+		case 43: { /* '43' */
+            return 234
 		}
-	case 44:
-		{ /* '44' */
-			return 235
+		case 44: { /* '44' */
+            return 235
 		}
-	case 45:
-		{ /* '45' */
-			return 236
+		case 45: { /* '45' */
+            return 236
 		}
-	case 46:
-		{ /* '46' */
-			return 237
+		case 46: { /* '46' */
+            return 237
 		}
-	case 47:
-		{ /* '47' */
-			return 238
+		case 47: { /* '47' */
+            return 238
 		}
-	case 48:
-		{ /* '48' */
-			return 240
+		case 48: { /* '48' */
+            return 240
 		}
-	case 49:
-		{ /* '49' */
-			return 241
+		case 49: { /* '49' */
+            return 241
 		}
-	case 5:
-		{ /* '5' */
-			return 0
+		case 5: { /* '5' */
+            return 0
 		}
-	case 50:
-		{ /* '50' */
-			return 242
+		case 50: { /* '50' */
+            return 242
 		}
-	case 51:
-		{ /* '51' */
-			return 244
+		case 51: { /* '51' */
+            return 244
 		}
-	case 52:
-		{ /* '52' */
-			return 245
+		case 52: { /* '52' */
+            return 245
 		}
-	case 53:
-		{ /* '53' */
-			return 246
+		case 53: { /* '53' */
+            return 246
 		}
-	case 54:
-		{ /* '54' */
-			return 249
+		case 54: { /* '54' */
+            return 249
 		}
-	case 55:
-		{ /* '55' */
-			return 250
+		case 55: { /* '55' */
+            return 250
 		}
-	case 56:
-		{ /* '56' */
-			return 251
+		case 56: { /* '56' */
+            return 251
 		}
-	case 57:
-		{ /* '57' */
-			return 252
+		case 57: { /* '57' */
+            return 252
 		}
-	case 58:
-		{ /* '58' */
-			return 254
+		case 58: { /* '58' */
+            return 254
 		}
-	case 59:
-		{ /* '59' */
-			return 255
+		case 59: { /* '59' */
+            return 255
 		}
-	case 6:
-		{ /* '6' */
-			return 1
+		case 6: { /* '6' */
+            return 1
 		}
-	case 60:
-		{ /* '60' */
-			return 275
+		case 60: { /* '60' */
+            return 275
 		}
-	case 7:
-		{ /* '7' */
-			return 2
+		case 7: { /* '7' */
+            return 2
 		}
-	case 8:
-		{ /* '8' */
-			return 3
+		case 8: { /* '8' */
+            return 3
 		}
-	case 9:
-		{ /* '9' */
-			return 4
+		case 9: { /* '9' */
+            return 4
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -433,253 +372,191 @@ func KnxDatapointMainTypeFirstEnumForFieldNumber(value uint16) (KnxDatapointMain
 }
 
 func (e KnxDatapointMainType) Name() string {
-	switch e {
-	case 0:
-		{ /* '0' */
-			return "Unknown Datapoint Type"
+	switch e  {
+		case 0: { /* '0' */
+            return "Unknown Datapoint Type"
 		}
-	case 1:
-		{ /* '1' */
-			return "Unknown Datapoint Type"
+		case 1: { /* '1' */
+            return "Unknown Datapoint Type"
 		}
-	case 10:
-		{ /* '10' */
-			return "8-bit unsigned value"
+		case 10: { /* '10' */
+            return "8-bit unsigned value"
 		}
-	case 11:
-		{ /* '11' */
-			return "8-bit signed value"
+		case 11: { /* '11' */
+            return "8-bit signed value"
 		}
-	case 12:
-		{ /* '12' */
-			return "2-byte unsigned value"
+		case 12: { /* '12' */
+            return "2-byte unsigned value"
 		}
-	case 13:
-		{ /* '13' */
-			return "2-byte signed value"
+		case 13: { /* '13' */
+            return "2-byte signed value"
 		}
-	case 14:
-		{ /* '14' */
-			return "2-byte float value"
+		case 14: { /* '14' */
+            return "2-byte float value"
 		}
-	case 15:
-		{ /* '15' */
-			return "time"
+		case 15: { /* '15' */
+            return "time"
 		}
-	case 16:
-		{ /* '16' */
-			return "date"
+		case 16: { /* '16' */
+            return "date"
 		}
-	case 17:
-		{ /* '17' */
-			return "4-byte unsigned value"
+		case 17: { /* '17' */
+            return "4-byte unsigned value"
 		}
-	case 18:
-		{ /* '18' */
-			return "4-byte signed value"
+		case 18: { /* '18' */
+            return "4-byte signed value"
 		}
-	case 19:
-		{ /* '19' */
-			return "4-byte float value"
+		case 19: { /* '19' */
+            return "4-byte float value"
 		}
-	case 2:
-		{ /* '2' */
-			return "Unknown Datapoint Type"
+		case 2: { /* '2' */
+            return "Unknown Datapoint Type"
 		}
-	case 20:
-		{ /* '20' */
-			return "entrance access"
+		case 20: { /* '20' */
+            return "entrance access"
 		}
-	case 21:
-		{ /* '21' */
-			return "character string"
+		case 21: { /* '21' */
+            return "character string"
 		}
-	case 22:
-		{ /* '22' */
-			return "scene number"
+		case 22: { /* '22' */
+            return "scene number"
 		}
-	case 23:
-		{ /* '23' */
-			return "scene control"
+		case 23: { /* '23' */
+            return "scene control"
 		}
-	case 24:
-		{ /* '24' */
-			return "Date Time"
+		case 24: { /* '24' */
+            return "Date Time"
 		}
-	case 25:
-		{ /* '25' */
-			return "1-byte"
+		case 25: { /* '25' */
+            return "1-byte"
 		}
-	case 26:
-		{ /* '26' */
-			return "8-bit set"
+		case 26: { /* '26' */
+            return "8-bit set"
 		}
-	case 27:
-		{ /* '27' */
-			return "16-bit set"
+		case 27: { /* '27' */
+            return "16-bit set"
 		}
-	case 28:
-		{ /* '28' */
-			return "2-bit set"
+		case 28: { /* '28' */
+            return "2-bit set"
 		}
-	case 29:
-		{ /* '29' */
-			return "2-nibble set"
+		case 29: { /* '29' */
+            return "2-nibble set"
 		}
-	case 3:
-		{ /* '3' */
-			return "Unknown Datapoint Type"
+		case 3: { /* '3' */
+            return "Unknown Datapoint Type"
 		}
-	case 30:
-		{ /* '30' */
-			return "8-bit set"
+		case 30: { /* '30' */
+            return "8-bit set"
 		}
-	case 31:
-		{ /* '31' */
-			return "32-bit set"
+		case 31: { /* '31' */
+            return "32-bit set"
 		}
-	case 32:
-		{ /* '32' */
-			return "electrical energy"
+		case 32: { /* '32' */
+            return "electrical energy"
 		}
-	case 33:
-		{ /* '33' */
-			return "24 times channel activation"
+		case 33: { /* '33' */
+            return "24 times channel activation"
 		}
-	case 34:
-		{ /* '34' */
-			return "16-bit unsigned value & 8-bit enum"
+		case 34: { /* '34' */
+            return "16-bit unsigned value & 8-bit enum"
 		}
-	case 35:
-		{ /* '35' */
-			return "8-bit unsigned value & 8-bit enum"
+		case 35: { /* '35' */
+            return "8-bit unsigned value & 8-bit enum"
 		}
-	case 36:
-		{ /* '36' */
-			return "datapoint type version"
+		case 36: { /* '36' */
+            return "datapoint type version"
 		}
-	case 37:
-		{ /* '37' */
-			return "alarm info"
+		case 37: { /* '37' */
+            return "alarm info"
 		}
-	case 38:
-		{ /* '38' */
-			return "3x 2-byte float value"
+		case 38: { /* '38' */
+            return "3x 2-byte float value"
 		}
-	case 39:
-		{ /* '39' */
-			return "scaling speed"
+		case 39: { /* '39' */
+            return "scaling speed"
 		}
-	case 4:
-		{ /* '4' */
-			return "Unknown Datapoint Type"
+		case 4: { /* '4' */
+            return "Unknown Datapoint Type"
 		}
-	case 40:
-		{ /* '40' */
-			return "4-1-1 byte combined information"
+		case 40: { /* '40' */
+            return "4-1-1 byte combined information"
 		}
-	case 41:
-		{ /* '41' */
-			return "MBus address"
+		case 41: { /* '41' */
+            return "MBus address"
 		}
-	case 42:
-		{ /* '42' */
-			return "3-byte colour RGB"
+		case 42: { /* '42' */
+            return "3-byte colour RGB"
 		}
-	case 43:
-		{ /* '43' */
-			return "language code ISO 639-1"
+		case 43: { /* '43' */
+            return "language code ISO 639-1"
 		}
-	case 44:
-		{ /* '44' */
-			return "Signed value with classification and validity"
+		case 44: { /* '44' */
+            return "Signed value with classification and validity"
 		}
-	case 45:
-		{ /* '45' */
-			return "Prioritised Mode Control"
+		case 45: { /* '45' */
+            return "Prioritised Mode Control"
 		}
-	case 46:
-		{ /* '46' */
-			return "configuration/ diagnostics"
+		case 46: { /* '46' */
+            return "configuration/ diagnostics"
 		}
-	case 47:
-		{ /* '47' */
-			return "configuration/ diagnostics"
+		case 47: { /* '47' */
+            return "configuration/ diagnostics"
 		}
-	case 48:
-		{ /* '48' */
-			return "positions"
+		case 48: { /* '48' */
+            return "positions"
 		}
-	case 49:
-		{ /* '49' */
-			return "status"
+		case 49: { /* '49' */
+            return "status"
 		}
-	case 5:
-		{ /* '5' */
-			return "Unknown Datapoint Type"
+		case 5: { /* '5' */
+            return "Unknown Datapoint Type"
 		}
-	case 50:
-		{ /* '50' */
-			return "status"
+		case 50: { /* '50' */
+            return "status"
 		}
-	case 51:
-		{ /* '51' */
-			return "Converter Status"
+		case 51: { /* '51' */
+            return "Converter Status"
 		}
-	case 52:
-		{ /* '52' */
-			return "Converter test result"
+		case 52: { /* '52' */
+            return "Converter test result"
 		}
-	case 53:
-		{ /* '53' */
-			return "Battery Information"
+		case 53: { /* '53' */
+            return "Battery Information"
 		}
-	case 54:
-		{ /* '54' */
-			return "brightness colour temperature transition"
+		case 54: { /* '54' */
+            return "brightness colour temperature transition"
 		}
-	case 55:
-		{ /* '55' */
-			return "status"
+		case 55: { /* '55' */
+            return "status"
 		}
-	case 56:
-		{ /* '56' */
-			return "Colour RGBW"
+		case 56: { /* '56' */
+            return "Colour RGBW"
 		}
-	case 57:
-		{ /* '57' */
-			return "Relative Control RGBW"
+		case 57: { /* '57' */
+            return "Relative Control RGBW"
 		}
-	case 58:
-		{ /* '58' */
-			return "Relative Control RGB"
+		case 58: { /* '58' */
+            return "Relative Control RGB"
 		}
-	case 59:
-		{ /* '59' */
-			return "F32F32"
+		case 59: { /* '59' */
+            return "F32F32"
 		}
-	case 6:
-		{ /* '6' */
-			return "1-bit"
+		case 6: { /* '6' */
+            return "1-bit"
 		}
-	case 60:
-		{ /* '60' */
-			return "F16F16F16F16"
+		case 60: { /* '60' */
+            return "F16F16F16F16"
 		}
-	case 7:
-		{ /* '7' */
-			return "1-bit controlled"
+		case 7: { /* '7' */
+            return "1-bit controlled"
 		}
-	case 8:
-		{ /* '8' */
-			return "3-bit controlled"
+		case 8: { /* '8' */
+            return "3-bit controlled"
 		}
-	case 9:
-		{ /* '9' */
-			return "character"
+		case 9: { /* '9' */
+            return "character"
 		}
-	default:
-		{
+		default: {
 			return ""
 		}
 	}
@@ -695,253 +572,191 @@ func KnxDatapointMainTypeFirstEnumForFieldName(value string) (KnxDatapointMainTy
 }
 
 func (e KnxDatapointMainType) SizeInBits() uint8 {
-	switch e {
-	case 0:
-		{ /* '0' */
-			return 0
+	switch e  {
+		case 0: { /* '0' */
+            return 0
 		}
-	case 1:
-		{ /* '1' */
-			return 64
+		case 1: { /* '1' */
+            return 64
 		}
-	case 10:
-		{ /* '10' */
-			return 8
+		case 10: { /* '10' */
+            return 8
 		}
-	case 11:
-		{ /* '11' */
-			return 8
+		case 11: { /* '11' */
+            return 8
 		}
-	case 12:
-		{ /* '12' */
-			return 16
+		case 12: { /* '12' */
+            return 16
 		}
-	case 13:
-		{ /* '13' */
-			return 16
+		case 13: { /* '13' */
+            return 16
 		}
-	case 14:
-		{ /* '14' */
-			return 16
+		case 14: { /* '14' */
+            return 16
 		}
-	case 15:
-		{ /* '15' */
-			return 24
+		case 15: { /* '15' */
+            return 24
 		}
-	case 16:
-		{ /* '16' */
-			return 24
+		case 16: { /* '16' */
+            return 24
 		}
-	case 17:
-		{ /* '17' */
-			return 32
+		case 17: { /* '17' */
+            return 32
 		}
-	case 18:
-		{ /* '18' */
-			return 32
+		case 18: { /* '18' */
+            return 32
 		}
-	case 19:
-		{ /* '19' */
-			return 32
+		case 19: { /* '19' */
+            return 32
 		}
-	case 2:
-		{ /* '2' */
-			return 64
+		case 2: { /* '2' */
+            return 64
 		}
-	case 20:
-		{ /* '20' */
-			return 32
+		case 20: { /* '20' */
+            return 32
 		}
-	case 21:
-		{ /* '21' */
-			return 112
+		case 21: { /* '21' */
+            return 112
 		}
-	case 22:
-		{ /* '22' */
-			return 8
+		case 22: { /* '22' */
+            return 8
 		}
-	case 23:
-		{ /* '23' */
-			return 8
+		case 23: { /* '23' */
+            return 8
 		}
-	case 24:
-		{ /* '24' */
-			return 64
+		case 24: { /* '24' */
+            return 64
 		}
-	case 25:
-		{ /* '25' */
-			return 8
+		case 25: { /* '25' */
+            return 8
 		}
-	case 26:
-		{ /* '26' */
-			return 8
+		case 26: { /* '26' */
+            return 8
 		}
-	case 27:
-		{ /* '27' */
-			return 16
+		case 27: { /* '27' */
+            return 16
 		}
-	case 28:
-		{ /* '28' */
-			return 2
+		case 28: { /* '28' */
+            return 2
 		}
-	case 29:
-		{ /* '29' */
-			return 8
+		case 29: { /* '29' */
+            return 8
 		}
-	case 3:
-		{ /* '3' */
-			return 64
+		case 3: { /* '3' */
+            return 64
 		}
-	case 30:
-		{ /* '30' */
-			return 8
+		case 30: { /* '30' */
+            return 8
 		}
-	case 31:
-		{ /* '31' */
-			return 32
+		case 31: { /* '31' */
+            return 32
 		}
-	case 32:
-		{ /* '32' */
-			return 64
+		case 32: { /* '32' */
+            return 64
 		}
-	case 33:
-		{ /* '33' */
-			return 24
+		case 33: { /* '33' */
+            return 24
 		}
-	case 34:
-		{ /* '34' */
-			return 24
+		case 34: { /* '34' */
+            return 24
 		}
-	case 35:
-		{ /* '35' */
-			return 16
+		case 35: { /* '35' */
+            return 16
 		}
-	case 36:
-		{ /* '36' */
-			return 16
+		case 36: { /* '36' */
+            return 16
 		}
-	case 37:
-		{ /* '37' */
-			return 48
+		case 37: { /* '37' */
+            return 48
 		}
-	case 38:
-		{ /* '38' */
-			return 48
+		case 38: { /* '38' */
+            return 48
 		}
-	case 39:
-		{ /* '39' */
-			return 24
+		case 39: { /* '39' */
+            return 24
 		}
-	case 4:
-		{ /* '4' */
-			return 96
+		case 4: { /* '4' */
+            return 96
 		}
-	case 40:
-		{ /* '40' */
-			return 48
+		case 40: { /* '40' */
+            return 48
 		}
-	case 41:
-		{ /* '41' */
-			return 64
+		case 41: { /* '41' */
+            return 64
 		}
-	case 42:
-		{ /* '42' */
-			return 24
+		case 42: { /* '42' */
+            return 24
 		}
-	case 43:
-		{ /* '43' */
-			return 16
+		case 43: { /* '43' */
+            return 16
 		}
-	case 44:
-		{ /* '44' */
-			return 48
+		case 44: { /* '44' */
+            return 48
 		}
-	case 45:
-		{ /* '45' */
-			return 8
+		case 45: { /* '45' */
+            return 8
 		}
-	case 46:
-		{ /* '46' */
-			return 16
+		case 46: { /* '46' */
+            return 16
 		}
-	case 47:
-		{ /* '47' */
-			return 8
+		case 47: { /* '47' */
+            return 8
 		}
-	case 48:
-		{ /* '48' */
-			return 24
+		case 48: { /* '48' */
+            return 24
 		}
-	case 49:
-		{ /* '49' */
-			return 32
+		case 49: { /* '49' */
+            return 32
 		}
-	case 5:
-		{ /* '5' */
-			return 64
+		case 5: { /* '5' */
+            return 64
 		}
-	case 50:
-		{ /* '50' */
-			return 48
+		case 50: { /* '50' */
+            return 48
 		}
-	case 51:
-		{ /* '51' */
-			return 16
+		case 51: { /* '51' */
+            return 16
 		}
-	case 52:
-		{ /* '52' */
-			return 48
+		case 52: { /* '52' */
+            return 48
 		}
-	case 53:
-		{ /* '53' */
-			return 16
+		case 53: { /* '53' */
+            return 16
 		}
-	case 54:
-		{ /* '54' */
-			return 48
+		case 54: { /* '54' */
+            return 48
 		}
-	case 55:
-		{ /* '55' */
-			return 24
+		case 55: { /* '55' */
+            return 24
 		}
-	case 56:
-		{ /* '56' */
-			return 48
+		case 56: { /* '56' */
+            return 48
 		}
-	case 57:
-		{ /* '57' */
-			return 40
+		case 57: { /* '57' */
+            return 40
 		}
-	case 58:
-		{ /* '58' */
-			return 24
+		case 58: { /* '58' */
+            return 24
 		}
-	case 59:
-		{ /* '59' */
-			return 64
+		case 59: { /* '59' */
+            return 64
 		}
-	case 6:
-		{ /* '6' */
-			return 1
+		case 6: { /* '6' */
+            return 1
 		}
-	case 60:
-		{ /* '60' */
-			return 64
+		case 60: { /* '60' */
+            return 64
 		}
-	case 7:
-		{ /* '7' */
-			return 2
+		case 7: { /* '7' */
+            return 2
 		}
-	case 8:
-		{ /* '8' */
-			return 4
+		case 8: { /* '8' */
+            return 4
 		}
-	case 9:
-		{ /* '9' */
-			return 8
+		case 9: { /* '9' */
+            return 8
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -957,128 +772,128 @@ func KnxDatapointMainTypeFirstEnumForFieldSizeInBits(value uint8) (KnxDatapointM
 }
 func KnxDatapointMainTypeByValue(value uint16) (enum KnxDatapointMainType, ok bool) {
 	switch value {
-	case 0:
-		return KnxDatapointMainType_DPT_UNKNOWN, true
-	case 1:
-		return KnxDatapointMainType_DPT_64_BIT_SET, true
-	case 10:
-		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE, true
-	case 11:
-		return KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE, true
-	case 12:
-		return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE, true
-	case 13:
-		return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE, true
-	case 14:
-		return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE, true
-	case 15:
-		return KnxDatapointMainType_DPT_TIME, true
-	case 16:
-		return KnxDatapointMainType_DPT_DATE, true
-	case 17:
-		return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE, true
-	case 18:
-		return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE, true
-	case 19:
-		return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE, true
-	case 2:
-		return KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE, true
-	case 20:
-		return KnxDatapointMainType_DPT_ENTRANCE_ACCESS, true
-	case 21:
-		return KnxDatapointMainType_DPT_CHARACTER_STRING, true
-	case 22:
-		return KnxDatapointMainType_DPT_SCENE_NUMBER, true
-	case 23:
-		return KnxDatapointMainType_DPT_SCENE_CONTROL, true
-	case 24:
-		return KnxDatapointMainType_DPT_DATE_TIME, true
-	case 25:
-		return KnxDatapointMainType_DPT_1_BYTE, true
-	case 26:
-		return KnxDatapointMainType_DPT_8_BIT_SET, true
-	case 27:
-		return KnxDatapointMainType_DPT_16_BIT_SET, true
-	case 28:
-		return KnxDatapointMainType_DPT_2_BIT_SET, true
-	case 29:
-		return KnxDatapointMainType_DPT_2_NIBBLE_SET, true
-	case 3:
-		return KnxDatapointMainType_DPT_8_BYTE_SIGNED_VALUE, true
-	case 30:
-		return KnxDatapointMainType_DPT_8_BIT_SET_2, true
-	case 31:
-		return KnxDatapointMainType_DPT_32_BIT_SET, true
-	case 32:
-		return KnxDatapointMainType_DPT_ELECTRICAL_ENERGY, true
-	case 33:
-		return KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION, true
-	case 34:
-		return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM, true
-	case 35:
-		return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM, true
-	case 36:
-		return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION, true
-	case 37:
-		return KnxDatapointMainType_DPT_ALARM_INFO, true
-	case 38:
-		return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE, true
-	case 39:
-		return KnxDatapointMainType_DPT_SCALING_SPEED, true
-	case 4:
-		return KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE, true
-	case 40:
-		return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION, true
-	case 41:
-		return KnxDatapointMainType_DPT_MBUS_ADDRESS, true
-	case 42:
-		return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB, true
-	case 43:
-		return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1, true
-	case 44:
-		return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY, true
-	case 45:
-		return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL, true
-	case 46:
-		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT, true
-	case 47:
-		return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT, true
-	case 48:
-		return KnxDatapointMainType_DPT_POSITIONS, true
-	case 49:
-		return KnxDatapointMainType_DPT_STATUS_32_BIT, true
-	case 5:
-		return KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE, true
-	case 50:
-		return KnxDatapointMainType_DPT_STATUS_48_BIT, true
-	case 51:
-		return KnxDatapointMainType_DPT_CONVERTER_STATUS, true
-	case 52:
-		return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT, true
-	case 53:
-		return KnxDatapointMainType_DPT_BATTERY_INFORMATION, true
-	case 54:
-		return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION, true
-	case 55:
-		return KnxDatapointMainType_DPT_STATUS_24_BIT, true
-	case 56:
-		return KnxDatapointMainType_DPT_COLOUR_RGBW, true
-	case 57:
-		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW, true
-	case 58:
-		return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB, true
-	case 59:
-		return KnxDatapointMainType_DPT_F32F32, true
-	case 6:
-		return KnxDatapointMainType_DPT_1_BIT, true
-	case 60:
-		return KnxDatapointMainType_DPT_F16F16F16F16, true
-	case 7:
-		return KnxDatapointMainType_DPT_1_BIT_CONTROLLED, true
-	case 8:
-		return KnxDatapointMainType_DPT_3_BIT_CONTROLLED, true
-	case 9:
-		return KnxDatapointMainType_DPT_CHARACTER, true
+		case 0:
+			return KnxDatapointMainType_DPT_UNKNOWN, true
+		case 1:
+			return KnxDatapointMainType_DPT_64_BIT_SET, true
+		case 10:
+			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE, true
+		case 11:
+			return KnxDatapointMainType_DPT_8_BIT_SIGNED_VALUE, true
+		case 12:
+			return KnxDatapointMainType_DPT_2_BYTE_UNSIGNED_VALUE, true
+		case 13:
+			return KnxDatapointMainType_DPT_2_BYTE_SIGNED_VALUE, true
+		case 14:
+			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE, true
+		case 15:
+			return KnxDatapointMainType_DPT_TIME, true
+		case 16:
+			return KnxDatapointMainType_DPT_DATE, true
+		case 17:
+			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE, true
+		case 18:
+			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE, true
+		case 19:
+			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE, true
+		case 2:
+			return KnxDatapointMainType_DPT_8_BYTE_UNSIGNED_VALUE, true
+		case 20:
+			return KnxDatapointMainType_DPT_ENTRANCE_ACCESS, true
+		case 21:
+			return KnxDatapointMainType_DPT_CHARACTER_STRING, true
+		case 22:
+			return KnxDatapointMainType_DPT_SCENE_NUMBER, true
+		case 23:
+			return KnxDatapointMainType_DPT_SCENE_CONTROL, true
+		case 24:
+			return KnxDatapointMainType_DPT_DATE_TIME, true
+		case 25:
+			return KnxDatapointMainType_DPT_1_BYTE, true
+		case 26:
+			return KnxDatapointMainType_DPT_8_BIT_SET, true
+		case 27:
+			return KnxDatapointMainType_DPT_16_BIT_SET, true
+		case 28:
+			return KnxDatapointMainType_DPT_2_BIT_SET, true
+		case 29:
+			return KnxDatapointMainType_DPT_2_NIBBLE_SET, true
+		case 3:
+			return KnxDatapointMainType_DPT_8_BYTE_SIGNED_VALUE, true
+		case 30:
+			return KnxDatapointMainType_DPT_8_BIT_SET_2, true
+		case 31:
+			return KnxDatapointMainType_DPT_32_BIT_SET, true
+		case 32:
+			return KnxDatapointMainType_DPT_ELECTRICAL_ENERGY, true
+		case 33:
+			return KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION, true
+		case 34:
+			return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM, true
+		case 35:
+			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM, true
+		case 36:
+			return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION, true
+		case 37:
+			return KnxDatapointMainType_DPT_ALARM_INFO, true
+		case 38:
+			return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE, true
+		case 39:
+			return KnxDatapointMainType_DPT_SCALING_SPEED, true
+		case 4:
+			return KnxDatapointMainType_DPT_12_BYTE_SIGNED_VALUE, true
+		case 40:
+			return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION, true
+		case 41:
+			return KnxDatapointMainType_DPT_MBUS_ADDRESS, true
+		case 42:
+			return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB, true
+		case 43:
+			return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1, true
+		case 44:
+			return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY, true
+		case 45:
+			return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL, true
+		case 46:
+			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT, true
+		case 47:
+			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT, true
+		case 48:
+			return KnxDatapointMainType_DPT_POSITIONS, true
+		case 49:
+			return KnxDatapointMainType_DPT_STATUS_32_BIT, true
+		case 5:
+			return KnxDatapointMainType_DPT_8_BYTE_FLOAT_VALUE, true
+		case 50:
+			return KnxDatapointMainType_DPT_STATUS_48_BIT, true
+		case 51:
+			return KnxDatapointMainType_DPT_CONVERTER_STATUS, true
+		case 52:
+			return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT, true
+		case 53:
+			return KnxDatapointMainType_DPT_BATTERY_INFORMATION, true
+		case 54:
+			return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION, true
+		case 55:
+			return KnxDatapointMainType_DPT_STATUS_24_BIT, true
+		case 56:
+			return KnxDatapointMainType_DPT_COLOUR_RGBW, true
+		case 57:
+			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW, true
+		case 58:
+			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB, true
+		case 59:
+			return KnxDatapointMainType_DPT_F32F32, true
+		case 6:
+			return KnxDatapointMainType_DPT_1_BIT, true
+		case 60:
+			return KnxDatapointMainType_DPT_F16F16F16F16, true
+		case 7:
+			return KnxDatapointMainType_DPT_1_BIT_CONTROLLED, true
+		case 8:
+			return KnxDatapointMainType_DPT_3_BIT_CONTROLLED, true
+		case 9:
+			return KnxDatapointMainType_DPT_CHARACTER, true
 	}
 	return 0, false
 }
@@ -1211,13 +1026,13 @@ func KnxDatapointMainTypeByName(value string) (enum KnxDatapointMainType, ok boo
 	return 0, false
 }
 
-func KnxDatapointMainTypeKnows(value uint16) bool {
+func KnxDatapointMainTypeKnows(value uint16)  bool {
 	for _, typeValue := range KnxDatapointMainTypeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastKnxDatapointMainType(structType interface{}) KnxDatapointMainType {
@@ -1399,3 +1214,4 @@ func (e KnxDatapointMainType) PLC4XEnumName() string {
 func (e KnxDatapointMainType) String() string {
 	return e.PLC4XEnumName()
 }
+

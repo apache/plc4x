@@ -122,10 +122,18 @@ func SerializeTiaDateTime(io utils.WriteBuffer, value values.PlcValue) error {
 	return nil
 }
 
-func ParseS7String(io utils.ReadBuffer, stringLength int32, encoding string) (string, error) {
+func ParseS7String(io utils.ReadBuffer, stringLength int32, encoding string, stringEncoding string) (string, error) {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
+		totalStringLength, _ := io.ReadUint8("", 8)
+		length, _ := io.ReadUint8("", 8)
+		if totalStringLength < length {
+			length = totalStringLength
+		}
+		if stringLength < int32(length) {
+			length = uint8(stringLength)
+		}
 		multiplier = 8
 	case "UTF-16":
 		multiplier = 16
@@ -133,7 +141,7 @@ func ParseS7String(io utils.ReadBuffer, stringLength int32, encoding string) (st
 	return io.ReadString("", uint32(stringLength*multiplier), encoding)
 }
 
-func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string) error {
+func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength int32, encoding string, stringEncoding string) error {
 	var multiplier int32
 	switch encoding {
 	case "UTF-8":
@@ -144,11 +152,11 @@ func SerializeS7String(io utils.WriteBuffer, value values.PlcValue, stringLength
 	return io.WriteString("", uint32(stringLength*multiplier), encoding, value.GetString())
 }
 
-func ParseS7Char(io utils.ReadBuffer, encoding string) (uint8, error) {
-	return io.ReadUint8("", 8)
+func ParseS7Char(io utils.ReadBuffer, encoding string, stringEncoding string) (string, error) {
+	return io.ReadString("value", uint32(8), encoding)
 }
 
-func SerializeS7Char(io utils.WriteBuffer, value values.PlcValue, encoding string) error {
+func SerializeS7Char(io utils.WriteBuffer, value values.PlcValue, encoding string, stringEncoding string) error {
 	return io.WriteUint8("", 8, value.GetUint8())
 }
 

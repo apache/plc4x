@@ -34,22 +34,22 @@ type ILineOffHookReason interface {
 	utils.Serializable
 }
 
-const (
+const(
 	LineOffHookReason_INCOMING_VOICE_CALL LineOffHookReason = 0x01
-	LineOffHookReason_INCOMING_DATA_CALL  LineOffHookReason = 0x02
-	LineOffHookReason_INCOMING_CALL       LineOffHookReason = 0x03
+	LineOffHookReason_INCOMING_DATA_CALL LineOffHookReason = 0x02
+	LineOffHookReason_INCOMING_CALL LineOffHookReason = 0x03
 	LineOffHookReason_OUTGOING_VOICE_CALL LineOffHookReason = 0x10
-	LineOffHookReason_OUTGOING_DATA_CALL  LineOffHookReason = 0x20
-	LineOffHookReason_OUTGOING_CALL       LineOffHookReason = 0x30
-	LineOffHookReason_CBTI_IS_SETTING     LineOffHookReason = 0x40
-	LineOffHookReason_CBTI_IS_CLEARING    LineOffHookReason = 0x50
+	LineOffHookReason_OUTGOING_DATA_CALL LineOffHookReason = 0x20
+	LineOffHookReason_OUTGOING_CALL LineOffHookReason = 0x30
+	LineOffHookReason_CBTI_IS_SETTING LineOffHookReason = 0x40
+	LineOffHookReason_CBTI_IS_CLEARING LineOffHookReason = 0x50
 )
 
 var LineOffHookReasonValues []LineOffHookReason
 
 func init() {
 	_ = errors.New
-	LineOffHookReasonValues = []LineOffHookReason{
+	LineOffHookReasonValues = []LineOffHookReason {
 		LineOffHookReason_INCOMING_VOICE_CALL,
 		LineOffHookReason_INCOMING_DATA_CALL,
 		LineOffHookReason_INCOMING_CALL,
@@ -63,22 +63,22 @@ func init() {
 
 func LineOffHookReasonByValue(value uint8) (enum LineOffHookReason, ok bool) {
 	switch value {
-	case 0x01:
-		return LineOffHookReason_INCOMING_VOICE_CALL, true
-	case 0x02:
-		return LineOffHookReason_INCOMING_DATA_CALL, true
-	case 0x03:
-		return LineOffHookReason_INCOMING_CALL, true
-	case 0x10:
-		return LineOffHookReason_OUTGOING_VOICE_CALL, true
-	case 0x20:
-		return LineOffHookReason_OUTGOING_DATA_CALL, true
-	case 0x30:
-		return LineOffHookReason_OUTGOING_CALL, true
-	case 0x40:
-		return LineOffHookReason_CBTI_IS_SETTING, true
-	case 0x50:
-		return LineOffHookReason_CBTI_IS_CLEARING, true
+		case 0x01:
+			return LineOffHookReason_INCOMING_VOICE_CALL, true
+		case 0x02:
+			return LineOffHookReason_INCOMING_DATA_CALL, true
+		case 0x03:
+			return LineOffHookReason_INCOMING_CALL, true
+		case 0x10:
+			return LineOffHookReason_OUTGOING_VOICE_CALL, true
+		case 0x20:
+			return LineOffHookReason_OUTGOING_DATA_CALL, true
+		case 0x30:
+			return LineOffHookReason_OUTGOING_CALL, true
+		case 0x40:
+			return LineOffHookReason_CBTI_IS_SETTING, true
+		case 0x50:
+			return LineOffHookReason_CBTI_IS_CLEARING, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func LineOffHookReasonByName(value string) (enum LineOffHookReason, ok bool) {
 	return 0, false
 }
 
-func LineOffHookReasonKnows(value uint8) bool {
+func LineOffHookReasonKnows(value uint8)  bool {
 	for _, typeValue := range LineOffHookReasonValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastLineOffHookReason(structType interface{}) LineOffHookReason {
@@ -187,3 +187,4 @@ func (e LineOffHookReason) PLC4XEnumName() string {
 func (e LineOffHookReason) String() string {
 	return e.PLC4XEnumName()
 }
+

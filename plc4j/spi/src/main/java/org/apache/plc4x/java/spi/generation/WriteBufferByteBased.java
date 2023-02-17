@@ -45,10 +45,12 @@ public class WriteBufferByteBased implements WriteBuffer, BufferCommons {
         this.byteOrder = byteOrder;
     }
 
+    @Override
     public ByteOrder getByteOrder() {
         return byteOrder;
     }
 
+    @Override
     public void setByteOrder(ByteOrder byteOrder) {
         this.byteOrder = byteOrder;
     }

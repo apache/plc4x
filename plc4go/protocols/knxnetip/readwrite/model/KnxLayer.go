@@ -34,9 +34,9 @@ type IKnxLayer interface {
 	utils.Serializable
 }
 
-const (
+const(
 	KnxLayer_TUNNEL_LINK_LAYER KnxLayer = 0x02
-	KnxLayer_TUNNEL_RAW        KnxLayer = 0x04
+	KnxLayer_TUNNEL_RAW KnxLayer = 0x04
 	KnxLayer_TUNNEL_BUSMONITOR KnxLayer = 0x80
 )
 
@@ -44,7 +44,7 @@ var KnxLayerValues []KnxLayer
 
 func init() {
 	_ = errors.New
-	KnxLayerValues = []KnxLayer{
+	KnxLayerValues = []KnxLayer {
 		KnxLayer_TUNNEL_LINK_LAYER,
 		KnxLayer_TUNNEL_RAW,
 		KnxLayer_TUNNEL_BUSMONITOR,
@@ -53,12 +53,12 @@ func init() {
 
 func KnxLayerByValue(value uint8) (enum KnxLayer, ok bool) {
 	switch value {
-	case 0x02:
-		return KnxLayer_TUNNEL_LINK_LAYER, true
-	case 0x04:
-		return KnxLayer_TUNNEL_RAW, true
-	case 0x80:
-		return KnxLayer_TUNNEL_BUSMONITOR, true
+		case 0x02:
+			return KnxLayer_TUNNEL_LINK_LAYER, true
+		case 0x04:
+			return KnxLayer_TUNNEL_RAW, true
+		case 0x80:
+			return KnxLayer_TUNNEL_BUSMONITOR, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func KnxLayerByName(value string) (enum KnxLayer, ok bool) {
 	return 0, false
 }
 
-func KnxLayerKnows(value uint8) bool {
+func KnxLayerKnows(value uint8)  bool {
 	for _, typeValue := range KnxLayerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastKnxLayer(structType interface{}) KnxLayer {
@@ -147,3 +147,4 @@ func (e KnxLayer) PLC4XEnumName() string {
 func (e KnxLayer) String() string {
 	return e.PLC4XEnumName()
 }
+

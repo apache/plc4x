@@ -34,21 +34,21 @@ type IBVLCResultCode interface {
 	utils.Serializable
 }
 
-const (
-	BVLCResultCode_SUCCESSFUL_COMPLETION                  BVLCResultCode = 0x0000
+const(
+	BVLCResultCode_SUCCESSFUL_COMPLETION BVLCResultCode = 0x0000
 	BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK BVLCResultCode = 0x0010
-	BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK  BVLCResultCode = 0x0020
-	BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK            BVLCResultCode = 0x0030
-	BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK          BVLCResultCode = 0x0040
-	BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK  BVLCResultCode = 0x0050
-	BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK    BVLCResultCode = 0x0060
+	BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK BVLCResultCode = 0x0020
+	BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK BVLCResultCode = 0x0030
+	BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK BVLCResultCode = 0x0040
+	BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK BVLCResultCode = 0x0050
+	BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK BVLCResultCode = 0x0060
 )
 
 var BVLCResultCodeValues []BVLCResultCode
 
 func init() {
 	_ = errors.New
-	BVLCResultCodeValues = []BVLCResultCode{
+	BVLCResultCodeValues = []BVLCResultCode {
 		BVLCResultCode_SUCCESSFUL_COMPLETION,
 		BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK,
 		BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK,
@@ -61,20 +61,20 @@ func init() {
 
 func BVLCResultCodeByValue(value uint16) (enum BVLCResultCode, ok bool) {
 	switch value {
-	case 0x0000:
-		return BVLCResultCode_SUCCESSFUL_COMPLETION, true
-	case 0x0010:
-		return BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK, true
-	case 0x0020:
-		return BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK, true
-	case 0x0030:
-		return BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, true
-	case 0x0040:
-		return BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK, true
-	case 0x0050:
-		return BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK, true
-	case 0x0060:
-		return BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK, true
+		case 0x0000:
+			return BVLCResultCode_SUCCESSFUL_COMPLETION, true
+		case 0x0010:
+			return BVLCResultCode_WRITE_BROADCAST_DISTRIBUTION_TABLE_NAK, true
+		case 0x0020:
+			return BVLCResultCode_READ_BROADCAST_DISTRIBUTION_TABLE_NAK, true
+		case 0x0030:
+			return BVLCResultCode_REGISTER_FOREIGN_DEVICE_NAK, true
+		case 0x0040:
+			return BVLCResultCode_READ_FOREIGN_DEVICE_TABLE_NAK, true
+		case 0x0050:
+			return BVLCResultCode_DELETE_FOREIGN_DEVICE_TABLE_ENTRY_NAK, true
+		case 0x0060:
+			return BVLCResultCode_DISTRIBUTE_BROADCAST_TO_NETWORK_NAK, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BVLCResultCodeByName(value string) (enum BVLCResultCode, ok bool) {
 	return 0, false
 }
 
-func BVLCResultCodeKnows(value uint16) bool {
+func BVLCResultCodeKnows(value uint16)  bool {
 	for _, typeValue := range BVLCResultCodeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBVLCResultCode(structType interface{}) BVLCResultCode {
@@ -179,3 +179,4 @@ func (e BVLCResultCode) PLC4XEnumName() string {
 func (e BVLCResultCode) String() string {
 	return e.PLC4XEnumName()
 }
+

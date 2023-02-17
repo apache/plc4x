@@ -45,40 +45,40 @@ type ITransportSize interface {
 	BaseType() TransportSize
 }
 
-const (
-	TransportSize_BOOL          TransportSize = 0x01
-	TransportSize_BYTE          TransportSize = 0x02
-	TransportSize_WORD          TransportSize = 0x03
-	TransportSize_DWORD         TransportSize = 0x04
-	TransportSize_LWORD         TransportSize = 0x05
-	TransportSize_INT           TransportSize = 0x06
-	TransportSize_UINT          TransportSize = 0x07
-	TransportSize_SINT          TransportSize = 0x08
-	TransportSize_USINT         TransportSize = 0x09
-	TransportSize_DINT          TransportSize = 0x0A
-	TransportSize_UDINT         TransportSize = 0x0B
-	TransportSize_LINT          TransportSize = 0x0C
-	TransportSize_ULINT         TransportSize = 0x0D
-	TransportSize_REAL          TransportSize = 0x0E
-	TransportSize_LREAL         TransportSize = 0x0F
-	TransportSize_CHAR          TransportSize = 0x10
-	TransportSize_WCHAR         TransportSize = 0x11
-	TransportSize_STRING        TransportSize = 0x12
-	TransportSize_WSTRING       TransportSize = 0x13
-	TransportSize_TIME          TransportSize = 0x14
-	TransportSize_LTIME         TransportSize = 0x16
-	TransportSize_DATE          TransportSize = 0x17
-	TransportSize_TIME_OF_DAY   TransportSize = 0x18
-	TransportSize_TOD           TransportSize = 0x19
+const(
+	TransportSize_BOOL TransportSize = 0x01
+	TransportSize_BYTE TransportSize = 0x02
+	TransportSize_WORD TransportSize = 0x03
+	TransportSize_DWORD TransportSize = 0x04
+	TransportSize_LWORD TransportSize = 0x05
+	TransportSize_INT TransportSize = 0x06
+	TransportSize_UINT TransportSize = 0x07
+	TransportSize_SINT TransportSize = 0x08
+	TransportSize_USINT TransportSize = 0x09
+	TransportSize_DINT TransportSize = 0x0A
+	TransportSize_UDINT TransportSize = 0x0B
+	TransportSize_LINT TransportSize = 0x0C
+	TransportSize_ULINT TransportSize = 0x0D
+	TransportSize_REAL TransportSize = 0x0E
+	TransportSize_LREAL TransportSize = 0x0F
+	TransportSize_CHAR TransportSize = 0x10
+	TransportSize_WCHAR TransportSize = 0x11
+	TransportSize_STRING TransportSize = 0x12
+	TransportSize_WSTRING TransportSize = 0x13
+	TransportSize_TIME TransportSize = 0x14
+	TransportSize_LTIME TransportSize = 0x16
+	TransportSize_DATE TransportSize = 0x17
+	TransportSize_TIME_OF_DAY TransportSize = 0x18
+	TransportSize_TOD TransportSize = 0x19
 	TransportSize_DATE_AND_TIME TransportSize = 0x1A
-	TransportSize_DT            TransportSize = 0x1B
+	TransportSize_DT TransportSize = 0x1B
 )
 
 var TransportSizeValues []TransportSize
 
 func init() {
 	_ = errors.New
-	TransportSizeValues = []TransportSize{
+	TransportSizeValues = []TransportSize {
 		TransportSize_BOOL,
 		TransportSize_BYTE,
 		TransportSize_WORD,
@@ -108,114 +108,88 @@ func init() {
 	}
 }
 
+
 func (e TransportSize) Supported_S7_300() bool {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return true
+	switch e  {
+		case 0x01: { /* '0x01' */
+            return true
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return true
+		case 0x02: { /* '0x02' */
+            return true
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return true
+		case 0x03: { /* '0x03' */
+            return true
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return true
+		case 0x04: { /* '0x04' */
+            return true
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return false
+		case 0x05: { /* '0x05' */
+            return false
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return true
+		case 0x06: { /* '0x06' */
+            return true
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return false
+		case 0x07: { /* '0x07' */
+            return false
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return false
+		case 0x08: { /* '0x08' */
+            return false
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return false
+		case 0x09: { /* '0x09' */
+            return false
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return true
+		case 0x0A: { /* '0x0A' */
+            return true
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return false
+		case 0x0B: { /* '0x0B' */
+            return false
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return false
+		case 0x0C: { /* '0x0C' */
+            return false
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return false
+		case 0x0D: { /* '0x0D' */
+            return false
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return true
+		case 0x0E: { /* '0x0E' */
+            return true
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return false
+		case 0x0F: { /* '0x0F' */
+            return false
 		}
-	case 0x10:
-		{ /* '0x10' */
-			return true
+		case 0x10: { /* '0x10' */
+            return true
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return false
+		case 0x11: { /* '0x11' */
+            return false
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return true
+		case 0x12: { /* '0x12' */
+            return true
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return false
+		case 0x13: { /* '0x13' */
+            return false
 		}
-	case 0x14:
-		{ /* '0x14' */
-			return true
+		case 0x14: { /* '0x14' */
+            return true
 		}
-	case 0x16:
-		{ /* '0x16' */
-			return false
+		case 0x16: { /* '0x16' */
+            return false
 		}
-	case 0x17:
-		{ /* '0x17' */
-			return true
+		case 0x17: { /* '0x17' */
+            return true
 		}
-	case 0x18:
-		{ /* '0x18' */
-			return true
+		case 0x18: { /* '0x18' */
+            return true
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return true
+		case 0x19: { /* '0x19' */
+            return true
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return true
+		case 0x1A: { /* '0x1A' */
+            return true
 		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return true
+		case 0x1B: { /* '0x1B' */
+            return true
 		}
-	default:
-		{
+		default: {
 			return false
 		}
 	}
@@ -231,113 +205,86 @@ func TransportSizeFirstEnumForFieldSupported_S7_300(value bool) (TransportSize, 
 }
 
 func (e TransportSize) Supported_LOGO() bool {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return true
+	switch e  {
+		case 0x01: { /* '0x01' */
+            return true
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return true
+		case 0x02: { /* '0x02' */
+            return true
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return true
+		case 0x03: { /* '0x03' */
+            return true
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return true
+		case 0x04: { /* '0x04' */
+            return true
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return false
+		case 0x05: { /* '0x05' */
+            return false
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return true
+		case 0x06: { /* '0x06' */
+            return true
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return true
+		case 0x07: { /* '0x07' */
+            return true
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return true
+		case 0x08: { /* '0x08' */
+            return true
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return true
+		case 0x09: { /* '0x09' */
+            return true
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return true
+		case 0x0A: { /* '0x0A' */
+            return true
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return true
+		case 0x0B: { /* '0x0B' */
+            return true
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return false
+		case 0x0C: { /* '0x0C' */
+            return false
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return false
+		case 0x0D: { /* '0x0D' */
+            return false
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return true
+		case 0x0E: { /* '0x0E' */
+            return true
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return false
+		case 0x0F: { /* '0x0F' */
+            return false
 		}
-	case 0x10:
-		{ /* '0x10' */
-			return true
+		case 0x10: { /* '0x10' */
+            return true
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return true
+		case 0x11: { /* '0x11' */
+            return true
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return true
+		case 0x12: { /* '0x12' */
+            return true
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return true
+		case 0x13: { /* '0x13' */
+            return true
 		}
-	case 0x14:
-		{ /* '0x14' */
-			return true
+		case 0x14: { /* '0x14' */
+            return true
 		}
-	case 0x16:
-		{ /* '0x16' */
-			return false
+		case 0x16: { /* '0x16' */
+            return false
 		}
-	case 0x17:
-		{ /* '0x17' */
-			return true
+		case 0x17: { /* '0x17' */
+            return true
 		}
-	case 0x18:
-		{ /* '0x18' */
-			return true
+		case 0x18: { /* '0x18' */
+            return true
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return true
+		case 0x19: { /* '0x19' */
+            return true
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return false
+		case 0x1A: { /* '0x1A' */
+            return false
 		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return false
+		case 0x1B: { /* '0x1B' */
+            return false
 		}
-	default:
-		{
+		default: {
 			return false
 		}
 	}
@@ -353,113 +300,86 @@ func TransportSizeFirstEnumForFieldSupported_LOGO(value bool) (TransportSize, er
 }
 
 func (e TransportSize) Code() uint8 {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return 0x01
+	switch e  {
+		case 0x01: { /* '0x01' */
+            return 0x01
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return 0x02
+		case 0x02: { /* '0x02' */
+            return 0x02
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return 0x04
+		case 0x03: { /* '0x03' */
+            return 0x04
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return 0x06
+		case 0x04: { /* '0x04' */
+            return 0x06
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return 0x00
+		case 0x05: { /* '0x05' */
+            return 0x00
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return 0x05
+		case 0x06: { /* '0x06' */
+            return 0x05
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return 0x05
+		case 0x07: { /* '0x07' */
+            return 0x05
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return 0x02
+		case 0x08: { /* '0x08' */
+            return 0x02
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return 0x02
+		case 0x09: { /* '0x09' */
+            return 0x02
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return 0x07
+		case 0x0A: { /* '0x0A' */
+            return 0x07
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return 0x07
+		case 0x0B: { /* '0x0B' */
+            return 0x07
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return 0x00
+		case 0x0C: { /* '0x0C' */
+            return 0x00
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return 0x00
+		case 0x0D: { /* '0x0D' */
+            return 0x00
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return 0x08
+		case 0x0E: { /* '0x0E' */
+            return 0x08
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return 0x30
+		case 0x0F: { /* '0x0F' */
+            return 0x30
 		}
-	case 0x10:
-		{ /* '0x10' */
-			return 0x03
+		case 0x10: { /* '0x10' */
+            return 0x03
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return 0x13
+		case 0x11: { /* '0x11' */
+            return 0x13
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return 0x03
+		case 0x12: { /* '0x12' */
+            return 0x03
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return 0x00
+		case 0x13: { /* '0x13' */
+            return 0x00
 		}
-	case 0x14:
-		{ /* '0x14' */
-			return 0x0B
+		case 0x14: { /* '0x14' */
+            return 0x0B
 		}
-	case 0x16:
-		{ /* '0x16' */
-			return 0x00
+		case 0x16: { /* '0x16' */
+            return 0x00
 		}
-	case 0x17:
-		{ /* '0x17' */
-			return 0x09
+		case 0x17: { /* '0x17' */
+            return 0x09
 		}
-	case 0x18:
-		{ /* '0x18' */
-			return 0x06
+		case 0x18: { /* '0x18' */
+            return 0x06
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return 0x06
+		case 0x19: { /* '0x19' */
+            return 0x06
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return 0x0F
+		case 0x1A: { /* '0x1A' */
+            return 0x0F
 		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return 0x0F
+		case 0x1B: { /* '0x1B' */
+            return 0x0F
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -475,113 +395,86 @@ func TransportSizeFirstEnumForFieldCode(value uint8) (TransportSize, error) {
 }
 
 func (e TransportSize) SizeInBytes() uint8 {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return 1
+	switch e  {
+		case 0x01: { /* '0x01' */
+            return 1
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return 1
+		case 0x02: { /* '0x02' */
+            return 1
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return 2
+		case 0x03: { /* '0x03' */
+            return 2
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return 4
+		case 0x04: { /* '0x04' */
+            return 4
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return 8
+		case 0x05: { /* '0x05' */
+            return 8
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return 2
+		case 0x06: { /* '0x06' */
+            return 2
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return 2
+		case 0x07: { /* '0x07' */
+            return 2
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return 1
+		case 0x08: { /* '0x08' */
+            return 1
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return 1
+		case 0x09: { /* '0x09' */
+            return 1
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return 4
+		case 0x0A: { /* '0x0A' */
+            return 4
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return 4
+		case 0x0B: { /* '0x0B' */
+            return 4
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return 8
+		case 0x0C: { /* '0x0C' */
+            return 8
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return 16
+		case 0x0D: { /* '0x0D' */
+            return 16
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return 4
+		case 0x0E: { /* '0x0E' */
+            return 4
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return 8
+		case 0x0F: { /* '0x0F' */
+            return 8
 		}
-	case 0x10:
-		{ /* '0x10' */
-			return 1
+		case 0x10: { /* '0x10' */
+            return 1
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return 2
+		case 0x11: { /* '0x11' */
+            return 2
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return 1
+		case 0x12: { /* '0x12' */
+            return 1
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return 2
+		case 0x13: { /* '0x13' */
+            return 2
 		}
-	case 0x14:
-		{ /* '0x14' */
-			return 4
+		case 0x14: { /* '0x14' */
+            return 4
 		}
-	case 0x16:
-		{ /* '0x16' */
-			return 8
+		case 0x16: { /* '0x16' */
+            return 8
 		}
-	case 0x17:
-		{ /* '0x17' */
-			return 2
+		case 0x17: { /* '0x17' */
+            return 2
 		}
-	case 0x18:
-		{ /* '0x18' */
-			return 4
+		case 0x18: { /* '0x18' */
+            return 4
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return 4
+		case 0x19: { /* '0x19' */
+            return 4
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return 12
+		case 0x1A: { /* '0x1A' */
+            return 12
 		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return 12
+		case 0x1B: { /* '0x1B' */
+            return 12
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -597,113 +490,86 @@ func TransportSizeFirstEnumForFieldSizeInBytes(value uint8) (TransportSize, erro
 }
 
 func (e TransportSize) Supported_S7_400() bool {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return true
+	switch e  {
+		case 0x01: { /* '0x01' */
+            return true
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return true
+		case 0x02: { /* '0x02' */
+            return true
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return true
+		case 0x03: { /* '0x03' */
+            return true
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return true
+		case 0x04: { /* '0x04' */
+            return true
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return false
+		case 0x05: { /* '0x05' */
+            return false
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return true
+		case 0x06: { /* '0x06' */
+            return true
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return false
+		case 0x07: { /* '0x07' */
+            return false
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return false
+		case 0x08: { /* '0x08' */
+            return false
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return false
+		case 0x09: { /* '0x09' */
+            return false
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return true
+		case 0x0A: { /* '0x0A' */
+            return true
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return false
+		case 0x0B: { /* '0x0B' */
+            return false
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return false
+		case 0x0C: { /* '0x0C' */
+            return false
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return false
+		case 0x0D: { /* '0x0D' */
+            return false
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return true
+		case 0x0E: { /* '0x0E' */
+            return true
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return false
+		case 0x0F: { /* '0x0F' */
+            return false
 		}
-	case 0x10:
-		{ /* '0x10' */
-			return true
+		case 0x10: { /* '0x10' */
+            return true
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return false
+		case 0x11: { /* '0x11' */
+            return false
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return true
+		case 0x12: { /* '0x12' */
+            return true
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return false
+		case 0x13: { /* '0x13' */
+            return false
 		}
-	case 0x14:
-		{ /* '0x14' */
-			return true
+		case 0x14: { /* '0x14' */
+            return true
 		}
-	case 0x16:
-		{ /* '0x16' */
-			return false
+		case 0x16: { /* '0x16' */
+            return false
 		}
-	case 0x17:
-		{ /* '0x17' */
-			return true
+		case 0x17: { /* '0x17' */
+            return true
 		}
-	case 0x18:
-		{ /* '0x18' */
-			return true
+		case 0x18: { /* '0x18' */
+            return true
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return true
+		case 0x19: { /* '0x19' */
+            return true
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return true
+		case 0x1A: { /* '0x1A' */
+            return true
 		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return true
+		case 0x1B: { /* '0x1B' */
+            return true
 		}
-	default:
-		{
+		default: {
 			return false
 		}
 	}
@@ -719,113 +585,86 @@ func TransportSizeFirstEnumForFieldSupported_S7_400(value bool) (TransportSize, 
 }
 
 func (e TransportSize) Supported_S7_1200() bool {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return true
+	switch e  {
+		case 0x01: { /* '0x01' */
+            return true
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return true
+		case 0x02: { /* '0x02' */
+            return true
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return true
+		case 0x03: { /* '0x03' */
+            return true
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return true
+		case 0x04: { /* '0x04' */
+            return true
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return false
+		case 0x05: { /* '0x05' */
+            return false
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return true
+		case 0x06: { /* '0x06' */
+            return true
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return true
+		case 0x07: { /* '0x07' */
+            return true
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return true
+		case 0x08: { /* '0x08' */
+            return true
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return true
+		case 0x09: { /* '0x09' */
+            return true
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return true
+		case 0x0A: { /* '0x0A' */
+            return true
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return true
+		case 0x0B: { /* '0x0B' */
+            return true
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return false
+		case 0x0C: { /* '0x0C' */
+            return false
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return false
+		case 0x0D: { /* '0x0D' */
+            return false
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return true
+		case 0x0E: { /* '0x0E' */
+            return true
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return true
+		case 0x0F: { /* '0x0F' */
+            return true
 		}
-	case 0x10:
-		{ /* '0x10' */
-			return true
+		case 0x10: { /* '0x10' */
+            return true
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return true
+		case 0x11: { /* '0x11' */
+            return true
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return true
+		case 0x12: { /* '0x12' */
+            return true
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return true
+		case 0x13: { /* '0x13' */
+            return true
 		}
-	case 0x14:
-		{ /* '0x14' */
-			return true
+		case 0x14: { /* '0x14' */
+            return true
 		}
-	case 0x16:
-		{ /* '0x16' */
-			return false
+		case 0x16: { /* '0x16' */
+            return false
 		}
-	case 0x17:
-		{ /* '0x17' */
-			return true
+		case 0x17: { /* '0x17' */
+            return true
 		}
-	case 0x18:
-		{ /* '0x18' */
-			return true
+		case 0x18: { /* '0x18' */
+            return true
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return true
+		case 0x19: { /* '0x19' */
+            return true
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return false
+		case 0x1A: { /* '0x1A' */
+            return false
 		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return false
+		case 0x1B: { /* '0x1B' */
+            return false
 		}
-	default:
-		{
+		default: {
 			return false
 		}
 	}
@@ -841,113 +680,86 @@ func TransportSizeFirstEnumForFieldSupported_S7_1200(value bool) (TransportSize,
 }
 
 func (e TransportSize) ShortName() uint8 {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return 'X'
+	switch e  {
+		case 0x01: { /* '0x01' */
+            return 'X'
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return 'B'
+		case 0x02: { /* '0x02' */
+            return 'B'
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return 'W'
+		case 0x03: { /* '0x03' */
+            return 'W'
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return 'D'
+		case 0x04: { /* '0x04' */
+            return 'D'
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return 'X'
+		case 0x05: { /* '0x05' */
+            return 'X'
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return 'W'
+		case 0x06: { /* '0x06' */
+            return 'W'
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return 'W'
+		case 0x07: { /* '0x07' */
+            return 'W'
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return 'B'
+		case 0x08: { /* '0x08' */
+            return 'B'
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return 'B'
+		case 0x09: { /* '0x09' */
+            return 'B'
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return 'D'
+		case 0x0A: { /* '0x0A' */
+            return 'D'
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return 'D'
+		case 0x0B: { /* '0x0B' */
+            return 'D'
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return 'X'
+		case 0x0C: { /* '0x0C' */
+            return 'X'
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return 'X'
+		case 0x0D: { /* '0x0D' */
+            return 'X'
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return 'D'
+		case 0x0E: { /* '0x0E' */
+            return 'D'
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return 'X'
+		case 0x0F: { /* '0x0F' */
+            return 'X'
 		}
-	case 0x10:
-		{ /* '0x10' */
-			return 'B'
+		case 0x10: { /* '0x10' */
+            return 'B'
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return 'X'
+		case 0x11: { /* '0x11' */
+            return 'X'
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return 'X'
+		case 0x12: { /* '0x12' */
+            return 'X'
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return 'X'
+		case 0x13: { /* '0x13' */
+            return 'X'
 		}
-	case 0x14:
-		{ /* '0x14' */
-			return 'X'
+		case 0x14: { /* '0x14' */
+            return 'X'
 		}
-	case 0x16:
-		{ /* '0x16' */
-			return 'X'
+		case 0x16: { /* '0x16' */
+            return 'X'
 		}
-	case 0x17:
-		{ /* '0x17' */
-			return 'X'
+		case 0x17: { /* '0x17' */
+            return 'X'
 		}
-	case 0x18:
-		{ /* '0x18' */
-			return 'X'
+		case 0x18: { /* '0x18' */
+            return 'X'
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return 'X'
+		case 0x19: { /* '0x19' */
+            return 'X'
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return 'X'
+		case 0x1A: { /* '0x1A' */
+            return 'X'
 		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return 'X'
+		case 0x1B: { /* '0x1B' */
+            return 'X'
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -963,113 +775,86 @@ func TransportSizeFirstEnumForFieldShortName(value uint8) (TransportSize, error)
 }
 
 func (e TransportSize) Supported_S7_1500() bool {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return true
+	switch e  {
+		case 0x01: { /* '0x01' */
+            return true
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return true
+		case 0x02: { /* '0x02' */
+            return true
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return true
+		case 0x03: { /* '0x03' */
+            return true
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return true
+		case 0x04: { /* '0x04' */
+            return true
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return true
+		case 0x05: { /* '0x05' */
+            return true
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return true
+		case 0x06: { /* '0x06' */
+            return true
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return true
+		case 0x07: { /* '0x07' */
+            return true
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return true
+		case 0x08: { /* '0x08' */
+            return true
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return true
+		case 0x09: { /* '0x09' */
+            return true
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return true
+		case 0x0A: { /* '0x0A' */
+            return true
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return true
+		case 0x0B: { /* '0x0B' */
+            return true
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return true
+		case 0x0C: { /* '0x0C' */
+            return true
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return true
+		case 0x0D: { /* '0x0D' */
+            return true
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return true
+		case 0x0E: { /* '0x0E' */
+            return true
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return true
+		case 0x0F: { /* '0x0F' */
+            return true
 		}
-	case 0x10:
-		{ /* '0x10' */
-			return true
+		case 0x10: { /* '0x10' */
+            return true
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return true
+		case 0x11: { /* '0x11' */
+            return true
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return true
+		case 0x12: { /* '0x12' */
+            return true
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return true
+		case 0x13: { /* '0x13' */
+            return true
 		}
-	case 0x14:
-		{ /* '0x14' */
-			return true
+		case 0x14: { /* '0x14' */
+            return true
 		}
-	case 0x16:
-		{ /* '0x16' */
-			return true
+		case 0x16: { /* '0x16' */
+            return true
 		}
-	case 0x17:
-		{ /* '0x17' */
-			return true
+		case 0x17: { /* '0x17' */
+            return true
 		}
-	case 0x18:
-		{ /* '0x18' */
-			return true
+		case 0x18: { /* '0x18' */
+            return true
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return true
+		case 0x19: { /* '0x19' */
+            return true
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return true
+		case 0x1A: { /* '0x1A' */
+            return true
 		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return true
+		case 0x1B: { /* '0x1B' */
+            return true
 		}
-	default:
-		{
+		default: {
 			return false
 		}
 	}
@@ -1085,113 +870,86 @@ func TransportSizeFirstEnumForFieldSupported_S7_1500(value bool) (TransportSize,
 }
 
 func (e TransportSize) DataTransportSize() DataTransportSize {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
+	switch e  {
+		case 0x01: { /* '0x01' */
 			return DataTransportSize_BIT
 		}
-	case 0x02:
-		{ /* '0x02' */
+		case 0x02: { /* '0x02' */
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
-	case 0x03:
-		{ /* '0x03' */
+		case 0x03: { /* '0x03' */
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
-	case 0x04:
-		{ /* '0x04' */
+		case 0x04: { /* '0x04' */
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
-	case 0x05:
-		{ /* '0x05' */
+		case 0x05: { /* '0x05' */
 			return 0
 		}
-	case 0x06:
-		{ /* '0x06' */
+		case 0x06: { /* '0x06' */
 			return DataTransportSize_INTEGER
 		}
-	case 0x07:
-		{ /* '0x07' */
+		case 0x07: { /* '0x07' */
 			return DataTransportSize_INTEGER
 		}
-	case 0x08:
-		{ /* '0x08' */
+		case 0x08: { /* '0x08' */
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
-	case 0x09:
-		{ /* '0x09' */
+		case 0x09: { /* '0x09' */
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
-	case 0x0A:
-		{ /* '0x0A' */
+		case 0x0A: { /* '0x0A' */
 			return DataTransportSize_INTEGER
 		}
-	case 0x0B:
-		{ /* '0x0B' */
+		case 0x0B: { /* '0x0B' */
 			return DataTransportSize_INTEGER
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return 0
-		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return 0
-		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return DataTransportSize_REAL
-		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return 0
-		}
-	case 0x10:
-		{ /* '0x10' */
+		case 0x0C: { /* '0x0C' */
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return 0
-		}
-	case 0x12:
-		{ /* '0x12' */
+		case 0x0D: { /* '0x0D' */
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return 0
-		}
-	case 0x14:
-		{ /* '0x14' */
-			return 0
-		}
-	case 0x16:
-		{ /* '0x16' */
-			return 0
-		}
-	case 0x17:
-		{ /* '0x17' */
+		case 0x0E: { /* '0x0E' */
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
-	case 0x18:
-		{ /* '0x18' */
+		case 0x0F: { /* '0x0F' */
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
-	case 0x19:
-		{ /* '0x19' */
+		case 0x10: { /* '0x10' */
 			return DataTransportSize_BYTE_WORD_DWORD
 		}
-	case 0x1A:
-		{ /* '0x1A' */
+		case 0x11: { /* '0x11' */
+			return DataTransportSize_BYTE_WORD_DWORD
+		}
+		case 0x12: { /* '0x12' */
+			return DataTransportSize_BYTE_WORD_DWORD
+		}
+		case 0x13: { /* '0x13' */
+			return DataTransportSize_BYTE_WORD_DWORD
+		}
+		case 0x14: { /* '0x14' */
 			return 0
 		}
-	case 0x1B:
-		{ /* '0x1B' */
+		case 0x16: { /* '0x16' */
 			return 0
 		}
-	default:
-		{
+		case 0x17: { /* '0x17' */
+			return DataTransportSize_BYTE_WORD_DWORD
+		}
+		case 0x18: { /* '0x18' */
+			return DataTransportSize_BYTE_WORD_DWORD
+		}
+		case 0x19: { /* '0x19' */
+			return DataTransportSize_BYTE_WORD_DWORD
+		}
+		case 0x1A: { /* '0x1A' */
+			return 0
+		}
+		case 0x1B: { /* '0x1B' */
+			return 0
+		}
+		default: {
 			return 0
 		}
 	}
@@ -1207,113 +965,86 @@ func TransportSizeFirstEnumForFieldDataTransportSize(value DataTransportSize) (T
 }
 
 func (e TransportSize) DataProtocolId() string {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
-			return "IEC61131_BOOL"
+	switch e  {
+		case 0x01: { /* '0x01' */
+            return "IEC61131_BOOL"
 		}
-	case 0x02:
-		{ /* '0x02' */
-			return "IEC61131_BYTE"
+		case 0x02: { /* '0x02' */
+            return "IEC61131_BYTE"
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return "IEC61131_WORD"
+		case 0x03: { /* '0x03' */
+            return "IEC61131_WORD"
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return "IEC61131_DWORD"
+		case 0x04: { /* '0x04' */
+            return "IEC61131_DWORD"
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return "IEC61131_LWORD"
+		case 0x05: { /* '0x05' */
+            return "IEC61131_LWORD"
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return "IEC61131_INT"
+		case 0x06: { /* '0x06' */
+            return "IEC61131_INT"
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return "IEC61131_UINT"
+		case 0x07: { /* '0x07' */
+            return "IEC61131_UINT"
 		}
-	case 0x08:
-		{ /* '0x08' */
-			return "IEC61131_SINT"
+		case 0x08: { /* '0x08' */
+            return "IEC61131_SINT"
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return "IEC61131_USINT"
+		case 0x09: { /* '0x09' */
+            return "IEC61131_USINT"
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return "IEC61131_DINT"
+		case 0x0A: { /* '0x0A' */
+            return "IEC61131_DINT"
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return "IEC61131_UDINT"
+		case 0x0B: { /* '0x0B' */
+            return "IEC61131_UDINT"
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return "IEC61131_LINT"
+		case 0x0C: { /* '0x0C' */
+            return "IEC61131_LINT"
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return "IEC61131_ULINT"
+		case 0x0D: { /* '0x0D' */
+            return "IEC61131_ULINT"
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return "IEC61131_REAL"
+		case 0x0E: { /* '0x0E' */
+            return "IEC61131_REAL"
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return "IEC61131_LREAL"
+		case 0x0F: { /* '0x0F' */
+            return "IEC61131_LREAL"
 		}
-	case 0x10:
-		{ /* '0x10' */
-			return "IEC61131_CHAR"
+		case 0x10: { /* '0x10' */
+            return "IEC61131_CHAR"
 		}
-	case 0x11:
-		{ /* '0x11' */
-			return "IEC61131_WCHAR"
+		case 0x11: { /* '0x11' */
+            return "IEC61131_WCHAR"
 		}
-	case 0x12:
-		{ /* '0x12' */
-			return "IEC61131_STRING"
+		case 0x12: { /* '0x12' */
+            return "IEC61131_STRING"
 		}
-	case 0x13:
-		{ /* '0x13' */
-			return "IEC61131_WSTRING"
+		case 0x13: { /* '0x13' */
+            return "IEC61131_WSTRING"
 		}
-	case 0x14:
-		{ /* '0x14' */
-			return "IEC61131_TIME"
+		case 0x14: { /* '0x14' */
+            return "IEC61131_TIME"
 		}
-	case 0x16:
-		{ /* '0x16' */
-			return "IEC61131_LTIME"
+		case 0x16: { /* '0x16' */
+            return "IEC61131_LTIME"
 		}
-	case 0x17:
-		{ /* '0x17' */
-			return "IEC61131_DATE"
+		case 0x17: { /* '0x17' */
+            return "IEC61131_DATE"
 		}
-	case 0x18:
-		{ /* '0x18' */
-			return "IEC61131_TIME_OF_DAY"
+		case 0x18: { /* '0x18' */
+            return "IEC61131_TIME_OF_DAY"
 		}
-	case 0x19:
-		{ /* '0x19' */
-			return "IEC61131_TIME_OF_DAY"
+		case 0x19: { /* '0x19' */
+            return "IEC61131_TIME_OF_DAY"
 		}
-	case 0x1A:
-		{ /* '0x1A' */
-			return "IEC61131_DATE_AND_TIME"
+		case 0x1A: { /* '0x1A' */
+            return "IEC61131_DATE_AND_TIME"
 		}
-	case 0x1B:
-		{ /* '0x1B' */
-			return "IEC61131_DATE_AND_TIME"
+		case 0x1B: { /* '0x1B' */
+            return "IEC61131_DATE_AND_TIME"
 		}
-	default:
-		{
+		default: {
 			return ""
 		}
 	}
@@ -1329,113 +1060,86 @@ func TransportSizeFirstEnumForFieldDataProtocolId(value string) (TransportSize, 
 }
 
 func (e TransportSize) BaseType() TransportSize {
-	switch e {
-	case 0x01:
-		{ /* '0x01' */
+	switch e  {
+		case 0x01: { /* '0x01' */
 			return 0
 		}
-	case 0x02:
-		{ /* '0x02' */
+		case 0x02: { /* '0x02' */
 			return 0
 		}
-	case 0x03:
-		{ /* '0x03' */
+		case 0x03: { /* '0x03' */
 			return 0
 		}
-	case 0x04:
-		{ /* '0x04' */
+		case 0x04: { /* '0x04' */
 			return TransportSize_WORD
 		}
-	case 0x05:
-		{ /* '0x05' */
+		case 0x05: { /* '0x05' */
 			return 0
 		}
-	case 0x06:
-		{ /* '0x06' */
+		case 0x06: { /* '0x06' */
 			return 0
 		}
-	case 0x07:
-		{ /* '0x07' */
+		case 0x07: { /* '0x07' */
 			return TransportSize_INT
 		}
-	case 0x08:
-		{ /* '0x08' */
+		case 0x08: { /* '0x08' */
 			return TransportSize_INT
 		}
-	case 0x09:
-		{ /* '0x09' */
+		case 0x09: { /* '0x09' */
 			return TransportSize_INT
 		}
-	case 0x0A:
-		{ /* '0x0A' */
+		case 0x0A: { /* '0x0A' */
 			return TransportSize_INT
 		}
-	case 0x0B:
-		{ /* '0x0B' */
+		case 0x0B: { /* '0x0B' */
 			return TransportSize_INT
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return TransportSize_INT
-		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return TransportSize_INT
-		}
-	case 0x0E:
-		{ /* '0x0E' */
+		case 0x0C: { /* '0x0C' */
 			return 0
 		}
-	case 0x0F:
-		{ /* '0x0F' */
+		case 0x0D: { /* '0x0D' */
+			return 0
+		}
+		case 0x0E: { /* '0x0E' */
+			return 0
+		}
+		case 0x0F: { /* '0x0F' */
 			return TransportSize_REAL
 		}
-	case 0x10:
-		{ /* '0x10' */
+		case 0x10: { /* '0x10' */
 			return 0
 		}
-	case 0x11:
-		{ /* '0x11' */
+		case 0x11: { /* '0x11' */
 			return 0
 		}
-	case 0x12:
-		{ /* '0x12' */
+		case 0x12: { /* '0x12' */
 			return 0
 		}
-	case 0x13:
-		{ /* '0x13' */
+		case 0x13: { /* '0x13' */
 			return 0
 		}
-	case 0x14:
-		{ /* '0x14' */
+		case 0x14: { /* '0x14' */
 			return 0
 		}
-	case 0x16:
-		{ /* '0x16' */
+		case 0x16: { /* '0x16' */
 			return TransportSize_TIME
 		}
-	case 0x17:
-		{ /* '0x17' */
+		case 0x17: { /* '0x17' */
 			return 0
 		}
-	case 0x18:
-		{ /* '0x18' */
+		case 0x18: { /* '0x18' */
 			return 0
 		}
-	case 0x19:
-		{ /* '0x19' */
+		case 0x19: { /* '0x19' */
 			return 0
 		}
-	case 0x1A:
-		{ /* '0x1A' */
+		case 0x1A: { /* '0x1A' */
 			return 0
 		}
-	case 0x1B:
-		{ /* '0x1B' */
+		case 0x1B: { /* '0x1B' */
 			return 0
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -1451,58 +1155,58 @@ func TransportSizeFirstEnumForFieldBaseType(value TransportSize) (TransportSize,
 }
 func TransportSizeByValue(value uint8) (enum TransportSize, ok bool) {
 	switch value {
-	case 0x01:
-		return TransportSize_BOOL, true
-	case 0x02:
-		return TransportSize_BYTE, true
-	case 0x03:
-		return TransportSize_WORD, true
-	case 0x04:
-		return TransportSize_DWORD, true
-	case 0x05:
-		return TransportSize_LWORD, true
-	case 0x06:
-		return TransportSize_INT, true
-	case 0x07:
-		return TransportSize_UINT, true
-	case 0x08:
-		return TransportSize_SINT, true
-	case 0x09:
-		return TransportSize_USINT, true
-	case 0x0A:
-		return TransportSize_DINT, true
-	case 0x0B:
-		return TransportSize_UDINT, true
-	case 0x0C:
-		return TransportSize_LINT, true
-	case 0x0D:
-		return TransportSize_ULINT, true
-	case 0x0E:
-		return TransportSize_REAL, true
-	case 0x0F:
-		return TransportSize_LREAL, true
-	case 0x10:
-		return TransportSize_CHAR, true
-	case 0x11:
-		return TransportSize_WCHAR, true
-	case 0x12:
-		return TransportSize_STRING, true
-	case 0x13:
-		return TransportSize_WSTRING, true
-	case 0x14:
-		return TransportSize_TIME, true
-	case 0x16:
-		return TransportSize_LTIME, true
-	case 0x17:
-		return TransportSize_DATE, true
-	case 0x18:
-		return TransportSize_TIME_OF_DAY, true
-	case 0x19:
-		return TransportSize_TOD, true
-	case 0x1A:
-		return TransportSize_DATE_AND_TIME, true
-	case 0x1B:
-		return TransportSize_DT, true
+		case 0x01:
+			return TransportSize_BOOL, true
+		case 0x02:
+			return TransportSize_BYTE, true
+		case 0x03:
+			return TransportSize_WORD, true
+		case 0x04:
+			return TransportSize_DWORD, true
+		case 0x05:
+			return TransportSize_LWORD, true
+		case 0x06:
+			return TransportSize_INT, true
+		case 0x07:
+			return TransportSize_UINT, true
+		case 0x08:
+			return TransportSize_SINT, true
+		case 0x09:
+			return TransportSize_USINT, true
+		case 0x0A:
+			return TransportSize_DINT, true
+		case 0x0B:
+			return TransportSize_UDINT, true
+		case 0x0C:
+			return TransportSize_LINT, true
+		case 0x0D:
+			return TransportSize_ULINT, true
+		case 0x0E:
+			return TransportSize_REAL, true
+		case 0x0F:
+			return TransportSize_LREAL, true
+		case 0x10:
+			return TransportSize_CHAR, true
+		case 0x11:
+			return TransportSize_WCHAR, true
+		case 0x12:
+			return TransportSize_STRING, true
+		case 0x13:
+			return TransportSize_WSTRING, true
+		case 0x14:
+			return TransportSize_TIME, true
+		case 0x16:
+			return TransportSize_LTIME, true
+		case 0x17:
+			return TransportSize_DATE, true
+		case 0x18:
+			return TransportSize_TIME_OF_DAY, true
+		case 0x19:
+			return TransportSize_TOD, true
+		case 0x1A:
+			return TransportSize_DATE_AND_TIME, true
+		case 0x1B:
+			return TransportSize_DT, true
 	}
 	return 0, false
 }
@@ -1565,13 +1269,13 @@ func TransportSizeByName(value string) (enum TransportSize, ok bool) {
 	return 0, false
 }
 
-func TransportSizeKnows(value uint8) bool {
+func TransportSizeKnows(value uint8)  bool {
 	for _, typeValue := range TransportSizeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastTransportSize(structType interface{}) TransportSize {
@@ -1683,3 +1387,4 @@ func (e TransportSize) PLC4XEnumName() string {
 func (e TransportSize) String() string {
 	return e.PLC4XEnumName()
 }
+

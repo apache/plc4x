@@ -34,14 +34,14 @@ type IBACnetTimerTransition interface {
 	utils.Serializable
 }
 
-const (
-	BACnetTimerTransition_NONE               BACnetTimerTransition = 0
-	BACnetTimerTransition_IDLE_TO_RUNNING    BACnetTimerTransition = 1
-	BACnetTimerTransition_RUNNING_TO_IDLE    BACnetTimerTransition = 2
+const(
+	BACnetTimerTransition_NONE BACnetTimerTransition = 0
+	BACnetTimerTransition_IDLE_TO_RUNNING BACnetTimerTransition = 1
+	BACnetTimerTransition_RUNNING_TO_IDLE BACnetTimerTransition = 2
 	BACnetTimerTransition_RUNNING_TO_RUNNING BACnetTimerTransition = 3
 	BACnetTimerTransition_RUNNING_TO_EXPIRED BACnetTimerTransition = 4
-	BACnetTimerTransition_FORCED_TO_EXPIRED  BACnetTimerTransition = 5
-	BACnetTimerTransition_EXPIRED_TO_IDLE    BACnetTimerTransition = 6
+	BACnetTimerTransition_FORCED_TO_EXPIRED BACnetTimerTransition = 5
+	BACnetTimerTransition_EXPIRED_TO_IDLE BACnetTimerTransition = 6
 	BACnetTimerTransition_EXPIRED_TO_RUNNING BACnetTimerTransition = 7
 )
 
@@ -49,7 +49,7 @@ var BACnetTimerTransitionValues []BACnetTimerTransition
 
 func init() {
 	_ = errors.New
-	BACnetTimerTransitionValues = []BACnetTimerTransition{
+	BACnetTimerTransitionValues = []BACnetTimerTransition {
 		BACnetTimerTransition_NONE,
 		BACnetTimerTransition_IDLE_TO_RUNNING,
 		BACnetTimerTransition_RUNNING_TO_IDLE,
@@ -63,22 +63,22 @@ func init() {
 
 func BACnetTimerTransitionByValue(value uint8) (enum BACnetTimerTransition, ok bool) {
 	switch value {
-	case 0:
-		return BACnetTimerTransition_NONE, true
-	case 1:
-		return BACnetTimerTransition_IDLE_TO_RUNNING, true
-	case 2:
-		return BACnetTimerTransition_RUNNING_TO_IDLE, true
-	case 3:
-		return BACnetTimerTransition_RUNNING_TO_RUNNING, true
-	case 4:
-		return BACnetTimerTransition_RUNNING_TO_EXPIRED, true
-	case 5:
-		return BACnetTimerTransition_FORCED_TO_EXPIRED, true
-	case 6:
-		return BACnetTimerTransition_EXPIRED_TO_IDLE, true
-	case 7:
-		return BACnetTimerTransition_EXPIRED_TO_RUNNING, true
+		case 0:
+			return BACnetTimerTransition_NONE, true
+		case 1:
+			return BACnetTimerTransition_IDLE_TO_RUNNING, true
+		case 2:
+			return BACnetTimerTransition_RUNNING_TO_IDLE, true
+		case 3:
+			return BACnetTimerTransition_RUNNING_TO_RUNNING, true
+		case 4:
+			return BACnetTimerTransition_RUNNING_TO_EXPIRED, true
+		case 5:
+			return BACnetTimerTransition_FORCED_TO_EXPIRED, true
+		case 6:
+			return BACnetTimerTransition_EXPIRED_TO_IDLE, true
+		case 7:
+			return BACnetTimerTransition_EXPIRED_TO_RUNNING, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func BACnetTimerTransitionByName(value string) (enum BACnetTimerTransition, ok b
 	return 0, false
 }
 
-func BACnetTimerTransitionKnows(value uint8) bool {
+func BACnetTimerTransitionKnows(value uint8)  bool {
 	for _, typeValue := range BACnetTimerTransitionValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetTimerTransition(structType interface{}) BACnetTimerTransition {
@@ -187,3 +187,4 @@ func (e BACnetTimerTransition) PLC4XEnumName() string {
 func (e BACnetTimerTransition) String() string {
 	return e.PLC4XEnumName()
 }
+

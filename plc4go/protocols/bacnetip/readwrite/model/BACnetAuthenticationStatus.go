@@ -34,21 +34,21 @@ type IBACnetAuthenticationStatus interface {
 	utils.Serializable
 }
 
-const (
-	BACnetAuthenticationStatus_NOT_READY                         BACnetAuthenticationStatus = 0
-	BACnetAuthenticationStatus_READY                             BACnetAuthenticationStatus = 1
-	BACnetAuthenticationStatus_DISABLED                          BACnetAuthenticationStatus = 2
+const(
+	BACnetAuthenticationStatus_NOT_READY BACnetAuthenticationStatus = 0
+	BACnetAuthenticationStatus_READY BACnetAuthenticationStatus = 1
+	BACnetAuthenticationStatus_DISABLED BACnetAuthenticationStatus = 2
 	BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR BACnetAuthenticationStatus = 3
-	BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT         BACnetAuthenticationStatus = 4
-	BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION          BACnetAuthenticationStatus = 5
-	BACnetAuthenticationStatus_IN_PROGRESS                       BACnetAuthenticationStatus = 6
+	BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT BACnetAuthenticationStatus = 4
+	BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION BACnetAuthenticationStatus = 5
+	BACnetAuthenticationStatus_IN_PROGRESS BACnetAuthenticationStatus = 6
 )
 
 var BACnetAuthenticationStatusValues []BACnetAuthenticationStatus
 
 func init() {
 	_ = errors.New
-	BACnetAuthenticationStatusValues = []BACnetAuthenticationStatus{
+	BACnetAuthenticationStatusValues = []BACnetAuthenticationStatus {
 		BACnetAuthenticationStatus_NOT_READY,
 		BACnetAuthenticationStatus_READY,
 		BACnetAuthenticationStatus_DISABLED,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetAuthenticationStatusByValue(value uint8) (enum BACnetAuthenticationStatus, ok bool) {
 	switch value {
-	case 0:
-		return BACnetAuthenticationStatus_NOT_READY, true
-	case 1:
-		return BACnetAuthenticationStatus_READY, true
-	case 2:
-		return BACnetAuthenticationStatus_DISABLED, true
-	case 3:
-		return BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR, true
-	case 4:
-		return BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT, true
-	case 5:
-		return BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION, true
-	case 6:
-		return BACnetAuthenticationStatus_IN_PROGRESS, true
+		case 0:
+			return BACnetAuthenticationStatus_NOT_READY, true
+		case 1:
+			return BACnetAuthenticationStatus_READY, true
+		case 2:
+			return BACnetAuthenticationStatus_DISABLED, true
+		case 3:
+			return BACnetAuthenticationStatus_WAITING_FOR_AUTHENTICATION_FACTOR, true
+		case 4:
+			return BACnetAuthenticationStatus_WAITING_FOR_ACCOMPANIMENT, true
+		case 5:
+			return BACnetAuthenticationStatus_WAITING_FOR_VERIFICATION, true
+		case 6:
+			return BACnetAuthenticationStatus_IN_PROGRESS, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetAuthenticationStatusByName(value string) (enum BACnetAuthenticationSt
 	return 0, false
 }
 
-func BACnetAuthenticationStatusKnows(value uint8) bool {
+func BACnetAuthenticationStatusKnows(value uint8)  bool {
 	for _, typeValue := range BACnetAuthenticationStatusValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetAuthenticationStatus(structType interface{}) BACnetAuthenticationStatus {
@@ -179,3 +179,4 @@ func (e BACnetAuthenticationStatus) PLC4XEnumName() string {
 func (e BACnetAuthenticationStatus) String() string {
 	return e.PLC4XEnumName()
 }
+

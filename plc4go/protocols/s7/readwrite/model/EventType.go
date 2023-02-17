@@ -34,18 +34,18 @@ type IEventType interface {
 	utils.Serializable
 }
 
-const (
+const(
 	EventType_MODE EventType = 0x01
-	EventType_SYS  EventType = 0x02
-	EventType_USR  EventType = 0x04
-	EventType_ALM  EventType = 0x80
+	EventType_SYS EventType = 0x02
+	EventType_USR EventType = 0x04
+	EventType_ALM EventType = 0x80
 )
 
 var EventTypeValues []EventType
 
 func init() {
 	_ = errors.New
-	EventTypeValues = []EventType{
+	EventTypeValues = []EventType {
 		EventType_MODE,
 		EventType_SYS,
 		EventType_USR,
@@ -55,14 +55,14 @@ func init() {
 
 func EventTypeByValue(value uint8) (enum EventType, ok bool) {
 	switch value {
-	case 0x01:
-		return EventType_MODE, true
-	case 0x02:
-		return EventType_SYS, true
-	case 0x04:
-		return EventType_USR, true
-	case 0x80:
-		return EventType_ALM, true
+		case 0x01:
+			return EventType_MODE, true
+		case 0x02:
+			return EventType_SYS, true
+		case 0x04:
+			return EventType_USR, true
+		case 0x80:
+			return EventType_ALM, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func EventTypeByName(value string) (enum EventType, ok bool) {
 	return 0, false
 }
 
-func EventTypeKnows(value uint8) bool {
+func EventTypeKnows(value uint8)  bool {
 	for _, typeValue := range EventTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastEventType(structType interface{}) EventType {
@@ -155,3 +155,4 @@ func (e EventType) PLC4XEnumName() string {
 func (e EventType) String() string {
 	return e.PLC4XEnumName()
 }
+

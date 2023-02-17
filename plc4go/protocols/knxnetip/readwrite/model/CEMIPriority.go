@@ -34,18 +34,18 @@ type ICEMIPriority interface {
 	utils.Serializable
 }
 
-const (
+const(
 	CEMIPriority_SYSTEM CEMIPriority = 0x0
 	CEMIPriority_NORMAL CEMIPriority = 0x1
 	CEMIPriority_URGENT CEMIPriority = 0x2
-	CEMIPriority_LOW    CEMIPriority = 0x3
+	CEMIPriority_LOW CEMIPriority = 0x3
 )
 
 var CEMIPriorityValues []CEMIPriority
 
 func init() {
 	_ = errors.New
-	CEMIPriorityValues = []CEMIPriority{
+	CEMIPriorityValues = []CEMIPriority {
 		CEMIPriority_SYSTEM,
 		CEMIPriority_NORMAL,
 		CEMIPriority_URGENT,
@@ -55,14 +55,14 @@ func init() {
 
 func CEMIPriorityByValue(value uint8) (enum CEMIPriority, ok bool) {
 	switch value {
-	case 0x0:
-		return CEMIPriority_SYSTEM, true
-	case 0x1:
-		return CEMIPriority_NORMAL, true
-	case 0x2:
-		return CEMIPriority_URGENT, true
-	case 0x3:
-		return CEMIPriority_LOW, true
+		case 0x0:
+			return CEMIPriority_SYSTEM, true
+		case 0x1:
+			return CEMIPriority_NORMAL, true
+		case 0x2:
+			return CEMIPriority_URGENT, true
+		case 0x3:
+			return CEMIPriority_LOW, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func CEMIPriorityByName(value string) (enum CEMIPriority, ok bool) {
 	return 0, false
 }
 
-func CEMIPriorityKnows(value uint8) bool {
+func CEMIPriorityKnows(value uint8)  bool {
 	for _, typeValue := range CEMIPriorityValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastCEMIPriority(structType interface{}) CEMIPriority {
@@ -155,3 +155,4 @@ func (e CEMIPriority) PLC4XEnumName() string {
 func (e CEMIPriority) String() string {
 	return e.PLC4XEnumName()
 }
+

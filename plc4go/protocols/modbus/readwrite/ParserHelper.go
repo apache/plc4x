@@ -37,7 +37,7 @@ func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.
 	case "ModbusPDUWriteFileRecordRequestItem":
 		return model.ModbusPDUWriteFileRecordRequestItemParseWithBuffer(context.Background(), io)
 	case "DataItem":
-		dataType, _ := model.ModbusDataTypeByName(arguments[0])
+        dataType, _ := model.ModbusDataTypeByName(arguments[0])
 		numberOfValues, err := utils.StrToUint16(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
@@ -60,7 +60,7 @@ func (m ModbusParserHelper) Parse(typeName string, arguments []string, io utils.
 	case "ModbusPDUReadFileRecordRequestItem":
 		return model.ModbusPDUReadFileRecordRequestItemParseWithBuffer(context.Background(), io)
 	case "ModbusADU":
-		driverType, _ := model.DriverTypeByName(arguments[0])
+        driverType, _ := model.DriverTypeByName(arguments[0])
 		response, err := utils.StrToBool(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")

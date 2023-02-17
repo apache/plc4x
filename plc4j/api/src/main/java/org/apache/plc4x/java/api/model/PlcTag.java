@@ -46,6 +46,14 @@ public interface PlcTag {
      * @return Address string representing this Tag
      */
     String getAddressString();
+    /**
+     * Returns the number of elements, that this tag would be parsed from.
+     *
+     * @return the number of elements representing this Tag
+     */
+    default int getNumberOfElements(){
+        return 1;
+    }
 
     /**
      * Returns the "datatype" of the response one can expect from this tag.
@@ -61,6 +69,9 @@ public interface PlcTag {
     @JsonIgnore
     default PlcValueType getPlcValueType() {
         return PlcValueType.NULL;
+    }
+    @JsonIgnore
+    default void setPlcValueType(PlcValueType plcValueType){
     }
 
     /**

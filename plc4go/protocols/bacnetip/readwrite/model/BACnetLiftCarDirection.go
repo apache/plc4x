@@ -34,21 +34,21 @@ type IBACnetLiftCarDirection interface {
 	utils.Serializable
 }
 
-const (
-	BACnetLiftCarDirection_UNKNOWN                  BACnetLiftCarDirection = 0
-	BACnetLiftCarDirection_NONE                     BACnetLiftCarDirection = 1
-	BACnetLiftCarDirection_STOPPED                  BACnetLiftCarDirection = 2
-	BACnetLiftCarDirection_UP                       BACnetLiftCarDirection = 3
-	BACnetLiftCarDirection_DOWN                     BACnetLiftCarDirection = 4
-	BACnetLiftCarDirection_UP_AND_DOWN              BACnetLiftCarDirection = 5
-	BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE BACnetLiftCarDirection = 0xFFFF
+const(
+	BACnetLiftCarDirection_UNKNOWN BACnetLiftCarDirection = 0
+	BACnetLiftCarDirection_NONE BACnetLiftCarDirection = 1
+	BACnetLiftCarDirection_STOPPED BACnetLiftCarDirection = 2
+	BACnetLiftCarDirection_UP BACnetLiftCarDirection = 3
+	BACnetLiftCarDirection_DOWN BACnetLiftCarDirection = 4
+	BACnetLiftCarDirection_UP_AND_DOWN BACnetLiftCarDirection = 5
+	BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE BACnetLiftCarDirection = 0XFFFF
 )
 
 var BACnetLiftCarDirectionValues []BACnetLiftCarDirection
 
 func init() {
 	_ = errors.New
-	BACnetLiftCarDirectionValues = []BACnetLiftCarDirection{
+	BACnetLiftCarDirectionValues = []BACnetLiftCarDirection {
 		BACnetLiftCarDirection_UNKNOWN,
 		BACnetLiftCarDirection_NONE,
 		BACnetLiftCarDirection_STOPPED,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetLiftCarDirectionByValue(value uint16) (enum BACnetLiftCarDirection, ok bool) {
 	switch value {
-	case 0:
-		return BACnetLiftCarDirection_UNKNOWN, true
-	case 0xFFFF:
-		return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetLiftCarDirection_NONE, true
-	case 2:
-		return BACnetLiftCarDirection_STOPPED, true
-	case 3:
-		return BACnetLiftCarDirection_UP, true
-	case 4:
-		return BACnetLiftCarDirection_DOWN, true
-	case 5:
-		return BACnetLiftCarDirection_UP_AND_DOWN, true
+		case 0:
+			return BACnetLiftCarDirection_UNKNOWN, true
+		case 0XFFFF:
+			return BACnetLiftCarDirection_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetLiftCarDirection_NONE, true
+		case 2:
+			return BACnetLiftCarDirection_STOPPED, true
+		case 3:
+			return BACnetLiftCarDirection_UP, true
+		case 4:
+			return BACnetLiftCarDirection_DOWN, true
+		case 5:
+			return BACnetLiftCarDirection_UP_AND_DOWN, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetLiftCarDirectionByName(value string) (enum BACnetLiftCarDirection, ok
 	return 0, false
 }
 
-func BACnetLiftCarDirectionKnows(value uint16) bool {
+func BACnetLiftCarDirectionKnows(value uint16)  bool {
 	for _, typeValue := range BACnetLiftCarDirectionValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetLiftCarDirection(structType interface{}) BACnetLiftCarDirection {
@@ -179,3 +179,4 @@ func (e BACnetLiftCarDirection) PLC4XEnumName() string {
 func (e BACnetLiftCarDirection) String() string {
 	return e.PLC4XEnumName()
 }
+

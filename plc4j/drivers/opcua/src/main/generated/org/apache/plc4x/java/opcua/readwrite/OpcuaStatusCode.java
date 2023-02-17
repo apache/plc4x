@@ -273,18 +273,7 @@ public enum OpcuaStatusCode {
   BadExpectedStreamToBlock((long) 0x80B40000L),
   BadWouldBlock((long) 0x80B50000L),
   BadSyntaxError((long) 0x80B60000L),
-  BadMaxConnectionsReached((long) 0x80B70000L),
-  UncertainTransducerInManual((long) 0x42080000L),
-  UncertainSimulatedValue((long) 0x42090000L),
-  UncertainSensorCalibration((long) 0x420A0000L),
-  UncertainConfigurationError((long) 0x420F0000L),
-  GoodCascadeInitializationAcknowledged((long) 0x04010000L),
-  GoodCascadeInitializationRequest((long) 0x04020000L),
-  GoodCascadeNotInvited((long) 0x04030000L),
-  GoodCascadeNotSelected((long) 0x04040000L),
-  GoodFaultStateActive((long) 0x04070000L),
-  GoodInitiateFaultState((long) 0x04080000L),
-  GoodCascade((long) 0x04090000L);
+  BadMaxConnectionsReached((long) 0x80B70000L);
   private static final Map<Long, OpcuaStatusCode> map;
 
   static {

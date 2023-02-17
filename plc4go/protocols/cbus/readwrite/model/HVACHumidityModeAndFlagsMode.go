@@ -34,10 +34,10 @@ type IHVACHumidityModeAndFlagsMode interface {
 	utils.Serializable
 }
 
-const (
-	HVACHumidityModeAndFlagsMode_OFF              HVACHumidityModeAndFlagsMode = 0x0
-	HVACHumidityModeAndFlagsMode_HUMIDIFY_ONLY    HVACHumidityModeAndFlagsMode = 0x1
-	HVACHumidityModeAndFlagsMode_DEHUMIDIFY_ONLY  HVACHumidityModeAndFlagsMode = 0x2
+const(
+	HVACHumidityModeAndFlagsMode_OFF HVACHumidityModeAndFlagsMode = 0x0
+	HVACHumidityModeAndFlagsMode_HUMIDIFY_ONLY HVACHumidityModeAndFlagsMode = 0x1
+	HVACHumidityModeAndFlagsMode_DEHUMIDIFY_ONLY HVACHumidityModeAndFlagsMode = 0x2
 	HVACHumidityModeAndFlagsMode_HUMIDITY_CONTROL HVACHumidityModeAndFlagsMode = 0x3
 )
 
@@ -45,7 +45,7 @@ var HVACHumidityModeAndFlagsModeValues []HVACHumidityModeAndFlagsMode
 
 func init() {
 	_ = errors.New
-	HVACHumidityModeAndFlagsModeValues = []HVACHumidityModeAndFlagsMode{
+	HVACHumidityModeAndFlagsModeValues = []HVACHumidityModeAndFlagsMode {
 		HVACHumidityModeAndFlagsMode_OFF,
 		HVACHumidityModeAndFlagsMode_HUMIDIFY_ONLY,
 		HVACHumidityModeAndFlagsMode_DEHUMIDIFY_ONLY,
@@ -55,14 +55,14 @@ func init() {
 
 func HVACHumidityModeAndFlagsModeByValue(value uint8) (enum HVACHumidityModeAndFlagsMode, ok bool) {
 	switch value {
-	case 0x0:
-		return HVACHumidityModeAndFlagsMode_OFF, true
-	case 0x1:
-		return HVACHumidityModeAndFlagsMode_HUMIDIFY_ONLY, true
-	case 0x2:
-		return HVACHumidityModeAndFlagsMode_DEHUMIDIFY_ONLY, true
-	case 0x3:
-		return HVACHumidityModeAndFlagsMode_HUMIDITY_CONTROL, true
+		case 0x0:
+			return HVACHumidityModeAndFlagsMode_OFF, true
+		case 0x1:
+			return HVACHumidityModeAndFlagsMode_HUMIDIFY_ONLY, true
+		case 0x2:
+			return HVACHumidityModeAndFlagsMode_DEHUMIDIFY_ONLY, true
+		case 0x3:
+			return HVACHumidityModeAndFlagsMode_HUMIDITY_CONTROL, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func HVACHumidityModeAndFlagsModeByName(value string) (enum HVACHumidityModeAndF
 	return 0, false
 }
 
-func HVACHumidityModeAndFlagsModeKnows(value uint8) bool {
+func HVACHumidityModeAndFlagsModeKnows(value uint8)  bool {
 	for _, typeValue := range HVACHumidityModeAndFlagsModeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastHVACHumidityModeAndFlagsMode(structType interface{}) HVACHumidityModeAndFlagsMode {
@@ -155,3 +155,4 @@ func (e HVACHumidityModeAndFlagsMode) PLC4XEnumName() string {
 func (e HVACHumidityModeAndFlagsMode) String() string {
 	return e.PLC4XEnumName()
 }
+

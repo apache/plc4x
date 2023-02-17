@@ -36,7 +36,7 @@ type IMeteringCommandTypeContainer interface {
 	CommandType() MeteringCommandType
 }
 
-const (
+const(
 	MeteringCommandTypeContainer_MeteringCommandEvent_0Bytes MeteringCommandTypeContainer = 0x08
 	MeteringCommandTypeContainer_MeteringCommandEvent_1Bytes MeteringCommandTypeContainer = 0x09
 	MeteringCommandTypeContainer_MeteringCommandEvent_2Bytes MeteringCommandTypeContainer = 0x0A
@@ -51,7 +51,7 @@ var MeteringCommandTypeContainerValues []MeteringCommandTypeContainer
 
 func init() {
 	_ = errors.New
-	MeteringCommandTypeContainerValues = []MeteringCommandTypeContainer{
+	MeteringCommandTypeContainerValues = []MeteringCommandTypeContainer {
 		MeteringCommandTypeContainer_MeteringCommandEvent_0Bytes,
 		MeteringCommandTypeContainer_MeteringCommandEvent_1Bytes,
 		MeteringCommandTypeContainer_MeteringCommandEvent_2Bytes,
@@ -63,42 +63,34 @@ func init() {
 	}
 }
 
+
 func (e MeteringCommandTypeContainer) NumBytes() uint8 {
-	switch e {
-	case 0x08:
-		{ /* '0x08' */
-			return 0
+	switch e  {
+		case 0x08: { /* '0x08' */
+            return 0
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return 1
+		case 0x09: { /* '0x09' */
+            return 1
 		}
-	case 0x0A:
-		{ /* '0x0A' */
-			return 2
+		case 0x0A: { /* '0x0A' */
+            return 2
 		}
-	case 0x0B:
-		{ /* '0x0B' */
-			return 3
+		case 0x0B: { /* '0x0B' */
+            return 3
 		}
-	case 0x0C:
-		{ /* '0x0C' */
-			return 4
+		case 0x0C: { /* '0x0C' */
+            return 4
 		}
-	case 0x0D:
-		{ /* '0x0D' */
-			return 5
+		case 0x0D: { /* '0x0D' */
+            return 5
 		}
-	case 0x0E:
-		{ /* '0x0E' */
-			return 6
+		case 0x0E: { /* '0x0E' */
+            return 6
 		}
-	case 0x0F:
-		{ /* '0x0F' */
-			return 7
+		case 0x0F: { /* '0x0F' */
+            return 7
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -114,41 +106,32 @@ func MeteringCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (Meterin
 }
 
 func (e MeteringCommandTypeContainer) CommandType() MeteringCommandType {
-	switch e {
-	case 0x08:
-		{ /* '0x08' */
+	switch e  {
+		case 0x08: { /* '0x08' */
 			return MeteringCommandType_EVENT
 		}
-	case 0x09:
-		{ /* '0x09' */
+		case 0x09: { /* '0x09' */
 			return MeteringCommandType_EVENT
 		}
-	case 0x0A:
-		{ /* '0x0A' */
+		case 0x0A: { /* '0x0A' */
 			return MeteringCommandType_EVENT
 		}
-	case 0x0B:
-		{ /* '0x0B' */
+		case 0x0B: { /* '0x0B' */
 			return MeteringCommandType_EVENT
 		}
-	case 0x0C:
-		{ /* '0x0C' */
+		case 0x0C: { /* '0x0C' */
 			return MeteringCommandType_EVENT
 		}
-	case 0x0D:
-		{ /* '0x0D' */
+		case 0x0D: { /* '0x0D' */
 			return MeteringCommandType_EVENT
 		}
-	case 0x0E:
-		{ /* '0x0E' */
+		case 0x0E: { /* '0x0E' */
 			return MeteringCommandType_EVENT
 		}
-	case 0x0F:
-		{ /* '0x0F' */
+		case 0x0F: { /* '0x0F' */
 			return MeteringCommandType_EVENT
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -164,22 +147,22 @@ func MeteringCommandTypeContainerFirstEnumForFieldCommandType(value MeteringComm
 }
 func MeteringCommandTypeContainerByValue(value uint8) (enum MeteringCommandTypeContainer, ok bool) {
 	switch value {
-	case 0x08:
-		return MeteringCommandTypeContainer_MeteringCommandEvent_0Bytes, true
-	case 0x09:
-		return MeteringCommandTypeContainer_MeteringCommandEvent_1Bytes, true
-	case 0x0A:
-		return MeteringCommandTypeContainer_MeteringCommandEvent_2Bytes, true
-	case 0x0B:
-		return MeteringCommandTypeContainer_MeteringCommandEvent_3Bytes, true
-	case 0x0C:
-		return MeteringCommandTypeContainer_MeteringCommandEvent_4Bytes, true
-	case 0x0D:
-		return MeteringCommandTypeContainer_MeteringCommandEvent_5Bytes, true
-	case 0x0E:
-		return MeteringCommandTypeContainer_MeteringCommandEvent_6Bytes, true
-	case 0x0F:
-		return MeteringCommandTypeContainer_MeteringCommandEvent_7Bytes, true
+		case 0x08:
+			return MeteringCommandTypeContainer_MeteringCommandEvent_0Bytes, true
+		case 0x09:
+			return MeteringCommandTypeContainer_MeteringCommandEvent_1Bytes, true
+		case 0x0A:
+			return MeteringCommandTypeContainer_MeteringCommandEvent_2Bytes, true
+		case 0x0B:
+			return MeteringCommandTypeContainer_MeteringCommandEvent_3Bytes, true
+		case 0x0C:
+			return MeteringCommandTypeContainer_MeteringCommandEvent_4Bytes, true
+		case 0x0D:
+			return MeteringCommandTypeContainer_MeteringCommandEvent_5Bytes, true
+		case 0x0E:
+			return MeteringCommandTypeContainer_MeteringCommandEvent_6Bytes, true
+		case 0x0F:
+			return MeteringCommandTypeContainer_MeteringCommandEvent_7Bytes, true
 	}
 	return 0, false
 }
@@ -206,13 +189,13 @@ func MeteringCommandTypeContainerByName(value string) (enum MeteringCommandTypeC
 	return 0, false
 }
 
-func MeteringCommandTypeContainerKnows(value uint8) bool {
+func MeteringCommandTypeContainerKnows(value uint8)  bool {
 	for _, typeValue := range MeteringCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastMeteringCommandTypeContainer(structType interface{}) MeteringCommandTypeContainer {
@@ -288,3 +271,4 @@ func (e MeteringCommandTypeContainer) PLC4XEnumName() string {
 func (e MeteringCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
+

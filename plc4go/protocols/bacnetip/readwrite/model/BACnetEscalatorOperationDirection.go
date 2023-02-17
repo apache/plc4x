@@ -34,21 +34,21 @@ type IBACnetEscalatorOperationDirection interface {
 	utils.Serializable
 }
 
-const (
-	BACnetEscalatorOperationDirection_UNKNOWN                  BACnetEscalatorOperationDirection = 0
-	BACnetEscalatorOperationDirection_STOPPED                  BACnetEscalatorOperationDirection = 1
-	BACnetEscalatorOperationDirection_UP_RATED_SPEED           BACnetEscalatorOperationDirection = 2
-	BACnetEscalatorOperationDirection_UP_REDUCED_SPEED         BACnetEscalatorOperationDirection = 3
-	BACnetEscalatorOperationDirection_DOWN_RATED_SPEED         BACnetEscalatorOperationDirection = 4
-	BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED       BACnetEscalatorOperationDirection = 5
-	BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE BACnetEscalatorOperationDirection = 0xFFFF
+const(
+	BACnetEscalatorOperationDirection_UNKNOWN BACnetEscalatorOperationDirection = 0
+	BACnetEscalatorOperationDirection_STOPPED BACnetEscalatorOperationDirection = 1
+	BACnetEscalatorOperationDirection_UP_RATED_SPEED BACnetEscalatorOperationDirection = 2
+	BACnetEscalatorOperationDirection_UP_REDUCED_SPEED BACnetEscalatorOperationDirection = 3
+	BACnetEscalatorOperationDirection_DOWN_RATED_SPEED BACnetEscalatorOperationDirection = 4
+	BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED BACnetEscalatorOperationDirection = 5
+	BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE BACnetEscalatorOperationDirection = 0XFFFF
 )
 
 var BACnetEscalatorOperationDirectionValues []BACnetEscalatorOperationDirection
 
 func init() {
 	_ = errors.New
-	BACnetEscalatorOperationDirectionValues = []BACnetEscalatorOperationDirection{
+	BACnetEscalatorOperationDirectionValues = []BACnetEscalatorOperationDirection {
 		BACnetEscalatorOperationDirection_UNKNOWN,
 		BACnetEscalatorOperationDirection_STOPPED,
 		BACnetEscalatorOperationDirection_UP_RATED_SPEED,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetEscalatorOperationDirectionByValue(value uint16) (enum BACnetEscalatorOperationDirection, ok bool) {
 	switch value {
-	case 0:
-		return BACnetEscalatorOperationDirection_UNKNOWN, true
-	case 0xFFFF:
-		return BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetEscalatorOperationDirection_STOPPED, true
-	case 2:
-		return BACnetEscalatorOperationDirection_UP_RATED_SPEED, true
-	case 3:
-		return BACnetEscalatorOperationDirection_UP_REDUCED_SPEED, true
-	case 4:
-		return BACnetEscalatorOperationDirection_DOWN_RATED_SPEED, true
-	case 5:
-		return BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED, true
+		case 0:
+			return BACnetEscalatorOperationDirection_UNKNOWN, true
+		case 0XFFFF:
+			return BACnetEscalatorOperationDirection_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetEscalatorOperationDirection_STOPPED, true
+		case 2:
+			return BACnetEscalatorOperationDirection_UP_RATED_SPEED, true
+		case 3:
+			return BACnetEscalatorOperationDirection_UP_REDUCED_SPEED, true
+		case 4:
+			return BACnetEscalatorOperationDirection_DOWN_RATED_SPEED, true
+		case 5:
+			return BACnetEscalatorOperationDirection_DOWN_REDUCED_SPEED, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetEscalatorOperationDirectionByName(value string) (enum BACnetEscalator
 	return 0, false
 }
 
-func BACnetEscalatorOperationDirectionKnows(value uint16) bool {
+func BACnetEscalatorOperationDirectionKnows(value uint16)  bool {
 	for _, typeValue := range BACnetEscalatorOperationDirectionValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetEscalatorOperationDirection(structType interface{}) BACnetEscalatorOperationDirection {
@@ -179,3 +179,4 @@ func (e BACnetEscalatorOperationDirection) PLC4XEnumName() string {
 func (e BACnetEscalatorOperationDirection) String() string {
 	return e.PLC4XEnumName()
 }
+

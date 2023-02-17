@@ -35,41 +35,41 @@ type ISimulatedDataTypeSizes interface {
 	DataTypeSize() uint8
 }
 
-const (
-	SimulatedDataTypeSizes_BOOL           SimulatedDataTypeSizes = 1
-	SimulatedDataTypeSizes_BYTE           SimulatedDataTypeSizes = 2
-	SimulatedDataTypeSizes_WORD           SimulatedDataTypeSizes = 3
-	SimulatedDataTypeSizes_DWORD          SimulatedDataTypeSizes = 4
-	SimulatedDataTypeSizes_LWORD          SimulatedDataTypeSizes = 5
-	SimulatedDataTypeSizes_SINT           SimulatedDataTypeSizes = 6
-	SimulatedDataTypeSizes_INT            SimulatedDataTypeSizes = 7
-	SimulatedDataTypeSizes_DINT           SimulatedDataTypeSizes = 8
-	SimulatedDataTypeSizes_LINT           SimulatedDataTypeSizes = 9
-	SimulatedDataTypeSizes_USINT          SimulatedDataTypeSizes = 10
-	SimulatedDataTypeSizes_UINT           SimulatedDataTypeSizes = 11
-	SimulatedDataTypeSizes_UDINT          SimulatedDataTypeSizes = 12
-	SimulatedDataTypeSizes_ULINT          SimulatedDataTypeSizes = 13
-	SimulatedDataTypeSizes_REAL           SimulatedDataTypeSizes = 14
-	SimulatedDataTypeSizes_LREAL          SimulatedDataTypeSizes = 15
-	SimulatedDataTypeSizes_TIME           SimulatedDataTypeSizes = 16
-	SimulatedDataTypeSizes_LTIME          SimulatedDataTypeSizes = 17
-	SimulatedDataTypeSizes_DATE           SimulatedDataTypeSizes = 18
-	SimulatedDataTypeSizes_LDATE          SimulatedDataTypeSizes = 19
-	SimulatedDataTypeSizes_TIME_OF_DAY    SimulatedDataTypeSizes = 20
-	SimulatedDataTypeSizes_LTIME_OF_DAY   SimulatedDataTypeSizes = 21
-	SimulatedDataTypeSizes_DATE_AND_TIME  SimulatedDataTypeSizes = 22
+const(
+	SimulatedDataTypeSizes_BOOL SimulatedDataTypeSizes = 1
+	SimulatedDataTypeSizes_BYTE SimulatedDataTypeSizes = 2
+	SimulatedDataTypeSizes_WORD SimulatedDataTypeSizes = 3
+	SimulatedDataTypeSizes_DWORD SimulatedDataTypeSizes = 4
+	SimulatedDataTypeSizes_LWORD SimulatedDataTypeSizes = 5
+	SimulatedDataTypeSizes_SINT SimulatedDataTypeSizes = 6
+	SimulatedDataTypeSizes_INT SimulatedDataTypeSizes = 7
+	SimulatedDataTypeSizes_DINT SimulatedDataTypeSizes = 8
+	SimulatedDataTypeSizes_LINT SimulatedDataTypeSizes = 9
+	SimulatedDataTypeSizes_USINT SimulatedDataTypeSizes = 10
+	SimulatedDataTypeSizes_UINT SimulatedDataTypeSizes = 11
+	SimulatedDataTypeSizes_UDINT SimulatedDataTypeSizes = 12
+	SimulatedDataTypeSizes_ULINT SimulatedDataTypeSizes = 13
+	SimulatedDataTypeSizes_REAL SimulatedDataTypeSizes = 14
+	SimulatedDataTypeSizes_LREAL SimulatedDataTypeSizes = 15
+	SimulatedDataTypeSizes_TIME SimulatedDataTypeSizes = 16
+	SimulatedDataTypeSizes_LTIME SimulatedDataTypeSizes = 17
+	SimulatedDataTypeSizes_DATE SimulatedDataTypeSizes = 18
+	SimulatedDataTypeSizes_LDATE SimulatedDataTypeSizes = 19
+	SimulatedDataTypeSizes_TIME_OF_DAY SimulatedDataTypeSizes = 20
+	SimulatedDataTypeSizes_LTIME_OF_DAY SimulatedDataTypeSizes = 21
+	SimulatedDataTypeSizes_DATE_AND_TIME SimulatedDataTypeSizes = 22
 	SimulatedDataTypeSizes_LDATE_AND_TIME SimulatedDataTypeSizes = 23
-	SimulatedDataTypeSizes_CHAR           SimulatedDataTypeSizes = 24
-	SimulatedDataTypeSizes_WCHAR          SimulatedDataTypeSizes = 25
-	SimulatedDataTypeSizes_STRING         SimulatedDataTypeSizes = 26
-	SimulatedDataTypeSizes_WSTRING        SimulatedDataTypeSizes = 27
+	SimulatedDataTypeSizes_CHAR SimulatedDataTypeSizes = 24
+	SimulatedDataTypeSizes_WCHAR SimulatedDataTypeSizes = 25
+	SimulatedDataTypeSizes_STRING SimulatedDataTypeSizes = 26
+	SimulatedDataTypeSizes_WSTRING SimulatedDataTypeSizes = 27
 )
 
 var SimulatedDataTypeSizesValues []SimulatedDataTypeSizes
 
 func init() {
 	_ = errors.New
-	SimulatedDataTypeSizesValues = []SimulatedDataTypeSizes{
+	SimulatedDataTypeSizesValues = []SimulatedDataTypeSizes {
 		SimulatedDataTypeSizes_BOOL,
 		SimulatedDataTypeSizes_BYTE,
 		SimulatedDataTypeSizes_WORD,
@@ -100,118 +100,91 @@ func init() {
 	}
 }
 
+
 func (e SimulatedDataTypeSizes) DataTypeSize() uint8 {
-	switch e {
-	case 1:
-		{ /* '1' */
-			return 1
+	switch e  {
+		case 1: { /* '1' */
+            return 1
 		}
-	case 10:
-		{ /* '10' */
-			return 1
+		case 10: { /* '10' */
+            return 1
 		}
-	case 11:
-		{ /* '11' */
-			return 2
+		case 11: { /* '11' */
+            return 2
 		}
-	case 12:
-		{ /* '12' */
-			return 4
+		case 12: { /* '12' */
+            return 4
 		}
-	case 13:
-		{ /* '13' */
-			return 8
+		case 13: { /* '13' */
+            return 8
 		}
-	case 14:
-		{ /* '14' */
-			return 4
+		case 14: { /* '14' */
+            return 4
 		}
-	case 15:
-		{ /* '15' */
-			return 8
+		case 15: { /* '15' */
+            return 8
 		}
-	case 16:
-		{ /* '16' */
-			return 8
+		case 16: { /* '16' */
+            return 8
 		}
-	case 17:
-		{ /* '17' */
-			return 8
+		case 17: { /* '17' */
+            return 8
 		}
-	case 18:
-		{ /* '18' */
-			return 8
+		case 18: { /* '18' */
+            return 8
 		}
-	case 19:
-		{ /* '19' */
-			return 8
+		case 19: { /* '19' */
+            return 8
 		}
-	case 2:
-		{ /* '2' */
-			return 1
+		case 2: { /* '2' */
+            return 1
 		}
-	case 20:
-		{ /* '20' */
-			return 8
+		case 20: { /* '20' */
+            return 8
 		}
-	case 21:
-		{ /* '21' */
-			return 8
+		case 21: { /* '21' */
+            return 8
 		}
-	case 22:
-		{ /* '22' */
-			return 8
+		case 22: { /* '22' */
+            return 8
 		}
-	case 23:
-		{ /* '23' */
-			return 8
+		case 23: { /* '23' */
+            return 8
 		}
-	case 24:
-		{ /* '24' */
-			return 1
+		case 24: { /* '24' */
+            return 1
 		}
-	case 25:
-		{ /* '25' */
-			return 2
+		case 25: { /* '25' */
+            return 2
 		}
-	case 26:
-		{ /* '26' */
-			return 255
+		case 26: { /* '26' */
+            return 255
 		}
-	case 27:
-		{ /* '27' */
-			return 127
+		case 27: { /* '27' */
+            return 127
 		}
-	case 3:
-		{ /* '3' */
-			return 2
+		case 3: { /* '3' */
+            return 2
 		}
-	case 4:
-		{ /* '4' */
-			return 4
+		case 4: { /* '4' */
+            return 4
 		}
-	case 5:
-		{ /* '5' */
-			return 8
+		case 5: { /* '5' */
+            return 8
 		}
-	case 6:
-		{ /* '6' */
-			return 1
+		case 6: { /* '6' */
+            return 1
 		}
-	case 7:
-		{ /* '7' */
-			return 2
+		case 7: { /* '7' */
+            return 2
 		}
-	case 8:
-		{ /* '8' */
-			return 4
+		case 8: { /* '8' */
+            return 4
 		}
-	case 9:
-		{ /* '9' */
-			return 8
+		case 9: { /* '9' */
+            return 8
 		}
-	default:
-		{
+		default: {
 			return 0
 		}
 	}
@@ -227,60 +200,60 @@ func SimulatedDataTypeSizesFirstEnumForFieldDataTypeSize(value uint8) (Simulated
 }
 func SimulatedDataTypeSizesByValue(value uint8) (enum SimulatedDataTypeSizes, ok bool) {
 	switch value {
-	case 1:
-		return SimulatedDataTypeSizes_BOOL, true
-	case 10:
-		return SimulatedDataTypeSizes_USINT, true
-	case 11:
-		return SimulatedDataTypeSizes_UINT, true
-	case 12:
-		return SimulatedDataTypeSizes_UDINT, true
-	case 13:
-		return SimulatedDataTypeSizes_ULINT, true
-	case 14:
-		return SimulatedDataTypeSizes_REAL, true
-	case 15:
-		return SimulatedDataTypeSizes_LREAL, true
-	case 16:
-		return SimulatedDataTypeSizes_TIME, true
-	case 17:
-		return SimulatedDataTypeSizes_LTIME, true
-	case 18:
-		return SimulatedDataTypeSizes_DATE, true
-	case 19:
-		return SimulatedDataTypeSizes_LDATE, true
-	case 2:
-		return SimulatedDataTypeSizes_BYTE, true
-	case 20:
-		return SimulatedDataTypeSizes_TIME_OF_DAY, true
-	case 21:
-		return SimulatedDataTypeSizes_LTIME_OF_DAY, true
-	case 22:
-		return SimulatedDataTypeSizes_DATE_AND_TIME, true
-	case 23:
-		return SimulatedDataTypeSizes_LDATE_AND_TIME, true
-	case 24:
-		return SimulatedDataTypeSizes_CHAR, true
-	case 25:
-		return SimulatedDataTypeSizes_WCHAR, true
-	case 26:
-		return SimulatedDataTypeSizes_STRING, true
-	case 27:
-		return SimulatedDataTypeSizes_WSTRING, true
-	case 3:
-		return SimulatedDataTypeSizes_WORD, true
-	case 4:
-		return SimulatedDataTypeSizes_DWORD, true
-	case 5:
-		return SimulatedDataTypeSizes_LWORD, true
-	case 6:
-		return SimulatedDataTypeSizes_SINT, true
-	case 7:
-		return SimulatedDataTypeSizes_INT, true
-	case 8:
-		return SimulatedDataTypeSizes_DINT, true
-	case 9:
-		return SimulatedDataTypeSizes_LINT, true
+		case 1:
+			return SimulatedDataTypeSizes_BOOL, true
+		case 10:
+			return SimulatedDataTypeSizes_USINT, true
+		case 11:
+			return SimulatedDataTypeSizes_UINT, true
+		case 12:
+			return SimulatedDataTypeSizes_UDINT, true
+		case 13:
+			return SimulatedDataTypeSizes_ULINT, true
+		case 14:
+			return SimulatedDataTypeSizes_REAL, true
+		case 15:
+			return SimulatedDataTypeSizes_LREAL, true
+		case 16:
+			return SimulatedDataTypeSizes_TIME, true
+		case 17:
+			return SimulatedDataTypeSizes_LTIME, true
+		case 18:
+			return SimulatedDataTypeSizes_DATE, true
+		case 19:
+			return SimulatedDataTypeSizes_LDATE, true
+		case 2:
+			return SimulatedDataTypeSizes_BYTE, true
+		case 20:
+			return SimulatedDataTypeSizes_TIME_OF_DAY, true
+		case 21:
+			return SimulatedDataTypeSizes_LTIME_OF_DAY, true
+		case 22:
+			return SimulatedDataTypeSizes_DATE_AND_TIME, true
+		case 23:
+			return SimulatedDataTypeSizes_LDATE_AND_TIME, true
+		case 24:
+			return SimulatedDataTypeSizes_CHAR, true
+		case 25:
+			return SimulatedDataTypeSizes_WCHAR, true
+		case 26:
+			return SimulatedDataTypeSizes_STRING, true
+		case 27:
+			return SimulatedDataTypeSizes_WSTRING, true
+		case 3:
+			return SimulatedDataTypeSizes_WORD, true
+		case 4:
+			return SimulatedDataTypeSizes_DWORD, true
+		case 5:
+			return SimulatedDataTypeSizes_LWORD, true
+		case 6:
+			return SimulatedDataTypeSizes_SINT, true
+		case 7:
+			return SimulatedDataTypeSizes_INT, true
+		case 8:
+			return SimulatedDataTypeSizes_DINT, true
+		case 9:
+			return SimulatedDataTypeSizes_LINT, true
 	}
 	return 0, false
 }
@@ -345,13 +318,13 @@ func SimulatedDataTypeSizesByName(value string) (enum SimulatedDataTypeSizes, ok
 	return 0, false
 }
 
-func SimulatedDataTypeSizesKnows(value uint8) bool {
+func SimulatedDataTypeSizesKnows(value uint8)  bool {
 	for _, typeValue := range SimulatedDataTypeSizesValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastSimulatedDataTypeSizes(structType interface{}) SimulatedDataTypeSizes {
@@ -465,3 +438,4 @@ func (e SimulatedDataTypeSizes) PLC4XEnumName() string {
 func (e SimulatedDataTypeSizes) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -35,21 +35,21 @@ type IDataTransportSize interface {
 	SizeInBits() bool
 }
 
-const (
-	DataTransportSize_NULL            DataTransportSize = 0x00
-	DataTransportSize_BIT             DataTransportSize = 0x03
+const(
+	DataTransportSize_NULL DataTransportSize = 0x00
+	DataTransportSize_BIT DataTransportSize = 0x03
 	DataTransportSize_BYTE_WORD_DWORD DataTransportSize = 0x04
-	DataTransportSize_INTEGER         DataTransportSize = 0x05
-	DataTransportSize_DINTEGER        DataTransportSize = 0x06
-	DataTransportSize_REAL            DataTransportSize = 0x07
-	DataTransportSize_OCTET_STRING    DataTransportSize = 0x09
+	DataTransportSize_INTEGER DataTransportSize = 0x05
+	DataTransportSize_DINTEGER DataTransportSize = 0x06
+	DataTransportSize_REAL DataTransportSize = 0x07
+	DataTransportSize_OCTET_STRING DataTransportSize = 0x09
 )
 
 var DataTransportSizeValues []DataTransportSize
 
 func init() {
 	_ = errors.New
-	DataTransportSizeValues = []DataTransportSize{
+	DataTransportSizeValues = []DataTransportSize {
 		DataTransportSize_NULL,
 		DataTransportSize_BIT,
 		DataTransportSize_BYTE_WORD_DWORD,
@@ -60,38 +60,31 @@ func init() {
 	}
 }
 
+
 func (e DataTransportSize) SizeInBits() bool {
-	switch e {
-	case 0x00:
-		{ /* '0x00' */
-			return false
+	switch e  {
+		case 0x00: { /* '0x00' */
+            return false
 		}
-	case 0x03:
-		{ /* '0x03' */
-			return true
+		case 0x03: { /* '0x03' */
+            return true
 		}
-	case 0x04:
-		{ /* '0x04' */
-			return true
+		case 0x04: { /* '0x04' */
+            return true
 		}
-	case 0x05:
-		{ /* '0x05' */
-			return true
+		case 0x05: { /* '0x05' */
+            return true
 		}
-	case 0x06:
-		{ /* '0x06' */
-			return false
+		case 0x06: { /* '0x06' */
+            return false
 		}
-	case 0x07:
-		{ /* '0x07' */
-			return false
+		case 0x07: { /* '0x07' */
+            return false
 		}
-	case 0x09:
-		{ /* '0x09' */
-			return false
+		case 0x09: { /* '0x09' */
+            return false
 		}
-	default:
-		{
+		default: {
 			return false
 		}
 	}
@@ -107,20 +100,20 @@ func DataTransportSizeFirstEnumForFieldSizeInBits(value bool) (DataTransportSize
 }
 func DataTransportSizeByValue(value uint8) (enum DataTransportSize, ok bool) {
 	switch value {
-	case 0x00:
-		return DataTransportSize_NULL, true
-	case 0x03:
-		return DataTransportSize_BIT, true
-	case 0x04:
-		return DataTransportSize_BYTE_WORD_DWORD, true
-	case 0x05:
-		return DataTransportSize_INTEGER, true
-	case 0x06:
-		return DataTransportSize_DINTEGER, true
-	case 0x07:
-		return DataTransportSize_REAL, true
-	case 0x09:
-		return DataTransportSize_OCTET_STRING, true
+		case 0x00:
+			return DataTransportSize_NULL, true
+		case 0x03:
+			return DataTransportSize_BIT, true
+		case 0x04:
+			return DataTransportSize_BYTE_WORD_DWORD, true
+		case 0x05:
+			return DataTransportSize_INTEGER, true
+		case 0x06:
+			return DataTransportSize_DINTEGER, true
+		case 0x07:
+			return DataTransportSize_REAL, true
+		case 0x09:
+			return DataTransportSize_OCTET_STRING, true
 	}
 	return 0, false
 }
@@ -145,13 +138,13 @@ func DataTransportSizeByName(value string) (enum DataTransportSize, ok bool) {
 	return 0, false
 }
 
-func DataTransportSizeKnows(value uint8) bool {
+func DataTransportSizeKnows(value uint8)  bool {
 	for _, typeValue := range DataTransportSizeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDataTransportSize(structType interface{}) DataTransportSize {
@@ -225,3 +218,4 @@ func (e DataTransportSize) PLC4XEnumName() string {
 func (e DataTransportSize) String() string {
 	return e.PLC4XEnumName()
 }
+

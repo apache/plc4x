@@ -34,46 +34,46 @@ type IBACnetConfirmedServiceChoice interface {
 	utils.Serializable
 }
 
-const (
-	BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM                   BACnetConfirmedServiceChoice = 0x00
-	BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION          BACnetConfirmedServiceChoice = 0x01
+const(
+	BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM BACnetConfirmedServiceChoice = 0x00
+	BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION BACnetConfirmedServiceChoice = 0x01
 	BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE BACnetConfirmedServiceChoice = 0x1F
-	BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION        BACnetConfirmedServiceChoice = 0x02
-	BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY                   BACnetConfirmedServiceChoice = 0x03
-	BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY              BACnetConfirmedServiceChoice = 0x04
-	BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION               BACnetConfirmedServiceChoice = 0x1D
-	BACnetConfirmedServiceChoice_LIFE_SAFETY_OPERATION               BACnetConfirmedServiceChoice = 0x1B
-	BACnetConfirmedServiceChoice_SUBSCRIBE_COV                       BACnetConfirmedServiceChoice = 0x05
-	BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY              BACnetConfirmedServiceChoice = 0x1C
-	BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE     BACnetConfirmedServiceChoice = 0x1E
-	BACnetConfirmedServiceChoice_ATOMIC_READ_FILE                    BACnetConfirmedServiceChoice = 0x06
-	BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE                   BACnetConfirmedServiceChoice = 0x07
-	BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT                    BACnetConfirmedServiceChoice = 0x08
-	BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT                 BACnetConfirmedServiceChoice = 0x09
-	BACnetConfirmedServiceChoice_CREATE_OBJECT                       BACnetConfirmedServiceChoice = 0x0A
-	BACnetConfirmedServiceChoice_DELETE_OBJECT                       BACnetConfirmedServiceChoice = 0x0B
-	BACnetConfirmedServiceChoice_READ_PROPERTY                       BACnetConfirmedServiceChoice = 0x0C
-	BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE              BACnetConfirmedServiceChoice = 0x0E
-	BACnetConfirmedServiceChoice_READ_RANGE                          BACnetConfirmedServiceChoice = 0x1A
-	BACnetConfirmedServiceChoice_WRITE_PROPERTY                      BACnetConfirmedServiceChoice = 0x0F
-	BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE             BACnetConfirmedServiceChoice = 0x10
-	BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL        BACnetConfirmedServiceChoice = 0x11
-	BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER          BACnetConfirmedServiceChoice = 0x12
-	BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE              BACnetConfirmedServiceChoice = 0x13
-	BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE                 BACnetConfirmedServiceChoice = 0x14
-	BACnetConfirmedServiceChoice_VT_OPEN                             BACnetConfirmedServiceChoice = 0x15
-	BACnetConfirmedServiceChoice_VT_CLOSE                            BACnetConfirmedServiceChoice = 0x16
-	BACnetConfirmedServiceChoice_VT_DATA                             BACnetConfirmedServiceChoice = 0x17
-	BACnetConfirmedServiceChoice_AUTHENTICATE                        BACnetConfirmedServiceChoice = 0x18
-	BACnetConfirmedServiceChoice_REQUEST_KEY                         BACnetConfirmedServiceChoice = 0x19
-	BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL           BACnetConfirmedServiceChoice = 0x0D
+	BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION BACnetConfirmedServiceChoice = 0x02
+	BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY BACnetConfirmedServiceChoice = 0x03
+	BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY BACnetConfirmedServiceChoice = 0x04
+	BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION BACnetConfirmedServiceChoice = 0x1D
+	BACnetConfirmedServiceChoice_LIFE_SAFETY_OPERATION BACnetConfirmedServiceChoice = 0x1B
+	BACnetConfirmedServiceChoice_SUBSCRIBE_COV BACnetConfirmedServiceChoice = 0x05
+	BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY BACnetConfirmedServiceChoice = 0x1C
+	BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE BACnetConfirmedServiceChoice = 0x1E
+	BACnetConfirmedServiceChoice_ATOMIC_READ_FILE BACnetConfirmedServiceChoice = 0x06
+	BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE BACnetConfirmedServiceChoice = 0x07
+	BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT BACnetConfirmedServiceChoice = 0x08
+	BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT BACnetConfirmedServiceChoice = 0x09
+	BACnetConfirmedServiceChoice_CREATE_OBJECT BACnetConfirmedServiceChoice = 0x0A
+	BACnetConfirmedServiceChoice_DELETE_OBJECT BACnetConfirmedServiceChoice = 0x0B
+	BACnetConfirmedServiceChoice_READ_PROPERTY BACnetConfirmedServiceChoice = 0x0C
+	BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE BACnetConfirmedServiceChoice = 0x0E
+	BACnetConfirmedServiceChoice_READ_RANGE BACnetConfirmedServiceChoice = 0x1A
+	BACnetConfirmedServiceChoice_WRITE_PROPERTY BACnetConfirmedServiceChoice = 0x0F
+	BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE BACnetConfirmedServiceChoice = 0x10
+	BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL BACnetConfirmedServiceChoice = 0x11
+	BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER BACnetConfirmedServiceChoice = 0x12
+	BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE BACnetConfirmedServiceChoice = 0x13
+	BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE BACnetConfirmedServiceChoice = 0x14
+	BACnetConfirmedServiceChoice_VT_OPEN BACnetConfirmedServiceChoice = 0x15
+	BACnetConfirmedServiceChoice_VT_CLOSE BACnetConfirmedServiceChoice = 0x16
+	BACnetConfirmedServiceChoice_VT_DATA BACnetConfirmedServiceChoice = 0x17
+	BACnetConfirmedServiceChoice_AUTHENTICATE BACnetConfirmedServiceChoice = 0x18
+	BACnetConfirmedServiceChoice_REQUEST_KEY BACnetConfirmedServiceChoice = 0x19
+	BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL BACnetConfirmedServiceChoice = 0x0D
 )
 
 var BACnetConfirmedServiceChoiceValues []BACnetConfirmedServiceChoice
 
 func init() {
 	_ = errors.New
-	BACnetConfirmedServiceChoiceValues = []BACnetConfirmedServiceChoice{
+	BACnetConfirmedServiceChoiceValues = []BACnetConfirmedServiceChoice {
 		BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM,
 		BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION,
 		BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE,
@@ -111,70 +111,70 @@ func init() {
 
 func BACnetConfirmedServiceChoiceByValue(value uint8) (enum BACnetConfirmedServiceChoice, ok bool) {
 	switch value {
-	case 0x00:
-		return BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM, true
-	case 0x01:
-		return BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION, true
-	case 0x02:
-		return BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION, true
-	case 0x03:
-		return BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY, true
-	case 0x04:
-		return BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY, true
-	case 0x05:
-		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV, true
-	case 0x06:
-		return BACnetConfirmedServiceChoice_ATOMIC_READ_FILE, true
-	case 0x07:
-		return BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE, true
-	case 0x08:
-		return BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT, true
-	case 0x09:
-		return BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT, true
-	case 0x0A:
-		return BACnetConfirmedServiceChoice_CREATE_OBJECT, true
-	case 0x0B:
-		return BACnetConfirmedServiceChoice_DELETE_OBJECT, true
-	case 0x0C:
-		return BACnetConfirmedServiceChoice_READ_PROPERTY, true
-	case 0x0D:
-		return BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL, true
-	case 0x0E:
-		return BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE, true
-	case 0x0F:
-		return BACnetConfirmedServiceChoice_WRITE_PROPERTY, true
-	case 0x10:
-		return BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE, true
-	case 0x11:
-		return BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL, true
-	case 0x12:
-		return BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER, true
-	case 0x13:
-		return BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE, true
-	case 0x14:
-		return BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE, true
-	case 0x15:
-		return BACnetConfirmedServiceChoice_VT_OPEN, true
-	case 0x16:
-		return BACnetConfirmedServiceChoice_VT_CLOSE, true
-	case 0x17:
-		return BACnetConfirmedServiceChoice_VT_DATA, true
-	case 0x18:
-		return BACnetConfirmedServiceChoice_AUTHENTICATE, true
-	case 0x19:
-		return BACnetConfirmedServiceChoice_REQUEST_KEY, true
-	case 0x1A:
-		return BACnetConfirmedServiceChoice_READ_RANGE, true
-	case 0x1B:
-		return BACnetConfirmedServiceChoice_LIFE_SAFETY_OPERATION, true
-	case 0x1C:
-		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY, true
-	case 0x1D:
-		return BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION, true
-	case 0x1E:
-		return BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE, true
-	case 0x1F:
-		return BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE, true
+		case 0x00:
+			return BACnetConfirmedServiceChoice_ACKNOWLEDGE_ALARM, true
+		case 0x01:
+			return BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION, true
+		case 0x02:
+			return BACnetConfirmedServiceChoice_CONFIRMED_EVENT_NOTIFICATION, true
+		case 0x03:
+			return BACnetConfirmedServiceChoice_GET_ALARM_SUMMARY, true
+		case 0x04:
+			return BACnetConfirmedServiceChoice_GET_ENROLLMENT_SUMMARY, true
+		case 0x05:
+			return BACnetConfirmedServiceChoice_SUBSCRIBE_COV, true
+		case 0x06:
+			return BACnetConfirmedServiceChoice_ATOMIC_READ_FILE, true
+		case 0x07:
+			return BACnetConfirmedServiceChoice_ATOMIC_WRITE_FILE, true
+		case 0x08:
+			return BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT, true
+		case 0x09:
+			return BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT, true
+		case 0x0A:
+			return BACnetConfirmedServiceChoice_CREATE_OBJECT, true
+		case 0x0B:
+			return BACnetConfirmedServiceChoice_DELETE_OBJECT, true
+		case 0x0C:
+			return BACnetConfirmedServiceChoice_READ_PROPERTY, true
+		case 0x0D:
+			return BACnetConfirmedServiceChoice_READ_PROPERTY_CONDITIONAL, true
+		case 0x0E:
+			return BACnetConfirmedServiceChoice_READ_PROPERTY_MULTIPLE, true
+		case 0x0F:
+			return BACnetConfirmedServiceChoice_WRITE_PROPERTY, true
+		case 0x10:
+			return BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE, true
+		case 0x11:
+			return BACnetConfirmedServiceChoice_DEVICE_COMMUNICATION_CONTROL, true
+		case 0x12:
+			return BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER, true
+		case 0x13:
+			return BACnetConfirmedServiceChoice_CONFIRMED_TEXT_MESSAGE, true
+		case 0x14:
+			return BACnetConfirmedServiceChoice_REINITIALIZE_DEVICE, true
+		case 0x15:
+			return BACnetConfirmedServiceChoice_VT_OPEN, true
+		case 0x16:
+			return BACnetConfirmedServiceChoice_VT_CLOSE, true
+		case 0x17:
+			return BACnetConfirmedServiceChoice_VT_DATA, true
+		case 0x18:
+			return BACnetConfirmedServiceChoice_AUTHENTICATE, true
+		case 0x19:
+			return BACnetConfirmedServiceChoice_REQUEST_KEY, true
+		case 0x1A:
+			return BACnetConfirmedServiceChoice_READ_RANGE, true
+		case 0x1B:
+			return BACnetConfirmedServiceChoice_LIFE_SAFETY_OPERATION, true
+		case 0x1C:
+			return BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY, true
+		case 0x1D:
+			return BACnetConfirmedServiceChoice_GET_EVENT_INFORMATION, true
+		case 0x1E:
+			return BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE, true
+		case 0x1F:
+			return BACnetConfirmedServiceChoice_CONFIRMED_COV_NOTIFICATION_MULTIPLE, true
 	}
 	return 0, false
 }
@@ -249,13 +249,13 @@ func BACnetConfirmedServiceChoiceByName(value string) (enum BACnetConfirmedServi
 	return 0, false
 }
 
-func BACnetConfirmedServiceChoiceKnows(value uint8) bool {
+func BACnetConfirmedServiceChoiceKnows(value uint8)  bool {
 	for _, typeValue := range BACnetConfirmedServiceChoiceValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetConfirmedServiceChoice(structType interface{}) BACnetConfirmedServiceChoice {
@@ -379,3 +379,4 @@ func (e BACnetConfirmedServiceChoice) PLC4XEnumName() string {
 func (e BACnetConfirmedServiceChoice) String() string {
 	return e.PLC4XEnumName()
 }
+

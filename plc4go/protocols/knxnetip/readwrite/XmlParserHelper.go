@@ -21,8 +21,8 @@ package readwrite
 
 import (
 	"context"
-	"strconv"
 	"strings"
+	"strconv"
 
 	"github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -43,114 +43,114 @@ func init() {
 }
 
 func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
-	switch typeName {
-	case "KnxProperty":
-		propertyType, _ := model.KnxPropertyDataTypeByName(parserArguments[0])
-		parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 8)
-		if err != nil {
-			return nil, err
-		}
-		dataLengthInBytes := uint8(parsedUint1)
-		return model.KnxPropertyParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), propertyType, dataLengthInBytes)
-	case "HPAIControlEndpoint":
-		return model.HPAIControlEndpointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "TunnelingResponseDataBlock":
-		return model.TunnelingResponseDataBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "DeviceDescriptorType2":
-		return model.DeviceDescriptorType2ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ChannelInformation":
-		return model.ChannelInformationParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "KnxDatapoint":
-		datapointType, _ := model.KnxDatapointTypeByName(parserArguments[0])
-		return model.KnxDatapointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), datapointType)
-	case "DeviceConfigurationAckDataBlock":
-		return model.DeviceConfigurationAckDataBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ConnectionRequestInformation":
-		return model.ConnectionRequestInformationParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "Apdu":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
-		if err != nil {
-			return nil, err
-		}
-		dataLength := uint8(parsedUint0)
-		return model.ApduParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
-	case "HPAIDiscoveryEndpoint":
-		return model.HPAIDiscoveryEndpointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ProjectInstallationIdentifier":
-		return model.ProjectInstallationIdentifierParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ServiceId":
-		return model.ServiceIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "HPAIDataEndpoint":
-		return model.HPAIDataEndpointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "RelativeTimestamp":
-		return model.RelativeTimestampParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CEMI":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
-		if err != nil {
-			return nil, err
-		}
-		size := uint16(parsedUint0)
-		return model.CEMIParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), size)
-	case "KnxNetIpMessage":
-		return model.KnxNetIpMessageParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "DeviceStatus":
-		return model.DeviceStatusParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "IPAddress":
-		return model.IPAddressParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "GroupObjectDescriptorRealisationTypeB":
-		return model.GroupObjectDescriptorRealisationTypeBParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "CEMIAdditionalInformation":
-		return model.CEMIAdditionalInformationParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ComObjectTable":
-		firmwareType, _ := model.FirmwareTypeByName(parserArguments[0])
-		return model.ComObjectTableParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), firmwareType)
-	case "KnxAddress":
-		return model.KnxAddressParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ConnectionResponseDataBlock":
-		return model.ConnectionResponseDataBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "TunnelingRequestDataBlock":
-		return model.TunnelingRequestDataBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "DIBDeviceInfo":
-		return model.DIBDeviceInfoParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "DeviceConfigurationRequestDataBlock":
-		return model.DeviceConfigurationRequestDataBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "DIBSuppSvcFamilies":
-		return model.DIBSuppSvcFamiliesParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "LDataFrame":
-		return model.LDataFrameParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ApduDataExt":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
-		if err != nil {
-			return nil, err
-		}
-		length := uint8(parsedUint0)
-		return model.ApduDataExtParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), length)
-	case "ApduControl":
-		return model.ApduControlParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "KnxGroupAddress":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 2)
-		if err != nil {
-			return nil, err
-		}
-		numLevels := uint8(parsedUint0)
-		return model.KnxGroupAddressParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), numLevels)
-	case "GroupObjectDescriptorRealisationType6":
-		return model.GroupObjectDescriptorRealisationType6ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "GroupObjectDescriptorRealisationType7":
-		return model.GroupObjectDescriptorRealisationType7ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "MACAddress":
-		return model.MACAddressParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "GroupObjectDescriptorRealisationType2":
-		return model.GroupObjectDescriptorRealisationType2ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	case "ApduData":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
-		if err != nil {
-			return nil, err
-		}
-		dataLength := uint8(parsedUint0)
-		return model.ApduDataParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength)
-	case "GroupObjectDescriptorRealisationType1":
-		return model.GroupObjectDescriptorRealisationType1ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-	}
-	return nil, errors.Errorf("Unsupported type %s", typeName)
+    switch typeName {
+        case "KnxProperty":
+            propertyType, _ := model.KnxPropertyDataTypeByName(parserArguments[0])
+			parsedUint1, err := strconv.ParseUint(parserArguments[1], 10, 8)
+			if err!=nil {
+				return nil, err
+			}
+			dataLengthInBytes := uint8(parsedUint1)
+            return model.KnxPropertyParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), propertyType,  dataLengthInBytes  )
+        case "HPAIControlEndpoint":
+			return model.HPAIControlEndpointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "TunnelingResponseDataBlock":
+			return model.TunnelingResponseDataBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "DeviceDescriptorType2":
+			return model.DeviceDescriptorType2ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ChannelInformation":
+			return model.ChannelInformationParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "KnxDatapoint":
+            datapointType, _ := model.KnxDatapointTypeByName(parserArguments[0])
+            return model.KnxDatapointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), datapointType  )
+        case "DeviceConfigurationAckDataBlock":
+			return model.DeviceConfigurationAckDataBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ConnectionRequestInformation":
+			return model.ConnectionRequestInformationParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "Apdu":
+			parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
+			if err!=nil {
+				return nil, err
+			}
+			dataLength := uint8(parsedUint0)
+            return model.ApduParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength  )
+        case "HPAIDiscoveryEndpoint":
+			return model.HPAIDiscoveryEndpointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ProjectInstallationIdentifier":
+			return model.ProjectInstallationIdentifierParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ServiceId":
+			return model.ServiceIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "HPAIDataEndpoint":
+			return model.HPAIDataEndpointParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "RelativeTimestamp":
+			return model.RelativeTimestampParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "CEMI":
+			parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+			if err!=nil {
+				return nil, err
+			}
+			size := uint16(parsedUint0)
+            return model.CEMIParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), size  )
+        case "KnxNetIpMessage":
+			return model.KnxNetIpMessageParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "DeviceStatus":
+			return model.DeviceStatusParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "IPAddress":
+			return model.IPAddressParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "GroupObjectDescriptorRealisationTypeB":
+			return model.GroupObjectDescriptorRealisationTypeBParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "CEMIAdditionalInformation":
+			return model.CEMIAdditionalInformationParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ComObjectTable":
+            firmwareType, _ := model.FirmwareTypeByName(parserArguments[0])
+            return model.ComObjectTableParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), firmwareType  )
+        case "KnxAddress":
+			return model.KnxAddressParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ConnectionResponseDataBlock":
+			return model.ConnectionResponseDataBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "TunnelingRequestDataBlock":
+			return model.TunnelingRequestDataBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "DIBDeviceInfo":
+			return model.DIBDeviceInfoParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "DeviceConfigurationRequestDataBlock":
+			return model.DeviceConfigurationRequestDataBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "DIBSuppSvcFamilies":
+			return model.DIBSuppSvcFamiliesParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "LDataFrame":
+			return model.LDataFrameParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ApduDataExt":
+			parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
+			if err!=nil {
+				return nil, err
+			}
+			length := uint8(parsedUint0)
+            return model.ApduDataExtParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), length  )
+        case "ApduControl":
+			return model.ApduControlParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "KnxGroupAddress":
+			parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 2)
+			if err!=nil {
+				return nil, err
+			}
+			numLevels := uint8(parsedUint0)
+            return model.KnxGroupAddressParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), numLevels  )
+        case "GroupObjectDescriptorRealisationType6":
+			return model.GroupObjectDescriptorRealisationType6ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "GroupObjectDescriptorRealisationType7":
+			return model.GroupObjectDescriptorRealisationType7ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "MACAddress":
+			return model.MACAddressParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "GroupObjectDescriptorRealisationType2":
+			return model.GroupObjectDescriptorRealisationType2ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+        case "ApduData":
+			parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 8)
+			if err!=nil {
+				return nil, err
+			}
+			dataLength := uint8(parsedUint0)
+            return model.ApduDataParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), dataLength  )
+        case "GroupObjectDescriptorRealisationType1":
+			return model.GroupObjectDescriptorRealisationType1ParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+    }
+    return nil, errors.Errorf("Unsupported type %s", typeName)
 }

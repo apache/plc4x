@@ -34,32 +34,32 @@ type IBACnetLiftFault interface {
 	utils.Serializable
 }
 
-const (
-	BACnetLiftFault_CONTROLLER_FAULT                 BACnetLiftFault = 0
-	BACnetLiftFault_DRIVE_AND_MOTOR_FAULT            BACnetLiftFault = 1
-	BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT   BACnetLiftFault = 2
-	BACnetLiftFault_LIFT_SHAFT_DEVICE_FAULT          BACnetLiftFault = 3
-	BACnetLiftFault_POWER_SUPPLY_FAULT               BACnetLiftFault = 4
-	BACnetLiftFault_SAFETY_INTERLOCK_FAULT           BACnetLiftFault = 5
-	BACnetLiftFault_DOOR_CLOSING_FAULT               BACnetLiftFault = 6
-	BACnetLiftFault_DOOR_OPENING_FAULT               BACnetLiftFault = 7
+const(
+	BACnetLiftFault_CONTROLLER_FAULT BACnetLiftFault = 0
+	BACnetLiftFault_DRIVE_AND_MOTOR_FAULT BACnetLiftFault = 1
+	BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT BACnetLiftFault = 2
+	BACnetLiftFault_LIFT_SHAFT_DEVICE_FAULT BACnetLiftFault = 3
+	BACnetLiftFault_POWER_SUPPLY_FAULT BACnetLiftFault = 4
+	BACnetLiftFault_SAFETY_INTERLOCK_FAULT BACnetLiftFault = 5
+	BACnetLiftFault_DOOR_CLOSING_FAULT BACnetLiftFault = 6
+	BACnetLiftFault_DOOR_OPENING_FAULT BACnetLiftFault = 7
 	BACnetLiftFault_CAR_STOPPED_OUTSIDE_LANDING_ZONE BACnetLiftFault = 8
-	BACnetLiftFault_CALL_BUTTON_STUCK                BACnetLiftFault = 9
-	BACnetLiftFault_START_FAILURE                    BACnetLiftFault = 10
-	BACnetLiftFault_CONTROLLER_SUPPLY_FAULT          BACnetLiftFault = 11
-	BACnetLiftFault_SELF_TEST_FAILURE                BACnetLiftFault = 12
-	BACnetLiftFault_RUNTIME_LIMIT_EXCEEDED           BACnetLiftFault = 13
-	BACnetLiftFault_POSITION_LOST                    BACnetLiftFault = 14
-	BACnetLiftFault_DRIVE_TEMPERATURE_EXCEEDED       BACnetLiftFault = 15
-	BACnetLiftFault_LOAD_MEASUREMENT_FAULT           BACnetLiftFault = 16
-	BACnetLiftFault_VENDOR_PROPRIETARY_VALUE         BACnetLiftFault = 0xFFFF
+	BACnetLiftFault_CALL_BUTTON_STUCK BACnetLiftFault = 9
+	BACnetLiftFault_START_FAILURE BACnetLiftFault = 10
+	BACnetLiftFault_CONTROLLER_SUPPLY_FAULT BACnetLiftFault = 11
+	BACnetLiftFault_SELF_TEST_FAILURE BACnetLiftFault = 12
+	BACnetLiftFault_RUNTIME_LIMIT_EXCEEDED BACnetLiftFault = 13
+	BACnetLiftFault_POSITION_LOST BACnetLiftFault = 14
+	BACnetLiftFault_DRIVE_TEMPERATURE_EXCEEDED BACnetLiftFault = 15
+	BACnetLiftFault_LOAD_MEASUREMENT_FAULT BACnetLiftFault = 16
+	BACnetLiftFault_VENDOR_PROPRIETARY_VALUE BACnetLiftFault = 0XFFFF
 )
 
 var BACnetLiftFaultValues []BACnetLiftFault
 
 func init() {
 	_ = errors.New
-	BACnetLiftFaultValues = []BACnetLiftFault{
+	BACnetLiftFaultValues = []BACnetLiftFault {
 		BACnetLiftFault_CONTROLLER_FAULT,
 		BACnetLiftFault_DRIVE_AND_MOTOR_FAULT,
 		BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT,
@@ -83,42 +83,42 @@ func init() {
 
 func BACnetLiftFaultByValue(value uint16) (enum BACnetLiftFault, ok bool) {
 	switch value {
-	case 0:
-		return BACnetLiftFault_CONTROLLER_FAULT, true
-	case 0xFFFF:
-		return BACnetLiftFault_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetLiftFault_DRIVE_AND_MOTOR_FAULT, true
-	case 10:
-		return BACnetLiftFault_START_FAILURE, true
-	case 11:
-		return BACnetLiftFault_CONTROLLER_SUPPLY_FAULT, true
-	case 12:
-		return BACnetLiftFault_SELF_TEST_FAILURE, true
-	case 13:
-		return BACnetLiftFault_RUNTIME_LIMIT_EXCEEDED, true
-	case 14:
-		return BACnetLiftFault_POSITION_LOST, true
-	case 15:
-		return BACnetLiftFault_DRIVE_TEMPERATURE_EXCEEDED, true
-	case 16:
-		return BACnetLiftFault_LOAD_MEASUREMENT_FAULT, true
-	case 2:
-		return BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT, true
-	case 3:
-		return BACnetLiftFault_LIFT_SHAFT_DEVICE_FAULT, true
-	case 4:
-		return BACnetLiftFault_POWER_SUPPLY_FAULT, true
-	case 5:
-		return BACnetLiftFault_SAFETY_INTERLOCK_FAULT, true
-	case 6:
-		return BACnetLiftFault_DOOR_CLOSING_FAULT, true
-	case 7:
-		return BACnetLiftFault_DOOR_OPENING_FAULT, true
-	case 8:
-		return BACnetLiftFault_CAR_STOPPED_OUTSIDE_LANDING_ZONE, true
-	case 9:
-		return BACnetLiftFault_CALL_BUTTON_STUCK, true
+		case 0:
+			return BACnetLiftFault_CONTROLLER_FAULT, true
+		case 0XFFFF:
+			return BACnetLiftFault_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetLiftFault_DRIVE_AND_MOTOR_FAULT, true
+		case 10:
+			return BACnetLiftFault_START_FAILURE, true
+		case 11:
+			return BACnetLiftFault_CONTROLLER_SUPPLY_FAULT, true
+		case 12:
+			return BACnetLiftFault_SELF_TEST_FAILURE, true
+		case 13:
+			return BACnetLiftFault_RUNTIME_LIMIT_EXCEEDED, true
+		case 14:
+			return BACnetLiftFault_POSITION_LOST, true
+		case 15:
+			return BACnetLiftFault_DRIVE_TEMPERATURE_EXCEEDED, true
+		case 16:
+			return BACnetLiftFault_LOAD_MEASUREMENT_FAULT, true
+		case 2:
+			return BACnetLiftFault_GOVERNOR_AND_SAFETY_GEAR_FAULT, true
+		case 3:
+			return BACnetLiftFault_LIFT_SHAFT_DEVICE_FAULT, true
+		case 4:
+			return BACnetLiftFault_POWER_SUPPLY_FAULT, true
+		case 5:
+			return BACnetLiftFault_SAFETY_INTERLOCK_FAULT, true
+		case 6:
+			return BACnetLiftFault_DOOR_CLOSING_FAULT, true
+		case 7:
+			return BACnetLiftFault_DOOR_OPENING_FAULT, true
+		case 8:
+			return BACnetLiftFault_CAR_STOPPED_OUTSIDE_LANDING_ZONE, true
+		case 9:
+			return BACnetLiftFault_CALL_BUTTON_STUCK, true
 	}
 	return 0, false
 }
@@ -165,13 +165,13 @@ func BACnetLiftFaultByName(value string) (enum BACnetLiftFault, ok bool) {
 	return 0, false
 }
 
-func BACnetLiftFaultKnows(value uint16) bool {
+func BACnetLiftFaultKnows(value uint16)  bool {
 	for _, typeValue := range BACnetLiftFaultValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetLiftFault(structType interface{}) BACnetLiftFault {
@@ -267,3 +267,4 @@ func (e BACnetLiftFault) PLC4XEnumName() string {
 func (e BACnetLiftFault) String() string {
 	return e.PLC4XEnumName()
 }
+

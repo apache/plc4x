@@ -39,7 +39,7 @@ public class ProgramDiagnostic2DataType extends ExtensionObjectDefinition implem
 
   // Accessors for discriminator values.
   public String getIdentifier() {
-    return (String) "24035";
+    return (String) "15398";
   }
 
   // Properties.

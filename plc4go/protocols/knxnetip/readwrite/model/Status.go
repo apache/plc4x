@@ -34,26 +34,26 @@ type IStatus interface {
 	utils.Serializable
 }
 
-const (
-	Status_NO_ERROR                        Status = 0x00
-	Status_PROTOCOL_TYPE_NOT_SUPPORTED     Status = 0x01
-	Status_UNSUPPORTED_PROTOCOL_VERSION    Status = 0x02
-	Status_OUT_OF_ORDER_SEQUENCE_NUMBER    Status = 0x04
-	Status_INVALID_CONNECTION_ID           Status = 0x21
-	Status_CONNECTION_TYPE_NOT_SUPPORTED   Status = 0x22
+const(
+	Status_NO_ERROR Status = 0x00
+	Status_PROTOCOL_TYPE_NOT_SUPPORTED Status = 0x01
+	Status_UNSUPPORTED_PROTOCOL_VERSION Status = 0x02
+	Status_OUT_OF_ORDER_SEQUENCE_NUMBER Status = 0x04
+	Status_INVALID_CONNECTION_ID Status = 0x21
+	Status_CONNECTION_TYPE_NOT_SUPPORTED Status = 0x22
 	Status_CONNECTION_OPTION_NOT_SUPPORTED Status = 0x23
-	Status_NO_MORE_CONNECTIONS             Status = 0x24
-	Status_NO_MORE_UNIQUE_CONNECTIONS      Status = 0x25
-	Status_DATA_CONNECTION                 Status = 0x26
-	Status_KNX_CONNECTION                  Status = 0x27
-	Status_TUNNELLING_LAYER_NOT_SUPPORTED  Status = 0x29
+	Status_NO_MORE_CONNECTIONS Status = 0x24
+	Status_NO_MORE_UNIQUE_CONNECTIONS Status = 0x25
+	Status_DATA_CONNECTION Status = 0x26
+	Status_KNX_CONNECTION Status = 0x27
+	Status_TUNNELLING_LAYER_NOT_SUPPORTED Status = 0x29
 )
 
 var StatusValues []Status
 
 func init() {
 	_ = errors.New
-	StatusValues = []Status{
+	StatusValues = []Status {
 		Status_NO_ERROR,
 		Status_PROTOCOL_TYPE_NOT_SUPPORTED,
 		Status_UNSUPPORTED_PROTOCOL_VERSION,
@@ -71,30 +71,30 @@ func init() {
 
 func StatusByValue(value uint8) (enum Status, ok bool) {
 	switch value {
-	case 0x00:
-		return Status_NO_ERROR, true
-	case 0x01:
-		return Status_PROTOCOL_TYPE_NOT_SUPPORTED, true
-	case 0x02:
-		return Status_UNSUPPORTED_PROTOCOL_VERSION, true
-	case 0x04:
-		return Status_OUT_OF_ORDER_SEQUENCE_NUMBER, true
-	case 0x21:
-		return Status_INVALID_CONNECTION_ID, true
-	case 0x22:
-		return Status_CONNECTION_TYPE_NOT_SUPPORTED, true
-	case 0x23:
-		return Status_CONNECTION_OPTION_NOT_SUPPORTED, true
-	case 0x24:
-		return Status_NO_MORE_CONNECTIONS, true
-	case 0x25:
-		return Status_NO_MORE_UNIQUE_CONNECTIONS, true
-	case 0x26:
-		return Status_DATA_CONNECTION, true
-	case 0x27:
-		return Status_KNX_CONNECTION, true
-	case 0x29:
-		return Status_TUNNELLING_LAYER_NOT_SUPPORTED, true
+		case 0x00:
+			return Status_NO_ERROR, true
+		case 0x01:
+			return Status_PROTOCOL_TYPE_NOT_SUPPORTED, true
+		case 0x02:
+			return Status_UNSUPPORTED_PROTOCOL_VERSION, true
+		case 0x04:
+			return Status_OUT_OF_ORDER_SEQUENCE_NUMBER, true
+		case 0x21:
+			return Status_INVALID_CONNECTION_ID, true
+		case 0x22:
+			return Status_CONNECTION_TYPE_NOT_SUPPORTED, true
+		case 0x23:
+			return Status_CONNECTION_OPTION_NOT_SUPPORTED, true
+		case 0x24:
+			return Status_NO_MORE_CONNECTIONS, true
+		case 0x25:
+			return Status_NO_MORE_UNIQUE_CONNECTIONS, true
+		case 0x26:
+			return Status_DATA_CONNECTION, true
+		case 0x27:
+			return Status_KNX_CONNECTION, true
+		case 0x29:
+			return Status_TUNNELLING_LAYER_NOT_SUPPORTED, true
 	}
 	return 0, false
 }
@@ -129,13 +129,13 @@ func StatusByName(value string) (enum Status, ok bool) {
 	return 0, false
 }
 
-func StatusKnows(value uint8) bool {
+func StatusKnows(value uint8)  bool {
 	for _, typeValue := range StatusValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastStatus(structType interface{}) Status {
@@ -219,3 +219,4 @@ func (e Status) PLC4XEnumName() string {
 func (e Status) String() string {
 	return e.PLC4XEnumName()
 }
+

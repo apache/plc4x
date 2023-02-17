@@ -34,30 +34,30 @@ type IErrorReportingSystemCategoryTypeForClimateControllers interface {
 	utils.Serializable
 }
 
-const (
-	ErrorReportingSystemCategoryTypeForClimateControllers_AIR_CONDITIONING_SYSTEM  ErrorReportingSystemCategoryTypeForClimateControllers = 0x0
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_1               ErrorReportingSystemCategoryTypeForClimateControllers = 0x1
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_2               ErrorReportingSystemCategoryTypeForClimateControllers = 0x2
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_3               ErrorReportingSystemCategoryTypeForClimateControllers = 0x3
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_4               ErrorReportingSystemCategoryTypeForClimateControllers = 0x4
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_5               ErrorReportingSystemCategoryTypeForClimateControllers = 0x5
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_6               ErrorReportingSystemCategoryTypeForClimateControllers = 0x6
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_7               ErrorReportingSystemCategoryTypeForClimateControllers = 0x7
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_8               ErrorReportingSystemCategoryTypeForClimateControllers = 0x8
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_9               ErrorReportingSystemCategoryTypeForClimateControllers = 0x9
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_10              ErrorReportingSystemCategoryTypeForClimateControllers = 0xA
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_11              ErrorReportingSystemCategoryTypeForClimateControllers = 0xB
+const(
+	ErrorReportingSystemCategoryTypeForClimateControllers_AIR_CONDITIONING_SYSTEM ErrorReportingSystemCategoryTypeForClimateControllers = 0x0
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_1 ErrorReportingSystemCategoryTypeForClimateControllers = 0x1
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_2 ErrorReportingSystemCategoryTypeForClimateControllers = 0x2
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_3 ErrorReportingSystemCategoryTypeForClimateControllers = 0x3
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_4 ErrorReportingSystemCategoryTypeForClimateControllers = 0x4
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_5 ErrorReportingSystemCategoryTypeForClimateControllers = 0x5
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_6 ErrorReportingSystemCategoryTypeForClimateControllers = 0x6
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_7 ErrorReportingSystemCategoryTypeForClimateControllers = 0x7
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_8 ErrorReportingSystemCategoryTypeForClimateControllers = 0x8
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_9 ErrorReportingSystemCategoryTypeForClimateControllers = 0x9
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_10 ErrorReportingSystemCategoryTypeForClimateControllers = 0xA
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_11 ErrorReportingSystemCategoryTypeForClimateControllers = 0xB
 	ErrorReportingSystemCategoryTypeForClimateControllers_GLOBAL_WARMING_MODULATOR ErrorReportingSystemCategoryTypeForClimateControllers = 0xC
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_13              ErrorReportingSystemCategoryTypeForClimateControllers = 0xD
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_14              ErrorReportingSystemCategoryTypeForClimateControllers = 0xE
-	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_15              ErrorReportingSystemCategoryTypeForClimateControllers = 0xF
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_13 ErrorReportingSystemCategoryTypeForClimateControllers = 0xD
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_14 ErrorReportingSystemCategoryTypeForClimateControllers = 0xE
+	ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_15 ErrorReportingSystemCategoryTypeForClimateControllers = 0xF
 )
 
 var ErrorReportingSystemCategoryTypeForClimateControllersValues []ErrorReportingSystemCategoryTypeForClimateControllers
 
 func init() {
 	_ = errors.New
-	ErrorReportingSystemCategoryTypeForClimateControllersValues = []ErrorReportingSystemCategoryTypeForClimateControllers{
+	ErrorReportingSystemCategoryTypeForClimateControllersValues = []ErrorReportingSystemCategoryTypeForClimateControllers {
 		ErrorReportingSystemCategoryTypeForClimateControllers_AIR_CONDITIONING_SYSTEM,
 		ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_1,
 		ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_2,
@@ -79,38 +79,38 @@ func init() {
 
 func ErrorReportingSystemCategoryTypeForClimateControllersByValue(value uint8) (enum ErrorReportingSystemCategoryTypeForClimateControllers, ok bool) {
 	switch value {
-	case 0x0:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_AIR_CONDITIONING_SYSTEM, true
-	case 0x1:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_1, true
-	case 0x2:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_2, true
-	case 0x3:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_3, true
-	case 0x4:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_4, true
-	case 0x5:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_5, true
-	case 0x6:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_6, true
-	case 0x7:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_7, true
-	case 0x8:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_8, true
-	case 0x9:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_9, true
-	case 0xA:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_10, true
-	case 0xB:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_11, true
-	case 0xC:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_GLOBAL_WARMING_MODULATOR, true
-	case 0xD:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_13, true
-	case 0xE:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_14, true
-	case 0xF:
-		return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_15, true
+		case 0x0:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_AIR_CONDITIONING_SYSTEM, true
+		case 0x1:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_1, true
+		case 0x2:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_2, true
+		case 0x3:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_3, true
+		case 0x4:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_4, true
+		case 0x5:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_5, true
+		case 0x6:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_6, true
+		case 0x7:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_7, true
+		case 0x8:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_8, true
+		case 0x9:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_9, true
+		case 0xA:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_10, true
+		case 0xB:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_11, true
+		case 0xC:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_GLOBAL_WARMING_MODULATOR, true
+		case 0xD:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_13, true
+		case 0xE:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_14, true
+		case 0xF:
+			return ErrorReportingSystemCategoryTypeForClimateControllers_RESERVED_15, true
 	}
 	return 0, false
 }
@@ -153,13 +153,13 @@ func ErrorReportingSystemCategoryTypeForClimateControllersByName(value string) (
 	return 0, false
 }
 
-func ErrorReportingSystemCategoryTypeForClimateControllersKnows(value uint8) bool {
+func ErrorReportingSystemCategoryTypeForClimateControllersKnows(value uint8)  bool {
 	for _, typeValue := range ErrorReportingSystemCategoryTypeForClimateControllersValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastErrorReportingSystemCategoryTypeForClimateControllers(structType interface{}) ErrorReportingSystemCategoryTypeForClimateControllers {
@@ -251,3 +251,4 @@ func (e ErrorReportingSystemCategoryTypeForClimateControllers) PLC4XEnumName() s
 func (e ErrorReportingSystemCategoryTypeForClimateControllers) String() string {
 	return e.PLC4XEnumName()
 }
+

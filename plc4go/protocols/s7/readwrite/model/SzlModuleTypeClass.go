@@ -34,18 +34,18 @@ type ISzlModuleTypeClass interface {
 	utils.Serializable
 }
 
-const (
+const(
 	SzlModuleTypeClass_CPU SzlModuleTypeClass = 0x0
-	SzlModuleTypeClass_IM  SzlModuleTypeClass = 0x4
-	SzlModuleTypeClass_FM  SzlModuleTypeClass = 0x8
-	SzlModuleTypeClass_CP  SzlModuleTypeClass = 0xC
+	SzlModuleTypeClass_IM SzlModuleTypeClass = 0x4
+	SzlModuleTypeClass_FM SzlModuleTypeClass = 0x8
+	SzlModuleTypeClass_CP SzlModuleTypeClass = 0xC
 )
 
 var SzlModuleTypeClassValues []SzlModuleTypeClass
 
 func init() {
 	_ = errors.New
-	SzlModuleTypeClassValues = []SzlModuleTypeClass{
+	SzlModuleTypeClassValues = []SzlModuleTypeClass {
 		SzlModuleTypeClass_CPU,
 		SzlModuleTypeClass_IM,
 		SzlModuleTypeClass_FM,
@@ -55,14 +55,14 @@ func init() {
 
 func SzlModuleTypeClassByValue(value uint8) (enum SzlModuleTypeClass, ok bool) {
 	switch value {
-	case 0x0:
-		return SzlModuleTypeClass_CPU, true
-	case 0x4:
-		return SzlModuleTypeClass_IM, true
-	case 0x8:
-		return SzlModuleTypeClass_FM, true
-	case 0xC:
-		return SzlModuleTypeClass_CP, true
+		case 0x0:
+			return SzlModuleTypeClass_CPU, true
+		case 0x4:
+			return SzlModuleTypeClass_IM, true
+		case 0x8:
+			return SzlModuleTypeClass_FM, true
+		case 0xC:
+			return SzlModuleTypeClass_CP, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func SzlModuleTypeClassByName(value string) (enum SzlModuleTypeClass, ok bool) {
 	return 0, false
 }
 
-func SzlModuleTypeClassKnows(value uint8) bool {
+func SzlModuleTypeClassKnows(value uint8)  bool {
 	for _, typeValue := range SzlModuleTypeClassValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastSzlModuleTypeClass(structType interface{}) SzlModuleTypeClass {
@@ -155,3 +155,4 @@ func (e SzlModuleTypeClass) PLC4XEnumName() string {
 func (e SzlModuleTypeClass) String() string {
 	return e.PLC4XEnumName()
 }
+

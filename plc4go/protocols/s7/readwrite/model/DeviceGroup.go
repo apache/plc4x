@@ -34,17 +34,17 @@ type IDeviceGroup interface {
 	utils.Serializable
 }
 
-const (
+const(
 	DeviceGroup_PG_OR_PC DeviceGroup = 0x01
-	DeviceGroup_OS       DeviceGroup = 0x02
-	DeviceGroup_OTHERS   DeviceGroup = 0x03
+	DeviceGroup_OS DeviceGroup = 0x02
+	DeviceGroup_OTHERS DeviceGroup = 0x03
 )
 
 var DeviceGroupValues []DeviceGroup
 
 func init() {
 	_ = errors.New
-	DeviceGroupValues = []DeviceGroup{
+	DeviceGroupValues = []DeviceGroup {
 		DeviceGroup_PG_OR_PC,
 		DeviceGroup_OS,
 		DeviceGroup_OTHERS,
@@ -53,12 +53,12 @@ func init() {
 
 func DeviceGroupByValue(value uint8) (enum DeviceGroup, ok bool) {
 	switch value {
-	case 0x01:
-		return DeviceGroup_PG_OR_PC, true
-	case 0x02:
-		return DeviceGroup_OS, true
-	case 0x03:
-		return DeviceGroup_OTHERS, true
+		case 0x01:
+			return DeviceGroup_PG_OR_PC, true
+		case 0x02:
+			return DeviceGroup_OS, true
+		case 0x03:
+			return DeviceGroup_OTHERS, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func DeviceGroupByName(value string) (enum DeviceGroup, ok bool) {
 	return 0, false
 }
 
-func DeviceGroupKnows(value uint8) bool {
+func DeviceGroupKnows(value uint8)  bool {
 	for _, typeValue := range DeviceGroupValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDeviceGroup(structType interface{}) DeviceGroup {
@@ -147,3 +147,4 @@ func (e DeviceGroup) PLC4XEnumName() string {
 func (e DeviceGroup) String() string {
 	return e.PLC4XEnumName()
 }
+

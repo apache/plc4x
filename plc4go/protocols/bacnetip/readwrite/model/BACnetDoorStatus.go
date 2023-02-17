@@ -34,25 +34,25 @@ type IBACnetDoorStatus interface {
 	utils.Serializable
 }
 
-const (
-	BACnetDoorStatus_CLOSED                   BACnetDoorStatus = 0
-	BACnetDoorStatus_OPENED                   BACnetDoorStatus = 1
-	BACnetDoorStatus_UNKNOWN                  BACnetDoorStatus = 2
-	BACnetDoorStatus_DOOR_FAULT               BACnetDoorStatus = 3
-	BACnetDoorStatus_UNUSED                   BACnetDoorStatus = 4
-	BACnetDoorStatus_NONE                     BACnetDoorStatus = 5
-	BACnetDoorStatus_CLOSING                  BACnetDoorStatus = 6
-	BACnetDoorStatus_OPENING                  BACnetDoorStatus = 7
-	BACnetDoorStatus_SAFETY_LOCKED            BACnetDoorStatus = 8
-	BACnetDoorStatus_LIMITED_OPENED           BACnetDoorStatus = 9
-	BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE BACnetDoorStatus = 0xFFFF
+const(
+	BACnetDoorStatus_CLOSED BACnetDoorStatus = 0
+	BACnetDoorStatus_OPENED BACnetDoorStatus = 1
+	BACnetDoorStatus_UNKNOWN BACnetDoorStatus = 2
+	BACnetDoorStatus_DOOR_FAULT BACnetDoorStatus = 3
+	BACnetDoorStatus_UNUSED BACnetDoorStatus = 4
+	BACnetDoorStatus_NONE BACnetDoorStatus = 5
+	BACnetDoorStatus_CLOSING BACnetDoorStatus = 6
+	BACnetDoorStatus_OPENING BACnetDoorStatus = 7
+	BACnetDoorStatus_SAFETY_LOCKED BACnetDoorStatus = 8
+	BACnetDoorStatus_LIMITED_OPENED BACnetDoorStatus = 9
+	BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE BACnetDoorStatus = 0XFFFF
 )
 
 var BACnetDoorStatusValues []BACnetDoorStatus
 
 func init() {
 	_ = errors.New
-	BACnetDoorStatusValues = []BACnetDoorStatus{
+	BACnetDoorStatusValues = []BACnetDoorStatus {
 		BACnetDoorStatus_CLOSED,
 		BACnetDoorStatus_OPENED,
 		BACnetDoorStatus_UNKNOWN,
@@ -69,28 +69,28 @@ func init() {
 
 func BACnetDoorStatusByValue(value uint16) (enum BACnetDoorStatus, ok bool) {
 	switch value {
-	case 0:
-		return BACnetDoorStatus_CLOSED, true
-	case 0xFFFF:
-		return BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE, true
-	case 1:
-		return BACnetDoorStatus_OPENED, true
-	case 2:
-		return BACnetDoorStatus_UNKNOWN, true
-	case 3:
-		return BACnetDoorStatus_DOOR_FAULT, true
-	case 4:
-		return BACnetDoorStatus_UNUSED, true
-	case 5:
-		return BACnetDoorStatus_NONE, true
-	case 6:
-		return BACnetDoorStatus_CLOSING, true
-	case 7:
-		return BACnetDoorStatus_OPENING, true
-	case 8:
-		return BACnetDoorStatus_SAFETY_LOCKED, true
-	case 9:
-		return BACnetDoorStatus_LIMITED_OPENED, true
+		case 0:
+			return BACnetDoorStatus_CLOSED, true
+		case 0XFFFF:
+			return BACnetDoorStatus_VENDOR_PROPRIETARY_VALUE, true
+		case 1:
+			return BACnetDoorStatus_OPENED, true
+		case 2:
+			return BACnetDoorStatus_UNKNOWN, true
+		case 3:
+			return BACnetDoorStatus_DOOR_FAULT, true
+		case 4:
+			return BACnetDoorStatus_UNUSED, true
+		case 5:
+			return BACnetDoorStatus_NONE, true
+		case 6:
+			return BACnetDoorStatus_CLOSING, true
+		case 7:
+			return BACnetDoorStatus_OPENING, true
+		case 8:
+			return BACnetDoorStatus_SAFETY_LOCKED, true
+		case 9:
+			return BACnetDoorStatus_LIMITED_OPENED, true
 	}
 	return 0, false
 }
@@ -123,13 +123,13 @@ func BACnetDoorStatusByName(value string) (enum BACnetDoorStatus, ok bool) {
 	return 0, false
 }
 
-func BACnetDoorStatusKnows(value uint16) bool {
+func BACnetDoorStatusKnows(value uint16)  bool {
 	for _, typeValue := range BACnetDoorStatusValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetDoorStatus(structType interface{}) BACnetDoorStatus {
@@ -211,3 +211,4 @@ func (e BACnetDoorStatus) PLC4XEnumName() string {
 func (e BACnetDoorStatus) String() string {
 	return e.PLC4XEnumName()
 }
+

@@ -34,28 +34,28 @@ type IBACnetDataType interface {
 	utils.Serializable
 }
 
-const (
-	BACnetDataType_NULL                     BACnetDataType = 0
-	BACnetDataType_BOOLEAN                  BACnetDataType = 1
-	BACnetDataType_UNSIGNED_INTEGER         BACnetDataType = 2
-	BACnetDataType_SIGNED_INTEGER           BACnetDataType = 3
-	BACnetDataType_REAL                     BACnetDataType = 4
-	BACnetDataType_DOUBLE                   BACnetDataType = 5
-	BACnetDataType_OCTET_STRING             BACnetDataType = 6
-	BACnetDataType_CHARACTER_STRING         BACnetDataType = 7
-	BACnetDataType_BIT_STRING               BACnetDataType = 8
-	BACnetDataType_ENUMERATED               BACnetDataType = 9
-	BACnetDataType_DATE                     BACnetDataType = 10
-	BACnetDataType_TIME                     BACnetDataType = 11
+const(
+	BACnetDataType_NULL BACnetDataType = 0
+	BACnetDataType_BOOLEAN BACnetDataType = 1
+	BACnetDataType_UNSIGNED_INTEGER BACnetDataType = 2
+	BACnetDataType_SIGNED_INTEGER BACnetDataType = 3
+	BACnetDataType_REAL BACnetDataType = 4
+	BACnetDataType_DOUBLE BACnetDataType = 5
+	BACnetDataType_OCTET_STRING BACnetDataType = 6
+	BACnetDataType_CHARACTER_STRING BACnetDataType = 7
+	BACnetDataType_BIT_STRING BACnetDataType = 8
+	BACnetDataType_ENUMERATED BACnetDataType = 9
+	BACnetDataType_DATE BACnetDataType = 10
+	BACnetDataType_TIME BACnetDataType = 11
 	BACnetDataType_BACNET_OBJECT_IDENTIFIER BACnetDataType = 12
-	BACnetDataType_UNKNOWN                  BACnetDataType = 33
+	BACnetDataType_UNKNOWN BACnetDataType = 33
 )
 
 var BACnetDataTypeValues []BACnetDataType
 
 func init() {
 	_ = errors.New
-	BACnetDataTypeValues = []BACnetDataType{
+	BACnetDataTypeValues = []BACnetDataType {
 		BACnetDataType_NULL,
 		BACnetDataType_BOOLEAN,
 		BACnetDataType_UNSIGNED_INTEGER,
@@ -75,34 +75,34 @@ func init() {
 
 func BACnetDataTypeByValue(value uint8) (enum BACnetDataType, ok bool) {
 	switch value {
-	case 0:
-		return BACnetDataType_NULL, true
-	case 1:
-		return BACnetDataType_BOOLEAN, true
-	case 10:
-		return BACnetDataType_DATE, true
-	case 11:
-		return BACnetDataType_TIME, true
-	case 12:
-		return BACnetDataType_BACNET_OBJECT_IDENTIFIER, true
-	case 2:
-		return BACnetDataType_UNSIGNED_INTEGER, true
-	case 3:
-		return BACnetDataType_SIGNED_INTEGER, true
-	case 33:
-		return BACnetDataType_UNKNOWN, true
-	case 4:
-		return BACnetDataType_REAL, true
-	case 5:
-		return BACnetDataType_DOUBLE, true
-	case 6:
-		return BACnetDataType_OCTET_STRING, true
-	case 7:
-		return BACnetDataType_CHARACTER_STRING, true
-	case 8:
-		return BACnetDataType_BIT_STRING, true
-	case 9:
-		return BACnetDataType_ENUMERATED, true
+		case 0:
+			return BACnetDataType_NULL, true
+		case 1:
+			return BACnetDataType_BOOLEAN, true
+		case 10:
+			return BACnetDataType_DATE, true
+		case 11:
+			return BACnetDataType_TIME, true
+		case 12:
+			return BACnetDataType_BACNET_OBJECT_IDENTIFIER, true
+		case 2:
+			return BACnetDataType_UNSIGNED_INTEGER, true
+		case 3:
+			return BACnetDataType_SIGNED_INTEGER, true
+		case 33:
+			return BACnetDataType_UNKNOWN, true
+		case 4:
+			return BACnetDataType_REAL, true
+		case 5:
+			return BACnetDataType_DOUBLE, true
+		case 6:
+			return BACnetDataType_OCTET_STRING, true
+		case 7:
+			return BACnetDataType_CHARACTER_STRING, true
+		case 8:
+			return BACnetDataType_BIT_STRING, true
+		case 9:
+			return BACnetDataType_ENUMERATED, true
 	}
 	return 0, false
 }
@@ -141,13 +141,13 @@ func BACnetDataTypeByName(value string) (enum BACnetDataType, ok bool) {
 	return 0, false
 }
 
-func BACnetDataTypeKnows(value uint8) bool {
+func BACnetDataTypeKnows(value uint8)  bool {
 	for _, typeValue := range BACnetDataTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastBACnetDataType(structType interface{}) BACnetDataType {
@@ -235,3 +235,4 @@ func (e BACnetDataType) PLC4XEnumName() string {
 func (e BACnetDataType) String() string {
 	return e.PLC4XEnumName()
 }
+

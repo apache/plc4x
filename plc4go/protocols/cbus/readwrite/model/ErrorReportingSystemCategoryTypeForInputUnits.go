@@ -34,30 +34,30 @@ type IErrorReportingSystemCategoryTypeForInputUnits interface {
 	utils.Serializable
 }
 
-const (
-	ErrorReportingSystemCategoryTypeForInputUnits_KEY_UNITS                    ErrorReportingSystemCategoryTypeForInputUnits = 0x0
+const(
+	ErrorReportingSystemCategoryTypeForInputUnits_KEY_UNITS ErrorReportingSystemCategoryTypeForInputUnits = 0x0
 	ErrorReportingSystemCategoryTypeForInputUnits_TELECOMMAND_AND_REMOTE_ENTRY ErrorReportingSystemCategoryTypeForInputUnits = 0x1
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_2                   ErrorReportingSystemCategoryTypeForInputUnits = 0x2
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_3                   ErrorReportingSystemCategoryTypeForInputUnits = 0x3
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_4                   ErrorReportingSystemCategoryTypeForInputUnits = 0x4
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_5                   ErrorReportingSystemCategoryTypeForInputUnits = 0x5
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_6                   ErrorReportingSystemCategoryTypeForInputUnits = 0x6
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_7                   ErrorReportingSystemCategoryTypeForInputUnits = 0x7
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_8                   ErrorReportingSystemCategoryTypeForInputUnits = 0x8
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_9                   ErrorReportingSystemCategoryTypeForInputUnits = 0x9
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_10                  ErrorReportingSystemCategoryTypeForInputUnits = 0xA
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_11                  ErrorReportingSystemCategoryTypeForInputUnits = 0xB
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_12                  ErrorReportingSystemCategoryTypeForInputUnits = 0xC
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_13                  ErrorReportingSystemCategoryTypeForInputUnits = 0xD
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_14                  ErrorReportingSystemCategoryTypeForInputUnits = 0xE
-	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_15                  ErrorReportingSystemCategoryTypeForInputUnits = 0xF
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_2 ErrorReportingSystemCategoryTypeForInputUnits = 0x2
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_3 ErrorReportingSystemCategoryTypeForInputUnits = 0x3
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_4 ErrorReportingSystemCategoryTypeForInputUnits = 0x4
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_5 ErrorReportingSystemCategoryTypeForInputUnits = 0x5
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_6 ErrorReportingSystemCategoryTypeForInputUnits = 0x6
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_7 ErrorReportingSystemCategoryTypeForInputUnits = 0x7
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_8 ErrorReportingSystemCategoryTypeForInputUnits = 0x8
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_9 ErrorReportingSystemCategoryTypeForInputUnits = 0x9
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_10 ErrorReportingSystemCategoryTypeForInputUnits = 0xA
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_11 ErrorReportingSystemCategoryTypeForInputUnits = 0xB
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_12 ErrorReportingSystemCategoryTypeForInputUnits = 0xC
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_13 ErrorReportingSystemCategoryTypeForInputUnits = 0xD
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_14 ErrorReportingSystemCategoryTypeForInputUnits = 0xE
+	ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_15 ErrorReportingSystemCategoryTypeForInputUnits = 0xF
 )
 
 var ErrorReportingSystemCategoryTypeForInputUnitsValues []ErrorReportingSystemCategoryTypeForInputUnits
 
 func init() {
 	_ = errors.New
-	ErrorReportingSystemCategoryTypeForInputUnitsValues = []ErrorReportingSystemCategoryTypeForInputUnits{
+	ErrorReportingSystemCategoryTypeForInputUnitsValues = []ErrorReportingSystemCategoryTypeForInputUnits {
 		ErrorReportingSystemCategoryTypeForInputUnits_KEY_UNITS,
 		ErrorReportingSystemCategoryTypeForInputUnits_TELECOMMAND_AND_REMOTE_ENTRY,
 		ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_2,
@@ -79,38 +79,38 @@ func init() {
 
 func ErrorReportingSystemCategoryTypeForInputUnitsByValue(value uint8) (enum ErrorReportingSystemCategoryTypeForInputUnits, ok bool) {
 	switch value {
-	case 0x0:
-		return ErrorReportingSystemCategoryTypeForInputUnits_KEY_UNITS, true
-	case 0x1:
-		return ErrorReportingSystemCategoryTypeForInputUnits_TELECOMMAND_AND_REMOTE_ENTRY, true
-	case 0x2:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_2, true
-	case 0x3:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_3, true
-	case 0x4:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_4, true
-	case 0x5:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_5, true
-	case 0x6:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_6, true
-	case 0x7:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_7, true
-	case 0x8:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_8, true
-	case 0x9:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_9, true
-	case 0xA:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_10, true
-	case 0xB:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_11, true
-	case 0xC:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_12, true
-	case 0xD:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_13, true
-	case 0xE:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_14, true
-	case 0xF:
-		return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_15, true
+		case 0x0:
+			return ErrorReportingSystemCategoryTypeForInputUnits_KEY_UNITS, true
+		case 0x1:
+			return ErrorReportingSystemCategoryTypeForInputUnits_TELECOMMAND_AND_REMOTE_ENTRY, true
+		case 0x2:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_2, true
+		case 0x3:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_3, true
+		case 0x4:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_4, true
+		case 0x5:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_5, true
+		case 0x6:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_6, true
+		case 0x7:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_7, true
+		case 0x8:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_8, true
+		case 0x9:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_9, true
+		case 0xA:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_10, true
+		case 0xB:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_11, true
+		case 0xC:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_12, true
+		case 0xD:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_13, true
+		case 0xE:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_14, true
+		case 0xF:
+			return ErrorReportingSystemCategoryTypeForInputUnits_RESERVED_15, true
 	}
 	return 0, false
 }
@@ -153,13 +153,13 @@ func ErrorReportingSystemCategoryTypeForInputUnitsByName(value string) (enum Err
 	return 0, false
 }
 
-func ErrorReportingSystemCategoryTypeForInputUnitsKnows(value uint8) bool {
+func ErrorReportingSystemCategoryTypeForInputUnitsKnows(value uint8)  bool {
 	for _, typeValue := range ErrorReportingSystemCategoryTypeForInputUnitsValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastErrorReportingSystemCategoryTypeForInputUnits(structType interface{}) ErrorReportingSystemCategoryTypeForInputUnits {
@@ -251,3 +251,4 @@ func (e ErrorReportingSystemCategoryTypeForInputUnits) PLC4XEnumName() string {
 func (e ErrorReportingSystemCategoryTypeForInputUnits) String() string {
 	return e.PLC4XEnumName()
 }
+

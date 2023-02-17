@@ -34,12 +34,12 @@ type IDeviceDescriptorMediumType interface {
 	utils.Serializable
 }
 
-const (
-	DeviceDescriptorMediumType_TP1    DeviceDescriptorMediumType = 0x0
-	DeviceDescriptorMediumType_PL110  DeviceDescriptorMediumType = 0x1
-	DeviceDescriptorMediumType_RF     DeviceDescriptorMediumType = 0x2
-	DeviceDescriptorMediumType_TP0    DeviceDescriptorMediumType = 0x3
-	DeviceDescriptorMediumType_PL132  DeviceDescriptorMediumType = 0x4
+const(
+	DeviceDescriptorMediumType_TP1 DeviceDescriptorMediumType = 0x0
+	DeviceDescriptorMediumType_PL110 DeviceDescriptorMediumType = 0x1
+	DeviceDescriptorMediumType_RF DeviceDescriptorMediumType = 0x2
+	DeviceDescriptorMediumType_TP0 DeviceDescriptorMediumType = 0x3
+	DeviceDescriptorMediumType_PL132 DeviceDescriptorMediumType = 0x4
 	DeviceDescriptorMediumType_KNX_IP DeviceDescriptorMediumType = 0x5
 )
 
@@ -47,7 +47,7 @@ var DeviceDescriptorMediumTypeValues []DeviceDescriptorMediumType
 
 func init() {
 	_ = errors.New
-	DeviceDescriptorMediumTypeValues = []DeviceDescriptorMediumType{
+	DeviceDescriptorMediumTypeValues = []DeviceDescriptorMediumType {
 		DeviceDescriptorMediumType_TP1,
 		DeviceDescriptorMediumType_PL110,
 		DeviceDescriptorMediumType_RF,
@@ -59,18 +59,18 @@ func init() {
 
 func DeviceDescriptorMediumTypeByValue(value uint8) (enum DeviceDescriptorMediumType, ok bool) {
 	switch value {
-	case 0x0:
-		return DeviceDescriptorMediumType_TP1, true
-	case 0x1:
-		return DeviceDescriptorMediumType_PL110, true
-	case 0x2:
-		return DeviceDescriptorMediumType_RF, true
-	case 0x3:
-		return DeviceDescriptorMediumType_TP0, true
-	case 0x4:
-		return DeviceDescriptorMediumType_PL132, true
-	case 0x5:
-		return DeviceDescriptorMediumType_KNX_IP, true
+		case 0x0:
+			return DeviceDescriptorMediumType_TP1, true
+		case 0x1:
+			return DeviceDescriptorMediumType_PL110, true
+		case 0x2:
+			return DeviceDescriptorMediumType_RF, true
+		case 0x3:
+			return DeviceDescriptorMediumType_TP0, true
+		case 0x4:
+			return DeviceDescriptorMediumType_PL132, true
+		case 0x5:
+			return DeviceDescriptorMediumType_KNX_IP, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func DeviceDescriptorMediumTypeByName(value string) (enum DeviceDescriptorMedium
 	return 0, false
 }
 
-func DeviceDescriptorMediumTypeKnows(value uint8) bool {
+func DeviceDescriptorMediumTypeKnows(value uint8)  bool {
 	for _, typeValue := range DeviceDescriptorMediumTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false
+	return false;
 }
 
 func CastDeviceDescriptorMediumType(structType interface{}) DeviceDescriptorMediumType {
@@ -171,3 +171,4 @@ func (e DeviceDescriptorMediumType) PLC4XEnumName() string {
 func (e DeviceDescriptorMediumType) String() string {
 	return e.PLC4XEnumName()
 }
+
