@@ -44,6 +44,7 @@
   * [Getting Started](#getting-started)
   * [Developers](#developers)
   * [Community](#community)
+  * [Translation](#translation)
   * [Contributing](#contributing)
   * [Licensing](#licensing)
 
@@ -210,6 +211,10 @@ See also: [https://plc4x.apache.org/mailing-lists.html](https://plc4x.apache.org
 ### Twitter
 
 Get the latest PLC4X news on Twitter: [https://twitter.com/ApachePlc4x](https://twitter.com/ApachePlc4x)
+
+## Translation
+
++ [Chinese](./translation/README_zh_CN.md)
 
 ## Contributing
 
