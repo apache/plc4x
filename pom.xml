@@ -719,10 +719,7 @@
             <exclude>**/.git/**</exclude>
             <exclude>**/.gitignore</exclude>
             <exclude>**/cmake-*/**</exclude>
-            <exclude>**/.cmake/**</exclude>
             <exclude>**/.lock/**</exclude>
-            <exclude>**/downloads/**</exclude>
-            <exclude>plc4go/**</exclude>
 
             <!-- License Files for other licenses -->
             <exclude>**/UNLICENSE</exclude>
@@ -733,10 +730,6 @@
               Files licensed under other compatible licenses.
             -->
             <exclude>**/Expression.g4</exclude>
-            <exclude>**/*.log</exclude>
-            <exclude>**/KeyStoreLoader.java</exclude>
-            <exclude>**/OPCUAServer.java</exclude>
-            <exclude>**/Plc4xNamespace.java</exclude>
 
             <!-- Maven related files -->
             <exclude>**/target/**</exclude>
