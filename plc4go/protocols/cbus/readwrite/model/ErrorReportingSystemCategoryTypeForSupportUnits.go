@@ -34,30 +34,30 @@ type IErrorReportingSystemCategoryTypeForSupportUnits interface {
 	utils.Serializable
 }
 
-const(
+const (
 	ErrorReportingSystemCategoryTypeForSupportUnits_POWER_SUPPLIES ErrorReportingSystemCategoryTypeForSupportUnits = 0x0
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_1 ErrorReportingSystemCategoryTypeForSupportUnits = 0x1
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_2 ErrorReportingSystemCategoryTypeForSupportUnits = 0x2
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_3 ErrorReportingSystemCategoryTypeForSupportUnits = 0x3
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_4 ErrorReportingSystemCategoryTypeForSupportUnits = 0x4
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_5 ErrorReportingSystemCategoryTypeForSupportUnits = 0x5
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_6 ErrorReportingSystemCategoryTypeForSupportUnits = 0x6
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_7 ErrorReportingSystemCategoryTypeForSupportUnits = 0x7
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_8 ErrorReportingSystemCategoryTypeForSupportUnits = 0x8
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_9 ErrorReportingSystemCategoryTypeForSupportUnits = 0x9
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_10 ErrorReportingSystemCategoryTypeForSupportUnits = 0xA
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_11 ErrorReportingSystemCategoryTypeForSupportUnits = 0xB
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_12 ErrorReportingSystemCategoryTypeForSupportUnits = 0xC
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_13 ErrorReportingSystemCategoryTypeForSupportUnits = 0xD
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_14 ErrorReportingSystemCategoryTypeForSupportUnits = 0xE
-	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_15 ErrorReportingSystemCategoryTypeForSupportUnits = 0xF
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_1     ErrorReportingSystemCategoryTypeForSupportUnits = 0x1
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_2     ErrorReportingSystemCategoryTypeForSupportUnits = 0x2
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_3     ErrorReportingSystemCategoryTypeForSupportUnits = 0x3
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_4     ErrorReportingSystemCategoryTypeForSupportUnits = 0x4
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_5     ErrorReportingSystemCategoryTypeForSupportUnits = 0x5
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_6     ErrorReportingSystemCategoryTypeForSupportUnits = 0x6
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_7     ErrorReportingSystemCategoryTypeForSupportUnits = 0x7
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_8     ErrorReportingSystemCategoryTypeForSupportUnits = 0x8
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_9     ErrorReportingSystemCategoryTypeForSupportUnits = 0x9
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_10    ErrorReportingSystemCategoryTypeForSupportUnits = 0xA
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_11    ErrorReportingSystemCategoryTypeForSupportUnits = 0xB
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_12    ErrorReportingSystemCategoryTypeForSupportUnits = 0xC
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_13    ErrorReportingSystemCategoryTypeForSupportUnits = 0xD
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_14    ErrorReportingSystemCategoryTypeForSupportUnits = 0xE
+	ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_15    ErrorReportingSystemCategoryTypeForSupportUnits = 0xF
 )
 
 var ErrorReportingSystemCategoryTypeForSupportUnitsValues []ErrorReportingSystemCategoryTypeForSupportUnits
 
 func init() {
 	_ = errors.New
-	ErrorReportingSystemCategoryTypeForSupportUnitsValues = []ErrorReportingSystemCategoryTypeForSupportUnits {
+	ErrorReportingSystemCategoryTypeForSupportUnitsValues = []ErrorReportingSystemCategoryTypeForSupportUnits{
 		ErrorReportingSystemCategoryTypeForSupportUnits_POWER_SUPPLIES,
 		ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_1,
 		ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_2,
@@ -79,38 +79,38 @@ func init() {
 
 func ErrorReportingSystemCategoryTypeForSupportUnitsByValue(value uint8) (enum ErrorReportingSystemCategoryTypeForSupportUnits, ok bool) {
 	switch value {
-		case 0x0:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_POWER_SUPPLIES, true
-		case 0x1:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_1, true
-		case 0x2:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_2, true
-		case 0x3:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_3, true
-		case 0x4:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_4, true
-		case 0x5:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_5, true
-		case 0x6:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_6, true
-		case 0x7:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_7, true
-		case 0x8:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_8, true
-		case 0x9:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_9, true
-		case 0xA:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_10, true
-		case 0xB:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_11, true
-		case 0xC:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_12, true
-		case 0xD:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_13, true
-		case 0xE:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_14, true
-		case 0xF:
-			return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_15, true
+	case 0x0:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_POWER_SUPPLIES, true
+	case 0x1:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_1, true
+	case 0x2:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_2, true
+	case 0x3:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_3, true
+	case 0x4:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_4, true
+	case 0x5:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_5, true
+	case 0x6:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_6, true
+	case 0x7:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_7, true
+	case 0x8:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_8, true
+	case 0x9:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_9, true
+	case 0xA:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_10, true
+	case 0xB:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_11, true
+	case 0xC:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_12, true
+	case 0xD:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_13, true
+	case 0xE:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_14, true
+	case 0xF:
+		return ErrorReportingSystemCategoryTypeForSupportUnits_RESERVED_15, true
 	}
 	return 0, false
 }
@@ -153,13 +153,13 @@ func ErrorReportingSystemCategoryTypeForSupportUnitsByName(value string) (enum E
 	return 0, false
 }
 
-func ErrorReportingSystemCategoryTypeForSupportUnitsKnows(value uint8)  bool {
+func ErrorReportingSystemCategoryTypeForSupportUnitsKnows(value uint8) bool {
 	for _, typeValue := range ErrorReportingSystemCategoryTypeForSupportUnitsValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastErrorReportingSystemCategoryTypeForSupportUnits(structType interface{}) ErrorReportingSystemCategoryTypeForSupportUnits {
@@ -251,4 +251,3 @@ func (e ErrorReportingSystemCategoryTypeForSupportUnits) PLC4XEnumName() string 
 func (e ErrorReportingSystemCategoryTypeForSupportUnits) String() string {
 	return e.PLC4XEnumName()
 }
-

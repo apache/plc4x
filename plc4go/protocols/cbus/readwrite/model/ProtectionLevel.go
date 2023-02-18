@@ -35,18 +35,18 @@ type IProtectionLevel interface {
 	Description() string
 }
 
-const(
+const (
 	ProtectionLevel_UNLOCK_REQUIRED ProtectionLevel = 0
 	ProtectionLevel_NO_WRITE_ACCESS ProtectionLevel = 1
-	ProtectionLevel_NONE ProtectionLevel = 2
-	ProtectionLevel_READ_ONLY ProtectionLevel = 3
+	ProtectionLevel_NONE            ProtectionLevel = 2
+	ProtectionLevel_READ_ONLY       ProtectionLevel = 3
 )
 
 var ProtectionLevelValues []ProtectionLevel
 
 func init() {
 	_ = errors.New
-	ProtectionLevelValues = []ProtectionLevel {
+	ProtectionLevelValues = []ProtectionLevel{
 		ProtectionLevel_UNLOCK_REQUIRED,
 		ProtectionLevel_NO_WRITE_ACCESS,
 		ProtectionLevel_NONE,
@@ -54,22 +54,26 @@ func init() {
 	}
 }
 
-
 func (e ProtectionLevel) Description() string {
-	switch e  {
-		case 0: { /* '0' */
-            return "Unlock required from C-BUS port"
+	switch e {
+	case 0:
+		{ /* '0' */
+			return "Unlock required from C-BUS port"
 		}
-		case 1: { /* '1' */
-            return "No write access via C-BUS port"
+	case 1:
+		{ /* '1' */
+			return "No write access via C-BUS port"
 		}
-		case 2: { /* '2' */
-            return "None"
+	case 2:
+		{ /* '2' */
+			return "None"
 		}
-		case 3: { /* '3' */
-            return "Read only"
+	case 3:
+		{ /* '3' */
+			return "Read only"
 		}
-		default: {
+	default:
+		{
 			return ""
 		}
 	}
@@ -85,14 +89,14 @@ func ProtectionLevelFirstEnumForFieldDescription(value string) (ProtectionLevel,
 }
 func ProtectionLevelByValue(value uint8) (enum ProtectionLevel, ok bool) {
 	switch value {
-		case 0:
-			return ProtectionLevel_UNLOCK_REQUIRED, true
-		case 1:
-			return ProtectionLevel_NO_WRITE_ACCESS, true
-		case 2:
-			return ProtectionLevel_NONE, true
-		case 3:
-			return ProtectionLevel_READ_ONLY, true
+	case 0:
+		return ProtectionLevel_UNLOCK_REQUIRED, true
+	case 1:
+		return ProtectionLevel_NO_WRITE_ACCESS, true
+	case 2:
+		return ProtectionLevel_NONE, true
+	case 3:
+		return ProtectionLevel_READ_ONLY, true
 	}
 	return 0, false
 }
@@ -111,13 +115,13 @@ func ProtectionLevelByName(value string) (enum ProtectionLevel, ok bool) {
 	return 0, false
 }
 
-func ProtectionLevelKnows(value uint8)  bool {
+func ProtectionLevelKnows(value uint8) bool {
 	for _, typeValue := range ProtectionLevelValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastProtectionLevel(structType interface{}) ProtectionLevel {
@@ -185,4 +189,3 @@ func (e ProtectionLevel) PLC4XEnumName() string {
 func (e ProtectionLevel) String() string {
 	return e.PLC4XEnumName()
 }
-

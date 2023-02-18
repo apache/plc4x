@@ -443,7 +443,7 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
                 () -> PathSegment.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
             () ->
                 ((boolean)
-                    (org.apache.plc4x.java.eip.readwrite.utils.StaticHelper.isStillAPathSegment(
+                    (org.apache.plc4x.java.eip.readwrite.utils.StaticHelper.noMorePathSegments(
                         readBuffer, order))),
             WithOption.WithByteOrder(
                 (((order) == (IntegerEncoding.BIG_ENDIAN))

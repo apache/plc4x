@@ -149,7 +149,7 @@
               [simple      uint    32          originatorSerialNumber]
               [simple      uint    8              connectionPathSize]
               [reserved    byte                 '0x00']
-              [array       PathSegment('order')   connectionPaths     terminated   'STATIC_CALL("isStillAPathSegment", readBuffer, order)']
+              [array       PathSegment('order')   connectionPaths     terminated   'STATIC_CALL("noMorePathSegments", readBuffer, order)']
         ]
         ['0x4E','true' CipConnectionManagerCloseResponse
               [reserved uint    8   '0x00']
@@ -217,7 +217,7 @@
                [simple      NetworkConnectionParameters('order') toConnectionParameters]
                [simple      TransportType('order')       transportType]
                [simple      uint    8              connectionPathSize]
-               [array       PathSegment('order')   connectionPaths     terminated   'STATIC_CALL("isStillAPathSegment", readBuffer, order)']
+               [array       PathSegment('order')   connectionPaths     terminated   'STATIC_CALL("noMorePathSegments", readBuffer, order)']
         ]
         ['0x5B','true'     CipConnectionManagerResponse
                [reserved    uint    24          '0x000000']
@@ -305,9 +305,9 @@
     [discriminator  uint    5   dataSegmentType]
     [typeSwitch dataSegmentType
         ['0x11'      AnsiExtendedSymbolSegment
-            [implicit   uint    8   dataSize        'symbol.length']
+            [implicit   uint    8                       dataSize        'STR_LEN(symbol)']
             [simple     vstring     'dataSize * 8'      symbol]
-            [optional   uint    8   pad         'symbol.length % 2 != 0']
+            [optional   uint    8                       pad         'STR_LEN(symbol) % 2 != 0']
         ]
     ]
 ]

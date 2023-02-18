@@ -35,32 +35,32 @@ type IAttribute interface {
 	BytesReturned() uint8
 }
 
-const(
-	Attribute_Manufacturer Attribute = 0x00
-	Attribute_Type Attribute = 0x01
-	Attribute_FirmwareVersion Attribute = 0x02
-	Attribute_Summary Attribute = 0x03
+const (
+	Attribute_Manufacturer              Attribute = 0x00
+	Attribute_Type                      Attribute = 0x01
+	Attribute_FirmwareVersion           Attribute = 0x02
+	Attribute_Summary                   Attribute = 0x03
 	Attribute_ExtendedDiagnosticSummary Attribute = 0x04
-	Attribute_NetworkTerminalLevels Attribute = 0x05
-	Attribute_TerminalLevel Attribute = 0x06
-	Attribute_NetworkVoltage Attribute = 0x07
-	Attribute_GAVValuesCurrent Attribute = 0x08
-	Attribute_GAVValuesStored Attribute = 0x09
-	Attribute_GAVPhysicalAddresses Attribute = 0x0A
-	Attribute_LogicalAssignment Attribute = 0x0B
-	Attribute_Delays Attribute = 0x0C
-	Attribute_MinimumLevels Attribute = 0x0D
-	Attribute_MaximumLevels Attribute = 0x0E
-	Attribute_CurrentSenseLevels Attribute = 0x0F
-	Attribute_OutputUnitSummary Attribute = 0x10
-	Attribute_DSIStatus Attribute = 0x11
+	Attribute_NetworkTerminalLevels     Attribute = 0x05
+	Attribute_TerminalLevel             Attribute = 0x06
+	Attribute_NetworkVoltage            Attribute = 0x07
+	Attribute_GAVValuesCurrent          Attribute = 0x08
+	Attribute_GAVValuesStored           Attribute = 0x09
+	Attribute_GAVPhysicalAddresses      Attribute = 0x0A
+	Attribute_LogicalAssignment         Attribute = 0x0B
+	Attribute_Delays                    Attribute = 0x0C
+	Attribute_MinimumLevels             Attribute = 0x0D
+	Attribute_MaximumLevels             Attribute = 0x0E
+	Attribute_CurrentSenseLevels        Attribute = 0x0F
+	Attribute_OutputUnitSummary         Attribute = 0x10
+	Attribute_DSIStatus                 Attribute = 0x11
 )
 
 var AttributeValues []Attribute
 
 func init() {
 	_ = errors.New
-	AttributeValues = []Attribute {
+	AttributeValues = []Attribute{
 		Attribute_Manufacturer,
 		Attribute_Type,
 		Attribute_FirmwareVersion,
@@ -82,64 +82,82 @@ func init() {
 	}
 }
 
-
 func (e Attribute) BytesReturned() uint8 {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return 8
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 8
 		}
-		case 0x01: { /* '0x01' */
-            return 8
+	case 0x01:
+		{ /* '0x01' */
+			return 8
 		}
-		case 0x02: { /* '0x02' */
-            return 8
+	case 0x02:
+		{ /* '0x02' */
+			return 8
 		}
-		case 0x03: { /* '0x03' */
-            return 9
+	case 0x03:
+		{ /* '0x03' */
+			return 9
 		}
-		case 0x04: { /* '0x04' */
-            return 13
+	case 0x04:
+		{ /* '0x04' */
+			return 13
 		}
-		case 0x05: { /* '0x05' */
-            return 13
+	case 0x05:
+		{ /* '0x05' */
+			return 13
 		}
-		case 0x06: { /* '0x06' */
-            return 13
+	case 0x06:
+		{ /* '0x06' */
+			return 13
 		}
-		case 0x07: { /* '0x07' */
-            return 5
+	case 0x07:
+		{ /* '0x07' */
+			return 5
 		}
-		case 0x08: { /* '0x08' */
-            return 16
+	case 0x08:
+		{ /* '0x08' */
+			return 16
 		}
-		case 0x09: { /* '0x09' */
-            return 16
+	case 0x09:
+		{ /* '0x09' */
+			return 16
 		}
-		case 0x0A: { /* '0x0A' */
-            return 16
+	case 0x0A:
+		{ /* '0x0A' */
+			return 16
 		}
-		case 0x0B: { /* '0x0B' */
-            return 13
+	case 0x0B:
+		{ /* '0x0B' */
+			return 13
 		}
-		case 0x0C: { /* '0x0C' */
-            return 14
+	case 0x0C:
+		{ /* '0x0C' */
+			return 14
 		}
-		case 0x0D: { /* '0x0D' */
-            return 13
+	case 0x0D:
+		{ /* '0x0D' */
+			return 13
 		}
-		case 0x0E: { /* '0x0E' */
-            return 13
+	case 0x0E:
+		{ /* '0x0E' */
+			return 13
 		}
-		case 0x0F: { /* '0x0F' */
-            return 8
+	case 0x0F:
+		{ /* '0x0F' */
+			return 8
 		}
-		case 0x10: { /* '0x10' */
-            return 4
+	case 0x10:
+		{ /* '0x10' */
+			return 4
 		}
-		case 0x11: { /* '0x11' */
-            return 10
+	case 0x11:
+		{ /* '0x11' */
+			return 10
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -155,42 +173,42 @@ func AttributeFirstEnumForFieldBytesReturned(value uint8) (Attribute, error) {
 }
 func AttributeByValue(value uint8) (enum Attribute, ok bool) {
 	switch value {
-		case 0x00:
-			return Attribute_Manufacturer, true
-		case 0x01:
-			return Attribute_Type, true
-		case 0x02:
-			return Attribute_FirmwareVersion, true
-		case 0x03:
-			return Attribute_Summary, true
-		case 0x04:
-			return Attribute_ExtendedDiagnosticSummary, true
-		case 0x05:
-			return Attribute_NetworkTerminalLevels, true
-		case 0x06:
-			return Attribute_TerminalLevel, true
-		case 0x07:
-			return Attribute_NetworkVoltage, true
-		case 0x08:
-			return Attribute_GAVValuesCurrent, true
-		case 0x09:
-			return Attribute_GAVValuesStored, true
-		case 0x0A:
-			return Attribute_GAVPhysicalAddresses, true
-		case 0x0B:
-			return Attribute_LogicalAssignment, true
-		case 0x0C:
-			return Attribute_Delays, true
-		case 0x0D:
-			return Attribute_MinimumLevels, true
-		case 0x0E:
-			return Attribute_MaximumLevels, true
-		case 0x0F:
-			return Attribute_CurrentSenseLevels, true
-		case 0x10:
-			return Attribute_OutputUnitSummary, true
-		case 0x11:
-			return Attribute_DSIStatus, true
+	case 0x00:
+		return Attribute_Manufacturer, true
+	case 0x01:
+		return Attribute_Type, true
+	case 0x02:
+		return Attribute_FirmwareVersion, true
+	case 0x03:
+		return Attribute_Summary, true
+	case 0x04:
+		return Attribute_ExtendedDiagnosticSummary, true
+	case 0x05:
+		return Attribute_NetworkTerminalLevels, true
+	case 0x06:
+		return Attribute_TerminalLevel, true
+	case 0x07:
+		return Attribute_NetworkVoltage, true
+	case 0x08:
+		return Attribute_GAVValuesCurrent, true
+	case 0x09:
+		return Attribute_GAVValuesStored, true
+	case 0x0A:
+		return Attribute_GAVPhysicalAddresses, true
+	case 0x0B:
+		return Attribute_LogicalAssignment, true
+	case 0x0C:
+		return Attribute_Delays, true
+	case 0x0D:
+		return Attribute_MinimumLevels, true
+	case 0x0E:
+		return Attribute_MaximumLevels, true
+	case 0x0F:
+		return Attribute_CurrentSenseLevels, true
+	case 0x10:
+		return Attribute_OutputUnitSummary, true
+	case 0x11:
+		return Attribute_DSIStatus, true
 	}
 	return 0, false
 }
@@ -237,13 +255,13 @@ func AttributeByName(value string) (enum Attribute, ok bool) {
 	return 0, false
 }
 
-func AttributeKnows(value uint8)  bool {
+func AttributeKnows(value uint8) bool {
 	for _, typeValue := range AttributeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastAttribute(structType interface{}) Attribute {
@@ -339,4 +357,3 @@ func (e Attribute) PLC4XEnumName() string {
 func (e Attribute) String() string {
 	return e.PLC4XEnumName()
 }
-

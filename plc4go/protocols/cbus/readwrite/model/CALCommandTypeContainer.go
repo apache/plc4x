@@ -36,102 +36,102 @@ type ICALCommandTypeContainer interface {
 	CommandType() CALCommandType
 }
 
-const(
-	CALCommandTypeContainer_CALCommandReset CALCommandTypeContainer = 0x08
-	CALCommandTypeContainer_CALCommandRecall CALCommandTypeContainer = 0x1A
-	CALCommandTypeContainer_CALCommandIdentify CALCommandTypeContainer = 0x21
-	CALCommandTypeContainer_CALCommandGetStatus CALCommandTypeContainer = 0x2A
-	CALCommandTypeContainer_CALCommandAcknowledge CALCommandTypeContainer = 0x32
-	CALCommandTypeContainer_CALCommandReply_0Bytes CALCommandTypeContainer = 0x80
-	CALCommandTypeContainer_CALCommandReply_1Bytes CALCommandTypeContainer = 0x81
-	CALCommandTypeContainer_CALCommandReply_2Bytes CALCommandTypeContainer = 0x82
-	CALCommandTypeContainer_CALCommandReply_3Bytes CALCommandTypeContainer = 0x83
-	CALCommandTypeContainer_CALCommandReply_4Bytes CALCommandTypeContainer = 0x84
-	CALCommandTypeContainer_CALCommandReply_5Bytes CALCommandTypeContainer = 0x85
-	CALCommandTypeContainer_CALCommandReply_6Bytes CALCommandTypeContainer = 0x86
-	CALCommandTypeContainer_CALCommandReply_7Bytes CALCommandTypeContainer = 0x87
-	CALCommandTypeContainer_CALCommandReply_8Bytes CALCommandTypeContainer = 0x88
-	CALCommandTypeContainer_CALCommandReply_9Bytes CALCommandTypeContainer = 0x89
-	CALCommandTypeContainer_CALCommandReply_10Bytes CALCommandTypeContainer = 0x8A
-	CALCommandTypeContainer_CALCommandReply_11Bytes CALCommandTypeContainer = 0x8B
-	CALCommandTypeContainer_CALCommandReply_12Bytes CALCommandTypeContainer = 0x8C
-	CALCommandTypeContainer_CALCommandReply_13Bytes CALCommandTypeContainer = 0x8D
-	CALCommandTypeContainer_CALCommandReply_14Bytes CALCommandTypeContainer = 0x8E
-	CALCommandTypeContainer_CALCommandReply_15Bytes CALCommandTypeContainer = 0x8F
-	CALCommandTypeContainer_CALCommandReply_16Bytes CALCommandTypeContainer = 0x90
-	CALCommandTypeContainer_CALCommandReply_17Bytes CALCommandTypeContainer = 0x91
-	CALCommandTypeContainer_CALCommandReply_18Bytes CALCommandTypeContainer = 0x92
-	CALCommandTypeContainer_CALCommandReply_19Bytes CALCommandTypeContainer = 0x93
-	CALCommandTypeContainer_CALCommandReply_20Bytes CALCommandTypeContainer = 0x94
-	CALCommandTypeContainer_CALCommandReply_21Bytes CALCommandTypeContainer = 0x95
-	CALCommandTypeContainer_CALCommandReply_22Bytes CALCommandTypeContainer = 0x96
-	CALCommandTypeContainer_CALCommandReply_23Bytes CALCommandTypeContainer = 0x97
-	CALCommandTypeContainer_CALCommandReply_24Bytes CALCommandTypeContainer = 0x98
-	CALCommandTypeContainer_CALCommandReply_25Bytes CALCommandTypeContainer = 0x99
-	CALCommandTypeContainer_CALCommandReply_26Bytes CALCommandTypeContainer = 0x9A
-	CALCommandTypeContainer_CALCommandReply_27Bytes CALCommandTypeContainer = 0x9B
-	CALCommandTypeContainer_CALCommandReply_28Bytes CALCommandTypeContainer = 0x9C
-	CALCommandTypeContainer_CALCommandReply_29Bytes CALCommandTypeContainer = 0x9D
-	CALCommandTypeContainer_CALCommandReply_30Bytes CALCommandTypeContainer = 0x9E
-	CALCommandTypeContainer_CALCommandReply_31Bytes CALCommandTypeContainer = 0x9F
-	CALCommandTypeContainer_CALCommandWrite_0Bytes CALCommandTypeContainer = 0xA0
-	CALCommandTypeContainer_CALCommandWrite_1Bytes CALCommandTypeContainer = 0xA1
-	CALCommandTypeContainer_CALCommandWrite_2Bytes CALCommandTypeContainer = 0xA2
-	CALCommandTypeContainer_CALCommandWrite_3Bytes CALCommandTypeContainer = 0xA3
-	CALCommandTypeContainer_CALCommandWrite_4Bytes CALCommandTypeContainer = 0xA4
-	CALCommandTypeContainer_CALCommandWrite_5Bytes CALCommandTypeContainer = 0xA5
-	CALCommandTypeContainer_CALCommandWrite_6Bytes CALCommandTypeContainer = 0xA6
-	CALCommandTypeContainer_CALCommandWrite_7Bytes CALCommandTypeContainer = 0xA7
-	CALCommandTypeContainer_CALCommandWrite_8Bytes CALCommandTypeContainer = 0xA8
-	CALCommandTypeContainer_CALCommandWrite_9Bytes CALCommandTypeContainer = 0xA9
-	CALCommandTypeContainer_CALCommandWrite_10Bytes CALCommandTypeContainer = 0xAA
-	CALCommandTypeContainer_CALCommandWrite_11Bytes CALCommandTypeContainer = 0xAB
-	CALCommandTypeContainer_CALCommandWrite_12Bytes CALCommandTypeContainer = 0xAC
-	CALCommandTypeContainer_CALCommandWrite_13Bytes CALCommandTypeContainer = 0xAD
-	CALCommandTypeContainer_CALCommandWrite_14Bytes CALCommandTypeContainer = 0xAE
-	CALCommandTypeContainer_CALCommandWrite_15Bytes CALCommandTypeContainer = 0xAF
-	CALCommandTypeContainer_CALCommandStatus_0Bytes CALCommandTypeContainer = 0xC0
-	CALCommandTypeContainer_CALCommandStatus_1Bytes CALCommandTypeContainer = 0xC1
-	CALCommandTypeContainer_CALCommandStatus_2Bytes CALCommandTypeContainer = 0xC2
-	CALCommandTypeContainer_CALCommandStatus_3Bytes CALCommandTypeContainer = 0xC3
-	CALCommandTypeContainer_CALCommandStatus_4Bytes CALCommandTypeContainer = 0xC4
-	CALCommandTypeContainer_CALCommandStatus_5Bytes CALCommandTypeContainer = 0xC5
-	CALCommandTypeContainer_CALCommandStatus_6Bytes CALCommandTypeContainer = 0xC6
-	CALCommandTypeContainer_CALCommandStatus_7Bytes CALCommandTypeContainer = 0xC7
-	CALCommandTypeContainer_CALCommandStatus_8Bytes CALCommandTypeContainer = 0xC8
-	CALCommandTypeContainer_CALCommandStatus_9Bytes CALCommandTypeContainer = 0xC9
-	CALCommandTypeContainer_CALCommandStatus_10Bytes CALCommandTypeContainer = 0xCA
-	CALCommandTypeContainer_CALCommandStatus_11Bytes CALCommandTypeContainer = 0xCB
-	CALCommandTypeContainer_CALCommandStatus_12Bytes CALCommandTypeContainer = 0xCC
-	CALCommandTypeContainer_CALCommandStatus_13Bytes CALCommandTypeContainer = 0xCD
-	CALCommandTypeContainer_CALCommandStatus_14Bytes CALCommandTypeContainer = 0xCE
-	CALCommandTypeContainer_CALCommandStatus_15Bytes CALCommandTypeContainer = 0xCF
-	CALCommandTypeContainer_CALCommandStatus_16Bytes CALCommandTypeContainer = 0xD0
-	CALCommandTypeContainer_CALCommandStatus_17Bytes CALCommandTypeContainer = 0xD1
-	CALCommandTypeContainer_CALCommandStatus_18Bytes CALCommandTypeContainer = 0xD2
-	CALCommandTypeContainer_CALCommandStatus_19Bytes CALCommandTypeContainer = 0xD3
-	CALCommandTypeContainer_CALCommandStatus_20Bytes CALCommandTypeContainer = 0xD4
-	CALCommandTypeContainer_CALCommandStatus_21Bytes CALCommandTypeContainer = 0xD5
-	CALCommandTypeContainer_CALCommandStatus_22Bytes CALCommandTypeContainer = 0xD6
-	CALCommandTypeContainer_CALCommandStatus_23Bytes CALCommandTypeContainer = 0xD7
-	CALCommandTypeContainer_CALCommandStatus_24Bytes CALCommandTypeContainer = 0xD8
-	CALCommandTypeContainer_CALCommandStatus_25Bytes CALCommandTypeContainer = 0xD9
-	CALCommandTypeContainer_CALCommandStatus_26Bytes CALCommandTypeContainer = 0xDA
-	CALCommandTypeContainer_CALCommandStatus_27Bytes CALCommandTypeContainer = 0xDB
-	CALCommandTypeContainer_CALCommandStatus_28Bytes CALCommandTypeContainer = 0xDC
-	CALCommandTypeContainer_CALCommandStatus_29Bytes CALCommandTypeContainer = 0xDD
-	CALCommandTypeContainer_CALCommandStatus_30Bytes CALCommandTypeContainer = 0xDE
-	CALCommandTypeContainer_CALCommandStatus_31Bytes CALCommandTypeContainer = 0xDF
-	CALCommandTypeContainer_CALCommandStatusExtended_0Bytes CALCommandTypeContainer = 0xE0
-	CALCommandTypeContainer_CALCommandStatusExtended_1Bytes CALCommandTypeContainer = 0xE1
-	CALCommandTypeContainer_CALCommandStatusExtended_2Bytes CALCommandTypeContainer = 0xE2
-	CALCommandTypeContainer_CALCommandStatusExtended_3Bytes CALCommandTypeContainer = 0xE3
-	CALCommandTypeContainer_CALCommandStatusExtended_4Bytes CALCommandTypeContainer = 0xE4
-	CALCommandTypeContainer_CALCommandStatusExtended_5Bytes CALCommandTypeContainer = 0xE5
-	CALCommandTypeContainer_CALCommandStatusExtended_6Bytes CALCommandTypeContainer = 0xE6
-	CALCommandTypeContainer_CALCommandStatusExtended_7Bytes CALCommandTypeContainer = 0xE7
-	CALCommandTypeContainer_CALCommandStatusExtended_8Bytes CALCommandTypeContainer = 0xE8
-	CALCommandTypeContainer_CALCommandStatusExtended_9Bytes CALCommandTypeContainer = 0xE9
+const (
+	CALCommandTypeContainer_CALCommandReset                  CALCommandTypeContainer = 0x08
+	CALCommandTypeContainer_CALCommandRecall                 CALCommandTypeContainer = 0x1A
+	CALCommandTypeContainer_CALCommandIdentify               CALCommandTypeContainer = 0x21
+	CALCommandTypeContainer_CALCommandGetStatus              CALCommandTypeContainer = 0x2A
+	CALCommandTypeContainer_CALCommandAcknowledge            CALCommandTypeContainer = 0x32
+	CALCommandTypeContainer_CALCommandReply_0Bytes           CALCommandTypeContainer = 0x80
+	CALCommandTypeContainer_CALCommandReply_1Bytes           CALCommandTypeContainer = 0x81
+	CALCommandTypeContainer_CALCommandReply_2Bytes           CALCommandTypeContainer = 0x82
+	CALCommandTypeContainer_CALCommandReply_3Bytes           CALCommandTypeContainer = 0x83
+	CALCommandTypeContainer_CALCommandReply_4Bytes           CALCommandTypeContainer = 0x84
+	CALCommandTypeContainer_CALCommandReply_5Bytes           CALCommandTypeContainer = 0x85
+	CALCommandTypeContainer_CALCommandReply_6Bytes           CALCommandTypeContainer = 0x86
+	CALCommandTypeContainer_CALCommandReply_7Bytes           CALCommandTypeContainer = 0x87
+	CALCommandTypeContainer_CALCommandReply_8Bytes           CALCommandTypeContainer = 0x88
+	CALCommandTypeContainer_CALCommandReply_9Bytes           CALCommandTypeContainer = 0x89
+	CALCommandTypeContainer_CALCommandReply_10Bytes          CALCommandTypeContainer = 0x8A
+	CALCommandTypeContainer_CALCommandReply_11Bytes          CALCommandTypeContainer = 0x8B
+	CALCommandTypeContainer_CALCommandReply_12Bytes          CALCommandTypeContainer = 0x8C
+	CALCommandTypeContainer_CALCommandReply_13Bytes          CALCommandTypeContainer = 0x8D
+	CALCommandTypeContainer_CALCommandReply_14Bytes          CALCommandTypeContainer = 0x8E
+	CALCommandTypeContainer_CALCommandReply_15Bytes          CALCommandTypeContainer = 0x8F
+	CALCommandTypeContainer_CALCommandReply_16Bytes          CALCommandTypeContainer = 0x90
+	CALCommandTypeContainer_CALCommandReply_17Bytes          CALCommandTypeContainer = 0x91
+	CALCommandTypeContainer_CALCommandReply_18Bytes          CALCommandTypeContainer = 0x92
+	CALCommandTypeContainer_CALCommandReply_19Bytes          CALCommandTypeContainer = 0x93
+	CALCommandTypeContainer_CALCommandReply_20Bytes          CALCommandTypeContainer = 0x94
+	CALCommandTypeContainer_CALCommandReply_21Bytes          CALCommandTypeContainer = 0x95
+	CALCommandTypeContainer_CALCommandReply_22Bytes          CALCommandTypeContainer = 0x96
+	CALCommandTypeContainer_CALCommandReply_23Bytes          CALCommandTypeContainer = 0x97
+	CALCommandTypeContainer_CALCommandReply_24Bytes          CALCommandTypeContainer = 0x98
+	CALCommandTypeContainer_CALCommandReply_25Bytes          CALCommandTypeContainer = 0x99
+	CALCommandTypeContainer_CALCommandReply_26Bytes          CALCommandTypeContainer = 0x9A
+	CALCommandTypeContainer_CALCommandReply_27Bytes          CALCommandTypeContainer = 0x9B
+	CALCommandTypeContainer_CALCommandReply_28Bytes          CALCommandTypeContainer = 0x9C
+	CALCommandTypeContainer_CALCommandReply_29Bytes          CALCommandTypeContainer = 0x9D
+	CALCommandTypeContainer_CALCommandReply_30Bytes          CALCommandTypeContainer = 0x9E
+	CALCommandTypeContainer_CALCommandReply_31Bytes          CALCommandTypeContainer = 0x9F
+	CALCommandTypeContainer_CALCommandWrite_0Bytes           CALCommandTypeContainer = 0xA0
+	CALCommandTypeContainer_CALCommandWrite_1Bytes           CALCommandTypeContainer = 0xA1
+	CALCommandTypeContainer_CALCommandWrite_2Bytes           CALCommandTypeContainer = 0xA2
+	CALCommandTypeContainer_CALCommandWrite_3Bytes           CALCommandTypeContainer = 0xA3
+	CALCommandTypeContainer_CALCommandWrite_4Bytes           CALCommandTypeContainer = 0xA4
+	CALCommandTypeContainer_CALCommandWrite_5Bytes           CALCommandTypeContainer = 0xA5
+	CALCommandTypeContainer_CALCommandWrite_6Bytes           CALCommandTypeContainer = 0xA6
+	CALCommandTypeContainer_CALCommandWrite_7Bytes           CALCommandTypeContainer = 0xA7
+	CALCommandTypeContainer_CALCommandWrite_8Bytes           CALCommandTypeContainer = 0xA8
+	CALCommandTypeContainer_CALCommandWrite_9Bytes           CALCommandTypeContainer = 0xA9
+	CALCommandTypeContainer_CALCommandWrite_10Bytes          CALCommandTypeContainer = 0xAA
+	CALCommandTypeContainer_CALCommandWrite_11Bytes          CALCommandTypeContainer = 0xAB
+	CALCommandTypeContainer_CALCommandWrite_12Bytes          CALCommandTypeContainer = 0xAC
+	CALCommandTypeContainer_CALCommandWrite_13Bytes          CALCommandTypeContainer = 0xAD
+	CALCommandTypeContainer_CALCommandWrite_14Bytes          CALCommandTypeContainer = 0xAE
+	CALCommandTypeContainer_CALCommandWrite_15Bytes          CALCommandTypeContainer = 0xAF
+	CALCommandTypeContainer_CALCommandStatus_0Bytes          CALCommandTypeContainer = 0xC0
+	CALCommandTypeContainer_CALCommandStatus_1Bytes          CALCommandTypeContainer = 0xC1
+	CALCommandTypeContainer_CALCommandStatus_2Bytes          CALCommandTypeContainer = 0xC2
+	CALCommandTypeContainer_CALCommandStatus_3Bytes          CALCommandTypeContainer = 0xC3
+	CALCommandTypeContainer_CALCommandStatus_4Bytes          CALCommandTypeContainer = 0xC4
+	CALCommandTypeContainer_CALCommandStatus_5Bytes          CALCommandTypeContainer = 0xC5
+	CALCommandTypeContainer_CALCommandStatus_6Bytes          CALCommandTypeContainer = 0xC6
+	CALCommandTypeContainer_CALCommandStatus_7Bytes          CALCommandTypeContainer = 0xC7
+	CALCommandTypeContainer_CALCommandStatus_8Bytes          CALCommandTypeContainer = 0xC8
+	CALCommandTypeContainer_CALCommandStatus_9Bytes          CALCommandTypeContainer = 0xC9
+	CALCommandTypeContainer_CALCommandStatus_10Bytes         CALCommandTypeContainer = 0xCA
+	CALCommandTypeContainer_CALCommandStatus_11Bytes         CALCommandTypeContainer = 0xCB
+	CALCommandTypeContainer_CALCommandStatus_12Bytes         CALCommandTypeContainer = 0xCC
+	CALCommandTypeContainer_CALCommandStatus_13Bytes         CALCommandTypeContainer = 0xCD
+	CALCommandTypeContainer_CALCommandStatus_14Bytes         CALCommandTypeContainer = 0xCE
+	CALCommandTypeContainer_CALCommandStatus_15Bytes         CALCommandTypeContainer = 0xCF
+	CALCommandTypeContainer_CALCommandStatus_16Bytes         CALCommandTypeContainer = 0xD0
+	CALCommandTypeContainer_CALCommandStatus_17Bytes         CALCommandTypeContainer = 0xD1
+	CALCommandTypeContainer_CALCommandStatus_18Bytes         CALCommandTypeContainer = 0xD2
+	CALCommandTypeContainer_CALCommandStatus_19Bytes         CALCommandTypeContainer = 0xD3
+	CALCommandTypeContainer_CALCommandStatus_20Bytes         CALCommandTypeContainer = 0xD4
+	CALCommandTypeContainer_CALCommandStatus_21Bytes         CALCommandTypeContainer = 0xD5
+	CALCommandTypeContainer_CALCommandStatus_22Bytes         CALCommandTypeContainer = 0xD6
+	CALCommandTypeContainer_CALCommandStatus_23Bytes         CALCommandTypeContainer = 0xD7
+	CALCommandTypeContainer_CALCommandStatus_24Bytes         CALCommandTypeContainer = 0xD8
+	CALCommandTypeContainer_CALCommandStatus_25Bytes         CALCommandTypeContainer = 0xD9
+	CALCommandTypeContainer_CALCommandStatus_26Bytes         CALCommandTypeContainer = 0xDA
+	CALCommandTypeContainer_CALCommandStatus_27Bytes         CALCommandTypeContainer = 0xDB
+	CALCommandTypeContainer_CALCommandStatus_28Bytes         CALCommandTypeContainer = 0xDC
+	CALCommandTypeContainer_CALCommandStatus_29Bytes         CALCommandTypeContainer = 0xDD
+	CALCommandTypeContainer_CALCommandStatus_30Bytes         CALCommandTypeContainer = 0xDE
+	CALCommandTypeContainer_CALCommandStatus_31Bytes         CALCommandTypeContainer = 0xDF
+	CALCommandTypeContainer_CALCommandStatusExtended_0Bytes  CALCommandTypeContainer = 0xE0
+	CALCommandTypeContainer_CALCommandStatusExtended_1Bytes  CALCommandTypeContainer = 0xE1
+	CALCommandTypeContainer_CALCommandStatusExtended_2Bytes  CALCommandTypeContainer = 0xE2
+	CALCommandTypeContainer_CALCommandStatusExtended_3Bytes  CALCommandTypeContainer = 0xE3
+	CALCommandTypeContainer_CALCommandStatusExtended_4Bytes  CALCommandTypeContainer = 0xE4
+	CALCommandTypeContainer_CALCommandStatusExtended_5Bytes  CALCommandTypeContainer = 0xE5
+	CALCommandTypeContainer_CALCommandStatusExtended_6Bytes  CALCommandTypeContainer = 0xE6
+	CALCommandTypeContainer_CALCommandStatusExtended_7Bytes  CALCommandTypeContainer = 0xE7
+	CALCommandTypeContainer_CALCommandStatusExtended_8Bytes  CALCommandTypeContainer = 0xE8
+	CALCommandTypeContainer_CALCommandStatusExtended_9Bytes  CALCommandTypeContainer = 0xE9
 	CALCommandTypeContainer_CALCommandStatusExtended_10Bytes CALCommandTypeContainer = 0xEA
 	CALCommandTypeContainer_CALCommandStatusExtended_11Bytes CALCommandTypeContainer = 0xEB
 	CALCommandTypeContainer_CALCommandStatusExtended_12Bytes CALCommandTypeContainer = 0xEC
@@ -160,7 +160,7 @@ var CALCommandTypeContainerValues []CALCommandTypeContainer
 
 func init() {
 	_ = errors.New
-	CALCommandTypeContainerValues = []CALCommandTypeContainer {
+	CALCommandTypeContainerValues = []CALCommandTypeContainer{
 		CALCommandTypeContainer_CALCommandReset,
 		CALCommandTypeContainer_CALCommandRecall,
 		CALCommandTypeContainer_CALCommandIdentify,
@@ -281,361 +281,478 @@ func init() {
 	}
 }
 
-
 func (e CALCommandTypeContainer) NumBytes() uint8 {
-	switch e  {
-		case 0x08: { /* '0x08' */
-            return 0
+	switch e {
+	case 0x08:
+		{ /* '0x08' */
+			return 0
+		}
+	case 0x1A:
+		{ /* '0x1A' */
+			return 2
+		}
+	case 0x21:
+		{ /* '0x21' */
+			return 1
+		}
+	case 0x2A:
+		{ /* '0x2A' */
+			return 2
+		}
+	case 0x32:
+		{ /* '0x32' */
+			return 2
+		}
+	case 0x80:
+		{ /* '0x80' */
+			return 0
+		}
+	case 0x81:
+		{ /* '0x81' */
+			return 1
+		}
+	case 0x82:
+		{ /* '0x82' */
+			return 2
+		}
+	case 0x83:
+		{ /* '0x83' */
+			return 3
+		}
+	case 0x84:
+		{ /* '0x84' */
+			return 4
+		}
+	case 0x85:
+		{ /* '0x85' */
+			return 5
+		}
+	case 0x86:
+		{ /* '0x86' */
+			return 6
+		}
+	case 0x87:
+		{ /* '0x87' */
+			return 7
+		}
+	case 0x88:
+		{ /* '0x88' */
+			return 8
+		}
+	case 0x89:
+		{ /* '0x89' */
+			return 9
+		}
+	case 0x8A:
+		{ /* '0x8A' */
+			return 10
+		}
+	case 0x8B:
+		{ /* '0x8B' */
+			return 11
+		}
+	case 0x8C:
+		{ /* '0x8C' */
+			return 12
+		}
+	case 0x8D:
+		{ /* '0x8D' */
+			return 13
+		}
+	case 0x8E:
+		{ /* '0x8E' */
+			return 14
+		}
+	case 0x8F:
+		{ /* '0x8F' */
+			return 15
+		}
+	case 0x90:
+		{ /* '0x90' */
+			return 16
+		}
+	case 0x91:
+		{ /* '0x91' */
+			return 17
+		}
+	case 0x92:
+		{ /* '0x92' */
+			return 18
+		}
+	case 0x93:
+		{ /* '0x93' */
+			return 19
+		}
+	case 0x94:
+		{ /* '0x94' */
+			return 20
 		}
-		case 0x1A: { /* '0x1A' */
-            return 2
+	case 0x95:
+		{ /* '0x95' */
+			return 21
 		}
-		case 0x21: { /* '0x21' */
-            return 1
+	case 0x96:
+		{ /* '0x96' */
+			return 22
 		}
-		case 0x2A: { /* '0x2A' */
-            return 2
+	case 0x97:
+		{ /* '0x97' */
+			return 23
 		}
-		case 0x32: { /* '0x32' */
-            return 2
+	case 0x98:
+		{ /* '0x98' */
+			return 24
 		}
-		case 0x80: { /* '0x80' */
-            return 0
+	case 0x99:
+		{ /* '0x99' */
+			return 25
 		}
-		case 0x81: { /* '0x81' */
-            return 1
+	case 0x9A:
+		{ /* '0x9A' */
+			return 26
 		}
-		case 0x82: { /* '0x82' */
-            return 2
+	case 0x9B:
+		{ /* '0x9B' */
+			return 27
 		}
-		case 0x83: { /* '0x83' */
-            return 3
+	case 0x9C:
+		{ /* '0x9C' */
+			return 28
 		}
-		case 0x84: { /* '0x84' */
-            return 4
+	case 0x9D:
+		{ /* '0x9D' */
+			return 29
 		}
-		case 0x85: { /* '0x85' */
-            return 5
+	case 0x9E:
+		{ /* '0x9E' */
+			return 30
 		}
-		case 0x86: { /* '0x86' */
-            return 6
+	case 0x9F:
+		{ /* '0x9F' */
+			return 31
 		}
-		case 0x87: { /* '0x87' */
-            return 7
+	case 0xA0:
+		{ /* '0xA0' */
+			return 0
 		}
-		case 0x88: { /* '0x88' */
-            return 8
+	case 0xA1:
+		{ /* '0xA1' */
+			return 1
 		}
-		case 0x89: { /* '0x89' */
-            return 9
+	case 0xA2:
+		{ /* '0xA2' */
+			return 2
 		}
-		case 0x8A: { /* '0x8A' */
-            return 10
+	case 0xA3:
+		{ /* '0xA3' */
+			return 3
 		}
-		case 0x8B: { /* '0x8B' */
-            return 11
+	case 0xA4:
+		{ /* '0xA4' */
+			return 4
 		}
-		case 0x8C: { /* '0x8C' */
-            return 12
+	case 0xA5:
+		{ /* '0xA5' */
+			return 5
 		}
-		case 0x8D: { /* '0x8D' */
-            return 13
+	case 0xA6:
+		{ /* '0xA6' */
+			return 6
 		}
-		case 0x8E: { /* '0x8E' */
-            return 14
+	case 0xA7:
+		{ /* '0xA7' */
+			return 7
 		}
-		case 0x8F: { /* '0x8F' */
-            return 15
+	case 0xA8:
+		{ /* '0xA8' */
+			return 8
 		}
-		case 0x90: { /* '0x90' */
-            return 16
+	case 0xA9:
+		{ /* '0xA9' */
+			return 9
 		}
-		case 0x91: { /* '0x91' */
-            return 17
+	case 0xAA:
+		{ /* '0xAA' */
+			return 10
 		}
-		case 0x92: { /* '0x92' */
-            return 18
+	case 0xAB:
+		{ /* '0xAB' */
+			return 11
 		}
-		case 0x93: { /* '0x93' */
-            return 19
+	case 0xAC:
+		{ /* '0xAC' */
+			return 12
 		}
-		case 0x94: { /* '0x94' */
-            return 20
+	case 0xAD:
+		{ /* '0xAD' */
+			return 13
 		}
-		case 0x95: { /* '0x95' */
-            return 21
+	case 0xAE:
+		{ /* '0xAE' */
+			return 14
 		}
-		case 0x96: { /* '0x96' */
-            return 22
+	case 0xAF:
+		{ /* '0xAF' */
+			return 15
 		}
-		case 0x97: { /* '0x97' */
-            return 23
+	case 0xC0:
+		{ /* '0xC0' */
+			return 0
 		}
-		case 0x98: { /* '0x98' */
-            return 24
+	case 0xC1:
+		{ /* '0xC1' */
+			return 1
 		}
-		case 0x99: { /* '0x99' */
-            return 25
+	case 0xC2:
+		{ /* '0xC2' */
+			return 2
 		}
-		case 0x9A: { /* '0x9A' */
-            return 26
+	case 0xC3:
+		{ /* '0xC3' */
+			return 3
 		}
-		case 0x9B: { /* '0x9B' */
-            return 27
+	case 0xC4:
+		{ /* '0xC4' */
+			return 4
 		}
-		case 0x9C: { /* '0x9C' */
-            return 28
+	case 0xC5:
+		{ /* '0xC5' */
+			return 5
 		}
-		case 0x9D: { /* '0x9D' */
-            return 29
+	case 0xC6:
+		{ /* '0xC6' */
+			return 6
 		}
-		case 0x9E: { /* '0x9E' */
-            return 30
+	case 0xC7:
+		{ /* '0xC7' */
+			return 7
 		}
-		case 0x9F: { /* '0x9F' */
-            return 31
+	case 0xC8:
+		{ /* '0xC8' */
+			return 8
 		}
-		case 0xA0: { /* '0xA0' */
-            return 0
+	case 0xC9:
+		{ /* '0xC9' */
+			return 9
 		}
-		case 0xA1: { /* '0xA1' */
-            return 1
+	case 0xCA:
+		{ /* '0xCA' */
+			return 10
 		}
-		case 0xA2: { /* '0xA2' */
-            return 2
+	case 0xCB:
+		{ /* '0xCB' */
+			return 11
 		}
-		case 0xA3: { /* '0xA3' */
-            return 3
+	case 0xCC:
+		{ /* '0xCC' */
+			return 12
 		}
-		case 0xA4: { /* '0xA4' */
-            return 4
+	case 0xCD:
+		{ /* '0xCD' */
+			return 13
 		}
-		case 0xA5: { /* '0xA5' */
-            return 5
+	case 0xCE:
+		{ /* '0xCE' */
+			return 14
 		}
-		case 0xA6: { /* '0xA6' */
-            return 6
+	case 0xCF:
+		{ /* '0xCF' */
+			return 15
 		}
-		case 0xA7: { /* '0xA7' */
-            return 7
+	case 0xD0:
+		{ /* '0xD0' */
+			return 16
 		}
-		case 0xA8: { /* '0xA8' */
-            return 8
+	case 0xD1:
+		{ /* '0xD1' */
+			return 17
 		}
-		case 0xA9: { /* '0xA9' */
-            return 9
+	case 0xD2:
+		{ /* '0xD2' */
+			return 18
 		}
-		case 0xAA: { /* '0xAA' */
-            return 10
+	case 0xD3:
+		{ /* '0xD3' */
+			return 19
 		}
-		case 0xAB: { /* '0xAB' */
-            return 11
+	case 0xD4:
+		{ /* '0xD4' */
+			return 20
 		}
-		case 0xAC: { /* '0xAC' */
-            return 12
+	case 0xD5:
+		{ /* '0xD5' */
+			return 21
 		}
-		case 0xAD: { /* '0xAD' */
-            return 13
+	case 0xD6:
+		{ /* '0xD6' */
+			return 22
 		}
-		case 0xAE: { /* '0xAE' */
-            return 14
+	case 0xD7:
+		{ /* '0xD7' */
+			return 23
 		}
-		case 0xAF: { /* '0xAF' */
-            return 15
+	case 0xD8:
+		{ /* '0xD8' */
+			return 24
 		}
-		case 0xC0: { /* '0xC0' */
-            return 0
+	case 0xD9:
+		{ /* '0xD9' */
+			return 25
 		}
-		case 0xC1: { /* '0xC1' */
-            return 1
+	case 0xDA:
+		{ /* '0xDA' */
+			return 26
 		}
-		case 0xC2: { /* '0xC2' */
-            return 2
+	case 0xDB:
+		{ /* '0xDB' */
+			return 27
 		}
-		case 0xC3: { /* '0xC3' */
-            return 3
+	case 0xDC:
+		{ /* '0xDC' */
+			return 28
 		}
-		case 0xC4: { /* '0xC4' */
-            return 4
+	case 0xDD:
+		{ /* '0xDD' */
+			return 29
 		}
-		case 0xC5: { /* '0xC5' */
-            return 5
+	case 0xDE:
+		{ /* '0xDE' */
+			return 30
 		}
-		case 0xC6: { /* '0xC6' */
-            return 6
+	case 0xDF:
+		{ /* '0xDF' */
+			return 31
 		}
-		case 0xC7: { /* '0xC7' */
-            return 7
+	case 0xE0:
+		{ /* '0xE0' */
+			return 0
 		}
-		case 0xC8: { /* '0xC8' */
-            return 8
+	case 0xE1:
+		{ /* '0xE1' */
+			return 1
 		}
-		case 0xC9: { /* '0xC9' */
-            return 9
+	case 0xE2:
+		{ /* '0xE2' */
+			return 2
 		}
-		case 0xCA: { /* '0xCA' */
-            return 10
+	case 0xE3:
+		{ /* '0xE3' */
+			return 3
 		}
-		case 0xCB: { /* '0xCB' */
-            return 11
+	case 0xE4:
+		{ /* '0xE4' */
+			return 4
 		}
-		case 0xCC: { /* '0xCC' */
-            return 12
+	case 0xE5:
+		{ /* '0xE5' */
+			return 5
 		}
-		case 0xCD: { /* '0xCD' */
-            return 13
+	case 0xE6:
+		{ /* '0xE6' */
+			return 6
 		}
-		case 0xCE: { /* '0xCE' */
-            return 14
+	case 0xE7:
+		{ /* '0xE7' */
+			return 7
 		}
-		case 0xCF: { /* '0xCF' */
-            return 15
+	case 0xE8:
+		{ /* '0xE8' */
+			return 8
 		}
-		case 0xD0: { /* '0xD0' */
-            return 16
+	case 0xE9:
+		{ /* '0xE9' */
+			return 9
 		}
-		case 0xD1: { /* '0xD1' */
-            return 17
+	case 0xEA:
+		{ /* '0xEA' */
+			return 10
 		}
-		case 0xD2: { /* '0xD2' */
-            return 18
+	case 0xEB:
+		{ /* '0xEB' */
+			return 11
 		}
-		case 0xD3: { /* '0xD3' */
-            return 19
+	case 0xEC:
+		{ /* '0xEC' */
+			return 12
 		}
-		case 0xD4: { /* '0xD4' */
-            return 20
+	case 0xED:
+		{ /* '0xED' */
+			return 13
 		}
-		case 0xD5: { /* '0xD5' */
-            return 21
+	case 0xEE:
+		{ /* '0xEE' */
+			return 14
 		}
-		case 0xD6: { /* '0xD6' */
-            return 22
+	case 0xEF:
+		{ /* '0xEF' */
+			return 15
 		}
-		case 0xD7: { /* '0xD7' */
-            return 23
+	case 0xF0:
+		{ /* '0xF0' */
+			return 16
 		}
-		case 0xD8: { /* '0xD8' */
-            return 24
+	case 0xF1:
+		{ /* '0xF1' */
+			return 17
 		}
-		case 0xD9: { /* '0xD9' */
-            return 25
+	case 0xF2:
+		{ /* '0xF2' */
+			return 18
 		}
-		case 0xDA: { /* '0xDA' */
-            return 26
+	case 0xF3:
+		{ /* '0xF3' */
+			return 19
 		}
-		case 0xDB: { /* '0xDB' */
-            return 27
+	case 0xF4:
+		{ /* '0xF4' */
+			return 20
 		}
-		case 0xDC: { /* '0xDC' */
-            return 28
+	case 0xF5:
+		{ /* '0xF5' */
+			return 21
 		}
-		case 0xDD: { /* '0xDD' */
-            return 29
+	case 0xF6:
+		{ /* '0xF6' */
+			return 22
 		}
-		case 0xDE: { /* '0xDE' */
-            return 30
+	case 0xF7:
+		{ /* '0xF7' */
+			return 23
 		}
-		case 0xDF: { /* '0xDF' */
-            return 31
+	case 0xF8:
+		{ /* '0xF8' */
+			return 24
 		}
-		case 0xE0: { /* '0xE0' */
-            return 0
+	case 0xF9:
+		{ /* '0xF9' */
+			return 25
 		}
-		case 0xE1: { /* '0xE1' */
-            return 1
+	case 0xFA:
+		{ /* '0xFA' */
+			return 26
 		}
-		case 0xE2: { /* '0xE2' */
-            return 2
+	case 0xFB:
+		{ /* '0xFB' */
+			return 27
 		}
-		case 0xE3: { /* '0xE3' */
-            return 3
+	case 0xFC:
+		{ /* '0xFC' */
+			return 28
 		}
-		case 0xE4: { /* '0xE4' */
-            return 4
+	case 0xFD:
+		{ /* '0xFD' */
+			return 29
 		}
-		case 0xE5: { /* '0xE5' */
-            return 5
+	case 0xFE:
+		{ /* '0xFE' */
+			return 30
 		}
-		case 0xE6: { /* '0xE6' */
-            return 6
+	case 0xFF:
+		{ /* '0xFF' */
+			return 31
 		}
-		case 0xE7: { /* '0xE7' */
-            return 7
-		}
-		case 0xE8: { /* '0xE8' */
-            return 8
-		}
-		case 0xE9: { /* '0xE9' */
-            return 9
-		}
-		case 0xEA: { /* '0xEA' */
-            return 10
-		}
-		case 0xEB: { /* '0xEB' */
-            return 11
-		}
-		case 0xEC: { /* '0xEC' */
-            return 12
-		}
-		case 0xED: { /* '0xED' */
-            return 13
-		}
-		case 0xEE: { /* '0xEE' */
-            return 14
-		}
-		case 0xEF: { /* '0xEF' */
-            return 15
-		}
-		case 0xF0: { /* '0xF0' */
-            return 16
-		}
-		case 0xF1: { /* '0xF1' */
-            return 17
-		}
-		case 0xF2: { /* '0xF2' */
-            return 18
-		}
-		case 0xF3: { /* '0xF3' */
-            return 19
-		}
-		case 0xF4: { /* '0xF4' */
-            return 20
-		}
-		case 0xF5: { /* '0xF5' */
-            return 21
-		}
-		case 0xF6: { /* '0xF6' */
-            return 22
-		}
-		case 0xF7: { /* '0xF7' */
-            return 23
-		}
-		case 0xF8: { /* '0xF8' */
-            return 24
-		}
-		case 0xF9: { /* '0xF9' */
-            return 25
-		}
-		case 0xFA: { /* '0xFA' */
-            return 26
-		}
-		case 0xFB: { /* '0xFB' */
-            return 27
-		}
-		case 0xFC: { /* '0xFC' */
-            return 28
-		}
-		case 0xFD: { /* '0xFD' */
-            return 29
-		}
-		case 0xFE: { /* '0xFE' */
-            return 30
-		}
-		case 0xFF: { /* '0xFF' */
-            return 31
-		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -651,359 +768,477 @@ func CALCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (CALCommandTy
 }
 
 func (e CALCommandTypeContainer) CommandType() CALCommandType {
-	switch e  {
-		case 0x08: { /* '0x08' */
+	switch e {
+	case 0x08:
+		{ /* '0x08' */
 			return CALCommandType_RESET
 		}
-		case 0x1A: { /* '0x1A' */
+	case 0x1A:
+		{ /* '0x1A' */
 			return CALCommandType_RECALL
 		}
-		case 0x21: { /* '0x21' */
+	case 0x21:
+		{ /* '0x21' */
 			return CALCommandType_IDENTIFY
 		}
-		case 0x2A: { /* '0x2A' */
+	case 0x2A:
+		{ /* '0x2A' */
 			return CALCommandType_GET_STATUS
 		}
-		case 0x32: { /* '0x32' */
+	case 0x32:
+		{ /* '0x32' */
 			return CALCommandType_ACKNOWLEDGE
 		}
-		case 0x80: { /* '0x80' */
+	case 0x80:
+		{ /* '0x80' */
 			return CALCommandType_REPLY
 		}
-		case 0x81: { /* '0x81' */
+	case 0x81:
+		{ /* '0x81' */
 			return CALCommandType_REPLY
 		}
-		case 0x82: { /* '0x82' */
+	case 0x82:
+		{ /* '0x82' */
 			return CALCommandType_REPLY
 		}
-		case 0x83: { /* '0x83' */
+	case 0x83:
+		{ /* '0x83' */
 			return CALCommandType_REPLY
 		}
-		case 0x84: { /* '0x84' */
+	case 0x84:
+		{ /* '0x84' */
 			return CALCommandType_REPLY
 		}
-		case 0x85: { /* '0x85' */
+	case 0x85:
+		{ /* '0x85' */
 			return CALCommandType_REPLY
 		}
-		case 0x86: { /* '0x86' */
+	case 0x86:
+		{ /* '0x86' */
 			return CALCommandType_REPLY
 		}
-		case 0x87: { /* '0x87' */
+	case 0x87:
+		{ /* '0x87' */
 			return CALCommandType_REPLY
 		}
-		case 0x88: { /* '0x88' */
+	case 0x88:
+		{ /* '0x88' */
 			return CALCommandType_REPLY
 		}
-		case 0x89: { /* '0x89' */
+	case 0x89:
+		{ /* '0x89' */
 			return CALCommandType_REPLY
 		}
-		case 0x8A: { /* '0x8A' */
+	case 0x8A:
+		{ /* '0x8A' */
 			return CALCommandType_REPLY
 		}
-		case 0x8B: { /* '0x8B' */
+	case 0x8B:
+		{ /* '0x8B' */
 			return CALCommandType_REPLY
 		}
-		case 0x8C: { /* '0x8C' */
+	case 0x8C:
+		{ /* '0x8C' */
 			return CALCommandType_REPLY
 		}
-		case 0x8D: { /* '0x8D' */
+	case 0x8D:
+		{ /* '0x8D' */
 			return CALCommandType_REPLY
 		}
-		case 0x8E: { /* '0x8E' */
+	case 0x8E:
+		{ /* '0x8E' */
 			return CALCommandType_REPLY
 		}
-		case 0x8F: { /* '0x8F' */
+	case 0x8F:
+		{ /* '0x8F' */
 			return CALCommandType_REPLY
 		}
-		case 0x90: { /* '0x90' */
+	case 0x90:
+		{ /* '0x90' */
 			return CALCommandType_REPLY
 		}
-		case 0x91: { /* '0x91' */
+	case 0x91:
+		{ /* '0x91' */
 			return CALCommandType_REPLY
 		}
-		case 0x92: { /* '0x92' */
+	case 0x92:
+		{ /* '0x92' */
 			return CALCommandType_REPLY
 		}
-		case 0x93: { /* '0x93' */
+	case 0x93:
+		{ /* '0x93' */
 			return CALCommandType_REPLY
 		}
-		case 0x94: { /* '0x94' */
+	case 0x94:
+		{ /* '0x94' */
 			return CALCommandType_REPLY
 		}
-		case 0x95: { /* '0x95' */
+	case 0x95:
+		{ /* '0x95' */
 			return CALCommandType_REPLY
 		}
-		case 0x96: { /* '0x96' */
+	case 0x96:
+		{ /* '0x96' */
 			return CALCommandType_REPLY
 		}
-		case 0x97: { /* '0x97' */
+	case 0x97:
+		{ /* '0x97' */
 			return CALCommandType_REPLY
 		}
-		case 0x98: { /* '0x98' */
+	case 0x98:
+		{ /* '0x98' */
 			return CALCommandType_REPLY
 		}
-		case 0x99: { /* '0x99' */
+	case 0x99:
+		{ /* '0x99' */
 			return CALCommandType_REPLY
 		}
-		case 0x9A: { /* '0x9A' */
+	case 0x9A:
+		{ /* '0x9A' */
 			return CALCommandType_REPLY
 		}
-		case 0x9B: { /* '0x9B' */
+	case 0x9B:
+		{ /* '0x9B' */
 			return CALCommandType_REPLY
 		}
-		case 0x9C: { /* '0x9C' */
+	case 0x9C:
+		{ /* '0x9C' */
 			return CALCommandType_REPLY
 		}
-		case 0x9D: { /* '0x9D' */
+	case 0x9D:
+		{ /* '0x9D' */
 			return CALCommandType_REPLY
 		}
-		case 0x9E: { /* '0x9E' */
+	case 0x9E:
+		{ /* '0x9E' */
 			return CALCommandType_REPLY
 		}
-		case 0x9F: { /* '0x9F' */
+	case 0x9F:
+		{ /* '0x9F' */
 			return CALCommandType_REPLY
 		}
-		case 0xA0: { /* '0xA0' */
+	case 0xA0:
+		{ /* '0xA0' */
 			return CALCommandType_WRITE
 		}
-		case 0xA1: { /* '0xA1' */
+	case 0xA1:
+		{ /* '0xA1' */
 			return CALCommandType_WRITE
 		}
-		case 0xA2: { /* '0xA2' */
+	case 0xA2:
+		{ /* '0xA2' */
 			return CALCommandType_WRITE
 		}
-		case 0xA3: { /* '0xA3' */
+	case 0xA3:
+		{ /* '0xA3' */
 			return CALCommandType_WRITE
 		}
-		case 0xA4: { /* '0xA4' */
+	case 0xA4:
+		{ /* '0xA4' */
 			return CALCommandType_WRITE
 		}
-		case 0xA5: { /* '0xA5' */
+	case 0xA5:
+		{ /* '0xA5' */
 			return CALCommandType_WRITE
 		}
-		case 0xA6: { /* '0xA6' */
+	case 0xA6:
+		{ /* '0xA6' */
 			return CALCommandType_WRITE
 		}
-		case 0xA7: { /* '0xA7' */
+	case 0xA7:
+		{ /* '0xA7' */
 			return CALCommandType_WRITE
 		}
-		case 0xA8: { /* '0xA8' */
+	case 0xA8:
+		{ /* '0xA8' */
 			return CALCommandType_WRITE
 		}
-		case 0xA9: { /* '0xA9' */
+	case 0xA9:
+		{ /* '0xA9' */
 			return CALCommandType_WRITE
 		}
-		case 0xAA: { /* '0xAA' */
+	case 0xAA:
+		{ /* '0xAA' */
 			return CALCommandType_WRITE
 		}
-		case 0xAB: { /* '0xAB' */
+	case 0xAB:
+		{ /* '0xAB' */
 			return CALCommandType_WRITE
 		}
-		case 0xAC: { /* '0xAC' */
+	case 0xAC:
+		{ /* '0xAC' */
 			return CALCommandType_WRITE
 		}
-		case 0xAD: { /* '0xAD' */
+	case 0xAD:
+		{ /* '0xAD' */
 			return CALCommandType_WRITE
 		}
-		case 0xAE: { /* '0xAE' */
+	case 0xAE:
+		{ /* '0xAE' */
 			return CALCommandType_WRITE
 		}
-		case 0xAF: { /* '0xAF' */
+	case 0xAF:
+		{ /* '0xAF' */
 			return CALCommandType_WRITE
 		}
-		case 0xC0: { /* '0xC0' */
+	case 0xC0:
+		{ /* '0xC0' */
 			return CALCommandType_STATUS
 		}
-		case 0xC1: { /* '0xC1' */
+	case 0xC1:
+		{ /* '0xC1' */
 			return CALCommandType_STATUS
 		}
-		case 0xC2: { /* '0xC2' */
+	case 0xC2:
+		{ /* '0xC2' */
 			return CALCommandType_STATUS
 		}
-		case 0xC3: { /* '0xC3' */
+	case 0xC3:
+		{ /* '0xC3' */
 			return CALCommandType_STATUS
 		}
-		case 0xC4: { /* '0xC4' */
+	case 0xC4:
+		{ /* '0xC4' */
 			return CALCommandType_STATUS
 		}
-		case 0xC5: { /* '0xC5' */
+	case 0xC5:
+		{ /* '0xC5' */
 			return CALCommandType_STATUS
 		}
-		case 0xC6: { /* '0xC6' */
+	case 0xC6:
+		{ /* '0xC6' */
 			return CALCommandType_STATUS
 		}
-		case 0xC7: { /* '0xC7' */
+	case 0xC7:
+		{ /* '0xC7' */
 			return CALCommandType_STATUS
 		}
-		case 0xC8: { /* '0xC8' */
+	case 0xC8:
+		{ /* '0xC8' */
 			return CALCommandType_STATUS
 		}
-		case 0xC9: { /* '0xC9' */
+	case 0xC9:
+		{ /* '0xC9' */
 			return CALCommandType_STATUS
 		}
-		case 0xCA: { /* '0xCA' */
+	case 0xCA:
+		{ /* '0xCA' */
 			return CALCommandType_STATUS
 		}
-		case 0xCB: { /* '0xCB' */
+	case 0xCB:
+		{ /* '0xCB' */
 			return CALCommandType_STATUS
 		}
-		case 0xCC: { /* '0xCC' */
+	case 0xCC:
+		{ /* '0xCC' */
 			return CALCommandType_STATUS
 		}
-		case 0xCD: { /* '0xCD' */
+	case 0xCD:
+		{ /* '0xCD' */
 			return CALCommandType_STATUS
 		}
-		case 0xCE: { /* '0xCE' */
+	case 0xCE:
+		{ /* '0xCE' */
 			return CALCommandType_STATUS
 		}
-		case 0xCF: { /* '0xCF' */
+	case 0xCF:
+		{ /* '0xCF' */
 			return CALCommandType_STATUS
 		}
-		case 0xD0: { /* '0xD0' */
+	case 0xD0:
+		{ /* '0xD0' */
 			return CALCommandType_STATUS
 		}
-		case 0xD1: { /* '0xD1' */
+	case 0xD1:
+		{ /* '0xD1' */
 			return CALCommandType_STATUS
 		}
-		case 0xD2: { /* '0xD2' */
+	case 0xD2:
+		{ /* '0xD2' */
 			return CALCommandType_STATUS
 		}
-		case 0xD3: { /* '0xD3' */
+	case 0xD3:
+		{ /* '0xD3' */
 			return CALCommandType_STATUS
 		}
-		case 0xD4: { /* '0xD4' */
+	case 0xD4:
+		{ /* '0xD4' */
 			return CALCommandType_STATUS
 		}
-		case 0xD5: { /* '0xD5' */
+	case 0xD5:
+		{ /* '0xD5' */
 			return CALCommandType_STATUS
 		}
-		case 0xD6: { /* '0xD6' */
+	case 0xD6:
+		{ /* '0xD6' */
 			return CALCommandType_STATUS
 		}
-		case 0xD7: { /* '0xD7' */
+	case 0xD7:
+		{ /* '0xD7' */
 			return CALCommandType_STATUS
 		}
-		case 0xD8: { /* '0xD8' */
+	case 0xD8:
+		{ /* '0xD8' */
 			return CALCommandType_STATUS
 		}
-		case 0xD9: { /* '0xD9' */
+	case 0xD9:
+		{ /* '0xD9' */
 			return CALCommandType_STATUS
 		}
-		case 0xDA: { /* '0xDA' */
+	case 0xDA:
+		{ /* '0xDA' */
 			return CALCommandType_STATUS
 		}
-		case 0xDB: { /* '0xDB' */
+	case 0xDB:
+		{ /* '0xDB' */
 			return CALCommandType_STATUS
 		}
-		case 0xDC: { /* '0xDC' */
+	case 0xDC:
+		{ /* '0xDC' */
 			return CALCommandType_STATUS
 		}
-		case 0xDD: { /* '0xDD' */
+	case 0xDD:
+		{ /* '0xDD' */
 			return CALCommandType_STATUS
 		}
-		case 0xDE: { /* '0xDE' */
+	case 0xDE:
+		{ /* '0xDE' */
 			return CALCommandType_STATUS
 		}
-		case 0xDF: { /* '0xDF' */
+	case 0xDF:
+		{ /* '0xDF' */
 			return CALCommandType_STATUS
 		}
-		case 0xE0: { /* '0xE0' */
+	case 0xE0:
+		{ /* '0xE0' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xE1: { /* '0xE1' */
+	case 0xE1:
+		{ /* '0xE1' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xE2: { /* '0xE2' */
+	case 0xE2:
+		{ /* '0xE2' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xE3: { /* '0xE3' */
+	case 0xE3:
+		{ /* '0xE3' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xE4: { /* '0xE4' */
+	case 0xE4:
+		{ /* '0xE4' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xE5: { /* '0xE5' */
+	case 0xE5:
+		{ /* '0xE5' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xE6: { /* '0xE6' */
+	case 0xE6:
+		{ /* '0xE6' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xE7: { /* '0xE7' */
+	case 0xE7:
+		{ /* '0xE7' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xE8: { /* '0xE8' */
+	case 0xE8:
+		{ /* '0xE8' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xE9: { /* '0xE9' */
+	case 0xE9:
+		{ /* '0xE9' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xEA: { /* '0xEA' */
+	case 0xEA:
+		{ /* '0xEA' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xEB: { /* '0xEB' */
+	case 0xEB:
+		{ /* '0xEB' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xEC: { /* '0xEC' */
+	case 0xEC:
+		{ /* '0xEC' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xED: { /* '0xED' */
+	case 0xED:
+		{ /* '0xED' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xEE: { /* '0xEE' */
+	case 0xEE:
+		{ /* '0xEE' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xEF: { /* '0xEF' */
+	case 0xEF:
+		{ /* '0xEF' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xF0: { /* '0xF0' */
+	case 0xF0:
+		{ /* '0xF0' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xF1: { /* '0xF1' */
+	case 0xF1:
+		{ /* '0xF1' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xF2: { /* '0xF2' */
+	case 0xF2:
+		{ /* '0xF2' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xF3: { /* '0xF3' */
+	case 0xF3:
+		{ /* '0xF3' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xF4: { /* '0xF4' */
+	case 0xF4:
+		{ /* '0xF4' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xF5: { /* '0xF5' */
+	case 0xF5:
+		{ /* '0xF5' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xF6: { /* '0xF6' */
+	case 0xF6:
+		{ /* '0xF6' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xF7: { /* '0xF7' */
+	case 0xF7:
+		{ /* '0xF7' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xF8: { /* '0xF8' */
+	case 0xF8:
+		{ /* '0xF8' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xF9: { /* '0xF9' */
+	case 0xF9:
+		{ /* '0xF9' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xFA: { /* '0xFA' */
+	case 0xFA:
+		{ /* '0xFA' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xFB: { /* '0xFB' */
+	case 0xFB:
+		{ /* '0xFB' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xFC: { /* '0xFC' */
+	case 0xFC:
+		{ /* '0xFC' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xFD: { /* '0xFD' */
+	case 0xFD:
+		{ /* '0xFD' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xFE: { /* '0xFE' */
+	case 0xFE:
+		{ /* '0xFE' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		case 0xFF: { /* '0xFF' */
+	case 0xFF:
+		{ /* '0xFF' */
 			return CALCommandType_STATUS_EXTENDED
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -1019,240 +1254,240 @@ func CALCommandTypeContainerFirstEnumForFieldCommandType(value CALCommandType) (
 }
 func CALCommandTypeContainerByValue(value uint8) (enum CALCommandTypeContainer, ok bool) {
 	switch value {
-		case 0x08:
-			return CALCommandTypeContainer_CALCommandReset, true
-		case 0x1A:
-			return CALCommandTypeContainer_CALCommandRecall, true
-		case 0x21:
-			return CALCommandTypeContainer_CALCommandIdentify, true
-		case 0x2A:
-			return CALCommandTypeContainer_CALCommandGetStatus, true
-		case 0x32:
-			return CALCommandTypeContainer_CALCommandAcknowledge, true
-		case 0x80:
-			return CALCommandTypeContainer_CALCommandReply_0Bytes, true
-		case 0x81:
-			return CALCommandTypeContainer_CALCommandReply_1Bytes, true
-		case 0x82:
-			return CALCommandTypeContainer_CALCommandReply_2Bytes, true
-		case 0x83:
-			return CALCommandTypeContainer_CALCommandReply_3Bytes, true
-		case 0x84:
-			return CALCommandTypeContainer_CALCommandReply_4Bytes, true
-		case 0x85:
-			return CALCommandTypeContainer_CALCommandReply_5Bytes, true
-		case 0x86:
-			return CALCommandTypeContainer_CALCommandReply_6Bytes, true
-		case 0x87:
-			return CALCommandTypeContainer_CALCommandReply_7Bytes, true
-		case 0x88:
-			return CALCommandTypeContainer_CALCommandReply_8Bytes, true
-		case 0x89:
-			return CALCommandTypeContainer_CALCommandReply_9Bytes, true
-		case 0x8A:
-			return CALCommandTypeContainer_CALCommandReply_10Bytes, true
-		case 0x8B:
-			return CALCommandTypeContainer_CALCommandReply_11Bytes, true
-		case 0x8C:
-			return CALCommandTypeContainer_CALCommandReply_12Bytes, true
-		case 0x8D:
-			return CALCommandTypeContainer_CALCommandReply_13Bytes, true
-		case 0x8E:
-			return CALCommandTypeContainer_CALCommandReply_14Bytes, true
-		case 0x8F:
-			return CALCommandTypeContainer_CALCommandReply_15Bytes, true
-		case 0x90:
-			return CALCommandTypeContainer_CALCommandReply_16Bytes, true
-		case 0x91:
-			return CALCommandTypeContainer_CALCommandReply_17Bytes, true
-		case 0x92:
-			return CALCommandTypeContainer_CALCommandReply_18Bytes, true
-		case 0x93:
-			return CALCommandTypeContainer_CALCommandReply_19Bytes, true
-		case 0x94:
-			return CALCommandTypeContainer_CALCommandReply_20Bytes, true
-		case 0x95:
-			return CALCommandTypeContainer_CALCommandReply_21Bytes, true
-		case 0x96:
-			return CALCommandTypeContainer_CALCommandReply_22Bytes, true
-		case 0x97:
-			return CALCommandTypeContainer_CALCommandReply_23Bytes, true
-		case 0x98:
-			return CALCommandTypeContainer_CALCommandReply_24Bytes, true
-		case 0x99:
-			return CALCommandTypeContainer_CALCommandReply_25Bytes, true
-		case 0x9A:
-			return CALCommandTypeContainer_CALCommandReply_26Bytes, true
-		case 0x9B:
-			return CALCommandTypeContainer_CALCommandReply_27Bytes, true
-		case 0x9C:
-			return CALCommandTypeContainer_CALCommandReply_28Bytes, true
-		case 0x9D:
-			return CALCommandTypeContainer_CALCommandReply_29Bytes, true
-		case 0x9E:
-			return CALCommandTypeContainer_CALCommandReply_30Bytes, true
-		case 0x9F:
-			return CALCommandTypeContainer_CALCommandReply_31Bytes, true
-		case 0xA0:
-			return CALCommandTypeContainer_CALCommandWrite_0Bytes, true
-		case 0xA1:
-			return CALCommandTypeContainer_CALCommandWrite_1Bytes, true
-		case 0xA2:
-			return CALCommandTypeContainer_CALCommandWrite_2Bytes, true
-		case 0xA3:
-			return CALCommandTypeContainer_CALCommandWrite_3Bytes, true
-		case 0xA4:
-			return CALCommandTypeContainer_CALCommandWrite_4Bytes, true
-		case 0xA5:
-			return CALCommandTypeContainer_CALCommandWrite_5Bytes, true
-		case 0xA6:
-			return CALCommandTypeContainer_CALCommandWrite_6Bytes, true
-		case 0xA7:
-			return CALCommandTypeContainer_CALCommandWrite_7Bytes, true
-		case 0xA8:
-			return CALCommandTypeContainer_CALCommandWrite_8Bytes, true
-		case 0xA9:
-			return CALCommandTypeContainer_CALCommandWrite_9Bytes, true
-		case 0xAA:
-			return CALCommandTypeContainer_CALCommandWrite_10Bytes, true
-		case 0xAB:
-			return CALCommandTypeContainer_CALCommandWrite_11Bytes, true
-		case 0xAC:
-			return CALCommandTypeContainer_CALCommandWrite_12Bytes, true
-		case 0xAD:
-			return CALCommandTypeContainer_CALCommandWrite_13Bytes, true
-		case 0xAE:
-			return CALCommandTypeContainer_CALCommandWrite_14Bytes, true
-		case 0xAF:
-			return CALCommandTypeContainer_CALCommandWrite_15Bytes, true
-		case 0xC0:
-			return CALCommandTypeContainer_CALCommandStatus_0Bytes, true
-		case 0xC1:
-			return CALCommandTypeContainer_CALCommandStatus_1Bytes, true
-		case 0xC2:
-			return CALCommandTypeContainer_CALCommandStatus_2Bytes, true
-		case 0xC3:
-			return CALCommandTypeContainer_CALCommandStatus_3Bytes, true
-		case 0xC4:
-			return CALCommandTypeContainer_CALCommandStatus_4Bytes, true
-		case 0xC5:
-			return CALCommandTypeContainer_CALCommandStatus_5Bytes, true
-		case 0xC6:
-			return CALCommandTypeContainer_CALCommandStatus_6Bytes, true
-		case 0xC7:
-			return CALCommandTypeContainer_CALCommandStatus_7Bytes, true
-		case 0xC8:
-			return CALCommandTypeContainer_CALCommandStatus_8Bytes, true
-		case 0xC9:
-			return CALCommandTypeContainer_CALCommandStatus_9Bytes, true
-		case 0xCA:
-			return CALCommandTypeContainer_CALCommandStatus_10Bytes, true
-		case 0xCB:
-			return CALCommandTypeContainer_CALCommandStatus_11Bytes, true
-		case 0xCC:
-			return CALCommandTypeContainer_CALCommandStatus_12Bytes, true
-		case 0xCD:
-			return CALCommandTypeContainer_CALCommandStatus_13Bytes, true
-		case 0xCE:
-			return CALCommandTypeContainer_CALCommandStatus_14Bytes, true
-		case 0xCF:
-			return CALCommandTypeContainer_CALCommandStatus_15Bytes, true
-		case 0xD0:
-			return CALCommandTypeContainer_CALCommandStatus_16Bytes, true
-		case 0xD1:
-			return CALCommandTypeContainer_CALCommandStatus_17Bytes, true
-		case 0xD2:
-			return CALCommandTypeContainer_CALCommandStatus_18Bytes, true
-		case 0xD3:
-			return CALCommandTypeContainer_CALCommandStatus_19Bytes, true
-		case 0xD4:
-			return CALCommandTypeContainer_CALCommandStatus_20Bytes, true
-		case 0xD5:
-			return CALCommandTypeContainer_CALCommandStatus_21Bytes, true
-		case 0xD6:
-			return CALCommandTypeContainer_CALCommandStatus_22Bytes, true
-		case 0xD7:
-			return CALCommandTypeContainer_CALCommandStatus_23Bytes, true
-		case 0xD8:
-			return CALCommandTypeContainer_CALCommandStatus_24Bytes, true
-		case 0xD9:
-			return CALCommandTypeContainer_CALCommandStatus_25Bytes, true
-		case 0xDA:
-			return CALCommandTypeContainer_CALCommandStatus_26Bytes, true
-		case 0xDB:
-			return CALCommandTypeContainer_CALCommandStatus_27Bytes, true
-		case 0xDC:
-			return CALCommandTypeContainer_CALCommandStatus_28Bytes, true
-		case 0xDD:
-			return CALCommandTypeContainer_CALCommandStatus_29Bytes, true
-		case 0xDE:
-			return CALCommandTypeContainer_CALCommandStatus_30Bytes, true
-		case 0xDF:
-			return CALCommandTypeContainer_CALCommandStatus_31Bytes, true
-		case 0xE0:
-			return CALCommandTypeContainer_CALCommandStatusExtended_0Bytes, true
-		case 0xE1:
-			return CALCommandTypeContainer_CALCommandStatusExtended_1Bytes, true
-		case 0xE2:
-			return CALCommandTypeContainer_CALCommandStatusExtended_2Bytes, true
-		case 0xE3:
-			return CALCommandTypeContainer_CALCommandStatusExtended_3Bytes, true
-		case 0xE4:
-			return CALCommandTypeContainer_CALCommandStatusExtended_4Bytes, true
-		case 0xE5:
-			return CALCommandTypeContainer_CALCommandStatusExtended_5Bytes, true
-		case 0xE6:
-			return CALCommandTypeContainer_CALCommandStatusExtended_6Bytes, true
-		case 0xE7:
-			return CALCommandTypeContainer_CALCommandStatusExtended_7Bytes, true
-		case 0xE8:
-			return CALCommandTypeContainer_CALCommandStatusExtended_8Bytes, true
-		case 0xE9:
-			return CALCommandTypeContainer_CALCommandStatusExtended_9Bytes, true
-		case 0xEA:
-			return CALCommandTypeContainer_CALCommandStatusExtended_10Bytes, true
-		case 0xEB:
-			return CALCommandTypeContainer_CALCommandStatusExtended_11Bytes, true
-		case 0xEC:
-			return CALCommandTypeContainer_CALCommandStatusExtended_12Bytes, true
-		case 0xED:
-			return CALCommandTypeContainer_CALCommandStatusExtended_13Bytes, true
-		case 0xEE:
-			return CALCommandTypeContainer_CALCommandStatusExtended_14Bytes, true
-		case 0xEF:
-			return CALCommandTypeContainer_CALCommandStatusExtended_15Bytes, true
-		case 0xF0:
-			return CALCommandTypeContainer_CALCommandStatusExtended_16Bytes, true
-		case 0xF1:
-			return CALCommandTypeContainer_CALCommandStatusExtended_17Bytes, true
-		case 0xF2:
-			return CALCommandTypeContainer_CALCommandStatusExtended_18Bytes, true
-		case 0xF3:
-			return CALCommandTypeContainer_CALCommandStatusExtended_19Bytes, true
-		case 0xF4:
-			return CALCommandTypeContainer_CALCommandStatusExtended_20Bytes, true
-		case 0xF5:
-			return CALCommandTypeContainer_CALCommandStatusExtended_21Bytes, true
-		case 0xF6:
-			return CALCommandTypeContainer_CALCommandStatusExtended_22Bytes, true
-		case 0xF7:
-			return CALCommandTypeContainer_CALCommandStatusExtended_23Bytes, true
-		case 0xF8:
-			return CALCommandTypeContainer_CALCommandStatusExtended_24Bytes, true
-		case 0xF9:
-			return CALCommandTypeContainer_CALCommandStatusExtended_25Bytes, true
-		case 0xFA:
-			return CALCommandTypeContainer_CALCommandStatusExtended_26Bytes, true
-		case 0xFB:
-			return CALCommandTypeContainer_CALCommandStatusExtended_27Bytes, true
-		case 0xFC:
-			return CALCommandTypeContainer_CALCommandStatusExtended_28Bytes, true
-		case 0xFD:
-			return CALCommandTypeContainer_CALCommandStatusExtended_29Bytes, true
-		case 0xFE:
-			return CALCommandTypeContainer_CALCommandStatusExtended_30Bytes, true
-		case 0xFF:
-			return CALCommandTypeContainer_CALCommandStatusExtended_31Bytes, true
+	case 0x08:
+		return CALCommandTypeContainer_CALCommandReset, true
+	case 0x1A:
+		return CALCommandTypeContainer_CALCommandRecall, true
+	case 0x21:
+		return CALCommandTypeContainer_CALCommandIdentify, true
+	case 0x2A:
+		return CALCommandTypeContainer_CALCommandGetStatus, true
+	case 0x32:
+		return CALCommandTypeContainer_CALCommandAcknowledge, true
+	case 0x80:
+		return CALCommandTypeContainer_CALCommandReply_0Bytes, true
+	case 0x81:
+		return CALCommandTypeContainer_CALCommandReply_1Bytes, true
+	case 0x82:
+		return CALCommandTypeContainer_CALCommandReply_2Bytes, true
+	case 0x83:
+		return CALCommandTypeContainer_CALCommandReply_3Bytes, true
+	case 0x84:
+		return CALCommandTypeContainer_CALCommandReply_4Bytes, true
+	case 0x85:
+		return CALCommandTypeContainer_CALCommandReply_5Bytes, true
+	case 0x86:
+		return CALCommandTypeContainer_CALCommandReply_6Bytes, true
+	case 0x87:
+		return CALCommandTypeContainer_CALCommandReply_7Bytes, true
+	case 0x88:
+		return CALCommandTypeContainer_CALCommandReply_8Bytes, true
+	case 0x89:
+		return CALCommandTypeContainer_CALCommandReply_9Bytes, true
+	case 0x8A:
+		return CALCommandTypeContainer_CALCommandReply_10Bytes, true
+	case 0x8B:
+		return CALCommandTypeContainer_CALCommandReply_11Bytes, true
+	case 0x8C:
+		return CALCommandTypeContainer_CALCommandReply_12Bytes, true
+	case 0x8D:
+		return CALCommandTypeContainer_CALCommandReply_13Bytes, true
+	case 0x8E:
+		return CALCommandTypeContainer_CALCommandReply_14Bytes, true
+	case 0x8F:
+		return CALCommandTypeContainer_CALCommandReply_15Bytes, true
+	case 0x90:
+		return CALCommandTypeContainer_CALCommandReply_16Bytes, true
+	case 0x91:
+		return CALCommandTypeContainer_CALCommandReply_17Bytes, true
+	case 0x92:
+		return CALCommandTypeContainer_CALCommandReply_18Bytes, true
+	case 0x93:
+		return CALCommandTypeContainer_CALCommandReply_19Bytes, true
+	case 0x94:
+		return CALCommandTypeContainer_CALCommandReply_20Bytes, true
+	case 0x95:
+		return CALCommandTypeContainer_CALCommandReply_21Bytes, true
+	case 0x96:
+		return CALCommandTypeContainer_CALCommandReply_22Bytes, true
+	case 0x97:
+		return CALCommandTypeContainer_CALCommandReply_23Bytes, true
+	case 0x98:
+		return CALCommandTypeContainer_CALCommandReply_24Bytes, true
+	case 0x99:
+		return CALCommandTypeContainer_CALCommandReply_25Bytes, true
+	case 0x9A:
+		return CALCommandTypeContainer_CALCommandReply_26Bytes, true
+	case 0x9B:
+		return CALCommandTypeContainer_CALCommandReply_27Bytes, true
+	case 0x9C:
+		return CALCommandTypeContainer_CALCommandReply_28Bytes, true
+	case 0x9D:
+		return CALCommandTypeContainer_CALCommandReply_29Bytes, true
+	case 0x9E:
+		return CALCommandTypeContainer_CALCommandReply_30Bytes, true
+	case 0x9F:
+		return CALCommandTypeContainer_CALCommandReply_31Bytes, true
+	case 0xA0:
+		return CALCommandTypeContainer_CALCommandWrite_0Bytes, true
+	case 0xA1:
+		return CALCommandTypeContainer_CALCommandWrite_1Bytes, true
+	case 0xA2:
+		return CALCommandTypeContainer_CALCommandWrite_2Bytes, true
+	case 0xA3:
+		return CALCommandTypeContainer_CALCommandWrite_3Bytes, true
+	case 0xA4:
+		return CALCommandTypeContainer_CALCommandWrite_4Bytes, true
+	case 0xA5:
+		return CALCommandTypeContainer_CALCommandWrite_5Bytes, true
+	case 0xA6:
+		return CALCommandTypeContainer_CALCommandWrite_6Bytes, true
+	case 0xA7:
+		return CALCommandTypeContainer_CALCommandWrite_7Bytes, true
+	case 0xA8:
+		return CALCommandTypeContainer_CALCommandWrite_8Bytes, true
+	case 0xA9:
+		return CALCommandTypeContainer_CALCommandWrite_9Bytes, true
+	case 0xAA:
+		return CALCommandTypeContainer_CALCommandWrite_10Bytes, true
+	case 0xAB:
+		return CALCommandTypeContainer_CALCommandWrite_11Bytes, true
+	case 0xAC:
+		return CALCommandTypeContainer_CALCommandWrite_12Bytes, true
+	case 0xAD:
+		return CALCommandTypeContainer_CALCommandWrite_13Bytes, true
+	case 0xAE:
+		return CALCommandTypeContainer_CALCommandWrite_14Bytes, true
+	case 0xAF:
+		return CALCommandTypeContainer_CALCommandWrite_15Bytes, true
+	case 0xC0:
+		return CALCommandTypeContainer_CALCommandStatus_0Bytes, true
+	case 0xC1:
+		return CALCommandTypeContainer_CALCommandStatus_1Bytes, true
+	case 0xC2:
+		return CALCommandTypeContainer_CALCommandStatus_2Bytes, true
+	case 0xC3:
+		return CALCommandTypeContainer_CALCommandStatus_3Bytes, true
+	case 0xC4:
+		return CALCommandTypeContainer_CALCommandStatus_4Bytes, true
+	case 0xC5:
+		return CALCommandTypeContainer_CALCommandStatus_5Bytes, true
+	case 0xC6:
+		return CALCommandTypeContainer_CALCommandStatus_6Bytes, true
+	case 0xC7:
+		return CALCommandTypeContainer_CALCommandStatus_7Bytes, true
+	case 0xC8:
+		return CALCommandTypeContainer_CALCommandStatus_8Bytes, true
+	case 0xC9:
+		return CALCommandTypeContainer_CALCommandStatus_9Bytes, true
+	case 0xCA:
+		return CALCommandTypeContainer_CALCommandStatus_10Bytes, true
+	case 0xCB:
+		return CALCommandTypeContainer_CALCommandStatus_11Bytes, true
+	case 0xCC:
+		return CALCommandTypeContainer_CALCommandStatus_12Bytes, true
+	case 0xCD:
+		return CALCommandTypeContainer_CALCommandStatus_13Bytes, true
+	case 0xCE:
+		return CALCommandTypeContainer_CALCommandStatus_14Bytes, true
+	case 0xCF:
+		return CALCommandTypeContainer_CALCommandStatus_15Bytes, true
+	case 0xD0:
+		return CALCommandTypeContainer_CALCommandStatus_16Bytes, true
+	case 0xD1:
+		return CALCommandTypeContainer_CALCommandStatus_17Bytes, true
+	case 0xD2:
+		return CALCommandTypeContainer_CALCommandStatus_18Bytes, true
+	case 0xD3:
+		return CALCommandTypeContainer_CALCommandStatus_19Bytes, true
+	case 0xD4:
+		return CALCommandTypeContainer_CALCommandStatus_20Bytes, true
+	case 0xD5:
+		return CALCommandTypeContainer_CALCommandStatus_21Bytes, true
+	case 0xD6:
+		return CALCommandTypeContainer_CALCommandStatus_22Bytes, true
+	case 0xD7:
+		return CALCommandTypeContainer_CALCommandStatus_23Bytes, true
+	case 0xD8:
+		return CALCommandTypeContainer_CALCommandStatus_24Bytes, true
+	case 0xD9:
+		return CALCommandTypeContainer_CALCommandStatus_25Bytes, true
+	case 0xDA:
+		return CALCommandTypeContainer_CALCommandStatus_26Bytes, true
+	case 0xDB:
+		return CALCommandTypeContainer_CALCommandStatus_27Bytes, true
+	case 0xDC:
+		return CALCommandTypeContainer_CALCommandStatus_28Bytes, true
+	case 0xDD:
+		return CALCommandTypeContainer_CALCommandStatus_29Bytes, true
+	case 0xDE:
+		return CALCommandTypeContainer_CALCommandStatus_30Bytes, true
+	case 0xDF:
+		return CALCommandTypeContainer_CALCommandStatus_31Bytes, true
+	case 0xE0:
+		return CALCommandTypeContainer_CALCommandStatusExtended_0Bytes, true
+	case 0xE1:
+		return CALCommandTypeContainer_CALCommandStatusExtended_1Bytes, true
+	case 0xE2:
+		return CALCommandTypeContainer_CALCommandStatusExtended_2Bytes, true
+	case 0xE3:
+		return CALCommandTypeContainer_CALCommandStatusExtended_3Bytes, true
+	case 0xE4:
+		return CALCommandTypeContainer_CALCommandStatusExtended_4Bytes, true
+	case 0xE5:
+		return CALCommandTypeContainer_CALCommandStatusExtended_5Bytes, true
+	case 0xE6:
+		return CALCommandTypeContainer_CALCommandStatusExtended_6Bytes, true
+	case 0xE7:
+		return CALCommandTypeContainer_CALCommandStatusExtended_7Bytes, true
+	case 0xE8:
+		return CALCommandTypeContainer_CALCommandStatusExtended_8Bytes, true
+	case 0xE9:
+		return CALCommandTypeContainer_CALCommandStatusExtended_9Bytes, true
+	case 0xEA:
+		return CALCommandTypeContainer_CALCommandStatusExtended_10Bytes, true
+	case 0xEB:
+		return CALCommandTypeContainer_CALCommandStatusExtended_11Bytes, true
+	case 0xEC:
+		return CALCommandTypeContainer_CALCommandStatusExtended_12Bytes, true
+	case 0xED:
+		return CALCommandTypeContainer_CALCommandStatusExtended_13Bytes, true
+	case 0xEE:
+		return CALCommandTypeContainer_CALCommandStatusExtended_14Bytes, true
+	case 0xEF:
+		return CALCommandTypeContainer_CALCommandStatusExtended_15Bytes, true
+	case 0xF0:
+		return CALCommandTypeContainer_CALCommandStatusExtended_16Bytes, true
+	case 0xF1:
+		return CALCommandTypeContainer_CALCommandStatusExtended_17Bytes, true
+	case 0xF2:
+		return CALCommandTypeContainer_CALCommandStatusExtended_18Bytes, true
+	case 0xF3:
+		return CALCommandTypeContainer_CALCommandStatusExtended_19Bytes, true
+	case 0xF4:
+		return CALCommandTypeContainer_CALCommandStatusExtended_20Bytes, true
+	case 0xF5:
+		return CALCommandTypeContainer_CALCommandStatusExtended_21Bytes, true
+	case 0xF6:
+		return CALCommandTypeContainer_CALCommandStatusExtended_22Bytes, true
+	case 0xF7:
+		return CALCommandTypeContainer_CALCommandStatusExtended_23Bytes, true
+	case 0xF8:
+		return CALCommandTypeContainer_CALCommandStatusExtended_24Bytes, true
+	case 0xF9:
+		return CALCommandTypeContainer_CALCommandStatusExtended_25Bytes, true
+	case 0xFA:
+		return CALCommandTypeContainer_CALCommandStatusExtended_26Bytes, true
+	case 0xFB:
+		return CALCommandTypeContainer_CALCommandStatusExtended_27Bytes, true
+	case 0xFC:
+		return CALCommandTypeContainer_CALCommandStatusExtended_28Bytes, true
+	case 0xFD:
+		return CALCommandTypeContainer_CALCommandStatusExtended_29Bytes, true
+	case 0xFE:
+		return CALCommandTypeContainer_CALCommandStatusExtended_30Bytes, true
+	case 0xFF:
+		return CALCommandTypeContainer_CALCommandStatusExtended_31Bytes, true
 	}
 	return 0, false
 }
@@ -1497,13 +1732,13 @@ func CALCommandTypeContainerByName(value string) (enum CALCommandTypeContainer, 
 	return 0, false
 }
 
-func CALCommandTypeContainerKnows(value uint8)  bool {
+func CALCommandTypeContainerKnows(value uint8) bool {
 	for _, typeValue := range CALCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastCALCommandTypeContainer(structType interface{}) CALCommandTypeContainer {
@@ -1797,4 +2032,3 @@ func (e CALCommandTypeContainer) PLC4XEnumName() string {
 func (e CALCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
-

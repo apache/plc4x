@@ -34,40 +34,40 @@ type ISecurityResponseCode interface {
 	utils.Serializable
 }
 
-const(
-	SecurityResponseCode_SUCCESS SecurityResponseCode = 0x00
-	SecurityResponseCode_ACCESS_DENIED SecurityResponseCode = 0x01
-	SecurityResponseCode_BAD_DESTINATION_ADDRESS SecurityResponseCode = 0x02
-	SecurityResponseCode_BAD_DESTINATION_DEVICE_ID SecurityResponseCode = 0x03
-	SecurityResponseCode_BAD_SIGNATURE SecurityResponseCode = 0x04
-	SecurityResponseCode_BAD_SOURCE_ADDRESS SecurityResponseCode = 0x05
-	SecurityResponseCode_BAD_TIMESTAMP SecurityResponseCode = 0x06
-	SecurityResponseCode_CANNOT_USE_KEY SecurityResponseCode = 0x07
-	SecurityResponseCode_CANNOT_VERIFY_MESSAGE_ID SecurityResponseCode = 0x08
-	SecurityResponseCode_CORRECT_KEY_REVISION SecurityResponseCode = 0x09
+const (
+	SecurityResponseCode_SUCCESS                        SecurityResponseCode = 0x00
+	SecurityResponseCode_ACCESS_DENIED                  SecurityResponseCode = 0x01
+	SecurityResponseCode_BAD_DESTINATION_ADDRESS        SecurityResponseCode = 0x02
+	SecurityResponseCode_BAD_DESTINATION_DEVICE_ID      SecurityResponseCode = 0x03
+	SecurityResponseCode_BAD_SIGNATURE                  SecurityResponseCode = 0x04
+	SecurityResponseCode_BAD_SOURCE_ADDRESS             SecurityResponseCode = 0x05
+	SecurityResponseCode_BAD_TIMESTAMP                  SecurityResponseCode = 0x06
+	SecurityResponseCode_CANNOT_USE_KEY                 SecurityResponseCode = 0x07
+	SecurityResponseCode_CANNOT_VERIFY_MESSAGE_ID       SecurityResponseCode = 0x08
+	SecurityResponseCode_CORRECT_KEY_REVISION           SecurityResponseCode = 0x09
 	SecurityResponseCode_DESTINATION_DEVICE_ID_REQUIRED SecurityResponseCode = 0x0A
-	SecurityResponseCode_DUPLICATE_MESSAGE SecurityResponseCode = 0x0B
-	SecurityResponseCode_ENCRYPTION_NOT_CONFIGURED SecurityResponseCode = 0x0C
-	SecurityResponseCode_ENCRYPTION_REQUIRED SecurityResponseCode = 0x0D
-	SecurityResponseCode_INCORRECT_KEY SecurityResponseCode = 0x0E
-	SecurityResponseCode_INVALID_KEY_DATA SecurityResponseCode = 0x0F
-	SecurityResponseCode_KEY_UPDATE_IN_PROGRESS SecurityResponseCode = 0x10
-	SecurityResponseCode_MALFORMED_MESSAGE SecurityResponseCode = 0x11
-	SecurityResponseCode_NOT_KEY_SERVER SecurityResponseCode = 0x12
-	SecurityResponseCode_SECURITY_NOT_CONFIGURED SecurityResponseCode = 0x13
-	SecurityResponseCode_SOURCE_SECURITY_REQUIRED SecurityResponseCode = 0x14
-	SecurityResponseCode_TOO_MANY_KEYS SecurityResponseCode = 0x15
-	SecurityResponseCode_UNKNOWN_AUTHENTICATION_TYPE SecurityResponseCode = 0x16
-	SecurityResponseCode_UNKNOWN_KEY SecurityResponseCode = 0x17
-	SecurityResponseCode_UNKNOWN_KEY_REVISION SecurityResponseCode = 0x18
-	SecurityResponseCode_UNKNOWN_SOURCE_MESSAGE SecurityResponseCode = 0x19
+	SecurityResponseCode_DUPLICATE_MESSAGE              SecurityResponseCode = 0x0B
+	SecurityResponseCode_ENCRYPTION_NOT_CONFIGURED      SecurityResponseCode = 0x0C
+	SecurityResponseCode_ENCRYPTION_REQUIRED            SecurityResponseCode = 0x0D
+	SecurityResponseCode_INCORRECT_KEY                  SecurityResponseCode = 0x0E
+	SecurityResponseCode_INVALID_KEY_DATA               SecurityResponseCode = 0x0F
+	SecurityResponseCode_KEY_UPDATE_IN_PROGRESS         SecurityResponseCode = 0x10
+	SecurityResponseCode_MALFORMED_MESSAGE              SecurityResponseCode = 0x11
+	SecurityResponseCode_NOT_KEY_SERVER                 SecurityResponseCode = 0x12
+	SecurityResponseCode_SECURITY_NOT_CONFIGURED        SecurityResponseCode = 0x13
+	SecurityResponseCode_SOURCE_SECURITY_REQUIRED       SecurityResponseCode = 0x14
+	SecurityResponseCode_TOO_MANY_KEYS                  SecurityResponseCode = 0x15
+	SecurityResponseCode_UNKNOWN_AUTHENTICATION_TYPE    SecurityResponseCode = 0x16
+	SecurityResponseCode_UNKNOWN_KEY                    SecurityResponseCode = 0x17
+	SecurityResponseCode_UNKNOWN_KEY_REVISION           SecurityResponseCode = 0x18
+	SecurityResponseCode_UNKNOWN_SOURCE_MESSAGE         SecurityResponseCode = 0x19
 )
 
 var SecurityResponseCodeValues []SecurityResponseCode
 
 func init() {
 	_ = errors.New
-	SecurityResponseCodeValues = []SecurityResponseCode {
+	SecurityResponseCodeValues = []SecurityResponseCode{
 		SecurityResponseCode_SUCCESS,
 		SecurityResponseCode_ACCESS_DENIED,
 		SecurityResponseCode_BAD_DESTINATION_ADDRESS,
@@ -99,58 +99,58 @@ func init() {
 
 func SecurityResponseCodeByValue(value uint8) (enum SecurityResponseCode, ok bool) {
 	switch value {
-		case 0x00:
-			return SecurityResponseCode_SUCCESS, true
-		case 0x01:
-			return SecurityResponseCode_ACCESS_DENIED, true
-		case 0x02:
-			return SecurityResponseCode_BAD_DESTINATION_ADDRESS, true
-		case 0x03:
-			return SecurityResponseCode_BAD_DESTINATION_DEVICE_ID, true
-		case 0x04:
-			return SecurityResponseCode_BAD_SIGNATURE, true
-		case 0x05:
-			return SecurityResponseCode_BAD_SOURCE_ADDRESS, true
-		case 0x06:
-			return SecurityResponseCode_BAD_TIMESTAMP, true
-		case 0x07:
-			return SecurityResponseCode_CANNOT_USE_KEY, true
-		case 0x08:
-			return SecurityResponseCode_CANNOT_VERIFY_MESSAGE_ID, true
-		case 0x09:
-			return SecurityResponseCode_CORRECT_KEY_REVISION, true
-		case 0x0A:
-			return SecurityResponseCode_DESTINATION_DEVICE_ID_REQUIRED, true
-		case 0x0B:
-			return SecurityResponseCode_DUPLICATE_MESSAGE, true
-		case 0x0C:
-			return SecurityResponseCode_ENCRYPTION_NOT_CONFIGURED, true
-		case 0x0D:
-			return SecurityResponseCode_ENCRYPTION_REQUIRED, true
-		case 0x0E:
-			return SecurityResponseCode_INCORRECT_KEY, true
-		case 0x0F:
-			return SecurityResponseCode_INVALID_KEY_DATA, true
-		case 0x10:
-			return SecurityResponseCode_KEY_UPDATE_IN_PROGRESS, true
-		case 0x11:
-			return SecurityResponseCode_MALFORMED_MESSAGE, true
-		case 0x12:
-			return SecurityResponseCode_NOT_KEY_SERVER, true
-		case 0x13:
-			return SecurityResponseCode_SECURITY_NOT_CONFIGURED, true
-		case 0x14:
-			return SecurityResponseCode_SOURCE_SECURITY_REQUIRED, true
-		case 0x15:
-			return SecurityResponseCode_TOO_MANY_KEYS, true
-		case 0x16:
-			return SecurityResponseCode_UNKNOWN_AUTHENTICATION_TYPE, true
-		case 0x17:
-			return SecurityResponseCode_UNKNOWN_KEY, true
-		case 0x18:
-			return SecurityResponseCode_UNKNOWN_KEY_REVISION, true
-		case 0x19:
-			return SecurityResponseCode_UNKNOWN_SOURCE_MESSAGE, true
+	case 0x00:
+		return SecurityResponseCode_SUCCESS, true
+	case 0x01:
+		return SecurityResponseCode_ACCESS_DENIED, true
+	case 0x02:
+		return SecurityResponseCode_BAD_DESTINATION_ADDRESS, true
+	case 0x03:
+		return SecurityResponseCode_BAD_DESTINATION_DEVICE_ID, true
+	case 0x04:
+		return SecurityResponseCode_BAD_SIGNATURE, true
+	case 0x05:
+		return SecurityResponseCode_BAD_SOURCE_ADDRESS, true
+	case 0x06:
+		return SecurityResponseCode_BAD_TIMESTAMP, true
+	case 0x07:
+		return SecurityResponseCode_CANNOT_USE_KEY, true
+	case 0x08:
+		return SecurityResponseCode_CANNOT_VERIFY_MESSAGE_ID, true
+	case 0x09:
+		return SecurityResponseCode_CORRECT_KEY_REVISION, true
+	case 0x0A:
+		return SecurityResponseCode_DESTINATION_DEVICE_ID_REQUIRED, true
+	case 0x0B:
+		return SecurityResponseCode_DUPLICATE_MESSAGE, true
+	case 0x0C:
+		return SecurityResponseCode_ENCRYPTION_NOT_CONFIGURED, true
+	case 0x0D:
+		return SecurityResponseCode_ENCRYPTION_REQUIRED, true
+	case 0x0E:
+		return SecurityResponseCode_INCORRECT_KEY, true
+	case 0x0F:
+		return SecurityResponseCode_INVALID_KEY_DATA, true
+	case 0x10:
+		return SecurityResponseCode_KEY_UPDATE_IN_PROGRESS, true
+	case 0x11:
+		return SecurityResponseCode_MALFORMED_MESSAGE, true
+	case 0x12:
+		return SecurityResponseCode_NOT_KEY_SERVER, true
+	case 0x13:
+		return SecurityResponseCode_SECURITY_NOT_CONFIGURED, true
+	case 0x14:
+		return SecurityResponseCode_SOURCE_SECURITY_REQUIRED, true
+	case 0x15:
+		return SecurityResponseCode_TOO_MANY_KEYS, true
+	case 0x16:
+		return SecurityResponseCode_UNKNOWN_AUTHENTICATION_TYPE, true
+	case 0x17:
+		return SecurityResponseCode_UNKNOWN_KEY, true
+	case 0x18:
+		return SecurityResponseCode_UNKNOWN_KEY_REVISION, true
+	case 0x19:
+		return SecurityResponseCode_UNKNOWN_SOURCE_MESSAGE, true
 	}
 	return 0, false
 }
@@ -213,13 +213,13 @@ func SecurityResponseCodeByName(value string) (enum SecurityResponseCode, ok boo
 	return 0, false
 }
 
-func SecurityResponseCodeKnows(value uint8)  bool {
+func SecurityResponseCodeKnows(value uint8) bool {
 	for _, typeValue := range SecurityResponseCodeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastSecurityResponseCode(structType interface{}) SecurityResponseCode {
@@ -331,4 +331,3 @@ func (e SecurityResponseCode) PLC4XEnumName() string {
 func (e SecurityResponseCode) String() string {
 	return e.PLC4XEnumName()
 }
-

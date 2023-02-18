@@ -34,35 +34,35 @@ type IBACnetEventType interface {
 	utils.Serializable
 }
 
-const(
-	BACnetEventType_CHANGE_OF_BITSTRING BACnetEventType = 0
-	BACnetEventType_CHANGE_OF_STATE BACnetEventType = 1
-	BACnetEventType_CHANGE_OF_VALUE BACnetEventType = 2
-	BACnetEventType_COMMAND_FAILURE BACnetEventType = 3
-	BACnetEventType_FLOATING_LIMIT BACnetEventType = 4
-	BACnetEventType_OUT_OF_RANGE BACnetEventType = 5
-	BACnetEventType_CHANGE_OF_LIFE_SAFETY BACnetEventType = 8
-	BACnetEventType_EXTENDED BACnetEventType = 9
-	BACnetEventType_BUFFER_READY BACnetEventType = 10
-	BACnetEventType_UNSIGNED_RANGE BACnetEventType = 11
-	BACnetEventType_ACCESS_EVENT BACnetEventType = 13
-	BACnetEventType_DOUBLE_OUT_OF_RANGE BACnetEventType = 14
-	BACnetEventType_SIGNED_OUT_OF_RANGE BACnetEventType = 15
-	BACnetEventType_UNSIGNED_OUT_OF_RANGE BACnetEventType = 16
+const (
+	BACnetEventType_CHANGE_OF_BITSTRING       BACnetEventType = 0
+	BACnetEventType_CHANGE_OF_STATE           BACnetEventType = 1
+	BACnetEventType_CHANGE_OF_VALUE           BACnetEventType = 2
+	BACnetEventType_COMMAND_FAILURE           BACnetEventType = 3
+	BACnetEventType_FLOATING_LIMIT            BACnetEventType = 4
+	BACnetEventType_OUT_OF_RANGE              BACnetEventType = 5
+	BACnetEventType_CHANGE_OF_LIFE_SAFETY     BACnetEventType = 8
+	BACnetEventType_EXTENDED                  BACnetEventType = 9
+	BACnetEventType_BUFFER_READY              BACnetEventType = 10
+	BACnetEventType_UNSIGNED_RANGE            BACnetEventType = 11
+	BACnetEventType_ACCESS_EVENT              BACnetEventType = 13
+	BACnetEventType_DOUBLE_OUT_OF_RANGE       BACnetEventType = 14
+	BACnetEventType_SIGNED_OUT_OF_RANGE       BACnetEventType = 15
+	BACnetEventType_UNSIGNED_OUT_OF_RANGE     BACnetEventType = 16
 	BACnetEventType_CHANGE_OF_CHARACTERSTRING BACnetEventType = 17
-	BACnetEventType_CHANGE_OF_STATUS_FLAGS BACnetEventType = 18
-	BACnetEventType_CHANGE_OF_RELIABILITY BACnetEventType = 19
-	BACnetEventType_NONE BACnetEventType = 20
-	BACnetEventType_CHANGE_OF_DISCRETE_VALUE BACnetEventType = 21
-	BACnetEventType_CHANGE_OF_TIMER BACnetEventType = 22
-	BACnetEventType_VENDOR_PROPRIETARY_VALUE BACnetEventType = 0xFFFF
+	BACnetEventType_CHANGE_OF_STATUS_FLAGS    BACnetEventType = 18
+	BACnetEventType_CHANGE_OF_RELIABILITY     BACnetEventType = 19
+	BACnetEventType_NONE                      BACnetEventType = 20
+	BACnetEventType_CHANGE_OF_DISCRETE_VALUE  BACnetEventType = 21
+	BACnetEventType_CHANGE_OF_TIMER           BACnetEventType = 22
+	BACnetEventType_VENDOR_PROPRIETARY_VALUE  BACnetEventType = 0xFFFF
 )
 
 var BACnetEventTypeValues []BACnetEventType
 
 func init() {
 	_ = errors.New
-	BACnetEventTypeValues = []BACnetEventType {
+	BACnetEventTypeValues = []BACnetEventType{
 		BACnetEventType_CHANGE_OF_BITSTRING,
 		BACnetEventType_CHANGE_OF_STATE,
 		BACnetEventType_CHANGE_OF_VALUE,
@@ -89,48 +89,48 @@ func init() {
 
 func BACnetEventTypeByValue(value uint16) (enum BACnetEventType, ok bool) {
 	switch value {
-		case 0:
-			return BACnetEventType_CHANGE_OF_BITSTRING, true
-		case 0xFFFF:
-			return BACnetEventType_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetEventType_CHANGE_OF_STATE, true
-		case 10:
-			return BACnetEventType_BUFFER_READY, true
-		case 11:
-			return BACnetEventType_UNSIGNED_RANGE, true
-		case 13:
-			return BACnetEventType_ACCESS_EVENT, true
-		case 14:
-			return BACnetEventType_DOUBLE_OUT_OF_RANGE, true
-		case 15:
-			return BACnetEventType_SIGNED_OUT_OF_RANGE, true
-		case 16:
-			return BACnetEventType_UNSIGNED_OUT_OF_RANGE, true
-		case 17:
-			return BACnetEventType_CHANGE_OF_CHARACTERSTRING, true
-		case 18:
-			return BACnetEventType_CHANGE_OF_STATUS_FLAGS, true
-		case 19:
-			return BACnetEventType_CHANGE_OF_RELIABILITY, true
-		case 2:
-			return BACnetEventType_CHANGE_OF_VALUE, true
-		case 20:
-			return BACnetEventType_NONE, true
-		case 21:
-			return BACnetEventType_CHANGE_OF_DISCRETE_VALUE, true
-		case 22:
-			return BACnetEventType_CHANGE_OF_TIMER, true
-		case 3:
-			return BACnetEventType_COMMAND_FAILURE, true
-		case 4:
-			return BACnetEventType_FLOATING_LIMIT, true
-		case 5:
-			return BACnetEventType_OUT_OF_RANGE, true
-		case 8:
-			return BACnetEventType_CHANGE_OF_LIFE_SAFETY, true
-		case 9:
-			return BACnetEventType_EXTENDED, true
+	case 0:
+		return BACnetEventType_CHANGE_OF_BITSTRING, true
+	case 0xFFFF:
+		return BACnetEventType_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetEventType_CHANGE_OF_STATE, true
+	case 10:
+		return BACnetEventType_BUFFER_READY, true
+	case 11:
+		return BACnetEventType_UNSIGNED_RANGE, true
+	case 13:
+		return BACnetEventType_ACCESS_EVENT, true
+	case 14:
+		return BACnetEventType_DOUBLE_OUT_OF_RANGE, true
+	case 15:
+		return BACnetEventType_SIGNED_OUT_OF_RANGE, true
+	case 16:
+		return BACnetEventType_UNSIGNED_OUT_OF_RANGE, true
+	case 17:
+		return BACnetEventType_CHANGE_OF_CHARACTERSTRING, true
+	case 18:
+		return BACnetEventType_CHANGE_OF_STATUS_FLAGS, true
+	case 19:
+		return BACnetEventType_CHANGE_OF_RELIABILITY, true
+	case 2:
+		return BACnetEventType_CHANGE_OF_VALUE, true
+	case 20:
+		return BACnetEventType_NONE, true
+	case 21:
+		return BACnetEventType_CHANGE_OF_DISCRETE_VALUE, true
+	case 22:
+		return BACnetEventType_CHANGE_OF_TIMER, true
+	case 3:
+		return BACnetEventType_COMMAND_FAILURE, true
+	case 4:
+		return BACnetEventType_FLOATING_LIMIT, true
+	case 5:
+		return BACnetEventType_OUT_OF_RANGE, true
+	case 8:
+		return BACnetEventType_CHANGE_OF_LIFE_SAFETY, true
+	case 9:
+		return BACnetEventType_EXTENDED, true
 	}
 	return 0, false
 }
@@ -183,13 +183,13 @@ func BACnetEventTypeByName(value string) (enum BACnetEventType, ok bool) {
 	return 0, false
 }
 
-func BACnetEventTypeKnows(value uint16)  bool {
+func BACnetEventTypeKnows(value uint16) bool {
 	for _, typeValue := range BACnetEventTypeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetEventType(structType interface{}) BACnetEventType {
@@ -291,4 +291,3 @@ func (e BACnetEventType) PLC4XEnumName() string {
 func (e BACnetEventType) String() string {
 	return e.PLC4XEnumName()
 }
-

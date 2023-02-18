@@ -34,20 +34,20 @@ type IBACnetCharacterEncoding interface {
 	utils.Serializable
 }
 
-const(
-	BACnetCharacterEncoding_ISO_10646 BACnetCharacterEncoding = 0x0
+const (
+	BACnetCharacterEncoding_ISO_10646          BACnetCharacterEncoding = 0x0
 	BACnetCharacterEncoding_IBM_Microsoft_DBCS BACnetCharacterEncoding = 0x1
-	BACnetCharacterEncoding_JIS_X_0208 BACnetCharacterEncoding = 0x2
-	BACnetCharacterEncoding_ISO_10646_4 BACnetCharacterEncoding = 0x3
-	BACnetCharacterEncoding_ISO_10646_2 BACnetCharacterEncoding = 0x4
-	BACnetCharacterEncoding_ISO_8859_1 BACnetCharacterEncoding = 0x5
+	BACnetCharacterEncoding_JIS_X_0208         BACnetCharacterEncoding = 0x2
+	BACnetCharacterEncoding_ISO_10646_4        BACnetCharacterEncoding = 0x3
+	BACnetCharacterEncoding_ISO_10646_2        BACnetCharacterEncoding = 0x4
+	BACnetCharacterEncoding_ISO_8859_1         BACnetCharacterEncoding = 0x5
 )
 
 var BACnetCharacterEncodingValues []BACnetCharacterEncoding
 
 func init() {
 	_ = errors.New
-	BACnetCharacterEncodingValues = []BACnetCharacterEncoding {
+	BACnetCharacterEncodingValues = []BACnetCharacterEncoding{
 		BACnetCharacterEncoding_ISO_10646,
 		BACnetCharacterEncoding_IBM_Microsoft_DBCS,
 		BACnetCharacterEncoding_JIS_X_0208,
@@ -59,18 +59,18 @@ func init() {
 
 func BACnetCharacterEncodingByValue(value byte) (enum BACnetCharacterEncoding, ok bool) {
 	switch value {
-		case 0x0:
-			return BACnetCharacterEncoding_ISO_10646, true
-		case 0x1:
-			return BACnetCharacterEncoding_IBM_Microsoft_DBCS, true
-		case 0x2:
-			return BACnetCharacterEncoding_JIS_X_0208, true
-		case 0x3:
-			return BACnetCharacterEncoding_ISO_10646_4, true
-		case 0x4:
-			return BACnetCharacterEncoding_ISO_10646_2, true
-		case 0x5:
-			return BACnetCharacterEncoding_ISO_8859_1, true
+	case 0x0:
+		return BACnetCharacterEncoding_ISO_10646, true
+	case 0x1:
+		return BACnetCharacterEncoding_IBM_Microsoft_DBCS, true
+	case 0x2:
+		return BACnetCharacterEncoding_JIS_X_0208, true
+	case 0x3:
+		return BACnetCharacterEncoding_ISO_10646_4, true
+	case 0x4:
+		return BACnetCharacterEncoding_ISO_10646_2, true
+	case 0x5:
+		return BACnetCharacterEncoding_ISO_8859_1, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func BACnetCharacterEncodingByName(value string) (enum BACnetCharacterEncoding, 
 	return 0, false
 }
 
-func BACnetCharacterEncodingKnows(value byte)  bool {
+func BACnetCharacterEncodingKnows(value byte) bool {
 	for _, typeValue := range BACnetCharacterEncodingValues {
 		if byte(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetCharacterEncoding(structType interface{}) BACnetCharacterEncoding {
@@ -171,4 +171,3 @@ func (e BACnetCharacterEncoding) PLC4XEnumName() string {
 func (e BACnetCharacterEncoding) String() string {
 	return e.PLC4XEnumName()
 }
-

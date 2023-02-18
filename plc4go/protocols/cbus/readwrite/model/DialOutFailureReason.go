@@ -34,20 +34,20 @@ type IDialOutFailureReason interface {
 	utils.Serializable
 }
 
-const(
-	DialOutFailureReason_NO_DIAL_TONE DialOutFailureReason = 0x01
-	DialOutFailureReason_NO_ANSWER DialOutFailureReason = 0x02
-	DialOutFailureReason_NO_VALID_ACKNOWLEDGEMENT_OF_PROMPTS DialOutFailureReason = 0x03
+const (
+	DialOutFailureReason_NO_DIAL_TONE                           DialOutFailureReason = 0x01
+	DialOutFailureReason_NO_ANSWER                              DialOutFailureReason = 0x02
+	DialOutFailureReason_NO_VALID_ACKNOWLEDGEMENT_OF_PROMPTS    DialOutFailureReason = 0x03
 	DialOutFailureReason_NUMBER_WAS_UNOBTAINABLE_DOES_NOT_EXIST DialOutFailureReason = 0x04
-	DialOutFailureReason_NUMBER_WAS_BUSY DialOutFailureReason = 0x05
-	DialOutFailureReason_INTERNAL_FAILURE DialOutFailureReason = 0x06
+	DialOutFailureReason_NUMBER_WAS_BUSY                        DialOutFailureReason = 0x05
+	DialOutFailureReason_INTERNAL_FAILURE                       DialOutFailureReason = 0x06
 )
 
 var DialOutFailureReasonValues []DialOutFailureReason
 
 func init() {
 	_ = errors.New
-	DialOutFailureReasonValues = []DialOutFailureReason {
+	DialOutFailureReasonValues = []DialOutFailureReason{
 		DialOutFailureReason_NO_DIAL_TONE,
 		DialOutFailureReason_NO_ANSWER,
 		DialOutFailureReason_NO_VALID_ACKNOWLEDGEMENT_OF_PROMPTS,
@@ -59,18 +59,18 @@ func init() {
 
 func DialOutFailureReasonByValue(value uint8) (enum DialOutFailureReason, ok bool) {
 	switch value {
-		case 0x01:
-			return DialOutFailureReason_NO_DIAL_TONE, true
-		case 0x02:
-			return DialOutFailureReason_NO_ANSWER, true
-		case 0x03:
-			return DialOutFailureReason_NO_VALID_ACKNOWLEDGEMENT_OF_PROMPTS, true
-		case 0x04:
-			return DialOutFailureReason_NUMBER_WAS_UNOBTAINABLE_DOES_NOT_EXIST, true
-		case 0x05:
-			return DialOutFailureReason_NUMBER_WAS_BUSY, true
-		case 0x06:
-			return DialOutFailureReason_INTERNAL_FAILURE, true
+	case 0x01:
+		return DialOutFailureReason_NO_DIAL_TONE, true
+	case 0x02:
+		return DialOutFailureReason_NO_ANSWER, true
+	case 0x03:
+		return DialOutFailureReason_NO_VALID_ACKNOWLEDGEMENT_OF_PROMPTS, true
+	case 0x04:
+		return DialOutFailureReason_NUMBER_WAS_UNOBTAINABLE_DOES_NOT_EXIST, true
+	case 0x05:
+		return DialOutFailureReason_NUMBER_WAS_BUSY, true
+	case 0x06:
+		return DialOutFailureReason_INTERNAL_FAILURE, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func DialOutFailureReasonByName(value string) (enum DialOutFailureReason, ok boo
 	return 0, false
 }
 
-func DialOutFailureReasonKnows(value uint8)  bool {
+func DialOutFailureReasonKnows(value uint8) bool {
 	for _, typeValue := range DialOutFailureReasonValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastDialOutFailureReason(structType interface{}) DialOutFailureReason {
@@ -171,4 +171,3 @@ func (e DialOutFailureReason) PLC4XEnumName() string {
 func (e DialOutFailureReason) String() string {
 	return e.PLC4XEnumName()
 }
-

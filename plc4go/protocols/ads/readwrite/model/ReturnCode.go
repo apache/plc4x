@@ -34,136 +34,136 @@ type IReturnCode interface {
 	utils.Serializable
 }
 
-const(
-	ReturnCode_OK ReturnCode = 0x00
-	ReturnCode_INTERNAL_ERROR ReturnCode = 0x01
-	ReturnCode_NO_REALTIME ReturnCode = 0x02
-	ReturnCode_SAVE_ERROR ReturnCode = 0x03
-	ReturnCode_MAILBOX_FULL ReturnCode = 0x04
-	ReturnCode_WRONG_HMSG ReturnCode = 0x05
-	ReturnCode_TARGET_PORT_NOT_FOUND ReturnCode = 0x06
-	ReturnCode_TARGET_HOST_NOT_FOUND ReturnCode = 0x07
-	ReturnCode_UNKNOWN_COMMAND_ID ReturnCode = 0x08
-	ReturnCode_UNKNOWN_TASK_ID ReturnCode = 0x09
-	ReturnCode_NO_IO ReturnCode = 0x0A
-	ReturnCode_UNKNOWN_ADS_COMMAND ReturnCode = 0x0B
-	ReturnCode_WIN32_ERROR ReturnCode = 0x0C
-	ReturnCode_PORT_NOT_CONNECTED ReturnCode = 0x0D
-	ReturnCode_INVALID_ADS_LENGTH ReturnCode = 0x0E
-	ReturnCode_INVALID_AMS_NET_ID ReturnCode = 0x0F
-	ReturnCode_LOW_INSTALLATION_LEVEL ReturnCode = 0x10
-	ReturnCode_NO_DEBUGGING_AVAILABLE ReturnCode = 0x11
-	ReturnCode_PORT_DEACTIVATED ReturnCode = 0x12
-	ReturnCode_PORT_ALREADY_CONNECTED ReturnCode = 0x13
-	ReturnCode_ADS_SYNC_WIN32_ERROR ReturnCode = 0x14
-	ReturnCode_ADS_SYNC_TIMEOUT ReturnCode = 0x15
-	ReturnCode_ADS_SYNC_AMS_ERROR ReturnCode = 0x16
-	ReturnCode_NO_INDEX_MAP_FOR_ADS_AVAILABLE ReturnCode = 0x17
-	ReturnCode_INVALID_ADS_PORT ReturnCode = 0x18
-	ReturnCode_NO_MEMORY ReturnCode = 0x19
-	ReturnCode_TCP_SENDING_ERROR ReturnCode = 0x1A
-	ReturnCode_HOST_NOT_REACHABLE ReturnCode = 0x1B
-	ReturnCode_INVALID_AMS_FRAGMENT ReturnCode = 0x1C
-	ReturnCode_ROUTERERR_NOLOCKEDMEMORY ReturnCode = 0x500
-	ReturnCode_ROUTERERR_RESIZEMEMORY ReturnCode = 0x501
-	ReturnCode_ROUTERERR_MAILBOXFULL ReturnCode = 0x502
-	ReturnCode_ROUTERERR_DEBUGBOXFULL ReturnCode = 0x503
-	ReturnCode_ROUTERERR_UNKNOWNPORTTYPE ReturnCode = 0x504
-	ReturnCode_ROUTERERR_NOTINITIALIZED ReturnCode = 0x505
-	ReturnCode_ROUTERERR_PORTALREADYINUSE ReturnCode = 0x506
-	ReturnCode_ROUTERERR_NOTREGISTERED ReturnCode = 0x507
-	ReturnCode_ROUTERERR_NOMOREQUEUES ReturnCode = 0x508
-	ReturnCode_ROUTERERR_INVALIDPORT ReturnCode = 0x509
-	ReturnCode_ROUTERERR_NOTACTIVATED ReturnCode = 0x50A
-	ReturnCode_ADSERR_DEVICE_ERROR ReturnCode = 0x700
-	ReturnCode_ADSERR_DEVICE_SRVNOTSUPP ReturnCode = 0x701
-	ReturnCode_ADSERR_DEVICE_INVALIDGRP ReturnCode = 0x702
-	ReturnCode_ADSERR_DEVICE_INVALIDOFFSET ReturnCode = 0x703
-	ReturnCode_ADSERR_DEVICE_INVALIDACCESS ReturnCode = 0x704
-	ReturnCode_ADSERR_DEVICE_INVALIDSIZE ReturnCode = 0x705
-	ReturnCode_ADSERR_DEVICE_INVALIDDATA ReturnCode = 0x706
-	ReturnCode_ADSERR_DEVICE_NOTREADY ReturnCode = 0x707
-	ReturnCode_ADSERR_DEVICE_BUSY ReturnCode = 0x708
-	ReturnCode_ADSERR_DEVICE_INVALIDCONTEXT ReturnCode = 0x709
-	ReturnCode_ADSERR_DEVICE_NOMEMORY ReturnCode = 0x70A
-	ReturnCode_ADSERR_DEVICE_INVALIDPARM ReturnCode = 0x70B
-	ReturnCode_ADSERR_DEVICE_NOTFOUND ReturnCode = 0x70C
-	ReturnCode_ADSERR_DEVICE_SYNTAX ReturnCode = 0x70D
-	ReturnCode_ADSERR_DEVICE_INCOMPATIBLE ReturnCode = 0x70E
-	ReturnCode_ADSERR_DEVICE_EXISTS ReturnCode = 0x70F
-	ReturnCode_ADSERR_DEVICE_SYMBOLNOTFOUND ReturnCode = 0x710
+const (
+	ReturnCode_OK                                 ReturnCode = 0x00
+	ReturnCode_INTERNAL_ERROR                     ReturnCode = 0x01
+	ReturnCode_NO_REALTIME                        ReturnCode = 0x02
+	ReturnCode_SAVE_ERROR                         ReturnCode = 0x03
+	ReturnCode_MAILBOX_FULL                       ReturnCode = 0x04
+	ReturnCode_WRONG_HMSG                         ReturnCode = 0x05
+	ReturnCode_TARGET_PORT_NOT_FOUND              ReturnCode = 0x06
+	ReturnCode_TARGET_HOST_NOT_FOUND              ReturnCode = 0x07
+	ReturnCode_UNKNOWN_COMMAND_ID                 ReturnCode = 0x08
+	ReturnCode_UNKNOWN_TASK_ID                    ReturnCode = 0x09
+	ReturnCode_NO_IO                              ReturnCode = 0x0A
+	ReturnCode_UNKNOWN_ADS_COMMAND                ReturnCode = 0x0B
+	ReturnCode_WIN32_ERROR                        ReturnCode = 0x0C
+	ReturnCode_PORT_NOT_CONNECTED                 ReturnCode = 0x0D
+	ReturnCode_INVALID_ADS_LENGTH                 ReturnCode = 0x0E
+	ReturnCode_INVALID_AMS_NET_ID                 ReturnCode = 0x0F
+	ReturnCode_LOW_INSTALLATION_LEVEL             ReturnCode = 0x10
+	ReturnCode_NO_DEBUGGING_AVAILABLE             ReturnCode = 0x11
+	ReturnCode_PORT_DEACTIVATED                   ReturnCode = 0x12
+	ReturnCode_PORT_ALREADY_CONNECTED             ReturnCode = 0x13
+	ReturnCode_ADS_SYNC_WIN32_ERROR               ReturnCode = 0x14
+	ReturnCode_ADS_SYNC_TIMEOUT                   ReturnCode = 0x15
+	ReturnCode_ADS_SYNC_AMS_ERROR                 ReturnCode = 0x16
+	ReturnCode_NO_INDEX_MAP_FOR_ADS_AVAILABLE     ReturnCode = 0x17
+	ReturnCode_INVALID_ADS_PORT                   ReturnCode = 0x18
+	ReturnCode_NO_MEMORY                          ReturnCode = 0x19
+	ReturnCode_TCP_SENDING_ERROR                  ReturnCode = 0x1A
+	ReturnCode_HOST_NOT_REACHABLE                 ReturnCode = 0x1B
+	ReturnCode_INVALID_AMS_FRAGMENT               ReturnCode = 0x1C
+	ReturnCode_ROUTERERR_NOLOCKEDMEMORY           ReturnCode = 0x500
+	ReturnCode_ROUTERERR_RESIZEMEMORY             ReturnCode = 0x501
+	ReturnCode_ROUTERERR_MAILBOXFULL              ReturnCode = 0x502
+	ReturnCode_ROUTERERR_DEBUGBOXFULL             ReturnCode = 0x503
+	ReturnCode_ROUTERERR_UNKNOWNPORTTYPE          ReturnCode = 0x504
+	ReturnCode_ROUTERERR_NOTINITIALIZED           ReturnCode = 0x505
+	ReturnCode_ROUTERERR_PORTALREADYINUSE         ReturnCode = 0x506
+	ReturnCode_ROUTERERR_NOTREGISTERED            ReturnCode = 0x507
+	ReturnCode_ROUTERERR_NOMOREQUEUES             ReturnCode = 0x508
+	ReturnCode_ROUTERERR_INVALIDPORT              ReturnCode = 0x509
+	ReturnCode_ROUTERERR_NOTACTIVATED             ReturnCode = 0x50A
+	ReturnCode_ADSERR_DEVICE_ERROR                ReturnCode = 0x700
+	ReturnCode_ADSERR_DEVICE_SRVNOTSUPP           ReturnCode = 0x701
+	ReturnCode_ADSERR_DEVICE_INVALIDGRP           ReturnCode = 0x702
+	ReturnCode_ADSERR_DEVICE_INVALIDOFFSET        ReturnCode = 0x703
+	ReturnCode_ADSERR_DEVICE_INVALIDACCESS        ReturnCode = 0x704
+	ReturnCode_ADSERR_DEVICE_INVALIDSIZE          ReturnCode = 0x705
+	ReturnCode_ADSERR_DEVICE_INVALIDDATA          ReturnCode = 0x706
+	ReturnCode_ADSERR_DEVICE_NOTREADY             ReturnCode = 0x707
+	ReturnCode_ADSERR_DEVICE_BUSY                 ReturnCode = 0x708
+	ReturnCode_ADSERR_DEVICE_INVALIDCONTEXT       ReturnCode = 0x709
+	ReturnCode_ADSERR_DEVICE_NOMEMORY             ReturnCode = 0x70A
+	ReturnCode_ADSERR_DEVICE_INVALIDPARM          ReturnCode = 0x70B
+	ReturnCode_ADSERR_DEVICE_NOTFOUND             ReturnCode = 0x70C
+	ReturnCode_ADSERR_DEVICE_SYNTAX               ReturnCode = 0x70D
+	ReturnCode_ADSERR_DEVICE_INCOMPATIBLE         ReturnCode = 0x70E
+	ReturnCode_ADSERR_DEVICE_EXISTS               ReturnCode = 0x70F
+	ReturnCode_ADSERR_DEVICE_SYMBOLNOTFOUND       ReturnCode = 0x710
 	ReturnCode_ADSERR_DEVICE_SYMBOLVERSIONINVALID ReturnCode = 0x711
-	ReturnCode_ADSERR_DEVICE_INVALIDSTATE ReturnCode = 0x712
-	ReturnCode_ADSERR_DEVICE_TRANSMODENOTSUPP ReturnCode = 0x713
-	ReturnCode_ADSERR_DEVICE_NOTIFYHNDINVALID ReturnCode = 0x714
-	ReturnCode_ADSERR_DEVICE_CLIENTUNKNOWN ReturnCode = 0x715
-	ReturnCode_ADSERR_DEVICE_NOMOREHDLS ReturnCode = 0x716
-	ReturnCode_ADSERR_DEVICE_INVALIDWATCHSIZE ReturnCode = 0x717
-	ReturnCode_ADSERR_DEVICE_NOTINIT ReturnCode = 0x718
-	ReturnCode_ADSERR_DEVICE_TIMEOUT ReturnCode = 0x719
-	ReturnCode_ADSERR_DEVICE_NOINTERFACE ReturnCode = 0x71A
-	ReturnCode_ADSERR_DEVICE_INVALIDINTERFACE ReturnCode = 0x71B
-	ReturnCode_ADSERR_DEVICE_INVALIDCLSID ReturnCode = 0x71C
-	ReturnCode_ADSERR_DEVICE_INVALIDOBJID ReturnCode = 0x71D
-	ReturnCode_ADSERR_DEVICE_PENDING ReturnCode = 0x71E
-	ReturnCode_ADSERR_DEVICE_ABORTED ReturnCode = 0x71F
-	ReturnCode_ADSERR_DEVICE_WARNING ReturnCode = 0x720
-	ReturnCode_ADSERR_DEVICE_INVALIDARRAYIDX ReturnCode = 0x721
-	ReturnCode_ADSERR_DEVICE_SYMBOLNOTACTIVE ReturnCode = 0x722
-	ReturnCode_ADSERR_DEVICE_ACCESSDENIED ReturnCode = 0x723
-	ReturnCode_ADSERR_DEVICE_LICENSENOTFOUND ReturnCode = 0x724
-	ReturnCode_ADSERR_DEVICE_LICENSEEXPIRED ReturnCode = 0x725
-	ReturnCode_ADSERR_DEVICE_LICENSEEXCEEDED ReturnCode = 0x726
-	ReturnCode_ADSERR_DEVICE_LICENSEINVALID ReturnCode = 0x727
-	ReturnCode_ADSERR_DEVICE_LICENSESYSTEMID ReturnCode = 0x728
-	ReturnCode_ADSERR_DEVICE_LICENSENOTIMELIMIT ReturnCode = 0x729
-	ReturnCode_ADSERR_DEVICE_LICENSEFUTUREISSUE ReturnCode = 0x72A
-	ReturnCode_ADSERR_DEVICE_LICENSETIMETOLONG ReturnCode = 0x72B
-	ReturnCode_ADSERR_DEVICE_EXCEPTION ReturnCode = 0x72c
-	ReturnCode_ADSERR_DEVICE_LICENSEDUPLICATED ReturnCode = 0x72D
-	ReturnCode_ADSERR_DEVICE_SIGNATUREINVALID ReturnCode = 0x72E
-	ReturnCode_ADSERR_DEVICE_CERTIFICATEINVALID ReturnCode = 0x72F
-	ReturnCode_ADSERR_CLIENT_ERROR ReturnCode = 0x740
-	ReturnCode_ADSERR_CLIENT_INVALIDPARM ReturnCode = 0x741
-	ReturnCode_ADSERR_CLIENT_LISTEMPTY ReturnCode = 0x742
-	ReturnCode_ADSERR_CLIENT_VARUSED ReturnCode = 0x743
-	ReturnCode_ADSERR_CLIENT_DUPLINVOKEID ReturnCode = 0x744
-	ReturnCode_ADSERR_CLIENT_SYNCTIMEOUT ReturnCode = 0x745
-	ReturnCode_ADSERR_CLIENT_W32ERROR ReturnCode = 0x746
-	ReturnCode_ADSERR_CLIENT_TIMEOUTINVALID ReturnCode = 0x747
-	ReturnCode_ADSERR_CLIENT_PORTNOTOPEN ReturnCode = 0x748
-	ReturnCode_ADSERR_CLIENT_NOAMSADDR ReturnCode = 0x750
-	ReturnCode_ADSERR_CLIENT_SYNCINTERNAL ReturnCode = 0x751
-	ReturnCode_ADSERR_CLIENT_ADDHASH ReturnCode = 0x752
-	ReturnCode_ADSERR_CLIENT_REMOVEHASH ReturnCode = 0x753
-	ReturnCode_ADSERR_CLIENT_NOMORESYM ReturnCode = 0x754
-	ReturnCode_ADSERR_CLIENT_SYNCRESINVALID ReturnCode = 0x755
-	ReturnCode_RTERR_INTERNAL ReturnCode = 0x1000
-	ReturnCode_RTERR_BADTIMERPERIODS ReturnCode = 0x1001
-	ReturnCode_RTERR_INVALIDTASKPTR ReturnCode = 0x1002
-	ReturnCode_RTERR_INVALIDSTACKPTR ReturnCode = 0x1003
-	ReturnCode_RTERR_PRIOEXISTS ReturnCode = 0x1004
-	ReturnCode_RTERR_NOMORETCB ReturnCode = 0x1005
-	ReturnCode_RTERR_NOMORESEMAS ReturnCode = 0x1006
-	ReturnCode_RTERR_NOMOREQUEUES ReturnCode = 0x1007
-	ReturnCode_RTERR_EXTIRQALREADYDEF ReturnCode = 0x100D
-	ReturnCode_RTERR_EXTIRQNOTDEF ReturnCode = 0x100E
-	ReturnCode_RTERR_EXTIRQINSTALLFAILED ReturnCode = 0x100F
-	ReturnCode_RTERR_IRQLNOTLESSOREQUAL ReturnCode = 0x1010
-	ReturnCode_RTERR_VMXNOTSUPPORTED ReturnCode = 0x1017
-	ReturnCode_RTERR_VMXDISABLED ReturnCode = 0x1018
-	ReturnCode_RTERR_VMXCONTROLSMISSING ReturnCode = 0x1019
-	ReturnCode_RTERR_VMXENABLEFAILS ReturnCode = 0x101A
-	ReturnCode_WSAETIMEDOUT ReturnCode = 0x274C
-	ReturnCode_WSAECONNREFUSED ReturnCode = 0x274D
-	ReturnCode_WSAEHOSTUNREACH ReturnCode = 0x2751
+	ReturnCode_ADSERR_DEVICE_INVALIDSTATE         ReturnCode = 0x712
+	ReturnCode_ADSERR_DEVICE_TRANSMODENOTSUPP     ReturnCode = 0x713
+	ReturnCode_ADSERR_DEVICE_NOTIFYHNDINVALID     ReturnCode = 0x714
+	ReturnCode_ADSERR_DEVICE_CLIENTUNKNOWN        ReturnCode = 0x715
+	ReturnCode_ADSERR_DEVICE_NOMOREHDLS           ReturnCode = 0x716
+	ReturnCode_ADSERR_DEVICE_INVALIDWATCHSIZE     ReturnCode = 0x717
+	ReturnCode_ADSERR_DEVICE_NOTINIT              ReturnCode = 0x718
+	ReturnCode_ADSERR_DEVICE_TIMEOUT              ReturnCode = 0x719
+	ReturnCode_ADSERR_DEVICE_NOINTERFACE          ReturnCode = 0x71A
+	ReturnCode_ADSERR_DEVICE_INVALIDINTERFACE     ReturnCode = 0x71B
+	ReturnCode_ADSERR_DEVICE_INVALIDCLSID         ReturnCode = 0x71C
+	ReturnCode_ADSERR_DEVICE_INVALIDOBJID         ReturnCode = 0x71D
+	ReturnCode_ADSERR_DEVICE_PENDING              ReturnCode = 0x71E
+	ReturnCode_ADSERR_DEVICE_ABORTED              ReturnCode = 0x71F
+	ReturnCode_ADSERR_DEVICE_WARNING              ReturnCode = 0x720
+	ReturnCode_ADSERR_DEVICE_INVALIDARRAYIDX      ReturnCode = 0x721
+	ReturnCode_ADSERR_DEVICE_SYMBOLNOTACTIVE      ReturnCode = 0x722
+	ReturnCode_ADSERR_DEVICE_ACCESSDENIED         ReturnCode = 0x723
+	ReturnCode_ADSERR_DEVICE_LICENSENOTFOUND      ReturnCode = 0x724
+	ReturnCode_ADSERR_DEVICE_LICENSEEXPIRED       ReturnCode = 0x725
+	ReturnCode_ADSERR_DEVICE_LICENSEEXCEEDED      ReturnCode = 0x726
+	ReturnCode_ADSERR_DEVICE_LICENSEINVALID       ReturnCode = 0x727
+	ReturnCode_ADSERR_DEVICE_LICENSESYSTEMID      ReturnCode = 0x728
+	ReturnCode_ADSERR_DEVICE_LICENSENOTIMELIMIT   ReturnCode = 0x729
+	ReturnCode_ADSERR_DEVICE_LICENSEFUTUREISSUE   ReturnCode = 0x72A
+	ReturnCode_ADSERR_DEVICE_LICENSETIMETOLONG    ReturnCode = 0x72B
+	ReturnCode_ADSERR_DEVICE_EXCEPTION            ReturnCode = 0x72c
+	ReturnCode_ADSERR_DEVICE_LICENSEDUPLICATED    ReturnCode = 0x72D
+	ReturnCode_ADSERR_DEVICE_SIGNATUREINVALID     ReturnCode = 0x72E
+	ReturnCode_ADSERR_DEVICE_CERTIFICATEINVALID   ReturnCode = 0x72F
+	ReturnCode_ADSERR_CLIENT_ERROR                ReturnCode = 0x740
+	ReturnCode_ADSERR_CLIENT_INVALIDPARM          ReturnCode = 0x741
+	ReturnCode_ADSERR_CLIENT_LISTEMPTY            ReturnCode = 0x742
+	ReturnCode_ADSERR_CLIENT_VARUSED              ReturnCode = 0x743
+	ReturnCode_ADSERR_CLIENT_DUPLINVOKEID         ReturnCode = 0x744
+	ReturnCode_ADSERR_CLIENT_SYNCTIMEOUT          ReturnCode = 0x745
+	ReturnCode_ADSERR_CLIENT_W32ERROR             ReturnCode = 0x746
+	ReturnCode_ADSERR_CLIENT_TIMEOUTINVALID       ReturnCode = 0x747
+	ReturnCode_ADSERR_CLIENT_PORTNOTOPEN          ReturnCode = 0x748
+	ReturnCode_ADSERR_CLIENT_NOAMSADDR            ReturnCode = 0x750
+	ReturnCode_ADSERR_CLIENT_SYNCINTERNAL         ReturnCode = 0x751
+	ReturnCode_ADSERR_CLIENT_ADDHASH              ReturnCode = 0x752
+	ReturnCode_ADSERR_CLIENT_REMOVEHASH           ReturnCode = 0x753
+	ReturnCode_ADSERR_CLIENT_NOMORESYM            ReturnCode = 0x754
+	ReturnCode_ADSERR_CLIENT_SYNCRESINVALID       ReturnCode = 0x755
+	ReturnCode_RTERR_INTERNAL                     ReturnCode = 0x1000
+	ReturnCode_RTERR_BADTIMERPERIODS              ReturnCode = 0x1001
+	ReturnCode_RTERR_INVALIDTASKPTR               ReturnCode = 0x1002
+	ReturnCode_RTERR_INVALIDSTACKPTR              ReturnCode = 0x1003
+	ReturnCode_RTERR_PRIOEXISTS                   ReturnCode = 0x1004
+	ReturnCode_RTERR_NOMORETCB                    ReturnCode = 0x1005
+	ReturnCode_RTERR_NOMORESEMAS                  ReturnCode = 0x1006
+	ReturnCode_RTERR_NOMOREQUEUES                 ReturnCode = 0x1007
+	ReturnCode_RTERR_EXTIRQALREADYDEF             ReturnCode = 0x100D
+	ReturnCode_RTERR_EXTIRQNOTDEF                 ReturnCode = 0x100E
+	ReturnCode_RTERR_EXTIRQINSTALLFAILED          ReturnCode = 0x100F
+	ReturnCode_RTERR_IRQLNOTLESSOREQUAL           ReturnCode = 0x1010
+	ReturnCode_RTERR_VMXNOTSUPPORTED              ReturnCode = 0x1017
+	ReturnCode_RTERR_VMXDISABLED                  ReturnCode = 0x1018
+	ReturnCode_RTERR_VMXCONTROLSMISSING           ReturnCode = 0x1019
+	ReturnCode_RTERR_VMXENABLEFAILS               ReturnCode = 0x101A
+	ReturnCode_WSAETIMEDOUT                       ReturnCode = 0x274C
+	ReturnCode_WSAECONNREFUSED                    ReturnCode = 0x274D
+	ReturnCode_WSAEHOSTUNREACH                    ReturnCode = 0x2751
 )
 
 var ReturnCodeValues []ReturnCode
 
 func init() {
 	_ = errors.New
-	ReturnCodeValues = []ReturnCode {
+	ReturnCodeValues = []ReturnCode{
 		ReturnCode_OK,
 		ReturnCode_INTERNAL_ERROR,
 		ReturnCode_NO_REALTIME,
@@ -291,250 +291,250 @@ func init() {
 
 func ReturnCodeByValue(value uint32) (enum ReturnCode, ok bool) {
 	switch value {
-		case 0x00:
-			return ReturnCode_OK, true
-		case 0x01:
-			return ReturnCode_INTERNAL_ERROR, true
-		case 0x02:
-			return ReturnCode_NO_REALTIME, true
-		case 0x03:
-			return ReturnCode_SAVE_ERROR, true
-		case 0x04:
-			return ReturnCode_MAILBOX_FULL, true
-		case 0x05:
-			return ReturnCode_WRONG_HMSG, true
-		case 0x06:
-			return ReturnCode_TARGET_PORT_NOT_FOUND, true
-		case 0x07:
-			return ReturnCode_TARGET_HOST_NOT_FOUND, true
-		case 0x08:
-			return ReturnCode_UNKNOWN_COMMAND_ID, true
-		case 0x09:
-			return ReturnCode_UNKNOWN_TASK_ID, true
-		case 0x0A:
-			return ReturnCode_NO_IO, true
-		case 0x0B:
-			return ReturnCode_UNKNOWN_ADS_COMMAND, true
-		case 0x0C:
-			return ReturnCode_WIN32_ERROR, true
-		case 0x0D:
-			return ReturnCode_PORT_NOT_CONNECTED, true
-		case 0x0E:
-			return ReturnCode_INVALID_ADS_LENGTH, true
-		case 0x0F:
-			return ReturnCode_INVALID_AMS_NET_ID, true
-		case 0x10:
-			return ReturnCode_LOW_INSTALLATION_LEVEL, true
-		case 0x1000:
-			return ReturnCode_RTERR_INTERNAL, true
-		case 0x1001:
-			return ReturnCode_RTERR_BADTIMERPERIODS, true
-		case 0x1002:
-			return ReturnCode_RTERR_INVALIDTASKPTR, true
-		case 0x1003:
-			return ReturnCode_RTERR_INVALIDSTACKPTR, true
-		case 0x1004:
-			return ReturnCode_RTERR_PRIOEXISTS, true
-		case 0x1005:
-			return ReturnCode_RTERR_NOMORETCB, true
-		case 0x1006:
-			return ReturnCode_RTERR_NOMORESEMAS, true
-		case 0x1007:
-			return ReturnCode_RTERR_NOMOREQUEUES, true
-		case 0x100D:
-			return ReturnCode_RTERR_EXTIRQALREADYDEF, true
-		case 0x100E:
-			return ReturnCode_RTERR_EXTIRQNOTDEF, true
-		case 0x100F:
-			return ReturnCode_RTERR_EXTIRQINSTALLFAILED, true
-		case 0x1010:
-			return ReturnCode_RTERR_IRQLNOTLESSOREQUAL, true
-		case 0x1017:
-			return ReturnCode_RTERR_VMXNOTSUPPORTED, true
-		case 0x1018:
-			return ReturnCode_RTERR_VMXDISABLED, true
-		case 0x1019:
-			return ReturnCode_RTERR_VMXCONTROLSMISSING, true
-		case 0x101A:
-			return ReturnCode_RTERR_VMXENABLEFAILS, true
-		case 0x11:
-			return ReturnCode_NO_DEBUGGING_AVAILABLE, true
-		case 0x12:
-			return ReturnCode_PORT_DEACTIVATED, true
-		case 0x13:
-			return ReturnCode_PORT_ALREADY_CONNECTED, true
-		case 0x14:
-			return ReturnCode_ADS_SYNC_WIN32_ERROR, true
-		case 0x15:
-			return ReturnCode_ADS_SYNC_TIMEOUT, true
-		case 0x16:
-			return ReturnCode_ADS_SYNC_AMS_ERROR, true
-		case 0x17:
-			return ReturnCode_NO_INDEX_MAP_FOR_ADS_AVAILABLE, true
-		case 0x18:
-			return ReturnCode_INVALID_ADS_PORT, true
-		case 0x19:
-			return ReturnCode_NO_MEMORY, true
-		case 0x1A:
-			return ReturnCode_TCP_SENDING_ERROR, true
-		case 0x1B:
-			return ReturnCode_HOST_NOT_REACHABLE, true
-		case 0x1C:
-			return ReturnCode_INVALID_AMS_FRAGMENT, true
-		case 0x274C:
-			return ReturnCode_WSAETIMEDOUT, true
-		case 0x274D:
-			return ReturnCode_WSAECONNREFUSED, true
-		case 0x2751:
-			return ReturnCode_WSAEHOSTUNREACH, true
-		case 0x500:
-			return ReturnCode_ROUTERERR_NOLOCKEDMEMORY, true
-		case 0x501:
-			return ReturnCode_ROUTERERR_RESIZEMEMORY, true
-		case 0x502:
-			return ReturnCode_ROUTERERR_MAILBOXFULL, true
-		case 0x503:
-			return ReturnCode_ROUTERERR_DEBUGBOXFULL, true
-		case 0x504:
-			return ReturnCode_ROUTERERR_UNKNOWNPORTTYPE, true
-		case 0x505:
-			return ReturnCode_ROUTERERR_NOTINITIALIZED, true
-		case 0x506:
-			return ReturnCode_ROUTERERR_PORTALREADYINUSE, true
-		case 0x507:
-			return ReturnCode_ROUTERERR_NOTREGISTERED, true
-		case 0x508:
-			return ReturnCode_ROUTERERR_NOMOREQUEUES, true
-		case 0x509:
-			return ReturnCode_ROUTERERR_INVALIDPORT, true
-		case 0x50A:
-			return ReturnCode_ROUTERERR_NOTACTIVATED, true
-		case 0x700:
-			return ReturnCode_ADSERR_DEVICE_ERROR, true
-		case 0x701:
-			return ReturnCode_ADSERR_DEVICE_SRVNOTSUPP, true
-		case 0x702:
-			return ReturnCode_ADSERR_DEVICE_INVALIDGRP, true
-		case 0x703:
-			return ReturnCode_ADSERR_DEVICE_INVALIDOFFSET, true
-		case 0x704:
-			return ReturnCode_ADSERR_DEVICE_INVALIDACCESS, true
-		case 0x705:
-			return ReturnCode_ADSERR_DEVICE_INVALIDSIZE, true
-		case 0x706:
-			return ReturnCode_ADSERR_DEVICE_INVALIDDATA, true
-		case 0x707:
-			return ReturnCode_ADSERR_DEVICE_NOTREADY, true
-		case 0x708:
-			return ReturnCode_ADSERR_DEVICE_BUSY, true
-		case 0x709:
-			return ReturnCode_ADSERR_DEVICE_INVALIDCONTEXT, true
-		case 0x70A:
-			return ReturnCode_ADSERR_DEVICE_NOMEMORY, true
-		case 0x70B:
-			return ReturnCode_ADSERR_DEVICE_INVALIDPARM, true
-		case 0x70C:
-			return ReturnCode_ADSERR_DEVICE_NOTFOUND, true
-		case 0x70D:
-			return ReturnCode_ADSERR_DEVICE_SYNTAX, true
-		case 0x70E:
-			return ReturnCode_ADSERR_DEVICE_INCOMPATIBLE, true
-		case 0x70F:
-			return ReturnCode_ADSERR_DEVICE_EXISTS, true
-		case 0x710:
-			return ReturnCode_ADSERR_DEVICE_SYMBOLNOTFOUND, true
-		case 0x711:
-			return ReturnCode_ADSERR_DEVICE_SYMBOLVERSIONINVALID, true
-		case 0x712:
-			return ReturnCode_ADSERR_DEVICE_INVALIDSTATE, true
-		case 0x713:
-			return ReturnCode_ADSERR_DEVICE_TRANSMODENOTSUPP, true
-		case 0x714:
-			return ReturnCode_ADSERR_DEVICE_NOTIFYHNDINVALID, true
-		case 0x715:
-			return ReturnCode_ADSERR_DEVICE_CLIENTUNKNOWN, true
-		case 0x716:
-			return ReturnCode_ADSERR_DEVICE_NOMOREHDLS, true
-		case 0x717:
-			return ReturnCode_ADSERR_DEVICE_INVALIDWATCHSIZE, true
-		case 0x718:
-			return ReturnCode_ADSERR_DEVICE_NOTINIT, true
-		case 0x719:
-			return ReturnCode_ADSERR_DEVICE_TIMEOUT, true
-		case 0x71A:
-			return ReturnCode_ADSERR_DEVICE_NOINTERFACE, true
-		case 0x71B:
-			return ReturnCode_ADSERR_DEVICE_INVALIDINTERFACE, true
-		case 0x71C:
-			return ReturnCode_ADSERR_DEVICE_INVALIDCLSID, true
-		case 0x71D:
-			return ReturnCode_ADSERR_DEVICE_INVALIDOBJID, true
-		case 0x71E:
-			return ReturnCode_ADSERR_DEVICE_PENDING, true
-		case 0x71F:
-			return ReturnCode_ADSERR_DEVICE_ABORTED, true
-		case 0x720:
-			return ReturnCode_ADSERR_DEVICE_WARNING, true
-		case 0x721:
-			return ReturnCode_ADSERR_DEVICE_INVALIDARRAYIDX, true
-		case 0x722:
-			return ReturnCode_ADSERR_DEVICE_SYMBOLNOTACTIVE, true
-		case 0x723:
-			return ReturnCode_ADSERR_DEVICE_ACCESSDENIED, true
-		case 0x724:
-			return ReturnCode_ADSERR_DEVICE_LICENSENOTFOUND, true
-		case 0x725:
-			return ReturnCode_ADSERR_DEVICE_LICENSEEXPIRED, true
-		case 0x726:
-			return ReturnCode_ADSERR_DEVICE_LICENSEEXCEEDED, true
-		case 0x727:
-			return ReturnCode_ADSERR_DEVICE_LICENSEINVALID, true
-		case 0x728:
-			return ReturnCode_ADSERR_DEVICE_LICENSESYSTEMID, true
-		case 0x729:
-			return ReturnCode_ADSERR_DEVICE_LICENSENOTIMELIMIT, true
-		case 0x72A:
-			return ReturnCode_ADSERR_DEVICE_LICENSEFUTUREISSUE, true
-		case 0x72B:
-			return ReturnCode_ADSERR_DEVICE_LICENSETIMETOLONG, true
-		case 0x72D:
-			return ReturnCode_ADSERR_DEVICE_LICENSEDUPLICATED, true
-		case 0x72E:
-			return ReturnCode_ADSERR_DEVICE_SIGNATUREINVALID, true
-		case 0x72F:
-			return ReturnCode_ADSERR_DEVICE_CERTIFICATEINVALID, true
-		case 0x72c:
-			return ReturnCode_ADSERR_DEVICE_EXCEPTION, true
-		case 0x740:
-			return ReturnCode_ADSERR_CLIENT_ERROR, true
-		case 0x741:
-			return ReturnCode_ADSERR_CLIENT_INVALIDPARM, true
-		case 0x742:
-			return ReturnCode_ADSERR_CLIENT_LISTEMPTY, true
-		case 0x743:
-			return ReturnCode_ADSERR_CLIENT_VARUSED, true
-		case 0x744:
-			return ReturnCode_ADSERR_CLIENT_DUPLINVOKEID, true
-		case 0x745:
-			return ReturnCode_ADSERR_CLIENT_SYNCTIMEOUT, true
-		case 0x746:
-			return ReturnCode_ADSERR_CLIENT_W32ERROR, true
-		case 0x747:
-			return ReturnCode_ADSERR_CLIENT_TIMEOUTINVALID, true
-		case 0x748:
-			return ReturnCode_ADSERR_CLIENT_PORTNOTOPEN, true
-		case 0x750:
-			return ReturnCode_ADSERR_CLIENT_NOAMSADDR, true
-		case 0x751:
-			return ReturnCode_ADSERR_CLIENT_SYNCINTERNAL, true
-		case 0x752:
-			return ReturnCode_ADSERR_CLIENT_ADDHASH, true
-		case 0x753:
-			return ReturnCode_ADSERR_CLIENT_REMOVEHASH, true
-		case 0x754:
-			return ReturnCode_ADSERR_CLIENT_NOMORESYM, true
-		case 0x755:
-			return ReturnCode_ADSERR_CLIENT_SYNCRESINVALID, true
+	case 0x00:
+		return ReturnCode_OK, true
+	case 0x01:
+		return ReturnCode_INTERNAL_ERROR, true
+	case 0x02:
+		return ReturnCode_NO_REALTIME, true
+	case 0x03:
+		return ReturnCode_SAVE_ERROR, true
+	case 0x04:
+		return ReturnCode_MAILBOX_FULL, true
+	case 0x05:
+		return ReturnCode_WRONG_HMSG, true
+	case 0x06:
+		return ReturnCode_TARGET_PORT_NOT_FOUND, true
+	case 0x07:
+		return ReturnCode_TARGET_HOST_NOT_FOUND, true
+	case 0x08:
+		return ReturnCode_UNKNOWN_COMMAND_ID, true
+	case 0x09:
+		return ReturnCode_UNKNOWN_TASK_ID, true
+	case 0x0A:
+		return ReturnCode_NO_IO, true
+	case 0x0B:
+		return ReturnCode_UNKNOWN_ADS_COMMAND, true
+	case 0x0C:
+		return ReturnCode_WIN32_ERROR, true
+	case 0x0D:
+		return ReturnCode_PORT_NOT_CONNECTED, true
+	case 0x0E:
+		return ReturnCode_INVALID_ADS_LENGTH, true
+	case 0x0F:
+		return ReturnCode_INVALID_AMS_NET_ID, true
+	case 0x10:
+		return ReturnCode_LOW_INSTALLATION_LEVEL, true
+	case 0x1000:
+		return ReturnCode_RTERR_INTERNAL, true
+	case 0x1001:
+		return ReturnCode_RTERR_BADTIMERPERIODS, true
+	case 0x1002:
+		return ReturnCode_RTERR_INVALIDTASKPTR, true
+	case 0x1003:
+		return ReturnCode_RTERR_INVALIDSTACKPTR, true
+	case 0x1004:
+		return ReturnCode_RTERR_PRIOEXISTS, true
+	case 0x1005:
+		return ReturnCode_RTERR_NOMORETCB, true
+	case 0x1006:
+		return ReturnCode_RTERR_NOMORESEMAS, true
+	case 0x1007:
+		return ReturnCode_RTERR_NOMOREQUEUES, true
+	case 0x100D:
+		return ReturnCode_RTERR_EXTIRQALREADYDEF, true
+	case 0x100E:
+		return ReturnCode_RTERR_EXTIRQNOTDEF, true
+	case 0x100F:
+		return ReturnCode_RTERR_EXTIRQINSTALLFAILED, true
+	case 0x1010:
+		return ReturnCode_RTERR_IRQLNOTLESSOREQUAL, true
+	case 0x1017:
+		return ReturnCode_RTERR_VMXNOTSUPPORTED, true
+	case 0x1018:
+		return ReturnCode_RTERR_VMXDISABLED, true
+	case 0x1019:
+		return ReturnCode_RTERR_VMXCONTROLSMISSING, true
+	case 0x101A:
+		return ReturnCode_RTERR_VMXENABLEFAILS, true
+	case 0x11:
+		return ReturnCode_NO_DEBUGGING_AVAILABLE, true
+	case 0x12:
+		return ReturnCode_PORT_DEACTIVATED, true
+	case 0x13:
+		return ReturnCode_PORT_ALREADY_CONNECTED, true
+	case 0x14:
+		return ReturnCode_ADS_SYNC_WIN32_ERROR, true
+	case 0x15:
+		return ReturnCode_ADS_SYNC_TIMEOUT, true
+	case 0x16:
+		return ReturnCode_ADS_SYNC_AMS_ERROR, true
+	case 0x17:
+		return ReturnCode_NO_INDEX_MAP_FOR_ADS_AVAILABLE, true
+	case 0x18:
+		return ReturnCode_INVALID_ADS_PORT, true
+	case 0x19:
+		return ReturnCode_NO_MEMORY, true
+	case 0x1A:
+		return ReturnCode_TCP_SENDING_ERROR, true
+	case 0x1B:
+		return ReturnCode_HOST_NOT_REACHABLE, true
+	case 0x1C:
+		return ReturnCode_INVALID_AMS_FRAGMENT, true
+	case 0x274C:
+		return ReturnCode_WSAETIMEDOUT, true
+	case 0x274D:
+		return ReturnCode_WSAECONNREFUSED, true
+	case 0x2751:
+		return ReturnCode_WSAEHOSTUNREACH, true
+	case 0x500:
+		return ReturnCode_ROUTERERR_NOLOCKEDMEMORY, true
+	case 0x501:
+		return ReturnCode_ROUTERERR_RESIZEMEMORY, true
+	case 0x502:
+		return ReturnCode_ROUTERERR_MAILBOXFULL, true
+	case 0x503:
+		return ReturnCode_ROUTERERR_DEBUGBOXFULL, true
+	case 0x504:
+		return ReturnCode_ROUTERERR_UNKNOWNPORTTYPE, true
+	case 0x505:
+		return ReturnCode_ROUTERERR_NOTINITIALIZED, true
+	case 0x506:
+		return ReturnCode_ROUTERERR_PORTALREADYINUSE, true
+	case 0x507:
+		return ReturnCode_ROUTERERR_NOTREGISTERED, true
+	case 0x508:
+		return ReturnCode_ROUTERERR_NOMOREQUEUES, true
+	case 0x509:
+		return ReturnCode_ROUTERERR_INVALIDPORT, true
+	case 0x50A:
+		return ReturnCode_ROUTERERR_NOTACTIVATED, true
+	case 0x700:
+		return ReturnCode_ADSERR_DEVICE_ERROR, true
+	case 0x701:
+		return ReturnCode_ADSERR_DEVICE_SRVNOTSUPP, true
+	case 0x702:
+		return ReturnCode_ADSERR_DEVICE_INVALIDGRP, true
+	case 0x703:
+		return ReturnCode_ADSERR_DEVICE_INVALIDOFFSET, true
+	case 0x704:
+		return ReturnCode_ADSERR_DEVICE_INVALIDACCESS, true
+	case 0x705:
+		return ReturnCode_ADSERR_DEVICE_INVALIDSIZE, true
+	case 0x706:
+		return ReturnCode_ADSERR_DEVICE_INVALIDDATA, true
+	case 0x707:
+		return ReturnCode_ADSERR_DEVICE_NOTREADY, true
+	case 0x708:
+		return ReturnCode_ADSERR_DEVICE_BUSY, true
+	case 0x709:
+		return ReturnCode_ADSERR_DEVICE_INVALIDCONTEXT, true
+	case 0x70A:
+		return ReturnCode_ADSERR_DEVICE_NOMEMORY, true
+	case 0x70B:
+		return ReturnCode_ADSERR_DEVICE_INVALIDPARM, true
+	case 0x70C:
+		return ReturnCode_ADSERR_DEVICE_NOTFOUND, true
+	case 0x70D:
+		return ReturnCode_ADSERR_DEVICE_SYNTAX, true
+	case 0x70E:
+		return ReturnCode_ADSERR_DEVICE_INCOMPATIBLE, true
+	case 0x70F:
+		return ReturnCode_ADSERR_DEVICE_EXISTS, true
+	case 0x710:
+		return ReturnCode_ADSERR_DEVICE_SYMBOLNOTFOUND, true
+	case 0x711:
+		return ReturnCode_ADSERR_DEVICE_SYMBOLVERSIONINVALID, true
+	case 0x712:
+		return ReturnCode_ADSERR_DEVICE_INVALIDSTATE, true
+	case 0x713:
+		return ReturnCode_ADSERR_DEVICE_TRANSMODENOTSUPP, true
+	case 0x714:
+		return ReturnCode_ADSERR_DEVICE_NOTIFYHNDINVALID, true
+	case 0x715:
+		return ReturnCode_ADSERR_DEVICE_CLIENTUNKNOWN, true
+	case 0x716:
+		return ReturnCode_ADSERR_DEVICE_NOMOREHDLS, true
+	case 0x717:
+		return ReturnCode_ADSERR_DEVICE_INVALIDWATCHSIZE, true
+	case 0x718:
+		return ReturnCode_ADSERR_DEVICE_NOTINIT, true
+	case 0x719:
+		return ReturnCode_ADSERR_DEVICE_TIMEOUT, true
+	case 0x71A:
+		return ReturnCode_ADSERR_DEVICE_NOINTERFACE, true
+	case 0x71B:
+		return ReturnCode_ADSERR_DEVICE_INVALIDINTERFACE, true
+	case 0x71C:
+		return ReturnCode_ADSERR_DEVICE_INVALIDCLSID, true
+	case 0x71D:
+		return ReturnCode_ADSERR_DEVICE_INVALIDOBJID, true
+	case 0x71E:
+		return ReturnCode_ADSERR_DEVICE_PENDING, true
+	case 0x71F:
+		return ReturnCode_ADSERR_DEVICE_ABORTED, true
+	case 0x720:
+		return ReturnCode_ADSERR_DEVICE_WARNING, true
+	case 0x721:
+		return ReturnCode_ADSERR_DEVICE_INVALIDARRAYIDX, true
+	case 0x722:
+		return ReturnCode_ADSERR_DEVICE_SYMBOLNOTACTIVE, true
+	case 0x723:
+		return ReturnCode_ADSERR_DEVICE_ACCESSDENIED, true
+	case 0x724:
+		return ReturnCode_ADSERR_DEVICE_LICENSENOTFOUND, true
+	case 0x725:
+		return ReturnCode_ADSERR_DEVICE_LICENSEEXPIRED, true
+	case 0x726:
+		return ReturnCode_ADSERR_DEVICE_LICENSEEXCEEDED, true
+	case 0x727:
+		return ReturnCode_ADSERR_DEVICE_LICENSEINVALID, true
+	case 0x728:
+		return ReturnCode_ADSERR_DEVICE_LICENSESYSTEMID, true
+	case 0x729:
+		return ReturnCode_ADSERR_DEVICE_LICENSENOTIMELIMIT, true
+	case 0x72A:
+		return ReturnCode_ADSERR_DEVICE_LICENSEFUTUREISSUE, true
+	case 0x72B:
+		return ReturnCode_ADSERR_DEVICE_LICENSETIMETOLONG, true
+	case 0x72D:
+		return ReturnCode_ADSERR_DEVICE_LICENSEDUPLICATED, true
+	case 0x72E:
+		return ReturnCode_ADSERR_DEVICE_SIGNATUREINVALID, true
+	case 0x72F:
+		return ReturnCode_ADSERR_DEVICE_CERTIFICATEINVALID, true
+	case 0x72c:
+		return ReturnCode_ADSERR_DEVICE_EXCEPTION, true
+	case 0x740:
+		return ReturnCode_ADSERR_CLIENT_ERROR, true
+	case 0x741:
+		return ReturnCode_ADSERR_CLIENT_INVALIDPARM, true
+	case 0x742:
+		return ReturnCode_ADSERR_CLIENT_LISTEMPTY, true
+	case 0x743:
+		return ReturnCode_ADSERR_CLIENT_VARUSED, true
+	case 0x744:
+		return ReturnCode_ADSERR_CLIENT_DUPLINVOKEID, true
+	case 0x745:
+		return ReturnCode_ADSERR_CLIENT_SYNCTIMEOUT, true
+	case 0x746:
+		return ReturnCode_ADSERR_CLIENT_W32ERROR, true
+	case 0x747:
+		return ReturnCode_ADSERR_CLIENT_TIMEOUTINVALID, true
+	case 0x748:
+		return ReturnCode_ADSERR_CLIENT_PORTNOTOPEN, true
+	case 0x750:
+		return ReturnCode_ADSERR_CLIENT_NOAMSADDR, true
+	case 0x751:
+		return ReturnCode_ADSERR_CLIENT_SYNCINTERNAL, true
+	case 0x752:
+		return ReturnCode_ADSERR_CLIENT_ADDHASH, true
+	case 0x753:
+		return ReturnCode_ADSERR_CLIENT_REMOVEHASH, true
+	case 0x754:
+		return ReturnCode_ADSERR_CLIENT_NOMORESYM, true
+	case 0x755:
+		return ReturnCode_ADSERR_CLIENT_SYNCRESINVALID, true
 	}
 	return 0, false
 }
@@ -789,13 +789,13 @@ func ReturnCodeByName(value string) (enum ReturnCode, ok bool) {
 	return 0, false
 }
 
-func ReturnCodeKnows(value uint32)  bool {
+func ReturnCodeKnows(value uint32) bool {
 	for _, typeValue := range ReturnCodeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastReturnCode(structType interface{}) ReturnCode {
@@ -1099,4 +1099,3 @@ func (e ReturnCode) PLC4XEnumName() string {
 func (e ReturnCode) String() string {
 	return e.PLC4XEnumName()
 }
-

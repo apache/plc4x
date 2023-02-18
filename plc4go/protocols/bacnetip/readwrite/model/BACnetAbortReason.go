@@ -34,27 +34,27 @@ type IBACnetAbortReason interface {
 	utils.Serializable
 }
 
-const(
-	BACnetAbortReason_OTHER BACnetAbortReason = 0
-	BACnetAbortReason_BUFFER_OVERFLOW BACnetAbortReason = 1
-	BACnetAbortReason_INVALID_APDU_IN_THIS_STATE BACnetAbortReason = 2
+const (
+	BACnetAbortReason_OTHER                             BACnetAbortReason = 0
+	BACnetAbortReason_BUFFER_OVERFLOW                   BACnetAbortReason = 1
+	BACnetAbortReason_INVALID_APDU_IN_THIS_STATE        BACnetAbortReason = 2
 	BACnetAbortReason_PREEMPTED_BY_HIGHER_PRIORITY_TASK BACnetAbortReason = 3
-	BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED BACnetAbortReason = 4
-	BACnetAbortReason_SECURITY_ERROR BACnetAbortReason = 5
-	BACnetAbortReason_INSUFFICIENT_SECURITY BACnetAbortReason = 6
-	BACnetAbortReason_WINDOW_SIZE_OUT_OF_RANGE BACnetAbortReason = 7
-	BACnetAbortReason_APPLICATION_EXCEEDED_REPLY_TIME BACnetAbortReason = 8
-	BACnetAbortReason_OUT_OF_RESOURCES BACnetAbortReason = 9
-	BACnetAbortReason_TSM_TIMEOUT BACnetAbortReason = 10
-	BACnetAbortReason_APDU_TOO_LONG BACnetAbortReason = 11
-	BACnetAbortReason_VENDOR_PROPRIETARY_VALUE BACnetAbortReason = 0xFF
+	BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED        BACnetAbortReason = 4
+	BACnetAbortReason_SECURITY_ERROR                    BACnetAbortReason = 5
+	BACnetAbortReason_INSUFFICIENT_SECURITY             BACnetAbortReason = 6
+	BACnetAbortReason_WINDOW_SIZE_OUT_OF_RANGE          BACnetAbortReason = 7
+	BACnetAbortReason_APPLICATION_EXCEEDED_REPLY_TIME   BACnetAbortReason = 8
+	BACnetAbortReason_OUT_OF_RESOURCES                  BACnetAbortReason = 9
+	BACnetAbortReason_TSM_TIMEOUT                       BACnetAbortReason = 10
+	BACnetAbortReason_APDU_TOO_LONG                     BACnetAbortReason = 11
+	BACnetAbortReason_VENDOR_PROPRIETARY_VALUE          BACnetAbortReason = 0xFF
 )
 
 var BACnetAbortReasonValues []BACnetAbortReason
 
 func init() {
 	_ = errors.New
-	BACnetAbortReasonValues = []BACnetAbortReason {
+	BACnetAbortReasonValues = []BACnetAbortReason{
 		BACnetAbortReason_OTHER,
 		BACnetAbortReason_BUFFER_OVERFLOW,
 		BACnetAbortReason_INVALID_APDU_IN_THIS_STATE,
@@ -73,32 +73,32 @@ func init() {
 
 func BACnetAbortReasonByValue(value uint8) (enum BACnetAbortReason, ok bool) {
 	switch value {
-		case 0:
-			return BACnetAbortReason_OTHER, true
-		case 0xFF:
-			return BACnetAbortReason_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetAbortReason_BUFFER_OVERFLOW, true
-		case 10:
-			return BACnetAbortReason_TSM_TIMEOUT, true
-		case 11:
-			return BACnetAbortReason_APDU_TOO_LONG, true
-		case 2:
-			return BACnetAbortReason_INVALID_APDU_IN_THIS_STATE, true
-		case 3:
-			return BACnetAbortReason_PREEMPTED_BY_HIGHER_PRIORITY_TASK, true
-		case 4:
-			return BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED, true
-		case 5:
-			return BACnetAbortReason_SECURITY_ERROR, true
-		case 6:
-			return BACnetAbortReason_INSUFFICIENT_SECURITY, true
-		case 7:
-			return BACnetAbortReason_WINDOW_SIZE_OUT_OF_RANGE, true
-		case 8:
-			return BACnetAbortReason_APPLICATION_EXCEEDED_REPLY_TIME, true
-		case 9:
-			return BACnetAbortReason_OUT_OF_RESOURCES, true
+	case 0:
+		return BACnetAbortReason_OTHER, true
+	case 0xFF:
+		return BACnetAbortReason_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetAbortReason_BUFFER_OVERFLOW, true
+	case 10:
+		return BACnetAbortReason_TSM_TIMEOUT, true
+	case 11:
+		return BACnetAbortReason_APDU_TOO_LONG, true
+	case 2:
+		return BACnetAbortReason_INVALID_APDU_IN_THIS_STATE, true
+	case 3:
+		return BACnetAbortReason_PREEMPTED_BY_HIGHER_PRIORITY_TASK, true
+	case 4:
+		return BACnetAbortReason_SEGMENTATION_NOT_SUPPORTED, true
+	case 5:
+		return BACnetAbortReason_SECURITY_ERROR, true
+	case 6:
+		return BACnetAbortReason_INSUFFICIENT_SECURITY, true
+	case 7:
+		return BACnetAbortReason_WINDOW_SIZE_OUT_OF_RANGE, true
+	case 8:
+		return BACnetAbortReason_APPLICATION_EXCEEDED_REPLY_TIME, true
+	case 9:
+		return BACnetAbortReason_OUT_OF_RESOURCES, true
 	}
 	return 0, false
 }
@@ -135,13 +135,13 @@ func BACnetAbortReasonByName(value string) (enum BACnetAbortReason, ok bool) {
 	return 0, false
 }
 
-func BACnetAbortReasonKnows(value uint8)  bool {
+func BACnetAbortReasonKnows(value uint8) bool {
 	for _, typeValue := range BACnetAbortReasonValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetAbortReason(structType interface{}) BACnetAbortReason {
@@ -227,4 +227,3 @@ func (e BACnetAbortReason) PLC4XEnumName() string {
 func (e BACnetAbortReason) String() string {
 	return e.PLC4XEnumName()
 }
-

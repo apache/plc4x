@@ -21,8 +21,8 @@ package readwrite
 
 import (
 	"context"
-	"strings"
 	"strconv"
+	"strings"
 
 	"github.com/apache/plc4x/plc4go/protocols/abeth/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -43,20 +43,20 @@ func init() {
 }
 
 func (m AbethXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
-    switch typeName {
-        case "DF1RequestCommand":
-			return model.DF1RequestCommandParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-        case "DF1RequestMessage":
-			return model.DF1RequestMessageParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-        case "DF1ResponseMessage":
-			parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
-			if err!=nil {
-				return nil, err
-			}
-			payloadLength := uint16(parsedUint0)
-            return model.DF1ResponseMessageParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), payloadLength  )
-        case "CIPEncapsulationPacket":
-			return model.CIPEncapsulationPacketParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-    }
-    return nil, errors.Errorf("Unsupported type %s", typeName)
+	switch typeName {
+	case "DF1RequestCommand":
+		return model.DF1RequestCommandParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "DF1RequestMessage":
+		return model.DF1RequestMessageParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "DF1ResponseMessage":
+		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		payloadLength := uint16(parsedUint0)
+		return model.DF1ResponseMessageParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), payloadLength)
+	case "CIPEncapsulationPacket":
+		return model.CIPEncapsulationPacketParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	}
+	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

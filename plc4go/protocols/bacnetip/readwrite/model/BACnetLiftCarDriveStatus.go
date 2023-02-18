@@ -34,25 +34,25 @@ type IBACnetLiftCarDriveStatus interface {
 	utils.Serializable
 }
 
-const(
-	BACnetLiftCarDriveStatus_UNKNOWN BACnetLiftCarDriveStatus = 0
-	BACnetLiftCarDriveStatus_STATIONARY BACnetLiftCarDriveStatus = 1
-	BACnetLiftCarDriveStatus_BRAKING BACnetLiftCarDriveStatus = 2
-	BACnetLiftCarDriveStatus_ACCELERATE BACnetLiftCarDriveStatus = 3
-	BACnetLiftCarDriveStatus_DECELERATE BACnetLiftCarDriveStatus = 4
-	BACnetLiftCarDriveStatus_RATED_SPEED BACnetLiftCarDriveStatus = 5
-	BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP BACnetLiftCarDriveStatus = 6
-	BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP BACnetLiftCarDriveStatus = 7
-	BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP BACnetLiftCarDriveStatus = 8
-	BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP BACnetLiftCarDriveStatus = 9
-	BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE BACnetLiftCarDriveStatus = 0XFFFF
+const (
+	BACnetLiftCarDriveStatus_UNKNOWN                  BACnetLiftCarDriveStatus = 0
+	BACnetLiftCarDriveStatus_STATIONARY               BACnetLiftCarDriveStatus = 1
+	BACnetLiftCarDriveStatus_BRAKING                  BACnetLiftCarDriveStatus = 2
+	BACnetLiftCarDriveStatus_ACCELERATE               BACnetLiftCarDriveStatus = 3
+	BACnetLiftCarDriveStatus_DECELERATE               BACnetLiftCarDriveStatus = 4
+	BACnetLiftCarDriveStatus_RATED_SPEED              BACnetLiftCarDriveStatus = 5
+	BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP        BACnetLiftCarDriveStatus = 6
+	BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP           BACnetLiftCarDriveStatus = 7
+	BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP         BACnetLiftCarDriveStatus = 8
+	BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP         BACnetLiftCarDriveStatus = 9
+	BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE BACnetLiftCarDriveStatus = 0xFFFF
 )
 
 var BACnetLiftCarDriveStatusValues []BACnetLiftCarDriveStatus
 
 func init() {
 	_ = errors.New
-	BACnetLiftCarDriveStatusValues = []BACnetLiftCarDriveStatus {
+	BACnetLiftCarDriveStatusValues = []BACnetLiftCarDriveStatus{
 		BACnetLiftCarDriveStatus_UNKNOWN,
 		BACnetLiftCarDriveStatus_STATIONARY,
 		BACnetLiftCarDriveStatus_BRAKING,
@@ -69,28 +69,28 @@ func init() {
 
 func BACnetLiftCarDriveStatusByValue(value uint16) (enum BACnetLiftCarDriveStatus, ok bool) {
 	switch value {
-		case 0:
-			return BACnetLiftCarDriveStatus_UNKNOWN, true
-		case 0XFFFF:
-			return BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetLiftCarDriveStatus_STATIONARY, true
-		case 2:
-			return BACnetLiftCarDriveStatus_BRAKING, true
-		case 3:
-			return BACnetLiftCarDriveStatus_ACCELERATE, true
-		case 4:
-			return BACnetLiftCarDriveStatus_DECELERATE, true
-		case 5:
-			return BACnetLiftCarDriveStatus_RATED_SPEED, true
-		case 6:
-			return BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP, true
-		case 7:
-			return BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP, true
-		case 8:
-			return BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP, true
-		case 9:
-			return BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP, true
+	case 0:
+		return BACnetLiftCarDriveStatus_UNKNOWN, true
+	case 0xFFFF:
+		return BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetLiftCarDriveStatus_STATIONARY, true
+	case 2:
+		return BACnetLiftCarDriveStatus_BRAKING, true
+	case 3:
+		return BACnetLiftCarDriveStatus_ACCELERATE, true
+	case 4:
+		return BACnetLiftCarDriveStatus_DECELERATE, true
+	case 5:
+		return BACnetLiftCarDriveStatus_RATED_SPEED, true
+	case 6:
+		return BACnetLiftCarDriveStatus_SINGLE_FLOOR_JUMP, true
+	case 7:
+		return BACnetLiftCarDriveStatus_TWO_FLOOR_JUMP, true
+	case 8:
+		return BACnetLiftCarDriveStatus_THREE_FLOOR_JUMP, true
+	case 9:
+		return BACnetLiftCarDriveStatus_MULTI_FLOOR_JUMP, true
 	}
 	return 0, false
 }
@@ -123,13 +123,13 @@ func BACnetLiftCarDriveStatusByName(value string) (enum BACnetLiftCarDriveStatus
 	return 0, false
 }
 
-func BACnetLiftCarDriveStatusKnows(value uint16)  bool {
+func BACnetLiftCarDriveStatusKnows(value uint16) bool {
 	for _, typeValue := range BACnetLiftCarDriveStatusValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetLiftCarDriveStatus(structType interface{}) BACnetLiftCarDriveStatus {
@@ -211,4 +211,3 @@ func (e BACnetLiftCarDriveStatus) PLC4XEnumName() string {
 func (e BACnetLiftCarDriveStatus) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -34,30 +34,30 @@ type IApduType interface {
 	utils.Serializable
 }
 
-const(
-	ApduType_CONFIRMED_REQUEST_PDU ApduType = 0x0
+const (
+	ApduType_CONFIRMED_REQUEST_PDU   ApduType = 0x0
 	ApduType_UNCONFIRMED_REQUEST_PDU ApduType = 0x1
-	ApduType_SIMPLE_ACK_PDU ApduType = 0x2
-	ApduType_COMPLEX_ACK_PDU ApduType = 0x3
-	ApduType_SEGMENT_ACK_PDU ApduType = 0x4
-	ApduType_ERROR_PDU ApduType = 0x5
-	ApduType_REJECT_PDU ApduType = 0x6
-	ApduType_ABORT_PDU ApduType = 0x7
-	ApduType_APDU_UNKNOWN_8 ApduType = 0x8
-	ApduType_APDU_UNKNOWN_9 ApduType = 0x9
-	ApduType_APDU_UNKNOWN_A ApduType = 0xA
-	ApduType_APDU_UNKNOWN_B ApduType = 0xB
-	ApduType_APDU_UNKNOWN_C ApduType = 0xC
-	ApduType_APDU_UNKNOWN_D ApduType = 0xD
-	ApduType_APDU_UNKNOWN_E ApduType = 0xE
-	ApduType_APDU_UNKNOWN_F ApduType = 0xF
+	ApduType_SIMPLE_ACK_PDU          ApduType = 0x2
+	ApduType_COMPLEX_ACK_PDU         ApduType = 0x3
+	ApduType_SEGMENT_ACK_PDU         ApduType = 0x4
+	ApduType_ERROR_PDU               ApduType = 0x5
+	ApduType_REJECT_PDU              ApduType = 0x6
+	ApduType_ABORT_PDU               ApduType = 0x7
+	ApduType_APDU_UNKNOWN_8          ApduType = 0x8
+	ApduType_APDU_UNKNOWN_9          ApduType = 0x9
+	ApduType_APDU_UNKNOWN_A          ApduType = 0xA
+	ApduType_APDU_UNKNOWN_B          ApduType = 0xB
+	ApduType_APDU_UNKNOWN_C          ApduType = 0xC
+	ApduType_APDU_UNKNOWN_D          ApduType = 0xD
+	ApduType_APDU_UNKNOWN_E          ApduType = 0xE
+	ApduType_APDU_UNKNOWN_F          ApduType = 0xF
 )
 
 var ApduTypeValues []ApduType
 
 func init() {
 	_ = errors.New
-	ApduTypeValues = []ApduType {
+	ApduTypeValues = []ApduType{
 		ApduType_CONFIRMED_REQUEST_PDU,
 		ApduType_UNCONFIRMED_REQUEST_PDU,
 		ApduType_SIMPLE_ACK_PDU,
@@ -79,38 +79,38 @@ func init() {
 
 func ApduTypeByValue(value uint8) (enum ApduType, ok bool) {
 	switch value {
-		case 0x0:
-			return ApduType_CONFIRMED_REQUEST_PDU, true
-		case 0x1:
-			return ApduType_UNCONFIRMED_REQUEST_PDU, true
-		case 0x2:
-			return ApduType_SIMPLE_ACK_PDU, true
-		case 0x3:
-			return ApduType_COMPLEX_ACK_PDU, true
-		case 0x4:
-			return ApduType_SEGMENT_ACK_PDU, true
-		case 0x5:
-			return ApduType_ERROR_PDU, true
-		case 0x6:
-			return ApduType_REJECT_PDU, true
-		case 0x7:
-			return ApduType_ABORT_PDU, true
-		case 0x8:
-			return ApduType_APDU_UNKNOWN_8, true
-		case 0x9:
-			return ApduType_APDU_UNKNOWN_9, true
-		case 0xA:
-			return ApduType_APDU_UNKNOWN_A, true
-		case 0xB:
-			return ApduType_APDU_UNKNOWN_B, true
-		case 0xC:
-			return ApduType_APDU_UNKNOWN_C, true
-		case 0xD:
-			return ApduType_APDU_UNKNOWN_D, true
-		case 0xE:
-			return ApduType_APDU_UNKNOWN_E, true
-		case 0xF:
-			return ApduType_APDU_UNKNOWN_F, true
+	case 0x0:
+		return ApduType_CONFIRMED_REQUEST_PDU, true
+	case 0x1:
+		return ApduType_UNCONFIRMED_REQUEST_PDU, true
+	case 0x2:
+		return ApduType_SIMPLE_ACK_PDU, true
+	case 0x3:
+		return ApduType_COMPLEX_ACK_PDU, true
+	case 0x4:
+		return ApduType_SEGMENT_ACK_PDU, true
+	case 0x5:
+		return ApduType_ERROR_PDU, true
+	case 0x6:
+		return ApduType_REJECT_PDU, true
+	case 0x7:
+		return ApduType_ABORT_PDU, true
+	case 0x8:
+		return ApduType_APDU_UNKNOWN_8, true
+	case 0x9:
+		return ApduType_APDU_UNKNOWN_9, true
+	case 0xA:
+		return ApduType_APDU_UNKNOWN_A, true
+	case 0xB:
+		return ApduType_APDU_UNKNOWN_B, true
+	case 0xC:
+		return ApduType_APDU_UNKNOWN_C, true
+	case 0xD:
+		return ApduType_APDU_UNKNOWN_D, true
+	case 0xE:
+		return ApduType_APDU_UNKNOWN_E, true
+	case 0xF:
+		return ApduType_APDU_UNKNOWN_F, true
 	}
 	return 0, false
 }
@@ -153,13 +153,13 @@ func ApduTypeByName(value string) (enum ApduType, ok bool) {
 	return 0, false
 }
 
-func ApduTypeKnows(value uint8)  bool {
+func ApduTypeKnows(value uint8) bool {
 	for _, typeValue := range ApduTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastApduType(structType interface{}) ApduType {
@@ -251,4 +251,3 @@ func (e ApduType) PLC4XEnumName() string {
 func (e ApduType) String() string {
 	return e.PLC4XEnumName()
 }
-

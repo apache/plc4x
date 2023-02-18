@@ -40,270 +40,270 @@ type IParameter interface {
 	Group() string
 }
 
-const(
-	Parameter_UNKNOWN_01 Parameter = 0x00
-	Parameter_UNKNOWN_02 Parameter = 0x01
-	Parameter_UNKNOWN_03 Parameter = 0x02
-	Parameter_UNKNOWN_04 Parameter = 0x03
-	Parameter_UNKNOWN_05 Parameter = 0x04
-	Parameter_UNKNOWN_06 Parameter = 0x05
-	Parameter_UNKNOWN_07 Parameter = 0x06
-	Parameter_UNKNOWN_08 Parameter = 0x07
-	Parameter_UNKNOWN_09 Parameter = 0x08
-	Parameter_UNKNOWN_10 Parameter = 0x09
-	Parameter_UNKNOWN_11 Parameter = 0x0A
-	Parameter_UNKNOWN_12 Parameter = 0x0B
-	Parameter_UNKNOWN_13 Parameter = 0x0C
-	Parameter_UNKNOWN_14 Parameter = 0x0D
-	Parameter_UNKNOWN_15 Parameter = 0x0E
-	Parameter_UNKNOWN_16 Parameter = 0x0F
-	Parameter_UNKNOWN_17 Parameter = 0x10
-	Parameter_UNKNOWN_18 Parameter = 0x11
-	Parameter_UNKNOWN_19 Parameter = 0x12
-	Parameter_UNKNOWN_20 Parameter = 0x13
-	Parameter_UNKNOWN_21 Parameter = 0x14
-	Parameter_UNKNOWN_22 Parameter = 0x15
-	Parameter_UNKNOWN_23 Parameter = 0x16
-	Parameter_UNKNOWN_24 Parameter = 0x17
-	Parameter_UNKNOWN_25 Parameter = 0x18
-	Parameter_UNKNOWN_26 Parameter = 0x19
-	Parameter_UNKNOWN_27 Parameter = 0x1A
-	Parameter_UNKNOWN_28 Parameter = 0x1B
-	Parameter_UNKNOWN_29 Parameter = 0x1C
-	Parameter_UNKNOWN_30 Parameter = 0x1D
-	Parameter_UNKNOWN_31 Parameter = 0x1E
-	Parameter_UNKNOWN_32 Parameter = 0x1F
-	Parameter_UNKNOWN_33 Parameter = 0x20
-	Parameter_APPLICATION_ADDRESS_1 Parameter = 0x21
-	Parameter_APPLICATION_ADDRESS_2 Parameter = 0x22
-	Parameter_UNKOWN_35 Parameter = 0x23
-	Parameter_UNKOWN_36 Parameter = 0x24
-	Parameter_UNKOWN_37 Parameter = 0x25
-	Parameter_UNKOWN_38 Parameter = 0x26
-	Parameter_UNKOWN_39 Parameter = 0x27
-	Parameter_UNKOWN_40 Parameter = 0x28
-	Parameter_UNKOWN_41 Parameter = 0x29
-	Parameter_UNKOWN_42 Parameter = 0x2A
-	Parameter_UNKOWN_43 Parameter = 0x2B
-	Parameter_UNKOWN_44 Parameter = 0x2C
-	Parameter_UNKOWN_45 Parameter = 0x2D
-	Parameter_UNKOWN_46 Parameter = 0x2E
-	Parameter_UNKOWN_47 Parameter = 0x2F
-	Parameter_INTERFACE_OPTIONS_1 Parameter = 0x30
-	Parameter_UNKOWN_49 Parameter = 0x31
-	Parameter_UNKOWN_50 Parameter = 0x32
-	Parameter_UNKOWN_51 Parameter = 0x33
-	Parameter_UNKOWN_52 Parameter = 0x34
-	Parameter_UNKOWN_53 Parameter = 0x35
-	Parameter_UNKOWN_54 Parameter = 0x36
-	Parameter_UNKOWN_55 Parameter = 0x37
-	Parameter_UNKOWN_56 Parameter = 0x38
-	Parameter_UNKOWN_57 Parameter = 0x39
-	Parameter_UNKOWN_58 Parameter = 0x3A
-	Parameter_UNKOWN_59 Parameter = 0x3B
-	Parameter_UNKOWN_60 Parameter = 0x3C
-	Parameter_BAUD_RATE_SELECTOR Parameter = 0x3D
-	Parameter_INTERFACE_OPTIONS_2 Parameter = 0x3E
-	Parameter_UNKOWN_63 Parameter = 0x3F
-	Parameter_UNKOWN_64 Parameter = 0x40
+const (
+	Parameter_UNKNOWN_01                            Parameter = 0x00
+	Parameter_UNKNOWN_02                            Parameter = 0x01
+	Parameter_UNKNOWN_03                            Parameter = 0x02
+	Parameter_UNKNOWN_04                            Parameter = 0x03
+	Parameter_UNKNOWN_05                            Parameter = 0x04
+	Parameter_UNKNOWN_06                            Parameter = 0x05
+	Parameter_UNKNOWN_07                            Parameter = 0x06
+	Parameter_UNKNOWN_08                            Parameter = 0x07
+	Parameter_UNKNOWN_09                            Parameter = 0x08
+	Parameter_UNKNOWN_10                            Parameter = 0x09
+	Parameter_UNKNOWN_11                            Parameter = 0x0A
+	Parameter_UNKNOWN_12                            Parameter = 0x0B
+	Parameter_UNKNOWN_13                            Parameter = 0x0C
+	Parameter_UNKNOWN_14                            Parameter = 0x0D
+	Parameter_UNKNOWN_15                            Parameter = 0x0E
+	Parameter_UNKNOWN_16                            Parameter = 0x0F
+	Parameter_UNKNOWN_17                            Parameter = 0x10
+	Parameter_UNKNOWN_18                            Parameter = 0x11
+	Parameter_UNKNOWN_19                            Parameter = 0x12
+	Parameter_UNKNOWN_20                            Parameter = 0x13
+	Parameter_UNKNOWN_21                            Parameter = 0x14
+	Parameter_UNKNOWN_22                            Parameter = 0x15
+	Parameter_UNKNOWN_23                            Parameter = 0x16
+	Parameter_UNKNOWN_24                            Parameter = 0x17
+	Parameter_UNKNOWN_25                            Parameter = 0x18
+	Parameter_UNKNOWN_26                            Parameter = 0x19
+	Parameter_UNKNOWN_27                            Parameter = 0x1A
+	Parameter_UNKNOWN_28                            Parameter = 0x1B
+	Parameter_UNKNOWN_29                            Parameter = 0x1C
+	Parameter_UNKNOWN_30                            Parameter = 0x1D
+	Parameter_UNKNOWN_31                            Parameter = 0x1E
+	Parameter_UNKNOWN_32                            Parameter = 0x1F
+	Parameter_UNKNOWN_33                            Parameter = 0x20
+	Parameter_APPLICATION_ADDRESS_1                 Parameter = 0x21
+	Parameter_APPLICATION_ADDRESS_2                 Parameter = 0x22
+	Parameter_UNKOWN_35                             Parameter = 0x23
+	Parameter_UNKOWN_36                             Parameter = 0x24
+	Parameter_UNKOWN_37                             Parameter = 0x25
+	Parameter_UNKOWN_38                             Parameter = 0x26
+	Parameter_UNKOWN_39                             Parameter = 0x27
+	Parameter_UNKOWN_40                             Parameter = 0x28
+	Parameter_UNKOWN_41                             Parameter = 0x29
+	Parameter_UNKOWN_42                             Parameter = 0x2A
+	Parameter_UNKOWN_43                             Parameter = 0x2B
+	Parameter_UNKOWN_44                             Parameter = 0x2C
+	Parameter_UNKOWN_45                             Parameter = 0x2D
+	Parameter_UNKOWN_46                             Parameter = 0x2E
+	Parameter_UNKOWN_47                             Parameter = 0x2F
+	Parameter_INTERFACE_OPTIONS_1                   Parameter = 0x30
+	Parameter_UNKOWN_49                             Parameter = 0x31
+	Parameter_UNKOWN_50                             Parameter = 0x32
+	Parameter_UNKOWN_51                             Parameter = 0x33
+	Parameter_UNKOWN_52                             Parameter = 0x34
+	Parameter_UNKOWN_53                             Parameter = 0x35
+	Parameter_UNKOWN_54                             Parameter = 0x36
+	Parameter_UNKOWN_55                             Parameter = 0x37
+	Parameter_UNKOWN_56                             Parameter = 0x38
+	Parameter_UNKOWN_57                             Parameter = 0x39
+	Parameter_UNKOWN_58                             Parameter = 0x3A
+	Parameter_UNKOWN_59                             Parameter = 0x3B
+	Parameter_UNKOWN_60                             Parameter = 0x3C
+	Parameter_BAUD_RATE_SELECTOR                    Parameter = 0x3D
+	Parameter_INTERFACE_OPTIONS_2                   Parameter = 0x3E
+	Parameter_UNKOWN_63                             Parameter = 0x3F
+	Parameter_UNKOWN_64                             Parameter = 0x40
 	Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS Parameter = 0x41
-	Parameter_INTERFACE_OPTIONS_3 Parameter = 0x42
-	Parameter_UNKOWN_67 Parameter = 0x43
-	Parameter_UNKOWN_68 Parameter = 0x44
-	Parameter_UNKOWN_69 Parameter = 0x45
-	Parameter_UNKOWN_70 Parameter = 0x46
-	Parameter_UNKOWN_71 Parameter = 0x47
-	Parameter_UNKOWN_72 Parameter = 0x48
-	Parameter_UNKOWN_73 Parameter = 0x49
-	Parameter_UNKOWN_74 Parameter = 0x4A
-	Parameter_UNKOWN_75 Parameter = 0x4B
-	Parameter_UNKOWN_76 Parameter = 0x4C
-	Parameter_UNKOWN_77 Parameter = 0x4D
-	Parameter_UNKOWN_78 Parameter = 0x4E
-	Parameter_UNKOWN_79 Parameter = 0x4F
-	Parameter_UNKOWN_80 Parameter = 0x50
-	Parameter_UNKOWN_81 Parameter = 0x51
-	Parameter_UNKOWN_82 Parameter = 0x52
-	Parameter_UNKOWN_83 Parameter = 0x53
-	Parameter_UNKOWN_84 Parameter = 0x54
-	Parameter_UNKOWN_85 Parameter = 0x55
-	Parameter_UNKOWN_86 Parameter = 0x56
-	Parameter_UNKOWN_87 Parameter = 0x57
-	Parameter_UNKOWN_88 Parameter = 0x58
-	Parameter_UNKOWN_89 Parameter = 0x59
-	Parameter_UNKOWN_90 Parameter = 0x5A
-	Parameter_UNKOWN_91 Parameter = 0x5B
-	Parameter_UNKOWN_92 Parameter = 0x5C
-	Parameter_UNKOWN_93 Parameter = 0x5D
-	Parameter_UNKOWN_94 Parameter = 0x5E
-	Parameter_UNKOWN_95 Parameter = 0x5F
-	Parameter_UNKOWN_96 Parameter = 0x60
-	Parameter_UNKOWN_97 Parameter = 0x61
-	Parameter_UNKOWN_98 Parameter = 0x62
-	Parameter_UNKOWN_99 Parameter = 0x63
-	Parameter_UNKOWN_100 Parameter = 0x64
-	Parameter_UNKOWN_101 Parameter = 0x65
-	Parameter_UNKOWN_102 Parameter = 0x66
-	Parameter_UNKOWN_103 Parameter = 0x67
-	Parameter_UNKOWN_104 Parameter = 0x68
-	Parameter_UNKOWN_105 Parameter = 0x69
-	Parameter_UNKOWN_106 Parameter = 0x6A
-	Parameter_UNKOWN_107 Parameter = 0x6B
-	Parameter_UNKOWN_108 Parameter = 0x6C
-	Parameter_UNKOWN_109 Parameter = 0x6D
-	Parameter_UNKOWN_110 Parameter = 0x6E
-	Parameter_UNKOWN_111 Parameter = 0x6F
-	Parameter_UNKOWN_112 Parameter = 0x70
-	Parameter_UNKOWN_113 Parameter = 0x71
-	Parameter_UNKOWN_114 Parameter = 0x72
-	Parameter_UNKOWN_115 Parameter = 0x73
-	Parameter_UNKOWN_116 Parameter = 0x74
-	Parameter_UNKOWN_117 Parameter = 0x75
-	Parameter_UNKOWN_118 Parameter = 0x76
-	Parameter_UNKOWN_119 Parameter = 0x77
-	Parameter_UNKOWN_120 Parameter = 0x78
-	Parameter_UNKOWN_121 Parameter = 0x79
-	Parameter_UNKOWN_122 Parameter = 0x7A
-	Parameter_UNKOWN_123 Parameter = 0x7B
-	Parameter_UNKOWN_124 Parameter = 0x7C
-	Parameter_UNKOWN_125 Parameter = 0x7D
-	Parameter_UNKOWN_126 Parameter = 0x7E
-	Parameter_UNKOWN_127 Parameter = 0x7F
-	Parameter_UNKOWN_128 Parameter = 0x80
-	Parameter_UNKOWN_129 Parameter = 0x81
-	Parameter_UNKOWN_130 Parameter = 0x82
-	Parameter_UNKOWN_131 Parameter = 0x83
-	Parameter_UNKOWN_132 Parameter = 0x84
-	Parameter_UNKOWN_133 Parameter = 0x85
-	Parameter_UNKOWN_134 Parameter = 0x86
-	Parameter_UNKOWN_135 Parameter = 0x87
-	Parameter_UNKOWN_136 Parameter = 0x88
-	Parameter_UNKOWN_137 Parameter = 0x89
-	Parameter_UNKOWN_138 Parameter = 0x8A
-	Parameter_UNKOWN_139 Parameter = 0x8B
-	Parameter_UNKOWN_140 Parameter = 0x8C
-	Parameter_UNKOWN_141 Parameter = 0x8D
-	Parameter_UNKOWN_142 Parameter = 0x8E
-	Parameter_UNKOWN_143 Parameter = 0x8F
-	Parameter_UNKOWN_144 Parameter = 0x90
-	Parameter_UNKOWN_145 Parameter = 0x91
-	Parameter_UNKOWN_146 Parameter = 0x92
-	Parameter_UNKOWN_147 Parameter = 0x93
-	Parameter_UNKOWN_148 Parameter = 0x94
-	Parameter_UNKOWN_149 Parameter = 0x95
-	Parameter_UNKOWN_150 Parameter = 0x96
-	Parameter_UNKOWN_151 Parameter = 0x97
-	Parameter_UNKOWN_152 Parameter = 0x98
-	Parameter_UNKOWN_153 Parameter = 0x99
-	Parameter_UNKOWN_154 Parameter = 0x9A
-	Parameter_UNKOWN_155 Parameter = 0x9B
-	Parameter_UNKOWN_156 Parameter = 0x9C
-	Parameter_UNKOWN_157 Parameter = 0x9D
-	Parameter_UNKOWN_158 Parameter = 0x9E
-	Parameter_UNKOWN_159 Parameter = 0x9F
-	Parameter_UNKOWN_160 Parameter = 0xA0
-	Parameter_UNKOWN_161 Parameter = 0xA1
-	Parameter_UNKOWN_162 Parameter = 0xA2
-	Parameter_UNKOWN_163 Parameter = 0xA3
-	Parameter_UNKOWN_164 Parameter = 0xA4
-	Parameter_UNKOWN_165 Parameter = 0xA5
-	Parameter_UNKOWN_166 Parameter = 0xA6
-	Parameter_UNKOWN_167 Parameter = 0xA7
-	Parameter_UNKOWN_168 Parameter = 0xA8
-	Parameter_UNKOWN_169 Parameter = 0xA9
-	Parameter_UNKOWN_170 Parameter = 0xAA
-	Parameter_UNKOWN_171 Parameter = 0xAB
-	Parameter_UNKOWN_172 Parameter = 0xAC
-	Parameter_UNKOWN_173 Parameter = 0xAD
-	Parameter_UNKOWN_174 Parameter = 0xAE
-	Parameter_UNKOWN_175 Parameter = 0xAF
-	Parameter_UNKOWN_176 Parameter = 0xB0
-	Parameter_UNKOWN_177 Parameter = 0xB1
-	Parameter_UNKOWN_178 Parameter = 0xB2
-	Parameter_UNKOWN_179 Parameter = 0xB3
-	Parameter_UNKOWN_180 Parameter = 0xB4
-	Parameter_UNKOWN_181 Parameter = 0xB5
-	Parameter_UNKOWN_182 Parameter = 0xB6
-	Parameter_UNKOWN_183 Parameter = 0xB7
-	Parameter_UNKOWN_184 Parameter = 0xB8
-	Parameter_UNKOWN_185 Parameter = 0xB9
-	Parameter_UNKOWN_186 Parameter = 0xBA
-	Parameter_UNKOWN_187 Parameter = 0xBB
-	Parameter_UNKOWN_188 Parameter = 0xBC
-	Parameter_UNKOWN_189 Parameter = 0xBD
-	Parameter_UNKOWN_190 Parameter = 0xBE
-	Parameter_UNKOWN_191 Parameter = 0xBF
-	Parameter_UNKOWN_192 Parameter = 0xC0
-	Parameter_UNKOWN_193 Parameter = 0xC1
-	Parameter_UNKOWN_194 Parameter = 0xC2
-	Parameter_UNKOWN_195 Parameter = 0xC3
-	Parameter_UNKOWN_196 Parameter = 0xC4
-	Parameter_UNKOWN_197 Parameter = 0xC5
-	Parameter_UNKOWN_198 Parameter = 0xC6
-	Parameter_UNKOWN_199 Parameter = 0xC7
-	Parameter_UNKOWN_200 Parameter = 0xC8
-	Parameter_UNKOWN_201 Parameter = 0xC9
-	Parameter_UNKOWN_202 Parameter = 0xCA
-	Parameter_UNKOWN_203 Parameter = 0xCB
-	Parameter_UNKOWN_204 Parameter = 0xCC
-	Parameter_UNKOWN_205 Parameter = 0xCD
-	Parameter_UNKOWN_206 Parameter = 0xCE
-	Parameter_UNKOWN_207 Parameter = 0xCF
-	Parameter_UNKOWN_208 Parameter = 0xD0
-	Parameter_UNKOWN_209 Parameter = 0xD1
-	Parameter_UNKOWN_210 Parameter = 0xD2
-	Parameter_UNKOWN_211 Parameter = 0xD3
-	Parameter_UNKOWN_212 Parameter = 0xD4
-	Parameter_UNKOWN_213 Parameter = 0xD5
-	Parameter_UNKOWN_214 Parameter = 0xD6
-	Parameter_UNKOWN_215 Parameter = 0xD7
-	Parameter_UNKOWN_216 Parameter = 0xD8
-	Parameter_UNKOWN_217 Parameter = 0xD9
-	Parameter_UNKOWN_218 Parameter = 0xDA
-	Parameter_UNKOWN_219 Parameter = 0xDB
-	Parameter_UNKOWN_220 Parameter = 0xDC
-	Parameter_UNKOWN_221 Parameter = 0xDD
-	Parameter_UNKOWN_222 Parameter = 0xDE
-	Parameter_UNKOWN_223 Parameter = 0xDF
-	Parameter_UNKOWN_224 Parameter = 0xE0
-	Parameter_UNKOWN_225 Parameter = 0xE1
-	Parameter_UNKOWN_226 Parameter = 0xE2
-	Parameter_UNKOWN_227 Parameter = 0xE3
-	Parameter_UNKOWN_228 Parameter = 0xE4
-	Parameter_UNKOWN_229 Parameter = 0xE5
-	Parameter_UNKOWN_230 Parameter = 0xE6
-	Parameter_UNKOWN_231 Parameter = 0xE7
-	Parameter_UNKOWN_232 Parameter = 0xE8
-	Parameter_UNKOWN_233 Parameter = 0xE9
-	Parameter_UNKOWN_234 Parameter = 0xEA
-	Parameter_CUSTOM_MANUFACTURER_1 Parameter = 0xEB
-	Parameter_CUSTOM_MANUFACTURER_2 Parameter = 0xEC
-	Parameter_CUSTOM_MANUFACTURER_3 Parameter = 0xED
-	Parameter_CUSTOM_MANUFACTURER_4 Parameter = 0xEE
-	Parameter_CUSTOM_MANUFACTURER_5 Parameter = 0xEF
-	Parameter_CUSTOM_MANUFACTURER_6 Parameter = 0xF0
-	Parameter_CUSTOM_MANUFACTURER_7 Parameter = 0xF1
-	Parameter_CUSTOM_MANUFACTURER_8 Parameter = 0xF2
-	Parameter_SERIAL_NUMBER_1 Parameter = 0xF3
-	Parameter_SERIAL_NUMBER_2 Parameter = 0xF4
-	Parameter_SERIAL_NUMBER_3 Parameter = 0xF5
-	Parameter_SERIAL_NUMBER_4 Parameter = 0xF6
-	Parameter_CUSTOM_TYPE_1 Parameter = 0xF7
-	Parameter_CUSTOM_TYPE_2 Parameter = 0xF8
-	Parameter_CUSTOM_TYPE_3 Parameter = 0xF9
-	Parameter_CUSTOM_TYPE_4 Parameter = 0xFA
-	Parameter_CUSTOM_TYPE_5 Parameter = 0xFB
-	Parameter_CUSTOM_TYPE_6 Parameter = 0xFC
-	Parameter_CUSTOM_TYPE_7 Parameter = 0xFD
-	Parameter_CUSTOM_TYPE_8 Parameter = 0xFE
-	Parameter_UNKOWN_255 Parameter = 0xFF
+	Parameter_INTERFACE_OPTIONS_3                   Parameter = 0x42
+	Parameter_UNKOWN_67                             Parameter = 0x43
+	Parameter_UNKOWN_68                             Parameter = 0x44
+	Parameter_UNKOWN_69                             Parameter = 0x45
+	Parameter_UNKOWN_70                             Parameter = 0x46
+	Parameter_UNKOWN_71                             Parameter = 0x47
+	Parameter_UNKOWN_72                             Parameter = 0x48
+	Parameter_UNKOWN_73                             Parameter = 0x49
+	Parameter_UNKOWN_74                             Parameter = 0x4A
+	Parameter_UNKOWN_75                             Parameter = 0x4B
+	Parameter_UNKOWN_76                             Parameter = 0x4C
+	Parameter_UNKOWN_77                             Parameter = 0x4D
+	Parameter_UNKOWN_78                             Parameter = 0x4E
+	Parameter_UNKOWN_79                             Parameter = 0x4F
+	Parameter_UNKOWN_80                             Parameter = 0x50
+	Parameter_UNKOWN_81                             Parameter = 0x51
+	Parameter_UNKOWN_82                             Parameter = 0x52
+	Parameter_UNKOWN_83                             Parameter = 0x53
+	Parameter_UNKOWN_84                             Parameter = 0x54
+	Parameter_UNKOWN_85                             Parameter = 0x55
+	Parameter_UNKOWN_86                             Parameter = 0x56
+	Parameter_UNKOWN_87                             Parameter = 0x57
+	Parameter_UNKOWN_88                             Parameter = 0x58
+	Parameter_UNKOWN_89                             Parameter = 0x59
+	Parameter_UNKOWN_90                             Parameter = 0x5A
+	Parameter_UNKOWN_91                             Parameter = 0x5B
+	Parameter_UNKOWN_92                             Parameter = 0x5C
+	Parameter_UNKOWN_93                             Parameter = 0x5D
+	Parameter_UNKOWN_94                             Parameter = 0x5E
+	Parameter_UNKOWN_95                             Parameter = 0x5F
+	Parameter_UNKOWN_96                             Parameter = 0x60
+	Parameter_UNKOWN_97                             Parameter = 0x61
+	Parameter_UNKOWN_98                             Parameter = 0x62
+	Parameter_UNKOWN_99                             Parameter = 0x63
+	Parameter_UNKOWN_100                            Parameter = 0x64
+	Parameter_UNKOWN_101                            Parameter = 0x65
+	Parameter_UNKOWN_102                            Parameter = 0x66
+	Parameter_UNKOWN_103                            Parameter = 0x67
+	Parameter_UNKOWN_104                            Parameter = 0x68
+	Parameter_UNKOWN_105                            Parameter = 0x69
+	Parameter_UNKOWN_106                            Parameter = 0x6A
+	Parameter_UNKOWN_107                            Parameter = 0x6B
+	Parameter_UNKOWN_108                            Parameter = 0x6C
+	Parameter_UNKOWN_109                            Parameter = 0x6D
+	Parameter_UNKOWN_110                            Parameter = 0x6E
+	Parameter_UNKOWN_111                            Parameter = 0x6F
+	Parameter_UNKOWN_112                            Parameter = 0x70
+	Parameter_UNKOWN_113                            Parameter = 0x71
+	Parameter_UNKOWN_114                            Parameter = 0x72
+	Parameter_UNKOWN_115                            Parameter = 0x73
+	Parameter_UNKOWN_116                            Parameter = 0x74
+	Parameter_UNKOWN_117                            Parameter = 0x75
+	Parameter_UNKOWN_118                            Parameter = 0x76
+	Parameter_UNKOWN_119                            Parameter = 0x77
+	Parameter_UNKOWN_120                            Parameter = 0x78
+	Parameter_UNKOWN_121                            Parameter = 0x79
+	Parameter_UNKOWN_122                            Parameter = 0x7A
+	Parameter_UNKOWN_123                            Parameter = 0x7B
+	Parameter_UNKOWN_124                            Parameter = 0x7C
+	Parameter_UNKOWN_125                            Parameter = 0x7D
+	Parameter_UNKOWN_126                            Parameter = 0x7E
+	Parameter_UNKOWN_127                            Parameter = 0x7F
+	Parameter_UNKOWN_128                            Parameter = 0x80
+	Parameter_UNKOWN_129                            Parameter = 0x81
+	Parameter_UNKOWN_130                            Parameter = 0x82
+	Parameter_UNKOWN_131                            Parameter = 0x83
+	Parameter_UNKOWN_132                            Parameter = 0x84
+	Parameter_UNKOWN_133                            Parameter = 0x85
+	Parameter_UNKOWN_134                            Parameter = 0x86
+	Parameter_UNKOWN_135                            Parameter = 0x87
+	Parameter_UNKOWN_136                            Parameter = 0x88
+	Parameter_UNKOWN_137                            Parameter = 0x89
+	Parameter_UNKOWN_138                            Parameter = 0x8A
+	Parameter_UNKOWN_139                            Parameter = 0x8B
+	Parameter_UNKOWN_140                            Parameter = 0x8C
+	Parameter_UNKOWN_141                            Parameter = 0x8D
+	Parameter_UNKOWN_142                            Parameter = 0x8E
+	Parameter_UNKOWN_143                            Parameter = 0x8F
+	Parameter_UNKOWN_144                            Parameter = 0x90
+	Parameter_UNKOWN_145                            Parameter = 0x91
+	Parameter_UNKOWN_146                            Parameter = 0x92
+	Parameter_UNKOWN_147                            Parameter = 0x93
+	Parameter_UNKOWN_148                            Parameter = 0x94
+	Parameter_UNKOWN_149                            Parameter = 0x95
+	Parameter_UNKOWN_150                            Parameter = 0x96
+	Parameter_UNKOWN_151                            Parameter = 0x97
+	Parameter_UNKOWN_152                            Parameter = 0x98
+	Parameter_UNKOWN_153                            Parameter = 0x99
+	Parameter_UNKOWN_154                            Parameter = 0x9A
+	Parameter_UNKOWN_155                            Parameter = 0x9B
+	Parameter_UNKOWN_156                            Parameter = 0x9C
+	Parameter_UNKOWN_157                            Parameter = 0x9D
+	Parameter_UNKOWN_158                            Parameter = 0x9E
+	Parameter_UNKOWN_159                            Parameter = 0x9F
+	Parameter_UNKOWN_160                            Parameter = 0xA0
+	Parameter_UNKOWN_161                            Parameter = 0xA1
+	Parameter_UNKOWN_162                            Parameter = 0xA2
+	Parameter_UNKOWN_163                            Parameter = 0xA3
+	Parameter_UNKOWN_164                            Parameter = 0xA4
+	Parameter_UNKOWN_165                            Parameter = 0xA5
+	Parameter_UNKOWN_166                            Parameter = 0xA6
+	Parameter_UNKOWN_167                            Parameter = 0xA7
+	Parameter_UNKOWN_168                            Parameter = 0xA8
+	Parameter_UNKOWN_169                            Parameter = 0xA9
+	Parameter_UNKOWN_170                            Parameter = 0xAA
+	Parameter_UNKOWN_171                            Parameter = 0xAB
+	Parameter_UNKOWN_172                            Parameter = 0xAC
+	Parameter_UNKOWN_173                            Parameter = 0xAD
+	Parameter_UNKOWN_174                            Parameter = 0xAE
+	Parameter_UNKOWN_175                            Parameter = 0xAF
+	Parameter_UNKOWN_176                            Parameter = 0xB0
+	Parameter_UNKOWN_177                            Parameter = 0xB1
+	Parameter_UNKOWN_178                            Parameter = 0xB2
+	Parameter_UNKOWN_179                            Parameter = 0xB3
+	Parameter_UNKOWN_180                            Parameter = 0xB4
+	Parameter_UNKOWN_181                            Parameter = 0xB5
+	Parameter_UNKOWN_182                            Parameter = 0xB6
+	Parameter_UNKOWN_183                            Parameter = 0xB7
+	Parameter_UNKOWN_184                            Parameter = 0xB8
+	Parameter_UNKOWN_185                            Parameter = 0xB9
+	Parameter_UNKOWN_186                            Parameter = 0xBA
+	Parameter_UNKOWN_187                            Parameter = 0xBB
+	Parameter_UNKOWN_188                            Parameter = 0xBC
+	Parameter_UNKOWN_189                            Parameter = 0xBD
+	Parameter_UNKOWN_190                            Parameter = 0xBE
+	Parameter_UNKOWN_191                            Parameter = 0xBF
+	Parameter_UNKOWN_192                            Parameter = 0xC0
+	Parameter_UNKOWN_193                            Parameter = 0xC1
+	Parameter_UNKOWN_194                            Parameter = 0xC2
+	Parameter_UNKOWN_195                            Parameter = 0xC3
+	Parameter_UNKOWN_196                            Parameter = 0xC4
+	Parameter_UNKOWN_197                            Parameter = 0xC5
+	Parameter_UNKOWN_198                            Parameter = 0xC6
+	Parameter_UNKOWN_199                            Parameter = 0xC7
+	Parameter_UNKOWN_200                            Parameter = 0xC8
+	Parameter_UNKOWN_201                            Parameter = 0xC9
+	Parameter_UNKOWN_202                            Parameter = 0xCA
+	Parameter_UNKOWN_203                            Parameter = 0xCB
+	Parameter_UNKOWN_204                            Parameter = 0xCC
+	Parameter_UNKOWN_205                            Parameter = 0xCD
+	Parameter_UNKOWN_206                            Parameter = 0xCE
+	Parameter_UNKOWN_207                            Parameter = 0xCF
+	Parameter_UNKOWN_208                            Parameter = 0xD0
+	Parameter_UNKOWN_209                            Parameter = 0xD1
+	Parameter_UNKOWN_210                            Parameter = 0xD2
+	Parameter_UNKOWN_211                            Parameter = 0xD3
+	Parameter_UNKOWN_212                            Parameter = 0xD4
+	Parameter_UNKOWN_213                            Parameter = 0xD5
+	Parameter_UNKOWN_214                            Parameter = 0xD6
+	Parameter_UNKOWN_215                            Parameter = 0xD7
+	Parameter_UNKOWN_216                            Parameter = 0xD8
+	Parameter_UNKOWN_217                            Parameter = 0xD9
+	Parameter_UNKOWN_218                            Parameter = 0xDA
+	Parameter_UNKOWN_219                            Parameter = 0xDB
+	Parameter_UNKOWN_220                            Parameter = 0xDC
+	Parameter_UNKOWN_221                            Parameter = 0xDD
+	Parameter_UNKOWN_222                            Parameter = 0xDE
+	Parameter_UNKOWN_223                            Parameter = 0xDF
+	Parameter_UNKOWN_224                            Parameter = 0xE0
+	Parameter_UNKOWN_225                            Parameter = 0xE1
+	Parameter_UNKOWN_226                            Parameter = 0xE2
+	Parameter_UNKOWN_227                            Parameter = 0xE3
+	Parameter_UNKOWN_228                            Parameter = 0xE4
+	Parameter_UNKOWN_229                            Parameter = 0xE5
+	Parameter_UNKOWN_230                            Parameter = 0xE6
+	Parameter_UNKOWN_231                            Parameter = 0xE7
+	Parameter_UNKOWN_232                            Parameter = 0xE8
+	Parameter_UNKOWN_233                            Parameter = 0xE9
+	Parameter_UNKOWN_234                            Parameter = 0xEA
+	Parameter_CUSTOM_MANUFACTURER_1                 Parameter = 0xEB
+	Parameter_CUSTOM_MANUFACTURER_2                 Parameter = 0xEC
+	Parameter_CUSTOM_MANUFACTURER_3                 Parameter = 0xED
+	Parameter_CUSTOM_MANUFACTURER_4                 Parameter = 0xEE
+	Parameter_CUSTOM_MANUFACTURER_5                 Parameter = 0xEF
+	Parameter_CUSTOM_MANUFACTURER_6                 Parameter = 0xF0
+	Parameter_CUSTOM_MANUFACTURER_7                 Parameter = 0xF1
+	Parameter_CUSTOM_MANUFACTURER_8                 Parameter = 0xF2
+	Parameter_SERIAL_NUMBER_1                       Parameter = 0xF3
+	Parameter_SERIAL_NUMBER_2                       Parameter = 0xF4
+	Parameter_SERIAL_NUMBER_3                       Parameter = 0xF5
+	Parameter_SERIAL_NUMBER_4                       Parameter = 0xF6
+	Parameter_CUSTOM_TYPE_1                         Parameter = 0xF7
+	Parameter_CUSTOM_TYPE_2                         Parameter = 0xF8
+	Parameter_CUSTOM_TYPE_3                         Parameter = 0xF9
+	Parameter_CUSTOM_TYPE_4                         Parameter = 0xFA
+	Parameter_CUSTOM_TYPE_5                         Parameter = 0xFB
+	Parameter_CUSTOM_TYPE_6                         Parameter = 0xFC
+	Parameter_CUSTOM_TYPE_7                         Parameter = 0xFD
+	Parameter_CUSTOM_TYPE_8                         Parameter = 0xFE
+	Parameter_UNKOWN_255                            Parameter = 0xFF
 )
 
 var ParameterValues []Parameter
 
 func init() {
 	_ = errors.New
-	ParameterValues = []Parameter {
+	ParameterValues = []Parameter{
 		Parameter_UNKNOWN_01,
 		Parameter_UNKNOWN_02,
 		Parameter_UNKNOWN_03,
@@ -563,778 +563,1034 @@ func init() {
 	}
 }
 
-
 func (e Parameter) ParameterType() ParameterType {
-	switch e  {
-		case 0x00: { /* '0x00' */
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x01: { /* '0x01' */
+	case 0x01:
+		{ /* '0x01' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x02: { /* '0x02' */
+	case 0x02:
+		{ /* '0x02' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x03: { /* '0x03' */
+	case 0x03:
+		{ /* '0x03' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x04: { /* '0x04' */
+	case 0x04:
+		{ /* '0x04' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x05: { /* '0x05' */
+	case 0x05:
+		{ /* '0x05' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x06: { /* '0x06' */
+	case 0x06:
+		{ /* '0x06' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x07: { /* '0x07' */
+	case 0x07:
+		{ /* '0x07' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x08: { /* '0x08' */
+	case 0x08:
+		{ /* '0x08' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x09: { /* '0x09' */
+	case 0x09:
+		{ /* '0x09' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x0A: { /* '0x0A' */
+	case 0x0A:
+		{ /* '0x0A' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x0B: { /* '0x0B' */
+	case 0x0B:
+		{ /* '0x0B' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x0C: { /* '0x0C' */
+	case 0x0C:
+		{ /* '0x0C' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x0D: { /* '0x0D' */
+	case 0x0D:
+		{ /* '0x0D' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x0E: { /* '0x0E' */
+	case 0x0E:
+		{ /* '0x0E' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x0F: { /* '0x0F' */
+	case 0x0F:
+		{ /* '0x0F' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x10: { /* '0x10' */
+	case 0x10:
+		{ /* '0x10' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x11: { /* '0x11' */
+	case 0x11:
+		{ /* '0x11' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x12: { /* '0x12' */
+	case 0x12:
+		{ /* '0x12' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x13: { /* '0x13' */
+	case 0x13:
+		{ /* '0x13' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x14: { /* '0x14' */
+	case 0x14:
+		{ /* '0x14' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x15: { /* '0x15' */
+	case 0x15:
+		{ /* '0x15' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x16: { /* '0x16' */
+	case 0x16:
+		{ /* '0x16' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x17: { /* '0x17' */
+	case 0x17:
+		{ /* '0x17' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x18: { /* '0x18' */
+	case 0x18:
+		{ /* '0x18' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x19: { /* '0x19' */
+	case 0x19:
+		{ /* '0x19' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x1A: { /* '0x1A' */
+	case 0x1A:
+		{ /* '0x1A' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x1B: { /* '0x1B' */
+	case 0x1B:
+		{ /* '0x1B' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x1C: { /* '0x1C' */
+	case 0x1C:
+		{ /* '0x1C' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x1D: { /* '0x1D' */
+	case 0x1D:
+		{ /* '0x1D' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x1E: { /* '0x1E' */
+	case 0x1E:
+		{ /* '0x1E' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x1F: { /* '0x1F' */
+	case 0x1F:
+		{ /* '0x1F' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x20: { /* '0x20' */
+	case 0x20:
+		{ /* '0x20' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x21: { /* '0x21' */
+	case 0x21:
+		{ /* '0x21' */
 			return ParameterType_APPLICATION_ADDRESS_1
 		}
-		case 0x22: { /* '0x22' */
+	case 0x22:
+		{ /* '0x22' */
 			return ParameterType_APPLICATION_ADDRESS_2
 		}
-		case 0x23: { /* '0x23' */
+	case 0x23:
+		{ /* '0x23' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x24: { /* '0x24' */
+	case 0x24:
+		{ /* '0x24' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x25: { /* '0x25' */
+	case 0x25:
+		{ /* '0x25' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x26: { /* '0x26' */
+	case 0x26:
+		{ /* '0x26' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x27: { /* '0x27' */
+	case 0x27:
+		{ /* '0x27' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x28: { /* '0x28' */
+	case 0x28:
+		{ /* '0x28' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x29: { /* '0x29' */
+	case 0x29:
+		{ /* '0x29' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x2A: { /* '0x2A' */
+	case 0x2A:
+		{ /* '0x2A' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x2B: { /* '0x2B' */
+	case 0x2B:
+		{ /* '0x2B' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x2C: { /* '0x2C' */
+	case 0x2C:
+		{ /* '0x2C' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x2D: { /* '0x2D' */
+	case 0x2D:
+		{ /* '0x2D' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x2E: { /* '0x2E' */
+	case 0x2E:
+		{ /* '0x2E' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x2F: { /* '0x2F' */
+	case 0x2F:
+		{ /* '0x2F' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x30: { /* '0x30' */
+	case 0x30:
+		{ /* '0x30' */
 			return ParameterType_INTERFACE_OPTIONS_1
 		}
-		case 0x31: { /* '0x31' */
+	case 0x31:
+		{ /* '0x31' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x32: { /* '0x32' */
+	case 0x32:
+		{ /* '0x32' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x33: { /* '0x33' */
+	case 0x33:
+		{ /* '0x33' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x34: { /* '0x34' */
+	case 0x34:
+		{ /* '0x34' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x35: { /* '0x35' */
+	case 0x35:
+		{ /* '0x35' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x36: { /* '0x36' */
+	case 0x36:
+		{ /* '0x36' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x37: { /* '0x37' */
+	case 0x37:
+		{ /* '0x37' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x38: { /* '0x38' */
+	case 0x38:
+		{ /* '0x38' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x39: { /* '0x39' */
+	case 0x39:
+		{ /* '0x39' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x3A: { /* '0x3A' */
+	case 0x3A:
+		{ /* '0x3A' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x3B: { /* '0x3B' */
+	case 0x3B:
+		{ /* '0x3B' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x3C: { /* '0x3C' */
+	case 0x3C:
+		{ /* '0x3C' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x3D: { /* '0x3D' */
+	case 0x3D:
+		{ /* '0x3D' */
 			return ParameterType_BAUD_RATE_SELECTOR
 		}
-		case 0x3E: { /* '0x3E' */
+	case 0x3E:
+		{ /* '0x3E' */
 			return ParameterType_INTERFACE_OPTIONS_2
 		}
-		case 0x3F: { /* '0x3F' */
+	case 0x3F:
+		{ /* '0x3F' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x40: { /* '0x40' */
+	case 0x40:
+		{ /* '0x40' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x41: { /* '0x41' */
+	case 0x41:
+		{ /* '0x41' */
 			return ParameterType_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS
 		}
-		case 0x42: { /* '0x42' */
+	case 0x42:
+		{ /* '0x42' */
 			return ParameterType_INTERFACE_OPTIONS_3
 		}
-		case 0x43: { /* '0x43' */
+	case 0x43:
+		{ /* '0x43' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x44: { /* '0x44' */
+	case 0x44:
+		{ /* '0x44' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x45: { /* '0x45' */
+	case 0x45:
+		{ /* '0x45' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x46: { /* '0x46' */
+	case 0x46:
+		{ /* '0x46' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x47: { /* '0x47' */
+	case 0x47:
+		{ /* '0x47' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x48: { /* '0x48' */
+	case 0x48:
+		{ /* '0x48' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x49: { /* '0x49' */
+	case 0x49:
+		{ /* '0x49' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x4A: { /* '0x4A' */
+	case 0x4A:
+		{ /* '0x4A' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x4B: { /* '0x4B' */
+	case 0x4B:
+		{ /* '0x4B' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x4C: { /* '0x4C' */
+	case 0x4C:
+		{ /* '0x4C' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x4D: { /* '0x4D' */
+	case 0x4D:
+		{ /* '0x4D' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x4E: { /* '0x4E' */
+	case 0x4E:
+		{ /* '0x4E' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x4F: { /* '0x4F' */
+	case 0x4F:
+		{ /* '0x4F' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x50: { /* '0x50' */
+	case 0x50:
+		{ /* '0x50' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x51: { /* '0x51' */
+	case 0x51:
+		{ /* '0x51' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x52: { /* '0x52' */
+	case 0x52:
+		{ /* '0x52' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x53: { /* '0x53' */
+	case 0x53:
+		{ /* '0x53' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x54: { /* '0x54' */
+	case 0x54:
+		{ /* '0x54' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x55: { /* '0x55' */
+	case 0x55:
+		{ /* '0x55' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x56: { /* '0x56' */
+	case 0x56:
+		{ /* '0x56' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x57: { /* '0x57' */
+	case 0x57:
+		{ /* '0x57' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x58: { /* '0x58' */
+	case 0x58:
+		{ /* '0x58' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x59: { /* '0x59' */
+	case 0x59:
+		{ /* '0x59' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x5A: { /* '0x5A' */
+	case 0x5A:
+		{ /* '0x5A' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x5B: { /* '0x5B' */
+	case 0x5B:
+		{ /* '0x5B' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x5C: { /* '0x5C' */
+	case 0x5C:
+		{ /* '0x5C' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x5D: { /* '0x5D' */
+	case 0x5D:
+		{ /* '0x5D' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x5E: { /* '0x5E' */
+	case 0x5E:
+		{ /* '0x5E' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x5F: { /* '0x5F' */
+	case 0x5F:
+		{ /* '0x5F' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x60: { /* '0x60' */
+	case 0x60:
+		{ /* '0x60' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x61: { /* '0x61' */
+	case 0x61:
+		{ /* '0x61' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x62: { /* '0x62' */
+	case 0x62:
+		{ /* '0x62' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x63: { /* '0x63' */
+	case 0x63:
+		{ /* '0x63' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x64: { /* '0x64' */
+	case 0x64:
+		{ /* '0x64' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x65: { /* '0x65' */
+	case 0x65:
+		{ /* '0x65' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x66: { /* '0x66' */
+	case 0x66:
+		{ /* '0x66' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x67: { /* '0x67' */
+	case 0x67:
+		{ /* '0x67' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x68: { /* '0x68' */
+	case 0x68:
+		{ /* '0x68' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x69: { /* '0x69' */
+	case 0x69:
+		{ /* '0x69' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x6A: { /* '0x6A' */
+	case 0x6A:
+		{ /* '0x6A' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x6B: { /* '0x6B' */
+	case 0x6B:
+		{ /* '0x6B' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x6C: { /* '0x6C' */
+	case 0x6C:
+		{ /* '0x6C' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x6D: { /* '0x6D' */
+	case 0x6D:
+		{ /* '0x6D' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x6E: { /* '0x6E' */
+	case 0x6E:
+		{ /* '0x6E' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x6F: { /* '0x6F' */
+	case 0x6F:
+		{ /* '0x6F' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x70: { /* '0x70' */
+	case 0x70:
+		{ /* '0x70' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x71: { /* '0x71' */
+	case 0x71:
+		{ /* '0x71' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x72: { /* '0x72' */
+	case 0x72:
+		{ /* '0x72' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x73: { /* '0x73' */
+	case 0x73:
+		{ /* '0x73' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x74: { /* '0x74' */
+	case 0x74:
+		{ /* '0x74' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x75: { /* '0x75' */
+	case 0x75:
+		{ /* '0x75' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x76: { /* '0x76' */
+	case 0x76:
+		{ /* '0x76' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x77: { /* '0x77' */
+	case 0x77:
+		{ /* '0x77' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x78: { /* '0x78' */
+	case 0x78:
+		{ /* '0x78' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x79: { /* '0x79' */
+	case 0x79:
+		{ /* '0x79' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x7A: { /* '0x7A' */
+	case 0x7A:
+		{ /* '0x7A' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x7B: { /* '0x7B' */
+	case 0x7B:
+		{ /* '0x7B' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x7C: { /* '0x7C' */
+	case 0x7C:
+		{ /* '0x7C' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x7D: { /* '0x7D' */
+	case 0x7D:
+		{ /* '0x7D' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x7E: { /* '0x7E' */
+	case 0x7E:
+		{ /* '0x7E' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x7F: { /* '0x7F' */
+	case 0x7F:
+		{ /* '0x7F' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x80: { /* '0x80' */
+	case 0x80:
+		{ /* '0x80' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x81: { /* '0x81' */
+	case 0x81:
+		{ /* '0x81' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x82: { /* '0x82' */
+	case 0x82:
+		{ /* '0x82' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x83: { /* '0x83' */
+	case 0x83:
+		{ /* '0x83' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x84: { /* '0x84' */
+	case 0x84:
+		{ /* '0x84' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x85: { /* '0x85' */
+	case 0x85:
+		{ /* '0x85' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x86: { /* '0x86' */
+	case 0x86:
+		{ /* '0x86' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x87: { /* '0x87' */
+	case 0x87:
+		{ /* '0x87' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x88: { /* '0x88' */
+	case 0x88:
+		{ /* '0x88' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x89: { /* '0x89' */
+	case 0x89:
+		{ /* '0x89' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x8A: { /* '0x8A' */
+	case 0x8A:
+		{ /* '0x8A' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x8B: { /* '0x8B' */
+	case 0x8B:
+		{ /* '0x8B' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x8C: { /* '0x8C' */
+	case 0x8C:
+		{ /* '0x8C' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x8D: { /* '0x8D' */
+	case 0x8D:
+		{ /* '0x8D' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x8E: { /* '0x8E' */
+	case 0x8E:
+		{ /* '0x8E' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x8F: { /* '0x8F' */
+	case 0x8F:
+		{ /* '0x8F' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x90: { /* '0x90' */
+	case 0x90:
+		{ /* '0x90' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x91: { /* '0x91' */
+	case 0x91:
+		{ /* '0x91' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x92: { /* '0x92' */
+	case 0x92:
+		{ /* '0x92' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x93: { /* '0x93' */
+	case 0x93:
+		{ /* '0x93' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x94: { /* '0x94' */
+	case 0x94:
+		{ /* '0x94' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x95: { /* '0x95' */
+	case 0x95:
+		{ /* '0x95' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x96: { /* '0x96' */
+	case 0x96:
+		{ /* '0x96' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x97: { /* '0x97' */
+	case 0x97:
+		{ /* '0x97' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x98: { /* '0x98' */
+	case 0x98:
+		{ /* '0x98' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x99: { /* '0x99' */
+	case 0x99:
+		{ /* '0x99' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x9A: { /* '0x9A' */
+	case 0x9A:
+		{ /* '0x9A' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x9B: { /* '0x9B' */
+	case 0x9B:
+		{ /* '0x9B' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x9C: { /* '0x9C' */
+	case 0x9C:
+		{ /* '0x9C' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x9D: { /* '0x9D' */
+	case 0x9D:
+		{ /* '0x9D' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x9E: { /* '0x9E' */
+	case 0x9E:
+		{ /* '0x9E' */
 			return ParameterType_UNKNOWN
 		}
-		case 0x9F: { /* '0x9F' */
+	case 0x9F:
+		{ /* '0x9F' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xA0: { /* '0xA0' */
+	case 0xA0:
+		{ /* '0xA0' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xA1: { /* '0xA1' */
+	case 0xA1:
+		{ /* '0xA1' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xA2: { /* '0xA2' */
+	case 0xA2:
+		{ /* '0xA2' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xA3: { /* '0xA3' */
+	case 0xA3:
+		{ /* '0xA3' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xA4: { /* '0xA4' */
+	case 0xA4:
+		{ /* '0xA4' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xA5: { /* '0xA5' */
+	case 0xA5:
+		{ /* '0xA5' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xA6: { /* '0xA6' */
+	case 0xA6:
+		{ /* '0xA6' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xA7: { /* '0xA7' */
+	case 0xA7:
+		{ /* '0xA7' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xA8: { /* '0xA8' */
+	case 0xA8:
+		{ /* '0xA8' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xA9: { /* '0xA9' */
+	case 0xA9:
+		{ /* '0xA9' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xAA: { /* '0xAA' */
+	case 0xAA:
+		{ /* '0xAA' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xAB: { /* '0xAB' */
+	case 0xAB:
+		{ /* '0xAB' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xAC: { /* '0xAC' */
+	case 0xAC:
+		{ /* '0xAC' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xAD: { /* '0xAD' */
+	case 0xAD:
+		{ /* '0xAD' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xAE: { /* '0xAE' */
+	case 0xAE:
+		{ /* '0xAE' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xAF: { /* '0xAF' */
+	case 0xAF:
+		{ /* '0xAF' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xB0: { /* '0xB0' */
+	case 0xB0:
+		{ /* '0xB0' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xB1: { /* '0xB1' */
+	case 0xB1:
+		{ /* '0xB1' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xB2: { /* '0xB2' */
+	case 0xB2:
+		{ /* '0xB2' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xB3: { /* '0xB3' */
+	case 0xB3:
+		{ /* '0xB3' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xB4: { /* '0xB4' */
+	case 0xB4:
+		{ /* '0xB4' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xB5: { /* '0xB5' */
+	case 0xB5:
+		{ /* '0xB5' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xB6: { /* '0xB6' */
+	case 0xB6:
+		{ /* '0xB6' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xB7: { /* '0xB7' */
+	case 0xB7:
+		{ /* '0xB7' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xB8: { /* '0xB8' */
+	case 0xB8:
+		{ /* '0xB8' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xB9: { /* '0xB9' */
+	case 0xB9:
+		{ /* '0xB9' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xBA: { /* '0xBA' */
+	case 0xBA:
+		{ /* '0xBA' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xBB: { /* '0xBB' */
+	case 0xBB:
+		{ /* '0xBB' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xBC: { /* '0xBC' */
+	case 0xBC:
+		{ /* '0xBC' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xBD: { /* '0xBD' */
+	case 0xBD:
+		{ /* '0xBD' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xBE: { /* '0xBE' */
+	case 0xBE:
+		{ /* '0xBE' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xBF: { /* '0xBF' */
+	case 0xBF:
+		{ /* '0xBF' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xC0: { /* '0xC0' */
+	case 0xC0:
+		{ /* '0xC0' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xC1: { /* '0xC1' */
+	case 0xC1:
+		{ /* '0xC1' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xC2: { /* '0xC2' */
+	case 0xC2:
+		{ /* '0xC2' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xC3: { /* '0xC3' */
+	case 0xC3:
+		{ /* '0xC3' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xC4: { /* '0xC4' */
+	case 0xC4:
+		{ /* '0xC4' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xC5: { /* '0xC5' */
+	case 0xC5:
+		{ /* '0xC5' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xC6: { /* '0xC6' */
+	case 0xC6:
+		{ /* '0xC6' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xC7: { /* '0xC7' */
+	case 0xC7:
+		{ /* '0xC7' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xC8: { /* '0xC8' */
+	case 0xC8:
+		{ /* '0xC8' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xC9: { /* '0xC9' */
+	case 0xC9:
+		{ /* '0xC9' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xCA: { /* '0xCA' */
+	case 0xCA:
+		{ /* '0xCA' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xCB: { /* '0xCB' */
+	case 0xCB:
+		{ /* '0xCB' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xCC: { /* '0xCC' */
+	case 0xCC:
+		{ /* '0xCC' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xCD: { /* '0xCD' */
+	case 0xCD:
+		{ /* '0xCD' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xCE: { /* '0xCE' */
+	case 0xCE:
+		{ /* '0xCE' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xCF: { /* '0xCF' */
+	case 0xCF:
+		{ /* '0xCF' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xD0: { /* '0xD0' */
+	case 0xD0:
+		{ /* '0xD0' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xD1: { /* '0xD1' */
+	case 0xD1:
+		{ /* '0xD1' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xD2: { /* '0xD2' */
+	case 0xD2:
+		{ /* '0xD2' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xD3: { /* '0xD3' */
+	case 0xD3:
+		{ /* '0xD3' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xD4: { /* '0xD4' */
+	case 0xD4:
+		{ /* '0xD4' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xD5: { /* '0xD5' */
+	case 0xD5:
+		{ /* '0xD5' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xD6: { /* '0xD6' */
+	case 0xD6:
+		{ /* '0xD6' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xD7: { /* '0xD7' */
+	case 0xD7:
+		{ /* '0xD7' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xD8: { /* '0xD8' */
+	case 0xD8:
+		{ /* '0xD8' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xD9: { /* '0xD9' */
+	case 0xD9:
+		{ /* '0xD9' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xDA: { /* '0xDA' */
+	case 0xDA:
+		{ /* '0xDA' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xDB: { /* '0xDB' */
+	case 0xDB:
+		{ /* '0xDB' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xDC: { /* '0xDC' */
+	case 0xDC:
+		{ /* '0xDC' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xDD: { /* '0xDD' */
+	case 0xDD:
+		{ /* '0xDD' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xDE: { /* '0xDE' */
+	case 0xDE:
+		{ /* '0xDE' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xDF: { /* '0xDF' */
+	case 0xDF:
+		{ /* '0xDF' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xE0: { /* '0xE0' */
+	case 0xE0:
+		{ /* '0xE0' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xE1: { /* '0xE1' */
+	case 0xE1:
+		{ /* '0xE1' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xE2: { /* '0xE2' */
+	case 0xE2:
+		{ /* '0xE2' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xE3: { /* '0xE3' */
+	case 0xE3:
+		{ /* '0xE3' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xE4: { /* '0xE4' */
+	case 0xE4:
+		{ /* '0xE4' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xE5: { /* '0xE5' */
+	case 0xE5:
+		{ /* '0xE5' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xE6: { /* '0xE6' */
+	case 0xE6:
+		{ /* '0xE6' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xE7: { /* '0xE7' */
+	case 0xE7:
+		{ /* '0xE7' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xE8: { /* '0xE8' */
+	case 0xE8:
+		{ /* '0xE8' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xE9: { /* '0xE9' */
+	case 0xE9:
+		{ /* '0xE9' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xEA: { /* '0xEA' */
+	case 0xEA:
+		{ /* '0xEA' */
 			return ParameterType_UNKNOWN
 		}
-		case 0xEB: { /* '0xEB' */
+	case 0xEB:
+		{ /* '0xEB' */
 			return ParameterType_CUSTOM_MANUFACTURER
 		}
-		case 0xEC: { /* '0xEC' */
+	case 0xEC:
+		{ /* '0xEC' */
 			return ParameterType_CUSTOM_MANUFACTURER
 		}
-		case 0xED: { /* '0xED' */
+	case 0xED:
+		{ /* '0xED' */
 			return ParameterType_CUSTOM_MANUFACTURER
 		}
-		case 0xEE: { /* '0xEE' */
+	case 0xEE:
+		{ /* '0xEE' */
 			return ParameterType_CUSTOM_MANUFACTURER
 		}
-		case 0xEF: { /* '0xEF' */
+	case 0xEF:
+		{ /* '0xEF' */
 			return ParameterType_CUSTOM_MANUFACTURER
 		}
-		case 0xF0: { /* '0xF0' */
+	case 0xF0:
+		{ /* '0xF0' */
 			return ParameterType_CUSTOM_MANUFACTURER
 		}
-		case 0xF1: { /* '0xF1' */
+	case 0xF1:
+		{ /* '0xF1' */
 			return ParameterType_CUSTOM_MANUFACTURER
 		}
-		case 0xF2: { /* '0xF2' */
+	case 0xF2:
+		{ /* '0xF2' */
 			return ParameterType_CUSTOM_MANUFACTURER
 		}
-		case 0xF3: { /* '0xF3' */
+	case 0xF3:
+		{ /* '0xF3' */
 			return ParameterType_SERIAL_NUMBER
 		}
-		case 0xF4: { /* '0xF4' */
+	case 0xF4:
+		{ /* '0xF4' */
 			return ParameterType_SERIAL_NUMBER
 		}
-		case 0xF5: { /* '0xF5' */
+	case 0xF5:
+		{ /* '0xF5' */
 			return ParameterType_SERIAL_NUMBER
 		}
-		case 0xF6: { /* '0xF6' */
+	case 0xF6:
+		{ /* '0xF6' */
 			return ParameterType_SERIAL_NUMBER
 		}
-		case 0xF7: { /* '0xF7' */
+	case 0xF7:
+		{ /* '0xF7' */
 			return ParameterType_CUSTOM_TYPE
 		}
-		case 0xF8: { /* '0xF8' */
+	case 0xF8:
+		{ /* '0xF8' */
 			return ParameterType_CUSTOM_TYPE
 		}
-		case 0xF9: { /* '0xF9' */
+	case 0xF9:
+		{ /* '0xF9' */
 			return ParameterType_CUSTOM_TYPE
 		}
-		case 0xFA: { /* '0xFA' */
+	case 0xFA:
+		{ /* '0xFA' */
 			return ParameterType_CUSTOM_TYPE
 		}
-		case 0xFB: { /* '0xFB' */
+	case 0xFB:
+		{ /* '0xFB' */
 			return ParameterType_CUSTOM_TYPE
 		}
-		case 0xFC: { /* '0xFC' */
+	case 0xFC:
+		{ /* '0xFC' */
 			return ParameterType_CUSTOM_TYPE
 		}
-		case 0xFD: { /* '0xFD' */
+	case 0xFD:
+		{ /* '0xFD' */
 			return ParameterType_CUSTOM_TYPE
 		}
-		case 0xFE: { /* '0xFE' */
+	case 0xFE:
+		{ /* '0xFE' */
 			return ParameterType_CUSTOM_TYPE
 		}
-		case 0xFF: { /* '0xFF' */
+	case 0xFF:
+		{ /* '0xFF' */
 			return ParameterType_UNKNOWN
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -1350,776 +1606,1033 @@ func ParameterFirstEnumForFieldParameterType(value ParameterType) (Parameter, er
 }
 
 func (e Parameter) Form() string {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return ""
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return ""
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return ""
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return ""
+		}
+	case 0x03:
+		{ /* '0x03' */
+			return ""
+		}
+	case 0x04:
+		{ /* '0x04' */
+			return ""
+		}
+	case 0x05:
+		{ /* '0x05' */
+			return ""
+		}
+	case 0x06:
+		{ /* '0x06' */
+			return ""
+		}
+	case 0x07:
+		{ /* '0x07' */
+			return ""
+		}
+	case 0x08:
+		{ /* '0x08' */
+			return ""
+		}
+	case 0x09:
+		{ /* '0x09' */
+			return ""
+		}
+	case 0x0A:
+		{ /* '0x0A' */
+			return ""
+		}
+	case 0x0B:
+		{ /* '0x0B' */
+			return ""
+		}
+	case 0x0C:
+		{ /* '0x0C' */
+			return ""
+		}
+	case 0x0D:
+		{ /* '0x0D' */
+			return ""
+		}
+	case 0x0E:
+		{ /* '0x0E' */
+			return ""
+		}
+	case 0x0F:
+		{ /* '0x0F' */
+			return ""
+		}
+	case 0x10:
+		{ /* '0x10' */
+			return ""
+		}
+	case 0x11:
+		{ /* '0x11' */
+			return ""
+		}
+	case 0x12:
+		{ /* '0x12' */
+			return ""
+		}
+	case 0x13:
+		{ /* '0x13' */
+			return ""
+		}
+	case 0x14:
+		{ /* '0x14' */
+			return ""
+		}
+	case 0x15:
+		{ /* '0x15' */
+			return ""
+		}
+	case 0x16:
+		{ /* '0x16' */
+			return ""
+		}
+	case 0x17:
+		{ /* '0x17' */
+			return ""
+		}
+	case 0x18:
+		{ /* '0x18' */
+			return ""
+		}
+	case 0x19:
+		{ /* '0x19' */
+			return ""
 		}
-		case 0x01: { /* '0x01' */
-            return ""
+	case 0x1A:
+		{ /* '0x1A' */
+			return ""
 		}
-		case 0x02: { /* '0x02' */
-            return ""
+	case 0x1B:
+		{ /* '0x1B' */
+			return ""
 		}
-		case 0x03: { /* '0x03' */
-            return ""
+	case 0x1C:
+		{ /* '0x1C' */
+			return ""
 		}
-		case 0x04: { /* '0x04' */
-            return ""
+	case 0x1D:
+		{ /* '0x1D' */
+			return ""
 		}
-		case 0x05: { /* '0x05' */
-            return ""
+	case 0x1E:
+		{ /* '0x1E' */
+			return ""
 		}
-		case 0x06: { /* '0x06' */
-            return ""
+	case 0x1F:
+		{ /* '0x1F' */
+			return ""
 		}
-		case 0x07: { /* '0x07' */
-            return ""
+	case 0x20:
+		{ /* '0x20' */
+			return ""
 		}
-		case 0x08: { /* '0x08' */
-            return ""
+	case 0x21:
+		{ /* '0x21' */
+			return "Byte (Note 1)"
 		}
-		case 0x09: { /* '0x09' */
-            return ""
+	case 0x22:
+		{ /* '0x22' */
+			return "Byte (Note 1)"
 		}
-		case 0x0A: { /* '0x0A' */
-            return ""
+	case 0x23:
+		{ /* '0x23' */
+			return ""
 		}
-		case 0x0B: { /* '0x0B' */
-            return ""
+	case 0x24:
+		{ /* '0x24' */
+			return ""
 		}
-		case 0x0C: { /* '0x0C' */
-            return ""
+	case 0x25:
+		{ /* '0x25' */
+			return ""
 		}
-		case 0x0D: { /* '0x0D' */
-            return ""
+	case 0x26:
+		{ /* '0x26' */
+			return ""
 		}
-		case 0x0E: { /* '0x0E' */
-            return ""
+	case 0x27:
+		{ /* '0x27' */
+			return ""
 		}
-		case 0x0F: { /* '0x0F' */
-            return ""
+	case 0x28:
+		{ /* '0x28' */
+			return ""
 		}
-		case 0x10: { /* '0x10' */
-            return ""
+	case 0x29:
+		{ /* '0x29' */
+			return ""
 		}
-		case 0x11: { /* '0x11' */
-            return ""
+	case 0x2A:
+		{ /* '0x2A' */
+			return ""
 		}
-		case 0x12: { /* '0x12' */
-            return ""
+	case 0x2B:
+		{ /* '0x2B' */
+			return ""
 		}
-		case 0x13: { /* '0x13' */
-            return ""
+	case 0x2C:
+		{ /* '0x2C' */
+			return ""
 		}
-		case 0x14: { /* '0x14' */
-            return ""
+	case 0x2D:
+		{ /* '0x2D' */
+			return ""
 		}
-		case 0x15: { /* '0x15' */
-            return ""
+	case 0x2E:
+		{ /* '0x2E' */
+			return ""
 		}
-		case 0x16: { /* '0x16' */
-            return ""
+	case 0x2F:
+		{ /* '0x2F' */
+			return ""
 		}
-		case 0x17: { /* '0x17' */
-            return ""
+	case 0x30:
+		{ /* '0x30' */
+			return "8 Bits (Note 2)"
 		}
-		case 0x18: { /* '0x18' */
-            return ""
+	case 0x31:
+		{ /* '0x31' */
+			return ""
 		}
-		case 0x19: { /* '0x19' */
-            return ""
+	case 0x32:
+		{ /* '0x32' */
+			return ""
 		}
-		case 0x1A: { /* '0x1A' */
-            return ""
+	case 0x33:
+		{ /* '0x33' */
+			return ""
 		}
-		case 0x1B: { /* '0x1B' */
-            return ""
+	case 0x34:
+		{ /* '0x34' */
+			return ""
 		}
-		case 0x1C: { /* '0x1C' */
-            return ""
+	case 0x35:
+		{ /* '0x35' */
+			return ""
 		}
-		case 0x1D: { /* '0x1D' */
-            return ""
+	case 0x36:
+		{ /* '0x36' */
+			return ""
 		}
-		case 0x1E: { /* '0x1E' */
-            return ""
+	case 0x37:
+		{ /* '0x37' */
+			return ""
 		}
-		case 0x1F: { /* '0x1F' */
-            return ""
+	case 0x38:
+		{ /* '0x38' */
+			return ""
 		}
-		case 0x20: { /* '0x20' */
-            return ""
+	case 0x39:
+		{ /* '0x39' */
+			return ""
 		}
-		case 0x21: { /* '0x21' */
-            return "Byte (Note 1)"
+	case 0x3A:
+		{ /* '0x3A' */
+			return ""
 		}
-		case 0x22: { /* '0x22' */
-            return "Byte (Note 1)"
+	case 0x3B:
+		{ /* '0x3B' */
+			return ""
 		}
-		case 0x23: { /* '0x23' */
-            return ""
+	case 0x3C:
+		{ /* '0x3C' */
+			return ""
 		}
-		case 0x24: { /* '0x24' */
-            return ""
+	case 0x3D:
+		{ /* '0x3D' */
+			return "Byte (Note 3)"
 		}
-		case 0x25: { /* '0x25' */
-            return ""
+	case 0x3E:
+		{ /* '0x3E' */
+			return "Byte (Note 4)"
 		}
-		case 0x26: { /* '0x26' */
-            return ""
+	case 0x3F:
+		{ /* '0x3F' */
+			return ""
 		}
-		case 0x27: { /* '0x27' */
-            return ""
+	case 0x40:
+		{ /* '0x40' */
+			return ""
 		}
-		case 0x28: { /* '0x28' */
-            return ""
+	case 0x41:
+		{ /* '0x41' */
+			return "8 Bits (Note 5)"
 		}
-		case 0x29: { /* '0x29' */
-            return ""
+	case 0x42:
+		{ /* '0x42' */
+			return "Byte (Note 6)"
 		}
-		case 0x2A: { /* '0x2A' */
-            return ""
+	case 0x43:
+		{ /* '0x43' */
+			return ""
 		}
-		case 0x2B: { /* '0x2B' */
-            return ""
+	case 0x44:
+		{ /* '0x44' */
+			return ""
 		}
-		case 0x2C: { /* '0x2C' */
-            return ""
+	case 0x45:
+		{ /* '0x45' */
+			return ""
 		}
-		case 0x2D: { /* '0x2D' */
-            return ""
+	case 0x46:
+		{ /* '0x46' */
+			return ""
 		}
-		case 0x2E: { /* '0x2E' */
-            return ""
+	case 0x47:
+		{ /* '0x47' */
+			return ""
 		}
-		case 0x2F: { /* '0x2F' */
-            return ""
+	case 0x48:
+		{ /* '0x48' */
+			return ""
 		}
-		case 0x30: { /* '0x30' */
-            return "8 Bits (Note 2)"
+	case 0x49:
+		{ /* '0x49' */
+			return ""
 		}
-		case 0x31: { /* '0x31' */
-            return ""
+	case 0x4A:
+		{ /* '0x4A' */
+			return ""
 		}
-		case 0x32: { /* '0x32' */
-            return ""
+	case 0x4B:
+		{ /* '0x4B' */
+			return ""
 		}
-		case 0x33: { /* '0x33' */
-            return ""
+	case 0x4C:
+		{ /* '0x4C' */
+			return ""
 		}
-		case 0x34: { /* '0x34' */
-            return ""
+	case 0x4D:
+		{ /* '0x4D' */
+			return ""
 		}
-		case 0x35: { /* '0x35' */
-            return ""
+	case 0x4E:
+		{ /* '0x4E' */
+			return ""
 		}
-		case 0x36: { /* '0x36' */
-            return ""
+	case 0x4F:
+		{ /* '0x4F' */
+			return ""
 		}
-		case 0x37: { /* '0x37' */
-            return ""
+	case 0x50:
+		{ /* '0x50' */
+			return ""
 		}
-		case 0x38: { /* '0x38' */
-            return ""
+	case 0x51:
+		{ /* '0x51' */
+			return ""
 		}
-		case 0x39: { /* '0x39' */
-            return ""
+	case 0x52:
+		{ /* '0x52' */
+			return ""
 		}
-		case 0x3A: { /* '0x3A' */
-            return ""
+	case 0x53:
+		{ /* '0x53' */
+			return ""
 		}
-		case 0x3B: { /* '0x3B' */
-            return ""
+	case 0x54:
+		{ /* '0x54' */
+			return ""
 		}
-		case 0x3C: { /* '0x3C' */
-            return ""
+	case 0x55:
+		{ /* '0x55' */
+			return ""
 		}
-		case 0x3D: { /* '0x3D' */
-            return "Byte (Note 3)"
+	case 0x56:
+		{ /* '0x56' */
+			return ""
 		}
-		case 0x3E: { /* '0x3E' */
-            return "Byte (Note 4)"
+	case 0x57:
+		{ /* '0x57' */
+			return ""
 		}
-		case 0x3F: { /* '0x3F' */
-            return ""
+	case 0x58:
+		{ /* '0x58' */
+			return ""
 		}
-		case 0x40: { /* '0x40' */
-            return ""
+	case 0x59:
+		{ /* '0x59' */
+			return ""
 		}
-		case 0x41: { /* '0x41' */
-            return "8 Bits (Note 5)"
+	case 0x5A:
+		{ /* '0x5A' */
+			return ""
 		}
-		case 0x42: { /* '0x42' */
-            return "Byte (Note 6)"
+	case 0x5B:
+		{ /* '0x5B' */
+			return ""
 		}
-		case 0x43: { /* '0x43' */
-            return ""
+	case 0x5C:
+		{ /* '0x5C' */
+			return ""
 		}
-		case 0x44: { /* '0x44' */
-            return ""
+	case 0x5D:
+		{ /* '0x5D' */
+			return ""
 		}
-		case 0x45: { /* '0x45' */
-            return ""
+	case 0x5E:
+		{ /* '0x5E' */
+			return ""
 		}
-		case 0x46: { /* '0x46' */
-            return ""
+	case 0x5F:
+		{ /* '0x5F' */
+			return ""
 		}
-		case 0x47: { /* '0x47' */
-            return ""
+	case 0x60:
+		{ /* '0x60' */
+			return ""
 		}
-		case 0x48: { /* '0x48' */
-            return ""
+	case 0x61:
+		{ /* '0x61' */
+			return ""
 		}
-		case 0x49: { /* '0x49' */
-            return ""
+	case 0x62:
+		{ /* '0x62' */
+			return ""
 		}
-		case 0x4A: { /* '0x4A' */
-            return ""
+	case 0x63:
+		{ /* '0x63' */
+			return ""
 		}
-		case 0x4B: { /* '0x4B' */
-            return ""
+	case 0x64:
+		{ /* '0x64' */
+			return ""
 		}
-		case 0x4C: { /* '0x4C' */
-            return ""
+	case 0x65:
+		{ /* '0x65' */
+			return ""
 		}
-		case 0x4D: { /* '0x4D' */
-            return ""
+	case 0x66:
+		{ /* '0x66' */
+			return ""
 		}
-		case 0x4E: { /* '0x4E' */
-            return ""
+	case 0x67:
+		{ /* '0x67' */
+			return ""
 		}
-		case 0x4F: { /* '0x4F' */
-            return ""
+	case 0x68:
+		{ /* '0x68' */
+			return ""
 		}
-		case 0x50: { /* '0x50' */
-            return ""
+	case 0x69:
+		{ /* '0x69' */
+			return ""
 		}
-		case 0x51: { /* '0x51' */
-            return ""
+	case 0x6A:
+		{ /* '0x6A' */
+			return ""
 		}
-		case 0x52: { /* '0x52' */
-            return ""
+	case 0x6B:
+		{ /* '0x6B' */
+			return ""
 		}
-		case 0x53: { /* '0x53' */
-            return ""
+	case 0x6C:
+		{ /* '0x6C' */
+			return ""
 		}
-		case 0x54: { /* '0x54' */
-            return ""
+	case 0x6D:
+		{ /* '0x6D' */
+			return ""
 		}
-		case 0x55: { /* '0x55' */
-            return ""
+	case 0x6E:
+		{ /* '0x6E' */
+			return ""
 		}
-		case 0x56: { /* '0x56' */
-            return ""
+	case 0x6F:
+		{ /* '0x6F' */
+			return ""
 		}
-		case 0x57: { /* '0x57' */
-            return ""
+	case 0x70:
+		{ /* '0x70' */
+			return ""
 		}
-		case 0x58: { /* '0x58' */
-            return ""
+	case 0x71:
+		{ /* '0x71' */
+			return ""
 		}
-		case 0x59: { /* '0x59' */
-            return ""
+	case 0x72:
+		{ /* '0x72' */
+			return ""
 		}
-		case 0x5A: { /* '0x5A' */
-            return ""
+	case 0x73:
+		{ /* '0x73' */
+			return ""
 		}
-		case 0x5B: { /* '0x5B' */
-            return ""
+	case 0x74:
+		{ /* '0x74' */
+			return ""
 		}
-		case 0x5C: { /* '0x5C' */
-            return ""
+	case 0x75:
+		{ /* '0x75' */
+			return ""
 		}
-		case 0x5D: { /* '0x5D' */
-            return ""
+	case 0x76:
+		{ /* '0x76' */
+			return ""
 		}
-		case 0x5E: { /* '0x5E' */
-            return ""
+	case 0x77:
+		{ /* '0x77' */
+			return ""
 		}
-		case 0x5F: { /* '0x5F' */
-            return ""
+	case 0x78:
+		{ /* '0x78' */
+			return ""
 		}
-		case 0x60: { /* '0x60' */
-            return ""
+	case 0x79:
+		{ /* '0x79' */
+			return ""
 		}
-		case 0x61: { /* '0x61' */
-            return ""
+	case 0x7A:
+		{ /* '0x7A' */
+			return ""
 		}
-		case 0x62: { /* '0x62' */
-            return ""
+	case 0x7B:
+		{ /* '0x7B' */
+			return ""
 		}
-		case 0x63: { /* '0x63' */
-            return ""
+	case 0x7C:
+		{ /* '0x7C' */
+			return ""
 		}
-		case 0x64: { /* '0x64' */
-            return ""
+	case 0x7D:
+		{ /* '0x7D' */
+			return ""
 		}
-		case 0x65: { /* '0x65' */
-            return ""
+	case 0x7E:
+		{ /* '0x7E' */
+			return ""
 		}
-		case 0x66: { /* '0x66' */
-            return ""
+	case 0x7F:
+		{ /* '0x7F' */
+			return ""
 		}
-		case 0x67: { /* '0x67' */
-            return ""
+	case 0x80:
+		{ /* '0x80' */
+			return ""
 		}
-		case 0x68: { /* '0x68' */
-            return ""
+	case 0x81:
+		{ /* '0x81' */
+			return ""
 		}
-		case 0x69: { /* '0x69' */
-            return ""
+	case 0x82:
+		{ /* '0x82' */
+			return ""
 		}
-		case 0x6A: { /* '0x6A' */
-            return ""
+	case 0x83:
+		{ /* '0x83' */
+			return ""
 		}
-		case 0x6B: { /* '0x6B' */
-            return ""
+	case 0x84:
+		{ /* '0x84' */
+			return ""
 		}
-		case 0x6C: { /* '0x6C' */
-            return ""
+	case 0x85:
+		{ /* '0x85' */
+			return ""
 		}
-		case 0x6D: { /* '0x6D' */
-            return ""
+	case 0x86:
+		{ /* '0x86' */
+			return ""
 		}
-		case 0x6E: { /* '0x6E' */
-            return ""
+	case 0x87:
+		{ /* '0x87' */
+			return ""
 		}
-		case 0x6F: { /* '0x6F' */
-            return ""
+	case 0x88:
+		{ /* '0x88' */
+			return ""
 		}
-		case 0x70: { /* '0x70' */
-            return ""
+	case 0x89:
+		{ /* '0x89' */
+			return ""
 		}
-		case 0x71: { /* '0x71' */
-            return ""
+	case 0x8A:
+		{ /* '0x8A' */
+			return ""
 		}
-		case 0x72: { /* '0x72' */
-            return ""
+	case 0x8B:
+		{ /* '0x8B' */
+			return ""
 		}
-		case 0x73: { /* '0x73' */
-            return ""
+	case 0x8C:
+		{ /* '0x8C' */
+			return ""
 		}
-		case 0x74: { /* '0x74' */
-            return ""
+	case 0x8D:
+		{ /* '0x8D' */
+			return ""
 		}
-		case 0x75: { /* '0x75' */
-            return ""
+	case 0x8E:
+		{ /* '0x8E' */
+			return ""
 		}
-		case 0x76: { /* '0x76' */
-            return ""
+	case 0x8F:
+		{ /* '0x8F' */
+			return ""
 		}
-		case 0x77: { /* '0x77' */
-            return ""
+	case 0x90:
+		{ /* '0x90' */
+			return ""
 		}
-		case 0x78: { /* '0x78' */
-            return ""
+	case 0x91:
+		{ /* '0x91' */
+			return ""
 		}
-		case 0x79: { /* '0x79' */
-            return ""
+	case 0x92:
+		{ /* '0x92' */
+			return ""
 		}
-		case 0x7A: { /* '0x7A' */
-            return ""
+	case 0x93:
+		{ /* '0x93' */
+			return ""
 		}
-		case 0x7B: { /* '0x7B' */
-            return ""
+	case 0x94:
+		{ /* '0x94' */
+			return ""
 		}
-		case 0x7C: { /* '0x7C' */
-            return ""
+	case 0x95:
+		{ /* '0x95' */
+			return ""
 		}
-		case 0x7D: { /* '0x7D' */
-            return ""
+	case 0x96:
+		{ /* '0x96' */
+			return ""
 		}
-		case 0x7E: { /* '0x7E' */
-            return ""
+	case 0x97:
+		{ /* '0x97' */
+			return ""
 		}
-		case 0x7F: { /* '0x7F' */
-            return ""
+	case 0x98:
+		{ /* '0x98' */
+			return ""
 		}
-		case 0x80: { /* '0x80' */
-            return ""
+	case 0x99:
+		{ /* '0x99' */
+			return ""
 		}
-		case 0x81: { /* '0x81' */
-            return ""
+	case 0x9A:
+		{ /* '0x9A' */
+			return ""
 		}
-		case 0x82: { /* '0x82' */
-            return ""
+	case 0x9B:
+		{ /* '0x9B' */
+			return ""
 		}
-		case 0x83: { /* '0x83' */
-            return ""
+	case 0x9C:
+		{ /* '0x9C' */
+			return ""
 		}
-		case 0x84: { /* '0x84' */
-            return ""
+	case 0x9D:
+		{ /* '0x9D' */
+			return ""
 		}
-		case 0x85: { /* '0x85' */
-            return ""
+	case 0x9E:
+		{ /* '0x9E' */
+			return ""
 		}
-		case 0x86: { /* '0x86' */
-            return ""
+	case 0x9F:
+		{ /* '0x9F' */
+			return ""
 		}
-		case 0x87: { /* '0x87' */
-            return ""
+	case 0xA0:
+		{ /* '0xA0' */
+			return ""
 		}
-		case 0x88: { /* '0x88' */
-            return ""
+	case 0xA1:
+		{ /* '0xA1' */
+			return ""
 		}
-		case 0x89: { /* '0x89' */
-            return ""
+	case 0xA2:
+		{ /* '0xA2' */
+			return ""
 		}
-		case 0x8A: { /* '0x8A' */
-            return ""
+	case 0xA3:
+		{ /* '0xA3' */
+			return ""
 		}
-		case 0x8B: { /* '0x8B' */
-            return ""
+	case 0xA4:
+		{ /* '0xA4' */
+			return ""
 		}
-		case 0x8C: { /* '0x8C' */
-            return ""
+	case 0xA5:
+		{ /* '0xA5' */
+			return ""
 		}
-		case 0x8D: { /* '0x8D' */
-            return ""
+	case 0xA6:
+		{ /* '0xA6' */
+			return ""
 		}
-		case 0x8E: { /* '0x8E' */
-            return ""
+	case 0xA7:
+		{ /* '0xA7' */
+			return ""
 		}
-		case 0x8F: { /* '0x8F' */
-            return ""
+	case 0xA8:
+		{ /* '0xA8' */
+			return ""
 		}
-		case 0x90: { /* '0x90' */
-            return ""
+	case 0xA9:
+		{ /* '0xA9' */
+			return ""
 		}
-		case 0x91: { /* '0x91' */
-            return ""
+	case 0xAA:
+		{ /* '0xAA' */
+			return ""
 		}
-		case 0x92: { /* '0x92' */
-            return ""
+	case 0xAB:
+		{ /* '0xAB' */
+			return ""
 		}
-		case 0x93: { /* '0x93' */
-            return ""
+	case 0xAC:
+		{ /* '0xAC' */
+			return ""
 		}
-		case 0x94: { /* '0x94' */
-            return ""
+	case 0xAD:
+		{ /* '0xAD' */
+			return ""
 		}
-		case 0x95: { /* '0x95' */
-            return ""
+	case 0xAE:
+		{ /* '0xAE' */
+			return ""
 		}
-		case 0x96: { /* '0x96' */
-            return ""
+	case 0xAF:
+		{ /* '0xAF' */
+			return ""
 		}
-		case 0x97: { /* '0x97' */
-            return ""
+	case 0xB0:
+		{ /* '0xB0' */
+			return ""
 		}
-		case 0x98: { /* '0x98' */
-            return ""
+	case 0xB1:
+		{ /* '0xB1' */
+			return ""
 		}
-		case 0x99: { /* '0x99' */
-            return ""
+	case 0xB2:
+		{ /* '0xB2' */
+			return ""
 		}
-		case 0x9A: { /* '0x9A' */
-            return ""
+	case 0xB3:
+		{ /* '0xB3' */
+			return ""
 		}
-		case 0x9B: { /* '0x9B' */
-            return ""
+	case 0xB4:
+		{ /* '0xB4' */
+			return ""
 		}
-		case 0x9C: { /* '0x9C' */
-            return ""
+	case 0xB5:
+		{ /* '0xB5' */
+			return ""
 		}
-		case 0x9D: { /* '0x9D' */
-            return ""
+	case 0xB6:
+		{ /* '0xB6' */
+			return ""
 		}
-		case 0x9E: { /* '0x9E' */
-            return ""
+	case 0xB7:
+		{ /* '0xB7' */
+			return ""
 		}
-		case 0x9F: { /* '0x9F' */
-            return ""
+	case 0xB8:
+		{ /* '0xB8' */
+			return ""
 		}
-		case 0xA0: { /* '0xA0' */
-            return ""
+	case 0xB9:
+		{ /* '0xB9' */
+			return ""
 		}
-		case 0xA1: { /* '0xA1' */
-            return ""
+	case 0xBA:
+		{ /* '0xBA' */
+			return ""
 		}
-		case 0xA2: { /* '0xA2' */
-            return ""
+	case 0xBB:
+		{ /* '0xBB' */
+			return ""
 		}
-		case 0xA3: { /* '0xA3' */
-            return ""
+	case 0xBC:
+		{ /* '0xBC' */
+			return ""
 		}
-		case 0xA4: { /* '0xA4' */
-            return ""
+	case 0xBD:
+		{ /* '0xBD' */
+			return ""
 		}
-		case 0xA5: { /* '0xA5' */
-            return ""
+	case 0xBE:
+		{ /* '0xBE' */
+			return ""
 		}
-		case 0xA6: { /* '0xA6' */
-            return ""
+	case 0xBF:
+		{ /* '0xBF' */
+			return ""
 		}
-		case 0xA7: { /* '0xA7' */
-            return ""
+	case 0xC0:
+		{ /* '0xC0' */
+			return ""
 		}
-		case 0xA8: { /* '0xA8' */
-            return ""
+	case 0xC1:
+		{ /* '0xC1' */
+			return ""
 		}
-		case 0xA9: { /* '0xA9' */
-            return ""
+	case 0xC2:
+		{ /* '0xC2' */
+			return ""
 		}
-		case 0xAA: { /* '0xAA' */
-            return ""
+	case 0xC3:
+		{ /* '0xC3' */
+			return ""
 		}
-		case 0xAB: { /* '0xAB' */
-            return ""
+	case 0xC4:
+		{ /* '0xC4' */
+			return ""
 		}
-		case 0xAC: { /* '0xAC' */
-            return ""
+	case 0xC5:
+		{ /* '0xC5' */
+			return ""
 		}
-		case 0xAD: { /* '0xAD' */
-            return ""
+	case 0xC6:
+		{ /* '0xC6' */
+			return ""
 		}
-		case 0xAE: { /* '0xAE' */
-            return ""
+	case 0xC7:
+		{ /* '0xC7' */
+			return ""
 		}
-		case 0xAF: { /* '0xAF' */
-            return ""
+	case 0xC8:
+		{ /* '0xC8' */
+			return ""
 		}
-		case 0xB0: { /* '0xB0' */
-            return ""
+	case 0xC9:
+		{ /* '0xC9' */
+			return ""
 		}
-		case 0xB1: { /* '0xB1' */
-            return ""
+	case 0xCA:
+		{ /* '0xCA' */
+			return ""
 		}
-		case 0xB2: { /* '0xB2' */
-            return ""
+	case 0xCB:
+		{ /* '0xCB' */
+			return ""
 		}
-		case 0xB3: { /* '0xB3' */
-            return ""
+	case 0xCC:
+		{ /* '0xCC' */
+			return ""
 		}
-		case 0xB4: { /* '0xB4' */
-            return ""
+	case 0xCD:
+		{ /* '0xCD' */
+			return ""
 		}
-		case 0xB5: { /* '0xB5' */
-            return ""
+	case 0xCE:
+		{ /* '0xCE' */
+			return ""
 		}
-		case 0xB6: { /* '0xB6' */
-            return ""
+	case 0xCF:
+		{ /* '0xCF' */
+			return ""
 		}
-		case 0xB7: { /* '0xB7' */
-            return ""
+	case 0xD0:
+		{ /* '0xD0' */
+			return ""
 		}
-		case 0xB8: { /* '0xB8' */
-            return ""
+	case 0xD1:
+		{ /* '0xD1' */
+			return ""
 		}
-		case 0xB9: { /* '0xB9' */
-            return ""
+	case 0xD2:
+		{ /* '0xD2' */
+			return ""
 		}
-		case 0xBA: { /* '0xBA' */
-            return ""
+	case 0xD3:
+		{ /* '0xD3' */
+			return ""
 		}
-		case 0xBB: { /* '0xBB' */
-            return ""
+	case 0xD4:
+		{ /* '0xD4' */
+			return ""
 		}
-		case 0xBC: { /* '0xBC' */
-            return ""
+	case 0xD5:
+		{ /* '0xD5' */
+			return ""
 		}
-		case 0xBD: { /* '0xBD' */
-            return ""
+	case 0xD6:
+		{ /* '0xD6' */
+			return ""
 		}
-		case 0xBE: { /* '0xBE' */
-            return ""
+	case 0xD7:
+		{ /* '0xD7' */
+			return ""
 		}
-		case 0xBF: { /* '0xBF' */
-            return ""
+	case 0xD8:
+		{ /* '0xD8' */
+			return ""
 		}
-		case 0xC0: { /* '0xC0' */
-            return ""
+	case 0xD9:
+		{ /* '0xD9' */
+			return ""
 		}
-		case 0xC1: { /* '0xC1' */
-            return ""
+	case 0xDA:
+		{ /* '0xDA' */
+			return ""
 		}
-		case 0xC2: { /* '0xC2' */
-            return ""
+	case 0xDB:
+		{ /* '0xDB' */
+			return ""
 		}
-		case 0xC3: { /* '0xC3' */
-            return ""
+	case 0xDC:
+		{ /* '0xDC' */
+			return ""
 		}
-		case 0xC4: { /* '0xC4' */
-            return ""
+	case 0xDD:
+		{ /* '0xDD' */
+			return ""
 		}
-		case 0xC5: { /* '0xC5' */
-            return ""
+	case 0xDE:
+		{ /* '0xDE' */
+			return ""
 		}
-		case 0xC6: { /* '0xC6' */
-            return ""
+	case 0xDF:
+		{ /* '0xDF' */
+			return ""
 		}
-		case 0xC7: { /* '0xC7' */
-            return ""
+	case 0xE0:
+		{ /* '0xE0' */
+			return ""
 		}
-		case 0xC8: { /* '0xC8' */
-            return ""
+	case 0xE1:
+		{ /* '0xE1' */
+			return ""
 		}
-		case 0xC9: { /* '0xC9' */
-            return ""
+	case 0xE2:
+		{ /* '0xE2' */
+			return ""
 		}
-		case 0xCA: { /* '0xCA' */
-            return ""
+	case 0xE3:
+		{ /* '0xE3' */
+			return ""
 		}
-		case 0xCB: { /* '0xCB' */
-            return ""
+	case 0xE4:
+		{ /* '0xE4' */
+			return ""
 		}
-		case 0xCC: { /* '0xCC' */
-            return ""
+	case 0xE5:
+		{ /* '0xE5' */
+			return ""
 		}
-		case 0xCD: { /* '0xCD' */
-            return ""
+	case 0xE6:
+		{ /* '0xE6' */
+			return ""
 		}
-		case 0xCE: { /* '0xCE' */
-            return ""
+	case 0xE7:
+		{ /* '0xE7' */
+			return ""
 		}
-		case 0xCF: { /* '0xCF' */
-            return ""
+	case 0xE8:
+		{ /* '0xE8' */
+			return ""
 		}
-		case 0xD0: { /* '0xD0' */
-            return ""
+	case 0xE9:
+		{ /* '0xE9' */
+			return ""
 		}
-		case 0xD1: { /* '0xD1' */
-            return ""
+	case 0xEA:
+		{ /* '0xEA' */
+			return ""
 		}
-		case 0xD2: { /* '0xD2' */
-            return ""
+	case 0xEB:
+		{ /* '0xEB' */
+			return "ASCII Chars (Note 7)"
 		}
-		case 0xD3: { /* '0xD3' */
-            return ""
+	case 0xEC:
+		{ /* '0xEC' */
+			return "ASCII Chars (Note 7)"
 		}
-		case 0xD4: { /* '0xD4' */
-            return ""
+	case 0xED:
+		{ /* '0xED' */
+			return "ASCII Chars (Note 7)"
 		}
-		case 0xD5: { /* '0xD5' */
-            return ""
+	case 0xEE:
+		{ /* '0xEE' */
+			return "ASCII Chars (Note 7)"
 		}
-		case 0xD6: { /* '0xD6' */
-            return ""
+	case 0xEF:
+		{ /* '0xEF' */
+			return "ASCII Chars (Note 7)"
 		}
-		case 0xD7: { /* '0xD7' */
-            return ""
+	case 0xF0:
+		{ /* '0xF0' */
+			return "ASCII Chars (Note 7)"
 		}
-		case 0xD8: { /* '0xD8' */
-            return ""
+	case 0xF1:
+		{ /* '0xF1' */
+			return "ASCII Chars (Note 7)"
 		}
-		case 0xD9: { /* '0xD9' */
-            return ""
+	case 0xF2:
+		{ /* '0xF2' */
+			return "ASCII Chars (Note 7)"
 		}
-		case 0xDA: { /* '0xDA' */
-            return ""
+	case 0xF3:
+		{ /* '0xF3' */
+			return "Bytes (Note 8)"
 		}
-		case 0xDB: { /* '0xDB' */
-            return ""
+	case 0xF4:
+		{ /* '0xF4' */
+			return "Bytes (Note 8)"
 		}
-		case 0xDC: { /* '0xDC' */
-            return ""
+	case 0xF5:
+		{ /* '0xF5' */
+			return "Bytes (Note 8)"
 		}
-		case 0xDD: { /* '0xDD' */
-            return ""
+	case 0xF6:
+		{ /* '0xF6' */
+			return "Bytes (Note 8)"
 		}
-		case 0xDE: { /* '0xDE' */
-            return ""
+	case 0xF7:
+		{ /* '0xF7' */
+			return "ASCII Chars (Note 9)"
 		}
-		case 0xDF: { /* '0xDF' */
-            return ""
+	case 0xF8:
+		{ /* '0xF8' */
+			return "ASCII Chars (Note 9)"
 		}
-		case 0xE0: { /* '0xE0' */
-            return ""
+	case 0xF9:
+		{ /* '0xF9' */
+			return "ASCII Chars (Note 9)"
 		}
-		case 0xE1: { /* '0xE1' */
-            return ""
+	case 0xFA:
+		{ /* '0xFA' */
+			return "ASCII Chars (Note 9)"
 		}
-		case 0xE2: { /* '0xE2' */
-            return ""
+	case 0xFB:
+		{ /* '0xFB' */
+			return "ASCII Chars (Note 9)"
 		}
-		case 0xE3: { /* '0xE3' */
-            return ""
+	case 0xFC:
+		{ /* '0xFC' */
+			return "ASCII Chars (Note 9)"
 		}
-		case 0xE4: { /* '0xE4' */
-            return ""
+	case 0xFD:
+		{ /* '0xFD' */
+			return "ASCII Chars (Note 9)"
 		}
-		case 0xE5: { /* '0xE5' */
-            return ""
+	case 0xFE:
+		{ /* '0xFE' */
+			return "ASCII Chars (Note 9)"
 		}
-		case 0xE6: { /* '0xE6' */
-            return ""
+	case 0xFF:
+		{ /* '0xFF' */
+			return ""
 		}
-		case 0xE7: { /* '0xE7' */
-            return ""
-		}
-		case 0xE8: { /* '0xE8' */
-            return ""
-		}
-		case 0xE9: { /* '0xE9' */
-            return ""
-		}
-		case 0xEA: { /* '0xEA' */
-            return ""
-		}
-		case 0xEB: { /* '0xEB' */
-            return "ASCII Chars (Note 7)"
-		}
-		case 0xEC: { /* '0xEC' */
-            return "ASCII Chars (Note 7)"
-		}
-		case 0xED: { /* '0xED' */
-            return "ASCII Chars (Note 7)"
-		}
-		case 0xEE: { /* '0xEE' */
-            return "ASCII Chars (Note 7)"
-		}
-		case 0xEF: { /* '0xEF' */
-            return "ASCII Chars (Note 7)"
-		}
-		case 0xF0: { /* '0xF0' */
-            return "ASCII Chars (Note 7)"
-		}
-		case 0xF1: { /* '0xF1' */
-            return "ASCII Chars (Note 7)"
-		}
-		case 0xF2: { /* '0xF2' */
-            return "ASCII Chars (Note 7)"
-		}
-		case 0xF3: { /* '0xF3' */
-            return "Bytes (Note 8)"
-		}
-		case 0xF4: { /* '0xF4' */
-            return "Bytes (Note 8)"
-		}
-		case 0xF5: { /* '0xF5' */
-            return "Bytes (Note 8)"
-		}
-		case 0xF6: { /* '0xF6' */
-            return "Bytes (Note 8)"
-		}
-		case 0xF7: { /* '0xF7' */
-            return "ASCII Chars (Note 9)"
-		}
-		case 0xF8: { /* '0xF8' */
-            return "ASCII Chars (Note 9)"
-		}
-		case 0xF9: { /* '0xF9' */
-            return "ASCII Chars (Note 9)"
-		}
-		case 0xFA: { /* '0xFA' */
-            return "ASCII Chars (Note 9)"
-		}
-		case 0xFB: { /* '0xFB' */
-            return "ASCII Chars (Note 9)"
-		}
-		case 0xFC: { /* '0xFC' */
-            return "ASCII Chars (Note 9)"
-		}
-		case 0xFD: { /* '0xFD' */
-            return "ASCII Chars (Note 9)"
-		}
-		case 0xFE: { /* '0xFE' */
-            return "ASCII Chars (Note 9)"
-		}
-		case 0xFF: { /* '0xFF' */
-            return ""
-		}
-		default: {
+	default:
+		{
 			return ""
 		}
 	}
@@ -2135,776 +2648,1033 @@ func ParameterFirstEnumForFieldForm(value string) (Parameter, error) {
 }
 
 func (e Parameter) IsVolatile() bool {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return false
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return false
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return false
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return false
+		}
+	case 0x03:
+		{ /* '0x03' */
+			return false
+		}
+	case 0x04:
+		{ /* '0x04' */
+			return false
+		}
+	case 0x05:
+		{ /* '0x05' */
+			return false
+		}
+	case 0x06:
+		{ /* '0x06' */
+			return false
+		}
+	case 0x07:
+		{ /* '0x07' */
+			return false
+		}
+	case 0x08:
+		{ /* '0x08' */
+			return false
+		}
+	case 0x09:
+		{ /* '0x09' */
+			return false
+		}
+	case 0x0A:
+		{ /* '0x0A' */
+			return false
+		}
+	case 0x0B:
+		{ /* '0x0B' */
+			return false
+		}
+	case 0x0C:
+		{ /* '0x0C' */
+			return false
+		}
+	case 0x0D:
+		{ /* '0x0D' */
+			return false
+		}
+	case 0x0E:
+		{ /* '0x0E' */
+			return false
+		}
+	case 0x0F:
+		{ /* '0x0F' */
+			return false
+		}
+	case 0x10:
+		{ /* '0x10' */
+			return false
+		}
+	case 0x11:
+		{ /* '0x11' */
+			return false
+		}
+	case 0x12:
+		{ /* '0x12' */
+			return false
+		}
+	case 0x13:
+		{ /* '0x13' */
+			return false
+		}
+	case 0x14:
+		{ /* '0x14' */
+			return false
+		}
+	case 0x15:
+		{ /* '0x15' */
+			return false
+		}
+	case 0x16:
+		{ /* '0x16' */
+			return false
+		}
+	case 0x17:
+		{ /* '0x17' */
+			return false
+		}
+	case 0x18:
+		{ /* '0x18' */
+			return false
+		}
+	case 0x19:
+		{ /* '0x19' */
+			return false
 		}
-		case 0x01: { /* '0x01' */
-            return false
+	case 0x1A:
+		{ /* '0x1A' */
+			return false
 		}
-		case 0x02: { /* '0x02' */
-            return false
+	case 0x1B:
+		{ /* '0x1B' */
+			return false
 		}
-		case 0x03: { /* '0x03' */
-            return false
+	case 0x1C:
+		{ /* '0x1C' */
+			return false
 		}
-		case 0x04: { /* '0x04' */
-            return false
+	case 0x1D:
+		{ /* '0x1D' */
+			return false
 		}
-		case 0x05: { /* '0x05' */
-            return false
+	case 0x1E:
+		{ /* '0x1E' */
+			return false
 		}
-		case 0x06: { /* '0x06' */
-            return false
+	case 0x1F:
+		{ /* '0x1F' */
+			return false
 		}
-		case 0x07: { /* '0x07' */
-            return false
+	case 0x20:
+		{ /* '0x20' */
+			return false
 		}
-		case 0x08: { /* '0x08' */
-            return false
+	case 0x21:
+		{ /* '0x21' */
+			return false
 		}
-		case 0x09: { /* '0x09' */
-            return false
+	case 0x22:
+		{ /* '0x22' */
+			return false
 		}
-		case 0x0A: { /* '0x0A' */
-            return false
+	case 0x23:
+		{ /* '0x23' */
+			return false
 		}
-		case 0x0B: { /* '0x0B' */
-            return false
+	case 0x24:
+		{ /* '0x24' */
+			return false
 		}
-		case 0x0C: { /* '0x0C' */
-            return false
+	case 0x25:
+		{ /* '0x25' */
+			return false
 		}
-		case 0x0D: { /* '0x0D' */
-            return false
+	case 0x26:
+		{ /* '0x26' */
+			return false
 		}
-		case 0x0E: { /* '0x0E' */
-            return false
+	case 0x27:
+		{ /* '0x27' */
+			return false
 		}
-		case 0x0F: { /* '0x0F' */
-            return false
+	case 0x28:
+		{ /* '0x28' */
+			return false
 		}
-		case 0x10: { /* '0x10' */
-            return false
+	case 0x29:
+		{ /* '0x29' */
+			return false
 		}
-		case 0x11: { /* '0x11' */
-            return false
+	case 0x2A:
+		{ /* '0x2A' */
+			return false
 		}
-		case 0x12: { /* '0x12' */
-            return false
+	case 0x2B:
+		{ /* '0x2B' */
+			return false
 		}
-		case 0x13: { /* '0x13' */
-            return false
+	case 0x2C:
+		{ /* '0x2C' */
+			return false
 		}
-		case 0x14: { /* '0x14' */
-            return false
+	case 0x2D:
+		{ /* '0x2D' */
+			return false
 		}
-		case 0x15: { /* '0x15' */
-            return false
+	case 0x2E:
+		{ /* '0x2E' */
+			return false
 		}
-		case 0x16: { /* '0x16' */
-            return false
+	case 0x2F:
+		{ /* '0x2F' */
+			return false
 		}
-		case 0x17: { /* '0x17' */
-            return false
+	case 0x30:
+		{ /* '0x30' */
+			return true
 		}
-		case 0x18: { /* '0x18' */
-            return false
+	case 0x31:
+		{ /* '0x31' */
+			return false
 		}
-		case 0x19: { /* '0x19' */
-            return false
+	case 0x32:
+		{ /* '0x32' */
+			return false
 		}
-		case 0x1A: { /* '0x1A' */
-            return false
+	case 0x33:
+		{ /* '0x33' */
+			return false
 		}
-		case 0x1B: { /* '0x1B' */
-            return false
+	case 0x34:
+		{ /* '0x34' */
+			return false
 		}
-		case 0x1C: { /* '0x1C' */
-            return false
+	case 0x35:
+		{ /* '0x35' */
+			return false
 		}
-		case 0x1D: { /* '0x1D' */
-            return false
+	case 0x36:
+		{ /* '0x36' */
+			return false
 		}
-		case 0x1E: { /* '0x1E' */
-            return false
+	case 0x37:
+		{ /* '0x37' */
+			return false
 		}
-		case 0x1F: { /* '0x1F' */
-            return false
+	case 0x38:
+		{ /* '0x38' */
+			return false
 		}
-		case 0x20: { /* '0x20' */
-            return false
+	case 0x39:
+		{ /* '0x39' */
+			return false
 		}
-		case 0x21: { /* '0x21' */
-            return false
+	case 0x3A:
+		{ /* '0x3A' */
+			return false
 		}
-		case 0x22: { /* '0x22' */
-            return false
+	case 0x3B:
+		{ /* '0x3B' */
+			return false
 		}
-		case 0x23: { /* '0x23' */
-            return false
+	case 0x3C:
+		{ /* '0x3C' */
+			return false
 		}
-		case 0x24: { /* '0x24' */
-            return false
+	case 0x3D:
+		{ /* '0x3D' */
+			return false
 		}
-		case 0x25: { /* '0x25' */
-            return false
+	case 0x3E:
+		{ /* '0x3E' */
+			return false
 		}
-		case 0x26: { /* '0x26' */
-            return false
+	case 0x3F:
+		{ /* '0x3F' */
+			return false
 		}
-		case 0x27: { /* '0x27' */
-            return false
+	case 0x40:
+		{ /* '0x40' */
+			return false
 		}
-		case 0x28: { /* '0x28' */
-            return false
+	case 0x41:
+		{ /* '0x41' */
+			return false
 		}
-		case 0x29: { /* '0x29' */
-            return false
+	case 0x42:
+		{ /* '0x42' */
+			return false
 		}
-		case 0x2A: { /* '0x2A' */
-            return false
+	case 0x43:
+		{ /* '0x43' */
+			return false
 		}
-		case 0x2B: { /* '0x2B' */
-            return false
+	case 0x44:
+		{ /* '0x44' */
+			return false
 		}
-		case 0x2C: { /* '0x2C' */
-            return false
+	case 0x45:
+		{ /* '0x45' */
+			return false
 		}
-		case 0x2D: { /* '0x2D' */
-            return false
+	case 0x46:
+		{ /* '0x46' */
+			return false
 		}
-		case 0x2E: { /* '0x2E' */
-            return false
+	case 0x47:
+		{ /* '0x47' */
+			return false
 		}
-		case 0x2F: { /* '0x2F' */
-            return false
+	case 0x48:
+		{ /* '0x48' */
+			return false
 		}
-		case 0x30: { /* '0x30' */
-            return true
+	case 0x49:
+		{ /* '0x49' */
+			return false
 		}
-		case 0x31: { /* '0x31' */
-            return false
+	case 0x4A:
+		{ /* '0x4A' */
+			return false
 		}
-		case 0x32: { /* '0x32' */
-            return false
+	case 0x4B:
+		{ /* '0x4B' */
+			return false
 		}
-		case 0x33: { /* '0x33' */
-            return false
+	case 0x4C:
+		{ /* '0x4C' */
+			return false
 		}
-		case 0x34: { /* '0x34' */
-            return false
+	case 0x4D:
+		{ /* '0x4D' */
+			return false
 		}
-		case 0x35: { /* '0x35' */
-            return false
+	case 0x4E:
+		{ /* '0x4E' */
+			return false
 		}
-		case 0x36: { /* '0x36' */
-            return false
+	case 0x4F:
+		{ /* '0x4F' */
+			return false
 		}
-		case 0x37: { /* '0x37' */
-            return false
+	case 0x50:
+		{ /* '0x50' */
+			return false
 		}
-		case 0x38: { /* '0x38' */
-            return false
+	case 0x51:
+		{ /* '0x51' */
+			return false
 		}
-		case 0x39: { /* '0x39' */
-            return false
+	case 0x52:
+		{ /* '0x52' */
+			return false
 		}
-		case 0x3A: { /* '0x3A' */
-            return false
+	case 0x53:
+		{ /* '0x53' */
+			return false
 		}
-		case 0x3B: { /* '0x3B' */
-            return false
+	case 0x54:
+		{ /* '0x54' */
+			return false
 		}
-		case 0x3C: { /* '0x3C' */
-            return false
+	case 0x55:
+		{ /* '0x55' */
+			return false
 		}
-		case 0x3D: { /* '0x3D' */
-            return false
+	case 0x56:
+		{ /* '0x56' */
+			return false
 		}
-		case 0x3E: { /* '0x3E' */
-            return false
+	case 0x57:
+		{ /* '0x57' */
+			return false
 		}
-		case 0x3F: { /* '0x3F' */
-            return false
+	case 0x58:
+		{ /* '0x58' */
+			return false
 		}
-		case 0x40: { /* '0x40' */
-            return false
+	case 0x59:
+		{ /* '0x59' */
+			return false
 		}
-		case 0x41: { /* '0x41' */
-            return false
+	case 0x5A:
+		{ /* '0x5A' */
+			return false
 		}
-		case 0x42: { /* '0x42' */
-            return false
+	case 0x5B:
+		{ /* '0x5B' */
+			return false
 		}
-		case 0x43: { /* '0x43' */
-            return false
+	case 0x5C:
+		{ /* '0x5C' */
+			return false
 		}
-		case 0x44: { /* '0x44' */
-            return false
+	case 0x5D:
+		{ /* '0x5D' */
+			return false
 		}
-		case 0x45: { /* '0x45' */
-            return false
+	case 0x5E:
+		{ /* '0x5E' */
+			return false
 		}
-		case 0x46: { /* '0x46' */
-            return false
+	case 0x5F:
+		{ /* '0x5F' */
+			return false
 		}
-		case 0x47: { /* '0x47' */
-            return false
+	case 0x60:
+		{ /* '0x60' */
+			return false
 		}
-		case 0x48: { /* '0x48' */
-            return false
+	case 0x61:
+		{ /* '0x61' */
+			return false
 		}
-		case 0x49: { /* '0x49' */
-            return false
+	case 0x62:
+		{ /* '0x62' */
+			return false
 		}
-		case 0x4A: { /* '0x4A' */
-            return false
+	case 0x63:
+		{ /* '0x63' */
+			return false
 		}
-		case 0x4B: { /* '0x4B' */
-            return false
+	case 0x64:
+		{ /* '0x64' */
+			return false
 		}
-		case 0x4C: { /* '0x4C' */
-            return false
+	case 0x65:
+		{ /* '0x65' */
+			return false
 		}
-		case 0x4D: { /* '0x4D' */
-            return false
+	case 0x66:
+		{ /* '0x66' */
+			return false
 		}
-		case 0x4E: { /* '0x4E' */
-            return false
+	case 0x67:
+		{ /* '0x67' */
+			return false
 		}
-		case 0x4F: { /* '0x4F' */
-            return false
+	case 0x68:
+		{ /* '0x68' */
+			return false
 		}
-		case 0x50: { /* '0x50' */
-            return false
+	case 0x69:
+		{ /* '0x69' */
+			return false
 		}
-		case 0x51: { /* '0x51' */
-            return false
+	case 0x6A:
+		{ /* '0x6A' */
+			return false
 		}
-		case 0x52: { /* '0x52' */
-            return false
+	case 0x6B:
+		{ /* '0x6B' */
+			return false
 		}
-		case 0x53: { /* '0x53' */
-            return false
+	case 0x6C:
+		{ /* '0x6C' */
+			return false
 		}
-		case 0x54: { /* '0x54' */
-            return false
+	case 0x6D:
+		{ /* '0x6D' */
+			return false
 		}
-		case 0x55: { /* '0x55' */
-            return false
+	case 0x6E:
+		{ /* '0x6E' */
+			return false
 		}
-		case 0x56: { /* '0x56' */
-            return false
+	case 0x6F:
+		{ /* '0x6F' */
+			return false
 		}
-		case 0x57: { /* '0x57' */
-            return false
+	case 0x70:
+		{ /* '0x70' */
+			return false
 		}
-		case 0x58: { /* '0x58' */
-            return false
+	case 0x71:
+		{ /* '0x71' */
+			return false
 		}
-		case 0x59: { /* '0x59' */
-            return false
+	case 0x72:
+		{ /* '0x72' */
+			return false
 		}
-		case 0x5A: { /* '0x5A' */
-            return false
+	case 0x73:
+		{ /* '0x73' */
+			return false
 		}
-		case 0x5B: { /* '0x5B' */
-            return false
+	case 0x74:
+		{ /* '0x74' */
+			return false
 		}
-		case 0x5C: { /* '0x5C' */
-            return false
+	case 0x75:
+		{ /* '0x75' */
+			return false
 		}
-		case 0x5D: { /* '0x5D' */
-            return false
+	case 0x76:
+		{ /* '0x76' */
+			return false
 		}
-		case 0x5E: { /* '0x5E' */
-            return false
+	case 0x77:
+		{ /* '0x77' */
+			return false
 		}
-		case 0x5F: { /* '0x5F' */
-            return false
+	case 0x78:
+		{ /* '0x78' */
+			return false
 		}
-		case 0x60: { /* '0x60' */
-            return false
+	case 0x79:
+		{ /* '0x79' */
+			return false
 		}
-		case 0x61: { /* '0x61' */
-            return false
+	case 0x7A:
+		{ /* '0x7A' */
+			return false
 		}
-		case 0x62: { /* '0x62' */
-            return false
+	case 0x7B:
+		{ /* '0x7B' */
+			return false
 		}
-		case 0x63: { /* '0x63' */
-            return false
+	case 0x7C:
+		{ /* '0x7C' */
+			return false
 		}
-		case 0x64: { /* '0x64' */
-            return false
+	case 0x7D:
+		{ /* '0x7D' */
+			return false
 		}
-		case 0x65: { /* '0x65' */
-            return false
+	case 0x7E:
+		{ /* '0x7E' */
+			return false
 		}
-		case 0x66: { /* '0x66' */
-            return false
+	case 0x7F:
+		{ /* '0x7F' */
+			return false
 		}
-		case 0x67: { /* '0x67' */
-            return false
+	case 0x80:
+		{ /* '0x80' */
+			return false
 		}
-		case 0x68: { /* '0x68' */
-            return false
+	case 0x81:
+		{ /* '0x81' */
+			return false
 		}
-		case 0x69: { /* '0x69' */
-            return false
+	case 0x82:
+		{ /* '0x82' */
+			return false
 		}
-		case 0x6A: { /* '0x6A' */
-            return false
+	case 0x83:
+		{ /* '0x83' */
+			return false
 		}
-		case 0x6B: { /* '0x6B' */
-            return false
+	case 0x84:
+		{ /* '0x84' */
+			return false
 		}
-		case 0x6C: { /* '0x6C' */
-            return false
+	case 0x85:
+		{ /* '0x85' */
+			return false
 		}
-		case 0x6D: { /* '0x6D' */
-            return false
+	case 0x86:
+		{ /* '0x86' */
+			return false
 		}
-		case 0x6E: { /* '0x6E' */
-            return false
+	case 0x87:
+		{ /* '0x87' */
+			return false
 		}
-		case 0x6F: { /* '0x6F' */
-            return false
+	case 0x88:
+		{ /* '0x88' */
+			return false
 		}
-		case 0x70: { /* '0x70' */
-            return false
+	case 0x89:
+		{ /* '0x89' */
+			return false
 		}
-		case 0x71: { /* '0x71' */
-            return false
+	case 0x8A:
+		{ /* '0x8A' */
+			return false
 		}
-		case 0x72: { /* '0x72' */
-            return false
+	case 0x8B:
+		{ /* '0x8B' */
+			return false
 		}
-		case 0x73: { /* '0x73' */
-            return false
+	case 0x8C:
+		{ /* '0x8C' */
+			return false
 		}
-		case 0x74: { /* '0x74' */
-            return false
+	case 0x8D:
+		{ /* '0x8D' */
+			return false
 		}
-		case 0x75: { /* '0x75' */
-            return false
+	case 0x8E:
+		{ /* '0x8E' */
+			return false
 		}
-		case 0x76: { /* '0x76' */
-            return false
+	case 0x8F:
+		{ /* '0x8F' */
+			return false
 		}
-		case 0x77: { /* '0x77' */
-            return false
+	case 0x90:
+		{ /* '0x90' */
+			return false
 		}
-		case 0x78: { /* '0x78' */
-            return false
+	case 0x91:
+		{ /* '0x91' */
+			return false
 		}
-		case 0x79: { /* '0x79' */
-            return false
+	case 0x92:
+		{ /* '0x92' */
+			return false
 		}
-		case 0x7A: { /* '0x7A' */
-            return false
+	case 0x93:
+		{ /* '0x93' */
+			return false
 		}
-		case 0x7B: { /* '0x7B' */
-            return false
+	case 0x94:
+		{ /* '0x94' */
+			return false
 		}
-		case 0x7C: { /* '0x7C' */
-            return false
+	case 0x95:
+		{ /* '0x95' */
+			return false
 		}
-		case 0x7D: { /* '0x7D' */
-            return false
+	case 0x96:
+		{ /* '0x96' */
+			return false
 		}
-		case 0x7E: { /* '0x7E' */
-            return false
+	case 0x97:
+		{ /* '0x97' */
+			return false
 		}
-		case 0x7F: { /* '0x7F' */
-            return false
+	case 0x98:
+		{ /* '0x98' */
+			return false
 		}
-		case 0x80: { /* '0x80' */
-            return false
+	case 0x99:
+		{ /* '0x99' */
+			return false
 		}
-		case 0x81: { /* '0x81' */
-            return false
+	case 0x9A:
+		{ /* '0x9A' */
+			return false
 		}
-		case 0x82: { /* '0x82' */
-            return false
+	case 0x9B:
+		{ /* '0x9B' */
+			return false
 		}
-		case 0x83: { /* '0x83' */
-            return false
+	case 0x9C:
+		{ /* '0x9C' */
+			return false
 		}
-		case 0x84: { /* '0x84' */
-            return false
+	case 0x9D:
+		{ /* '0x9D' */
+			return false
 		}
-		case 0x85: { /* '0x85' */
-            return false
+	case 0x9E:
+		{ /* '0x9E' */
+			return false
 		}
-		case 0x86: { /* '0x86' */
-            return false
+	case 0x9F:
+		{ /* '0x9F' */
+			return false
 		}
-		case 0x87: { /* '0x87' */
-            return false
+	case 0xA0:
+		{ /* '0xA0' */
+			return false
 		}
-		case 0x88: { /* '0x88' */
-            return false
+	case 0xA1:
+		{ /* '0xA1' */
+			return false
 		}
-		case 0x89: { /* '0x89' */
-            return false
+	case 0xA2:
+		{ /* '0xA2' */
+			return false
 		}
-		case 0x8A: { /* '0x8A' */
-            return false
+	case 0xA3:
+		{ /* '0xA3' */
+			return false
 		}
-		case 0x8B: { /* '0x8B' */
-            return false
+	case 0xA4:
+		{ /* '0xA4' */
+			return false
 		}
-		case 0x8C: { /* '0x8C' */
-            return false
+	case 0xA5:
+		{ /* '0xA5' */
+			return false
 		}
-		case 0x8D: { /* '0x8D' */
-            return false
+	case 0xA6:
+		{ /* '0xA6' */
+			return false
 		}
-		case 0x8E: { /* '0x8E' */
-            return false
+	case 0xA7:
+		{ /* '0xA7' */
+			return false
 		}
-		case 0x8F: { /* '0x8F' */
-            return false
+	case 0xA8:
+		{ /* '0xA8' */
+			return false
 		}
-		case 0x90: { /* '0x90' */
-            return false
+	case 0xA9:
+		{ /* '0xA9' */
+			return false
 		}
-		case 0x91: { /* '0x91' */
-            return false
+	case 0xAA:
+		{ /* '0xAA' */
+			return false
 		}
-		case 0x92: { /* '0x92' */
-            return false
+	case 0xAB:
+		{ /* '0xAB' */
+			return false
 		}
-		case 0x93: { /* '0x93' */
-            return false
+	case 0xAC:
+		{ /* '0xAC' */
+			return false
 		}
-		case 0x94: { /* '0x94' */
-            return false
+	case 0xAD:
+		{ /* '0xAD' */
+			return false
 		}
-		case 0x95: { /* '0x95' */
-            return false
+	case 0xAE:
+		{ /* '0xAE' */
+			return false
 		}
-		case 0x96: { /* '0x96' */
-            return false
+	case 0xAF:
+		{ /* '0xAF' */
+			return false
 		}
-		case 0x97: { /* '0x97' */
-            return false
+	case 0xB0:
+		{ /* '0xB0' */
+			return false
 		}
-		case 0x98: { /* '0x98' */
-            return false
+	case 0xB1:
+		{ /* '0xB1' */
+			return false
 		}
-		case 0x99: { /* '0x99' */
-            return false
+	case 0xB2:
+		{ /* '0xB2' */
+			return false
 		}
-		case 0x9A: { /* '0x9A' */
-            return false
+	case 0xB3:
+		{ /* '0xB3' */
+			return false
 		}
-		case 0x9B: { /* '0x9B' */
-            return false
+	case 0xB4:
+		{ /* '0xB4' */
+			return false
 		}
-		case 0x9C: { /* '0x9C' */
-            return false
+	case 0xB5:
+		{ /* '0xB5' */
+			return false
 		}
-		case 0x9D: { /* '0x9D' */
-            return false
+	case 0xB6:
+		{ /* '0xB6' */
+			return false
 		}
-		case 0x9E: { /* '0x9E' */
-            return false
+	case 0xB7:
+		{ /* '0xB7' */
+			return false
 		}
-		case 0x9F: { /* '0x9F' */
-            return false
+	case 0xB8:
+		{ /* '0xB8' */
+			return false
 		}
-		case 0xA0: { /* '0xA0' */
-            return false
+	case 0xB9:
+		{ /* '0xB9' */
+			return false
 		}
-		case 0xA1: { /* '0xA1' */
-            return false
+	case 0xBA:
+		{ /* '0xBA' */
+			return false
 		}
-		case 0xA2: { /* '0xA2' */
-            return false
+	case 0xBB:
+		{ /* '0xBB' */
+			return false
 		}
-		case 0xA3: { /* '0xA3' */
-            return false
+	case 0xBC:
+		{ /* '0xBC' */
+			return false
 		}
-		case 0xA4: { /* '0xA4' */
-            return false
+	case 0xBD:
+		{ /* '0xBD' */
+			return false
 		}
-		case 0xA5: { /* '0xA5' */
-            return false
+	case 0xBE:
+		{ /* '0xBE' */
+			return false
 		}
-		case 0xA6: { /* '0xA6' */
-            return false
+	case 0xBF:
+		{ /* '0xBF' */
+			return false
 		}
-		case 0xA7: { /* '0xA7' */
-            return false
+	case 0xC0:
+		{ /* '0xC0' */
+			return false
 		}
-		case 0xA8: { /* '0xA8' */
-            return false
+	case 0xC1:
+		{ /* '0xC1' */
+			return false
 		}
-		case 0xA9: { /* '0xA9' */
-            return false
+	case 0xC2:
+		{ /* '0xC2' */
+			return false
 		}
-		case 0xAA: { /* '0xAA' */
-            return false
+	case 0xC3:
+		{ /* '0xC3' */
+			return false
 		}
-		case 0xAB: { /* '0xAB' */
-            return false
+	case 0xC4:
+		{ /* '0xC4' */
+			return false
 		}
-		case 0xAC: { /* '0xAC' */
-            return false
+	case 0xC5:
+		{ /* '0xC5' */
+			return false
 		}
-		case 0xAD: { /* '0xAD' */
-            return false
+	case 0xC6:
+		{ /* '0xC6' */
+			return false
 		}
-		case 0xAE: { /* '0xAE' */
-            return false
+	case 0xC7:
+		{ /* '0xC7' */
+			return false
 		}
-		case 0xAF: { /* '0xAF' */
-            return false
+	case 0xC8:
+		{ /* '0xC8' */
+			return false
 		}
-		case 0xB0: { /* '0xB0' */
-            return false
+	case 0xC9:
+		{ /* '0xC9' */
+			return false
 		}
-		case 0xB1: { /* '0xB1' */
-            return false
+	case 0xCA:
+		{ /* '0xCA' */
+			return false
 		}
-		case 0xB2: { /* '0xB2' */
-            return false
+	case 0xCB:
+		{ /* '0xCB' */
+			return false
 		}
-		case 0xB3: { /* '0xB3' */
-            return false
+	case 0xCC:
+		{ /* '0xCC' */
+			return false
 		}
-		case 0xB4: { /* '0xB4' */
-            return false
+	case 0xCD:
+		{ /* '0xCD' */
+			return false
 		}
-		case 0xB5: { /* '0xB5' */
-            return false
+	case 0xCE:
+		{ /* '0xCE' */
+			return false
 		}
-		case 0xB6: { /* '0xB6' */
-            return false
+	case 0xCF:
+		{ /* '0xCF' */
+			return false
 		}
-		case 0xB7: { /* '0xB7' */
-            return false
+	case 0xD0:
+		{ /* '0xD0' */
+			return false
 		}
-		case 0xB8: { /* '0xB8' */
-            return false
+	case 0xD1:
+		{ /* '0xD1' */
+			return false
 		}
-		case 0xB9: { /* '0xB9' */
-            return false
+	case 0xD2:
+		{ /* '0xD2' */
+			return false
 		}
-		case 0xBA: { /* '0xBA' */
-            return false
+	case 0xD3:
+		{ /* '0xD3' */
+			return false
 		}
-		case 0xBB: { /* '0xBB' */
-            return false
+	case 0xD4:
+		{ /* '0xD4' */
+			return false
 		}
-		case 0xBC: { /* '0xBC' */
-            return false
+	case 0xD5:
+		{ /* '0xD5' */
+			return false
 		}
-		case 0xBD: { /* '0xBD' */
-            return false
+	case 0xD6:
+		{ /* '0xD6' */
+			return false
 		}
-		case 0xBE: { /* '0xBE' */
-            return false
+	case 0xD7:
+		{ /* '0xD7' */
+			return false
 		}
-		case 0xBF: { /* '0xBF' */
-            return false
+	case 0xD8:
+		{ /* '0xD8' */
+			return false
 		}
-		case 0xC0: { /* '0xC0' */
-            return false
+	case 0xD9:
+		{ /* '0xD9' */
+			return false
 		}
-		case 0xC1: { /* '0xC1' */
-            return false
+	case 0xDA:
+		{ /* '0xDA' */
+			return false
 		}
-		case 0xC2: { /* '0xC2' */
-            return false
+	case 0xDB:
+		{ /* '0xDB' */
+			return false
 		}
-		case 0xC3: { /* '0xC3' */
-            return false
+	case 0xDC:
+		{ /* '0xDC' */
+			return false
 		}
-		case 0xC4: { /* '0xC4' */
-            return false
+	case 0xDD:
+		{ /* '0xDD' */
+			return false
 		}
-		case 0xC5: { /* '0xC5' */
-            return false
+	case 0xDE:
+		{ /* '0xDE' */
+			return false
 		}
-		case 0xC6: { /* '0xC6' */
-            return false
+	case 0xDF:
+		{ /* '0xDF' */
+			return false
 		}
-		case 0xC7: { /* '0xC7' */
-            return false
+	case 0xE0:
+		{ /* '0xE0' */
+			return false
 		}
-		case 0xC8: { /* '0xC8' */
-            return false
+	case 0xE1:
+		{ /* '0xE1' */
+			return false
 		}
-		case 0xC9: { /* '0xC9' */
-            return false
+	case 0xE2:
+		{ /* '0xE2' */
+			return false
 		}
-		case 0xCA: { /* '0xCA' */
-            return false
+	case 0xE3:
+		{ /* '0xE3' */
+			return false
 		}
-		case 0xCB: { /* '0xCB' */
-            return false
+	case 0xE4:
+		{ /* '0xE4' */
+			return false
 		}
-		case 0xCC: { /* '0xCC' */
-            return false
+	case 0xE5:
+		{ /* '0xE5' */
+			return false
 		}
-		case 0xCD: { /* '0xCD' */
-            return false
+	case 0xE6:
+		{ /* '0xE6' */
+			return false
 		}
-		case 0xCE: { /* '0xCE' */
-            return false
+	case 0xE7:
+		{ /* '0xE7' */
+			return false
 		}
-		case 0xCF: { /* '0xCF' */
-            return false
+	case 0xE8:
+		{ /* '0xE8' */
+			return false
 		}
-		case 0xD0: { /* '0xD0' */
-            return false
+	case 0xE9:
+		{ /* '0xE9' */
+			return false
 		}
-		case 0xD1: { /* '0xD1' */
-            return false
+	case 0xEA:
+		{ /* '0xEA' */
+			return false
 		}
-		case 0xD2: { /* '0xD2' */
-            return false
+	case 0xEB:
+		{ /* '0xEB' */
+			return false
 		}
-		case 0xD3: { /* '0xD3' */
-            return false
+	case 0xEC:
+		{ /* '0xEC' */
+			return false
 		}
-		case 0xD4: { /* '0xD4' */
-            return false
+	case 0xED:
+		{ /* '0xED' */
+			return false
 		}
-		case 0xD5: { /* '0xD5' */
-            return false
+	case 0xEE:
+		{ /* '0xEE' */
+			return false
 		}
-		case 0xD6: { /* '0xD6' */
-            return false
+	case 0xEF:
+		{ /* '0xEF' */
+			return false
 		}
-		case 0xD7: { /* '0xD7' */
-            return false
+	case 0xF0:
+		{ /* '0xF0' */
+			return false
 		}
-		case 0xD8: { /* '0xD8' */
-            return false
+	case 0xF1:
+		{ /* '0xF1' */
+			return false
 		}
-		case 0xD9: { /* '0xD9' */
-            return false
+	case 0xF2:
+		{ /* '0xF2' */
+			return false
 		}
-		case 0xDA: { /* '0xDA' */
-            return false
+	case 0xF3:
+		{ /* '0xF3' */
+			return false
 		}
-		case 0xDB: { /* '0xDB' */
-            return false
+	case 0xF4:
+		{ /* '0xF4' */
+			return false
 		}
-		case 0xDC: { /* '0xDC' */
-            return false
+	case 0xF5:
+		{ /* '0xF5' */
+			return false
 		}
-		case 0xDD: { /* '0xDD' */
-            return false
+	case 0xF6:
+		{ /* '0xF6' */
+			return false
 		}
-		case 0xDE: { /* '0xDE' */
-            return false
+	case 0xF7:
+		{ /* '0xF7' */
+			return false
 		}
-		case 0xDF: { /* '0xDF' */
-            return false
+	case 0xF8:
+		{ /* '0xF8' */
+			return false
 		}
-		case 0xE0: { /* '0xE0' */
-            return false
+	case 0xF9:
+		{ /* '0xF9' */
+			return false
 		}
-		case 0xE1: { /* '0xE1' */
-            return false
+	case 0xFA:
+		{ /* '0xFA' */
+			return false
 		}
-		case 0xE2: { /* '0xE2' */
-            return false
+	case 0xFB:
+		{ /* '0xFB' */
+			return false
 		}
-		case 0xE3: { /* '0xE3' */
-            return false
+	case 0xFC:
+		{ /* '0xFC' */
+			return false
 		}
-		case 0xE4: { /* '0xE4' */
-            return false
+	case 0xFD:
+		{ /* '0xFD' */
+			return false
 		}
-		case 0xE5: { /* '0xE5' */
-            return false
+	case 0xFE:
+		{ /* '0xFE' */
+			return false
 		}
-		case 0xE6: { /* '0xE6' */
-            return false
+	case 0xFF:
+		{ /* '0xFF' */
+			return false
 		}
-		case 0xE7: { /* '0xE7' */
-            return false
-		}
-		case 0xE8: { /* '0xE8' */
-            return false
-		}
-		case 0xE9: { /* '0xE9' */
-            return false
-		}
-		case 0xEA: { /* '0xEA' */
-            return false
-		}
-		case 0xEB: { /* '0xEB' */
-            return false
-		}
-		case 0xEC: { /* '0xEC' */
-            return false
-		}
-		case 0xED: { /* '0xED' */
-            return false
-		}
-		case 0xEE: { /* '0xEE' */
-            return false
-		}
-		case 0xEF: { /* '0xEF' */
-            return false
-		}
-		case 0xF0: { /* '0xF0' */
-            return false
-		}
-		case 0xF1: { /* '0xF1' */
-            return false
-		}
-		case 0xF2: { /* '0xF2' */
-            return false
-		}
-		case 0xF3: { /* '0xF3' */
-            return false
-		}
-		case 0xF4: { /* '0xF4' */
-            return false
-		}
-		case 0xF5: { /* '0xF5' */
-            return false
-		}
-		case 0xF6: { /* '0xF6' */
-            return false
-		}
-		case 0xF7: { /* '0xF7' */
-            return false
-		}
-		case 0xF8: { /* '0xF8' */
-            return false
-		}
-		case 0xF9: { /* '0xF9' */
-            return false
-		}
-		case 0xFA: { /* '0xFA' */
-            return false
-		}
-		case 0xFB: { /* '0xFB' */
-            return false
-		}
-		case 0xFC: { /* '0xFC' */
-            return false
-		}
-		case 0xFD: { /* '0xFD' */
-            return false
-		}
-		case 0xFE: { /* '0xFE' */
-            return false
-		}
-		case 0xFF: { /* '0xFF' */
-            return false
-		}
-		default: {
+	default:
+		{
 			return false
 		}
 	}
@@ -2920,776 +3690,1033 @@ func ParameterFirstEnumForFieldIsVolatile(value bool) (Parameter, error) {
 }
 
 func (e Parameter) ParameterDescription() string {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return ""
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return ""
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return ""
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return ""
+		}
+	case 0x03:
+		{ /* '0x03' */
+			return ""
+		}
+	case 0x04:
+		{ /* '0x04' */
+			return ""
+		}
+	case 0x05:
+		{ /* '0x05' */
+			return ""
+		}
+	case 0x06:
+		{ /* '0x06' */
+			return ""
+		}
+	case 0x07:
+		{ /* '0x07' */
+			return ""
+		}
+	case 0x08:
+		{ /* '0x08' */
+			return ""
+		}
+	case 0x09:
+		{ /* '0x09' */
+			return ""
+		}
+	case 0x0A:
+		{ /* '0x0A' */
+			return ""
+		}
+	case 0x0B:
+		{ /* '0x0B' */
+			return ""
+		}
+	case 0x0C:
+		{ /* '0x0C' */
+			return ""
+		}
+	case 0x0D:
+		{ /* '0x0D' */
+			return ""
+		}
+	case 0x0E:
+		{ /* '0x0E' */
+			return ""
+		}
+	case 0x0F:
+		{ /* '0x0F' */
+			return ""
+		}
+	case 0x10:
+		{ /* '0x10' */
+			return ""
+		}
+	case 0x11:
+		{ /* '0x11' */
+			return ""
+		}
+	case 0x12:
+		{ /* '0x12' */
+			return ""
+		}
+	case 0x13:
+		{ /* '0x13' */
+			return ""
+		}
+	case 0x14:
+		{ /* '0x14' */
+			return ""
+		}
+	case 0x15:
+		{ /* '0x15' */
+			return ""
+		}
+	case 0x16:
+		{ /* '0x16' */
+			return ""
+		}
+	case 0x17:
+		{ /* '0x17' */
+			return ""
+		}
+	case 0x18:
+		{ /* '0x18' */
+			return ""
+		}
+	case 0x19:
+		{ /* '0x19' */
+			return ""
 		}
-		case 0x01: { /* '0x01' */
-            return ""
+	case 0x1A:
+		{ /* '0x1A' */
+			return ""
 		}
-		case 0x02: { /* '0x02' */
-            return ""
+	case 0x1B:
+		{ /* '0x1B' */
+			return ""
 		}
-		case 0x03: { /* '0x03' */
-            return ""
+	case 0x1C:
+		{ /* '0x1C' */
+			return ""
 		}
-		case 0x04: { /* '0x04' */
-            return ""
+	case 0x1D:
+		{ /* '0x1D' */
+			return ""
 		}
-		case 0x05: { /* '0x05' */
-            return ""
+	case 0x1E:
+		{ /* '0x1E' */
+			return ""
 		}
-		case 0x06: { /* '0x06' */
-            return ""
+	case 0x1F:
+		{ /* '0x1F' */
+			return ""
 		}
-		case 0x07: { /* '0x07' */
-            return ""
+	case 0x20:
+		{ /* '0x20' */
+			return ""
 		}
-		case 0x08: { /* '0x08' */
-            return ""
+	case 0x21:
+		{ /* '0x21' */
+			return "Application Address 1"
 		}
-		case 0x09: { /* '0x09' */
-            return ""
+	case 0x22:
+		{ /* '0x22' */
+			return "Application Address 2"
 		}
-		case 0x0A: { /* '0x0A' */
-            return ""
+	case 0x23:
+		{ /* '0x23' */
+			return ""
 		}
-		case 0x0B: { /* '0x0B' */
-            return ""
+	case 0x24:
+		{ /* '0x24' */
+			return ""
 		}
-		case 0x0C: { /* '0x0C' */
-            return ""
+	case 0x25:
+		{ /* '0x25' */
+			return ""
 		}
-		case 0x0D: { /* '0x0D' */
-            return ""
+	case 0x26:
+		{ /* '0x26' */
+			return ""
 		}
-		case 0x0E: { /* '0x0E' */
-            return ""
+	case 0x27:
+		{ /* '0x27' */
+			return ""
 		}
-		case 0x0F: { /* '0x0F' */
-            return ""
+	case 0x28:
+		{ /* '0x28' */
+			return ""
 		}
-		case 0x10: { /* '0x10' */
-            return ""
+	case 0x29:
+		{ /* '0x29' */
+			return ""
 		}
-		case 0x11: { /* '0x11' */
-            return ""
+	case 0x2A:
+		{ /* '0x2A' */
+			return ""
 		}
-		case 0x12: { /* '0x12' */
-            return ""
+	case 0x2B:
+		{ /* '0x2B' */
+			return ""
 		}
-		case 0x13: { /* '0x13' */
-            return ""
+	case 0x2C:
+		{ /* '0x2C' */
+			return ""
 		}
-		case 0x14: { /* '0x14' */
-            return ""
+	case 0x2D:
+		{ /* '0x2D' */
+			return ""
 		}
-		case 0x15: { /* '0x15' */
-            return ""
+	case 0x2E:
+		{ /* '0x2E' */
+			return ""
 		}
-		case 0x16: { /* '0x16' */
-            return ""
+	case 0x2F:
+		{ /* '0x2F' */
+			return ""
 		}
-		case 0x17: { /* '0x17' */
-            return ""
+	case 0x30:
+		{ /* '0x30' */
+			return "Interface options 1"
 		}
-		case 0x18: { /* '0x18' */
-            return ""
+	case 0x31:
+		{ /* '0x31' */
+			return ""
 		}
-		case 0x19: { /* '0x19' */
-            return ""
+	case 0x32:
+		{ /* '0x32' */
+			return ""
 		}
-		case 0x1A: { /* '0x1A' */
-            return ""
+	case 0x33:
+		{ /* '0x33' */
+			return ""
 		}
-		case 0x1B: { /* '0x1B' */
-            return ""
+	case 0x34:
+		{ /* '0x34' */
+			return ""
 		}
-		case 0x1C: { /* '0x1C' */
-            return ""
+	case 0x35:
+		{ /* '0x35' */
+			return ""
 		}
-		case 0x1D: { /* '0x1D' */
-            return ""
+	case 0x36:
+		{ /* '0x36' */
+			return ""
 		}
-		case 0x1E: { /* '0x1E' */
-            return ""
+	case 0x37:
+		{ /* '0x37' */
+			return ""
 		}
-		case 0x1F: { /* '0x1F' */
-            return ""
+	case 0x38:
+		{ /* '0x38' */
+			return ""
 		}
-		case 0x20: { /* '0x20' */
-            return ""
+	case 0x39:
+		{ /* '0x39' */
+			return ""
 		}
-		case 0x21: { /* '0x21' */
-            return "Application Address 1"
+	case 0x3A:
+		{ /* '0x3A' */
+			return ""
 		}
-		case 0x22: { /* '0x22' */
-            return "Application Address 2"
+	case 0x3B:
+		{ /* '0x3B' */
+			return ""
 		}
-		case 0x23: { /* '0x23' */
-            return ""
+	case 0x3C:
+		{ /* '0x3C' */
+			return ""
 		}
-		case 0x24: { /* '0x24' */
-            return ""
+	case 0x3D:
+		{ /* '0x3D' */
+			return "Baud rate selector"
 		}
-		case 0x25: { /* '0x25' */
-            return ""
+	case 0x3E:
+		{ /* '0x3E' */
+			return "Interface options 2"
 		}
-		case 0x26: { /* '0x26' */
-            return ""
+	case 0x3F:
+		{ /* '0x3F' */
+			return ""
 		}
-		case 0x27: { /* '0x27' */
-            return ""
+	case 0x40:
+		{ /* '0x40' */
+			return ""
 		}
-		case 0x28: { /* '0x28' */
-            return ""
+	case 0x41:
+		{ /* '0x41' */
+			return "Interface options 2 power up settings"
 		}
-		case 0x29: { /* '0x29' */
-            return ""
+	case 0x42:
+		{ /* '0x42' */
+			return "Interface options 3"
 		}
-		case 0x2A: { /* '0x2A' */
-            return ""
+	case 0x43:
+		{ /* '0x43' */
+			return ""
 		}
-		case 0x2B: { /* '0x2B' */
-            return ""
+	case 0x44:
+		{ /* '0x44' */
+			return ""
 		}
-		case 0x2C: { /* '0x2C' */
-            return ""
+	case 0x45:
+		{ /* '0x45' */
+			return ""
 		}
-		case 0x2D: { /* '0x2D' */
-            return ""
+	case 0x46:
+		{ /* '0x46' */
+			return ""
 		}
-		case 0x2E: { /* '0x2E' */
-            return ""
+	case 0x47:
+		{ /* '0x47' */
+			return ""
 		}
-		case 0x2F: { /* '0x2F' */
-            return ""
+	case 0x48:
+		{ /* '0x48' */
+			return ""
 		}
-		case 0x30: { /* '0x30' */
-            return "Interface options 1"
+	case 0x49:
+		{ /* '0x49' */
+			return ""
 		}
-		case 0x31: { /* '0x31' */
-            return ""
+	case 0x4A:
+		{ /* '0x4A' */
+			return ""
 		}
-		case 0x32: { /* '0x32' */
-            return ""
+	case 0x4B:
+		{ /* '0x4B' */
+			return ""
 		}
-		case 0x33: { /* '0x33' */
-            return ""
+	case 0x4C:
+		{ /* '0x4C' */
+			return ""
 		}
-		case 0x34: { /* '0x34' */
-            return ""
+	case 0x4D:
+		{ /* '0x4D' */
+			return ""
 		}
-		case 0x35: { /* '0x35' */
-            return ""
+	case 0x4E:
+		{ /* '0x4E' */
+			return ""
 		}
-		case 0x36: { /* '0x36' */
-            return ""
+	case 0x4F:
+		{ /* '0x4F' */
+			return ""
 		}
-		case 0x37: { /* '0x37' */
-            return ""
+	case 0x50:
+		{ /* '0x50' */
+			return ""
 		}
-		case 0x38: { /* '0x38' */
-            return ""
+	case 0x51:
+		{ /* '0x51' */
+			return ""
 		}
-		case 0x39: { /* '0x39' */
-            return ""
+	case 0x52:
+		{ /* '0x52' */
+			return ""
 		}
-		case 0x3A: { /* '0x3A' */
-            return ""
+	case 0x53:
+		{ /* '0x53' */
+			return ""
 		}
-		case 0x3B: { /* '0x3B' */
-            return ""
+	case 0x54:
+		{ /* '0x54' */
+			return ""
 		}
-		case 0x3C: { /* '0x3C' */
-            return ""
+	case 0x55:
+		{ /* '0x55' */
+			return ""
 		}
-		case 0x3D: { /* '0x3D' */
-            return "Baud rate selector"
+	case 0x56:
+		{ /* '0x56' */
+			return ""
 		}
-		case 0x3E: { /* '0x3E' */
-            return "Interface options 2"
+	case 0x57:
+		{ /* '0x57' */
+			return ""
 		}
-		case 0x3F: { /* '0x3F' */
-            return ""
+	case 0x58:
+		{ /* '0x58' */
+			return ""
 		}
-		case 0x40: { /* '0x40' */
-            return ""
+	case 0x59:
+		{ /* '0x59' */
+			return ""
 		}
-		case 0x41: { /* '0x41' */
-            return "Interface options 2 power up settings"
+	case 0x5A:
+		{ /* '0x5A' */
+			return ""
 		}
-		case 0x42: { /* '0x42' */
-            return "Interface options 3"
+	case 0x5B:
+		{ /* '0x5B' */
+			return ""
 		}
-		case 0x43: { /* '0x43' */
-            return ""
+	case 0x5C:
+		{ /* '0x5C' */
+			return ""
 		}
-		case 0x44: { /* '0x44' */
-            return ""
+	case 0x5D:
+		{ /* '0x5D' */
+			return ""
 		}
-		case 0x45: { /* '0x45' */
-            return ""
+	case 0x5E:
+		{ /* '0x5E' */
+			return ""
 		}
-		case 0x46: { /* '0x46' */
-            return ""
+	case 0x5F:
+		{ /* '0x5F' */
+			return ""
 		}
-		case 0x47: { /* '0x47' */
-            return ""
+	case 0x60:
+		{ /* '0x60' */
+			return ""
 		}
-		case 0x48: { /* '0x48' */
-            return ""
+	case 0x61:
+		{ /* '0x61' */
+			return ""
 		}
-		case 0x49: { /* '0x49' */
-            return ""
+	case 0x62:
+		{ /* '0x62' */
+			return ""
 		}
-		case 0x4A: { /* '0x4A' */
-            return ""
+	case 0x63:
+		{ /* '0x63' */
+			return ""
 		}
-		case 0x4B: { /* '0x4B' */
-            return ""
+	case 0x64:
+		{ /* '0x64' */
+			return ""
 		}
-		case 0x4C: { /* '0x4C' */
-            return ""
+	case 0x65:
+		{ /* '0x65' */
+			return ""
 		}
-		case 0x4D: { /* '0x4D' */
-            return ""
+	case 0x66:
+		{ /* '0x66' */
+			return ""
 		}
-		case 0x4E: { /* '0x4E' */
-            return ""
+	case 0x67:
+		{ /* '0x67' */
+			return ""
 		}
-		case 0x4F: { /* '0x4F' */
-            return ""
+	case 0x68:
+		{ /* '0x68' */
+			return ""
 		}
-		case 0x50: { /* '0x50' */
-            return ""
+	case 0x69:
+		{ /* '0x69' */
+			return ""
 		}
-		case 0x51: { /* '0x51' */
-            return ""
+	case 0x6A:
+		{ /* '0x6A' */
+			return ""
 		}
-		case 0x52: { /* '0x52' */
-            return ""
+	case 0x6B:
+		{ /* '0x6B' */
+			return ""
 		}
-		case 0x53: { /* '0x53' */
-            return ""
+	case 0x6C:
+		{ /* '0x6C' */
+			return ""
 		}
-		case 0x54: { /* '0x54' */
-            return ""
+	case 0x6D:
+		{ /* '0x6D' */
+			return ""
 		}
-		case 0x55: { /* '0x55' */
-            return ""
+	case 0x6E:
+		{ /* '0x6E' */
+			return ""
 		}
-		case 0x56: { /* '0x56' */
-            return ""
+	case 0x6F:
+		{ /* '0x6F' */
+			return ""
 		}
-		case 0x57: { /* '0x57' */
-            return ""
+	case 0x70:
+		{ /* '0x70' */
+			return ""
 		}
-		case 0x58: { /* '0x58' */
-            return ""
+	case 0x71:
+		{ /* '0x71' */
+			return ""
 		}
-		case 0x59: { /* '0x59' */
-            return ""
+	case 0x72:
+		{ /* '0x72' */
+			return ""
 		}
-		case 0x5A: { /* '0x5A' */
-            return ""
+	case 0x73:
+		{ /* '0x73' */
+			return ""
 		}
-		case 0x5B: { /* '0x5B' */
-            return ""
+	case 0x74:
+		{ /* '0x74' */
+			return ""
 		}
-		case 0x5C: { /* '0x5C' */
-            return ""
+	case 0x75:
+		{ /* '0x75' */
+			return ""
 		}
-		case 0x5D: { /* '0x5D' */
-            return ""
+	case 0x76:
+		{ /* '0x76' */
+			return ""
 		}
-		case 0x5E: { /* '0x5E' */
-            return ""
+	case 0x77:
+		{ /* '0x77' */
+			return ""
 		}
-		case 0x5F: { /* '0x5F' */
-            return ""
+	case 0x78:
+		{ /* '0x78' */
+			return ""
 		}
-		case 0x60: { /* '0x60' */
-            return ""
+	case 0x79:
+		{ /* '0x79' */
+			return ""
 		}
-		case 0x61: { /* '0x61' */
-            return ""
+	case 0x7A:
+		{ /* '0x7A' */
+			return ""
 		}
-		case 0x62: { /* '0x62' */
-            return ""
+	case 0x7B:
+		{ /* '0x7B' */
+			return ""
 		}
-		case 0x63: { /* '0x63' */
-            return ""
+	case 0x7C:
+		{ /* '0x7C' */
+			return ""
 		}
-		case 0x64: { /* '0x64' */
-            return ""
+	case 0x7D:
+		{ /* '0x7D' */
+			return ""
 		}
-		case 0x65: { /* '0x65' */
-            return ""
+	case 0x7E:
+		{ /* '0x7E' */
+			return ""
 		}
-		case 0x66: { /* '0x66' */
-            return ""
+	case 0x7F:
+		{ /* '0x7F' */
+			return ""
 		}
-		case 0x67: { /* '0x67' */
-            return ""
+	case 0x80:
+		{ /* '0x80' */
+			return ""
 		}
-		case 0x68: { /* '0x68' */
-            return ""
+	case 0x81:
+		{ /* '0x81' */
+			return ""
 		}
-		case 0x69: { /* '0x69' */
-            return ""
+	case 0x82:
+		{ /* '0x82' */
+			return ""
 		}
-		case 0x6A: { /* '0x6A' */
-            return ""
+	case 0x83:
+		{ /* '0x83' */
+			return ""
 		}
-		case 0x6B: { /* '0x6B' */
-            return ""
+	case 0x84:
+		{ /* '0x84' */
+			return ""
 		}
-		case 0x6C: { /* '0x6C' */
-            return ""
+	case 0x85:
+		{ /* '0x85' */
+			return ""
 		}
-		case 0x6D: { /* '0x6D' */
-            return ""
+	case 0x86:
+		{ /* '0x86' */
+			return ""
 		}
-		case 0x6E: { /* '0x6E' */
-            return ""
+	case 0x87:
+		{ /* '0x87' */
+			return ""
 		}
-		case 0x6F: { /* '0x6F' */
-            return ""
+	case 0x88:
+		{ /* '0x88' */
+			return ""
 		}
-		case 0x70: { /* '0x70' */
-            return ""
+	case 0x89:
+		{ /* '0x89' */
+			return ""
 		}
-		case 0x71: { /* '0x71' */
-            return ""
+	case 0x8A:
+		{ /* '0x8A' */
+			return ""
 		}
-		case 0x72: { /* '0x72' */
-            return ""
+	case 0x8B:
+		{ /* '0x8B' */
+			return ""
 		}
-		case 0x73: { /* '0x73' */
-            return ""
+	case 0x8C:
+		{ /* '0x8C' */
+			return ""
 		}
-		case 0x74: { /* '0x74' */
-            return ""
+	case 0x8D:
+		{ /* '0x8D' */
+			return ""
 		}
-		case 0x75: { /* '0x75' */
-            return ""
+	case 0x8E:
+		{ /* '0x8E' */
+			return ""
 		}
-		case 0x76: { /* '0x76' */
-            return ""
+	case 0x8F:
+		{ /* '0x8F' */
+			return ""
 		}
-		case 0x77: { /* '0x77' */
-            return ""
+	case 0x90:
+		{ /* '0x90' */
+			return ""
 		}
-		case 0x78: { /* '0x78' */
-            return ""
+	case 0x91:
+		{ /* '0x91' */
+			return ""
 		}
-		case 0x79: { /* '0x79' */
-            return ""
+	case 0x92:
+		{ /* '0x92' */
+			return ""
 		}
-		case 0x7A: { /* '0x7A' */
-            return ""
+	case 0x93:
+		{ /* '0x93' */
+			return ""
 		}
-		case 0x7B: { /* '0x7B' */
-            return ""
+	case 0x94:
+		{ /* '0x94' */
+			return ""
 		}
-		case 0x7C: { /* '0x7C' */
-            return ""
+	case 0x95:
+		{ /* '0x95' */
+			return ""
 		}
-		case 0x7D: { /* '0x7D' */
-            return ""
+	case 0x96:
+		{ /* '0x96' */
+			return ""
 		}
-		case 0x7E: { /* '0x7E' */
-            return ""
+	case 0x97:
+		{ /* '0x97' */
+			return ""
 		}
-		case 0x7F: { /* '0x7F' */
-            return ""
+	case 0x98:
+		{ /* '0x98' */
+			return ""
 		}
-		case 0x80: { /* '0x80' */
-            return ""
+	case 0x99:
+		{ /* '0x99' */
+			return ""
 		}
-		case 0x81: { /* '0x81' */
-            return ""
+	case 0x9A:
+		{ /* '0x9A' */
+			return ""
 		}
-		case 0x82: { /* '0x82' */
-            return ""
+	case 0x9B:
+		{ /* '0x9B' */
+			return ""
 		}
-		case 0x83: { /* '0x83' */
-            return ""
+	case 0x9C:
+		{ /* '0x9C' */
+			return ""
 		}
-		case 0x84: { /* '0x84' */
-            return ""
+	case 0x9D:
+		{ /* '0x9D' */
+			return ""
 		}
-		case 0x85: { /* '0x85' */
-            return ""
+	case 0x9E:
+		{ /* '0x9E' */
+			return ""
 		}
-		case 0x86: { /* '0x86' */
-            return ""
+	case 0x9F:
+		{ /* '0x9F' */
+			return ""
 		}
-		case 0x87: { /* '0x87' */
-            return ""
+	case 0xA0:
+		{ /* '0xA0' */
+			return ""
 		}
-		case 0x88: { /* '0x88' */
-            return ""
+	case 0xA1:
+		{ /* '0xA1' */
+			return ""
 		}
-		case 0x89: { /* '0x89' */
-            return ""
+	case 0xA2:
+		{ /* '0xA2' */
+			return ""
 		}
-		case 0x8A: { /* '0x8A' */
-            return ""
+	case 0xA3:
+		{ /* '0xA3' */
+			return ""
 		}
-		case 0x8B: { /* '0x8B' */
-            return ""
+	case 0xA4:
+		{ /* '0xA4' */
+			return ""
 		}
-		case 0x8C: { /* '0x8C' */
-            return ""
+	case 0xA5:
+		{ /* '0xA5' */
+			return ""
 		}
-		case 0x8D: { /* '0x8D' */
-            return ""
+	case 0xA6:
+		{ /* '0xA6' */
+			return ""
 		}
-		case 0x8E: { /* '0x8E' */
-            return ""
+	case 0xA7:
+		{ /* '0xA7' */
+			return ""
 		}
-		case 0x8F: { /* '0x8F' */
-            return ""
+	case 0xA8:
+		{ /* '0xA8' */
+			return ""
 		}
-		case 0x90: { /* '0x90' */
-            return ""
+	case 0xA9:
+		{ /* '0xA9' */
+			return ""
 		}
-		case 0x91: { /* '0x91' */
-            return ""
+	case 0xAA:
+		{ /* '0xAA' */
+			return ""
 		}
-		case 0x92: { /* '0x92' */
-            return ""
+	case 0xAB:
+		{ /* '0xAB' */
+			return ""
 		}
-		case 0x93: { /* '0x93' */
-            return ""
+	case 0xAC:
+		{ /* '0xAC' */
+			return ""
 		}
-		case 0x94: { /* '0x94' */
-            return ""
+	case 0xAD:
+		{ /* '0xAD' */
+			return ""
 		}
-		case 0x95: { /* '0x95' */
-            return ""
+	case 0xAE:
+		{ /* '0xAE' */
+			return ""
 		}
-		case 0x96: { /* '0x96' */
-            return ""
+	case 0xAF:
+		{ /* '0xAF' */
+			return ""
 		}
-		case 0x97: { /* '0x97' */
-            return ""
+	case 0xB0:
+		{ /* '0xB0' */
+			return ""
 		}
-		case 0x98: { /* '0x98' */
-            return ""
+	case 0xB1:
+		{ /* '0xB1' */
+			return ""
 		}
-		case 0x99: { /* '0x99' */
-            return ""
+	case 0xB2:
+		{ /* '0xB2' */
+			return ""
 		}
-		case 0x9A: { /* '0x9A' */
-            return ""
+	case 0xB3:
+		{ /* '0xB3' */
+			return ""
 		}
-		case 0x9B: { /* '0x9B' */
-            return ""
+	case 0xB4:
+		{ /* '0xB4' */
+			return ""
 		}
-		case 0x9C: { /* '0x9C' */
-            return ""
+	case 0xB5:
+		{ /* '0xB5' */
+			return ""
 		}
-		case 0x9D: { /* '0x9D' */
-            return ""
+	case 0xB6:
+		{ /* '0xB6' */
+			return ""
 		}
-		case 0x9E: { /* '0x9E' */
-            return ""
+	case 0xB7:
+		{ /* '0xB7' */
+			return ""
 		}
-		case 0x9F: { /* '0x9F' */
-            return ""
+	case 0xB8:
+		{ /* '0xB8' */
+			return ""
 		}
-		case 0xA0: { /* '0xA0' */
-            return ""
+	case 0xB9:
+		{ /* '0xB9' */
+			return ""
 		}
-		case 0xA1: { /* '0xA1' */
-            return ""
+	case 0xBA:
+		{ /* '0xBA' */
+			return ""
 		}
-		case 0xA2: { /* '0xA2' */
-            return ""
+	case 0xBB:
+		{ /* '0xBB' */
+			return ""
 		}
-		case 0xA3: { /* '0xA3' */
-            return ""
+	case 0xBC:
+		{ /* '0xBC' */
+			return ""
 		}
-		case 0xA4: { /* '0xA4' */
-            return ""
+	case 0xBD:
+		{ /* '0xBD' */
+			return ""
 		}
-		case 0xA5: { /* '0xA5' */
-            return ""
+	case 0xBE:
+		{ /* '0xBE' */
+			return ""
 		}
-		case 0xA6: { /* '0xA6' */
-            return ""
+	case 0xBF:
+		{ /* '0xBF' */
+			return ""
 		}
-		case 0xA7: { /* '0xA7' */
-            return ""
+	case 0xC0:
+		{ /* '0xC0' */
+			return ""
 		}
-		case 0xA8: { /* '0xA8' */
-            return ""
+	case 0xC1:
+		{ /* '0xC1' */
+			return ""
 		}
-		case 0xA9: { /* '0xA9' */
-            return ""
+	case 0xC2:
+		{ /* '0xC2' */
+			return ""
 		}
-		case 0xAA: { /* '0xAA' */
-            return ""
+	case 0xC3:
+		{ /* '0xC3' */
+			return ""
 		}
-		case 0xAB: { /* '0xAB' */
-            return ""
+	case 0xC4:
+		{ /* '0xC4' */
+			return ""
 		}
-		case 0xAC: { /* '0xAC' */
-            return ""
+	case 0xC5:
+		{ /* '0xC5' */
+			return ""
 		}
-		case 0xAD: { /* '0xAD' */
-            return ""
+	case 0xC6:
+		{ /* '0xC6' */
+			return ""
 		}
-		case 0xAE: { /* '0xAE' */
-            return ""
+	case 0xC7:
+		{ /* '0xC7' */
+			return ""
 		}
-		case 0xAF: { /* '0xAF' */
-            return ""
+	case 0xC8:
+		{ /* '0xC8' */
+			return ""
 		}
-		case 0xB0: { /* '0xB0' */
-            return ""
+	case 0xC9:
+		{ /* '0xC9' */
+			return ""
 		}
-		case 0xB1: { /* '0xB1' */
-            return ""
+	case 0xCA:
+		{ /* '0xCA' */
+			return ""
 		}
-		case 0xB2: { /* '0xB2' */
-            return ""
+	case 0xCB:
+		{ /* '0xCB' */
+			return ""
 		}
-		case 0xB3: { /* '0xB3' */
-            return ""
+	case 0xCC:
+		{ /* '0xCC' */
+			return ""
 		}
-		case 0xB4: { /* '0xB4' */
-            return ""
+	case 0xCD:
+		{ /* '0xCD' */
+			return ""
 		}
-		case 0xB5: { /* '0xB5' */
-            return ""
+	case 0xCE:
+		{ /* '0xCE' */
+			return ""
 		}
-		case 0xB6: { /* '0xB6' */
-            return ""
+	case 0xCF:
+		{ /* '0xCF' */
+			return ""
 		}
-		case 0xB7: { /* '0xB7' */
-            return ""
+	case 0xD0:
+		{ /* '0xD0' */
+			return ""
 		}
-		case 0xB8: { /* '0xB8' */
-            return ""
+	case 0xD1:
+		{ /* '0xD1' */
+			return ""
 		}
-		case 0xB9: { /* '0xB9' */
-            return ""
+	case 0xD2:
+		{ /* '0xD2' */
+			return ""
 		}
-		case 0xBA: { /* '0xBA' */
-            return ""
+	case 0xD3:
+		{ /* '0xD3' */
+			return ""
 		}
-		case 0xBB: { /* '0xBB' */
-            return ""
+	case 0xD4:
+		{ /* '0xD4' */
+			return ""
 		}
-		case 0xBC: { /* '0xBC' */
-            return ""
+	case 0xD5:
+		{ /* '0xD5' */
+			return ""
 		}
-		case 0xBD: { /* '0xBD' */
-            return ""
+	case 0xD6:
+		{ /* '0xD6' */
+			return ""
 		}
-		case 0xBE: { /* '0xBE' */
-            return ""
+	case 0xD7:
+		{ /* '0xD7' */
+			return ""
 		}
-		case 0xBF: { /* '0xBF' */
-            return ""
+	case 0xD8:
+		{ /* '0xD8' */
+			return ""
 		}
-		case 0xC0: { /* '0xC0' */
-            return ""
+	case 0xD9:
+		{ /* '0xD9' */
+			return ""
 		}
-		case 0xC1: { /* '0xC1' */
-            return ""
+	case 0xDA:
+		{ /* '0xDA' */
+			return ""
 		}
-		case 0xC2: { /* '0xC2' */
-            return ""
+	case 0xDB:
+		{ /* '0xDB' */
+			return ""
 		}
-		case 0xC3: { /* '0xC3' */
-            return ""
+	case 0xDC:
+		{ /* '0xDC' */
+			return ""
 		}
-		case 0xC4: { /* '0xC4' */
-            return ""
+	case 0xDD:
+		{ /* '0xDD' */
+			return ""
 		}
-		case 0xC5: { /* '0xC5' */
-            return ""
+	case 0xDE:
+		{ /* '0xDE' */
+			return ""
 		}
-		case 0xC6: { /* '0xC6' */
-            return ""
+	case 0xDF:
+		{ /* '0xDF' */
+			return ""
 		}
-		case 0xC7: { /* '0xC7' */
-            return ""
+	case 0xE0:
+		{ /* '0xE0' */
+			return ""
 		}
-		case 0xC8: { /* '0xC8' */
-            return ""
+	case 0xE1:
+		{ /* '0xE1' */
+			return ""
 		}
-		case 0xC9: { /* '0xC9' */
-            return ""
+	case 0xE2:
+		{ /* '0xE2' */
+			return ""
 		}
-		case 0xCA: { /* '0xCA' */
-            return ""
+	case 0xE3:
+		{ /* '0xE3' */
+			return ""
 		}
-		case 0xCB: { /* '0xCB' */
-            return ""
+	case 0xE4:
+		{ /* '0xE4' */
+			return ""
 		}
-		case 0xCC: { /* '0xCC' */
-            return ""
+	case 0xE5:
+		{ /* '0xE5' */
+			return ""
 		}
-		case 0xCD: { /* '0xCD' */
-            return ""
+	case 0xE6:
+		{ /* '0xE6' */
+			return ""
 		}
-		case 0xCE: { /* '0xCE' */
-            return ""
+	case 0xE7:
+		{ /* '0xE7' */
+			return ""
 		}
-		case 0xCF: { /* '0xCF' */
-            return ""
+	case 0xE8:
+		{ /* '0xE8' */
+			return ""
 		}
-		case 0xD0: { /* '0xD0' */
-            return ""
+	case 0xE9:
+		{ /* '0xE9' */
+			return ""
 		}
-		case 0xD1: { /* '0xD1' */
-            return ""
+	case 0xEA:
+		{ /* '0xEA' */
+			return ""
 		}
-		case 0xD2: { /* '0xD2' */
-            return ""
+	case 0xEB:
+		{ /* '0xEB' */
+			return "Custom Manufacturer (8 bytes)"
 		}
-		case 0xD3: { /* '0xD3' */
-            return ""
+	case 0xEC:
+		{ /* '0xEC' */
+			return "Custom Manufacturer (8 bytes)"
 		}
-		case 0xD4: { /* '0xD4' */
-            return ""
+	case 0xED:
+		{ /* '0xED' */
+			return "Custom Manufacturer (8 bytes)"
 		}
-		case 0xD5: { /* '0xD5' */
-            return ""
+	case 0xEE:
+		{ /* '0xEE' */
+			return "Custom Manufacturer (8 bytes)"
 		}
-		case 0xD6: { /* '0xD6' */
-            return ""
+	case 0xEF:
+		{ /* '0xEF' */
+			return "Custom Manufacturer (8 bytes)"
 		}
-		case 0xD7: { /* '0xD7' */
-            return ""
+	case 0xF0:
+		{ /* '0xF0' */
+			return "Custom Manufacturer (8 bytes)"
 		}
-		case 0xD8: { /* '0xD8' */
-            return ""
+	case 0xF1:
+		{ /* '0xF1' */
+			return "Custom Manufacturer (8 bytes)"
 		}
-		case 0xD9: { /* '0xD9' */
-            return ""
+	case 0xF2:
+		{ /* '0xF2' */
+			return "Custom Manufacturer (8 bytes)"
 		}
-		case 0xDA: { /* '0xDA' */
-            return ""
+	case 0xF3:
+		{ /* '0xF3' */
+			return "Serial Number"
 		}
-		case 0xDB: { /* '0xDB' */
-            return ""
+	case 0xF4:
+		{ /* '0xF4' */
+			return "Serial Number"
 		}
-		case 0xDC: { /* '0xDC' */
-            return ""
+	case 0xF5:
+		{ /* '0xF5' */
+			return "Serial Number"
 		}
-		case 0xDD: { /* '0xDD' */
-            return ""
+	case 0xF6:
+		{ /* '0xF6' */
+			return "Serial Number"
 		}
-		case 0xDE: { /* '0xDE' */
-            return ""
+	case 0xF7:
+		{ /* '0xF7' */
+			return "Custom Type (8 bytes)"
 		}
-		case 0xDF: { /* '0xDF' */
-            return ""
+	case 0xF8:
+		{ /* '0xF8' */
+			return "Custom Type (8 bytes)"
 		}
-		case 0xE0: { /* '0xE0' */
-            return ""
+	case 0xF9:
+		{ /* '0xF9' */
+			return "Custom Type (8 bytes)"
 		}
-		case 0xE1: { /* '0xE1' */
-            return ""
+	case 0xFA:
+		{ /* '0xFA' */
+			return "Custom Type (8 bytes)"
 		}
-		case 0xE2: { /* '0xE2' */
-            return ""
+	case 0xFB:
+		{ /* '0xFB' */
+			return "Custom Type (8 bytes)"
 		}
-		case 0xE3: { /* '0xE3' */
-            return ""
+	case 0xFC:
+		{ /* '0xFC' */
+			return "Custom Type (8 bytes)"
 		}
-		case 0xE4: { /* '0xE4' */
-            return ""
+	case 0xFD:
+		{ /* '0xFD' */
+			return "Custom Type (8 bytes)"
 		}
-		case 0xE5: { /* '0xE5' */
-            return ""
+	case 0xFE:
+		{ /* '0xFE' */
+			return "Custom Type (8 bytes)"
 		}
-		case 0xE6: { /* '0xE6' */
-            return ""
+	case 0xFF:
+		{ /* '0xFF' */
+			return ""
 		}
-		case 0xE7: { /* '0xE7' */
-            return ""
-		}
-		case 0xE8: { /* '0xE8' */
-            return ""
-		}
-		case 0xE9: { /* '0xE9' */
-            return ""
-		}
-		case 0xEA: { /* '0xEA' */
-            return ""
-		}
-		case 0xEB: { /* '0xEB' */
-            return "Custom Manufacturer (8 bytes)"
-		}
-		case 0xEC: { /* '0xEC' */
-            return "Custom Manufacturer (8 bytes)"
-		}
-		case 0xED: { /* '0xED' */
-            return "Custom Manufacturer (8 bytes)"
-		}
-		case 0xEE: { /* '0xEE' */
-            return "Custom Manufacturer (8 bytes)"
-		}
-		case 0xEF: { /* '0xEF' */
-            return "Custom Manufacturer (8 bytes)"
-		}
-		case 0xF0: { /* '0xF0' */
-            return "Custom Manufacturer (8 bytes)"
-		}
-		case 0xF1: { /* '0xF1' */
-            return "Custom Manufacturer (8 bytes)"
-		}
-		case 0xF2: { /* '0xF2' */
-            return "Custom Manufacturer (8 bytes)"
-		}
-		case 0xF3: { /* '0xF3' */
-            return "Serial Number"
-		}
-		case 0xF4: { /* '0xF4' */
-            return "Serial Number"
-		}
-		case 0xF5: { /* '0xF5' */
-            return "Serial Number"
-		}
-		case 0xF6: { /* '0xF6' */
-            return "Serial Number"
-		}
-		case 0xF7: { /* '0xF7' */
-            return "Custom Type (8 bytes)"
-		}
-		case 0xF8: { /* '0xF8' */
-            return "Custom Type (8 bytes)"
-		}
-		case 0xF9: { /* '0xF9' */
-            return "Custom Type (8 bytes)"
-		}
-		case 0xFA: { /* '0xFA' */
-            return "Custom Type (8 bytes)"
-		}
-		case 0xFB: { /* '0xFB' */
-            return "Custom Type (8 bytes)"
-		}
-		case 0xFC: { /* '0xFC' */
-            return "Custom Type (8 bytes)"
-		}
-		case 0xFD: { /* '0xFD' */
-            return "Custom Type (8 bytes)"
-		}
-		case 0xFE: { /* '0xFE' */
-            return "Custom Type (8 bytes)"
-		}
-		case 0xFF: { /* '0xFF' */
-            return ""
-		}
-		default: {
+	default:
+		{
 			return ""
 		}
 	}
@@ -3705,776 +4732,1033 @@ func ParameterFirstEnumForFieldParameterDescription(value string) (Parameter, er
 }
 
 func (e Parameter) ProtectionLevel() ProtectionLevel {
-	switch e  {
-		case 0x00: { /* '0x00' */
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
 			return ProtectionLevel_NONE
 		}
-		case 0x01: { /* '0x01' */
+	case 0x01:
+		{ /* '0x01' */
 			return ProtectionLevel_NONE
 		}
-		case 0x02: { /* '0x02' */
+	case 0x02:
+		{ /* '0x02' */
 			return ProtectionLevel_NONE
 		}
-		case 0x03: { /* '0x03' */
+	case 0x03:
+		{ /* '0x03' */
 			return ProtectionLevel_NONE
 		}
-		case 0x04: { /* '0x04' */
+	case 0x04:
+		{ /* '0x04' */
 			return ProtectionLevel_NONE
 		}
-		case 0x05: { /* '0x05' */
+	case 0x05:
+		{ /* '0x05' */
 			return ProtectionLevel_NONE
 		}
-		case 0x06: { /* '0x06' */
+	case 0x06:
+		{ /* '0x06' */
 			return ProtectionLevel_NONE
 		}
-		case 0x07: { /* '0x07' */
+	case 0x07:
+		{ /* '0x07' */
 			return ProtectionLevel_NONE
 		}
-		case 0x08: { /* '0x08' */
+	case 0x08:
+		{ /* '0x08' */
 			return ProtectionLevel_NONE
 		}
-		case 0x09: { /* '0x09' */
+	case 0x09:
+		{ /* '0x09' */
 			return ProtectionLevel_NONE
 		}
-		case 0x0A: { /* '0x0A' */
+	case 0x0A:
+		{ /* '0x0A' */
 			return ProtectionLevel_NONE
 		}
-		case 0x0B: { /* '0x0B' */
+	case 0x0B:
+		{ /* '0x0B' */
 			return ProtectionLevel_NONE
 		}
-		case 0x0C: { /* '0x0C' */
+	case 0x0C:
+		{ /* '0x0C' */
 			return ProtectionLevel_NONE
 		}
-		case 0x0D: { /* '0x0D' */
+	case 0x0D:
+		{ /* '0x0D' */
 			return ProtectionLevel_NONE
 		}
-		case 0x0E: { /* '0x0E' */
+	case 0x0E:
+		{ /* '0x0E' */
 			return ProtectionLevel_NONE
 		}
-		case 0x0F: { /* '0x0F' */
+	case 0x0F:
+		{ /* '0x0F' */
 			return ProtectionLevel_NONE
 		}
-		case 0x10: { /* '0x10' */
+	case 0x10:
+		{ /* '0x10' */
 			return ProtectionLevel_NONE
 		}
-		case 0x11: { /* '0x11' */
+	case 0x11:
+		{ /* '0x11' */
 			return ProtectionLevel_NONE
 		}
-		case 0x12: { /* '0x12' */
+	case 0x12:
+		{ /* '0x12' */
 			return ProtectionLevel_NONE
 		}
-		case 0x13: { /* '0x13' */
+	case 0x13:
+		{ /* '0x13' */
 			return ProtectionLevel_NONE
 		}
-		case 0x14: { /* '0x14' */
+	case 0x14:
+		{ /* '0x14' */
 			return ProtectionLevel_NONE
 		}
-		case 0x15: { /* '0x15' */
+	case 0x15:
+		{ /* '0x15' */
 			return ProtectionLevel_NONE
 		}
-		case 0x16: { /* '0x16' */
+	case 0x16:
+		{ /* '0x16' */
 			return ProtectionLevel_NONE
 		}
-		case 0x17: { /* '0x17' */
+	case 0x17:
+		{ /* '0x17' */
 			return ProtectionLevel_NONE
 		}
-		case 0x18: { /* '0x18' */
+	case 0x18:
+		{ /* '0x18' */
 			return ProtectionLevel_NONE
 		}
-		case 0x19: { /* '0x19' */
+	case 0x19:
+		{ /* '0x19' */
 			return ProtectionLevel_NONE
 		}
-		case 0x1A: { /* '0x1A' */
+	case 0x1A:
+		{ /* '0x1A' */
 			return ProtectionLevel_NONE
 		}
-		case 0x1B: { /* '0x1B' */
+	case 0x1B:
+		{ /* '0x1B' */
 			return ProtectionLevel_NONE
 		}
-		case 0x1C: { /* '0x1C' */
+	case 0x1C:
+		{ /* '0x1C' */
 			return ProtectionLevel_NONE
 		}
-		case 0x1D: { /* '0x1D' */
+	case 0x1D:
+		{ /* '0x1D' */
 			return ProtectionLevel_NONE
 		}
-		case 0x1E: { /* '0x1E' */
+	case 0x1E:
+		{ /* '0x1E' */
 			return ProtectionLevel_NONE
 		}
-		case 0x1F: { /* '0x1F' */
+	case 0x1F:
+		{ /* '0x1F' */
 			return ProtectionLevel_NONE
 		}
-		case 0x20: { /* '0x20' */
+	case 0x20:
+		{ /* '0x20' */
 			return ProtectionLevel_NONE
 		}
-		case 0x21: { /* '0x21' */
+	case 0x21:
+		{ /* '0x21' */
 			return ProtectionLevel_UNLOCK_REQUIRED
 		}
-		case 0x22: { /* '0x22' */
+	case 0x22:
+		{ /* '0x22' */
 			return ProtectionLevel_UNLOCK_REQUIRED
 		}
-		case 0x23: { /* '0x23' */
+	case 0x23:
+		{ /* '0x23' */
 			return ProtectionLevel_NONE
 		}
-		case 0x24: { /* '0x24' */
+	case 0x24:
+		{ /* '0x24' */
 			return ProtectionLevel_NONE
 		}
-		case 0x25: { /* '0x25' */
+	case 0x25:
+		{ /* '0x25' */
 			return ProtectionLevel_NONE
 		}
-		case 0x26: { /* '0x26' */
+	case 0x26:
+		{ /* '0x26' */
 			return ProtectionLevel_NONE
 		}
-		case 0x27: { /* '0x27' */
+	case 0x27:
+		{ /* '0x27' */
 			return ProtectionLevel_NONE
 		}
-		case 0x28: { /* '0x28' */
+	case 0x28:
+		{ /* '0x28' */
 			return ProtectionLevel_NONE
 		}
-		case 0x29: { /* '0x29' */
+	case 0x29:
+		{ /* '0x29' */
 			return ProtectionLevel_NONE
 		}
-		case 0x2A: { /* '0x2A' */
+	case 0x2A:
+		{ /* '0x2A' */
 			return ProtectionLevel_NONE
 		}
-		case 0x2B: { /* '0x2B' */
+	case 0x2B:
+		{ /* '0x2B' */
 			return ProtectionLevel_NONE
 		}
-		case 0x2C: { /* '0x2C' */
+	case 0x2C:
+		{ /* '0x2C' */
 			return ProtectionLevel_NONE
 		}
-		case 0x2D: { /* '0x2D' */
+	case 0x2D:
+		{ /* '0x2D' */
 			return ProtectionLevel_NONE
 		}
-		case 0x2E: { /* '0x2E' */
+	case 0x2E:
+		{ /* '0x2E' */
 			return ProtectionLevel_NONE
 		}
-		case 0x2F: { /* '0x2F' */
+	case 0x2F:
+		{ /* '0x2F' */
 			return ProtectionLevel_NONE
 		}
-		case 0x30: { /* '0x30' */
+	case 0x30:
+		{ /* '0x30' */
 			return ProtectionLevel_NO_WRITE_ACCESS
 		}
-		case 0x31: { /* '0x31' */
+	case 0x31:
+		{ /* '0x31' */
 			return ProtectionLevel_NONE
 		}
-		case 0x32: { /* '0x32' */
+	case 0x32:
+		{ /* '0x32' */
 			return ProtectionLevel_NONE
 		}
-		case 0x33: { /* '0x33' */
+	case 0x33:
+		{ /* '0x33' */
 			return ProtectionLevel_NONE
 		}
-		case 0x34: { /* '0x34' */
+	case 0x34:
+		{ /* '0x34' */
 			return ProtectionLevel_NONE
 		}
-		case 0x35: { /* '0x35' */
+	case 0x35:
+		{ /* '0x35' */
 			return ProtectionLevel_NONE
 		}
-		case 0x36: { /* '0x36' */
+	case 0x36:
+		{ /* '0x36' */
 			return ProtectionLevel_NONE
 		}
-		case 0x37: { /* '0x37' */
+	case 0x37:
+		{ /* '0x37' */
 			return ProtectionLevel_NONE
 		}
-		case 0x38: { /* '0x38' */
+	case 0x38:
+		{ /* '0x38' */
 			return ProtectionLevel_NONE
 		}
-		case 0x39: { /* '0x39' */
+	case 0x39:
+		{ /* '0x39' */
 			return ProtectionLevel_NONE
 		}
-		case 0x3A: { /* '0x3A' */
+	case 0x3A:
+		{ /* '0x3A' */
 			return ProtectionLevel_NONE
 		}
-		case 0x3B: { /* '0x3B' */
+	case 0x3B:
+		{ /* '0x3B' */
 			return ProtectionLevel_NONE
 		}
-		case 0x3C: { /* '0x3C' */
+	case 0x3C:
+		{ /* '0x3C' */
 			return ProtectionLevel_NONE
 		}
-		case 0x3D: { /* '0x3D' */
+	case 0x3D:
+		{ /* '0x3D' */
 			return ProtectionLevel_NO_WRITE_ACCESS
 		}
-		case 0x3E: { /* '0x3E' */
+	case 0x3E:
+		{ /* '0x3E' */
 			return ProtectionLevel_NONE
 		}
-		case 0x3F: { /* '0x3F' */
+	case 0x3F:
+		{ /* '0x3F' */
 			return ProtectionLevel_NONE
 		}
-		case 0x40: { /* '0x40' */
+	case 0x40:
+		{ /* '0x40' */
 			return ProtectionLevel_NONE
 		}
-		case 0x41: { /* '0x41' */
+	case 0x41:
+		{ /* '0x41' */
 			return ProtectionLevel_UNLOCK_REQUIRED
 		}
-		case 0x42: { /* '0x42' */
+	case 0x42:
+		{ /* '0x42' */
 			return ProtectionLevel_UNLOCK_REQUIRED
 		}
-		case 0x43: { /* '0x43' */
+	case 0x43:
+		{ /* '0x43' */
 			return ProtectionLevel_NONE
 		}
-		case 0x44: { /* '0x44' */
+	case 0x44:
+		{ /* '0x44' */
 			return ProtectionLevel_NONE
 		}
-		case 0x45: { /* '0x45' */
+	case 0x45:
+		{ /* '0x45' */
 			return ProtectionLevel_NONE
 		}
-		case 0x46: { /* '0x46' */
+	case 0x46:
+		{ /* '0x46' */
 			return ProtectionLevel_NONE
 		}
-		case 0x47: { /* '0x47' */
+	case 0x47:
+		{ /* '0x47' */
 			return ProtectionLevel_NONE
 		}
-		case 0x48: { /* '0x48' */
+	case 0x48:
+		{ /* '0x48' */
 			return ProtectionLevel_NONE
 		}
-		case 0x49: { /* '0x49' */
+	case 0x49:
+		{ /* '0x49' */
 			return ProtectionLevel_NONE
 		}
-		case 0x4A: { /* '0x4A' */
+	case 0x4A:
+		{ /* '0x4A' */
 			return ProtectionLevel_NONE
 		}
-		case 0x4B: { /* '0x4B' */
+	case 0x4B:
+		{ /* '0x4B' */
 			return ProtectionLevel_NONE
 		}
-		case 0x4C: { /* '0x4C' */
+	case 0x4C:
+		{ /* '0x4C' */
 			return ProtectionLevel_NONE
 		}
-		case 0x4D: { /* '0x4D' */
+	case 0x4D:
+		{ /* '0x4D' */
 			return ProtectionLevel_NONE
 		}
-		case 0x4E: { /* '0x4E' */
+	case 0x4E:
+		{ /* '0x4E' */
 			return ProtectionLevel_NONE
 		}
-		case 0x4F: { /* '0x4F' */
+	case 0x4F:
+		{ /* '0x4F' */
 			return ProtectionLevel_NONE
 		}
-		case 0x50: { /* '0x50' */
+	case 0x50:
+		{ /* '0x50' */
 			return ProtectionLevel_NONE
 		}
-		case 0x51: { /* '0x51' */
+	case 0x51:
+		{ /* '0x51' */
 			return ProtectionLevel_NONE
 		}
-		case 0x52: { /* '0x52' */
+	case 0x52:
+		{ /* '0x52' */
 			return ProtectionLevel_NONE
 		}
-		case 0x53: { /* '0x53' */
+	case 0x53:
+		{ /* '0x53' */
 			return ProtectionLevel_NONE
 		}
-		case 0x54: { /* '0x54' */
+	case 0x54:
+		{ /* '0x54' */
 			return ProtectionLevel_NONE
 		}
-		case 0x55: { /* '0x55' */
+	case 0x55:
+		{ /* '0x55' */
 			return ProtectionLevel_NONE
 		}
-		case 0x56: { /* '0x56' */
+	case 0x56:
+		{ /* '0x56' */
 			return ProtectionLevel_NONE
 		}
-		case 0x57: { /* '0x57' */
+	case 0x57:
+		{ /* '0x57' */
 			return ProtectionLevel_NONE
 		}
-		case 0x58: { /* '0x58' */
+	case 0x58:
+		{ /* '0x58' */
 			return ProtectionLevel_NONE
 		}
-		case 0x59: { /* '0x59' */
+	case 0x59:
+		{ /* '0x59' */
 			return ProtectionLevel_NONE
 		}
-		case 0x5A: { /* '0x5A' */
+	case 0x5A:
+		{ /* '0x5A' */
 			return ProtectionLevel_NONE
 		}
-		case 0x5B: { /* '0x5B' */
+	case 0x5B:
+		{ /* '0x5B' */
 			return ProtectionLevel_NONE
 		}
-		case 0x5C: { /* '0x5C' */
+	case 0x5C:
+		{ /* '0x5C' */
 			return ProtectionLevel_NONE
 		}
-		case 0x5D: { /* '0x5D' */
+	case 0x5D:
+		{ /* '0x5D' */
 			return ProtectionLevel_NONE
 		}
-		case 0x5E: { /* '0x5E' */
+	case 0x5E:
+		{ /* '0x5E' */
 			return ProtectionLevel_NONE
 		}
-		case 0x5F: { /* '0x5F' */
+	case 0x5F:
+		{ /* '0x5F' */
 			return ProtectionLevel_NONE
 		}
-		case 0x60: { /* '0x60' */
+	case 0x60:
+		{ /* '0x60' */
 			return ProtectionLevel_NONE
 		}
-		case 0x61: { /* '0x61' */
+	case 0x61:
+		{ /* '0x61' */
 			return ProtectionLevel_NONE
 		}
-		case 0x62: { /* '0x62' */
+	case 0x62:
+		{ /* '0x62' */
 			return ProtectionLevel_NONE
 		}
-		case 0x63: { /* '0x63' */
+	case 0x63:
+		{ /* '0x63' */
 			return ProtectionLevel_NONE
 		}
-		case 0x64: { /* '0x64' */
+	case 0x64:
+		{ /* '0x64' */
 			return ProtectionLevel_NONE
 		}
-		case 0x65: { /* '0x65' */
+	case 0x65:
+		{ /* '0x65' */
 			return ProtectionLevel_NONE
 		}
-		case 0x66: { /* '0x66' */
+	case 0x66:
+		{ /* '0x66' */
 			return ProtectionLevel_NONE
 		}
-		case 0x67: { /* '0x67' */
+	case 0x67:
+		{ /* '0x67' */
 			return ProtectionLevel_NONE
 		}
-		case 0x68: { /* '0x68' */
+	case 0x68:
+		{ /* '0x68' */
 			return ProtectionLevel_NONE
 		}
-		case 0x69: { /* '0x69' */
+	case 0x69:
+		{ /* '0x69' */
 			return ProtectionLevel_NONE
 		}
-		case 0x6A: { /* '0x6A' */
+	case 0x6A:
+		{ /* '0x6A' */
 			return ProtectionLevel_NONE
 		}
-		case 0x6B: { /* '0x6B' */
+	case 0x6B:
+		{ /* '0x6B' */
 			return ProtectionLevel_NONE
 		}
-		case 0x6C: { /* '0x6C' */
+	case 0x6C:
+		{ /* '0x6C' */
 			return ProtectionLevel_NONE
 		}
-		case 0x6D: { /* '0x6D' */
+	case 0x6D:
+		{ /* '0x6D' */
 			return ProtectionLevel_NONE
 		}
-		case 0x6E: { /* '0x6E' */
+	case 0x6E:
+		{ /* '0x6E' */
 			return ProtectionLevel_NONE
 		}
-		case 0x6F: { /* '0x6F' */
+	case 0x6F:
+		{ /* '0x6F' */
 			return ProtectionLevel_NONE
 		}
-		case 0x70: { /* '0x70' */
+	case 0x70:
+		{ /* '0x70' */
 			return ProtectionLevel_NONE
 		}
-		case 0x71: { /* '0x71' */
+	case 0x71:
+		{ /* '0x71' */
 			return ProtectionLevel_NONE
 		}
-		case 0x72: { /* '0x72' */
+	case 0x72:
+		{ /* '0x72' */
 			return ProtectionLevel_NONE
 		}
-		case 0x73: { /* '0x73' */
+	case 0x73:
+		{ /* '0x73' */
 			return ProtectionLevel_NONE
 		}
-		case 0x74: { /* '0x74' */
+	case 0x74:
+		{ /* '0x74' */
 			return ProtectionLevel_NONE
 		}
-		case 0x75: { /* '0x75' */
+	case 0x75:
+		{ /* '0x75' */
 			return ProtectionLevel_NONE
 		}
-		case 0x76: { /* '0x76' */
+	case 0x76:
+		{ /* '0x76' */
 			return ProtectionLevel_NONE
 		}
-		case 0x77: { /* '0x77' */
+	case 0x77:
+		{ /* '0x77' */
 			return ProtectionLevel_NONE
 		}
-		case 0x78: { /* '0x78' */
+	case 0x78:
+		{ /* '0x78' */
 			return ProtectionLevel_NONE
 		}
-		case 0x79: { /* '0x79' */
+	case 0x79:
+		{ /* '0x79' */
 			return ProtectionLevel_NONE
 		}
-		case 0x7A: { /* '0x7A' */
+	case 0x7A:
+		{ /* '0x7A' */
 			return ProtectionLevel_NONE
 		}
-		case 0x7B: { /* '0x7B' */
+	case 0x7B:
+		{ /* '0x7B' */
 			return ProtectionLevel_NONE
 		}
-		case 0x7C: { /* '0x7C' */
+	case 0x7C:
+		{ /* '0x7C' */
 			return ProtectionLevel_NONE
 		}
-		case 0x7D: { /* '0x7D' */
+	case 0x7D:
+		{ /* '0x7D' */
 			return ProtectionLevel_NONE
 		}
-		case 0x7E: { /* '0x7E' */
+	case 0x7E:
+		{ /* '0x7E' */
 			return ProtectionLevel_NONE
 		}
-		case 0x7F: { /* '0x7F' */
+	case 0x7F:
+		{ /* '0x7F' */
 			return ProtectionLevel_NONE
 		}
-		case 0x80: { /* '0x80' */
+	case 0x80:
+		{ /* '0x80' */
 			return ProtectionLevel_NONE
 		}
-		case 0x81: { /* '0x81' */
+	case 0x81:
+		{ /* '0x81' */
 			return ProtectionLevel_NONE
 		}
-		case 0x82: { /* '0x82' */
+	case 0x82:
+		{ /* '0x82' */
 			return ProtectionLevel_NONE
 		}
-		case 0x83: { /* '0x83' */
+	case 0x83:
+		{ /* '0x83' */
 			return ProtectionLevel_NONE
 		}
-		case 0x84: { /* '0x84' */
+	case 0x84:
+		{ /* '0x84' */
 			return ProtectionLevel_NONE
 		}
-		case 0x85: { /* '0x85' */
+	case 0x85:
+		{ /* '0x85' */
 			return ProtectionLevel_NONE
 		}
-		case 0x86: { /* '0x86' */
+	case 0x86:
+		{ /* '0x86' */
 			return ProtectionLevel_NONE
 		}
-		case 0x87: { /* '0x87' */
+	case 0x87:
+		{ /* '0x87' */
 			return ProtectionLevel_NONE
 		}
-		case 0x88: { /* '0x88' */
+	case 0x88:
+		{ /* '0x88' */
 			return ProtectionLevel_NONE
 		}
-		case 0x89: { /* '0x89' */
+	case 0x89:
+		{ /* '0x89' */
 			return ProtectionLevel_NONE
 		}
-		case 0x8A: { /* '0x8A' */
+	case 0x8A:
+		{ /* '0x8A' */
 			return ProtectionLevel_NONE
 		}
-		case 0x8B: { /* '0x8B' */
+	case 0x8B:
+		{ /* '0x8B' */
 			return ProtectionLevel_NONE
 		}
-		case 0x8C: { /* '0x8C' */
+	case 0x8C:
+		{ /* '0x8C' */
 			return ProtectionLevel_NONE
 		}
-		case 0x8D: { /* '0x8D' */
+	case 0x8D:
+		{ /* '0x8D' */
 			return ProtectionLevel_NONE
 		}
-		case 0x8E: { /* '0x8E' */
+	case 0x8E:
+		{ /* '0x8E' */
 			return ProtectionLevel_NONE
 		}
-		case 0x8F: { /* '0x8F' */
+	case 0x8F:
+		{ /* '0x8F' */
 			return ProtectionLevel_NONE
 		}
-		case 0x90: { /* '0x90' */
+	case 0x90:
+		{ /* '0x90' */
 			return ProtectionLevel_NONE
 		}
-		case 0x91: { /* '0x91' */
+	case 0x91:
+		{ /* '0x91' */
 			return ProtectionLevel_NONE
 		}
-		case 0x92: { /* '0x92' */
+	case 0x92:
+		{ /* '0x92' */
 			return ProtectionLevel_NONE
 		}
-		case 0x93: { /* '0x93' */
+	case 0x93:
+		{ /* '0x93' */
 			return ProtectionLevel_NONE
 		}
-		case 0x94: { /* '0x94' */
+	case 0x94:
+		{ /* '0x94' */
 			return ProtectionLevel_NONE
 		}
-		case 0x95: { /* '0x95' */
+	case 0x95:
+		{ /* '0x95' */
 			return ProtectionLevel_NONE
 		}
-		case 0x96: { /* '0x96' */
+	case 0x96:
+		{ /* '0x96' */
 			return ProtectionLevel_NONE
 		}
-		case 0x97: { /* '0x97' */
+	case 0x97:
+		{ /* '0x97' */
 			return ProtectionLevel_NONE
 		}
-		case 0x98: { /* '0x98' */
+	case 0x98:
+		{ /* '0x98' */
 			return ProtectionLevel_NONE
 		}
-		case 0x99: { /* '0x99' */
+	case 0x99:
+		{ /* '0x99' */
 			return ProtectionLevel_NONE
 		}
-		case 0x9A: { /* '0x9A' */
+	case 0x9A:
+		{ /* '0x9A' */
 			return ProtectionLevel_NONE
 		}
-		case 0x9B: { /* '0x9B' */
+	case 0x9B:
+		{ /* '0x9B' */
 			return ProtectionLevel_NONE
 		}
-		case 0x9C: { /* '0x9C' */
+	case 0x9C:
+		{ /* '0x9C' */
 			return ProtectionLevel_NONE
 		}
-		case 0x9D: { /* '0x9D' */
+	case 0x9D:
+		{ /* '0x9D' */
 			return ProtectionLevel_NONE
 		}
-		case 0x9E: { /* '0x9E' */
+	case 0x9E:
+		{ /* '0x9E' */
 			return ProtectionLevel_NONE
 		}
-		case 0x9F: { /* '0x9F' */
+	case 0x9F:
+		{ /* '0x9F' */
 			return ProtectionLevel_NONE
 		}
-		case 0xA0: { /* '0xA0' */
+	case 0xA0:
+		{ /* '0xA0' */
 			return ProtectionLevel_NONE
 		}
-		case 0xA1: { /* '0xA1' */
+	case 0xA1:
+		{ /* '0xA1' */
 			return ProtectionLevel_NONE
 		}
-		case 0xA2: { /* '0xA2' */
+	case 0xA2:
+		{ /* '0xA2' */
 			return ProtectionLevel_NONE
 		}
-		case 0xA3: { /* '0xA3' */
+	case 0xA3:
+		{ /* '0xA3' */
 			return ProtectionLevel_NONE
 		}
-		case 0xA4: { /* '0xA4' */
+	case 0xA4:
+		{ /* '0xA4' */
 			return ProtectionLevel_NONE
 		}
-		case 0xA5: { /* '0xA5' */
+	case 0xA5:
+		{ /* '0xA5' */
 			return ProtectionLevel_NONE
 		}
-		case 0xA6: { /* '0xA6' */
+	case 0xA6:
+		{ /* '0xA6' */
 			return ProtectionLevel_NONE
 		}
-		case 0xA7: { /* '0xA7' */
+	case 0xA7:
+		{ /* '0xA7' */
 			return ProtectionLevel_NONE
 		}
-		case 0xA8: { /* '0xA8' */
+	case 0xA8:
+		{ /* '0xA8' */
 			return ProtectionLevel_NONE
 		}
-		case 0xA9: { /* '0xA9' */
+	case 0xA9:
+		{ /* '0xA9' */
 			return ProtectionLevel_NONE
 		}
-		case 0xAA: { /* '0xAA' */
+	case 0xAA:
+		{ /* '0xAA' */
 			return ProtectionLevel_NONE
 		}
-		case 0xAB: { /* '0xAB' */
+	case 0xAB:
+		{ /* '0xAB' */
 			return ProtectionLevel_NONE
 		}
-		case 0xAC: { /* '0xAC' */
+	case 0xAC:
+		{ /* '0xAC' */
 			return ProtectionLevel_NONE
 		}
-		case 0xAD: { /* '0xAD' */
+	case 0xAD:
+		{ /* '0xAD' */
 			return ProtectionLevel_NONE
 		}
-		case 0xAE: { /* '0xAE' */
+	case 0xAE:
+		{ /* '0xAE' */
 			return ProtectionLevel_NONE
 		}
-		case 0xAF: { /* '0xAF' */
+	case 0xAF:
+		{ /* '0xAF' */
 			return ProtectionLevel_NONE
 		}
-		case 0xB0: { /* '0xB0' */
+	case 0xB0:
+		{ /* '0xB0' */
 			return ProtectionLevel_NONE
 		}
-		case 0xB1: { /* '0xB1' */
+	case 0xB1:
+		{ /* '0xB1' */
 			return ProtectionLevel_NONE
 		}
-		case 0xB2: { /* '0xB2' */
+	case 0xB2:
+		{ /* '0xB2' */
 			return ProtectionLevel_NONE
 		}
-		case 0xB3: { /* '0xB3' */
+	case 0xB3:
+		{ /* '0xB3' */
 			return ProtectionLevel_NONE
 		}
-		case 0xB4: { /* '0xB4' */
+	case 0xB4:
+		{ /* '0xB4' */
 			return ProtectionLevel_NONE
 		}
-		case 0xB5: { /* '0xB5' */
+	case 0xB5:
+		{ /* '0xB5' */
 			return ProtectionLevel_NONE
 		}
-		case 0xB6: { /* '0xB6' */
+	case 0xB6:
+		{ /* '0xB6' */
 			return ProtectionLevel_NONE
 		}
-		case 0xB7: { /* '0xB7' */
+	case 0xB7:
+		{ /* '0xB7' */
 			return ProtectionLevel_NONE
 		}
-		case 0xB8: { /* '0xB8' */
+	case 0xB8:
+		{ /* '0xB8' */
 			return ProtectionLevel_NONE
 		}
-		case 0xB9: { /* '0xB9' */
+	case 0xB9:
+		{ /* '0xB9' */
 			return ProtectionLevel_NONE
 		}
-		case 0xBA: { /* '0xBA' */
+	case 0xBA:
+		{ /* '0xBA' */
 			return ProtectionLevel_NONE
 		}
-		case 0xBB: { /* '0xBB' */
+	case 0xBB:
+		{ /* '0xBB' */
 			return ProtectionLevel_NONE
 		}
-		case 0xBC: { /* '0xBC' */
+	case 0xBC:
+		{ /* '0xBC' */
 			return ProtectionLevel_NONE
 		}
-		case 0xBD: { /* '0xBD' */
+	case 0xBD:
+		{ /* '0xBD' */
 			return ProtectionLevel_NONE
 		}
-		case 0xBE: { /* '0xBE' */
+	case 0xBE:
+		{ /* '0xBE' */
 			return ProtectionLevel_NONE
 		}
-		case 0xBF: { /* '0xBF' */
+	case 0xBF:
+		{ /* '0xBF' */
 			return ProtectionLevel_NONE
 		}
-		case 0xC0: { /* '0xC0' */
+	case 0xC0:
+		{ /* '0xC0' */
 			return ProtectionLevel_NONE
 		}
-		case 0xC1: { /* '0xC1' */
+	case 0xC1:
+		{ /* '0xC1' */
 			return ProtectionLevel_NONE
 		}
-		case 0xC2: { /* '0xC2' */
+	case 0xC2:
+		{ /* '0xC2' */
 			return ProtectionLevel_NONE
 		}
-		case 0xC3: { /* '0xC3' */
+	case 0xC3:
+		{ /* '0xC3' */
 			return ProtectionLevel_NONE
 		}
-		case 0xC4: { /* '0xC4' */
+	case 0xC4:
+		{ /* '0xC4' */
 			return ProtectionLevel_NONE
 		}
-		case 0xC5: { /* '0xC5' */
+	case 0xC5:
+		{ /* '0xC5' */
 			return ProtectionLevel_NONE
 		}
-		case 0xC6: { /* '0xC6' */
+	case 0xC6:
+		{ /* '0xC6' */
 			return ProtectionLevel_NONE
 		}
-		case 0xC7: { /* '0xC7' */
+	case 0xC7:
+		{ /* '0xC7' */
 			return ProtectionLevel_NONE
 		}
-		case 0xC8: { /* '0xC8' */
+	case 0xC8:
+		{ /* '0xC8' */
 			return ProtectionLevel_NONE
 		}
-		case 0xC9: { /* '0xC9' */
+	case 0xC9:
+		{ /* '0xC9' */
 			return ProtectionLevel_NONE
 		}
-		case 0xCA: { /* '0xCA' */
+	case 0xCA:
+		{ /* '0xCA' */
 			return ProtectionLevel_NONE
 		}
-		case 0xCB: { /* '0xCB' */
+	case 0xCB:
+		{ /* '0xCB' */
 			return ProtectionLevel_NONE
 		}
-		case 0xCC: { /* '0xCC' */
+	case 0xCC:
+		{ /* '0xCC' */
 			return ProtectionLevel_NONE
 		}
-		case 0xCD: { /* '0xCD' */
+	case 0xCD:
+		{ /* '0xCD' */
 			return ProtectionLevel_NONE
 		}
-		case 0xCE: { /* '0xCE' */
+	case 0xCE:
+		{ /* '0xCE' */
 			return ProtectionLevel_NONE
 		}
-		case 0xCF: { /* '0xCF' */
+	case 0xCF:
+		{ /* '0xCF' */
 			return ProtectionLevel_NONE
 		}
-		case 0xD0: { /* '0xD0' */
+	case 0xD0:
+		{ /* '0xD0' */
 			return ProtectionLevel_NONE
 		}
-		case 0xD1: { /* '0xD1' */
+	case 0xD1:
+		{ /* '0xD1' */
 			return ProtectionLevel_NONE
 		}
-		case 0xD2: { /* '0xD2' */
+	case 0xD2:
+		{ /* '0xD2' */
 			return ProtectionLevel_NONE
 		}
-		case 0xD3: { /* '0xD3' */
+	case 0xD3:
+		{ /* '0xD3' */
 			return ProtectionLevel_NONE
 		}
-		case 0xD4: { /* '0xD4' */
+	case 0xD4:
+		{ /* '0xD4' */
 			return ProtectionLevel_NONE
 		}
-		case 0xD5: { /* '0xD5' */
+	case 0xD5:
+		{ /* '0xD5' */
 			return ProtectionLevel_NONE
 		}
-		case 0xD6: { /* '0xD6' */
+	case 0xD6:
+		{ /* '0xD6' */
 			return ProtectionLevel_NONE
 		}
-		case 0xD7: { /* '0xD7' */
+	case 0xD7:
+		{ /* '0xD7' */
 			return ProtectionLevel_NONE
 		}
-		case 0xD8: { /* '0xD8' */
+	case 0xD8:
+		{ /* '0xD8' */
 			return ProtectionLevel_NONE
 		}
-		case 0xD9: { /* '0xD9' */
+	case 0xD9:
+		{ /* '0xD9' */
 			return ProtectionLevel_NONE
 		}
-		case 0xDA: { /* '0xDA' */
+	case 0xDA:
+		{ /* '0xDA' */
 			return ProtectionLevel_NONE
 		}
-		case 0xDB: { /* '0xDB' */
+	case 0xDB:
+		{ /* '0xDB' */
 			return ProtectionLevel_NONE
 		}
-		case 0xDC: { /* '0xDC' */
+	case 0xDC:
+		{ /* '0xDC' */
 			return ProtectionLevel_NONE
 		}
-		case 0xDD: { /* '0xDD' */
+	case 0xDD:
+		{ /* '0xDD' */
 			return ProtectionLevel_NONE
 		}
-		case 0xDE: { /* '0xDE' */
+	case 0xDE:
+		{ /* '0xDE' */
 			return ProtectionLevel_NONE
 		}
-		case 0xDF: { /* '0xDF' */
+	case 0xDF:
+		{ /* '0xDF' */
 			return ProtectionLevel_NONE
 		}
-		case 0xE0: { /* '0xE0' */
+	case 0xE0:
+		{ /* '0xE0' */
 			return ProtectionLevel_NONE
 		}
-		case 0xE1: { /* '0xE1' */
+	case 0xE1:
+		{ /* '0xE1' */
 			return ProtectionLevel_NONE
 		}
-		case 0xE2: { /* '0xE2' */
+	case 0xE2:
+		{ /* '0xE2' */
 			return ProtectionLevel_NONE
 		}
-		case 0xE3: { /* '0xE3' */
+	case 0xE3:
+		{ /* '0xE3' */
 			return ProtectionLevel_NONE
 		}
-		case 0xE4: { /* '0xE4' */
+	case 0xE4:
+		{ /* '0xE4' */
 			return ProtectionLevel_NONE
 		}
-		case 0xE5: { /* '0xE5' */
+	case 0xE5:
+		{ /* '0xE5' */
 			return ProtectionLevel_NONE
 		}
-		case 0xE6: { /* '0xE6' */
+	case 0xE6:
+		{ /* '0xE6' */
 			return ProtectionLevel_NONE
 		}
-		case 0xE7: { /* '0xE7' */
+	case 0xE7:
+		{ /* '0xE7' */
 			return ProtectionLevel_NONE
 		}
-		case 0xE8: { /* '0xE8' */
+	case 0xE8:
+		{ /* '0xE8' */
 			return ProtectionLevel_NONE
 		}
-		case 0xE9: { /* '0xE9' */
+	case 0xE9:
+		{ /* '0xE9' */
 			return ProtectionLevel_NONE
 		}
-		case 0xEA: { /* '0xEA' */
+	case 0xEA:
+		{ /* '0xEA' */
 			return ProtectionLevel_NONE
 		}
-		case 0xEB: { /* '0xEB' */
+	case 0xEB:
+		{ /* '0xEB' */
 			return ProtectionLevel_UNLOCK_REQUIRED
 		}
-		case 0xEC: { /* '0xEC' */
+	case 0xEC:
+		{ /* '0xEC' */
 			return ProtectionLevel_UNLOCK_REQUIRED
 		}
-		case 0xED: { /* '0xED' */
+	case 0xED:
+		{ /* '0xED' */
 			return ProtectionLevel_UNLOCK_REQUIRED
 		}
-		case 0xEE: { /* '0xEE' */
+	case 0xEE:
+		{ /* '0xEE' */
 			return ProtectionLevel_UNLOCK_REQUIRED
 		}
-		case 0xEF: { /* '0xEF' */
+	case 0xEF:
+		{ /* '0xEF' */
 			return ProtectionLevel_UNLOCK_REQUIRED
 		}
-		case 0xF0: { /* '0xF0' */
+	case 0xF0:
+		{ /* '0xF0' */
 			return ProtectionLevel_UNLOCK_REQUIRED
 		}
-		case 0xF1: { /* '0xF1' */
+	case 0xF1:
+		{ /* '0xF1' */
 			return ProtectionLevel_UNLOCK_REQUIRED
 		}
-		case 0xF2: { /* '0xF2' */
+	case 0xF2:
+		{ /* '0xF2' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xF3: { /* '0xF3' */
+	case 0xF3:
+		{ /* '0xF3' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xF4: { /* '0xF4' */
+	case 0xF4:
+		{ /* '0xF4' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xF5: { /* '0xF5' */
+	case 0xF5:
+		{ /* '0xF5' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xF6: { /* '0xF6' */
+	case 0xF6:
+		{ /* '0xF6' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xF7: { /* '0xF7' */
+	case 0xF7:
+		{ /* '0xF7' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xF8: { /* '0xF8' */
+	case 0xF8:
+		{ /* '0xF8' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xF9: { /* '0xF9' */
+	case 0xF9:
+		{ /* '0xF9' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xFA: { /* '0xFA' */
+	case 0xFA:
+		{ /* '0xFA' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xFB: { /* '0xFB' */
+	case 0xFB:
+		{ /* '0xFB' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xFC: { /* '0xFC' */
+	case 0xFC:
+		{ /* '0xFC' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xFD: { /* '0xFD' */
+	case 0xFD:
+		{ /* '0xFD' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xFE: { /* '0xFE' */
+	case 0xFE:
+		{ /* '0xFE' */
 			return ProtectionLevel_READ_ONLY
 		}
-		case 0xFF: { /* '0xFF' */
+	case 0xFF:
+		{ /* '0xFF' */
 			return ProtectionLevel_NONE
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -4490,776 +5774,1033 @@ func ParameterFirstEnumForFieldProtectionLevel(value ProtectionLevel) (Parameter
 }
 
 func (e Parameter) Group() string {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return ""
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return ""
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return ""
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return ""
+		}
+	case 0x03:
+		{ /* '0x03' */
+			return ""
+		}
+	case 0x04:
+		{ /* '0x04' */
+			return ""
+		}
+	case 0x05:
+		{ /* '0x05' */
+			return ""
+		}
+	case 0x06:
+		{ /* '0x06' */
+			return ""
+		}
+	case 0x07:
+		{ /* '0x07' */
+			return ""
+		}
+	case 0x08:
+		{ /* '0x08' */
+			return ""
+		}
+	case 0x09:
+		{ /* '0x09' */
+			return ""
+		}
+	case 0x0A:
+		{ /* '0x0A' */
+			return ""
+		}
+	case 0x0B:
+		{ /* '0x0B' */
+			return ""
+		}
+	case 0x0C:
+		{ /* '0x0C' */
+			return ""
+		}
+	case 0x0D:
+		{ /* '0x0D' */
+			return ""
+		}
+	case 0x0E:
+		{ /* '0x0E' */
+			return ""
+		}
+	case 0x0F:
+		{ /* '0x0F' */
+			return ""
+		}
+	case 0x10:
+		{ /* '0x10' */
+			return ""
+		}
+	case 0x11:
+		{ /* '0x11' */
+			return ""
+		}
+	case 0x12:
+		{ /* '0x12' */
+			return ""
+		}
+	case 0x13:
+		{ /* '0x13' */
+			return ""
+		}
+	case 0x14:
+		{ /* '0x14' */
+			return ""
+		}
+	case 0x15:
+		{ /* '0x15' */
+			return ""
+		}
+	case 0x16:
+		{ /* '0x16' */
+			return ""
+		}
+	case 0x17:
+		{ /* '0x17' */
+			return ""
+		}
+	case 0x18:
+		{ /* '0x18' */
+			return ""
+		}
+	case 0x19:
+		{ /* '0x19' */
+			return ""
 		}
-		case 0x01: { /* '0x01' */
-            return ""
+	case 0x1A:
+		{ /* '0x1A' */
+			return ""
 		}
-		case 0x02: { /* '0x02' */
-            return ""
+	case 0x1B:
+		{ /* '0x1B' */
+			return ""
 		}
-		case 0x03: { /* '0x03' */
-            return ""
+	case 0x1C:
+		{ /* '0x1C' */
+			return ""
 		}
-		case 0x04: { /* '0x04' */
-            return ""
+	case 0x1D:
+		{ /* '0x1D' */
+			return ""
 		}
-		case 0x05: { /* '0x05' */
-            return ""
+	case 0x1E:
+		{ /* '0x1E' */
+			return ""
 		}
-		case 0x06: { /* '0x06' */
-            return ""
+	case 0x1F:
+		{ /* '0x1F' */
+			return ""
 		}
-		case 0x07: { /* '0x07' */
-            return ""
+	case 0x20:
+		{ /* '0x20' */
+			return ""
 		}
-		case 0x08: { /* '0x08' */
-            return ""
+	case 0x21:
+		{ /* '0x21' */
+			return "Mgmt"
 		}
-		case 0x09: { /* '0x09' */
-            return ""
+	case 0x22:
+		{ /* '0x22' */
+			return "Mgmt"
 		}
-		case 0x0A: { /* '0x0A' */
-            return ""
+	case 0x23:
+		{ /* '0x23' */
+			return ""
 		}
-		case 0x0B: { /* '0x0B' */
-            return ""
+	case 0x24:
+		{ /* '0x24' */
+			return ""
 		}
-		case 0x0C: { /* '0x0C' */
-            return ""
+	case 0x25:
+		{ /* '0x25' */
+			return ""
 		}
-		case 0x0D: { /* '0x0D' */
-            return ""
+	case 0x26:
+		{ /* '0x26' */
+			return ""
 		}
-		case 0x0E: { /* '0x0E' */
-            return ""
+	case 0x27:
+		{ /* '0x27' */
+			return ""
 		}
-		case 0x0F: { /* '0x0F' */
-            return ""
+	case 0x28:
+		{ /* '0x28' */
+			return ""
 		}
-		case 0x10: { /* '0x10' */
-            return ""
+	case 0x29:
+		{ /* '0x29' */
+			return ""
 		}
-		case 0x11: { /* '0x11' */
-            return ""
+	case 0x2A:
+		{ /* '0x2A' */
+			return ""
 		}
-		case 0x12: { /* '0x12' */
-            return ""
+	case 0x2B:
+		{ /* '0x2B' */
+			return ""
 		}
-		case 0x13: { /* '0x13' */
-            return ""
+	case 0x2C:
+		{ /* '0x2C' */
+			return ""
 		}
-		case 0x14: { /* '0x14' */
-            return ""
+	case 0x2D:
+		{ /* '0x2D' */
+			return ""
 		}
-		case 0x15: { /* '0x15' */
-            return ""
+	case 0x2E:
+		{ /* '0x2E' */
+			return ""
 		}
-		case 0x16: { /* '0x16' */
-            return ""
+	case 0x2F:
+		{ /* '0x2F' */
+			return ""
 		}
-		case 0x17: { /* '0x17' */
-            return ""
+	case 0x30:
+		{ /* '0x30' */
+			return "Unit"
 		}
-		case 0x18: { /* '0x18' */
-            return ""
+	case 0x31:
+		{ /* '0x31' */
+			return ""
 		}
-		case 0x19: { /* '0x19' */
-            return ""
+	case 0x32:
+		{ /* '0x32' */
+			return ""
 		}
-		case 0x1A: { /* '0x1A' */
-            return ""
+	case 0x33:
+		{ /* '0x33' */
+			return ""
 		}
-		case 0x1B: { /* '0x1B' */
-            return ""
+	case 0x34:
+		{ /* '0x34' */
+			return ""
 		}
-		case 0x1C: { /* '0x1C' */
-            return ""
+	case 0x35:
+		{ /* '0x35' */
+			return ""
 		}
-		case 0x1D: { /* '0x1D' */
-            return ""
+	case 0x36:
+		{ /* '0x36' */
+			return ""
 		}
-		case 0x1E: { /* '0x1E' */
-            return ""
+	case 0x37:
+		{ /* '0x37' */
+			return ""
 		}
-		case 0x1F: { /* '0x1F' */
-            return ""
+	case 0x38:
+		{ /* '0x38' */
+			return ""
 		}
-		case 0x20: { /* '0x20' */
-            return ""
+	case 0x39:
+		{ /* '0x39' */
+			return ""
 		}
-		case 0x21: { /* '0x21' */
-            return "Mgmt"
+	case 0x3A:
+		{ /* '0x3A' */
+			return ""
 		}
-		case 0x22: { /* '0x22' */
-            return "Mgmt"
+	case 0x3B:
+		{ /* '0x3B' */
+			return ""
 		}
-		case 0x23: { /* '0x23' */
-            return ""
+	case 0x3C:
+		{ /* '0x3C' */
+			return ""
 		}
-		case 0x24: { /* '0x24' */
-            return ""
+	case 0x3D:
+		{ /* '0x3D' */
+			return "Unit"
 		}
-		case 0x25: { /* '0x25' */
-            return ""
+	case 0x3E:
+		{ /* '0x3E' */
+			return "Unit"
 		}
-		case 0x26: { /* '0x26' */
-            return ""
+	case 0x3F:
+		{ /* '0x3F' */
+			return ""
 		}
-		case 0x27: { /* '0x27' */
-            return ""
+	case 0x40:
+		{ /* '0x40' */
+			return ""
 		}
-		case 0x28: { /* '0x28' */
-            return ""
+	case 0x41:
+		{ /* '0x41' */
+			return "Unit"
 		}
-		case 0x29: { /* '0x29' */
-            return ""
+	case 0x42:
+		{ /* '0x42' */
+			return "Unit"
 		}
-		case 0x2A: { /* '0x2A' */
-            return ""
+	case 0x43:
+		{ /* '0x43' */
+			return ""
 		}
-		case 0x2B: { /* '0x2B' */
-            return ""
+	case 0x44:
+		{ /* '0x44' */
+			return ""
 		}
-		case 0x2C: { /* '0x2C' */
-            return ""
+	case 0x45:
+		{ /* '0x45' */
+			return ""
 		}
-		case 0x2D: { /* '0x2D' */
-            return ""
+	case 0x46:
+		{ /* '0x46' */
+			return ""
 		}
-		case 0x2E: { /* '0x2E' */
-            return ""
+	case 0x47:
+		{ /* '0x47' */
+			return ""
 		}
-		case 0x2F: { /* '0x2F' */
-            return ""
+	case 0x48:
+		{ /* '0x48' */
+			return ""
 		}
-		case 0x30: { /* '0x30' */
-            return "Unit"
+	case 0x49:
+		{ /* '0x49' */
+			return ""
 		}
-		case 0x31: { /* '0x31' */
-            return ""
+	case 0x4A:
+		{ /* '0x4A' */
+			return ""
 		}
-		case 0x32: { /* '0x32' */
-            return ""
+	case 0x4B:
+		{ /* '0x4B' */
+			return ""
 		}
-		case 0x33: { /* '0x33' */
-            return ""
+	case 0x4C:
+		{ /* '0x4C' */
+			return ""
 		}
-		case 0x34: { /* '0x34' */
-            return ""
+	case 0x4D:
+		{ /* '0x4D' */
+			return ""
 		}
-		case 0x35: { /* '0x35' */
-            return ""
+	case 0x4E:
+		{ /* '0x4E' */
+			return ""
 		}
-		case 0x36: { /* '0x36' */
-            return ""
+	case 0x4F:
+		{ /* '0x4F' */
+			return ""
 		}
-		case 0x37: { /* '0x37' */
-            return ""
+	case 0x50:
+		{ /* '0x50' */
+			return ""
 		}
-		case 0x38: { /* '0x38' */
-            return ""
+	case 0x51:
+		{ /* '0x51' */
+			return ""
 		}
-		case 0x39: { /* '0x39' */
-            return ""
+	case 0x52:
+		{ /* '0x52' */
+			return ""
 		}
-		case 0x3A: { /* '0x3A' */
-            return ""
+	case 0x53:
+		{ /* '0x53' */
+			return ""
 		}
-		case 0x3B: { /* '0x3B' */
-            return ""
+	case 0x54:
+		{ /* '0x54' */
+			return ""
 		}
-		case 0x3C: { /* '0x3C' */
-            return ""
+	case 0x55:
+		{ /* '0x55' */
+			return ""
 		}
-		case 0x3D: { /* '0x3D' */
-            return "Unit"
+	case 0x56:
+		{ /* '0x56' */
+			return ""
 		}
-		case 0x3E: { /* '0x3E' */
-            return "Unit"
+	case 0x57:
+		{ /* '0x57' */
+			return ""
 		}
-		case 0x3F: { /* '0x3F' */
-            return ""
+	case 0x58:
+		{ /* '0x58' */
+			return ""
 		}
-		case 0x40: { /* '0x40' */
-            return ""
+	case 0x59:
+		{ /* '0x59' */
+			return ""
 		}
-		case 0x41: { /* '0x41' */
-            return "Unit"
+	case 0x5A:
+		{ /* '0x5A' */
+			return ""
 		}
-		case 0x42: { /* '0x42' */
-            return "Unit"
+	case 0x5B:
+		{ /* '0x5B' */
+			return ""
 		}
-		case 0x43: { /* '0x43' */
-            return ""
+	case 0x5C:
+		{ /* '0x5C' */
+			return ""
 		}
-		case 0x44: { /* '0x44' */
-            return ""
+	case 0x5D:
+		{ /* '0x5D' */
+			return ""
 		}
-		case 0x45: { /* '0x45' */
-            return ""
+	case 0x5E:
+		{ /* '0x5E' */
+			return ""
 		}
-		case 0x46: { /* '0x46' */
-            return ""
+	case 0x5F:
+		{ /* '0x5F' */
+			return ""
 		}
-		case 0x47: { /* '0x47' */
-            return ""
+	case 0x60:
+		{ /* '0x60' */
+			return ""
 		}
-		case 0x48: { /* '0x48' */
-            return ""
+	case 0x61:
+		{ /* '0x61' */
+			return ""
 		}
-		case 0x49: { /* '0x49' */
-            return ""
+	case 0x62:
+		{ /* '0x62' */
+			return ""
 		}
-		case 0x4A: { /* '0x4A' */
-            return ""
+	case 0x63:
+		{ /* '0x63' */
+			return ""
 		}
-		case 0x4B: { /* '0x4B' */
-            return ""
+	case 0x64:
+		{ /* '0x64' */
+			return ""
 		}
-		case 0x4C: { /* '0x4C' */
-            return ""
+	case 0x65:
+		{ /* '0x65' */
+			return ""
 		}
-		case 0x4D: { /* '0x4D' */
-            return ""
+	case 0x66:
+		{ /* '0x66' */
+			return ""
 		}
-		case 0x4E: { /* '0x4E' */
-            return ""
+	case 0x67:
+		{ /* '0x67' */
+			return ""
 		}
-		case 0x4F: { /* '0x4F' */
-            return ""
+	case 0x68:
+		{ /* '0x68' */
+			return ""
 		}
-		case 0x50: { /* '0x50' */
-            return ""
+	case 0x69:
+		{ /* '0x69' */
+			return ""
 		}
-		case 0x51: { /* '0x51' */
-            return ""
+	case 0x6A:
+		{ /* '0x6A' */
+			return ""
 		}
-		case 0x52: { /* '0x52' */
-            return ""
+	case 0x6B:
+		{ /* '0x6B' */
+			return ""
 		}
-		case 0x53: { /* '0x53' */
-            return ""
+	case 0x6C:
+		{ /* '0x6C' */
+			return ""
 		}
-		case 0x54: { /* '0x54' */
-            return ""
+	case 0x6D:
+		{ /* '0x6D' */
+			return ""
 		}
-		case 0x55: { /* '0x55' */
-            return ""
+	case 0x6E:
+		{ /* '0x6E' */
+			return ""
 		}
-		case 0x56: { /* '0x56' */
-            return ""
+	case 0x6F:
+		{ /* '0x6F' */
+			return ""
 		}
-		case 0x57: { /* '0x57' */
-            return ""
+	case 0x70:
+		{ /* '0x70' */
+			return ""
 		}
-		case 0x58: { /* '0x58' */
-            return ""
+	case 0x71:
+		{ /* '0x71' */
+			return ""
 		}
-		case 0x59: { /* '0x59' */
-            return ""
+	case 0x72:
+		{ /* '0x72' */
+			return ""
 		}
-		case 0x5A: { /* '0x5A' */
-            return ""
+	case 0x73:
+		{ /* '0x73' */
+			return ""
 		}
-		case 0x5B: { /* '0x5B' */
-            return ""
+	case 0x74:
+		{ /* '0x74' */
+			return ""
 		}
-		case 0x5C: { /* '0x5C' */
-            return ""
+	case 0x75:
+		{ /* '0x75' */
+			return ""
 		}
-		case 0x5D: { /* '0x5D' */
-            return ""
+	case 0x76:
+		{ /* '0x76' */
+			return ""
 		}
-		case 0x5E: { /* '0x5E' */
-            return ""
+	case 0x77:
+		{ /* '0x77' */
+			return ""
 		}
-		case 0x5F: { /* '0x5F' */
-            return ""
+	case 0x78:
+		{ /* '0x78' */
+			return ""
 		}
-		case 0x60: { /* '0x60' */
-            return ""
+	case 0x79:
+		{ /* '0x79' */
+			return ""
 		}
-		case 0x61: { /* '0x61' */
-            return ""
+	case 0x7A:
+		{ /* '0x7A' */
+			return ""
 		}
-		case 0x62: { /* '0x62' */
-            return ""
+	case 0x7B:
+		{ /* '0x7B' */
+			return ""
 		}
-		case 0x63: { /* '0x63' */
-            return ""
+	case 0x7C:
+		{ /* '0x7C' */
+			return ""
 		}
-		case 0x64: { /* '0x64' */
-            return ""
+	case 0x7D:
+		{ /* '0x7D' */
+			return ""
 		}
-		case 0x65: { /* '0x65' */
-            return ""
+	case 0x7E:
+		{ /* '0x7E' */
+			return ""
 		}
-		case 0x66: { /* '0x66' */
-            return ""
+	case 0x7F:
+		{ /* '0x7F' */
+			return ""
 		}
-		case 0x67: { /* '0x67' */
-            return ""
+	case 0x80:
+		{ /* '0x80' */
+			return ""
 		}
-		case 0x68: { /* '0x68' */
-            return ""
+	case 0x81:
+		{ /* '0x81' */
+			return ""
 		}
-		case 0x69: { /* '0x69' */
-            return ""
+	case 0x82:
+		{ /* '0x82' */
+			return ""
 		}
-		case 0x6A: { /* '0x6A' */
-            return ""
+	case 0x83:
+		{ /* '0x83' */
+			return ""
 		}
-		case 0x6B: { /* '0x6B' */
-            return ""
+	case 0x84:
+		{ /* '0x84' */
+			return ""
 		}
-		case 0x6C: { /* '0x6C' */
-            return ""
+	case 0x85:
+		{ /* '0x85' */
+			return ""
 		}
-		case 0x6D: { /* '0x6D' */
-            return ""
+	case 0x86:
+		{ /* '0x86' */
+			return ""
 		}
-		case 0x6E: { /* '0x6E' */
-            return ""
+	case 0x87:
+		{ /* '0x87' */
+			return ""
 		}
-		case 0x6F: { /* '0x6F' */
-            return ""
+	case 0x88:
+		{ /* '0x88' */
+			return ""
 		}
-		case 0x70: { /* '0x70' */
-            return ""
+	case 0x89:
+		{ /* '0x89' */
+			return ""
 		}
-		case 0x71: { /* '0x71' */
-            return ""
+	case 0x8A:
+		{ /* '0x8A' */
+			return ""
 		}
-		case 0x72: { /* '0x72' */
-            return ""
+	case 0x8B:
+		{ /* '0x8B' */
+			return ""
 		}
-		case 0x73: { /* '0x73' */
-            return ""
+	case 0x8C:
+		{ /* '0x8C' */
+			return ""
 		}
-		case 0x74: { /* '0x74' */
-            return ""
+	case 0x8D:
+		{ /* '0x8D' */
+			return ""
 		}
-		case 0x75: { /* '0x75' */
-            return ""
+	case 0x8E:
+		{ /* '0x8E' */
+			return ""
 		}
-		case 0x76: { /* '0x76' */
-            return ""
+	case 0x8F:
+		{ /* '0x8F' */
+			return ""
 		}
-		case 0x77: { /* '0x77' */
-            return ""
+	case 0x90:
+		{ /* '0x90' */
+			return ""
 		}
-		case 0x78: { /* '0x78' */
-            return ""
+	case 0x91:
+		{ /* '0x91' */
+			return ""
 		}
-		case 0x79: { /* '0x79' */
-            return ""
+	case 0x92:
+		{ /* '0x92' */
+			return ""
 		}
-		case 0x7A: { /* '0x7A' */
-            return ""
+	case 0x93:
+		{ /* '0x93' */
+			return ""
 		}
-		case 0x7B: { /* '0x7B' */
-            return ""
+	case 0x94:
+		{ /* '0x94' */
+			return ""
 		}
-		case 0x7C: { /* '0x7C' */
-            return ""
+	case 0x95:
+		{ /* '0x95' */
+			return ""
 		}
-		case 0x7D: { /* '0x7D' */
-            return ""
+	case 0x96:
+		{ /* '0x96' */
+			return ""
 		}
-		case 0x7E: { /* '0x7E' */
-            return ""
+	case 0x97:
+		{ /* '0x97' */
+			return ""
 		}
-		case 0x7F: { /* '0x7F' */
-            return ""
+	case 0x98:
+		{ /* '0x98' */
+			return ""
 		}
-		case 0x80: { /* '0x80' */
-            return ""
+	case 0x99:
+		{ /* '0x99' */
+			return ""
 		}
-		case 0x81: { /* '0x81' */
-            return ""
+	case 0x9A:
+		{ /* '0x9A' */
+			return ""
 		}
-		case 0x82: { /* '0x82' */
-            return ""
+	case 0x9B:
+		{ /* '0x9B' */
+			return ""
 		}
-		case 0x83: { /* '0x83' */
-            return ""
+	case 0x9C:
+		{ /* '0x9C' */
+			return ""
 		}
-		case 0x84: { /* '0x84' */
-            return ""
+	case 0x9D:
+		{ /* '0x9D' */
+			return ""
 		}
-		case 0x85: { /* '0x85' */
-            return ""
+	case 0x9E:
+		{ /* '0x9E' */
+			return ""
 		}
-		case 0x86: { /* '0x86' */
-            return ""
+	case 0x9F:
+		{ /* '0x9F' */
+			return ""
 		}
-		case 0x87: { /* '0x87' */
-            return ""
+	case 0xA0:
+		{ /* '0xA0' */
+			return ""
 		}
-		case 0x88: { /* '0x88' */
-            return ""
+	case 0xA1:
+		{ /* '0xA1' */
+			return ""
 		}
-		case 0x89: { /* '0x89' */
-            return ""
+	case 0xA2:
+		{ /* '0xA2' */
+			return ""
 		}
-		case 0x8A: { /* '0x8A' */
-            return ""
+	case 0xA3:
+		{ /* '0xA3' */
+			return ""
 		}
-		case 0x8B: { /* '0x8B' */
-            return ""
+	case 0xA4:
+		{ /* '0xA4' */
+			return ""
 		}
-		case 0x8C: { /* '0x8C' */
-            return ""
+	case 0xA5:
+		{ /* '0xA5' */
+			return ""
 		}
-		case 0x8D: { /* '0x8D' */
-            return ""
+	case 0xA6:
+		{ /* '0xA6' */
+			return ""
 		}
-		case 0x8E: { /* '0x8E' */
-            return ""
+	case 0xA7:
+		{ /* '0xA7' */
+			return ""
 		}
-		case 0x8F: { /* '0x8F' */
-            return ""
+	case 0xA8:
+		{ /* '0xA8' */
+			return ""
 		}
-		case 0x90: { /* '0x90' */
-            return ""
+	case 0xA9:
+		{ /* '0xA9' */
+			return ""
 		}
-		case 0x91: { /* '0x91' */
-            return ""
+	case 0xAA:
+		{ /* '0xAA' */
+			return ""
 		}
-		case 0x92: { /* '0x92' */
-            return ""
+	case 0xAB:
+		{ /* '0xAB' */
+			return ""
 		}
-		case 0x93: { /* '0x93' */
-            return ""
+	case 0xAC:
+		{ /* '0xAC' */
+			return ""
 		}
-		case 0x94: { /* '0x94' */
-            return ""
+	case 0xAD:
+		{ /* '0xAD' */
+			return ""
 		}
-		case 0x95: { /* '0x95' */
-            return ""
+	case 0xAE:
+		{ /* '0xAE' */
+			return ""
 		}
-		case 0x96: { /* '0x96' */
-            return ""
+	case 0xAF:
+		{ /* '0xAF' */
+			return ""
 		}
-		case 0x97: { /* '0x97' */
-            return ""
+	case 0xB0:
+		{ /* '0xB0' */
+			return ""
 		}
-		case 0x98: { /* '0x98' */
-            return ""
+	case 0xB1:
+		{ /* '0xB1' */
+			return ""
 		}
-		case 0x99: { /* '0x99' */
-            return ""
+	case 0xB2:
+		{ /* '0xB2' */
+			return ""
 		}
-		case 0x9A: { /* '0x9A' */
-            return ""
+	case 0xB3:
+		{ /* '0xB3' */
+			return ""
 		}
-		case 0x9B: { /* '0x9B' */
-            return ""
+	case 0xB4:
+		{ /* '0xB4' */
+			return ""
 		}
-		case 0x9C: { /* '0x9C' */
-            return ""
+	case 0xB5:
+		{ /* '0xB5' */
+			return ""
 		}
-		case 0x9D: { /* '0x9D' */
-            return ""
+	case 0xB6:
+		{ /* '0xB6' */
+			return ""
 		}
-		case 0x9E: { /* '0x9E' */
-            return ""
+	case 0xB7:
+		{ /* '0xB7' */
+			return ""
 		}
-		case 0x9F: { /* '0x9F' */
-            return ""
+	case 0xB8:
+		{ /* '0xB8' */
+			return ""
 		}
-		case 0xA0: { /* '0xA0' */
-            return ""
+	case 0xB9:
+		{ /* '0xB9' */
+			return ""
 		}
-		case 0xA1: { /* '0xA1' */
-            return ""
+	case 0xBA:
+		{ /* '0xBA' */
+			return ""
 		}
-		case 0xA2: { /* '0xA2' */
-            return ""
+	case 0xBB:
+		{ /* '0xBB' */
+			return ""
 		}
-		case 0xA3: { /* '0xA3' */
-            return ""
+	case 0xBC:
+		{ /* '0xBC' */
+			return ""
 		}
-		case 0xA4: { /* '0xA4' */
-            return ""
+	case 0xBD:
+		{ /* '0xBD' */
+			return ""
 		}
-		case 0xA5: { /* '0xA5' */
-            return ""
+	case 0xBE:
+		{ /* '0xBE' */
+			return ""
 		}
-		case 0xA6: { /* '0xA6' */
-            return ""
+	case 0xBF:
+		{ /* '0xBF' */
+			return ""
 		}
-		case 0xA7: { /* '0xA7' */
-            return ""
+	case 0xC0:
+		{ /* '0xC0' */
+			return ""
 		}
-		case 0xA8: { /* '0xA8' */
-            return ""
+	case 0xC1:
+		{ /* '0xC1' */
+			return ""
 		}
-		case 0xA9: { /* '0xA9' */
-            return ""
+	case 0xC2:
+		{ /* '0xC2' */
+			return ""
 		}
-		case 0xAA: { /* '0xAA' */
-            return ""
+	case 0xC3:
+		{ /* '0xC3' */
+			return ""
 		}
-		case 0xAB: { /* '0xAB' */
-            return ""
+	case 0xC4:
+		{ /* '0xC4' */
+			return ""
 		}
-		case 0xAC: { /* '0xAC' */
-            return ""
+	case 0xC5:
+		{ /* '0xC5' */
+			return ""
 		}
-		case 0xAD: { /* '0xAD' */
-            return ""
+	case 0xC6:
+		{ /* '0xC6' */
+			return ""
 		}
-		case 0xAE: { /* '0xAE' */
-            return ""
+	case 0xC7:
+		{ /* '0xC7' */
+			return ""
 		}
-		case 0xAF: { /* '0xAF' */
-            return ""
+	case 0xC8:
+		{ /* '0xC8' */
+			return ""
 		}
-		case 0xB0: { /* '0xB0' */
-            return ""
+	case 0xC9:
+		{ /* '0xC9' */
+			return ""
 		}
-		case 0xB1: { /* '0xB1' */
-            return ""
+	case 0xCA:
+		{ /* '0xCA' */
+			return ""
 		}
-		case 0xB2: { /* '0xB2' */
-            return ""
+	case 0xCB:
+		{ /* '0xCB' */
+			return ""
 		}
-		case 0xB3: { /* '0xB3' */
-            return ""
+	case 0xCC:
+		{ /* '0xCC' */
+			return ""
 		}
-		case 0xB4: { /* '0xB4' */
-            return ""
+	case 0xCD:
+		{ /* '0xCD' */
+			return ""
 		}
-		case 0xB5: { /* '0xB5' */
-            return ""
+	case 0xCE:
+		{ /* '0xCE' */
+			return ""
 		}
-		case 0xB6: { /* '0xB6' */
-            return ""
+	case 0xCF:
+		{ /* '0xCF' */
+			return ""
 		}
-		case 0xB7: { /* '0xB7' */
-            return ""
+	case 0xD0:
+		{ /* '0xD0' */
+			return ""
 		}
-		case 0xB8: { /* '0xB8' */
-            return ""
+	case 0xD1:
+		{ /* '0xD1' */
+			return ""
 		}
-		case 0xB9: { /* '0xB9' */
-            return ""
+	case 0xD2:
+		{ /* '0xD2' */
+			return ""
 		}
-		case 0xBA: { /* '0xBA' */
-            return ""
+	case 0xD3:
+		{ /* '0xD3' */
+			return ""
 		}
-		case 0xBB: { /* '0xBB' */
-            return ""
+	case 0xD4:
+		{ /* '0xD4' */
+			return ""
 		}
-		case 0xBC: { /* '0xBC' */
-            return ""
+	case 0xD5:
+		{ /* '0xD5' */
+			return ""
 		}
-		case 0xBD: { /* '0xBD' */
-            return ""
+	case 0xD6:
+		{ /* '0xD6' */
+			return ""
 		}
-		case 0xBE: { /* '0xBE' */
-            return ""
+	case 0xD7:
+		{ /* '0xD7' */
+			return ""
 		}
-		case 0xBF: { /* '0xBF' */
-            return ""
+	case 0xD8:
+		{ /* '0xD8' */
+			return ""
 		}
-		case 0xC0: { /* '0xC0' */
-            return ""
+	case 0xD9:
+		{ /* '0xD9' */
+			return ""
 		}
-		case 0xC1: { /* '0xC1' */
-            return ""
+	case 0xDA:
+		{ /* '0xDA' */
+			return ""
 		}
-		case 0xC2: { /* '0xC2' */
-            return ""
+	case 0xDB:
+		{ /* '0xDB' */
+			return ""
 		}
-		case 0xC3: { /* '0xC3' */
-            return ""
+	case 0xDC:
+		{ /* '0xDC' */
+			return ""
 		}
-		case 0xC4: { /* '0xC4' */
-            return ""
+	case 0xDD:
+		{ /* '0xDD' */
+			return ""
 		}
-		case 0xC5: { /* '0xC5' */
-            return ""
+	case 0xDE:
+		{ /* '0xDE' */
+			return ""
 		}
-		case 0xC6: { /* '0xC6' */
-            return ""
+	case 0xDF:
+		{ /* '0xDF' */
+			return ""
 		}
-		case 0xC7: { /* '0xC7' */
-            return ""
+	case 0xE0:
+		{ /* '0xE0' */
+			return ""
 		}
-		case 0xC8: { /* '0xC8' */
-            return ""
+	case 0xE1:
+		{ /* '0xE1' */
+			return ""
 		}
-		case 0xC9: { /* '0xC9' */
-            return ""
+	case 0xE2:
+		{ /* '0xE2' */
+			return ""
 		}
-		case 0xCA: { /* '0xCA' */
-            return ""
+	case 0xE3:
+		{ /* '0xE3' */
+			return ""
 		}
-		case 0xCB: { /* '0xCB' */
-            return ""
+	case 0xE4:
+		{ /* '0xE4' */
+			return ""
 		}
-		case 0xCC: { /* '0xCC' */
-            return ""
+	case 0xE5:
+		{ /* '0xE5' */
+			return ""
 		}
-		case 0xCD: { /* '0xCD' */
-            return ""
+	case 0xE6:
+		{ /* '0xE6' */
+			return ""
 		}
-		case 0xCE: { /* '0xCE' */
-            return ""
+	case 0xE7:
+		{ /* '0xE7' */
+			return ""
 		}
-		case 0xCF: { /* '0xCF' */
-            return ""
+	case 0xE8:
+		{ /* '0xE8' */
+			return ""
 		}
-		case 0xD0: { /* '0xD0' */
-            return ""
+	case 0xE9:
+		{ /* '0xE9' */
+			return ""
 		}
-		case 0xD1: { /* '0xD1' */
-            return ""
+	case 0xEA:
+		{ /* '0xEA' */
+			return ""
 		}
-		case 0xD2: { /* '0xD2' */
-            return ""
+	case 0xEB:
+		{ /* '0xEB' */
+			return "Mgmt"
 		}
-		case 0xD3: { /* '0xD3' */
-            return ""
+	case 0xEC:
+		{ /* '0xEC' */
+			return "Mgmt"
 		}
-		case 0xD4: { /* '0xD4' */
-            return ""
+	case 0xED:
+		{ /* '0xED' */
+			return "Mgmt"
 		}
-		case 0xD5: { /* '0xD5' */
-            return ""
+	case 0xEE:
+		{ /* '0xEE' */
+			return "Mgmt"
 		}
-		case 0xD6: { /* '0xD6' */
-            return ""
+	case 0xEF:
+		{ /* '0xEF' */
+			return "Mgmt"
 		}
-		case 0xD7: { /* '0xD7' */
-            return ""
+	case 0xF0:
+		{ /* '0xF0' */
+			return "Mgmt"
 		}
-		case 0xD8: { /* '0xD8' */
-            return ""
+	case 0xF1:
+		{ /* '0xF1' */
+			return "Mgmt"
 		}
-		case 0xD9: { /* '0xD9' */
-            return ""
+	case 0xF2:
+		{ /* '0xF2' */
+			return "Mgmt"
 		}
-		case 0xDA: { /* '0xDA' */
-            return ""
+	case 0xF3:
+		{ /* '0xF3' */
+			return "Mgmt"
 		}
-		case 0xDB: { /* '0xDB' */
-            return ""
+	case 0xF4:
+		{ /* '0xF4' */
+			return "Mgmt"
 		}
-		case 0xDC: { /* '0xDC' */
-            return ""
+	case 0xF5:
+		{ /* '0xF5' */
+			return "Mgmt"
 		}
-		case 0xDD: { /* '0xDD' */
-            return ""
+	case 0xF6:
+		{ /* '0xF6' */
+			return "Mgmt"
 		}
-		case 0xDE: { /* '0xDE' */
-            return ""
+	case 0xF7:
+		{ /* '0xF7' */
+			return "Mgmt"
 		}
-		case 0xDF: { /* '0xDF' */
-            return ""
+	case 0xF8:
+		{ /* '0xF8' */
+			return "Mgmt"
 		}
-		case 0xE0: { /* '0xE0' */
-            return ""
+	case 0xF9:
+		{ /* '0xF9' */
+			return "Mgmt"
 		}
-		case 0xE1: { /* '0xE1' */
-            return ""
+	case 0xFA:
+		{ /* '0xFA' */
+			return "Mgmt"
 		}
-		case 0xE2: { /* '0xE2' */
-            return ""
+	case 0xFB:
+		{ /* '0xFB' */
+			return "Mgmt"
 		}
-		case 0xE3: { /* '0xE3' */
-            return ""
+	case 0xFC:
+		{ /* '0xFC' */
+			return "Mgmt"
 		}
-		case 0xE4: { /* '0xE4' */
-            return ""
+	case 0xFD:
+		{ /* '0xFD' */
+			return "Mgmt"
 		}
-		case 0xE5: { /* '0xE5' */
-            return ""
+	case 0xFE:
+		{ /* '0xFE' */
+			return "Mgmt"
 		}
-		case 0xE6: { /* '0xE6' */
-            return ""
+	case 0xFF:
+		{ /* '0xFF' */
+			return ""
 		}
-		case 0xE7: { /* '0xE7' */
-            return ""
-		}
-		case 0xE8: { /* '0xE8' */
-            return ""
-		}
-		case 0xE9: { /* '0xE9' */
-            return ""
-		}
-		case 0xEA: { /* '0xEA' */
-            return ""
-		}
-		case 0xEB: { /* '0xEB' */
-            return "Mgmt"
-		}
-		case 0xEC: { /* '0xEC' */
-            return "Mgmt"
-		}
-		case 0xED: { /* '0xED' */
-            return "Mgmt"
-		}
-		case 0xEE: { /* '0xEE' */
-            return "Mgmt"
-		}
-		case 0xEF: { /* '0xEF' */
-            return "Mgmt"
-		}
-		case 0xF0: { /* '0xF0' */
-            return "Mgmt"
-		}
-		case 0xF1: { /* '0xF1' */
-            return "Mgmt"
-		}
-		case 0xF2: { /* '0xF2' */
-            return "Mgmt"
-		}
-		case 0xF3: { /* '0xF3' */
-            return "Mgmt"
-		}
-		case 0xF4: { /* '0xF4' */
-            return "Mgmt"
-		}
-		case 0xF5: { /* '0xF5' */
-            return "Mgmt"
-		}
-		case 0xF6: { /* '0xF6' */
-            return "Mgmt"
-		}
-		case 0xF7: { /* '0xF7' */
-            return "Mgmt"
-		}
-		case 0xF8: { /* '0xF8' */
-            return "Mgmt"
-		}
-		case 0xF9: { /* '0xF9' */
-            return "Mgmt"
-		}
-		case 0xFA: { /* '0xFA' */
-            return "Mgmt"
-		}
-		case 0xFB: { /* '0xFB' */
-            return "Mgmt"
-		}
-		case 0xFC: { /* '0xFC' */
-            return "Mgmt"
-		}
-		case 0xFD: { /* '0xFD' */
-            return "Mgmt"
-		}
-		case 0xFE: { /* '0xFE' */
-            return "Mgmt"
-		}
-		case 0xFF: { /* '0xFF' */
-            return ""
-		}
-		default: {
+	default:
+		{
 			return ""
 		}
 	}
@@ -5275,518 +6816,518 @@ func ParameterFirstEnumForFieldGroup(value string) (Parameter, error) {
 }
 func ParameterByValue(value uint8) (enum Parameter, ok bool) {
 	switch value {
-		case 0x00:
-			return Parameter_UNKNOWN_01, true
-		case 0x01:
-			return Parameter_UNKNOWN_02, true
-		case 0x02:
-			return Parameter_UNKNOWN_03, true
-		case 0x03:
-			return Parameter_UNKNOWN_04, true
-		case 0x04:
-			return Parameter_UNKNOWN_05, true
-		case 0x05:
-			return Parameter_UNKNOWN_06, true
-		case 0x06:
-			return Parameter_UNKNOWN_07, true
-		case 0x07:
-			return Parameter_UNKNOWN_08, true
-		case 0x08:
-			return Parameter_UNKNOWN_09, true
-		case 0x09:
-			return Parameter_UNKNOWN_10, true
-		case 0x0A:
-			return Parameter_UNKNOWN_11, true
-		case 0x0B:
-			return Parameter_UNKNOWN_12, true
-		case 0x0C:
-			return Parameter_UNKNOWN_13, true
-		case 0x0D:
-			return Parameter_UNKNOWN_14, true
-		case 0x0E:
-			return Parameter_UNKNOWN_15, true
-		case 0x0F:
-			return Parameter_UNKNOWN_16, true
-		case 0x10:
-			return Parameter_UNKNOWN_17, true
-		case 0x11:
-			return Parameter_UNKNOWN_18, true
-		case 0x12:
-			return Parameter_UNKNOWN_19, true
-		case 0x13:
-			return Parameter_UNKNOWN_20, true
-		case 0x14:
-			return Parameter_UNKNOWN_21, true
-		case 0x15:
-			return Parameter_UNKNOWN_22, true
-		case 0x16:
-			return Parameter_UNKNOWN_23, true
-		case 0x17:
-			return Parameter_UNKNOWN_24, true
-		case 0x18:
-			return Parameter_UNKNOWN_25, true
-		case 0x19:
-			return Parameter_UNKNOWN_26, true
-		case 0x1A:
-			return Parameter_UNKNOWN_27, true
-		case 0x1B:
-			return Parameter_UNKNOWN_28, true
-		case 0x1C:
-			return Parameter_UNKNOWN_29, true
-		case 0x1D:
-			return Parameter_UNKNOWN_30, true
-		case 0x1E:
-			return Parameter_UNKNOWN_31, true
-		case 0x1F:
-			return Parameter_UNKNOWN_32, true
-		case 0x20:
-			return Parameter_UNKNOWN_33, true
-		case 0x21:
-			return Parameter_APPLICATION_ADDRESS_1, true
-		case 0x22:
-			return Parameter_APPLICATION_ADDRESS_2, true
-		case 0x23:
-			return Parameter_UNKOWN_35, true
-		case 0x24:
-			return Parameter_UNKOWN_36, true
-		case 0x25:
-			return Parameter_UNKOWN_37, true
-		case 0x26:
-			return Parameter_UNKOWN_38, true
-		case 0x27:
-			return Parameter_UNKOWN_39, true
-		case 0x28:
-			return Parameter_UNKOWN_40, true
-		case 0x29:
-			return Parameter_UNKOWN_41, true
-		case 0x2A:
-			return Parameter_UNKOWN_42, true
-		case 0x2B:
-			return Parameter_UNKOWN_43, true
-		case 0x2C:
-			return Parameter_UNKOWN_44, true
-		case 0x2D:
-			return Parameter_UNKOWN_45, true
-		case 0x2E:
-			return Parameter_UNKOWN_46, true
-		case 0x2F:
-			return Parameter_UNKOWN_47, true
-		case 0x30:
-			return Parameter_INTERFACE_OPTIONS_1, true
-		case 0x31:
-			return Parameter_UNKOWN_49, true
-		case 0x32:
-			return Parameter_UNKOWN_50, true
-		case 0x33:
-			return Parameter_UNKOWN_51, true
-		case 0x34:
-			return Parameter_UNKOWN_52, true
-		case 0x35:
-			return Parameter_UNKOWN_53, true
-		case 0x36:
-			return Parameter_UNKOWN_54, true
-		case 0x37:
-			return Parameter_UNKOWN_55, true
-		case 0x38:
-			return Parameter_UNKOWN_56, true
-		case 0x39:
-			return Parameter_UNKOWN_57, true
-		case 0x3A:
-			return Parameter_UNKOWN_58, true
-		case 0x3B:
-			return Parameter_UNKOWN_59, true
-		case 0x3C:
-			return Parameter_UNKOWN_60, true
-		case 0x3D:
-			return Parameter_BAUD_RATE_SELECTOR, true
-		case 0x3E:
-			return Parameter_INTERFACE_OPTIONS_2, true
-		case 0x3F:
-			return Parameter_UNKOWN_63, true
-		case 0x40:
-			return Parameter_UNKOWN_64, true
-		case 0x41:
-			return Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, true
-		case 0x42:
-			return Parameter_INTERFACE_OPTIONS_3, true
-		case 0x43:
-			return Parameter_UNKOWN_67, true
-		case 0x44:
-			return Parameter_UNKOWN_68, true
-		case 0x45:
-			return Parameter_UNKOWN_69, true
-		case 0x46:
-			return Parameter_UNKOWN_70, true
-		case 0x47:
-			return Parameter_UNKOWN_71, true
-		case 0x48:
-			return Parameter_UNKOWN_72, true
-		case 0x49:
-			return Parameter_UNKOWN_73, true
-		case 0x4A:
-			return Parameter_UNKOWN_74, true
-		case 0x4B:
-			return Parameter_UNKOWN_75, true
-		case 0x4C:
-			return Parameter_UNKOWN_76, true
-		case 0x4D:
-			return Parameter_UNKOWN_77, true
-		case 0x4E:
-			return Parameter_UNKOWN_78, true
-		case 0x4F:
-			return Parameter_UNKOWN_79, true
-		case 0x50:
-			return Parameter_UNKOWN_80, true
-		case 0x51:
-			return Parameter_UNKOWN_81, true
-		case 0x52:
-			return Parameter_UNKOWN_82, true
-		case 0x53:
-			return Parameter_UNKOWN_83, true
-		case 0x54:
-			return Parameter_UNKOWN_84, true
-		case 0x55:
-			return Parameter_UNKOWN_85, true
-		case 0x56:
-			return Parameter_UNKOWN_86, true
-		case 0x57:
-			return Parameter_UNKOWN_87, true
-		case 0x58:
-			return Parameter_UNKOWN_88, true
-		case 0x59:
-			return Parameter_UNKOWN_89, true
-		case 0x5A:
-			return Parameter_UNKOWN_90, true
-		case 0x5B:
-			return Parameter_UNKOWN_91, true
-		case 0x5C:
-			return Parameter_UNKOWN_92, true
-		case 0x5D:
-			return Parameter_UNKOWN_93, true
-		case 0x5E:
-			return Parameter_UNKOWN_94, true
-		case 0x5F:
-			return Parameter_UNKOWN_95, true
-		case 0x60:
-			return Parameter_UNKOWN_96, true
-		case 0x61:
-			return Parameter_UNKOWN_97, true
-		case 0x62:
-			return Parameter_UNKOWN_98, true
-		case 0x63:
-			return Parameter_UNKOWN_99, true
-		case 0x64:
-			return Parameter_UNKOWN_100, true
-		case 0x65:
-			return Parameter_UNKOWN_101, true
-		case 0x66:
-			return Parameter_UNKOWN_102, true
-		case 0x67:
-			return Parameter_UNKOWN_103, true
-		case 0x68:
-			return Parameter_UNKOWN_104, true
-		case 0x69:
-			return Parameter_UNKOWN_105, true
-		case 0x6A:
-			return Parameter_UNKOWN_106, true
-		case 0x6B:
-			return Parameter_UNKOWN_107, true
-		case 0x6C:
-			return Parameter_UNKOWN_108, true
-		case 0x6D:
-			return Parameter_UNKOWN_109, true
-		case 0x6E:
-			return Parameter_UNKOWN_110, true
-		case 0x6F:
-			return Parameter_UNKOWN_111, true
-		case 0x70:
-			return Parameter_UNKOWN_112, true
-		case 0x71:
-			return Parameter_UNKOWN_113, true
-		case 0x72:
-			return Parameter_UNKOWN_114, true
-		case 0x73:
-			return Parameter_UNKOWN_115, true
-		case 0x74:
-			return Parameter_UNKOWN_116, true
-		case 0x75:
-			return Parameter_UNKOWN_117, true
-		case 0x76:
-			return Parameter_UNKOWN_118, true
-		case 0x77:
-			return Parameter_UNKOWN_119, true
-		case 0x78:
-			return Parameter_UNKOWN_120, true
-		case 0x79:
-			return Parameter_UNKOWN_121, true
-		case 0x7A:
-			return Parameter_UNKOWN_122, true
-		case 0x7B:
-			return Parameter_UNKOWN_123, true
-		case 0x7C:
-			return Parameter_UNKOWN_124, true
-		case 0x7D:
-			return Parameter_UNKOWN_125, true
-		case 0x7E:
-			return Parameter_UNKOWN_126, true
-		case 0x7F:
-			return Parameter_UNKOWN_127, true
-		case 0x80:
-			return Parameter_UNKOWN_128, true
-		case 0x81:
-			return Parameter_UNKOWN_129, true
-		case 0x82:
-			return Parameter_UNKOWN_130, true
-		case 0x83:
-			return Parameter_UNKOWN_131, true
-		case 0x84:
-			return Parameter_UNKOWN_132, true
-		case 0x85:
-			return Parameter_UNKOWN_133, true
-		case 0x86:
-			return Parameter_UNKOWN_134, true
-		case 0x87:
-			return Parameter_UNKOWN_135, true
-		case 0x88:
-			return Parameter_UNKOWN_136, true
-		case 0x89:
-			return Parameter_UNKOWN_137, true
-		case 0x8A:
-			return Parameter_UNKOWN_138, true
-		case 0x8B:
-			return Parameter_UNKOWN_139, true
-		case 0x8C:
-			return Parameter_UNKOWN_140, true
-		case 0x8D:
-			return Parameter_UNKOWN_141, true
-		case 0x8E:
-			return Parameter_UNKOWN_142, true
-		case 0x8F:
-			return Parameter_UNKOWN_143, true
-		case 0x90:
-			return Parameter_UNKOWN_144, true
-		case 0x91:
-			return Parameter_UNKOWN_145, true
-		case 0x92:
-			return Parameter_UNKOWN_146, true
-		case 0x93:
-			return Parameter_UNKOWN_147, true
-		case 0x94:
-			return Parameter_UNKOWN_148, true
-		case 0x95:
-			return Parameter_UNKOWN_149, true
-		case 0x96:
-			return Parameter_UNKOWN_150, true
-		case 0x97:
-			return Parameter_UNKOWN_151, true
-		case 0x98:
-			return Parameter_UNKOWN_152, true
-		case 0x99:
-			return Parameter_UNKOWN_153, true
-		case 0x9A:
-			return Parameter_UNKOWN_154, true
-		case 0x9B:
-			return Parameter_UNKOWN_155, true
-		case 0x9C:
-			return Parameter_UNKOWN_156, true
-		case 0x9D:
-			return Parameter_UNKOWN_157, true
-		case 0x9E:
-			return Parameter_UNKOWN_158, true
-		case 0x9F:
-			return Parameter_UNKOWN_159, true
-		case 0xA0:
-			return Parameter_UNKOWN_160, true
-		case 0xA1:
-			return Parameter_UNKOWN_161, true
-		case 0xA2:
-			return Parameter_UNKOWN_162, true
-		case 0xA3:
-			return Parameter_UNKOWN_163, true
-		case 0xA4:
-			return Parameter_UNKOWN_164, true
-		case 0xA5:
-			return Parameter_UNKOWN_165, true
-		case 0xA6:
-			return Parameter_UNKOWN_166, true
-		case 0xA7:
-			return Parameter_UNKOWN_167, true
-		case 0xA8:
-			return Parameter_UNKOWN_168, true
-		case 0xA9:
-			return Parameter_UNKOWN_169, true
-		case 0xAA:
-			return Parameter_UNKOWN_170, true
-		case 0xAB:
-			return Parameter_UNKOWN_171, true
-		case 0xAC:
-			return Parameter_UNKOWN_172, true
-		case 0xAD:
-			return Parameter_UNKOWN_173, true
-		case 0xAE:
-			return Parameter_UNKOWN_174, true
-		case 0xAF:
-			return Parameter_UNKOWN_175, true
-		case 0xB0:
-			return Parameter_UNKOWN_176, true
-		case 0xB1:
-			return Parameter_UNKOWN_177, true
-		case 0xB2:
-			return Parameter_UNKOWN_178, true
-		case 0xB3:
-			return Parameter_UNKOWN_179, true
-		case 0xB4:
-			return Parameter_UNKOWN_180, true
-		case 0xB5:
-			return Parameter_UNKOWN_181, true
-		case 0xB6:
-			return Parameter_UNKOWN_182, true
-		case 0xB7:
-			return Parameter_UNKOWN_183, true
-		case 0xB8:
-			return Parameter_UNKOWN_184, true
-		case 0xB9:
-			return Parameter_UNKOWN_185, true
-		case 0xBA:
-			return Parameter_UNKOWN_186, true
-		case 0xBB:
-			return Parameter_UNKOWN_187, true
-		case 0xBC:
-			return Parameter_UNKOWN_188, true
-		case 0xBD:
-			return Parameter_UNKOWN_189, true
-		case 0xBE:
-			return Parameter_UNKOWN_190, true
-		case 0xBF:
-			return Parameter_UNKOWN_191, true
-		case 0xC0:
-			return Parameter_UNKOWN_192, true
-		case 0xC1:
-			return Parameter_UNKOWN_193, true
-		case 0xC2:
-			return Parameter_UNKOWN_194, true
-		case 0xC3:
-			return Parameter_UNKOWN_195, true
-		case 0xC4:
-			return Parameter_UNKOWN_196, true
-		case 0xC5:
-			return Parameter_UNKOWN_197, true
-		case 0xC6:
-			return Parameter_UNKOWN_198, true
-		case 0xC7:
-			return Parameter_UNKOWN_199, true
-		case 0xC8:
-			return Parameter_UNKOWN_200, true
-		case 0xC9:
-			return Parameter_UNKOWN_201, true
-		case 0xCA:
-			return Parameter_UNKOWN_202, true
-		case 0xCB:
-			return Parameter_UNKOWN_203, true
-		case 0xCC:
-			return Parameter_UNKOWN_204, true
-		case 0xCD:
-			return Parameter_UNKOWN_205, true
-		case 0xCE:
-			return Parameter_UNKOWN_206, true
-		case 0xCF:
-			return Parameter_UNKOWN_207, true
-		case 0xD0:
-			return Parameter_UNKOWN_208, true
-		case 0xD1:
-			return Parameter_UNKOWN_209, true
-		case 0xD2:
-			return Parameter_UNKOWN_210, true
-		case 0xD3:
-			return Parameter_UNKOWN_211, true
-		case 0xD4:
-			return Parameter_UNKOWN_212, true
-		case 0xD5:
-			return Parameter_UNKOWN_213, true
-		case 0xD6:
-			return Parameter_UNKOWN_214, true
-		case 0xD7:
-			return Parameter_UNKOWN_215, true
-		case 0xD8:
-			return Parameter_UNKOWN_216, true
-		case 0xD9:
-			return Parameter_UNKOWN_217, true
-		case 0xDA:
-			return Parameter_UNKOWN_218, true
-		case 0xDB:
-			return Parameter_UNKOWN_219, true
-		case 0xDC:
-			return Parameter_UNKOWN_220, true
-		case 0xDD:
-			return Parameter_UNKOWN_221, true
-		case 0xDE:
-			return Parameter_UNKOWN_222, true
-		case 0xDF:
-			return Parameter_UNKOWN_223, true
-		case 0xE0:
-			return Parameter_UNKOWN_224, true
-		case 0xE1:
-			return Parameter_UNKOWN_225, true
-		case 0xE2:
-			return Parameter_UNKOWN_226, true
-		case 0xE3:
-			return Parameter_UNKOWN_227, true
-		case 0xE4:
-			return Parameter_UNKOWN_228, true
-		case 0xE5:
-			return Parameter_UNKOWN_229, true
-		case 0xE6:
-			return Parameter_UNKOWN_230, true
-		case 0xE7:
-			return Parameter_UNKOWN_231, true
-		case 0xE8:
-			return Parameter_UNKOWN_232, true
-		case 0xE9:
-			return Parameter_UNKOWN_233, true
-		case 0xEA:
-			return Parameter_UNKOWN_234, true
-		case 0xEB:
-			return Parameter_CUSTOM_MANUFACTURER_1, true
-		case 0xEC:
-			return Parameter_CUSTOM_MANUFACTURER_2, true
-		case 0xED:
-			return Parameter_CUSTOM_MANUFACTURER_3, true
-		case 0xEE:
-			return Parameter_CUSTOM_MANUFACTURER_4, true
-		case 0xEF:
-			return Parameter_CUSTOM_MANUFACTURER_5, true
-		case 0xF0:
-			return Parameter_CUSTOM_MANUFACTURER_6, true
-		case 0xF1:
-			return Parameter_CUSTOM_MANUFACTURER_7, true
-		case 0xF2:
-			return Parameter_CUSTOM_MANUFACTURER_8, true
-		case 0xF3:
-			return Parameter_SERIAL_NUMBER_1, true
-		case 0xF4:
-			return Parameter_SERIAL_NUMBER_2, true
-		case 0xF5:
-			return Parameter_SERIAL_NUMBER_3, true
-		case 0xF6:
-			return Parameter_SERIAL_NUMBER_4, true
-		case 0xF7:
-			return Parameter_CUSTOM_TYPE_1, true
-		case 0xF8:
-			return Parameter_CUSTOM_TYPE_2, true
-		case 0xF9:
-			return Parameter_CUSTOM_TYPE_3, true
-		case 0xFA:
-			return Parameter_CUSTOM_TYPE_4, true
-		case 0xFB:
-			return Parameter_CUSTOM_TYPE_5, true
-		case 0xFC:
-			return Parameter_CUSTOM_TYPE_6, true
-		case 0xFD:
-			return Parameter_CUSTOM_TYPE_7, true
-		case 0xFE:
-			return Parameter_CUSTOM_TYPE_8, true
-		case 0xFF:
-			return Parameter_UNKOWN_255, true
+	case 0x00:
+		return Parameter_UNKNOWN_01, true
+	case 0x01:
+		return Parameter_UNKNOWN_02, true
+	case 0x02:
+		return Parameter_UNKNOWN_03, true
+	case 0x03:
+		return Parameter_UNKNOWN_04, true
+	case 0x04:
+		return Parameter_UNKNOWN_05, true
+	case 0x05:
+		return Parameter_UNKNOWN_06, true
+	case 0x06:
+		return Parameter_UNKNOWN_07, true
+	case 0x07:
+		return Parameter_UNKNOWN_08, true
+	case 0x08:
+		return Parameter_UNKNOWN_09, true
+	case 0x09:
+		return Parameter_UNKNOWN_10, true
+	case 0x0A:
+		return Parameter_UNKNOWN_11, true
+	case 0x0B:
+		return Parameter_UNKNOWN_12, true
+	case 0x0C:
+		return Parameter_UNKNOWN_13, true
+	case 0x0D:
+		return Parameter_UNKNOWN_14, true
+	case 0x0E:
+		return Parameter_UNKNOWN_15, true
+	case 0x0F:
+		return Parameter_UNKNOWN_16, true
+	case 0x10:
+		return Parameter_UNKNOWN_17, true
+	case 0x11:
+		return Parameter_UNKNOWN_18, true
+	case 0x12:
+		return Parameter_UNKNOWN_19, true
+	case 0x13:
+		return Parameter_UNKNOWN_20, true
+	case 0x14:
+		return Parameter_UNKNOWN_21, true
+	case 0x15:
+		return Parameter_UNKNOWN_22, true
+	case 0x16:
+		return Parameter_UNKNOWN_23, true
+	case 0x17:
+		return Parameter_UNKNOWN_24, true
+	case 0x18:
+		return Parameter_UNKNOWN_25, true
+	case 0x19:
+		return Parameter_UNKNOWN_26, true
+	case 0x1A:
+		return Parameter_UNKNOWN_27, true
+	case 0x1B:
+		return Parameter_UNKNOWN_28, true
+	case 0x1C:
+		return Parameter_UNKNOWN_29, true
+	case 0x1D:
+		return Parameter_UNKNOWN_30, true
+	case 0x1E:
+		return Parameter_UNKNOWN_31, true
+	case 0x1F:
+		return Parameter_UNKNOWN_32, true
+	case 0x20:
+		return Parameter_UNKNOWN_33, true
+	case 0x21:
+		return Parameter_APPLICATION_ADDRESS_1, true
+	case 0x22:
+		return Parameter_APPLICATION_ADDRESS_2, true
+	case 0x23:
+		return Parameter_UNKOWN_35, true
+	case 0x24:
+		return Parameter_UNKOWN_36, true
+	case 0x25:
+		return Parameter_UNKOWN_37, true
+	case 0x26:
+		return Parameter_UNKOWN_38, true
+	case 0x27:
+		return Parameter_UNKOWN_39, true
+	case 0x28:
+		return Parameter_UNKOWN_40, true
+	case 0x29:
+		return Parameter_UNKOWN_41, true
+	case 0x2A:
+		return Parameter_UNKOWN_42, true
+	case 0x2B:
+		return Parameter_UNKOWN_43, true
+	case 0x2C:
+		return Parameter_UNKOWN_44, true
+	case 0x2D:
+		return Parameter_UNKOWN_45, true
+	case 0x2E:
+		return Parameter_UNKOWN_46, true
+	case 0x2F:
+		return Parameter_UNKOWN_47, true
+	case 0x30:
+		return Parameter_INTERFACE_OPTIONS_1, true
+	case 0x31:
+		return Parameter_UNKOWN_49, true
+	case 0x32:
+		return Parameter_UNKOWN_50, true
+	case 0x33:
+		return Parameter_UNKOWN_51, true
+	case 0x34:
+		return Parameter_UNKOWN_52, true
+	case 0x35:
+		return Parameter_UNKOWN_53, true
+	case 0x36:
+		return Parameter_UNKOWN_54, true
+	case 0x37:
+		return Parameter_UNKOWN_55, true
+	case 0x38:
+		return Parameter_UNKOWN_56, true
+	case 0x39:
+		return Parameter_UNKOWN_57, true
+	case 0x3A:
+		return Parameter_UNKOWN_58, true
+	case 0x3B:
+		return Parameter_UNKOWN_59, true
+	case 0x3C:
+		return Parameter_UNKOWN_60, true
+	case 0x3D:
+		return Parameter_BAUD_RATE_SELECTOR, true
+	case 0x3E:
+		return Parameter_INTERFACE_OPTIONS_2, true
+	case 0x3F:
+		return Parameter_UNKOWN_63, true
+	case 0x40:
+		return Parameter_UNKOWN_64, true
+	case 0x41:
+		return Parameter_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, true
+	case 0x42:
+		return Parameter_INTERFACE_OPTIONS_3, true
+	case 0x43:
+		return Parameter_UNKOWN_67, true
+	case 0x44:
+		return Parameter_UNKOWN_68, true
+	case 0x45:
+		return Parameter_UNKOWN_69, true
+	case 0x46:
+		return Parameter_UNKOWN_70, true
+	case 0x47:
+		return Parameter_UNKOWN_71, true
+	case 0x48:
+		return Parameter_UNKOWN_72, true
+	case 0x49:
+		return Parameter_UNKOWN_73, true
+	case 0x4A:
+		return Parameter_UNKOWN_74, true
+	case 0x4B:
+		return Parameter_UNKOWN_75, true
+	case 0x4C:
+		return Parameter_UNKOWN_76, true
+	case 0x4D:
+		return Parameter_UNKOWN_77, true
+	case 0x4E:
+		return Parameter_UNKOWN_78, true
+	case 0x4F:
+		return Parameter_UNKOWN_79, true
+	case 0x50:
+		return Parameter_UNKOWN_80, true
+	case 0x51:
+		return Parameter_UNKOWN_81, true
+	case 0x52:
+		return Parameter_UNKOWN_82, true
+	case 0x53:
+		return Parameter_UNKOWN_83, true
+	case 0x54:
+		return Parameter_UNKOWN_84, true
+	case 0x55:
+		return Parameter_UNKOWN_85, true
+	case 0x56:
+		return Parameter_UNKOWN_86, true
+	case 0x57:
+		return Parameter_UNKOWN_87, true
+	case 0x58:
+		return Parameter_UNKOWN_88, true
+	case 0x59:
+		return Parameter_UNKOWN_89, true
+	case 0x5A:
+		return Parameter_UNKOWN_90, true
+	case 0x5B:
+		return Parameter_UNKOWN_91, true
+	case 0x5C:
+		return Parameter_UNKOWN_92, true
+	case 0x5D:
+		return Parameter_UNKOWN_93, true
+	case 0x5E:
+		return Parameter_UNKOWN_94, true
+	case 0x5F:
+		return Parameter_UNKOWN_95, true
+	case 0x60:
+		return Parameter_UNKOWN_96, true
+	case 0x61:
+		return Parameter_UNKOWN_97, true
+	case 0x62:
+		return Parameter_UNKOWN_98, true
+	case 0x63:
+		return Parameter_UNKOWN_99, true
+	case 0x64:
+		return Parameter_UNKOWN_100, true
+	case 0x65:
+		return Parameter_UNKOWN_101, true
+	case 0x66:
+		return Parameter_UNKOWN_102, true
+	case 0x67:
+		return Parameter_UNKOWN_103, true
+	case 0x68:
+		return Parameter_UNKOWN_104, true
+	case 0x69:
+		return Parameter_UNKOWN_105, true
+	case 0x6A:
+		return Parameter_UNKOWN_106, true
+	case 0x6B:
+		return Parameter_UNKOWN_107, true
+	case 0x6C:
+		return Parameter_UNKOWN_108, true
+	case 0x6D:
+		return Parameter_UNKOWN_109, true
+	case 0x6E:
+		return Parameter_UNKOWN_110, true
+	case 0x6F:
+		return Parameter_UNKOWN_111, true
+	case 0x70:
+		return Parameter_UNKOWN_112, true
+	case 0x71:
+		return Parameter_UNKOWN_113, true
+	case 0x72:
+		return Parameter_UNKOWN_114, true
+	case 0x73:
+		return Parameter_UNKOWN_115, true
+	case 0x74:
+		return Parameter_UNKOWN_116, true
+	case 0x75:
+		return Parameter_UNKOWN_117, true
+	case 0x76:
+		return Parameter_UNKOWN_118, true
+	case 0x77:
+		return Parameter_UNKOWN_119, true
+	case 0x78:
+		return Parameter_UNKOWN_120, true
+	case 0x79:
+		return Parameter_UNKOWN_121, true
+	case 0x7A:
+		return Parameter_UNKOWN_122, true
+	case 0x7B:
+		return Parameter_UNKOWN_123, true
+	case 0x7C:
+		return Parameter_UNKOWN_124, true
+	case 0x7D:
+		return Parameter_UNKOWN_125, true
+	case 0x7E:
+		return Parameter_UNKOWN_126, true
+	case 0x7F:
+		return Parameter_UNKOWN_127, true
+	case 0x80:
+		return Parameter_UNKOWN_128, true
+	case 0x81:
+		return Parameter_UNKOWN_129, true
+	case 0x82:
+		return Parameter_UNKOWN_130, true
+	case 0x83:
+		return Parameter_UNKOWN_131, true
+	case 0x84:
+		return Parameter_UNKOWN_132, true
+	case 0x85:
+		return Parameter_UNKOWN_133, true
+	case 0x86:
+		return Parameter_UNKOWN_134, true
+	case 0x87:
+		return Parameter_UNKOWN_135, true
+	case 0x88:
+		return Parameter_UNKOWN_136, true
+	case 0x89:
+		return Parameter_UNKOWN_137, true
+	case 0x8A:
+		return Parameter_UNKOWN_138, true
+	case 0x8B:
+		return Parameter_UNKOWN_139, true
+	case 0x8C:
+		return Parameter_UNKOWN_140, true
+	case 0x8D:
+		return Parameter_UNKOWN_141, true
+	case 0x8E:
+		return Parameter_UNKOWN_142, true
+	case 0x8F:
+		return Parameter_UNKOWN_143, true
+	case 0x90:
+		return Parameter_UNKOWN_144, true
+	case 0x91:
+		return Parameter_UNKOWN_145, true
+	case 0x92:
+		return Parameter_UNKOWN_146, true
+	case 0x93:
+		return Parameter_UNKOWN_147, true
+	case 0x94:
+		return Parameter_UNKOWN_148, true
+	case 0x95:
+		return Parameter_UNKOWN_149, true
+	case 0x96:
+		return Parameter_UNKOWN_150, true
+	case 0x97:
+		return Parameter_UNKOWN_151, true
+	case 0x98:
+		return Parameter_UNKOWN_152, true
+	case 0x99:
+		return Parameter_UNKOWN_153, true
+	case 0x9A:
+		return Parameter_UNKOWN_154, true
+	case 0x9B:
+		return Parameter_UNKOWN_155, true
+	case 0x9C:
+		return Parameter_UNKOWN_156, true
+	case 0x9D:
+		return Parameter_UNKOWN_157, true
+	case 0x9E:
+		return Parameter_UNKOWN_158, true
+	case 0x9F:
+		return Parameter_UNKOWN_159, true
+	case 0xA0:
+		return Parameter_UNKOWN_160, true
+	case 0xA1:
+		return Parameter_UNKOWN_161, true
+	case 0xA2:
+		return Parameter_UNKOWN_162, true
+	case 0xA3:
+		return Parameter_UNKOWN_163, true
+	case 0xA4:
+		return Parameter_UNKOWN_164, true
+	case 0xA5:
+		return Parameter_UNKOWN_165, true
+	case 0xA6:
+		return Parameter_UNKOWN_166, true
+	case 0xA7:
+		return Parameter_UNKOWN_167, true
+	case 0xA8:
+		return Parameter_UNKOWN_168, true
+	case 0xA9:
+		return Parameter_UNKOWN_169, true
+	case 0xAA:
+		return Parameter_UNKOWN_170, true
+	case 0xAB:
+		return Parameter_UNKOWN_171, true
+	case 0xAC:
+		return Parameter_UNKOWN_172, true
+	case 0xAD:
+		return Parameter_UNKOWN_173, true
+	case 0xAE:
+		return Parameter_UNKOWN_174, true
+	case 0xAF:
+		return Parameter_UNKOWN_175, true
+	case 0xB0:
+		return Parameter_UNKOWN_176, true
+	case 0xB1:
+		return Parameter_UNKOWN_177, true
+	case 0xB2:
+		return Parameter_UNKOWN_178, true
+	case 0xB3:
+		return Parameter_UNKOWN_179, true
+	case 0xB4:
+		return Parameter_UNKOWN_180, true
+	case 0xB5:
+		return Parameter_UNKOWN_181, true
+	case 0xB6:
+		return Parameter_UNKOWN_182, true
+	case 0xB7:
+		return Parameter_UNKOWN_183, true
+	case 0xB8:
+		return Parameter_UNKOWN_184, true
+	case 0xB9:
+		return Parameter_UNKOWN_185, true
+	case 0xBA:
+		return Parameter_UNKOWN_186, true
+	case 0xBB:
+		return Parameter_UNKOWN_187, true
+	case 0xBC:
+		return Parameter_UNKOWN_188, true
+	case 0xBD:
+		return Parameter_UNKOWN_189, true
+	case 0xBE:
+		return Parameter_UNKOWN_190, true
+	case 0xBF:
+		return Parameter_UNKOWN_191, true
+	case 0xC0:
+		return Parameter_UNKOWN_192, true
+	case 0xC1:
+		return Parameter_UNKOWN_193, true
+	case 0xC2:
+		return Parameter_UNKOWN_194, true
+	case 0xC3:
+		return Parameter_UNKOWN_195, true
+	case 0xC4:
+		return Parameter_UNKOWN_196, true
+	case 0xC5:
+		return Parameter_UNKOWN_197, true
+	case 0xC6:
+		return Parameter_UNKOWN_198, true
+	case 0xC7:
+		return Parameter_UNKOWN_199, true
+	case 0xC8:
+		return Parameter_UNKOWN_200, true
+	case 0xC9:
+		return Parameter_UNKOWN_201, true
+	case 0xCA:
+		return Parameter_UNKOWN_202, true
+	case 0xCB:
+		return Parameter_UNKOWN_203, true
+	case 0xCC:
+		return Parameter_UNKOWN_204, true
+	case 0xCD:
+		return Parameter_UNKOWN_205, true
+	case 0xCE:
+		return Parameter_UNKOWN_206, true
+	case 0xCF:
+		return Parameter_UNKOWN_207, true
+	case 0xD0:
+		return Parameter_UNKOWN_208, true
+	case 0xD1:
+		return Parameter_UNKOWN_209, true
+	case 0xD2:
+		return Parameter_UNKOWN_210, true
+	case 0xD3:
+		return Parameter_UNKOWN_211, true
+	case 0xD4:
+		return Parameter_UNKOWN_212, true
+	case 0xD5:
+		return Parameter_UNKOWN_213, true
+	case 0xD6:
+		return Parameter_UNKOWN_214, true
+	case 0xD7:
+		return Parameter_UNKOWN_215, true
+	case 0xD8:
+		return Parameter_UNKOWN_216, true
+	case 0xD9:
+		return Parameter_UNKOWN_217, true
+	case 0xDA:
+		return Parameter_UNKOWN_218, true
+	case 0xDB:
+		return Parameter_UNKOWN_219, true
+	case 0xDC:
+		return Parameter_UNKOWN_220, true
+	case 0xDD:
+		return Parameter_UNKOWN_221, true
+	case 0xDE:
+		return Parameter_UNKOWN_222, true
+	case 0xDF:
+		return Parameter_UNKOWN_223, true
+	case 0xE0:
+		return Parameter_UNKOWN_224, true
+	case 0xE1:
+		return Parameter_UNKOWN_225, true
+	case 0xE2:
+		return Parameter_UNKOWN_226, true
+	case 0xE3:
+		return Parameter_UNKOWN_227, true
+	case 0xE4:
+		return Parameter_UNKOWN_228, true
+	case 0xE5:
+		return Parameter_UNKOWN_229, true
+	case 0xE6:
+		return Parameter_UNKOWN_230, true
+	case 0xE7:
+		return Parameter_UNKOWN_231, true
+	case 0xE8:
+		return Parameter_UNKOWN_232, true
+	case 0xE9:
+		return Parameter_UNKOWN_233, true
+	case 0xEA:
+		return Parameter_UNKOWN_234, true
+	case 0xEB:
+		return Parameter_CUSTOM_MANUFACTURER_1, true
+	case 0xEC:
+		return Parameter_CUSTOM_MANUFACTURER_2, true
+	case 0xED:
+		return Parameter_CUSTOM_MANUFACTURER_3, true
+	case 0xEE:
+		return Parameter_CUSTOM_MANUFACTURER_4, true
+	case 0xEF:
+		return Parameter_CUSTOM_MANUFACTURER_5, true
+	case 0xF0:
+		return Parameter_CUSTOM_MANUFACTURER_6, true
+	case 0xF1:
+		return Parameter_CUSTOM_MANUFACTURER_7, true
+	case 0xF2:
+		return Parameter_CUSTOM_MANUFACTURER_8, true
+	case 0xF3:
+		return Parameter_SERIAL_NUMBER_1, true
+	case 0xF4:
+		return Parameter_SERIAL_NUMBER_2, true
+	case 0xF5:
+		return Parameter_SERIAL_NUMBER_3, true
+	case 0xF6:
+		return Parameter_SERIAL_NUMBER_4, true
+	case 0xF7:
+		return Parameter_CUSTOM_TYPE_1, true
+	case 0xF8:
+		return Parameter_CUSTOM_TYPE_2, true
+	case 0xF9:
+		return Parameter_CUSTOM_TYPE_3, true
+	case 0xFA:
+		return Parameter_CUSTOM_TYPE_4, true
+	case 0xFB:
+		return Parameter_CUSTOM_TYPE_5, true
+	case 0xFC:
+		return Parameter_CUSTOM_TYPE_6, true
+	case 0xFD:
+		return Parameter_CUSTOM_TYPE_7, true
+	case 0xFE:
+		return Parameter_CUSTOM_TYPE_8, true
+	case 0xFF:
+		return Parameter_UNKOWN_255, true
 	}
 	return 0, false
 }
@@ -6309,13 +7850,13 @@ func ParameterByName(value string) (enum Parameter, ok bool) {
 	return 0, false
 }
 
-func ParameterKnows(value uint8)  bool {
+func ParameterKnows(value uint8) bool {
 	for _, typeValue := range ParameterValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastParameter(structType interface{}) Parameter {
@@ -6887,4 +8428,3 @@ func (e Parameter) PLC4XEnumName() string {
 func (e Parameter) String() string {
 	return e.PLC4XEnumName()
 }
-

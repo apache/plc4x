@@ -34,18 +34,18 @@ type IZoneStatusTemp interface {
 	utils.Serializable
 }
 
-const(
-	ZoneStatusTemp_ZONE_SEALED ZoneStatusTemp = 0x0
+const (
+	ZoneStatusTemp_ZONE_SEALED   ZoneStatusTemp = 0x0
 	ZoneStatusTemp_ZONE_UNSEALED ZoneStatusTemp = 0x1
-	ZoneStatusTemp_ZONE_OPEN ZoneStatusTemp = 0x2
-	ZoneStatusTemp_ZONE_SHORT ZoneStatusTemp = 0x3
+	ZoneStatusTemp_ZONE_OPEN     ZoneStatusTemp = 0x2
+	ZoneStatusTemp_ZONE_SHORT    ZoneStatusTemp = 0x3
 )
 
 var ZoneStatusTempValues []ZoneStatusTemp
 
 func init() {
 	_ = errors.New
-	ZoneStatusTempValues = []ZoneStatusTemp {
+	ZoneStatusTempValues = []ZoneStatusTemp{
 		ZoneStatusTemp_ZONE_SEALED,
 		ZoneStatusTemp_ZONE_UNSEALED,
 		ZoneStatusTemp_ZONE_OPEN,
@@ -55,14 +55,14 @@ func init() {
 
 func ZoneStatusTempByValue(value uint8) (enum ZoneStatusTemp, ok bool) {
 	switch value {
-		case 0x0:
-			return ZoneStatusTemp_ZONE_SEALED, true
-		case 0x1:
-			return ZoneStatusTemp_ZONE_UNSEALED, true
-		case 0x2:
-			return ZoneStatusTemp_ZONE_OPEN, true
-		case 0x3:
-			return ZoneStatusTemp_ZONE_SHORT, true
+	case 0x0:
+		return ZoneStatusTemp_ZONE_SEALED, true
+	case 0x1:
+		return ZoneStatusTemp_ZONE_UNSEALED, true
+	case 0x2:
+		return ZoneStatusTemp_ZONE_OPEN, true
+	case 0x3:
+		return ZoneStatusTemp_ZONE_SHORT, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func ZoneStatusTempByName(value string) (enum ZoneStatusTemp, ok bool) {
 	return 0, false
 }
 
-func ZoneStatusTempKnows(value uint8)  bool {
+func ZoneStatusTempKnows(value uint8) bool {
 	for _, typeValue := range ZoneStatusTempValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastZoneStatusTemp(structType interface{}) ZoneStatusTemp {
@@ -155,4 +155,3 @@ func (e ZoneStatusTemp) PLC4XEnumName() string {
 func (e ZoneStatusTemp) String() string {
 	return e.PLC4XEnumName()
 }
-

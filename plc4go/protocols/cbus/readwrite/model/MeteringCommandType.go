@@ -35,7 +35,7 @@ type IMeteringCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const(
+const (
 	MeteringCommandType_EVENT MeteringCommandType = 0x00
 )
 
@@ -43,18 +43,19 @@ var MeteringCommandTypeValues []MeteringCommandType
 
 func init() {
 	_ = errors.New
-	MeteringCommandTypeValues = []MeteringCommandType {
+	MeteringCommandTypeValues = []MeteringCommandType{
 		MeteringCommandType_EVENT,
 	}
 }
 
-
 func (e MeteringCommandType) NumberOfArguments() uint8 {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return 0xFF
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 0xFF
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -70,8 +71,8 @@ func MeteringCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (Meterin
 }
 func MeteringCommandTypeByValue(value uint8) (enum MeteringCommandType, ok bool) {
 	switch value {
-		case 0x00:
-			return MeteringCommandType_EVENT, true
+	case 0x00:
+		return MeteringCommandType_EVENT, true
 	}
 	return 0, false
 }
@@ -84,13 +85,13 @@ func MeteringCommandTypeByName(value string) (enum MeteringCommandType, ok bool)
 	return 0, false
 }
 
-func MeteringCommandTypeKnows(value uint8)  bool {
+func MeteringCommandTypeKnows(value uint8) bool {
 	for _, typeValue := range MeteringCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastMeteringCommandType(structType interface{}) MeteringCommandType {
@@ -152,4 +153,3 @@ func (e MeteringCommandType) PLC4XEnumName() string {
 func (e MeteringCommandType) String() string {
 	return e.PLC4XEnumName()
 }
-

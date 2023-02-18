@@ -36,7 +36,7 @@ type IClockAndTimekeepingCommandTypeContainer interface {
 	CommandType() ClockAndTimekeepingCommandType
 }
 
-const(
+const (
 	ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_0Bytes ClockAndTimekeepingCommandTypeContainer = 0x08
 	ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_1Bytes ClockAndTimekeepingCommandTypeContainer = 0x09
 	ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_2Bytes ClockAndTimekeepingCommandTypeContainer = 0x0A
@@ -45,14 +45,14 @@ const(
 	ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_5Bytes ClockAndTimekeepingCommandTypeContainer = 0x0D
 	ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_6Bytes ClockAndTimekeepingCommandTypeContainer = 0x0E
 	ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_7Bytes ClockAndTimekeepingCommandTypeContainer = 0x0F
-	ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandRequestRefresh ClockAndTimekeepingCommandTypeContainer = 0x11
+	ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandRequestRefresh               ClockAndTimekeepingCommandTypeContainer = 0x11
 )
 
 var ClockAndTimekeepingCommandTypeContainerValues []ClockAndTimekeepingCommandTypeContainer
 
 func init() {
 	_ = errors.New
-	ClockAndTimekeepingCommandTypeContainerValues = []ClockAndTimekeepingCommandTypeContainer {
+	ClockAndTimekeepingCommandTypeContainerValues = []ClockAndTimekeepingCommandTypeContainer{
 		ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_0Bytes,
 		ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_1Bytes,
 		ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_2Bytes,
@@ -65,37 +65,46 @@ func init() {
 	}
 }
 
-
 func (e ClockAndTimekeepingCommandTypeContainer) NumBytes() uint8 {
-	switch e  {
-		case 0x08: { /* '0x08' */
-            return 0
+	switch e {
+	case 0x08:
+		{ /* '0x08' */
+			return 0
 		}
-		case 0x09: { /* '0x09' */
-            return 1
+	case 0x09:
+		{ /* '0x09' */
+			return 1
 		}
-		case 0x0A: { /* '0x0A' */
-            return 2
+	case 0x0A:
+		{ /* '0x0A' */
+			return 2
 		}
-		case 0x0B: { /* '0x0B' */
-            return 3
+	case 0x0B:
+		{ /* '0x0B' */
+			return 3
 		}
-		case 0x0C: { /* '0x0C' */
-            return 4
+	case 0x0C:
+		{ /* '0x0C' */
+			return 4
 		}
-		case 0x0D: { /* '0x0D' */
-            return 5
+	case 0x0D:
+		{ /* '0x0D' */
+			return 5
 		}
-		case 0x0E: { /* '0x0E' */
-            return 6
+	case 0x0E:
+		{ /* '0x0E' */
+			return 6
 		}
-		case 0x0F: { /* '0x0F' */
-            return 7
+	case 0x0F:
+		{ /* '0x0F' */
+			return 7
 		}
-		case 0x11: { /* '0x11' */
-            return 1
+	case 0x11:
+		{ /* '0x11' */
+			return 1
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -111,35 +120,45 @@ func ClockAndTimekeepingCommandTypeContainerFirstEnumForFieldNumBytes(value uint
 }
 
 func (e ClockAndTimekeepingCommandTypeContainer) CommandType() ClockAndTimekeepingCommandType {
-	switch e  {
-		case 0x08: { /* '0x08' */
+	switch e {
+	case 0x08:
+		{ /* '0x08' */
 			return ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE
 		}
-		case 0x09: { /* '0x09' */
+	case 0x09:
+		{ /* '0x09' */
 			return ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE
 		}
-		case 0x0A: { /* '0x0A' */
+	case 0x0A:
+		{ /* '0x0A' */
 			return ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE
 		}
-		case 0x0B: { /* '0x0B' */
+	case 0x0B:
+		{ /* '0x0B' */
 			return ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE
 		}
-		case 0x0C: { /* '0x0C' */
+	case 0x0C:
+		{ /* '0x0C' */
 			return ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE
 		}
-		case 0x0D: { /* '0x0D' */
+	case 0x0D:
+		{ /* '0x0D' */
 			return ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE
 		}
-		case 0x0E: { /* '0x0E' */
+	case 0x0E:
+		{ /* '0x0E' */
 			return ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE
 		}
-		case 0x0F: { /* '0x0F' */
+	case 0x0F:
+		{ /* '0x0F' */
 			return ClockAndTimekeepingCommandType_UPDATE_NETWORK_VARIABLE
 		}
-		case 0x11: { /* '0x11' */
+	case 0x11:
+		{ /* '0x11' */
 			return ClockAndTimekeepingCommandType_REQUEST_REFRESH
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -155,24 +174,24 @@ func ClockAndTimekeepingCommandTypeContainerFirstEnumForFieldCommandType(value C
 }
 func ClockAndTimekeepingCommandTypeContainerByValue(value uint8) (enum ClockAndTimekeepingCommandTypeContainer, ok bool) {
 	switch value {
-		case 0x08:
-			return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_0Bytes, true
-		case 0x09:
-			return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_1Bytes, true
-		case 0x0A:
-			return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_2Bytes, true
-		case 0x0B:
-			return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_3Bytes, true
-		case 0x0C:
-			return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_4Bytes, true
-		case 0x0D:
-			return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_5Bytes, true
-		case 0x0E:
-			return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_6Bytes, true
-		case 0x0F:
-			return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_7Bytes, true
-		case 0x11:
-			return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandRequestRefresh, true
+	case 0x08:
+		return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_0Bytes, true
+	case 0x09:
+		return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_1Bytes, true
+	case 0x0A:
+		return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_2Bytes, true
+	case 0x0B:
+		return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_3Bytes, true
+	case 0x0C:
+		return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_4Bytes, true
+	case 0x0D:
+		return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_5Bytes, true
+	case 0x0E:
+		return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_6Bytes, true
+	case 0x0F:
+		return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandUpdateNetworkVariable_7Bytes, true
+	case 0x11:
+		return ClockAndTimekeepingCommandTypeContainer_MediaTransportControlCommandRequestRefresh, true
 	}
 	return 0, false
 }
@@ -201,13 +220,13 @@ func ClockAndTimekeepingCommandTypeContainerByName(value string) (enum ClockAndT
 	return 0, false
 }
 
-func ClockAndTimekeepingCommandTypeContainerKnows(value uint8)  bool {
+func ClockAndTimekeepingCommandTypeContainerKnows(value uint8) bool {
 	for _, typeValue := range ClockAndTimekeepingCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastClockAndTimekeepingCommandTypeContainer(structType interface{}) ClockAndTimekeepingCommandTypeContainer {
@@ -285,4 +304,3 @@ func (e ClockAndTimekeepingCommandTypeContainer) PLC4XEnumName() string {
 func (e ClockAndTimekeepingCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
-

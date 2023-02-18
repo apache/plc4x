@@ -34,39 +34,39 @@ type IBACnetLifeSafetyState interface {
 	utils.Serializable
 }
 
-const(
-	BACnetLifeSafetyState_QUIET BACnetLifeSafetyState = 0
-	BACnetLifeSafetyState_PRE_ALARM BACnetLifeSafetyState = 1
-	BACnetLifeSafetyState_ALARM BACnetLifeSafetyState = 2
-	BACnetLifeSafetyState_FAULT BACnetLifeSafetyState = 3
-	BACnetLifeSafetyState_FAULT_PRE_ALARM BACnetLifeSafetyState = 4
-	BACnetLifeSafetyState_FAULT_ALARM BACnetLifeSafetyState = 5
-	BACnetLifeSafetyState_NOT_READY BACnetLifeSafetyState = 6
-	BACnetLifeSafetyState_ACTIVE BACnetLifeSafetyState = 7
-	BACnetLifeSafetyState_TAMPER BACnetLifeSafetyState = 8
-	BACnetLifeSafetyState_TEST_ALARM BACnetLifeSafetyState = 9
-	BACnetLifeSafetyState_TEST_ACTIVE BACnetLifeSafetyState = 10
-	BACnetLifeSafetyState_TEST_FAULT BACnetLifeSafetyState = 11
-	BACnetLifeSafetyState_TEST_FAULT_ALARM BACnetLifeSafetyState = 12
-	BACnetLifeSafetyState_HOLDUP BACnetLifeSafetyState = 13
-	BACnetLifeSafetyState_DURESS BACnetLifeSafetyState = 14
-	BACnetLifeSafetyState_TAMPER_ALARM BACnetLifeSafetyState = 15
-	BACnetLifeSafetyState_ABNORMAL BACnetLifeSafetyState = 16
-	BACnetLifeSafetyState_EMERGENCY_POWER BACnetLifeSafetyState = 17
-	BACnetLifeSafetyState_DELAYED BACnetLifeSafetyState = 18
-	BACnetLifeSafetyState_BLOCKED BACnetLifeSafetyState = 19
-	BACnetLifeSafetyState_LOCAL_ALARM BACnetLifeSafetyState = 20
-	BACnetLifeSafetyState_GENERAL_ALARM BACnetLifeSafetyState = 21
-	BACnetLifeSafetyState_SUPERVISORY BACnetLifeSafetyState = 22
-	BACnetLifeSafetyState_TEST_SUPERVISORY BACnetLifeSafetyState = 23
-	BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE BACnetLifeSafetyState = 0XFFFF
+const (
+	BACnetLifeSafetyState_QUIET                    BACnetLifeSafetyState = 0
+	BACnetLifeSafetyState_PRE_ALARM                BACnetLifeSafetyState = 1
+	BACnetLifeSafetyState_ALARM                    BACnetLifeSafetyState = 2
+	BACnetLifeSafetyState_FAULT                    BACnetLifeSafetyState = 3
+	BACnetLifeSafetyState_FAULT_PRE_ALARM          BACnetLifeSafetyState = 4
+	BACnetLifeSafetyState_FAULT_ALARM              BACnetLifeSafetyState = 5
+	BACnetLifeSafetyState_NOT_READY                BACnetLifeSafetyState = 6
+	BACnetLifeSafetyState_ACTIVE                   BACnetLifeSafetyState = 7
+	BACnetLifeSafetyState_TAMPER                   BACnetLifeSafetyState = 8
+	BACnetLifeSafetyState_TEST_ALARM               BACnetLifeSafetyState = 9
+	BACnetLifeSafetyState_TEST_ACTIVE              BACnetLifeSafetyState = 10
+	BACnetLifeSafetyState_TEST_FAULT               BACnetLifeSafetyState = 11
+	BACnetLifeSafetyState_TEST_FAULT_ALARM         BACnetLifeSafetyState = 12
+	BACnetLifeSafetyState_HOLDUP                   BACnetLifeSafetyState = 13
+	BACnetLifeSafetyState_DURESS                   BACnetLifeSafetyState = 14
+	BACnetLifeSafetyState_TAMPER_ALARM             BACnetLifeSafetyState = 15
+	BACnetLifeSafetyState_ABNORMAL                 BACnetLifeSafetyState = 16
+	BACnetLifeSafetyState_EMERGENCY_POWER          BACnetLifeSafetyState = 17
+	BACnetLifeSafetyState_DELAYED                  BACnetLifeSafetyState = 18
+	BACnetLifeSafetyState_BLOCKED                  BACnetLifeSafetyState = 19
+	BACnetLifeSafetyState_LOCAL_ALARM              BACnetLifeSafetyState = 20
+	BACnetLifeSafetyState_GENERAL_ALARM            BACnetLifeSafetyState = 21
+	BACnetLifeSafetyState_SUPERVISORY              BACnetLifeSafetyState = 22
+	BACnetLifeSafetyState_TEST_SUPERVISORY         BACnetLifeSafetyState = 23
+	BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE BACnetLifeSafetyState = 0xFFFF
 )
 
 var BACnetLifeSafetyStateValues []BACnetLifeSafetyState
 
 func init() {
 	_ = errors.New
-	BACnetLifeSafetyStateValues = []BACnetLifeSafetyState {
+	BACnetLifeSafetyStateValues = []BACnetLifeSafetyState{
 		BACnetLifeSafetyState_QUIET,
 		BACnetLifeSafetyState_PRE_ALARM,
 		BACnetLifeSafetyState_ALARM,
@@ -97,56 +97,56 @@ func init() {
 
 func BACnetLifeSafetyStateByValue(value uint16) (enum BACnetLifeSafetyState, ok bool) {
 	switch value {
-		case 0:
-			return BACnetLifeSafetyState_QUIET, true
-		case 0XFFFF:
-			return BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetLifeSafetyState_PRE_ALARM, true
-		case 10:
-			return BACnetLifeSafetyState_TEST_ACTIVE, true
-		case 11:
-			return BACnetLifeSafetyState_TEST_FAULT, true
-		case 12:
-			return BACnetLifeSafetyState_TEST_FAULT_ALARM, true
-		case 13:
-			return BACnetLifeSafetyState_HOLDUP, true
-		case 14:
-			return BACnetLifeSafetyState_DURESS, true
-		case 15:
-			return BACnetLifeSafetyState_TAMPER_ALARM, true
-		case 16:
-			return BACnetLifeSafetyState_ABNORMAL, true
-		case 17:
-			return BACnetLifeSafetyState_EMERGENCY_POWER, true
-		case 18:
-			return BACnetLifeSafetyState_DELAYED, true
-		case 19:
-			return BACnetLifeSafetyState_BLOCKED, true
-		case 2:
-			return BACnetLifeSafetyState_ALARM, true
-		case 20:
-			return BACnetLifeSafetyState_LOCAL_ALARM, true
-		case 21:
-			return BACnetLifeSafetyState_GENERAL_ALARM, true
-		case 22:
-			return BACnetLifeSafetyState_SUPERVISORY, true
-		case 23:
-			return BACnetLifeSafetyState_TEST_SUPERVISORY, true
-		case 3:
-			return BACnetLifeSafetyState_FAULT, true
-		case 4:
-			return BACnetLifeSafetyState_FAULT_PRE_ALARM, true
-		case 5:
-			return BACnetLifeSafetyState_FAULT_ALARM, true
-		case 6:
-			return BACnetLifeSafetyState_NOT_READY, true
-		case 7:
-			return BACnetLifeSafetyState_ACTIVE, true
-		case 8:
-			return BACnetLifeSafetyState_TAMPER, true
-		case 9:
-			return BACnetLifeSafetyState_TEST_ALARM, true
+	case 0:
+		return BACnetLifeSafetyState_QUIET, true
+	case 0xFFFF:
+		return BACnetLifeSafetyState_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetLifeSafetyState_PRE_ALARM, true
+	case 10:
+		return BACnetLifeSafetyState_TEST_ACTIVE, true
+	case 11:
+		return BACnetLifeSafetyState_TEST_FAULT, true
+	case 12:
+		return BACnetLifeSafetyState_TEST_FAULT_ALARM, true
+	case 13:
+		return BACnetLifeSafetyState_HOLDUP, true
+	case 14:
+		return BACnetLifeSafetyState_DURESS, true
+	case 15:
+		return BACnetLifeSafetyState_TAMPER_ALARM, true
+	case 16:
+		return BACnetLifeSafetyState_ABNORMAL, true
+	case 17:
+		return BACnetLifeSafetyState_EMERGENCY_POWER, true
+	case 18:
+		return BACnetLifeSafetyState_DELAYED, true
+	case 19:
+		return BACnetLifeSafetyState_BLOCKED, true
+	case 2:
+		return BACnetLifeSafetyState_ALARM, true
+	case 20:
+		return BACnetLifeSafetyState_LOCAL_ALARM, true
+	case 21:
+		return BACnetLifeSafetyState_GENERAL_ALARM, true
+	case 22:
+		return BACnetLifeSafetyState_SUPERVISORY, true
+	case 23:
+		return BACnetLifeSafetyState_TEST_SUPERVISORY, true
+	case 3:
+		return BACnetLifeSafetyState_FAULT, true
+	case 4:
+		return BACnetLifeSafetyState_FAULT_PRE_ALARM, true
+	case 5:
+		return BACnetLifeSafetyState_FAULT_ALARM, true
+	case 6:
+		return BACnetLifeSafetyState_NOT_READY, true
+	case 7:
+		return BACnetLifeSafetyState_ACTIVE, true
+	case 8:
+		return BACnetLifeSafetyState_TAMPER, true
+	case 9:
+		return BACnetLifeSafetyState_TEST_ALARM, true
 	}
 	return 0, false
 }
@@ -207,13 +207,13 @@ func BACnetLifeSafetyStateByName(value string) (enum BACnetLifeSafetyState, ok b
 	return 0, false
 }
 
-func BACnetLifeSafetyStateKnows(value uint16)  bool {
+func BACnetLifeSafetyStateKnows(value uint16) bool {
 	for _, typeValue := range BACnetLifeSafetyStateValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetLifeSafetyState(structType interface{}) BACnetLifeSafetyState {
@@ -323,4 +323,3 @@ func (e BACnetLifeSafetyState) PLC4XEnumName() string {
 func (e BACnetLifeSafetyState) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -34,18 +34,18 @@ type IStatusCoding interface {
 	utils.Serializable
 }
 
-const(
+const (
 	StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE StatusCoding = 0x00
-	StatusCoding_BINARY_BY_ELSEWHERE StatusCoding = 0x40
-	StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE StatusCoding = 0x07
-	StatusCoding_LEVEL_BY_ELSEWHERE StatusCoding = 0x47
+	StatusCoding_BINARY_BY_ELSEWHERE             StatusCoding = 0x40
+	StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE  StatusCoding = 0x07
+	StatusCoding_LEVEL_BY_ELSEWHERE              StatusCoding = 0x47
 )
 
 var StatusCodingValues []StatusCoding
 
 func init() {
 	_ = errors.New
-	StatusCodingValues = []StatusCoding {
+	StatusCodingValues = []StatusCoding{
 		StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE,
 		StatusCoding_BINARY_BY_ELSEWHERE,
 		StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE,
@@ -55,14 +55,14 @@ func init() {
 
 func StatusCodingByValue(value byte) (enum StatusCoding, ok bool) {
 	switch value {
-		case 0x00:
-			return StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE, true
-		case 0x07:
-			return StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE, true
-		case 0x40:
-			return StatusCoding_BINARY_BY_ELSEWHERE, true
-		case 0x47:
-			return StatusCoding_LEVEL_BY_ELSEWHERE, true
+	case 0x00:
+		return StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE, true
+	case 0x07:
+		return StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE, true
+	case 0x40:
+		return StatusCoding_BINARY_BY_ELSEWHERE, true
+	case 0x47:
+		return StatusCoding_LEVEL_BY_ELSEWHERE, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func StatusCodingByName(value string) (enum StatusCoding, ok bool) {
 	return 0, false
 }
 
-func StatusCodingKnows(value byte)  bool {
+func StatusCodingKnows(value byte) bool {
 	for _, typeValue := range StatusCodingValues {
 		if byte(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastStatusCoding(structType interface{}) StatusCoding {
@@ -155,4 +155,3 @@ func (e StatusCoding) PLC4XEnumName() string {
 func (e StatusCoding) String() string {
 	return e.PLC4XEnumName()
 }
-

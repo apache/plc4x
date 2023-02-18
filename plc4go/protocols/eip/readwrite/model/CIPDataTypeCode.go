@@ -36,15 +36,16 @@ type ICIPDataTypeCode interface {
 }
 
 const (
-	CIPDataTypeCode_BOOL   CIPDataTypeCode = 0x00C1
-	CIPDataTypeCode_SINT   CIPDataTypeCode = 0x00C2
-	CIPDataTypeCode_INT    CIPDataTypeCode = 0x00C3
-	CIPDataTypeCode_DINT   CIPDataTypeCode = 0x00C4
-	CIPDataTypeCode_LINT   CIPDataTypeCode = 0x00C5
-	CIPDataTypeCode_REAL   CIPDataTypeCode = 0x00CA
-	CIPDataTypeCode_DWORD  CIPDataTypeCode = 0x00D3
-	CIPDataTypeCode_Struct CIPDataTypeCode = 0x02A0
-	CIPDataTypeCode_STRING CIPDataTypeCode = 0x02A0
+	CIPDataTypeCode_BOOL       CIPDataTypeCode = 0x00C1
+	CIPDataTypeCode_SINT       CIPDataTypeCode = 0x00C2
+	CIPDataTypeCode_INT        CIPDataTypeCode = 0x00C3
+	CIPDataTypeCode_DINT       CIPDataTypeCode = 0x00C4
+	CIPDataTypeCode_LINT       CIPDataTypeCode = 0x00C5
+	CIPDataTypeCode_REAL       CIPDataTypeCode = 0x00CA
+	CIPDataTypeCode_DWORD      CIPDataTypeCode = 0x00D3
+	CIPDataTypeCode_STRUCTURED CIPDataTypeCode = 0x02A0
+	CIPDataTypeCode_STRING     CIPDataTypeCode = 0x02A0
+	CIPDataTypeCode_STRING36   CIPDataTypeCode = 0x02A0
 )
 
 var CIPDataTypeCodeValues []CIPDataTypeCode
@@ -59,8 +60,9 @@ func init() {
 		CIPDataTypeCode_LINT,
 		CIPDataTypeCode_REAL,
 		CIPDataTypeCode_DWORD,
-		CIPDataTypeCode_Struct,
+		CIPDataTypeCode_STRUCTURED,
 		CIPDataTypeCode_STRING,
+		CIPDataTypeCode_STRING36,
 	}
 }
 
@@ -130,7 +132,7 @@ func CIPDataTypeCodeByValue(value uint16) (enum CIPDataTypeCode, ok bool) {
 	case 0x00D3:
 		return CIPDataTypeCode_DWORD, true
 	case 0x02A0:
-		return CIPDataTypeCode_Struct, true
+		return CIPDataTypeCode_STRUCTURED, true
 	}
 	return 0, false
 }
@@ -151,8 +153,8 @@ func CIPDataTypeCodeByName(value string) (enum CIPDataTypeCode, ok bool) {
 		return CIPDataTypeCode_REAL, true
 	case "DWORD":
 		return CIPDataTypeCode_DWORD, true
-	case "Struct":
-		return CIPDataTypeCode_Struct, true
+	case "STRUCTURED":
+		return CIPDataTypeCode_STRUCTURED, true
 	}
 	return 0, false
 }
@@ -230,8 +232,8 @@ func (e CIPDataTypeCode) PLC4XEnumName() string {
 		return "REAL"
 	case CIPDataTypeCode_DWORD:
 		return "DWORD"
-	case CIPDataTypeCode_Struct:
-		return "Struct"
+	case CIPDataTypeCode_STRUCTURED:
+		return "STRUCTURED"
 	}
 	return ""
 }

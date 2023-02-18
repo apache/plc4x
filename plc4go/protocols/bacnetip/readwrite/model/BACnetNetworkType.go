@@ -34,26 +34,26 @@ type IBACnetNetworkType interface {
 	utils.Serializable
 }
 
-const(
-	BACnetNetworkType_ETHERNET BACnetNetworkType = 0x0
-	BACnetNetworkType_ARCNET BACnetNetworkType = 0x1
-	BACnetNetworkType_MSTP BACnetNetworkType = 0x2
-	BACnetNetworkType_PTP BACnetNetworkType = 0x3
-	BACnetNetworkType_LONTALK BACnetNetworkType = 0x4
-	BACnetNetworkType_IPV4 BACnetNetworkType = 0x5
-	BACnetNetworkType_ZIGBEE BACnetNetworkType = 0x6
-	BACnetNetworkType_VIRTUAL BACnetNetworkType = 0x7
-	BACnetNetworkType_REMOVED_NON_BACNET BACnetNetworkType = 0x8
-	BACnetNetworkType_IPV6 BACnetNetworkType = 0x9
-	BACnetNetworkType_SERIAL BACnetNetworkType = 0xA
-	BACnetNetworkType_VENDOR_PROPRIETARY_VALUE BACnetNetworkType = 0XFF
+const (
+	BACnetNetworkType_ETHERNET                 BACnetNetworkType = 0x0
+	BACnetNetworkType_ARCNET                   BACnetNetworkType = 0x1
+	BACnetNetworkType_MSTP                     BACnetNetworkType = 0x2
+	BACnetNetworkType_PTP                      BACnetNetworkType = 0x3
+	BACnetNetworkType_LONTALK                  BACnetNetworkType = 0x4
+	BACnetNetworkType_IPV4                     BACnetNetworkType = 0x5
+	BACnetNetworkType_ZIGBEE                   BACnetNetworkType = 0x6
+	BACnetNetworkType_VIRTUAL                  BACnetNetworkType = 0x7
+	BACnetNetworkType_REMOVED_NON_BACNET       BACnetNetworkType = 0x8
+	BACnetNetworkType_IPV6                     BACnetNetworkType = 0x9
+	BACnetNetworkType_SERIAL                   BACnetNetworkType = 0xA
+	BACnetNetworkType_VENDOR_PROPRIETARY_VALUE BACnetNetworkType = 0xFF
 )
 
 var BACnetNetworkTypeValues []BACnetNetworkType
 
 func init() {
 	_ = errors.New
-	BACnetNetworkTypeValues = []BACnetNetworkType {
+	BACnetNetworkTypeValues = []BACnetNetworkType{
 		BACnetNetworkType_ETHERNET,
 		BACnetNetworkType_ARCNET,
 		BACnetNetworkType_MSTP,
@@ -71,30 +71,30 @@ func init() {
 
 func BACnetNetworkTypeByValue(value uint8) (enum BACnetNetworkType, ok bool) {
 	switch value {
-		case 0XFF:
-			return BACnetNetworkType_VENDOR_PROPRIETARY_VALUE, true
-		case 0x0:
-			return BACnetNetworkType_ETHERNET, true
-		case 0x1:
-			return BACnetNetworkType_ARCNET, true
-		case 0x2:
-			return BACnetNetworkType_MSTP, true
-		case 0x3:
-			return BACnetNetworkType_PTP, true
-		case 0x4:
-			return BACnetNetworkType_LONTALK, true
-		case 0x5:
-			return BACnetNetworkType_IPV4, true
-		case 0x6:
-			return BACnetNetworkType_ZIGBEE, true
-		case 0x7:
-			return BACnetNetworkType_VIRTUAL, true
-		case 0x8:
-			return BACnetNetworkType_REMOVED_NON_BACNET, true
-		case 0x9:
-			return BACnetNetworkType_IPV6, true
-		case 0xA:
-			return BACnetNetworkType_SERIAL, true
+	case 0xFF:
+		return BACnetNetworkType_VENDOR_PROPRIETARY_VALUE, true
+	case 0x0:
+		return BACnetNetworkType_ETHERNET, true
+	case 0x1:
+		return BACnetNetworkType_ARCNET, true
+	case 0x2:
+		return BACnetNetworkType_MSTP, true
+	case 0x3:
+		return BACnetNetworkType_PTP, true
+	case 0x4:
+		return BACnetNetworkType_LONTALK, true
+	case 0x5:
+		return BACnetNetworkType_IPV4, true
+	case 0x6:
+		return BACnetNetworkType_ZIGBEE, true
+	case 0x7:
+		return BACnetNetworkType_VIRTUAL, true
+	case 0x8:
+		return BACnetNetworkType_REMOVED_NON_BACNET, true
+	case 0x9:
+		return BACnetNetworkType_IPV6, true
+	case 0xA:
+		return BACnetNetworkType_SERIAL, true
 	}
 	return 0, false
 }
@@ -129,13 +129,13 @@ func BACnetNetworkTypeByName(value string) (enum BACnetNetworkType, ok bool) {
 	return 0, false
 }
 
-func BACnetNetworkTypeKnows(value uint8)  bool {
+func BACnetNetworkTypeKnows(value uint8) bool {
 	for _, typeValue := range BACnetNetworkTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetNetworkType(structType interface{}) BACnetNetworkType {
@@ -219,4 +219,3 @@ func (e BACnetNetworkType) PLC4XEnumName() string {
 func (e BACnetNetworkType) String() string {
 	return e.PLC4XEnumName()
 }
-

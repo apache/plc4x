@@ -34,19 +34,19 @@ type IBACnetLockStatus interface {
 	utils.Serializable
 }
 
-const(
-	BACnetLockStatus_LOCKED BACnetLockStatus = 0
-	BACnetLockStatus_UNLOCKED BACnetLockStatus = 1
+const (
+	BACnetLockStatus_LOCKED     BACnetLockStatus = 0
+	BACnetLockStatus_UNLOCKED   BACnetLockStatus = 1
 	BACnetLockStatus_LOCK_FAULT BACnetLockStatus = 2
-	BACnetLockStatus_UNUSED BACnetLockStatus = 3
-	BACnetLockStatus_UNKNOWN BACnetLockStatus = 4
+	BACnetLockStatus_UNUSED     BACnetLockStatus = 3
+	BACnetLockStatus_UNKNOWN    BACnetLockStatus = 4
 )
 
 var BACnetLockStatusValues []BACnetLockStatus
 
 func init() {
 	_ = errors.New
-	BACnetLockStatusValues = []BACnetLockStatus {
+	BACnetLockStatusValues = []BACnetLockStatus{
 		BACnetLockStatus_LOCKED,
 		BACnetLockStatus_UNLOCKED,
 		BACnetLockStatus_LOCK_FAULT,
@@ -57,16 +57,16 @@ func init() {
 
 func BACnetLockStatusByValue(value uint8) (enum BACnetLockStatus, ok bool) {
 	switch value {
-		case 0:
-			return BACnetLockStatus_LOCKED, true
-		case 1:
-			return BACnetLockStatus_UNLOCKED, true
-		case 2:
-			return BACnetLockStatus_LOCK_FAULT, true
-		case 3:
-			return BACnetLockStatus_UNUSED, true
-		case 4:
-			return BACnetLockStatus_UNKNOWN, true
+	case 0:
+		return BACnetLockStatus_LOCKED, true
+	case 1:
+		return BACnetLockStatus_UNLOCKED, true
+	case 2:
+		return BACnetLockStatus_LOCK_FAULT, true
+	case 3:
+		return BACnetLockStatus_UNUSED, true
+	case 4:
+		return BACnetLockStatus_UNKNOWN, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func BACnetLockStatusByName(value string) (enum BACnetLockStatus, ok bool) {
 	return 0, false
 }
 
-func BACnetLockStatusKnows(value uint8)  bool {
+func BACnetLockStatusKnows(value uint8) bool {
 	for _, typeValue := range BACnetLockStatusValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetLockStatus(structType interface{}) BACnetLockStatus {
@@ -163,4 +163,3 @@ func (e BACnetLockStatus) PLC4XEnumName() string {
 func (e BACnetLockStatus) String() string {
 	return e.PLC4XEnumName()
 }
-

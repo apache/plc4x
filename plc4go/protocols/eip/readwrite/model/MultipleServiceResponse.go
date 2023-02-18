@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -70,7 +71,15 @@ type _MultipleServiceResponse struct {
 ///////////////////////
 
 func (m *_MultipleServiceResponse) GetService() uint8 {
-	return 0x8A
+	return 0x0A
+}
+
+func (m *_MultipleServiceResponse) GetResponse() bool {
+	return bool(true)
+}
+
+func (m *_MultipleServiceResponse) GetConnected() bool {
+	return false
 }
 
 ///////////////////////
@@ -115,14 +124,14 @@ func (m *_MultipleServiceResponse) GetServicesData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewMultipleServiceResponse factory function for _MultipleServiceResponse
-func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte, serviceLen uint16) *_MultipleServiceResponse {
+func NewMultipleServiceResponse(status uint8, extStatus uint8, serviceNb uint16, offsets []uint16, servicesData []byte, serviceLen uint16, order IntegerEncoding) *_MultipleServiceResponse {
 	_result := &_MultipleServiceResponse{
 		Status:       status,
 		ExtStatus:    extStatus,
 		ServiceNb:    serviceNb,
 		Offsets:      offsets,
 		ServicesData: servicesData,
-		_CipService:  NewCipService(serviceLen),
+		_CipService:  NewCipService(serviceLen, order),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -175,11 +184,11 @@ func (m *_MultipleServiceResponse) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MultipleServiceResponseParse(theBytes []byte, serviceLen uint16) (MultipleServiceResponse, error) {
-	return MultipleServiceResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceLen)
+func MultipleServiceResponseParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (MultipleServiceResponse, error) {
+	return MultipleServiceResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
 }
 
-func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceResponse, error) {
+func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (MultipleServiceResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceResponse"); pullErr != nil {
@@ -267,6 +276,7 @@ func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer util
 	_child := &_MultipleServiceResponse{
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
+			Order:      order,
 		},
 		Status:         status,
 		ExtStatus:      extStatus,
@@ -280,7 +290,7 @@ func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer util
 }
 
 func (m *_MultipleServiceResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

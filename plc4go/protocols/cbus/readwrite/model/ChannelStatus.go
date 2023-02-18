@@ -34,9 +34,9 @@ type IChannelStatus interface {
 	utils.Serializable
 }
 
-const(
-	ChannelStatus_OK ChannelStatus = 0
-	ChannelStatus_LAMP_FAULT ChannelStatus = 2
+const (
+	ChannelStatus_OK                     ChannelStatus = 0
+	ChannelStatus_LAMP_FAULT             ChannelStatus = 2
 	ChannelStatus_CURRENT_LIMIT_OR_SHORT ChannelStatus = 3
 )
 
@@ -44,7 +44,7 @@ var ChannelStatusValues []ChannelStatus
 
 func init() {
 	_ = errors.New
-	ChannelStatusValues = []ChannelStatus {
+	ChannelStatusValues = []ChannelStatus{
 		ChannelStatus_OK,
 		ChannelStatus_LAMP_FAULT,
 		ChannelStatus_CURRENT_LIMIT_OR_SHORT,
@@ -53,12 +53,12 @@ func init() {
 
 func ChannelStatusByValue(value uint8) (enum ChannelStatus, ok bool) {
 	switch value {
-		case 0:
-			return ChannelStatus_OK, true
-		case 2:
-			return ChannelStatus_LAMP_FAULT, true
-		case 3:
-			return ChannelStatus_CURRENT_LIMIT_OR_SHORT, true
+	case 0:
+		return ChannelStatus_OK, true
+	case 2:
+		return ChannelStatus_LAMP_FAULT, true
+	case 3:
+		return ChannelStatus_CURRENT_LIMIT_OR_SHORT, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func ChannelStatusByName(value string) (enum ChannelStatus, ok bool) {
 	return 0, false
 }
 
-func ChannelStatusKnows(value uint8)  bool {
+func ChannelStatusKnows(value uint8) bool {
 	for _, typeValue := range ChannelStatusValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastChannelStatus(structType interface{}) ChannelStatus {
@@ -147,4 +147,3 @@ func (e ChannelStatus) PLC4XEnumName() string {
 func (e ChannelStatus) String() string {
 	return e.PLC4XEnumName()
 }
-

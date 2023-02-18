@@ -30,7 +30,13 @@ import java.util.logging.Logger;
 
 public class StaticHelper {
 
-    public static boolean isStillAPathSegment(ReadBuffer io, IntegerEncoding order) {
+    /**
+     * Tries to parse another PathSegment, if this works it returns false, if it doesn't it returns ture.
+     * @param io readBuffer
+     * @param order byte order
+     * @return false if there's another PathSegment, true if not.
+     */
+    public static boolean noMorePathSegments(ReadBuffer io, IntegerEncoding order) {
         int initialPosition = io.getPos();
         try {
             PathSegment ps = PathSegment.staticParse(io, order);

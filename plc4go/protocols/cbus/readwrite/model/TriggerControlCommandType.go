@@ -35,19 +35,19 @@ type ITriggerControlCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const(
-	TriggerControlCommandType_TRIGGER_EVENT TriggerControlCommandType = 0x00
-	TriggerControlCommandType_TRIGGER_MIN TriggerControlCommandType = 0x01
-	TriggerControlCommandType_TRIGGER_MAX TriggerControlCommandType = 0x02
+const (
+	TriggerControlCommandType_TRIGGER_EVENT  TriggerControlCommandType = 0x00
+	TriggerControlCommandType_TRIGGER_MIN    TriggerControlCommandType = 0x01
+	TriggerControlCommandType_TRIGGER_MAX    TriggerControlCommandType = 0x02
 	TriggerControlCommandType_INDICATOR_KILL TriggerControlCommandType = 0x03
-	TriggerControlCommandType_LABEL TriggerControlCommandType = 0x04
+	TriggerControlCommandType_LABEL          TriggerControlCommandType = 0x04
 )
 
 var TriggerControlCommandTypeValues []TriggerControlCommandType
 
 func init() {
 	_ = errors.New
-	TriggerControlCommandTypeValues = []TriggerControlCommandType {
+	TriggerControlCommandTypeValues = []TriggerControlCommandType{
 		TriggerControlCommandType_TRIGGER_EVENT,
 		TriggerControlCommandType_TRIGGER_MIN,
 		TriggerControlCommandType_TRIGGER_MAX,
@@ -56,25 +56,30 @@ func init() {
 	}
 }
 
-
 func (e TriggerControlCommandType) NumberOfArguments() uint8 {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return 1
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 1
 		}
-		case 0x01: { /* '0x01' */
-            return 0
+	case 0x01:
+		{ /* '0x01' */
+			return 0
 		}
-		case 0x02: { /* '0x02' */
-            return 0
+	case 0x02:
+		{ /* '0x02' */
+			return 0
 		}
-		case 0x03: { /* '0x03' */
-            return 0
+	case 0x03:
+		{ /* '0x03' */
+			return 0
 		}
-		case 0x04: { /* '0x04' */
-            return 4
+	case 0x04:
+		{ /* '0x04' */
+			return 4
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -90,16 +95,16 @@ func TriggerControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (T
 }
 func TriggerControlCommandTypeByValue(value uint8) (enum TriggerControlCommandType, ok bool) {
 	switch value {
-		case 0x00:
-			return TriggerControlCommandType_TRIGGER_EVENT, true
-		case 0x01:
-			return TriggerControlCommandType_TRIGGER_MIN, true
-		case 0x02:
-			return TriggerControlCommandType_TRIGGER_MAX, true
-		case 0x03:
-			return TriggerControlCommandType_INDICATOR_KILL, true
-		case 0x04:
-			return TriggerControlCommandType_LABEL, true
+	case 0x00:
+		return TriggerControlCommandType_TRIGGER_EVENT, true
+	case 0x01:
+		return TriggerControlCommandType_TRIGGER_MIN, true
+	case 0x02:
+		return TriggerControlCommandType_TRIGGER_MAX, true
+	case 0x03:
+		return TriggerControlCommandType_INDICATOR_KILL, true
+	case 0x04:
+		return TriggerControlCommandType_LABEL, true
 	}
 	return 0, false
 }
@@ -120,13 +125,13 @@ func TriggerControlCommandTypeByName(value string) (enum TriggerControlCommandTy
 	return 0, false
 }
 
-func TriggerControlCommandTypeKnows(value uint8)  bool {
+func TriggerControlCommandTypeKnows(value uint8) bool {
 	for _, typeValue := range TriggerControlCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTriggerControlCommandType(structType interface{}) TriggerControlCommandType {
@@ -196,4 +201,3 @@ func (e TriggerControlCommandType) PLC4XEnumName() string {
 func (e TriggerControlCommandType) String() string {
 	return e.PLC4XEnumName()
 }
-

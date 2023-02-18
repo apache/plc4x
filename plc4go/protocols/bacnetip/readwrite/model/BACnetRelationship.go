@@ -34,45 +34,45 @@ type IBACnetRelationship interface {
 	utils.Serializable
 }
 
-const(
-	BACnetRelationship_UNKNOWN BACnetRelationship = 0
-	BACnetRelationship_DEFAULT BACnetRelationship = 1
-	BACnetRelationship_CONTAINS BACnetRelationship = 2
-	BACnetRelationship_CONTAINED_BY BACnetRelationship = 3
-	BACnetRelationship_USES BACnetRelationship = 4
-	BACnetRelationship_USED_BY BACnetRelationship = 5
-	BACnetRelationship_COMMANDS BACnetRelationship = 6
-	BACnetRelationship_COMMANDED_BY BACnetRelationship = 7
-	BACnetRelationship_ADJUSTS BACnetRelationship = 8
-	BACnetRelationship_ADJUSTED_BY BACnetRelationship = 9
-	BACnetRelationship_INGRESS BACnetRelationship = 10
-	BACnetRelationship_EGRESS BACnetRelationship = 11
-	BACnetRelationship_SUPPLIES_AIR BACnetRelationship = 12
-	BACnetRelationship_RECEIVES_AIR BACnetRelationship = 13
-	BACnetRelationship_SUPPLIES_HOT_AIR BACnetRelationship = 14
-	BACnetRelationship_RECEIVES_HOT_AIR BACnetRelationship = 15
-	BACnetRelationship_SUPPLIES_COOL_AIR BACnetRelationship = 16
-	BACnetRelationship_RECEIVES_COOL_AIR BACnetRelationship = 17
-	BACnetRelationship_SUPPLIES_POWER BACnetRelationship = 18
-	BACnetRelationship_RECEIVES_POWER BACnetRelationship = 19
-	BACnetRelationship_SUPPLIES_GAS BACnetRelationship = 20
-	BACnetRelationship_RECEIVES_GAS BACnetRelationship = 21
-	BACnetRelationship_SUPPLIES_WATER BACnetRelationship = 22
-	BACnetRelationship_RECEIVES_WATER BACnetRelationship = 23
-	BACnetRelationship_SUPPLIES_HOT_WATER BACnetRelationship = 24
-	BACnetRelationship_RECEIVES_HOT_WATER BACnetRelationship = 25
-	BACnetRelationship_SUPPLIES_COOL_WATER BACnetRelationship = 26
-	BACnetRelationship_RECEIVES_COOL_WATER BACnetRelationship = 27
-	BACnetRelationship_SUPPLIES_STEAM BACnetRelationship = 28
-	BACnetRelationship_RECEIVES_STEAM BACnetRelationship = 29
-	BACnetRelationship_VENDOR_PROPRIETARY_VALUE BACnetRelationship = 0XFFFF
+const (
+	BACnetRelationship_UNKNOWN                  BACnetRelationship = 0
+	BACnetRelationship_DEFAULT                  BACnetRelationship = 1
+	BACnetRelationship_CONTAINS                 BACnetRelationship = 2
+	BACnetRelationship_CONTAINED_BY             BACnetRelationship = 3
+	BACnetRelationship_USES                     BACnetRelationship = 4
+	BACnetRelationship_USED_BY                  BACnetRelationship = 5
+	BACnetRelationship_COMMANDS                 BACnetRelationship = 6
+	BACnetRelationship_COMMANDED_BY             BACnetRelationship = 7
+	BACnetRelationship_ADJUSTS                  BACnetRelationship = 8
+	BACnetRelationship_ADJUSTED_BY              BACnetRelationship = 9
+	BACnetRelationship_INGRESS                  BACnetRelationship = 10
+	BACnetRelationship_EGRESS                   BACnetRelationship = 11
+	BACnetRelationship_SUPPLIES_AIR             BACnetRelationship = 12
+	BACnetRelationship_RECEIVES_AIR             BACnetRelationship = 13
+	BACnetRelationship_SUPPLIES_HOT_AIR         BACnetRelationship = 14
+	BACnetRelationship_RECEIVES_HOT_AIR         BACnetRelationship = 15
+	BACnetRelationship_SUPPLIES_COOL_AIR        BACnetRelationship = 16
+	BACnetRelationship_RECEIVES_COOL_AIR        BACnetRelationship = 17
+	BACnetRelationship_SUPPLIES_POWER           BACnetRelationship = 18
+	BACnetRelationship_RECEIVES_POWER           BACnetRelationship = 19
+	BACnetRelationship_SUPPLIES_GAS             BACnetRelationship = 20
+	BACnetRelationship_RECEIVES_GAS             BACnetRelationship = 21
+	BACnetRelationship_SUPPLIES_WATER           BACnetRelationship = 22
+	BACnetRelationship_RECEIVES_WATER           BACnetRelationship = 23
+	BACnetRelationship_SUPPLIES_HOT_WATER       BACnetRelationship = 24
+	BACnetRelationship_RECEIVES_HOT_WATER       BACnetRelationship = 25
+	BACnetRelationship_SUPPLIES_COOL_WATER      BACnetRelationship = 26
+	BACnetRelationship_RECEIVES_COOL_WATER      BACnetRelationship = 27
+	BACnetRelationship_SUPPLIES_STEAM           BACnetRelationship = 28
+	BACnetRelationship_RECEIVES_STEAM           BACnetRelationship = 29
+	BACnetRelationship_VENDOR_PROPRIETARY_VALUE BACnetRelationship = 0xFFFF
 )
 
 var BACnetRelationshipValues []BACnetRelationship
 
 func init() {
 	_ = errors.New
-	BACnetRelationshipValues = []BACnetRelationship {
+	BACnetRelationshipValues = []BACnetRelationship{
 		BACnetRelationship_UNKNOWN,
 		BACnetRelationship_DEFAULT,
 		BACnetRelationship_CONTAINS,
@@ -109,68 +109,68 @@ func init() {
 
 func BACnetRelationshipByValue(value uint16) (enum BACnetRelationship, ok bool) {
 	switch value {
-		case 0:
-			return BACnetRelationship_UNKNOWN, true
-		case 0XFFFF:
-			return BACnetRelationship_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetRelationship_DEFAULT, true
-		case 10:
-			return BACnetRelationship_INGRESS, true
-		case 11:
-			return BACnetRelationship_EGRESS, true
-		case 12:
-			return BACnetRelationship_SUPPLIES_AIR, true
-		case 13:
-			return BACnetRelationship_RECEIVES_AIR, true
-		case 14:
-			return BACnetRelationship_SUPPLIES_HOT_AIR, true
-		case 15:
-			return BACnetRelationship_RECEIVES_HOT_AIR, true
-		case 16:
-			return BACnetRelationship_SUPPLIES_COOL_AIR, true
-		case 17:
-			return BACnetRelationship_RECEIVES_COOL_AIR, true
-		case 18:
-			return BACnetRelationship_SUPPLIES_POWER, true
-		case 19:
-			return BACnetRelationship_RECEIVES_POWER, true
-		case 2:
-			return BACnetRelationship_CONTAINS, true
-		case 20:
-			return BACnetRelationship_SUPPLIES_GAS, true
-		case 21:
-			return BACnetRelationship_RECEIVES_GAS, true
-		case 22:
-			return BACnetRelationship_SUPPLIES_WATER, true
-		case 23:
-			return BACnetRelationship_RECEIVES_WATER, true
-		case 24:
-			return BACnetRelationship_SUPPLIES_HOT_WATER, true
-		case 25:
-			return BACnetRelationship_RECEIVES_HOT_WATER, true
-		case 26:
-			return BACnetRelationship_SUPPLIES_COOL_WATER, true
-		case 27:
-			return BACnetRelationship_RECEIVES_COOL_WATER, true
-		case 28:
-			return BACnetRelationship_SUPPLIES_STEAM, true
-		case 29:
-			return BACnetRelationship_RECEIVES_STEAM, true
-		case 3:
-			return BACnetRelationship_CONTAINED_BY, true
-		case 4:
-			return BACnetRelationship_USES, true
-		case 5:
-			return BACnetRelationship_USED_BY, true
-		case 6:
-			return BACnetRelationship_COMMANDS, true
-		case 7:
-			return BACnetRelationship_COMMANDED_BY, true
-		case 8:
-			return BACnetRelationship_ADJUSTS, true
-		case 9:
-			return BACnetRelationship_ADJUSTED_BY, true
+	case 0:
+		return BACnetRelationship_UNKNOWN, true
+	case 0xFFFF:
+		return BACnetRelationship_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetRelationship_DEFAULT, true
+	case 10:
+		return BACnetRelationship_INGRESS, true
+	case 11:
+		return BACnetRelationship_EGRESS, true
+	case 12:
+		return BACnetRelationship_SUPPLIES_AIR, true
+	case 13:
+		return BACnetRelationship_RECEIVES_AIR, true
+	case 14:
+		return BACnetRelationship_SUPPLIES_HOT_AIR, true
+	case 15:
+		return BACnetRelationship_RECEIVES_HOT_AIR, true
+	case 16:
+		return BACnetRelationship_SUPPLIES_COOL_AIR, true
+	case 17:
+		return BACnetRelationship_RECEIVES_COOL_AIR, true
+	case 18:
+		return BACnetRelationship_SUPPLIES_POWER, true
+	case 19:
+		return BACnetRelationship_RECEIVES_POWER, true
+	case 2:
+		return BACnetRelationship_CONTAINS, true
+	case 20:
+		return BACnetRelationship_SUPPLIES_GAS, true
+	case 21:
+		return BACnetRelationship_RECEIVES_GAS, true
+	case 22:
+		return BACnetRelationship_SUPPLIES_WATER, true
+	case 23:
+		return BACnetRelationship_RECEIVES_WATER, true
+	case 24:
+		return BACnetRelationship_SUPPLIES_HOT_WATER, true
+	case 25:
+		return BACnetRelationship_RECEIVES_HOT_WATER, true
+	case 26:
+		return BACnetRelationship_SUPPLIES_COOL_WATER, true
+	case 27:
+		return BACnetRelationship_RECEIVES_COOL_WATER, true
+	case 28:
+		return BACnetRelationship_SUPPLIES_STEAM, true
+	case 29:
+		return BACnetRelationship_RECEIVES_STEAM, true
+	case 3:
+		return BACnetRelationship_CONTAINED_BY, true
+	case 4:
+		return BACnetRelationship_USES, true
+	case 5:
+		return BACnetRelationship_USED_BY, true
+	case 6:
+		return BACnetRelationship_COMMANDS, true
+	case 7:
+		return BACnetRelationship_COMMANDED_BY, true
+	case 8:
+		return BACnetRelationship_ADJUSTS, true
+	case 9:
+		return BACnetRelationship_ADJUSTED_BY, true
 	}
 	return 0, false
 }
@@ -243,13 +243,13 @@ func BACnetRelationshipByName(value string) (enum BACnetRelationship, ok bool) {
 	return 0, false
 }
 
-func BACnetRelationshipKnows(value uint16)  bool {
+func BACnetRelationshipKnows(value uint16) bool {
 	for _, typeValue := range BACnetRelationshipValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetRelationship(structType interface{}) BACnetRelationship {
@@ -371,4 +371,3 @@ func (e BACnetRelationship) PLC4XEnumName() string {
 func (e BACnetRelationship) String() string {
 	return e.PLC4XEnumName()
 }
-

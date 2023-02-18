@@ -34,26 +34,26 @@ type IHVACType interface {
 	utils.Serializable
 }
 
-const(
-	HVACType_NONE HVACType = 0x00
-	HVACType_FURNACE_GAS_OIL_ELECTRIC HVACType = 0x01
-	HVACType_EVAPORATIVE HVACType = 0x02
-	HVACType_HEAT_PUMP_REVERSE_CYCLE HVACType = 0x03
-	HVACType_HEAT_PUMP_HEATING_ONLY HVACType = 0x04
-	HVACType_HEAT_PUMP_COOLING_ONLY HVACType = 0x05
-	HVACType_FURNANCE_EVAP_COOLING HVACType = 0x06
+const (
+	HVACType_NONE                            HVACType = 0x00
+	HVACType_FURNACE_GAS_OIL_ELECTRIC        HVACType = 0x01
+	HVACType_EVAPORATIVE                     HVACType = 0x02
+	HVACType_HEAT_PUMP_REVERSE_CYCLE         HVACType = 0x03
+	HVACType_HEAT_PUMP_HEATING_ONLY          HVACType = 0x04
+	HVACType_HEAT_PUMP_COOLING_ONLY          HVACType = 0x05
+	HVACType_FURNANCE_EVAP_COOLING           HVACType = 0x06
 	HVACType_FURNANCE_HEAT_PUMP_COOLING_ONLY HVACType = 0x07
-	HVACType_HYDRONIC HVACType = 0x08
+	HVACType_HYDRONIC                        HVACType = 0x08
 	HVACType_HYDRONIC_HEAT_PUMP_COOLING_ONLY HVACType = 0x09
-	HVACType_HYDRONIC_EVAPORATIVE HVACType = 0x0A
-	HVACType_ANY HVACType = 0xFF
+	HVACType_HYDRONIC_EVAPORATIVE            HVACType = 0x0A
+	HVACType_ANY                             HVACType = 0xFF
 )
 
 var HVACTypeValues []HVACType
 
 func init() {
 	_ = errors.New
-	HVACTypeValues = []HVACType {
+	HVACTypeValues = []HVACType{
 		HVACType_NONE,
 		HVACType_FURNACE_GAS_OIL_ELECTRIC,
 		HVACType_EVAPORATIVE,
@@ -71,30 +71,30 @@ func init() {
 
 func HVACTypeByValue(value uint8) (enum HVACType, ok bool) {
 	switch value {
-		case 0x00:
-			return HVACType_NONE, true
-		case 0x01:
-			return HVACType_FURNACE_GAS_OIL_ELECTRIC, true
-		case 0x02:
-			return HVACType_EVAPORATIVE, true
-		case 0x03:
-			return HVACType_HEAT_PUMP_REVERSE_CYCLE, true
-		case 0x04:
-			return HVACType_HEAT_PUMP_HEATING_ONLY, true
-		case 0x05:
-			return HVACType_HEAT_PUMP_COOLING_ONLY, true
-		case 0x06:
-			return HVACType_FURNANCE_EVAP_COOLING, true
-		case 0x07:
-			return HVACType_FURNANCE_HEAT_PUMP_COOLING_ONLY, true
-		case 0x08:
-			return HVACType_HYDRONIC, true
-		case 0x09:
-			return HVACType_HYDRONIC_HEAT_PUMP_COOLING_ONLY, true
-		case 0x0A:
-			return HVACType_HYDRONIC_EVAPORATIVE, true
-		case 0xFF:
-			return HVACType_ANY, true
+	case 0x00:
+		return HVACType_NONE, true
+	case 0x01:
+		return HVACType_FURNACE_GAS_OIL_ELECTRIC, true
+	case 0x02:
+		return HVACType_EVAPORATIVE, true
+	case 0x03:
+		return HVACType_HEAT_PUMP_REVERSE_CYCLE, true
+	case 0x04:
+		return HVACType_HEAT_PUMP_HEATING_ONLY, true
+	case 0x05:
+		return HVACType_HEAT_PUMP_COOLING_ONLY, true
+	case 0x06:
+		return HVACType_FURNANCE_EVAP_COOLING, true
+	case 0x07:
+		return HVACType_FURNANCE_HEAT_PUMP_COOLING_ONLY, true
+	case 0x08:
+		return HVACType_HYDRONIC, true
+	case 0x09:
+		return HVACType_HYDRONIC_HEAT_PUMP_COOLING_ONLY, true
+	case 0x0A:
+		return HVACType_HYDRONIC_EVAPORATIVE, true
+	case 0xFF:
+		return HVACType_ANY, true
 	}
 	return 0, false
 }
@@ -129,13 +129,13 @@ func HVACTypeByName(value string) (enum HVACType, ok bool) {
 	return 0, false
 }
 
-func HVACTypeKnows(value uint8)  bool {
+func HVACTypeKnows(value uint8) bool {
 	for _, typeValue := range HVACTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastHVACType(structType interface{}) HVACType {
@@ -219,4 +219,3 @@ func (e HVACType) PLC4XEnumName() string {
 func (e HVACType) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -36,73 +36,73 @@ type ISecurityCommandTypeContainer interface {
 	CommandType() SecurityCommandType
 }
 
-const(
-	SecurityCommandTypeContainer_SecurityCommandOff_0Bytes SecurityCommandTypeContainer = 0x00
-	SecurityCommandTypeContainer_SecurityCommandOff_1Bytes SecurityCommandTypeContainer = 0x01
-	SecurityCommandTypeContainer_SecurityCommandOff_2Bytes SecurityCommandTypeContainer = 0x02
-	SecurityCommandTypeContainer_SecurityCommandOff_3Bytes SecurityCommandTypeContainer = 0x03
-	SecurityCommandTypeContainer_SecurityCommandOff_4Bytes SecurityCommandTypeContainer = 0x04
-	SecurityCommandTypeContainer_SecurityCommandOff_5Bytes SecurityCommandTypeContainer = 0x05
-	SecurityCommandTypeContainer_SecurityCommandOff_6Bytes SecurityCommandTypeContainer = 0x06
-	SecurityCommandTypeContainer_SecurityCommandOff_7Bytes SecurityCommandTypeContainer = 0x07
-	SecurityCommandTypeContainer_SecurityCommandEvent_0Bytes SecurityCommandTypeContainer = 0x08
-	SecurityCommandTypeContainer_SecurityCommandEvent_1Bytes SecurityCommandTypeContainer = 0x09
-	SecurityCommandTypeContainer_SecurityCommandEvent_2Bytes SecurityCommandTypeContainer = 0x0A
-	SecurityCommandTypeContainer_SecurityCommandEvent_3Bytes SecurityCommandTypeContainer = 0x0B
-	SecurityCommandTypeContainer_SecurityCommandEvent_4Bytes SecurityCommandTypeContainer = 0x0C
-	SecurityCommandTypeContainer_SecurityCommandEvent_5Bytes SecurityCommandTypeContainer = 0x0D
-	SecurityCommandTypeContainer_SecurityCommandEvent_6Bytes SecurityCommandTypeContainer = 0x0E
-	SecurityCommandTypeContainer_SecurityCommandEvent_7Bytes SecurityCommandTypeContainer = 0x0F
-	SecurityCommandTypeContainer_SecurityCommandOn_0Bytes SecurityCommandTypeContainer = 0x78
-	SecurityCommandTypeContainer_SecurityCommandOn_1Bytes SecurityCommandTypeContainer = 0x79
-	SecurityCommandTypeContainer_SecurityCommandOn_2Bytes SecurityCommandTypeContainer = 0x7A
-	SecurityCommandTypeContainer_SecurityCommandOn_3Bytes SecurityCommandTypeContainer = 0x7B
-	SecurityCommandTypeContainer_SecurityCommandOn_4Bytes SecurityCommandTypeContainer = 0x7C
-	SecurityCommandTypeContainer_SecurityCommandOn_5Bytes SecurityCommandTypeContainer = 0x7D
-	SecurityCommandTypeContainer_SecurityCommandOn_6Bytes SecurityCommandTypeContainer = 0x7E
-	SecurityCommandTypeContainer_SecurityCommandOn_7Bytes SecurityCommandTypeContainer = 0x7F
-	SecurityCommandTypeContainer_SecurityCommandLongOff_0Bytes SecurityCommandTypeContainer = 0x80
-	SecurityCommandTypeContainer_SecurityCommandLongOff_1Bytes SecurityCommandTypeContainer = 0x81
-	SecurityCommandTypeContainer_SecurityCommandLongOff_2Bytes SecurityCommandTypeContainer = 0x82
-	SecurityCommandTypeContainer_SecurityCommandLongOff_3Bytes SecurityCommandTypeContainer = 0x83
-	SecurityCommandTypeContainer_SecurityCommandLongOff_4Bytes SecurityCommandTypeContainer = 0x84
-	SecurityCommandTypeContainer_SecurityCommandLongOff_5Bytes SecurityCommandTypeContainer = 0x85
-	SecurityCommandTypeContainer_SecurityCommandLongOff_6Bytes SecurityCommandTypeContainer = 0x86
-	SecurityCommandTypeContainer_SecurityCommandLongOff_7Bytes SecurityCommandTypeContainer = 0x87
-	SecurityCommandTypeContainer_SecurityCommandLongOff_8Bytes SecurityCommandTypeContainer = 0x88
-	SecurityCommandTypeContainer_SecurityCommandLongOff_9Bytes SecurityCommandTypeContainer = 0x89
-	SecurityCommandTypeContainer_SecurityCommandLongOff_10Bytes SecurityCommandTypeContainer = 0x8A
-	SecurityCommandTypeContainer_SecurityCommandLongOff_11Bytes SecurityCommandTypeContainer = 0x8B
-	SecurityCommandTypeContainer_SecurityCommandLongOff_12Bytes SecurityCommandTypeContainer = 0x8C
-	SecurityCommandTypeContainer_SecurityCommandLongOff_13Bytes SecurityCommandTypeContainer = 0x8D
-	SecurityCommandTypeContainer_SecurityCommandLongOff_14Bytes SecurityCommandTypeContainer = 0x8E
-	SecurityCommandTypeContainer_SecurityCommandLongOff_15Bytes SecurityCommandTypeContainer = 0x8F
-	SecurityCommandTypeContainer_SecurityCommandLongOff_16Bytes SecurityCommandTypeContainer = 0x90
-	SecurityCommandTypeContainer_SecurityCommandLongOff_17Bytes SecurityCommandTypeContainer = 0x91
-	SecurityCommandTypeContainer_SecurityCommandLongOff_18Bytes SecurityCommandTypeContainer = 0x92
-	SecurityCommandTypeContainer_SecurityCommandLongOff_19Bytes SecurityCommandTypeContainer = 0x93
-	SecurityCommandTypeContainer_SecurityCommandLongOff_20Bytes SecurityCommandTypeContainer = 0x94
-	SecurityCommandTypeContainer_SecurityCommandLongOff_21Bytes SecurityCommandTypeContainer = 0x95
-	SecurityCommandTypeContainer_SecurityCommandLongOff_22Bytes SecurityCommandTypeContainer = 0x96
-	SecurityCommandTypeContainer_SecurityCommandLongOff_23Bytes SecurityCommandTypeContainer = 0x97
-	SecurityCommandTypeContainer_SecurityCommandLongOff_24Bytes SecurityCommandTypeContainer = 0x98
-	SecurityCommandTypeContainer_SecurityCommandLongOff_25Bytes SecurityCommandTypeContainer = 0x99
-	SecurityCommandTypeContainer_SecurityCommandLongOff_26Bytes SecurityCommandTypeContainer = 0x9A
-	SecurityCommandTypeContainer_SecurityCommandLongOff_27Bytes SecurityCommandTypeContainer = 0x9B
-	SecurityCommandTypeContainer_SecurityCommandLongOff_28Bytes SecurityCommandTypeContainer = 0x9C
-	SecurityCommandTypeContainer_SecurityCommandLongOff_29Bytes SecurityCommandTypeContainer = 0x9D
-	SecurityCommandTypeContainer_SecurityCommandLongOff_30Bytes SecurityCommandTypeContainer = 0x9E
-	SecurityCommandTypeContainer_SecurityCommandLongOff_31Bytes SecurityCommandTypeContainer = 0x9F
-	SecurityCommandTypeContainer_SecurityCommandLongEvent_0Bytes SecurityCommandTypeContainer = 0xA0
-	SecurityCommandTypeContainer_SecurityCommandLongEvent_1Bytes SecurityCommandTypeContainer = 0xA1
-	SecurityCommandTypeContainer_SecurityCommandLongEvent_2Bytes SecurityCommandTypeContainer = 0xA2
-	SecurityCommandTypeContainer_SecurityCommandLongEvent_3Bytes SecurityCommandTypeContainer = 0xA3
-	SecurityCommandTypeContainer_SecurityCommandLongEvent_4Bytes SecurityCommandTypeContainer = 0xA4
-	SecurityCommandTypeContainer_SecurityCommandLongEvent_5Bytes SecurityCommandTypeContainer = 0xA5
-	SecurityCommandTypeContainer_SecurityCommandLongEvent_6Bytes SecurityCommandTypeContainer = 0xA6
-	SecurityCommandTypeContainer_SecurityCommandLongEvent_7Bytes SecurityCommandTypeContainer = 0xA7
-	SecurityCommandTypeContainer_SecurityCommandLongEvent_8Bytes SecurityCommandTypeContainer = 0xA8
-	SecurityCommandTypeContainer_SecurityCommandLongEvent_9Bytes SecurityCommandTypeContainer = 0xA9
+const (
+	SecurityCommandTypeContainer_SecurityCommandOff_0Bytes        SecurityCommandTypeContainer = 0x00
+	SecurityCommandTypeContainer_SecurityCommandOff_1Bytes        SecurityCommandTypeContainer = 0x01
+	SecurityCommandTypeContainer_SecurityCommandOff_2Bytes        SecurityCommandTypeContainer = 0x02
+	SecurityCommandTypeContainer_SecurityCommandOff_3Bytes        SecurityCommandTypeContainer = 0x03
+	SecurityCommandTypeContainer_SecurityCommandOff_4Bytes        SecurityCommandTypeContainer = 0x04
+	SecurityCommandTypeContainer_SecurityCommandOff_5Bytes        SecurityCommandTypeContainer = 0x05
+	SecurityCommandTypeContainer_SecurityCommandOff_6Bytes        SecurityCommandTypeContainer = 0x06
+	SecurityCommandTypeContainer_SecurityCommandOff_7Bytes        SecurityCommandTypeContainer = 0x07
+	SecurityCommandTypeContainer_SecurityCommandEvent_0Bytes      SecurityCommandTypeContainer = 0x08
+	SecurityCommandTypeContainer_SecurityCommandEvent_1Bytes      SecurityCommandTypeContainer = 0x09
+	SecurityCommandTypeContainer_SecurityCommandEvent_2Bytes      SecurityCommandTypeContainer = 0x0A
+	SecurityCommandTypeContainer_SecurityCommandEvent_3Bytes      SecurityCommandTypeContainer = 0x0B
+	SecurityCommandTypeContainer_SecurityCommandEvent_4Bytes      SecurityCommandTypeContainer = 0x0C
+	SecurityCommandTypeContainer_SecurityCommandEvent_5Bytes      SecurityCommandTypeContainer = 0x0D
+	SecurityCommandTypeContainer_SecurityCommandEvent_6Bytes      SecurityCommandTypeContainer = 0x0E
+	SecurityCommandTypeContainer_SecurityCommandEvent_7Bytes      SecurityCommandTypeContainer = 0x0F
+	SecurityCommandTypeContainer_SecurityCommandOn_0Bytes         SecurityCommandTypeContainer = 0x78
+	SecurityCommandTypeContainer_SecurityCommandOn_1Bytes         SecurityCommandTypeContainer = 0x79
+	SecurityCommandTypeContainer_SecurityCommandOn_2Bytes         SecurityCommandTypeContainer = 0x7A
+	SecurityCommandTypeContainer_SecurityCommandOn_3Bytes         SecurityCommandTypeContainer = 0x7B
+	SecurityCommandTypeContainer_SecurityCommandOn_4Bytes         SecurityCommandTypeContainer = 0x7C
+	SecurityCommandTypeContainer_SecurityCommandOn_5Bytes         SecurityCommandTypeContainer = 0x7D
+	SecurityCommandTypeContainer_SecurityCommandOn_6Bytes         SecurityCommandTypeContainer = 0x7E
+	SecurityCommandTypeContainer_SecurityCommandOn_7Bytes         SecurityCommandTypeContainer = 0x7F
+	SecurityCommandTypeContainer_SecurityCommandLongOff_0Bytes    SecurityCommandTypeContainer = 0x80
+	SecurityCommandTypeContainer_SecurityCommandLongOff_1Bytes    SecurityCommandTypeContainer = 0x81
+	SecurityCommandTypeContainer_SecurityCommandLongOff_2Bytes    SecurityCommandTypeContainer = 0x82
+	SecurityCommandTypeContainer_SecurityCommandLongOff_3Bytes    SecurityCommandTypeContainer = 0x83
+	SecurityCommandTypeContainer_SecurityCommandLongOff_4Bytes    SecurityCommandTypeContainer = 0x84
+	SecurityCommandTypeContainer_SecurityCommandLongOff_5Bytes    SecurityCommandTypeContainer = 0x85
+	SecurityCommandTypeContainer_SecurityCommandLongOff_6Bytes    SecurityCommandTypeContainer = 0x86
+	SecurityCommandTypeContainer_SecurityCommandLongOff_7Bytes    SecurityCommandTypeContainer = 0x87
+	SecurityCommandTypeContainer_SecurityCommandLongOff_8Bytes    SecurityCommandTypeContainer = 0x88
+	SecurityCommandTypeContainer_SecurityCommandLongOff_9Bytes    SecurityCommandTypeContainer = 0x89
+	SecurityCommandTypeContainer_SecurityCommandLongOff_10Bytes   SecurityCommandTypeContainer = 0x8A
+	SecurityCommandTypeContainer_SecurityCommandLongOff_11Bytes   SecurityCommandTypeContainer = 0x8B
+	SecurityCommandTypeContainer_SecurityCommandLongOff_12Bytes   SecurityCommandTypeContainer = 0x8C
+	SecurityCommandTypeContainer_SecurityCommandLongOff_13Bytes   SecurityCommandTypeContainer = 0x8D
+	SecurityCommandTypeContainer_SecurityCommandLongOff_14Bytes   SecurityCommandTypeContainer = 0x8E
+	SecurityCommandTypeContainer_SecurityCommandLongOff_15Bytes   SecurityCommandTypeContainer = 0x8F
+	SecurityCommandTypeContainer_SecurityCommandLongOff_16Bytes   SecurityCommandTypeContainer = 0x90
+	SecurityCommandTypeContainer_SecurityCommandLongOff_17Bytes   SecurityCommandTypeContainer = 0x91
+	SecurityCommandTypeContainer_SecurityCommandLongOff_18Bytes   SecurityCommandTypeContainer = 0x92
+	SecurityCommandTypeContainer_SecurityCommandLongOff_19Bytes   SecurityCommandTypeContainer = 0x93
+	SecurityCommandTypeContainer_SecurityCommandLongOff_20Bytes   SecurityCommandTypeContainer = 0x94
+	SecurityCommandTypeContainer_SecurityCommandLongOff_21Bytes   SecurityCommandTypeContainer = 0x95
+	SecurityCommandTypeContainer_SecurityCommandLongOff_22Bytes   SecurityCommandTypeContainer = 0x96
+	SecurityCommandTypeContainer_SecurityCommandLongOff_23Bytes   SecurityCommandTypeContainer = 0x97
+	SecurityCommandTypeContainer_SecurityCommandLongOff_24Bytes   SecurityCommandTypeContainer = 0x98
+	SecurityCommandTypeContainer_SecurityCommandLongOff_25Bytes   SecurityCommandTypeContainer = 0x99
+	SecurityCommandTypeContainer_SecurityCommandLongOff_26Bytes   SecurityCommandTypeContainer = 0x9A
+	SecurityCommandTypeContainer_SecurityCommandLongOff_27Bytes   SecurityCommandTypeContainer = 0x9B
+	SecurityCommandTypeContainer_SecurityCommandLongOff_28Bytes   SecurityCommandTypeContainer = 0x9C
+	SecurityCommandTypeContainer_SecurityCommandLongOff_29Bytes   SecurityCommandTypeContainer = 0x9D
+	SecurityCommandTypeContainer_SecurityCommandLongOff_30Bytes   SecurityCommandTypeContainer = 0x9E
+	SecurityCommandTypeContainer_SecurityCommandLongOff_31Bytes   SecurityCommandTypeContainer = 0x9F
+	SecurityCommandTypeContainer_SecurityCommandLongEvent_0Bytes  SecurityCommandTypeContainer = 0xA0
+	SecurityCommandTypeContainer_SecurityCommandLongEvent_1Bytes  SecurityCommandTypeContainer = 0xA1
+	SecurityCommandTypeContainer_SecurityCommandLongEvent_2Bytes  SecurityCommandTypeContainer = 0xA2
+	SecurityCommandTypeContainer_SecurityCommandLongEvent_3Bytes  SecurityCommandTypeContainer = 0xA3
+	SecurityCommandTypeContainer_SecurityCommandLongEvent_4Bytes  SecurityCommandTypeContainer = 0xA4
+	SecurityCommandTypeContainer_SecurityCommandLongEvent_5Bytes  SecurityCommandTypeContainer = 0xA5
+	SecurityCommandTypeContainer_SecurityCommandLongEvent_6Bytes  SecurityCommandTypeContainer = 0xA6
+	SecurityCommandTypeContainer_SecurityCommandLongEvent_7Bytes  SecurityCommandTypeContainer = 0xA7
+	SecurityCommandTypeContainer_SecurityCommandLongEvent_8Bytes  SecurityCommandTypeContainer = 0xA8
+	SecurityCommandTypeContainer_SecurityCommandLongEvent_9Bytes  SecurityCommandTypeContainer = 0xA9
 	SecurityCommandTypeContainer_SecurityCommandLongEvent_10Bytes SecurityCommandTypeContainer = 0xAA
 	SecurityCommandTypeContainer_SecurityCommandLongEvent_11Bytes SecurityCommandTypeContainer = 0xAB
 	SecurityCommandTypeContainer_SecurityCommandLongEvent_12Bytes SecurityCommandTypeContainer = 0xAC
@@ -125,45 +125,45 @@ const(
 	SecurityCommandTypeContainer_SecurityCommandLongEvent_29Bytes SecurityCommandTypeContainer = 0xBD
 	SecurityCommandTypeContainer_SecurityCommandLongEvent_30Bytes SecurityCommandTypeContainer = 0xBE
 	SecurityCommandTypeContainer_SecurityCommandLongEvent_31Bytes SecurityCommandTypeContainer = 0xBF
-	SecurityCommandTypeContainer_SecurityCommandLongOn_0Bytes SecurityCommandTypeContainer = 0xE0
-	SecurityCommandTypeContainer_SecurityCommandLongOn_1Bytes SecurityCommandTypeContainer = 0xE1
-	SecurityCommandTypeContainer_SecurityCommandLongOn_2Bytes SecurityCommandTypeContainer = 0xE2
-	SecurityCommandTypeContainer_SecurityCommandLongOn_3Bytes SecurityCommandTypeContainer = 0xE3
-	SecurityCommandTypeContainer_SecurityCommandLongOn_4Bytes SecurityCommandTypeContainer = 0xE4
-	SecurityCommandTypeContainer_SecurityCommandLongOn_5Bytes SecurityCommandTypeContainer = 0xE5
-	SecurityCommandTypeContainer_SecurityCommandLongOn_6Bytes SecurityCommandTypeContainer = 0xE6
-	SecurityCommandTypeContainer_SecurityCommandLongOn_7Bytes SecurityCommandTypeContainer = 0xE7
-	SecurityCommandTypeContainer_SecurityCommandLongOn_8Bytes SecurityCommandTypeContainer = 0xE8
-	SecurityCommandTypeContainer_SecurityCommandLongOn_9Bytes SecurityCommandTypeContainer = 0xE9
-	SecurityCommandTypeContainer_SecurityCommandLongOn_10Bytes SecurityCommandTypeContainer = 0xEA
-	SecurityCommandTypeContainer_SecurityCommandLongOn_11Bytes SecurityCommandTypeContainer = 0xEB
-	SecurityCommandTypeContainer_SecurityCommandLongOn_12Bytes SecurityCommandTypeContainer = 0xEC
-	SecurityCommandTypeContainer_SecurityCommandLongOn_13Bytes SecurityCommandTypeContainer = 0xED
-	SecurityCommandTypeContainer_SecurityCommandLongOn_14Bytes SecurityCommandTypeContainer = 0xEE
-	SecurityCommandTypeContainer_SecurityCommandLongOn_15Bytes SecurityCommandTypeContainer = 0xEF
-	SecurityCommandTypeContainer_SecurityCommandLongOn_16Bytes SecurityCommandTypeContainer = 0xF0
-	SecurityCommandTypeContainer_SecurityCommandLongOn_17Bytes SecurityCommandTypeContainer = 0xF1
-	SecurityCommandTypeContainer_SecurityCommandLongOn_18Bytes SecurityCommandTypeContainer = 0xF2
-	SecurityCommandTypeContainer_SecurityCommandLongOn_19Bytes SecurityCommandTypeContainer = 0xF3
-	SecurityCommandTypeContainer_SecurityCommandLongOn_20Bytes SecurityCommandTypeContainer = 0xF4
-	SecurityCommandTypeContainer_SecurityCommandLongOn_21Bytes SecurityCommandTypeContainer = 0xF5
-	SecurityCommandTypeContainer_SecurityCommandLongOn_22Bytes SecurityCommandTypeContainer = 0xF6
-	SecurityCommandTypeContainer_SecurityCommandLongOn_23Bytes SecurityCommandTypeContainer = 0xF7
-	SecurityCommandTypeContainer_SecurityCommandLongOn_24Bytes SecurityCommandTypeContainer = 0xF8
-	SecurityCommandTypeContainer_SecurityCommandLongOn_25Bytes SecurityCommandTypeContainer = 0xF9
-	SecurityCommandTypeContainer_SecurityCommandLongOn_26Bytes SecurityCommandTypeContainer = 0xFA
-	SecurityCommandTypeContainer_SecurityCommandLongOn_27Bytes SecurityCommandTypeContainer = 0xFB
-	SecurityCommandTypeContainer_SecurityCommandLongOn_28Bytes SecurityCommandTypeContainer = 0xFC
-	SecurityCommandTypeContainer_SecurityCommandLongOn_29Bytes SecurityCommandTypeContainer = 0xFD
-	SecurityCommandTypeContainer_SecurityCommandLongOn_30Bytes SecurityCommandTypeContainer = 0xFE
-	SecurityCommandTypeContainer_SecurityCommandLongOn_31Bytes SecurityCommandTypeContainer = 0xFF
+	SecurityCommandTypeContainer_SecurityCommandLongOn_0Bytes     SecurityCommandTypeContainer = 0xE0
+	SecurityCommandTypeContainer_SecurityCommandLongOn_1Bytes     SecurityCommandTypeContainer = 0xE1
+	SecurityCommandTypeContainer_SecurityCommandLongOn_2Bytes     SecurityCommandTypeContainer = 0xE2
+	SecurityCommandTypeContainer_SecurityCommandLongOn_3Bytes     SecurityCommandTypeContainer = 0xE3
+	SecurityCommandTypeContainer_SecurityCommandLongOn_4Bytes     SecurityCommandTypeContainer = 0xE4
+	SecurityCommandTypeContainer_SecurityCommandLongOn_5Bytes     SecurityCommandTypeContainer = 0xE5
+	SecurityCommandTypeContainer_SecurityCommandLongOn_6Bytes     SecurityCommandTypeContainer = 0xE6
+	SecurityCommandTypeContainer_SecurityCommandLongOn_7Bytes     SecurityCommandTypeContainer = 0xE7
+	SecurityCommandTypeContainer_SecurityCommandLongOn_8Bytes     SecurityCommandTypeContainer = 0xE8
+	SecurityCommandTypeContainer_SecurityCommandLongOn_9Bytes     SecurityCommandTypeContainer = 0xE9
+	SecurityCommandTypeContainer_SecurityCommandLongOn_10Bytes    SecurityCommandTypeContainer = 0xEA
+	SecurityCommandTypeContainer_SecurityCommandLongOn_11Bytes    SecurityCommandTypeContainer = 0xEB
+	SecurityCommandTypeContainer_SecurityCommandLongOn_12Bytes    SecurityCommandTypeContainer = 0xEC
+	SecurityCommandTypeContainer_SecurityCommandLongOn_13Bytes    SecurityCommandTypeContainer = 0xED
+	SecurityCommandTypeContainer_SecurityCommandLongOn_14Bytes    SecurityCommandTypeContainer = 0xEE
+	SecurityCommandTypeContainer_SecurityCommandLongOn_15Bytes    SecurityCommandTypeContainer = 0xEF
+	SecurityCommandTypeContainer_SecurityCommandLongOn_16Bytes    SecurityCommandTypeContainer = 0xF0
+	SecurityCommandTypeContainer_SecurityCommandLongOn_17Bytes    SecurityCommandTypeContainer = 0xF1
+	SecurityCommandTypeContainer_SecurityCommandLongOn_18Bytes    SecurityCommandTypeContainer = 0xF2
+	SecurityCommandTypeContainer_SecurityCommandLongOn_19Bytes    SecurityCommandTypeContainer = 0xF3
+	SecurityCommandTypeContainer_SecurityCommandLongOn_20Bytes    SecurityCommandTypeContainer = 0xF4
+	SecurityCommandTypeContainer_SecurityCommandLongOn_21Bytes    SecurityCommandTypeContainer = 0xF5
+	SecurityCommandTypeContainer_SecurityCommandLongOn_22Bytes    SecurityCommandTypeContainer = 0xF6
+	SecurityCommandTypeContainer_SecurityCommandLongOn_23Bytes    SecurityCommandTypeContainer = 0xF7
+	SecurityCommandTypeContainer_SecurityCommandLongOn_24Bytes    SecurityCommandTypeContainer = 0xF8
+	SecurityCommandTypeContainer_SecurityCommandLongOn_25Bytes    SecurityCommandTypeContainer = 0xF9
+	SecurityCommandTypeContainer_SecurityCommandLongOn_26Bytes    SecurityCommandTypeContainer = 0xFA
+	SecurityCommandTypeContainer_SecurityCommandLongOn_27Bytes    SecurityCommandTypeContainer = 0xFB
+	SecurityCommandTypeContainer_SecurityCommandLongOn_28Bytes    SecurityCommandTypeContainer = 0xFC
+	SecurityCommandTypeContainer_SecurityCommandLongOn_29Bytes    SecurityCommandTypeContainer = 0xFD
+	SecurityCommandTypeContainer_SecurityCommandLongOn_30Bytes    SecurityCommandTypeContainer = 0xFE
+	SecurityCommandTypeContainer_SecurityCommandLongOn_31Bytes    SecurityCommandTypeContainer = 0xFF
 )
 
 var SecurityCommandTypeContainerValues []SecurityCommandTypeContainer
 
 func init() {
 	_ = errors.New
-	SecurityCommandTypeContainerValues = []SecurityCommandTypeContainer {
+	SecurityCommandTypeContainerValues = []SecurityCommandTypeContainer{
 		SecurityCommandTypeContainer_SecurityCommandOff_0Bytes,
 		SecurityCommandTypeContainer_SecurityCommandOff_1Bytes,
 		SecurityCommandTypeContainer_SecurityCommandOff_2Bytes,
@@ -287,370 +287,490 @@ func init() {
 	}
 }
 
-
 func (e SecurityCommandTypeContainer) NumBytes() uint8 {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return 0
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 0
+		}
+	case 0x01:
+		{ /* '0x01' */
+			return 1
+		}
+	case 0x02:
+		{ /* '0x02' */
+			return 2
+		}
+	case 0x03:
+		{ /* '0x03' */
+			return 3
+		}
+	case 0x04:
+		{ /* '0x04' */
+			return 4
+		}
+	case 0x05:
+		{ /* '0x05' */
+			return 5
+		}
+	case 0x06:
+		{ /* '0x06' */
+			return 6
+		}
+	case 0x07:
+		{ /* '0x07' */
+			return 7
+		}
+	case 0x08:
+		{ /* '0x08' */
+			return 0
+		}
+	case 0x09:
+		{ /* '0x09' */
+			return 1
+		}
+	case 0x0A:
+		{ /* '0x0A' */
+			return 2
+		}
+	case 0x0B:
+		{ /* '0x0B' */
+			return 3
+		}
+	case 0x0C:
+		{ /* '0x0C' */
+			return 4
+		}
+	case 0x0D:
+		{ /* '0x0D' */
+			return 5
+		}
+	case 0x0E:
+		{ /* '0x0E' */
+			return 6
+		}
+	case 0x0F:
+		{ /* '0x0F' */
+			return 7
+		}
+	case 0x78:
+		{ /* '0x78' */
+			return 0
+		}
+	case 0x79:
+		{ /* '0x79' */
+			return 1
+		}
+	case 0x7A:
+		{ /* '0x7A' */
+			return 2
+		}
+	case 0x7B:
+		{ /* '0x7B' */
+			return 3
+		}
+	case 0x7C:
+		{ /* '0x7C' */
+			return 4
+		}
+	case 0x7D:
+		{ /* '0x7D' */
+			return 5
+		}
+	case 0x7E:
+		{ /* '0x7E' */
+			return 6
+		}
+	case 0x7F:
+		{ /* '0x7F' */
+			return 7
+		}
+	case 0x80:
+		{ /* '0x80' */
+			return 8
+		}
+	case 0x81:
+		{ /* '0x81' */
+			return 1
 		}
-		case 0x01: { /* '0x01' */
-            return 1
+	case 0x82:
+		{ /* '0x82' */
+			return 2
 		}
-		case 0x02: { /* '0x02' */
-            return 2
+	case 0x83:
+		{ /* '0x83' */
+			return 3
 		}
-		case 0x03: { /* '0x03' */
-            return 3
+	case 0x84:
+		{ /* '0x84' */
+			return 4
 		}
-		case 0x04: { /* '0x04' */
-            return 4
+	case 0x85:
+		{ /* '0x85' */
+			return 5
 		}
-		case 0x05: { /* '0x05' */
-            return 5
+	case 0x86:
+		{ /* '0x86' */
+			return 6
 		}
-		case 0x06: { /* '0x06' */
-            return 6
+	case 0x87:
+		{ /* '0x87' */
+			return 7
 		}
-		case 0x07: { /* '0x07' */
-            return 7
+	case 0x88:
+		{ /* '0x88' */
+			return 8
 		}
-		case 0x08: { /* '0x08' */
-            return 0
+	case 0x89:
+		{ /* '0x89' */
+			return 9
 		}
-		case 0x09: { /* '0x09' */
-            return 1
+	case 0x8A:
+		{ /* '0x8A' */
+			return 10
 		}
-		case 0x0A: { /* '0x0A' */
-            return 2
+	case 0x8B:
+		{ /* '0x8B' */
+			return 11
 		}
-		case 0x0B: { /* '0x0B' */
-            return 3
+	case 0x8C:
+		{ /* '0x8C' */
+			return 12
 		}
-		case 0x0C: { /* '0x0C' */
-            return 4
+	case 0x8D:
+		{ /* '0x8D' */
+			return 13
 		}
-		case 0x0D: { /* '0x0D' */
-            return 5
+	case 0x8E:
+		{ /* '0x8E' */
+			return 14
 		}
-		case 0x0E: { /* '0x0E' */
-            return 6
+	case 0x8F:
+		{ /* '0x8F' */
+			return 15
 		}
-		case 0x0F: { /* '0x0F' */
-            return 7
+	case 0x90:
+		{ /* '0x90' */
+			return 16
 		}
-		case 0x78: { /* '0x78' */
-            return 0
+	case 0x91:
+		{ /* '0x91' */
+			return 17
 		}
-		case 0x79: { /* '0x79' */
-            return 1
+	case 0x92:
+		{ /* '0x92' */
+			return 18
 		}
-		case 0x7A: { /* '0x7A' */
-            return 2
+	case 0x93:
+		{ /* '0x93' */
+			return 19
 		}
-		case 0x7B: { /* '0x7B' */
-            return 3
+	case 0x94:
+		{ /* '0x94' */
+			return 20
 		}
-		case 0x7C: { /* '0x7C' */
-            return 4
+	case 0x95:
+		{ /* '0x95' */
+			return 21
 		}
-		case 0x7D: { /* '0x7D' */
-            return 5
+	case 0x96:
+		{ /* '0x96' */
+			return 22
 		}
-		case 0x7E: { /* '0x7E' */
-            return 6
+	case 0x97:
+		{ /* '0x97' */
+			return 23
 		}
-		case 0x7F: { /* '0x7F' */
-            return 7
+	case 0x98:
+		{ /* '0x98' */
+			return 24
 		}
-		case 0x80: { /* '0x80' */
-            return 8
+	case 0x99:
+		{ /* '0x99' */
+			return 25
 		}
-		case 0x81: { /* '0x81' */
-            return 1
+	case 0x9A:
+		{ /* '0x9A' */
+			return 26
 		}
-		case 0x82: { /* '0x82' */
-            return 2
+	case 0x9B:
+		{ /* '0x9B' */
+			return 27
 		}
-		case 0x83: { /* '0x83' */
-            return 3
+	case 0x9C:
+		{ /* '0x9C' */
+			return 28
 		}
-		case 0x84: { /* '0x84' */
-            return 4
+	case 0x9D:
+		{ /* '0x9D' */
+			return 29
 		}
-		case 0x85: { /* '0x85' */
-            return 5
+	case 0x9E:
+		{ /* '0x9E' */
+			return 30
 		}
-		case 0x86: { /* '0x86' */
-            return 6
+	case 0x9F:
+		{ /* '0x9F' */
+			return 31
 		}
-		case 0x87: { /* '0x87' */
-            return 7
+	case 0xA0:
+		{ /* '0xA0' */
+			return 0
 		}
-		case 0x88: { /* '0x88' */
-            return 8
+	case 0xA1:
+		{ /* '0xA1' */
+			return 1
 		}
-		case 0x89: { /* '0x89' */
-            return 9
+	case 0xA2:
+		{ /* '0xA2' */
+			return 2
 		}
-		case 0x8A: { /* '0x8A' */
-            return 10
+	case 0xA3:
+		{ /* '0xA3' */
+			return 3
 		}
-		case 0x8B: { /* '0x8B' */
-            return 11
+	case 0xA4:
+		{ /* '0xA4' */
+			return 4
 		}
-		case 0x8C: { /* '0x8C' */
-            return 12
+	case 0xA5:
+		{ /* '0xA5' */
+			return 5
 		}
-		case 0x8D: { /* '0x8D' */
-            return 13
+	case 0xA6:
+		{ /* '0xA6' */
+			return 6
 		}
-		case 0x8E: { /* '0x8E' */
-            return 14
+	case 0xA7:
+		{ /* '0xA7' */
+			return 7
 		}
-		case 0x8F: { /* '0x8F' */
-            return 15
+	case 0xA8:
+		{ /* '0xA8' */
+			return 8
 		}
-		case 0x90: { /* '0x90' */
-            return 16
+	case 0xA9:
+		{ /* '0xA9' */
+			return 9
 		}
-		case 0x91: { /* '0x91' */
-            return 17
+	case 0xAA:
+		{ /* '0xAA' */
+			return 10
 		}
-		case 0x92: { /* '0x92' */
-            return 18
+	case 0xAB:
+		{ /* '0xAB' */
+			return 11
 		}
-		case 0x93: { /* '0x93' */
-            return 19
+	case 0xAC:
+		{ /* '0xAC' */
+			return 12
 		}
-		case 0x94: { /* '0x94' */
-            return 20
+	case 0xAD:
+		{ /* '0xAD' */
+			return 13
 		}
-		case 0x95: { /* '0x95' */
-            return 21
+	case 0xAE:
+		{ /* '0xAE' */
+			return 14
 		}
-		case 0x96: { /* '0x96' */
-            return 22
+	case 0xAF:
+		{ /* '0xAF' */
+			return 15
 		}
-		case 0x97: { /* '0x97' */
-            return 23
+	case 0xB0:
+		{ /* '0xB0' */
+			return 16
 		}
-		case 0x98: { /* '0x98' */
-            return 24
+	case 0xB1:
+		{ /* '0xB1' */
+			return 17
 		}
-		case 0x99: { /* '0x99' */
-            return 25
+	case 0xB2:
+		{ /* '0xB2' */
+			return 18
 		}
-		case 0x9A: { /* '0x9A' */
-            return 26
+	case 0xB3:
+		{ /* '0xB3' */
+			return 19
 		}
-		case 0x9B: { /* '0x9B' */
-            return 27
+	case 0xB4:
+		{ /* '0xB4' */
+			return 20
 		}
-		case 0x9C: { /* '0x9C' */
-            return 28
+	case 0xB5:
+		{ /* '0xB5' */
+			return 21
 		}
-		case 0x9D: { /* '0x9D' */
-            return 29
+	case 0xB6:
+		{ /* '0xB6' */
+			return 22
 		}
-		case 0x9E: { /* '0x9E' */
-            return 30
+	case 0xB7:
+		{ /* '0xB7' */
+			return 23
 		}
-		case 0x9F: { /* '0x9F' */
-            return 31
+	case 0xB8:
+		{ /* '0xB8' */
+			return 24
 		}
-		case 0xA0: { /* '0xA0' */
-            return 0
+	case 0xB9:
+		{ /* '0xB9' */
+			return 25
 		}
-		case 0xA1: { /* '0xA1' */
-            return 1
+	case 0xBA:
+		{ /* '0xBA' */
+			return 26
 		}
-		case 0xA2: { /* '0xA2' */
-            return 2
+	case 0xBB:
+		{ /* '0xBB' */
+			return 27
 		}
-		case 0xA3: { /* '0xA3' */
-            return 3
+	case 0xBC:
+		{ /* '0xBC' */
+			return 28
 		}
-		case 0xA4: { /* '0xA4' */
-            return 4
+	case 0xBD:
+		{ /* '0xBD' */
+			return 29
 		}
-		case 0xA5: { /* '0xA5' */
-            return 5
+	case 0xBE:
+		{ /* '0xBE' */
+			return 30
 		}
-		case 0xA6: { /* '0xA6' */
-            return 6
+	case 0xBF:
+		{ /* '0xBF' */
+			return 31
 		}
-		case 0xA7: { /* '0xA7' */
-            return 7
+	case 0xE0:
+		{ /* '0xE0' */
+			return 0
 		}
-		case 0xA8: { /* '0xA8' */
-            return 8
+	case 0xE1:
+		{ /* '0xE1' */
+			return 1
 		}
-		case 0xA9: { /* '0xA9' */
-            return 9
+	case 0xE2:
+		{ /* '0xE2' */
+			return 2
 		}
-		case 0xAA: { /* '0xAA' */
-            return 10
+	case 0xE3:
+		{ /* '0xE3' */
+			return 3
 		}
-		case 0xAB: { /* '0xAB' */
-            return 11
+	case 0xE4:
+		{ /* '0xE4' */
+			return 4
 		}
-		case 0xAC: { /* '0xAC' */
-            return 12
+	case 0xE5:
+		{ /* '0xE5' */
+			return 5
 		}
-		case 0xAD: { /* '0xAD' */
-            return 13
+	case 0xE6:
+		{ /* '0xE6' */
+			return 6
 		}
-		case 0xAE: { /* '0xAE' */
-            return 14
+	case 0xE7:
+		{ /* '0xE7' */
+			return 7
 		}
-		case 0xAF: { /* '0xAF' */
-            return 15
+	case 0xE8:
+		{ /* '0xE8' */
+			return 8
 		}
-		case 0xB0: { /* '0xB0' */
-            return 16
+	case 0xE9:
+		{ /* '0xE9' */
+			return 9
 		}
-		case 0xB1: { /* '0xB1' */
-            return 17
+	case 0xEA:
+		{ /* '0xEA' */
+			return 10
 		}
-		case 0xB2: { /* '0xB2' */
-            return 18
+	case 0xEB:
+		{ /* '0xEB' */
+			return 11
 		}
-		case 0xB3: { /* '0xB3' */
-            return 19
+	case 0xEC:
+		{ /* '0xEC' */
+			return 12
 		}
-		case 0xB4: { /* '0xB4' */
-            return 20
+	case 0xED:
+		{ /* '0xED' */
+			return 13
 		}
-		case 0xB5: { /* '0xB5' */
-            return 21
+	case 0xEE:
+		{ /* '0xEE' */
+			return 14
 		}
-		case 0xB6: { /* '0xB6' */
-            return 22
+	case 0xEF:
+		{ /* '0xEF' */
+			return 15
 		}
-		case 0xB7: { /* '0xB7' */
-            return 23
+	case 0xF0:
+		{ /* '0xF0' */
+			return 16
 		}
-		case 0xB8: { /* '0xB8' */
-            return 24
+	case 0xF1:
+		{ /* '0xF1' */
+			return 17
 		}
-		case 0xB9: { /* '0xB9' */
-            return 25
+	case 0xF2:
+		{ /* '0xF2' */
+			return 18
 		}
-		case 0xBA: { /* '0xBA' */
-            return 26
+	case 0xF3:
+		{ /* '0xF3' */
+			return 19
 		}
-		case 0xBB: { /* '0xBB' */
-            return 27
+	case 0xF4:
+		{ /* '0xF4' */
+			return 20
 		}
-		case 0xBC: { /* '0xBC' */
-            return 28
+	case 0xF5:
+		{ /* '0xF5' */
+			return 21
 		}
-		case 0xBD: { /* '0xBD' */
-            return 29
+	case 0xF6:
+		{ /* '0xF6' */
+			return 22
 		}
-		case 0xBE: { /* '0xBE' */
-            return 30
+	case 0xF7:
+		{ /* '0xF7' */
+			return 23
 		}
-		case 0xBF: { /* '0xBF' */
-            return 31
+	case 0xF8:
+		{ /* '0xF8' */
+			return 24
 		}
-		case 0xE0: { /* '0xE0' */
-            return 0
+	case 0xF9:
+		{ /* '0xF9' */
+			return 25
 		}
-		case 0xE1: { /* '0xE1' */
-            return 1
+	case 0xFA:
+		{ /* '0xFA' */
+			return 26
 		}
-		case 0xE2: { /* '0xE2' */
-            return 2
+	case 0xFB:
+		{ /* '0xFB' */
+			return 27
 		}
-		case 0xE3: { /* '0xE3' */
-            return 3
+	case 0xFC:
+		{ /* '0xFC' */
+			return 28
 		}
-		case 0xE4: { /* '0xE4' */
-            return 4
+	case 0xFD:
+		{ /* '0xFD' */
+			return 29
 		}
-		case 0xE5: { /* '0xE5' */
-            return 5
+	case 0xFE:
+		{ /* '0xFE' */
+			return 30
 		}
-		case 0xE6: { /* '0xE6' */
-            return 6
+	case 0xFF:
+		{ /* '0xFF' */
+			return 31
 		}
-		case 0xE7: { /* '0xE7' */
-            return 7
-		}
-		case 0xE8: { /* '0xE8' */
-            return 8
-		}
-		case 0xE9: { /* '0xE9' */
-            return 9
-		}
-		case 0xEA: { /* '0xEA' */
-            return 10
-		}
-		case 0xEB: { /* '0xEB' */
-            return 11
-		}
-		case 0xEC: { /* '0xEC' */
-            return 12
-		}
-		case 0xED: { /* '0xED' */
-            return 13
-		}
-		case 0xEE: { /* '0xEE' */
-            return 14
-		}
-		case 0xEF: { /* '0xEF' */
-            return 15
-		}
-		case 0xF0: { /* '0xF0' */
-            return 16
-		}
-		case 0xF1: { /* '0xF1' */
-            return 17
-		}
-		case 0xF2: { /* '0xF2' */
-            return 18
-		}
-		case 0xF3: { /* '0xF3' */
-            return 19
-		}
-		case 0xF4: { /* '0xF4' */
-            return 20
-		}
-		case 0xF5: { /* '0xF5' */
-            return 21
-		}
-		case 0xF6: { /* '0xF6' */
-            return 22
-		}
-		case 0xF7: { /* '0xF7' */
-            return 23
-		}
-		case 0xF8: { /* '0xF8' */
-            return 24
-		}
-		case 0xF9: { /* '0xF9' */
-            return 25
-		}
-		case 0xFA: { /* '0xFA' */
-            return 26
-		}
-		case 0xFB: { /* '0xFB' */
-            return 27
-		}
-		case 0xFC: { /* '0xFC' */
-            return 28
-		}
-		case 0xFD: { /* '0xFD' */
-            return 29
-		}
-		case 0xFE: { /* '0xFE' */
-            return 30
-		}
-		case 0xFF: { /* '0xFF' */
-            return 31
-		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -666,368 +786,489 @@ func SecurityCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (Securit
 }
 
 func (e SecurityCommandTypeContainer) CommandType() SecurityCommandType {
-	switch e  {
-		case 0x00: { /* '0x00' */
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
 			return SecurityCommandType_OFF
 		}
-		case 0x01: { /* '0x01' */
+	case 0x01:
+		{ /* '0x01' */
 			return SecurityCommandType_OFF
 		}
-		case 0x02: { /* '0x02' */
+	case 0x02:
+		{ /* '0x02' */
 			return SecurityCommandType_OFF
 		}
-		case 0x03: { /* '0x03' */
+	case 0x03:
+		{ /* '0x03' */
 			return SecurityCommandType_OFF
 		}
-		case 0x04: { /* '0x04' */
+	case 0x04:
+		{ /* '0x04' */
 			return SecurityCommandType_OFF
 		}
-		case 0x05: { /* '0x05' */
+	case 0x05:
+		{ /* '0x05' */
 			return SecurityCommandType_OFF
 		}
-		case 0x06: { /* '0x06' */
+	case 0x06:
+		{ /* '0x06' */
 			return SecurityCommandType_OFF
 		}
-		case 0x07: { /* '0x07' */
+	case 0x07:
+		{ /* '0x07' */
 			return SecurityCommandType_OFF
 		}
-		case 0x08: { /* '0x08' */
+	case 0x08:
+		{ /* '0x08' */
 			return SecurityCommandType_EVENT
 		}
-		case 0x09: { /* '0x09' */
+	case 0x09:
+		{ /* '0x09' */
 			return SecurityCommandType_EVENT
 		}
-		case 0x0A: { /* '0x0A' */
+	case 0x0A:
+		{ /* '0x0A' */
 			return SecurityCommandType_EVENT
 		}
-		case 0x0B: { /* '0x0B' */
+	case 0x0B:
+		{ /* '0x0B' */
 			return SecurityCommandType_EVENT
 		}
-		case 0x0C: { /* '0x0C' */
+	case 0x0C:
+		{ /* '0x0C' */
 			return SecurityCommandType_EVENT
 		}
-		case 0x0D: { /* '0x0D' */
+	case 0x0D:
+		{ /* '0x0D' */
 			return SecurityCommandType_EVENT
 		}
-		case 0x0E: { /* '0x0E' */
+	case 0x0E:
+		{ /* '0x0E' */
 			return SecurityCommandType_EVENT
 		}
-		case 0x0F: { /* '0x0F' */
+	case 0x0F:
+		{ /* '0x0F' */
 			return SecurityCommandType_EVENT
 		}
-		case 0x78: { /* '0x78' */
+	case 0x78:
+		{ /* '0x78' */
 			return SecurityCommandType_ON
 		}
-		case 0x79: { /* '0x79' */
+	case 0x79:
+		{ /* '0x79' */
 			return SecurityCommandType_ON
 		}
-		case 0x7A: { /* '0x7A' */
+	case 0x7A:
+		{ /* '0x7A' */
 			return SecurityCommandType_ON
 		}
-		case 0x7B: { /* '0x7B' */
+	case 0x7B:
+		{ /* '0x7B' */
 			return SecurityCommandType_ON
 		}
-		case 0x7C: { /* '0x7C' */
+	case 0x7C:
+		{ /* '0x7C' */
 			return SecurityCommandType_ON
 		}
-		case 0x7D: { /* '0x7D' */
+	case 0x7D:
+		{ /* '0x7D' */
 			return SecurityCommandType_ON
 		}
-		case 0x7E: { /* '0x7E' */
+	case 0x7E:
+		{ /* '0x7E' */
 			return SecurityCommandType_ON
 		}
-		case 0x7F: { /* '0x7F' */
+	case 0x7F:
+		{ /* '0x7F' */
 			return SecurityCommandType_ON
 		}
-		case 0x80: { /* '0x80' */
+	case 0x80:
+		{ /* '0x80' */
 			return SecurityCommandType_OFF
 		}
-		case 0x81: { /* '0x81' */
+	case 0x81:
+		{ /* '0x81' */
 			return SecurityCommandType_OFF
 		}
-		case 0x82: { /* '0x82' */
+	case 0x82:
+		{ /* '0x82' */
 			return SecurityCommandType_OFF
 		}
-		case 0x83: { /* '0x83' */
+	case 0x83:
+		{ /* '0x83' */
 			return SecurityCommandType_OFF
 		}
-		case 0x84: { /* '0x84' */
+	case 0x84:
+		{ /* '0x84' */
 			return SecurityCommandType_OFF
 		}
-		case 0x85: { /* '0x85' */
+	case 0x85:
+		{ /* '0x85' */
 			return SecurityCommandType_OFF
 		}
-		case 0x86: { /* '0x86' */
+	case 0x86:
+		{ /* '0x86' */
 			return SecurityCommandType_OFF
 		}
-		case 0x87: { /* '0x87' */
+	case 0x87:
+		{ /* '0x87' */
 			return SecurityCommandType_OFF
 		}
-		case 0x88: { /* '0x88' */
+	case 0x88:
+		{ /* '0x88' */
 			return SecurityCommandType_OFF
 		}
-		case 0x89: { /* '0x89' */
+	case 0x89:
+		{ /* '0x89' */
 			return SecurityCommandType_OFF
 		}
-		case 0x8A: { /* '0x8A' */
+	case 0x8A:
+		{ /* '0x8A' */
 			return SecurityCommandType_OFF
 		}
-		case 0x8B: { /* '0x8B' */
+	case 0x8B:
+		{ /* '0x8B' */
 			return SecurityCommandType_OFF
 		}
-		case 0x8C: { /* '0x8C' */
+	case 0x8C:
+		{ /* '0x8C' */
 			return SecurityCommandType_OFF
 		}
-		case 0x8D: { /* '0x8D' */
+	case 0x8D:
+		{ /* '0x8D' */
 			return SecurityCommandType_OFF
 		}
-		case 0x8E: { /* '0x8E' */
+	case 0x8E:
+		{ /* '0x8E' */
 			return SecurityCommandType_OFF
 		}
-		case 0x8F: { /* '0x8F' */
+	case 0x8F:
+		{ /* '0x8F' */
 			return SecurityCommandType_OFF
 		}
-		case 0x90: { /* '0x90' */
+	case 0x90:
+		{ /* '0x90' */
 			return SecurityCommandType_OFF
 		}
-		case 0x91: { /* '0x91' */
+	case 0x91:
+		{ /* '0x91' */
 			return SecurityCommandType_OFF
 		}
-		case 0x92: { /* '0x92' */
+	case 0x92:
+		{ /* '0x92' */
 			return SecurityCommandType_OFF
 		}
-		case 0x93: { /* '0x93' */
+	case 0x93:
+		{ /* '0x93' */
 			return SecurityCommandType_OFF
 		}
-		case 0x94: { /* '0x94' */
+	case 0x94:
+		{ /* '0x94' */
 			return SecurityCommandType_OFF
 		}
-		case 0x95: { /* '0x95' */
+	case 0x95:
+		{ /* '0x95' */
 			return SecurityCommandType_OFF
 		}
-		case 0x96: { /* '0x96' */
+	case 0x96:
+		{ /* '0x96' */
 			return SecurityCommandType_OFF
 		}
-		case 0x97: { /* '0x97' */
+	case 0x97:
+		{ /* '0x97' */
 			return SecurityCommandType_OFF
 		}
-		case 0x98: { /* '0x98' */
+	case 0x98:
+		{ /* '0x98' */
 			return SecurityCommandType_OFF
 		}
-		case 0x99: { /* '0x99' */
+	case 0x99:
+		{ /* '0x99' */
 			return SecurityCommandType_OFF
 		}
-		case 0x9A: { /* '0x9A' */
+	case 0x9A:
+		{ /* '0x9A' */
 			return SecurityCommandType_OFF
 		}
-		case 0x9B: { /* '0x9B' */
+	case 0x9B:
+		{ /* '0x9B' */
 			return SecurityCommandType_OFF
 		}
-		case 0x9C: { /* '0x9C' */
+	case 0x9C:
+		{ /* '0x9C' */
 			return SecurityCommandType_OFF
 		}
-		case 0x9D: { /* '0x9D' */
+	case 0x9D:
+		{ /* '0x9D' */
 			return SecurityCommandType_OFF
 		}
-		case 0x9E: { /* '0x9E' */
+	case 0x9E:
+		{ /* '0x9E' */
 			return SecurityCommandType_OFF
 		}
-		case 0x9F: { /* '0x9F' */
+	case 0x9F:
+		{ /* '0x9F' */
 			return SecurityCommandType_OFF
 		}
-		case 0xA0: { /* '0xA0' */
+	case 0xA0:
+		{ /* '0xA0' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xA1: { /* '0xA1' */
+	case 0xA1:
+		{ /* '0xA1' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xA2: { /* '0xA2' */
+	case 0xA2:
+		{ /* '0xA2' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xA3: { /* '0xA3' */
+	case 0xA3:
+		{ /* '0xA3' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xA4: { /* '0xA4' */
+	case 0xA4:
+		{ /* '0xA4' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xA5: { /* '0xA5' */
+	case 0xA5:
+		{ /* '0xA5' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xA6: { /* '0xA6' */
+	case 0xA6:
+		{ /* '0xA6' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xA7: { /* '0xA7' */
+	case 0xA7:
+		{ /* '0xA7' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xA8: { /* '0xA8' */
+	case 0xA8:
+		{ /* '0xA8' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xA9: { /* '0xA9' */
+	case 0xA9:
+		{ /* '0xA9' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xAA: { /* '0xAA' */
+	case 0xAA:
+		{ /* '0xAA' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xAB: { /* '0xAB' */
+	case 0xAB:
+		{ /* '0xAB' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xAC: { /* '0xAC' */
+	case 0xAC:
+		{ /* '0xAC' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xAD: { /* '0xAD' */
+	case 0xAD:
+		{ /* '0xAD' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xAE: { /* '0xAE' */
+	case 0xAE:
+		{ /* '0xAE' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xAF: { /* '0xAF' */
+	case 0xAF:
+		{ /* '0xAF' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xB0: { /* '0xB0' */
+	case 0xB0:
+		{ /* '0xB0' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xB1: { /* '0xB1' */
+	case 0xB1:
+		{ /* '0xB1' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xB2: { /* '0xB2' */
+	case 0xB2:
+		{ /* '0xB2' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xB3: { /* '0xB3' */
+	case 0xB3:
+		{ /* '0xB3' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xB4: { /* '0xB4' */
+	case 0xB4:
+		{ /* '0xB4' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xB5: { /* '0xB5' */
+	case 0xB5:
+		{ /* '0xB5' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xB6: { /* '0xB6' */
+	case 0xB6:
+		{ /* '0xB6' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xB7: { /* '0xB7' */
+	case 0xB7:
+		{ /* '0xB7' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xB8: { /* '0xB8' */
+	case 0xB8:
+		{ /* '0xB8' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xB9: { /* '0xB9' */
+	case 0xB9:
+		{ /* '0xB9' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xBA: { /* '0xBA' */
+	case 0xBA:
+		{ /* '0xBA' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xBB: { /* '0xBB' */
+	case 0xBB:
+		{ /* '0xBB' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xBC: { /* '0xBC' */
+	case 0xBC:
+		{ /* '0xBC' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xBD: { /* '0xBD' */
+	case 0xBD:
+		{ /* '0xBD' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xBE: { /* '0xBE' */
+	case 0xBE:
+		{ /* '0xBE' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xBF: { /* '0xBF' */
+	case 0xBF:
+		{ /* '0xBF' */
 			return SecurityCommandType_EVENT
 		}
-		case 0xE0: { /* '0xE0' */
+	case 0xE0:
+		{ /* '0xE0' */
 			return SecurityCommandType_ON
 		}
-		case 0xE1: { /* '0xE1' */
+	case 0xE1:
+		{ /* '0xE1' */
 			return SecurityCommandType_ON
 		}
-		case 0xE2: { /* '0xE2' */
+	case 0xE2:
+		{ /* '0xE2' */
 			return SecurityCommandType_ON
 		}
-		case 0xE3: { /* '0xE3' */
+	case 0xE3:
+		{ /* '0xE3' */
 			return SecurityCommandType_ON
 		}
-		case 0xE4: { /* '0xE4' */
+	case 0xE4:
+		{ /* '0xE4' */
 			return SecurityCommandType_ON
 		}
-		case 0xE5: { /* '0xE5' */
+	case 0xE5:
+		{ /* '0xE5' */
 			return SecurityCommandType_ON
 		}
-		case 0xE6: { /* '0xE6' */
+	case 0xE6:
+		{ /* '0xE6' */
 			return SecurityCommandType_ON
 		}
-		case 0xE7: { /* '0xE7' */
+	case 0xE7:
+		{ /* '0xE7' */
 			return SecurityCommandType_ON
 		}
-		case 0xE8: { /* '0xE8' */
+	case 0xE8:
+		{ /* '0xE8' */
 			return SecurityCommandType_ON
 		}
-		case 0xE9: { /* '0xE9' */
+	case 0xE9:
+		{ /* '0xE9' */
 			return SecurityCommandType_ON
 		}
-		case 0xEA: { /* '0xEA' */
+	case 0xEA:
+		{ /* '0xEA' */
 			return SecurityCommandType_ON
 		}
-		case 0xEB: { /* '0xEB' */
+	case 0xEB:
+		{ /* '0xEB' */
 			return SecurityCommandType_ON
 		}
-		case 0xEC: { /* '0xEC' */
+	case 0xEC:
+		{ /* '0xEC' */
 			return SecurityCommandType_ON
 		}
-		case 0xED: { /* '0xED' */
+	case 0xED:
+		{ /* '0xED' */
 			return SecurityCommandType_ON
 		}
-		case 0xEE: { /* '0xEE' */
+	case 0xEE:
+		{ /* '0xEE' */
 			return SecurityCommandType_ON
 		}
-		case 0xEF: { /* '0xEF' */
+	case 0xEF:
+		{ /* '0xEF' */
 			return SecurityCommandType_ON
 		}
-		case 0xF0: { /* '0xF0' */
+	case 0xF0:
+		{ /* '0xF0' */
 			return SecurityCommandType_ON
 		}
-		case 0xF1: { /* '0xF1' */
+	case 0xF1:
+		{ /* '0xF1' */
 			return SecurityCommandType_ON
 		}
-		case 0xF2: { /* '0xF2' */
+	case 0xF2:
+		{ /* '0xF2' */
 			return SecurityCommandType_ON
 		}
-		case 0xF3: { /* '0xF3' */
+	case 0xF3:
+		{ /* '0xF3' */
 			return SecurityCommandType_ON
 		}
-		case 0xF4: { /* '0xF4' */
+	case 0xF4:
+		{ /* '0xF4' */
 			return SecurityCommandType_ON
 		}
-		case 0xF5: { /* '0xF5' */
+	case 0xF5:
+		{ /* '0xF5' */
 			return SecurityCommandType_ON
 		}
-		case 0xF6: { /* '0xF6' */
+	case 0xF6:
+		{ /* '0xF6' */
 			return SecurityCommandType_ON
 		}
-		case 0xF7: { /* '0xF7' */
+	case 0xF7:
+		{ /* '0xF7' */
 			return SecurityCommandType_ON
 		}
-		case 0xF8: { /* '0xF8' */
+	case 0xF8:
+		{ /* '0xF8' */
 			return SecurityCommandType_ON
 		}
-		case 0xF9: { /* '0xF9' */
+	case 0xF9:
+		{ /* '0xF9' */
 			return SecurityCommandType_ON
 		}
-		case 0xFA: { /* '0xFA' */
+	case 0xFA:
+		{ /* '0xFA' */
 			return SecurityCommandType_ON
 		}
-		case 0xFB: { /* '0xFB' */
+	case 0xFB:
+		{ /* '0xFB' */
 			return SecurityCommandType_ON
 		}
-		case 0xFC: { /* '0xFC' */
+	case 0xFC:
+		{ /* '0xFC' */
 			return SecurityCommandType_ON
 		}
-		case 0xFD: { /* '0xFD' */
+	case 0xFD:
+		{ /* '0xFD' */
 			return SecurityCommandType_ON
 		}
-		case 0xFE: { /* '0xFE' */
+	case 0xFE:
+		{ /* '0xFE' */
 			return SecurityCommandType_ON
 		}
-		case 0xFF: { /* '0xFF' */
+	case 0xFF:
+		{ /* '0xFF' */
 			return SecurityCommandType_ON
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -1043,246 +1284,246 @@ func SecurityCommandTypeContainerFirstEnumForFieldCommandType(value SecurityComm
 }
 func SecurityCommandTypeContainerByValue(value uint8) (enum SecurityCommandTypeContainer, ok bool) {
 	switch value {
-		case 0x00:
-			return SecurityCommandTypeContainer_SecurityCommandOff_0Bytes, true
-		case 0x01:
-			return SecurityCommandTypeContainer_SecurityCommandOff_1Bytes, true
-		case 0x02:
-			return SecurityCommandTypeContainer_SecurityCommandOff_2Bytes, true
-		case 0x03:
-			return SecurityCommandTypeContainer_SecurityCommandOff_3Bytes, true
-		case 0x04:
-			return SecurityCommandTypeContainer_SecurityCommandOff_4Bytes, true
-		case 0x05:
-			return SecurityCommandTypeContainer_SecurityCommandOff_5Bytes, true
-		case 0x06:
-			return SecurityCommandTypeContainer_SecurityCommandOff_6Bytes, true
-		case 0x07:
-			return SecurityCommandTypeContainer_SecurityCommandOff_7Bytes, true
-		case 0x08:
-			return SecurityCommandTypeContainer_SecurityCommandEvent_0Bytes, true
-		case 0x09:
-			return SecurityCommandTypeContainer_SecurityCommandEvent_1Bytes, true
-		case 0x0A:
-			return SecurityCommandTypeContainer_SecurityCommandEvent_2Bytes, true
-		case 0x0B:
-			return SecurityCommandTypeContainer_SecurityCommandEvent_3Bytes, true
-		case 0x0C:
-			return SecurityCommandTypeContainer_SecurityCommandEvent_4Bytes, true
-		case 0x0D:
-			return SecurityCommandTypeContainer_SecurityCommandEvent_5Bytes, true
-		case 0x0E:
-			return SecurityCommandTypeContainer_SecurityCommandEvent_6Bytes, true
-		case 0x0F:
-			return SecurityCommandTypeContainer_SecurityCommandEvent_7Bytes, true
-		case 0x78:
-			return SecurityCommandTypeContainer_SecurityCommandOn_0Bytes, true
-		case 0x79:
-			return SecurityCommandTypeContainer_SecurityCommandOn_1Bytes, true
-		case 0x7A:
-			return SecurityCommandTypeContainer_SecurityCommandOn_2Bytes, true
-		case 0x7B:
-			return SecurityCommandTypeContainer_SecurityCommandOn_3Bytes, true
-		case 0x7C:
-			return SecurityCommandTypeContainer_SecurityCommandOn_4Bytes, true
-		case 0x7D:
-			return SecurityCommandTypeContainer_SecurityCommandOn_5Bytes, true
-		case 0x7E:
-			return SecurityCommandTypeContainer_SecurityCommandOn_6Bytes, true
-		case 0x7F:
-			return SecurityCommandTypeContainer_SecurityCommandOn_7Bytes, true
-		case 0x80:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_0Bytes, true
-		case 0x81:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_1Bytes, true
-		case 0x82:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_2Bytes, true
-		case 0x83:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_3Bytes, true
-		case 0x84:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_4Bytes, true
-		case 0x85:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_5Bytes, true
-		case 0x86:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_6Bytes, true
-		case 0x87:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_7Bytes, true
-		case 0x88:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_8Bytes, true
-		case 0x89:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_9Bytes, true
-		case 0x8A:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_10Bytes, true
-		case 0x8B:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_11Bytes, true
-		case 0x8C:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_12Bytes, true
-		case 0x8D:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_13Bytes, true
-		case 0x8E:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_14Bytes, true
-		case 0x8F:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_15Bytes, true
-		case 0x90:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_16Bytes, true
-		case 0x91:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_17Bytes, true
-		case 0x92:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_18Bytes, true
-		case 0x93:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_19Bytes, true
-		case 0x94:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_20Bytes, true
-		case 0x95:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_21Bytes, true
-		case 0x96:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_22Bytes, true
-		case 0x97:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_23Bytes, true
-		case 0x98:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_24Bytes, true
-		case 0x99:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_25Bytes, true
-		case 0x9A:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_26Bytes, true
-		case 0x9B:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_27Bytes, true
-		case 0x9C:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_28Bytes, true
-		case 0x9D:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_29Bytes, true
-		case 0x9E:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_30Bytes, true
-		case 0x9F:
-			return SecurityCommandTypeContainer_SecurityCommandLongOff_31Bytes, true
-		case 0xA0:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_0Bytes, true
-		case 0xA1:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_1Bytes, true
-		case 0xA2:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_2Bytes, true
-		case 0xA3:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_3Bytes, true
-		case 0xA4:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_4Bytes, true
-		case 0xA5:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_5Bytes, true
-		case 0xA6:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_6Bytes, true
-		case 0xA7:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_7Bytes, true
-		case 0xA8:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_8Bytes, true
-		case 0xA9:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_9Bytes, true
-		case 0xAA:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_10Bytes, true
-		case 0xAB:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_11Bytes, true
-		case 0xAC:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_12Bytes, true
-		case 0xAD:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_13Bytes, true
-		case 0xAE:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_14Bytes, true
-		case 0xAF:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_15Bytes, true
-		case 0xB0:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_16Bytes, true
-		case 0xB1:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_17Bytes, true
-		case 0xB2:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_18Bytes, true
-		case 0xB3:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_19Bytes, true
-		case 0xB4:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_20Bytes, true
-		case 0xB5:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_21Bytes, true
-		case 0xB6:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_22Bytes, true
-		case 0xB7:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_23Bytes, true
-		case 0xB8:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_24Bytes, true
-		case 0xB9:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_25Bytes, true
-		case 0xBA:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_26Bytes, true
-		case 0xBB:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_27Bytes, true
-		case 0xBC:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_28Bytes, true
-		case 0xBD:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_29Bytes, true
-		case 0xBE:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_30Bytes, true
-		case 0xBF:
-			return SecurityCommandTypeContainer_SecurityCommandLongEvent_31Bytes, true
-		case 0xE0:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_0Bytes, true
-		case 0xE1:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_1Bytes, true
-		case 0xE2:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_2Bytes, true
-		case 0xE3:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_3Bytes, true
-		case 0xE4:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_4Bytes, true
-		case 0xE5:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_5Bytes, true
-		case 0xE6:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_6Bytes, true
-		case 0xE7:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_7Bytes, true
-		case 0xE8:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_8Bytes, true
-		case 0xE9:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_9Bytes, true
-		case 0xEA:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_10Bytes, true
-		case 0xEB:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_11Bytes, true
-		case 0xEC:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_12Bytes, true
-		case 0xED:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_13Bytes, true
-		case 0xEE:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_14Bytes, true
-		case 0xEF:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_15Bytes, true
-		case 0xF0:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_16Bytes, true
-		case 0xF1:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_17Bytes, true
-		case 0xF2:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_18Bytes, true
-		case 0xF3:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_19Bytes, true
-		case 0xF4:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_20Bytes, true
-		case 0xF5:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_21Bytes, true
-		case 0xF6:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_22Bytes, true
-		case 0xF7:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_23Bytes, true
-		case 0xF8:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_24Bytes, true
-		case 0xF9:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_25Bytes, true
-		case 0xFA:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_26Bytes, true
-		case 0xFB:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_27Bytes, true
-		case 0xFC:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_28Bytes, true
-		case 0xFD:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_29Bytes, true
-		case 0xFE:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_30Bytes, true
-		case 0xFF:
-			return SecurityCommandTypeContainer_SecurityCommandLongOn_31Bytes, true
+	case 0x00:
+		return SecurityCommandTypeContainer_SecurityCommandOff_0Bytes, true
+	case 0x01:
+		return SecurityCommandTypeContainer_SecurityCommandOff_1Bytes, true
+	case 0x02:
+		return SecurityCommandTypeContainer_SecurityCommandOff_2Bytes, true
+	case 0x03:
+		return SecurityCommandTypeContainer_SecurityCommandOff_3Bytes, true
+	case 0x04:
+		return SecurityCommandTypeContainer_SecurityCommandOff_4Bytes, true
+	case 0x05:
+		return SecurityCommandTypeContainer_SecurityCommandOff_5Bytes, true
+	case 0x06:
+		return SecurityCommandTypeContainer_SecurityCommandOff_6Bytes, true
+	case 0x07:
+		return SecurityCommandTypeContainer_SecurityCommandOff_7Bytes, true
+	case 0x08:
+		return SecurityCommandTypeContainer_SecurityCommandEvent_0Bytes, true
+	case 0x09:
+		return SecurityCommandTypeContainer_SecurityCommandEvent_1Bytes, true
+	case 0x0A:
+		return SecurityCommandTypeContainer_SecurityCommandEvent_2Bytes, true
+	case 0x0B:
+		return SecurityCommandTypeContainer_SecurityCommandEvent_3Bytes, true
+	case 0x0C:
+		return SecurityCommandTypeContainer_SecurityCommandEvent_4Bytes, true
+	case 0x0D:
+		return SecurityCommandTypeContainer_SecurityCommandEvent_5Bytes, true
+	case 0x0E:
+		return SecurityCommandTypeContainer_SecurityCommandEvent_6Bytes, true
+	case 0x0F:
+		return SecurityCommandTypeContainer_SecurityCommandEvent_7Bytes, true
+	case 0x78:
+		return SecurityCommandTypeContainer_SecurityCommandOn_0Bytes, true
+	case 0x79:
+		return SecurityCommandTypeContainer_SecurityCommandOn_1Bytes, true
+	case 0x7A:
+		return SecurityCommandTypeContainer_SecurityCommandOn_2Bytes, true
+	case 0x7B:
+		return SecurityCommandTypeContainer_SecurityCommandOn_3Bytes, true
+	case 0x7C:
+		return SecurityCommandTypeContainer_SecurityCommandOn_4Bytes, true
+	case 0x7D:
+		return SecurityCommandTypeContainer_SecurityCommandOn_5Bytes, true
+	case 0x7E:
+		return SecurityCommandTypeContainer_SecurityCommandOn_6Bytes, true
+	case 0x7F:
+		return SecurityCommandTypeContainer_SecurityCommandOn_7Bytes, true
+	case 0x80:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_0Bytes, true
+	case 0x81:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_1Bytes, true
+	case 0x82:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_2Bytes, true
+	case 0x83:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_3Bytes, true
+	case 0x84:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_4Bytes, true
+	case 0x85:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_5Bytes, true
+	case 0x86:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_6Bytes, true
+	case 0x87:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_7Bytes, true
+	case 0x88:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_8Bytes, true
+	case 0x89:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_9Bytes, true
+	case 0x8A:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_10Bytes, true
+	case 0x8B:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_11Bytes, true
+	case 0x8C:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_12Bytes, true
+	case 0x8D:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_13Bytes, true
+	case 0x8E:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_14Bytes, true
+	case 0x8F:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_15Bytes, true
+	case 0x90:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_16Bytes, true
+	case 0x91:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_17Bytes, true
+	case 0x92:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_18Bytes, true
+	case 0x93:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_19Bytes, true
+	case 0x94:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_20Bytes, true
+	case 0x95:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_21Bytes, true
+	case 0x96:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_22Bytes, true
+	case 0x97:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_23Bytes, true
+	case 0x98:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_24Bytes, true
+	case 0x99:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_25Bytes, true
+	case 0x9A:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_26Bytes, true
+	case 0x9B:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_27Bytes, true
+	case 0x9C:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_28Bytes, true
+	case 0x9D:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_29Bytes, true
+	case 0x9E:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_30Bytes, true
+	case 0x9F:
+		return SecurityCommandTypeContainer_SecurityCommandLongOff_31Bytes, true
+	case 0xA0:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_0Bytes, true
+	case 0xA1:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_1Bytes, true
+	case 0xA2:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_2Bytes, true
+	case 0xA3:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_3Bytes, true
+	case 0xA4:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_4Bytes, true
+	case 0xA5:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_5Bytes, true
+	case 0xA6:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_6Bytes, true
+	case 0xA7:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_7Bytes, true
+	case 0xA8:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_8Bytes, true
+	case 0xA9:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_9Bytes, true
+	case 0xAA:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_10Bytes, true
+	case 0xAB:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_11Bytes, true
+	case 0xAC:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_12Bytes, true
+	case 0xAD:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_13Bytes, true
+	case 0xAE:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_14Bytes, true
+	case 0xAF:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_15Bytes, true
+	case 0xB0:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_16Bytes, true
+	case 0xB1:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_17Bytes, true
+	case 0xB2:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_18Bytes, true
+	case 0xB3:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_19Bytes, true
+	case 0xB4:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_20Bytes, true
+	case 0xB5:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_21Bytes, true
+	case 0xB6:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_22Bytes, true
+	case 0xB7:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_23Bytes, true
+	case 0xB8:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_24Bytes, true
+	case 0xB9:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_25Bytes, true
+	case 0xBA:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_26Bytes, true
+	case 0xBB:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_27Bytes, true
+	case 0xBC:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_28Bytes, true
+	case 0xBD:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_29Bytes, true
+	case 0xBE:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_30Bytes, true
+	case 0xBF:
+		return SecurityCommandTypeContainer_SecurityCommandLongEvent_31Bytes, true
+	case 0xE0:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_0Bytes, true
+	case 0xE1:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_1Bytes, true
+	case 0xE2:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_2Bytes, true
+	case 0xE3:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_3Bytes, true
+	case 0xE4:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_4Bytes, true
+	case 0xE5:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_5Bytes, true
+	case 0xE6:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_6Bytes, true
+	case 0xE7:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_7Bytes, true
+	case 0xE8:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_8Bytes, true
+	case 0xE9:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_9Bytes, true
+	case 0xEA:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_10Bytes, true
+	case 0xEB:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_11Bytes, true
+	case 0xEC:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_12Bytes, true
+	case 0xED:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_13Bytes, true
+	case 0xEE:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_14Bytes, true
+	case 0xEF:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_15Bytes, true
+	case 0xF0:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_16Bytes, true
+	case 0xF1:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_17Bytes, true
+	case 0xF2:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_18Bytes, true
+	case 0xF3:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_19Bytes, true
+	case 0xF4:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_20Bytes, true
+	case 0xF5:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_21Bytes, true
+	case 0xF6:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_22Bytes, true
+	case 0xF7:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_23Bytes, true
+	case 0xF8:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_24Bytes, true
+	case 0xF9:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_25Bytes, true
+	case 0xFA:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_26Bytes, true
+	case 0xFB:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_27Bytes, true
+	case 0xFC:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_28Bytes, true
+	case 0xFD:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_29Bytes, true
+	case 0xFE:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_30Bytes, true
+	case 0xFF:
+		return SecurityCommandTypeContainer_SecurityCommandLongOn_31Bytes, true
 	}
 	return 0, false
 }
@@ -1533,13 +1774,13 @@ func SecurityCommandTypeContainerByName(value string) (enum SecurityCommandTypeC
 	return 0, false
 }
 
-func SecurityCommandTypeContainerKnows(value uint8)  bool {
+func SecurityCommandTypeContainerKnows(value uint8) bool {
 	for _, typeValue := range SecurityCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastSecurityCommandTypeContainer(structType interface{}) SecurityCommandTypeContainer {
@@ -1839,4 +2080,3 @@ func (e SecurityCommandTypeContainer) PLC4XEnumName() string {
 func (e SecurityCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
-

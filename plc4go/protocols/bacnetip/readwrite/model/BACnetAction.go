@@ -34,8 +34,8 @@ type IBACnetAction interface {
 	utils.Serializable
 }
 
-const(
-	BACnetAction_DIRECT BACnetAction = 0
+const (
+	BACnetAction_DIRECT  BACnetAction = 0
 	BACnetAction_REVERSE BACnetAction = 1
 )
 
@@ -43,7 +43,7 @@ var BACnetActionValues []BACnetAction
 
 func init() {
 	_ = errors.New
-	BACnetActionValues = []BACnetAction {
+	BACnetActionValues = []BACnetAction{
 		BACnetAction_DIRECT,
 		BACnetAction_REVERSE,
 	}
@@ -51,10 +51,10 @@ func init() {
 
 func BACnetActionByValue(value uint8) (enum BACnetAction, ok bool) {
 	switch value {
-		case 0:
-			return BACnetAction_DIRECT, true
-		case 1:
-			return BACnetAction_REVERSE, true
+	case 0:
+		return BACnetAction_DIRECT, true
+	case 1:
+		return BACnetAction_REVERSE, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func BACnetActionByName(value string) (enum BACnetAction, ok bool) {
 	return 0, false
 }
 
-func BACnetActionKnows(value uint8)  bool {
+func BACnetActionKnows(value uint8) bool {
 	for _, typeValue := range BACnetActionValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetAction(structType interface{}) BACnetAction {
@@ -139,4 +139,3 @@ func (e BACnetAction) PLC4XEnumName() string {
 func (e BACnetAction) String() string {
 	return e.PLC4XEnumName()
 }
-

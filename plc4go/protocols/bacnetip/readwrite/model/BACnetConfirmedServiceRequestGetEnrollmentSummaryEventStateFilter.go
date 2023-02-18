@@ -34,19 +34,19 @@ type IBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter interfac
 	utils.Serializable
 }
 
-const(
+const (
 	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter = 0
-	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter = 1
-	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter = 2
-	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter = 3
-	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter = 4
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT     BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter = 1
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL    BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter = 2
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL       BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter = 3
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE    BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter = 4
 )
 
 var BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterValues []BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter
 
 func init() {
 	_ = errors.New
-	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterValues = []BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter {
+	BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterValues = []BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter{
 		BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL,
 		BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT,
 		BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL,
@@ -57,16 +57,16 @@ func init() {
 
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByValue(value uint8) (enum BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter, ok bool) {
 	switch value {
-		case 0:
-			return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL, true
-		case 1:
-			return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT, true
-		case 2:
-			return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL, true
-		case 3:
-			return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL, true
-		case 4:
-			return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE, true
+	case 0:
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_OFFNORMAL, true
+	case 1:
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_FAULT, true
+	case 2:
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_NORMAL, true
+	case 3:
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ALL, true
+	case 4:
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter_ACTIVE, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterByName(val
 	return 0, false
 }
 
-func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterKnows(value uint8)  bool {
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterKnows(value uint8) bool {
 	for _, typeValue := range BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter(structType interface{}) BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter {
@@ -163,4 +163,3 @@ func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) PLC4X
 func (e BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilter) String() string {
 	return e.PLC4XEnumName()
 }
-

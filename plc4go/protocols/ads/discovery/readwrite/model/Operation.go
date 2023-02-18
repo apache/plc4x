@@ -34,22 +34,22 @@ type IOperation interface {
 	utils.Serializable
 }
 
-const(
-	Operation_DISCOVERY_REQUEST Operation = 0x00000001
-	Operation_DISCOVERY_RESPONSE Operation = 0x80000001
-	Operation_ADD_OR_UPDATE_ROUTE_REQUEST Operation = 0x00000006
+const (
+	Operation_DISCOVERY_REQUEST            Operation = 0x00000001
+	Operation_DISCOVERY_RESPONSE           Operation = 0x80000001
+	Operation_ADD_OR_UPDATE_ROUTE_REQUEST  Operation = 0x00000006
 	Operation_ADD_OR_UPDATE_ROUTE_RESPONSE Operation = 0x80000006
-	Operation_DEL_ROUTE_REQUEST Operation = 0x00000007
-	Operation_DEL_ROUTE_RESPONSE Operation = 0x80000007
-	Operation_UNKNOWN_REQUEST Operation = 0x00000008
-	Operation_UNKNOWN_RESPONSE Operation = 0x80000008
+	Operation_DEL_ROUTE_REQUEST            Operation = 0x00000007
+	Operation_DEL_ROUTE_RESPONSE           Operation = 0x80000007
+	Operation_UNKNOWN_REQUEST              Operation = 0x00000008
+	Operation_UNKNOWN_RESPONSE             Operation = 0x80000008
 )
 
 var OperationValues []Operation
 
 func init() {
 	_ = errors.New
-	OperationValues = []Operation {
+	OperationValues = []Operation{
 		Operation_DISCOVERY_REQUEST,
 		Operation_DISCOVERY_RESPONSE,
 		Operation_ADD_OR_UPDATE_ROUTE_REQUEST,
@@ -63,22 +63,22 @@ func init() {
 
 func OperationByValue(value uint32) (enum Operation, ok bool) {
 	switch value {
-		case 0x00000001:
-			return Operation_DISCOVERY_REQUEST, true
-		case 0x00000006:
-			return Operation_ADD_OR_UPDATE_ROUTE_REQUEST, true
-		case 0x00000007:
-			return Operation_DEL_ROUTE_REQUEST, true
-		case 0x00000008:
-			return Operation_UNKNOWN_REQUEST, true
-		case 0x80000001:
-			return Operation_DISCOVERY_RESPONSE, true
-		case 0x80000006:
-			return Operation_ADD_OR_UPDATE_ROUTE_RESPONSE, true
-		case 0x80000007:
-			return Operation_DEL_ROUTE_RESPONSE, true
-		case 0x80000008:
-			return Operation_UNKNOWN_RESPONSE, true
+	case 0x00000001:
+		return Operation_DISCOVERY_REQUEST, true
+	case 0x00000006:
+		return Operation_ADD_OR_UPDATE_ROUTE_REQUEST, true
+	case 0x00000007:
+		return Operation_DEL_ROUTE_REQUEST, true
+	case 0x00000008:
+		return Operation_UNKNOWN_REQUEST, true
+	case 0x80000001:
+		return Operation_DISCOVERY_RESPONSE, true
+	case 0x80000006:
+		return Operation_ADD_OR_UPDATE_ROUTE_RESPONSE, true
+	case 0x80000007:
+		return Operation_DEL_ROUTE_RESPONSE, true
+	case 0x80000008:
+		return Operation_UNKNOWN_RESPONSE, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func OperationByName(value string) (enum Operation, ok bool) {
 	return 0, false
 }
 
-func OperationKnows(value uint32)  bool {
+func OperationKnows(value uint32) bool {
 	for _, typeValue := range OperationValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastOperation(structType interface{}) Operation {
@@ -187,4 +187,3 @@ func (e Operation) PLC4XEnumName() string {
 func (e Operation) String() string {
 	return e.PLC4XEnumName()
 }
-

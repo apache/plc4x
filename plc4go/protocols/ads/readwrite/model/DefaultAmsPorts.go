@@ -34,61 +34,61 @@ type IDefaultAmsPorts interface {
 	utils.Serializable
 }
 
-const(
-	DefaultAmsPorts_CAM_CONTROLLER DefaultAmsPorts = 900
-	DefaultAmsPorts_RUNTIME_SYSTEM_01 DefaultAmsPorts = 851
-	DefaultAmsPorts_RUNTIME_SYSTEM_02 DefaultAmsPorts = 852
-	DefaultAmsPorts_RUNTIME_SYSTEM_03 DefaultAmsPorts = 853
-	DefaultAmsPorts_RUNTIME_SYSTEM_04 DefaultAmsPorts = 854
-	DefaultAmsPorts_RUNTIME_SYSTEM_05 DefaultAmsPorts = 855
-	DefaultAmsPorts_RUNTIME_SYSTEM_06 DefaultAmsPorts = 856
-	DefaultAmsPorts_RUNTIME_SYSTEM_07 DefaultAmsPorts = 857
-	DefaultAmsPorts_RUNTIME_SYSTEM_08 DefaultAmsPorts = 858
-	DefaultAmsPorts_RUNTIME_SYSTEM_09 DefaultAmsPorts = 859
-	DefaultAmsPorts_RUNTIME_SYSTEM_10 DefaultAmsPorts = 860
-	DefaultAmsPorts_RUNTIME_SYSTEM_11 DefaultAmsPorts = 861
-	DefaultAmsPorts_RUNTIME_SYSTEM_12 DefaultAmsPorts = 862
-	DefaultAmsPorts_RUNTIME_SYSTEM_13 DefaultAmsPorts = 863
-	DefaultAmsPorts_RUNTIME_SYSTEM_14 DefaultAmsPorts = 864
-	DefaultAmsPorts_RUNTIME_SYSTEM_15 DefaultAmsPorts = 865
-	DefaultAmsPorts_RUNTIME_SYSTEM_16 DefaultAmsPorts = 866
-	DefaultAmsPorts_RUNTIME_SYSTEM_17 DefaultAmsPorts = 867
-	DefaultAmsPorts_RUNTIME_SYSTEM_18 DefaultAmsPorts = 868
-	DefaultAmsPorts_RUNTIME_SYSTEM_19 DefaultAmsPorts = 869
-	DefaultAmsPorts_RUNTIME_SYSTEM_20 DefaultAmsPorts = 870
-	DefaultAmsPorts_RUNTIME_SYSTEM_21 DefaultAmsPorts = 871
-	DefaultAmsPorts_RUNTIME_SYSTEM_22 DefaultAmsPorts = 872
-	DefaultAmsPorts_RUNTIME_SYSTEM_23 DefaultAmsPorts = 873
-	DefaultAmsPorts_RUNTIME_SYSTEM_24 DefaultAmsPorts = 874
-	DefaultAmsPorts_RUNTIME_SYSTEM_25 DefaultAmsPorts = 875
-	DefaultAmsPorts_RUNTIME_SYSTEM_26 DefaultAmsPorts = 876
-	DefaultAmsPorts_RUNTIME_SYSTEM_27 DefaultAmsPorts = 877
-	DefaultAmsPorts_RUNTIME_SYSTEM_28 DefaultAmsPorts = 878
-	DefaultAmsPorts_RUNTIME_SYSTEM_29 DefaultAmsPorts = 879
-	DefaultAmsPorts_RUNTIME_SYSTEM_30 DefaultAmsPorts = 880
-	DefaultAmsPorts_RUNTIME_SYSTEM_31 DefaultAmsPorts = 881
-	DefaultAmsPorts_RUNTIME_SYSTEM_32 DefaultAmsPorts = 882
-	DefaultAmsPorts_RUNTIME_SYSTEM_33 DefaultAmsPorts = 883
-	DefaultAmsPorts_RUNTIME_SYSTEM_34 DefaultAmsPorts = 884
-	DefaultAmsPorts_RUNTIME_SYSTEM_35 DefaultAmsPorts = 885
-	DefaultAmsPorts_RUNTIME_SYSTEM_36 DefaultAmsPorts = 886
-	DefaultAmsPorts_RUNTIME_SYSTEM_37 DefaultAmsPorts = 887
-	DefaultAmsPorts_RUNTIME_SYSTEM_38 DefaultAmsPorts = 888
-	DefaultAmsPorts_RUNTIME_SYSTEM_39 DefaultAmsPorts = 889
-	DefaultAmsPorts_RUNTIME_SYSTEM_40 DefaultAmsPorts = 890
-	DefaultAmsPorts_RUNTIME_SYSTEM_41 DefaultAmsPorts = 891
-	DefaultAmsPorts_RUNTIME_SYSTEM_42 DefaultAmsPorts = 892
-	DefaultAmsPorts_RUNTIME_SYSTEM_43 DefaultAmsPorts = 893
-	DefaultAmsPorts_RUNTIME_SYSTEM_44 DefaultAmsPorts = 894
-	DefaultAmsPorts_RUNTIME_SYSTEM_45 DefaultAmsPorts = 895
-	DefaultAmsPorts_RUNTIME_SYSTEM_46 DefaultAmsPorts = 896
-	DefaultAmsPorts_RUNTIME_SYSTEM_47 DefaultAmsPorts = 897
-	DefaultAmsPorts_RUNTIME_SYSTEM_48 DefaultAmsPorts = 898
-	DefaultAmsPorts_RUNTIME_SYSTEM_49 DefaultAmsPorts = 899
-	DefaultAmsPorts_NC DefaultAmsPorts = 500
-	DefaultAmsPorts_RESERVED DefaultAmsPorts = 400
-	DefaultAmsPorts_IO DefaultAmsPorts = 300
-	DefaultAmsPorts_REAL_TIME_CORE DefaultAmsPorts = 200
+const (
+	DefaultAmsPorts_CAM_CONTROLLER      DefaultAmsPorts = 900
+	DefaultAmsPorts_RUNTIME_SYSTEM_01   DefaultAmsPorts = 851
+	DefaultAmsPorts_RUNTIME_SYSTEM_02   DefaultAmsPorts = 852
+	DefaultAmsPorts_RUNTIME_SYSTEM_03   DefaultAmsPorts = 853
+	DefaultAmsPorts_RUNTIME_SYSTEM_04   DefaultAmsPorts = 854
+	DefaultAmsPorts_RUNTIME_SYSTEM_05   DefaultAmsPorts = 855
+	DefaultAmsPorts_RUNTIME_SYSTEM_06   DefaultAmsPorts = 856
+	DefaultAmsPorts_RUNTIME_SYSTEM_07   DefaultAmsPorts = 857
+	DefaultAmsPorts_RUNTIME_SYSTEM_08   DefaultAmsPorts = 858
+	DefaultAmsPorts_RUNTIME_SYSTEM_09   DefaultAmsPorts = 859
+	DefaultAmsPorts_RUNTIME_SYSTEM_10   DefaultAmsPorts = 860
+	DefaultAmsPorts_RUNTIME_SYSTEM_11   DefaultAmsPorts = 861
+	DefaultAmsPorts_RUNTIME_SYSTEM_12   DefaultAmsPorts = 862
+	DefaultAmsPorts_RUNTIME_SYSTEM_13   DefaultAmsPorts = 863
+	DefaultAmsPorts_RUNTIME_SYSTEM_14   DefaultAmsPorts = 864
+	DefaultAmsPorts_RUNTIME_SYSTEM_15   DefaultAmsPorts = 865
+	DefaultAmsPorts_RUNTIME_SYSTEM_16   DefaultAmsPorts = 866
+	DefaultAmsPorts_RUNTIME_SYSTEM_17   DefaultAmsPorts = 867
+	DefaultAmsPorts_RUNTIME_SYSTEM_18   DefaultAmsPorts = 868
+	DefaultAmsPorts_RUNTIME_SYSTEM_19   DefaultAmsPorts = 869
+	DefaultAmsPorts_RUNTIME_SYSTEM_20   DefaultAmsPorts = 870
+	DefaultAmsPorts_RUNTIME_SYSTEM_21   DefaultAmsPorts = 871
+	DefaultAmsPorts_RUNTIME_SYSTEM_22   DefaultAmsPorts = 872
+	DefaultAmsPorts_RUNTIME_SYSTEM_23   DefaultAmsPorts = 873
+	DefaultAmsPorts_RUNTIME_SYSTEM_24   DefaultAmsPorts = 874
+	DefaultAmsPorts_RUNTIME_SYSTEM_25   DefaultAmsPorts = 875
+	DefaultAmsPorts_RUNTIME_SYSTEM_26   DefaultAmsPorts = 876
+	DefaultAmsPorts_RUNTIME_SYSTEM_27   DefaultAmsPorts = 877
+	DefaultAmsPorts_RUNTIME_SYSTEM_28   DefaultAmsPorts = 878
+	DefaultAmsPorts_RUNTIME_SYSTEM_29   DefaultAmsPorts = 879
+	DefaultAmsPorts_RUNTIME_SYSTEM_30   DefaultAmsPorts = 880
+	DefaultAmsPorts_RUNTIME_SYSTEM_31   DefaultAmsPorts = 881
+	DefaultAmsPorts_RUNTIME_SYSTEM_32   DefaultAmsPorts = 882
+	DefaultAmsPorts_RUNTIME_SYSTEM_33   DefaultAmsPorts = 883
+	DefaultAmsPorts_RUNTIME_SYSTEM_34   DefaultAmsPorts = 884
+	DefaultAmsPorts_RUNTIME_SYSTEM_35   DefaultAmsPorts = 885
+	DefaultAmsPorts_RUNTIME_SYSTEM_36   DefaultAmsPorts = 886
+	DefaultAmsPorts_RUNTIME_SYSTEM_37   DefaultAmsPorts = 887
+	DefaultAmsPorts_RUNTIME_SYSTEM_38   DefaultAmsPorts = 888
+	DefaultAmsPorts_RUNTIME_SYSTEM_39   DefaultAmsPorts = 889
+	DefaultAmsPorts_RUNTIME_SYSTEM_40   DefaultAmsPorts = 890
+	DefaultAmsPorts_RUNTIME_SYSTEM_41   DefaultAmsPorts = 891
+	DefaultAmsPorts_RUNTIME_SYSTEM_42   DefaultAmsPorts = 892
+	DefaultAmsPorts_RUNTIME_SYSTEM_43   DefaultAmsPorts = 893
+	DefaultAmsPorts_RUNTIME_SYSTEM_44   DefaultAmsPorts = 894
+	DefaultAmsPorts_RUNTIME_SYSTEM_45   DefaultAmsPorts = 895
+	DefaultAmsPorts_RUNTIME_SYSTEM_46   DefaultAmsPorts = 896
+	DefaultAmsPorts_RUNTIME_SYSTEM_47   DefaultAmsPorts = 897
+	DefaultAmsPorts_RUNTIME_SYSTEM_48   DefaultAmsPorts = 898
+	DefaultAmsPorts_RUNTIME_SYSTEM_49   DefaultAmsPorts = 899
+	DefaultAmsPorts_NC                  DefaultAmsPorts = 500
+	DefaultAmsPorts_RESERVED            DefaultAmsPorts = 400
+	DefaultAmsPorts_IO                  DefaultAmsPorts = 300
+	DefaultAmsPorts_REAL_TIME_CORE      DefaultAmsPorts = 200
 	DefaultAmsPorts_EVENT_SYSTEM_LOGGER DefaultAmsPorts = 100
 )
 
@@ -96,7 +96,7 @@ var DefaultAmsPortsValues []DefaultAmsPorts
 
 func init() {
 	_ = errors.New
-	DefaultAmsPortsValues = []DefaultAmsPorts {
+	DefaultAmsPortsValues = []DefaultAmsPorts{
 		DefaultAmsPorts_CAM_CONTROLLER,
 		DefaultAmsPorts_RUNTIME_SYSTEM_01,
 		DefaultAmsPorts_RUNTIME_SYSTEM_02,
@@ -157,116 +157,116 @@ func init() {
 
 func DefaultAmsPortsByValue(value uint16) (enum DefaultAmsPorts, ok bool) {
 	switch value {
-		case 100:
-			return DefaultAmsPorts_EVENT_SYSTEM_LOGGER, true
-		case 200:
-			return DefaultAmsPorts_REAL_TIME_CORE, true
-		case 300:
-			return DefaultAmsPorts_IO, true
-		case 400:
-			return DefaultAmsPorts_RESERVED, true
-		case 500:
-			return DefaultAmsPorts_NC, true
-		case 851:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_01, true
-		case 852:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_02, true
-		case 853:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_03, true
-		case 854:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_04, true
-		case 855:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_05, true
-		case 856:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_06, true
-		case 857:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_07, true
-		case 858:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_08, true
-		case 859:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_09, true
-		case 860:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_10, true
-		case 861:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_11, true
-		case 862:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_12, true
-		case 863:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_13, true
-		case 864:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_14, true
-		case 865:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_15, true
-		case 866:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_16, true
-		case 867:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_17, true
-		case 868:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_18, true
-		case 869:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_19, true
-		case 870:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_20, true
-		case 871:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_21, true
-		case 872:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_22, true
-		case 873:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_23, true
-		case 874:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_24, true
-		case 875:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_25, true
-		case 876:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_26, true
-		case 877:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_27, true
-		case 878:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_28, true
-		case 879:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_29, true
-		case 880:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_30, true
-		case 881:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_31, true
-		case 882:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_32, true
-		case 883:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_33, true
-		case 884:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_34, true
-		case 885:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_35, true
-		case 886:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_36, true
-		case 887:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_37, true
-		case 888:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_38, true
-		case 889:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_39, true
-		case 890:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_40, true
-		case 891:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_41, true
-		case 892:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_42, true
-		case 893:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_43, true
-		case 894:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_44, true
-		case 895:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_45, true
-		case 896:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_46, true
-		case 897:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_47, true
-		case 898:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_48, true
-		case 899:
-			return DefaultAmsPorts_RUNTIME_SYSTEM_49, true
-		case 900:
-			return DefaultAmsPorts_CAM_CONTROLLER, true
+	case 100:
+		return DefaultAmsPorts_EVENT_SYSTEM_LOGGER, true
+	case 200:
+		return DefaultAmsPorts_REAL_TIME_CORE, true
+	case 300:
+		return DefaultAmsPorts_IO, true
+	case 400:
+		return DefaultAmsPorts_RESERVED, true
+	case 500:
+		return DefaultAmsPorts_NC, true
+	case 851:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_01, true
+	case 852:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_02, true
+	case 853:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_03, true
+	case 854:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_04, true
+	case 855:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_05, true
+	case 856:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_06, true
+	case 857:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_07, true
+	case 858:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_08, true
+	case 859:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_09, true
+	case 860:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_10, true
+	case 861:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_11, true
+	case 862:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_12, true
+	case 863:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_13, true
+	case 864:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_14, true
+	case 865:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_15, true
+	case 866:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_16, true
+	case 867:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_17, true
+	case 868:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_18, true
+	case 869:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_19, true
+	case 870:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_20, true
+	case 871:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_21, true
+	case 872:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_22, true
+	case 873:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_23, true
+	case 874:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_24, true
+	case 875:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_25, true
+	case 876:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_26, true
+	case 877:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_27, true
+	case 878:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_28, true
+	case 879:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_29, true
+	case 880:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_30, true
+	case 881:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_31, true
+	case 882:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_32, true
+	case 883:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_33, true
+	case 884:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_34, true
+	case 885:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_35, true
+	case 886:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_36, true
+	case 887:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_37, true
+	case 888:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_38, true
+	case 889:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_39, true
+	case 890:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_40, true
+	case 891:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_41, true
+	case 892:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_42, true
+	case 893:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_43, true
+	case 894:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_44, true
+	case 895:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_45, true
+	case 896:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_46, true
+	case 897:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_47, true
+	case 898:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_48, true
+	case 899:
+		return DefaultAmsPorts_RUNTIME_SYSTEM_49, true
+	case 900:
+		return DefaultAmsPorts_CAM_CONTROLLER, true
 	}
 	return 0, false
 }
@@ -387,13 +387,13 @@ func DefaultAmsPortsByName(value string) (enum DefaultAmsPorts, ok bool) {
 	return 0, false
 }
 
-func DefaultAmsPortsKnows(value uint16)  bool {
+func DefaultAmsPortsKnows(value uint16) bool {
 	for _, typeValue := range DefaultAmsPortsValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastDefaultAmsPorts(structType interface{}) DefaultAmsPorts {
@@ -563,4 +563,3 @@ func (e DefaultAmsPorts) PLC4XEnumName() string {
 func (e DefaultAmsPorts) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -61,6 +62,14 @@ type _MultipleServiceRequest struct {
 
 func (m *_MultipleServiceRequest) GetService() uint8 {
 	return 0x0A
+}
+
+func (m *_MultipleServiceRequest) GetResponse() bool {
+	return bool(false)
+}
+
+func (m *_MultipleServiceRequest) GetConnected() bool {
+	return false
 }
 
 ///////////////////////
@@ -106,10 +115,10 @@ func (m *_MultipleServiceRequest) GetRequestPath() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewMultipleServiceRequest factory function for _MultipleServiceRequest
-func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServiceRequest {
+func NewMultipleServiceRequest(data Services, serviceLen uint16, order IntegerEncoding) *_MultipleServiceRequest {
 	_result := &_MultipleServiceRequest{
 		Data:        data,
-		_CipService: NewCipService(serviceLen),
+		_CipService: NewCipService(serviceLen, order),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -149,11 +158,11 @@ func (m *_MultipleServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MultipleServiceRequestParse(theBytes []byte, serviceLen uint16) (MultipleServiceRequest, error) {
-	return MultipleServiceRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceLen)
+func MultipleServiceRequestParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (MultipleServiceRequest, error) {
+	return MultipleServiceRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
 }
 
-func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceRequest, error) {
+func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (MultipleServiceRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceRequest"); pullErr != nil {
@@ -184,7 +193,7 @@ func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for data")
 	}
-	_data, _dataErr := ServicesParseWithBuffer(ctx, readBuffer, uint16(uint16(serviceLen)-uint16(uint16(6))))
+	_data, _dataErr := ServicesParseWithBuffer(ctx, readBuffer, uint16(uint16(serviceLen)-uint16(uint16(6))), IntegerEncoding(order))
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of MultipleServiceRequest")
 	}
@@ -201,6 +210,7 @@ func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	_child := &_MultipleServiceRequest{
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
+			Order:      order,
 		},
 		Data: data,
 	}
@@ -209,7 +219,7 @@ func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils
 }
 
 func (m *_MultipleServiceRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

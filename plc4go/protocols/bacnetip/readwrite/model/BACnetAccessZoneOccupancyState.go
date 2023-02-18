@@ -34,22 +34,22 @@ type IBACnetAccessZoneOccupancyState interface {
 	utils.Serializable
 }
 
-const(
-	BACnetAccessZoneOccupancyState_NORMAL BACnetAccessZoneOccupancyState = 0
-	BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT BACnetAccessZoneOccupancyState = 1
-	BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT BACnetAccessZoneOccupancyState = 2
-	BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT BACnetAccessZoneOccupancyState = 3
-	BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT BACnetAccessZoneOccupancyState = 4
-	BACnetAccessZoneOccupancyState_DISABLED BACnetAccessZoneOccupancyState = 5
-	BACnetAccessZoneOccupancyState_NOT_SUPPORTED BACnetAccessZoneOccupancyState = 6
-	BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE BACnetAccessZoneOccupancyState = 0XFFFF
+const (
+	BACnetAccessZoneOccupancyState_NORMAL                   BACnetAccessZoneOccupancyState = 0
+	BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT        BACnetAccessZoneOccupancyState = 1
+	BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT           BACnetAccessZoneOccupancyState = 2
+	BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT           BACnetAccessZoneOccupancyState = 3
+	BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT        BACnetAccessZoneOccupancyState = 4
+	BACnetAccessZoneOccupancyState_DISABLED                 BACnetAccessZoneOccupancyState = 5
+	BACnetAccessZoneOccupancyState_NOT_SUPPORTED            BACnetAccessZoneOccupancyState = 6
+	BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE BACnetAccessZoneOccupancyState = 0xFFFF
 )
 
 var BACnetAccessZoneOccupancyStateValues []BACnetAccessZoneOccupancyState
 
 func init() {
 	_ = errors.New
-	BACnetAccessZoneOccupancyStateValues = []BACnetAccessZoneOccupancyState {
+	BACnetAccessZoneOccupancyStateValues = []BACnetAccessZoneOccupancyState{
 		BACnetAccessZoneOccupancyState_NORMAL,
 		BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT,
 		BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT,
@@ -63,22 +63,22 @@ func init() {
 
 func BACnetAccessZoneOccupancyStateByValue(value uint16) (enum BACnetAccessZoneOccupancyState, ok bool) {
 	switch value {
-		case 0:
-			return BACnetAccessZoneOccupancyState_NORMAL, true
-		case 0XFFFF:
-			return BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT, true
-		case 2:
-			return BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT, true
-		case 3:
-			return BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT, true
-		case 4:
-			return BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT, true
-		case 5:
-			return BACnetAccessZoneOccupancyState_DISABLED, true
-		case 6:
-			return BACnetAccessZoneOccupancyState_NOT_SUPPORTED, true
+	case 0:
+		return BACnetAccessZoneOccupancyState_NORMAL, true
+	case 0xFFFF:
+		return BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetAccessZoneOccupancyState_BELOW_LOWER_LIMIT, true
+	case 2:
+		return BACnetAccessZoneOccupancyState_AT_LOWER_LIMIT, true
+	case 3:
+		return BACnetAccessZoneOccupancyState_AT_UPPER_LIMIT, true
+	case 4:
+		return BACnetAccessZoneOccupancyState_ABOVE_UPPER_LIMIT, true
+	case 5:
+		return BACnetAccessZoneOccupancyState_DISABLED, true
+	case 6:
+		return BACnetAccessZoneOccupancyState_NOT_SUPPORTED, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func BACnetAccessZoneOccupancyStateByName(value string) (enum BACnetAccessZoneOc
 	return 0, false
 }
 
-func BACnetAccessZoneOccupancyStateKnows(value uint16)  bool {
+func BACnetAccessZoneOccupancyStateKnows(value uint16) bool {
 	for _, typeValue := range BACnetAccessZoneOccupancyStateValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetAccessZoneOccupancyState(structType interface{}) BACnetAccessZoneOccupancyState {
@@ -187,4 +187,3 @@ func (e BACnetAccessZoneOccupancyState) PLC4XEnumName() string {
 func (e BACnetAccessZoneOccupancyState) String() string {
 	return e.PLC4XEnumName()
 }
-

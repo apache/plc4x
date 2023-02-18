@@ -34,21 +34,21 @@ type IBACnetBackupState interface {
 	utils.Serializable
 }
 
-const(
-	BACnetBackupState_IDLE BACnetBackupState = 0
-	BACnetBackupState_PREPARING_FOR_BACKUP BACnetBackupState = 1
+const (
+	BACnetBackupState_IDLE                  BACnetBackupState = 0
+	BACnetBackupState_PREPARING_FOR_BACKUP  BACnetBackupState = 1
 	BACnetBackupState_PREPARING_FOR_RESTORE BACnetBackupState = 2
-	BACnetBackupState_PERFORMING_A_BACKUP BACnetBackupState = 3
-	BACnetBackupState_PERFORMING_A_RESTORE BACnetBackupState = 4
-	BACnetBackupState_BACKUP_FAILURE BACnetBackupState = 5
-	BACnetBackupState_RESTORE_FAILURE BACnetBackupState = 6
+	BACnetBackupState_PERFORMING_A_BACKUP   BACnetBackupState = 3
+	BACnetBackupState_PERFORMING_A_RESTORE  BACnetBackupState = 4
+	BACnetBackupState_BACKUP_FAILURE        BACnetBackupState = 5
+	BACnetBackupState_RESTORE_FAILURE       BACnetBackupState = 6
 )
 
 var BACnetBackupStateValues []BACnetBackupState
 
 func init() {
 	_ = errors.New
-	BACnetBackupStateValues = []BACnetBackupState {
+	BACnetBackupStateValues = []BACnetBackupState{
 		BACnetBackupState_IDLE,
 		BACnetBackupState_PREPARING_FOR_BACKUP,
 		BACnetBackupState_PREPARING_FOR_RESTORE,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetBackupStateByValue(value uint8) (enum BACnetBackupState, ok bool) {
 	switch value {
-		case 0:
-			return BACnetBackupState_IDLE, true
-		case 1:
-			return BACnetBackupState_PREPARING_FOR_BACKUP, true
-		case 2:
-			return BACnetBackupState_PREPARING_FOR_RESTORE, true
-		case 3:
-			return BACnetBackupState_PERFORMING_A_BACKUP, true
-		case 4:
-			return BACnetBackupState_PERFORMING_A_RESTORE, true
-		case 5:
-			return BACnetBackupState_BACKUP_FAILURE, true
-		case 6:
-			return BACnetBackupState_RESTORE_FAILURE, true
+	case 0:
+		return BACnetBackupState_IDLE, true
+	case 1:
+		return BACnetBackupState_PREPARING_FOR_BACKUP, true
+	case 2:
+		return BACnetBackupState_PREPARING_FOR_RESTORE, true
+	case 3:
+		return BACnetBackupState_PERFORMING_A_BACKUP, true
+	case 4:
+		return BACnetBackupState_PERFORMING_A_RESTORE, true
+	case 5:
+		return BACnetBackupState_BACKUP_FAILURE, true
+	case 6:
+		return BACnetBackupState_RESTORE_FAILURE, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetBackupStateByName(value string) (enum BACnetBackupState, ok bool) {
 	return 0, false
 }
 
-func BACnetBackupStateKnows(value uint8)  bool {
+func BACnetBackupStateKnows(value uint8) bool {
 	for _, typeValue := range BACnetBackupStateValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetBackupState(structType interface{}) BACnetBackupState {
@@ -179,4 +179,3 @@ func (e BACnetBackupState) PLC4XEnumName() string {
 func (e BACnetBackupState) String() string {
 	return e.PLC4XEnumName()
 }
-

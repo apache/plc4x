@@ -37,7 +37,7 @@ func (m AdsParserHelper) Parse(typeName string, arguments []string, io utils.Rea
 	case "AmsSerialFrame":
 		return model.AmsSerialFrameParseWithBuffer(context.Background(), io)
 	case "DataItem":
-        plcValueType, _ := model.PlcValueTypeByName(arguments[0])
+		plcValueType, _ := model.PlcValueTypeByName(arguments[0])
 		stringLength, err := utils.StrToInt32(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")

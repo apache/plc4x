@@ -34,20 +34,20 @@ type IBACnetProgramRequest interface {
 	utils.Serializable
 }
 
-const(
-	BACnetProgramRequest_READY BACnetProgramRequest = 0
-	BACnetProgramRequest_LOAD BACnetProgramRequest = 1
-	BACnetProgramRequest_RUN BACnetProgramRequest = 2
-	BACnetProgramRequest_HALT BACnetProgramRequest = 3
+const (
+	BACnetProgramRequest_READY   BACnetProgramRequest = 0
+	BACnetProgramRequest_LOAD    BACnetProgramRequest = 1
+	BACnetProgramRequest_RUN     BACnetProgramRequest = 2
+	BACnetProgramRequest_HALT    BACnetProgramRequest = 3
 	BACnetProgramRequest_RESTART BACnetProgramRequest = 4
-	BACnetProgramRequest_UNLOAD BACnetProgramRequest = 5
+	BACnetProgramRequest_UNLOAD  BACnetProgramRequest = 5
 )
 
 var BACnetProgramRequestValues []BACnetProgramRequest
 
 func init() {
 	_ = errors.New
-	BACnetProgramRequestValues = []BACnetProgramRequest {
+	BACnetProgramRequestValues = []BACnetProgramRequest{
 		BACnetProgramRequest_READY,
 		BACnetProgramRequest_LOAD,
 		BACnetProgramRequest_RUN,
@@ -59,18 +59,18 @@ func init() {
 
 func BACnetProgramRequestByValue(value uint8) (enum BACnetProgramRequest, ok bool) {
 	switch value {
-		case 0:
-			return BACnetProgramRequest_READY, true
-		case 1:
-			return BACnetProgramRequest_LOAD, true
-		case 2:
-			return BACnetProgramRequest_RUN, true
-		case 3:
-			return BACnetProgramRequest_HALT, true
-		case 4:
-			return BACnetProgramRequest_RESTART, true
-		case 5:
-			return BACnetProgramRequest_UNLOAD, true
+	case 0:
+		return BACnetProgramRequest_READY, true
+	case 1:
+		return BACnetProgramRequest_LOAD, true
+	case 2:
+		return BACnetProgramRequest_RUN, true
+	case 3:
+		return BACnetProgramRequest_HALT, true
+	case 4:
+		return BACnetProgramRequest_RESTART, true
+	case 5:
+		return BACnetProgramRequest_UNLOAD, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func BACnetProgramRequestByName(value string) (enum BACnetProgramRequest, ok boo
 	return 0, false
 }
 
-func BACnetProgramRequestKnows(value uint8)  bool {
+func BACnetProgramRequestKnows(value uint8) bool {
 	for _, typeValue := range BACnetProgramRequestValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetProgramRequest(structType interface{}) BACnetProgramRequest {
@@ -171,4 +171,3 @@ func (e BACnetProgramRequest) PLC4XEnumName() string {
 func (e BACnetProgramRequest) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -34,12 +34,12 @@ type IBACnetSecurityLevel interface {
 	utils.Serializable
 }
 
-const(
-	BACnetSecurityLevel_INCAPABLE BACnetSecurityLevel = 0
-	BACnetSecurityLevel_PLAIN BACnetSecurityLevel = 1
-	BACnetSecurityLevel_SIGNED BACnetSecurityLevel = 2
-	BACnetSecurityLevel_ENCRYPTED BACnetSecurityLevel = 3
-	BACnetSecurityLevel_SIGNED_END_TO_END BACnetSecurityLevel = 4
+const (
+	BACnetSecurityLevel_INCAPABLE            BACnetSecurityLevel = 0
+	BACnetSecurityLevel_PLAIN                BACnetSecurityLevel = 1
+	BACnetSecurityLevel_SIGNED               BACnetSecurityLevel = 2
+	BACnetSecurityLevel_ENCRYPTED            BACnetSecurityLevel = 3
+	BACnetSecurityLevel_SIGNED_END_TO_END    BACnetSecurityLevel = 4
 	BACnetSecurityLevel_ENCRYPTED_END_TO_END BACnetSecurityLevel = 5
 )
 
@@ -47,7 +47,7 @@ var BACnetSecurityLevelValues []BACnetSecurityLevel
 
 func init() {
 	_ = errors.New
-	BACnetSecurityLevelValues = []BACnetSecurityLevel {
+	BACnetSecurityLevelValues = []BACnetSecurityLevel{
 		BACnetSecurityLevel_INCAPABLE,
 		BACnetSecurityLevel_PLAIN,
 		BACnetSecurityLevel_SIGNED,
@@ -59,18 +59,18 @@ func init() {
 
 func BACnetSecurityLevelByValue(value uint8) (enum BACnetSecurityLevel, ok bool) {
 	switch value {
-		case 0:
-			return BACnetSecurityLevel_INCAPABLE, true
-		case 1:
-			return BACnetSecurityLevel_PLAIN, true
-		case 2:
-			return BACnetSecurityLevel_SIGNED, true
-		case 3:
-			return BACnetSecurityLevel_ENCRYPTED, true
-		case 4:
-			return BACnetSecurityLevel_SIGNED_END_TO_END, true
-		case 5:
-			return BACnetSecurityLevel_ENCRYPTED_END_TO_END, true
+	case 0:
+		return BACnetSecurityLevel_INCAPABLE, true
+	case 1:
+		return BACnetSecurityLevel_PLAIN, true
+	case 2:
+		return BACnetSecurityLevel_SIGNED, true
+	case 3:
+		return BACnetSecurityLevel_ENCRYPTED, true
+	case 4:
+		return BACnetSecurityLevel_SIGNED_END_TO_END, true
+	case 5:
+		return BACnetSecurityLevel_ENCRYPTED_END_TO_END, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func BACnetSecurityLevelByName(value string) (enum BACnetSecurityLevel, ok bool)
 	return 0, false
 }
 
-func BACnetSecurityLevelKnows(value uint8)  bool {
+func BACnetSecurityLevelKnows(value uint8) bool {
 	for _, typeValue := range BACnetSecurityLevelValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetSecurityLevel(structType interface{}) BACnetSecurityLevel {
@@ -171,4 +171,3 @@ func (e BACnetSecurityLevel) PLC4XEnumName() string {
 func (e BACnetSecurityLevel) String() string {
 	return e.PLC4XEnumName()
 }
-

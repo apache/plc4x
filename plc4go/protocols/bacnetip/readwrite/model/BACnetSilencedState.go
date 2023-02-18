@@ -34,19 +34,19 @@ type IBACnetSilencedState interface {
 	utils.Serializable
 }
 
-const(
-	BACnetSilencedState_UNSILENCED BACnetSilencedState = 0
-	BACnetSilencedState_AUDIBLE_SILENCED BACnetSilencedState = 1
-	BACnetSilencedState_VISIBLE_SILENCED BACnetSilencedState = 2
-	BACnetSilencedState_ALL_SILENCED BACnetSilencedState = 3
-	BACnetSilencedState_VENDOR_PROPRIETARY_VALUE BACnetSilencedState = 0XFFFF
+const (
+	BACnetSilencedState_UNSILENCED               BACnetSilencedState = 0
+	BACnetSilencedState_AUDIBLE_SILENCED         BACnetSilencedState = 1
+	BACnetSilencedState_VISIBLE_SILENCED         BACnetSilencedState = 2
+	BACnetSilencedState_ALL_SILENCED             BACnetSilencedState = 3
+	BACnetSilencedState_VENDOR_PROPRIETARY_VALUE BACnetSilencedState = 0xFFFF
 )
 
 var BACnetSilencedStateValues []BACnetSilencedState
 
 func init() {
 	_ = errors.New
-	BACnetSilencedStateValues = []BACnetSilencedState {
+	BACnetSilencedStateValues = []BACnetSilencedState{
 		BACnetSilencedState_UNSILENCED,
 		BACnetSilencedState_AUDIBLE_SILENCED,
 		BACnetSilencedState_VISIBLE_SILENCED,
@@ -57,16 +57,16 @@ func init() {
 
 func BACnetSilencedStateByValue(value uint16) (enum BACnetSilencedState, ok bool) {
 	switch value {
-		case 0:
-			return BACnetSilencedState_UNSILENCED, true
-		case 0XFFFF:
-			return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetSilencedState_AUDIBLE_SILENCED, true
-		case 2:
-			return BACnetSilencedState_VISIBLE_SILENCED, true
-		case 3:
-			return BACnetSilencedState_ALL_SILENCED, true
+	case 0:
+		return BACnetSilencedState_UNSILENCED, true
+	case 0xFFFF:
+		return BACnetSilencedState_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetSilencedState_AUDIBLE_SILENCED, true
+	case 2:
+		return BACnetSilencedState_VISIBLE_SILENCED, true
+	case 3:
+		return BACnetSilencedState_ALL_SILENCED, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func BACnetSilencedStateByName(value string) (enum BACnetSilencedState, ok bool)
 	return 0, false
 }
 
-func BACnetSilencedStateKnows(value uint16)  bool {
+func BACnetSilencedStateKnows(value uint16) bool {
 	for _, typeValue := range BACnetSilencedStateValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetSilencedState(structType interface{}) BACnetSilencedState {
@@ -163,4 +163,3 @@ func (e BACnetSilencedState) PLC4XEnumName() string {
 func (e BACnetSilencedState) String() string {
 	return e.PLC4XEnumName()
 }
-

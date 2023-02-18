@@ -34,18 +34,18 @@ type IBACnetAccessUserType interface {
 	utils.Serializable
 }
 
-const(
-	BACnetAccessUserType_ASSET BACnetAccessUserType = 0
-	BACnetAccessUserType_GROUP BACnetAccessUserType = 1
-	BACnetAccessUserType_PERSON BACnetAccessUserType = 2
-	BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE BACnetAccessUserType = 0XFFFF
+const (
+	BACnetAccessUserType_ASSET                    BACnetAccessUserType = 0
+	BACnetAccessUserType_GROUP                    BACnetAccessUserType = 1
+	BACnetAccessUserType_PERSON                   BACnetAccessUserType = 2
+	BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE BACnetAccessUserType = 0xFFFF
 )
 
 var BACnetAccessUserTypeValues []BACnetAccessUserType
 
 func init() {
 	_ = errors.New
-	BACnetAccessUserTypeValues = []BACnetAccessUserType {
+	BACnetAccessUserTypeValues = []BACnetAccessUserType{
 		BACnetAccessUserType_ASSET,
 		BACnetAccessUserType_GROUP,
 		BACnetAccessUserType_PERSON,
@@ -55,14 +55,14 @@ func init() {
 
 func BACnetAccessUserTypeByValue(value uint16) (enum BACnetAccessUserType, ok bool) {
 	switch value {
-		case 0:
-			return BACnetAccessUserType_ASSET, true
-		case 0XFFFF:
-			return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetAccessUserType_GROUP, true
-		case 2:
-			return BACnetAccessUserType_PERSON, true
+	case 0:
+		return BACnetAccessUserType_ASSET, true
+	case 0xFFFF:
+		return BACnetAccessUserType_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetAccessUserType_GROUP, true
+	case 2:
+		return BACnetAccessUserType_PERSON, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func BACnetAccessUserTypeByName(value string) (enum BACnetAccessUserType, ok boo
 	return 0, false
 }
 
-func BACnetAccessUserTypeKnows(value uint16)  bool {
+func BACnetAccessUserTypeKnows(value uint16) bool {
 	for _, typeValue := range BACnetAccessUserTypeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetAccessUserType(structType interface{}) BACnetAccessUserType {
@@ -155,4 +155,3 @@ func (e BACnetAccessUserType) PLC4XEnumName() string {
 func (e BACnetAccessUserType) String() string {
 	return e.PLC4XEnumName()
 }
-

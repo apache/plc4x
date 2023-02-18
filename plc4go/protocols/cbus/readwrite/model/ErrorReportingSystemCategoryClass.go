@@ -34,30 +34,30 @@ type IErrorReportingSystemCategoryClass interface {
 	utils.Serializable
 }
 
-const(
-	ErrorReportingSystemCategoryClass_RESERVED_0 ErrorReportingSystemCategoryClass = 0x0
-	ErrorReportingSystemCategoryClass_RESERVED_1 ErrorReportingSystemCategoryClass = 0x1
-	ErrorReportingSystemCategoryClass_RESERVED_2 ErrorReportingSystemCategoryClass = 0x2
-	ErrorReportingSystemCategoryClass_RESERVED_3 ErrorReportingSystemCategoryClass = 0x3
-	ErrorReportingSystemCategoryClass_RESERVED_4 ErrorReportingSystemCategoryClass = 0x4
-	ErrorReportingSystemCategoryClass_INPUT_UNITS ErrorReportingSystemCategoryClass = 0x5
-	ErrorReportingSystemCategoryClass_RESERVED_6 ErrorReportingSystemCategoryClass = 0x6
-	ErrorReportingSystemCategoryClass_RESERVED_7 ErrorReportingSystemCategoryClass = 0x7
-	ErrorReportingSystemCategoryClass_RESERVED_8 ErrorReportingSystemCategoryClass = 0x8
-	ErrorReportingSystemCategoryClass_SUPPORT_UNITS ErrorReportingSystemCategoryClass = 0x9
-	ErrorReportingSystemCategoryClass_RESERVED_10 ErrorReportingSystemCategoryClass = 0xA
+const (
+	ErrorReportingSystemCategoryClass_RESERVED_0                  ErrorReportingSystemCategoryClass = 0x0
+	ErrorReportingSystemCategoryClass_RESERVED_1                  ErrorReportingSystemCategoryClass = 0x1
+	ErrorReportingSystemCategoryClass_RESERVED_2                  ErrorReportingSystemCategoryClass = 0x2
+	ErrorReportingSystemCategoryClass_RESERVED_3                  ErrorReportingSystemCategoryClass = 0x3
+	ErrorReportingSystemCategoryClass_RESERVED_4                  ErrorReportingSystemCategoryClass = 0x4
+	ErrorReportingSystemCategoryClass_INPUT_UNITS                 ErrorReportingSystemCategoryClass = 0x5
+	ErrorReportingSystemCategoryClass_RESERVED_6                  ErrorReportingSystemCategoryClass = 0x6
+	ErrorReportingSystemCategoryClass_RESERVED_7                  ErrorReportingSystemCategoryClass = 0x7
+	ErrorReportingSystemCategoryClass_RESERVED_8                  ErrorReportingSystemCategoryClass = 0x8
+	ErrorReportingSystemCategoryClass_SUPPORT_UNITS               ErrorReportingSystemCategoryClass = 0x9
+	ErrorReportingSystemCategoryClass_RESERVED_10                 ErrorReportingSystemCategoryClass = 0xA
 	ErrorReportingSystemCategoryClass_BUILDING_MANAGEMENT_SYSTEMS ErrorReportingSystemCategoryClass = 0xB
-	ErrorReportingSystemCategoryClass_RESERVED_12 ErrorReportingSystemCategoryClass = 0xC
-	ErrorReportingSystemCategoryClass_OUTPUT_UNITS ErrorReportingSystemCategoryClass = 0xD
-	ErrorReportingSystemCategoryClass_RESERVED_14 ErrorReportingSystemCategoryClass = 0xE
-	ErrorReportingSystemCategoryClass_CLIMATE_CONTROLLERS ErrorReportingSystemCategoryClass = 0xF
+	ErrorReportingSystemCategoryClass_RESERVED_12                 ErrorReportingSystemCategoryClass = 0xC
+	ErrorReportingSystemCategoryClass_OUTPUT_UNITS                ErrorReportingSystemCategoryClass = 0xD
+	ErrorReportingSystemCategoryClass_RESERVED_14                 ErrorReportingSystemCategoryClass = 0xE
+	ErrorReportingSystemCategoryClass_CLIMATE_CONTROLLERS         ErrorReportingSystemCategoryClass = 0xF
 )
 
 var ErrorReportingSystemCategoryClassValues []ErrorReportingSystemCategoryClass
 
 func init() {
 	_ = errors.New
-	ErrorReportingSystemCategoryClassValues = []ErrorReportingSystemCategoryClass {
+	ErrorReportingSystemCategoryClassValues = []ErrorReportingSystemCategoryClass{
 		ErrorReportingSystemCategoryClass_RESERVED_0,
 		ErrorReportingSystemCategoryClass_RESERVED_1,
 		ErrorReportingSystemCategoryClass_RESERVED_2,
@@ -79,38 +79,38 @@ func init() {
 
 func ErrorReportingSystemCategoryClassByValue(value uint8) (enum ErrorReportingSystemCategoryClass, ok bool) {
 	switch value {
-		case 0x0:
-			return ErrorReportingSystemCategoryClass_RESERVED_0, true
-		case 0x1:
-			return ErrorReportingSystemCategoryClass_RESERVED_1, true
-		case 0x2:
-			return ErrorReportingSystemCategoryClass_RESERVED_2, true
-		case 0x3:
-			return ErrorReportingSystemCategoryClass_RESERVED_3, true
-		case 0x4:
-			return ErrorReportingSystemCategoryClass_RESERVED_4, true
-		case 0x5:
-			return ErrorReportingSystemCategoryClass_INPUT_UNITS, true
-		case 0x6:
-			return ErrorReportingSystemCategoryClass_RESERVED_6, true
-		case 0x7:
-			return ErrorReportingSystemCategoryClass_RESERVED_7, true
-		case 0x8:
-			return ErrorReportingSystemCategoryClass_RESERVED_8, true
-		case 0x9:
-			return ErrorReportingSystemCategoryClass_SUPPORT_UNITS, true
-		case 0xA:
-			return ErrorReportingSystemCategoryClass_RESERVED_10, true
-		case 0xB:
-			return ErrorReportingSystemCategoryClass_BUILDING_MANAGEMENT_SYSTEMS, true
-		case 0xC:
-			return ErrorReportingSystemCategoryClass_RESERVED_12, true
-		case 0xD:
-			return ErrorReportingSystemCategoryClass_OUTPUT_UNITS, true
-		case 0xE:
-			return ErrorReportingSystemCategoryClass_RESERVED_14, true
-		case 0xF:
-			return ErrorReportingSystemCategoryClass_CLIMATE_CONTROLLERS, true
+	case 0x0:
+		return ErrorReportingSystemCategoryClass_RESERVED_0, true
+	case 0x1:
+		return ErrorReportingSystemCategoryClass_RESERVED_1, true
+	case 0x2:
+		return ErrorReportingSystemCategoryClass_RESERVED_2, true
+	case 0x3:
+		return ErrorReportingSystemCategoryClass_RESERVED_3, true
+	case 0x4:
+		return ErrorReportingSystemCategoryClass_RESERVED_4, true
+	case 0x5:
+		return ErrorReportingSystemCategoryClass_INPUT_UNITS, true
+	case 0x6:
+		return ErrorReportingSystemCategoryClass_RESERVED_6, true
+	case 0x7:
+		return ErrorReportingSystemCategoryClass_RESERVED_7, true
+	case 0x8:
+		return ErrorReportingSystemCategoryClass_RESERVED_8, true
+	case 0x9:
+		return ErrorReportingSystemCategoryClass_SUPPORT_UNITS, true
+	case 0xA:
+		return ErrorReportingSystemCategoryClass_RESERVED_10, true
+	case 0xB:
+		return ErrorReportingSystemCategoryClass_BUILDING_MANAGEMENT_SYSTEMS, true
+	case 0xC:
+		return ErrorReportingSystemCategoryClass_RESERVED_12, true
+	case 0xD:
+		return ErrorReportingSystemCategoryClass_OUTPUT_UNITS, true
+	case 0xE:
+		return ErrorReportingSystemCategoryClass_RESERVED_14, true
+	case 0xF:
+		return ErrorReportingSystemCategoryClass_CLIMATE_CONTROLLERS, true
 	}
 	return 0, false
 }
@@ -153,13 +153,13 @@ func ErrorReportingSystemCategoryClassByName(value string) (enum ErrorReportingS
 	return 0, false
 }
 
-func ErrorReportingSystemCategoryClassKnows(value uint8)  bool {
+func ErrorReportingSystemCategoryClassKnows(value uint8) bool {
 	for _, typeValue := range ErrorReportingSystemCategoryClassValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastErrorReportingSystemCategoryClass(structType interface{}) ErrorReportingSystemCategoryClass {
@@ -251,4 +251,3 @@ func (e ErrorReportingSystemCategoryClass) PLC4XEnumName() string {
 func (e ErrorReportingSystemCategoryClass) String() string {
 	return e.PLC4XEnumName()
 }
-

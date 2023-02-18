@@ -34,17 +34,17 @@ type IBACnetIPMode interface {
 	utils.Serializable
 }
 
-const(
-	BACnetIPMode_NORMAL BACnetIPMode = 0
+const (
+	BACnetIPMode_NORMAL  BACnetIPMode = 0
 	BACnetIPMode_FOREIGN BACnetIPMode = 1
-	BACnetIPMode_BBMD BACnetIPMode = 2
+	BACnetIPMode_BBMD    BACnetIPMode = 2
 )
 
 var BACnetIPModeValues []BACnetIPMode
 
 func init() {
 	_ = errors.New
-	BACnetIPModeValues = []BACnetIPMode {
+	BACnetIPModeValues = []BACnetIPMode{
 		BACnetIPMode_NORMAL,
 		BACnetIPMode_FOREIGN,
 		BACnetIPMode_BBMD,
@@ -53,12 +53,12 @@ func init() {
 
 func BACnetIPModeByValue(value uint8) (enum BACnetIPMode, ok bool) {
 	switch value {
-		case 0:
-			return BACnetIPMode_NORMAL, true
-		case 1:
-			return BACnetIPMode_FOREIGN, true
-		case 2:
-			return BACnetIPMode_BBMD, true
+	case 0:
+		return BACnetIPMode_NORMAL, true
+	case 1:
+		return BACnetIPMode_FOREIGN, true
+	case 2:
+		return BACnetIPMode_BBMD, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func BACnetIPModeByName(value string) (enum BACnetIPMode, ok bool) {
 	return 0, false
 }
 
-func BACnetIPModeKnows(value uint8)  bool {
+func BACnetIPModeKnows(value uint8) bool {
 	for _, typeValue := range BACnetIPModeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetIPMode(structType interface{}) BACnetIPMode {
@@ -147,4 +147,3 @@ func (e BACnetIPMode) PLC4XEnumName() string {
 func (e BACnetIPMode) String() string {
 	return e.PLC4XEnumName()
 }
-

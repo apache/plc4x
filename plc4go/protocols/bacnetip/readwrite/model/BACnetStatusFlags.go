@@ -34,10 +34,10 @@ type IBACnetStatusFlags interface {
 	utils.Serializable
 }
 
-const(
-	BACnetStatusFlags_IN_ALARM BACnetStatusFlags = 0
-	BACnetStatusFlags_FAULT BACnetStatusFlags = 1
-	BACnetStatusFlags_OVERRIDDEN BACnetStatusFlags = 2
+const (
+	BACnetStatusFlags_IN_ALARM       BACnetStatusFlags = 0
+	BACnetStatusFlags_FAULT          BACnetStatusFlags = 1
+	BACnetStatusFlags_OVERRIDDEN     BACnetStatusFlags = 2
 	BACnetStatusFlags_OUT_OF_SERVICE BACnetStatusFlags = 3
 )
 
@@ -45,7 +45,7 @@ var BACnetStatusFlagsValues []BACnetStatusFlags
 
 func init() {
 	_ = errors.New
-	BACnetStatusFlagsValues = []BACnetStatusFlags {
+	BACnetStatusFlagsValues = []BACnetStatusFlags{
 		BACnetStatusFlags_IN_ALARM,
 		BACnetStatusFlags_FAULT,
 		BACnetStatusFlags_OVERRIDDEN,
@@ -55,14 +55,14 @@ func init() {
 
 func BACnetStatusFlagsByValue(value uint8) (enum BACnetStatusFlags, ok bool) {
 	switch value {
-		case 0:
-			return BACnetStatusFlags_IN_ALARM, true
-		case 1:
-			return BACnetStatusFlags_FAULT, true
-		case 2:
-			return BACnetStatusFlags_OVERRIDDEN, true
-		case 3:
-			return BACnetStatusFlags_OUT_OF_SERVICE, true
+	case 0:
+		return BACnetStatusFlags_IN_ALARM, true
+	case 1:
+		return BACnetStatusFlags_FAULT, true
+	case 2:
+		return BACnetStatusFlags_OVERRIDDEN, true
+	case 3:
+		return BACnetStatusFlags_OUT_OF_SERVICE, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func BACnetStatusFlagsByName(value string) (enum BACnetStatusFlags, ok bool) {
 	return 0, false
 }
 
-func BACnetStatusFlagsKnows(value uint8)  bool {
+func BACnetStatusFlagsKnows(value uint8) bool {
 	for _, typeValue := range BACnetStatusFlagsValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetStatusFlags(structType interface{}) BACnetStatusFlags {
@@ -155,4 +155,3 @@ func (e BACnetStatusFlags) PLC4XEnumName() string {
 func (e BACnetStatusFlags) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -34,22 +34,22 @@ type IBACnetFaultType interface {
 	utils.Serializable
 }
 
-const(
-	BACnetFaultType_NONE BACnetFaultType = 0
+const (
+	BACnetFaultType_NONE                  BACnetFaultType = 0
 	BACnetFaultType_FAULT_CHARACTERSTRING BACnetFaultType = 1
-	BACnetFaultType_FAULT_EXTENDED BACnetFaultType = 2
-	BACnetFaultType_FAULT_LIFE_SAFETY BACnetFaultType = 3
-	BACnetFaultType_FAULT_STATE BACnetFaultType = 4
-	BACnetFaultType_FAULT_STATUS_FLAGS BACnetFaultType = 5
-	BACnetFaultType_FAULT_OUT_OF_RANGE BACnetFaultType = 6
-	BACnetFaultType_FAULT_LISTED BACnetFaultType = 7
+	BACnetFaultType_FAULT_EXTENDED        BACnetFaultType = 2
+	BACnetFaultType_FAULT_LIFE_SAFETY     BACnetFaultType = 3
+	BACnetFaultType_FAULT_STATE           BACnetFaultType = 4
+	BACnetFaultType_FAULT_STATUS_FLAGS    BACnetFaultType = 5
+	BACnetFaultType_FAULT_OUT_OF_RANGE    BACnetFaultType = 6
+	BACnetFaultType_FAULT_LISTED          BACnetFaultType = 7
 )
 
 var BACnetFaultTypeValues []BACnetFaultType
 
 func init() {
 	_ = errors.New
-	BACnetFaultTypeValues = []BACnetFaultType {
+	BACnetFaultTypeValues = []BACnetFaultType{
 		BACnetFaultType_NONE,
 		BACnetFaultType_FAULT_CHARACTERSTRING,
 		BACnetFaultType_FAULT_EXTENDED,
@@ -63,22 +63,22 @@ func init() {
 
 func BACnetFaultTypeByValue(value uint8) (enum BACnetFaultType, ok bool) {
 	switch value {
-		case 0:
-			return BACnetFaultType_NONE, true
-		case 1:
-			return BACnetFaultType_FAULT_CHARACTERSTRING, true
-		case 2:
-			return BACnetFaultType_FAULT_EXTENDED, true
-		case 3:
-			return BACnetFaultType_FAULT_LIFE_SAFETY, true
-		case 4:
-			return BACnetFaultType_FAULT_STATE, true
-		case 5:
-			return BACnetFaultType_FAULT_STATUS_FLAGS, true
-		case 6:
-			return BACnetFaultType_FAULT_OUT_OF_RANGE, true
-		case 7:
-			return BACnetFaultType_FAULT_LISTED, true
+	case 0:
+		return BACnetFaultType_NONE, true
+	case 1:
+		return BACnetFaultType_FAULT_CHARACTERSTRING, true
+	case 2:
+		return BACnetFaultType_FAULT_EXTENDED, true
+	case 3:
+		return BACnetFaultType_FAULT_LIFE_SAFETY, true
+	case 4:
+		return BACnetFaultType_FAULT_STATE, true
+	case 5:
+		return BACnetFaultType_FAULT_STATUS_FLAGS, true
+	case 6:
+		return BACnetFaultType_FAULT_OUT_OF_RANGE, true
+	case 7:
+		return BACnetFaultType_FAULT_LISTED, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func BACnetFaultTypeByName(value string) (enum BACnetFaultType, ok bool) {
 	return 0, false
 }
 
-func BACnetFaultTypeKnows(value uint8)  bool {
+func BACnetFaultTypeKnows(value uint8) bool {
 	for _, typeValue := range BACnetFaultTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetFaultType(structType interface{}) BACnetFaultType {
@@ -187,4 +187,3 @@ func (e BACnetFaultType) PLC4XEnumName() string {
 func (e BACnetFaultType) String() string {
 	return e.PLC4XEnumName()
 }
-

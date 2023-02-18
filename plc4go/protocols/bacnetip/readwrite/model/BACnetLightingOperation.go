@@ -34,26 +34,26 @@ type IBACnetLightingOperation interface {
 	utils.Serializable
 }
 
-const(
-	BACnetLightingOperation_NONE BACnetLightingOperation = 0
-	BACnetLightingOperation_FADE_TO BACnetLightingOperation = 1
-	BACnetLightingOperation_RAMP_TO BACnetLightingOperation = 2
-	BACnetLightingOperation_STEP_UP BACnetLightingOperation = 3
-	BACnetLightingOperation_STEP_DOWN BACnetLightingOperation = 4
-	BACnetLightingOperation_STEP_ON BACnetLightingOperation = 5
-	BACnetLightingOperation_STEP_OFF BACnetLightingOperation = 6
-	BACnetLightingOperation_WARN BACnetLightingOperation = 7
-	BACnetLightingOperation_WARN_OFF BACnetLightingOperation = 8
-	BACnetLightingOperation_WARN_RELINQUISH BACnetLightingOperation = 9
-	BACnetLightingOperation_STOP BACnetLightingOperation = 10
-	BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE BACnetLightingOperation = 0XFFFF
+const (
+	BACnetLightingOperation_NONE                     BACnetLightingOperation = 0
+	BACnetLightingOperation_FADE_TO                  BACnetLightingOperation = 1
+	BACnetLightingOperation_RAMP_TO                  BACnetLightingOperation = 2
+	BACnetLightingOperation_STEP_UP                  BACnetLightingOperation = 3
+	BACnetLightingOperation_STEP_DOWN                BACnetLightingOperation = 4
+	BACnetLightingOperation_STEP_ON                  BACnetLightingOperation = 5
+	BACnetLightingOperation_STEP_OFF                 BACnetLightingOperation = 6
+	BACnetLightingOperation_WARN                     BACnetLightingOperation = 7
+	BACnetLightingOperation_WARN_OFF                 BACnetLightingOperation = 8
+	BACnetLightingOperation_WARN_RELINQUISH          BACnetLightingOperation = 9
+	BACnetLightingOperation_STOP                     BACnetLightingOperation = 10
+	BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE BACnetLightingOperation = 0xFFFF
 )
 
 var BACnetLightingOperationValues []BACnetLightingOperation
 
 func init() {
 	_ = errors.New
-	BACnetLightingOperationValues = []BACnetLightingOperation {
+	BACnetLightingOperationValues = []BACnetLightingOperation{
 		BACnetLightingOperation_NONE,
 		BACnetLightingOperation_FADE_TO,
 		BACnetLightingOperation_RAMP_TO,
@@ -71,30 +71,30 @@ func init() {
 
 func BACnetLightingOperationByValue(value uint16) (enum BACnetLightingOperation, ok bool) {
 	switch value {
-		case 0:
-			return BACnetLightingOperation_NONE, true
-		case 0XFFFF:
-			return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetLightingOperation_FADE_TO, true
-		case 10:
-			return BACnetLightingOperation_STOP, true
-		case 2:
-			return BACnetLightingOperation_RAMP_TO, true
-		case 3:
-			return BACnetLightingOperation_STEP_UP, true
-		case 4:
-			return BACnetLightingOperation_STEP_DOWN, true
-		case 5:
-			return BACnetLightingOperation_STEP_ON, true
-		case 6:
-			return BACnetLightingOperation_STEP_OFF, true
-		case 7:
-			return BACnetLightingOperation_WARN, true
-		case 8:
-			return BACnetLightingOperation_WARN_OFF, true
-		case 9:
-			return BACnetLightingOperation_WARN_RELINQUISH, true
+	case 0:
+		return BACnetLightingOperation_NONE, true
+	case 0xFFFF:
+		return BACnetLightingOperation_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetLightingOperation_FADE_TO, true
+	case 10:
+		return BACnetLightingOperation_STOP, true
+	case 2:
+		return BACnetLightingOperation_RAMP_TO, true
+	case 3:
+		return BACnetLightingOperation_STEP_UP, true
+	case 4:
+		return BACnetLightingOperation_STEP_DOWN, true
+	case 5:
+		return BACnetLightingOperation_STEP_ON, true
+	case 6:
+		return BACnetLightingOperation_STEP_OFF, true
+	case 7:
+		return BACnetLightingOperation_WARN, true
+	case 8:
+		return BACnetLightingOperation_WARN_OFF, true
+	case 9:
+		return BACnetLightingOperation_WARN_RELINQUISH, true
 	}
 	return 0, false
 }
@@ -129,13 +129,13 @@ func BACnetLightingOperationByName(value string) (enum BACnetLightingOperation, 
 	return 0, false
 }
 
-func BACnetLightingOperationKnows(value uint16)  bool {
+func BACnetLightingOperationKnows(value uint16) bool {
 	for _, typeValue := range BACnetLightingOperationValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetLightingOperation(structType interface{}) BACnetLightingOperation {
@@ -219,4 +219,3 @@ func (e BACnetLightingOperation) PLC4XEnumName() string {
 func (e BACnetLightingOperation) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -34,12 +34,12 @@ type IBaudRateSelector interface {
 	utils.Serializable
 }
 
-const(
+const (
 	BaudRateSelector_SELECTED_4800_BAUD BaudRateSelector = 0x01
 	BaudRateSelector_SELECTED_2400_BAUD BaudRateSelector = 0x02
 	BaudRateSelector_SELECTED_1200_BAUD BaudRateSelector = 0x03
-	BaudRateSelector_SELECTED_600_BAUD BaudRateSelector = 0x04
-	BaudRateSelector_SELECTED_300_BAUD BaudRateSelector = 0x05
+	BaudRateSelector_SELECTED_600_BAUD  BaudRateSelector = 0x04
+	BaudRateSelector_SELECTED_300_BAUD  BaudRateSelector = 0x05
 	BaudRateSelector_SELECTED_9600_BAUD BaudRateSelector = 0xFF
 )
 
@@ -47,7 +47,7 @@ var BaudRateSelectorValues []BaudRateSelector
 
 func init() {
 	_ = errors.New
-	BaudRateSelectorValues = []BaudRateSelector {
+	BaudRateSelectorValues = []BaudRateSelector{
 		BaudRateSelector_SELECTED_4800_BAUD,
 		BaudRateSelector_SELECTED_2400_BAUD,
 		BaudRateSelector_SELECTED_1200_BAUD,
@@ -59,18 +59,18 @@ func init() {
 
 func BaudRateSelectorByValue(value uint8) (enum BaudRateSelector, ok bool) {
 	switch value {
-		case 0x01:
-			return BaudRateSelector_SELECTED_4800_BAUD, true
-		case 0x02:
-			return BaudRateSelector_SELECTED_2400_BAUD, true
-		case 0x03:
-			return BaudRateSelector_SELECTED_1200_BAUD, true
-		case 0x04:
-			return BaudRateSelector_SELECTED_600_BAUD, true
-		case 0x05:
-			return BaudRateSelector_SELECTED_300_BAUD, true
-		case 0xFF:
-			return BaudRateSelector_SELECTED_9600_BAUD, true
+	case 0x01:
+		return BaudRateSelector_SELECTED_4800_BAUD, true
+	case 0x02:
+		return BaudRateSelector_SELECTED_2400_BAUD, true
+	case 0x03:
+		return BaudRateSelector_SELECTED_1200_BAUD, true
+	case 0x04:
+		return BaudRateSelector_SELECTED_600_BAUD, true
+	case 0x05:
+		return BaudRateSelector_SELECTED_300_BAUD, true
+	case 0xFF:
+		return BaudRateSelector_SELECTED_9600_BAUD, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func BaudRateSelectorByName(value string) (enum BaudRateSelector, ok bool) {
 	return 0, false
 }
 
-func BaudRateSelectorKnows(value uint8)  bool {
+func BaudRateSelectorKnows(value uint8) bool {
 	for _, typeValue := range BaudRateSelectorValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBaudRateSelector(structType interface{}) BaudRateSelector {
@@ -171,4 +171,3 @@ func (e BaudRateSelector) PLC4XEnumName() string {
 func (e BaudRateSelector) String() string {
 	return e.PLC4XEnumName()
 }
-

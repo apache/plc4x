@@ -34,17 +34,17 @@ type IBACnetEventTransitionBits interface {
 	utils.Serializable
 }
 
-const(
+const (
 	BACnetEventTransitionBits_TO_OFFNORMAL BACnetEventTransitionBits = 0
-	BACnetEventTransitionBits_TO_FAULT BACnetEventTransitionBits = 1
-	BACnetEventTransitionBits_TO_NORMAL BACnetEventTransitionBits = 2
+	BACnetEventTransitionBits_TO_FAULT     BACnetEventTransitionBits = 1
+	BACnetEventTransitionBits_TO_NORMAL    BACnetEventTransitionBits = 2
 )
 
 var BACnetEventTransitionBitsValues []BACnetEventTransitionBits
 
 func init() {
 	_ = errors.New
-	BACnetEventTransitionBitsValues = []BACnetEventTransitionBits {
+	BACnetEventTransitionBitsValues = []BACnetEventTransitionBits{
 		BACnetEventTransitionBits_TO_OFFNORMAL,
 		BACnetEventTransitionBits_TO_FAULT,
 		BACnetEventTransitionBits_TO_NORMAL,
@@ -53,12 +53,12 @@ func init() {
 
 func BACnetEventTransitionBitsByValue(value uint8) (enum BACnetEventTransitionBits, ok bool) {
 	switch value {
-		case 0:
-			return BACnetEventTransitionBits_TO_OFFNORMAL, true
-		case 1:
-			return BACnetEventTransitionBits_TO_FAULT, true
-		case 2:
-			return BACnetEventTransitionBits_TO_NORMAL, true
+	case 0:
+		return BACnetEventTransitionBits_TO_OFFNORMAL, true
+	case 1:
+		return BACnetEventTransitionBits_TO_FAULT, true
+	case 2:
+		return BACnetEventTransitionBits_TO_NORMAL, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func BACnetEventTransitionBitsByName(value string) (enum BACnetEventTransitionBi
 	return 0, false
 }
 
-func BACnetEventTransitionBitsKnows(value uint8)  bool {
+func BACnetEventTransitionBitsKnows(value uint8) bool {
 	for _, typeValue := range BACnetEventTransitionBitsValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetEventTransitionBits(structType interface{}) BACnetEventTransitionBits {
@@ -147,4 +147,3 @@ func (e BACnetEventTransitionBits) PLC4XEnumName() string {
 func (e BACnetEventTransitionBits) String() string {
 	return e.PLC4XEnumName()
 }
-

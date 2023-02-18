@@ -34,21 +34,21 @@ type IBACnetAuthorizationMode interface {
 	utils.Serializable
 }
 
-const(
-	BACnetAuthorizationMode_AUTHORIZE BACnetAuthorizationMode = 0
-	BACnetAuthorizationMode_GRANT_ACTIVE BACnetAuthorizationMode = 1
-	BACnetAuthorizationMode_DENY_ALL BACnetAuthorizationMode = 2
-	BACnetAuthorizationMode_VERIFICATION_REQUIRED BACnetAuthorizationMode = 3
-	BACnetAuthorizationMode_AUTHORIZATION_DELAYED BACnetAuthorizationMode = 4
-	BACnetAuthorizationMode_NONE BACnetAuthorizationMode = 5
-	BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE BACnetAuthorizationMode = 0XFFFF
+const (
+	BACnetAuthorizationMode_AUTHORIZE                BACnetAuthorizationMode = 0
+	BACnetAuthorizationMode_GRANT_ACTIVE             BACnetAuthorizationMode = 1
+	BACnetAuthorizationMode_DENY_ALL                 BACnetAuthorizationMode = 2
+	BACnetAuthorizationMode_VERIFICATION_REQUIRED    BACnetAuthorizationMode = 3
+	BACnetAuthorizationMode_AUTHORIZATION_DELAYED    BACnetAuthorizationMode = 4
+	BACnetAuthorizationMode_NONE                     BACnetAuthorizationMode = 5
+	BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE BACnetAuthorizationMode = 0xFFFF
 )
 
 var BACnetAuthorizationModeValues []BACnetAuthorizationMode
 
 func init() {
 	_ = errors.New
-	BACnetAuthorizationModeValues = []BACnetAuthorizationMode {
+	BACnetAuthorizationModeValues = []BACnetAuthorizationMode{
 		BACnetAuthorizationMode_AUTHORIZE,
 		BACnetAuthorizationMode_GRANT_ACTIVE,
 		BACnetAuthorizationMode_DENY_ALL,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetAuthorizationModeByValue(value uint16) (enum BACnetAuthorizationMode, ok bool) {
 	switch value {
-		case 0:
-			return BACnetAuthorizationMode_AUTHORIZE, true
-		case 0XFFFF:
-			return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetAuthorizationMode_GRANT_ACTIVE, true
-		case 2:
-			return BACnetAuthorizationMode_DENY_ALL, true
-		case 3:
-			return BACnetAuthorizationMode_VERIFICATION_REQUIRED, true
-		case 4:
-			return BACnetAuthorizationMode_AUTHORIZATION_DELAYED, true
-		case 5:
-			return BACnetAuthorizationMode_NONE, true
+	case 0:
+		return BACnetAuthorizationMode_AUTHORIZE, true
+	case 0xFFFF:
+		return BACnetAuthorizationMode_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetAuthorizationMode_GRANT_ACTIVE, true
+	case 2:
+		return BACnetAuthorizationMode_DENY_ALL, true
+	case 3:
+		return BACnetAuthorizationMode_VERIFICATION_REQUIRED, true
+	case 4:
+		return BACnetAuthorizationMode_AUTHORIZATION_DELAYED, true
+	case 5:
+		return BACnetAuthorizationMode_NONE, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetAuthorizationModeByName(value string) (enum BACnetAuthorizationMode, 
 	return 0, false
 }
 
-func BACnetAuthorizationModeKnows(value uint16)  bool {
+func BACnetAuthorizationModeKnows(value uint16) bool {
 	for _, typeValue := range BACnetAuthorizationModeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetAuthorizationMode(structType interface{}) BACnetAuthorizationMode {
@@ -179,4 +179,3 @@ func (e BACnetAuthorizationMode) PLC4XEnumName() string {
 func (e BACnetAuthorizationMode) String() string {
 	return e.PLC4XEnumName()
 }
-

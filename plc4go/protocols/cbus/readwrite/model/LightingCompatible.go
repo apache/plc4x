@@ -34,18 +34,18 @@ type ILightingCompatible interface {
 	utils.Serializable
 }
 
-const(
-	LightingCompatible_NO LightingCompatible = 0x0
-	LightingCompatible_YES LightingCompatible = 0x1
+const (
+	LightingCompatible_NO                   LightingCompatible = 0x0
+	LightingCompatible_YES                  LightingCompatible = 0x1
 	LightingCompatible_YES_BUT_RESTRICTIONS LightingCompatible = 0x2
-	LightingCompatible_NA LightingCompatible = 0x3
+	LightingCompatible_NA                   LightingCompatible = 0x3
 )
 
 var LightingCompatibleValues []LightingCompatible
 
 func init() {
 	_ = errors.New
-	LightingCompatibleValues = []LightingCompatible {
+	LightingCompatibleValues = []LightingCompatible{
 		LightingCompatible_NO,
 		LightingCompatible_YES,
 		LightingCompatible_YES_BUT_RESTRICTIONS,
@@ -55,14 +55,14 @@ func init() {
 
 func LightingCompatibleByValue(value uint8) (enum LightingCompatible, ok bool) {
 	switch value {
-		case 0x0:
-			return LightingCompatible_NO, true
-		case 0x1:
-			return LightingCompatible_YES, true
-		case 0x2:
-			return LightingCompatible_YES_BUT_RESTRICTIONS, true
-		case 0x3:
-			return LightingCompatible_NA, true
+	case 0x0:
+		return LightingCompatible_NO, true
+	case 0x1:
+		return LightingCompatible_YES, true
+	case 0x2:
+		return LightingCompatible_YES_BUT_RESTRICTIONS, true
+	case 0x3:
+		return LightingCompatible_NA, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func LightingCompatibleByName(value string) (enum LightingCompatible, ok bool) {
 	return 0, false
 }
 
-func LightingCompatibleKnows(value uint8)  bool {
+func LightingCompatibleKnows(value uint8) bool {
 	for _, typeValue := range LightingCompatibleValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastLightingCompatible(structType interface{}) LightingCompatible {
@@ -155,4 +155,3 @@ func (e LightingCompatible) PLC4XEnumName() string {
 func (e LightingCompatible) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -34,39 +34,39 @@ type IApplicationId interface {
 	utils.Serializable
 }
 
-const(
-	ApplicationId_RESERVED ApplicationId = 0x00
-	ApplicationId_FREE_USAGE ApplicationId = 0x01
-	ApplicationId_TEMPERATURE_BROADCAST ApplicationId = 0x02
-	ApplicationId_ROOM_CONTROL_SYSTEM ApplicationId = 0x03
-	ApplicationId_LIGHTING ApplicationId = 0x04
-	ApplicationId_VENTILATION ApplicationId = 0x05
-	ApplicationId_IRRIGATION_CONTROL ApplicationId = 0x06
+const (
+	ApplicationId_RESERVED                           ApplicationId = 0x00
+	ApplicationId_FREE_USAGE                         ApplicationId = 0x01
+	ApplicationId_TEMPERATURE_BROADCAST              ApplicationId = 0x02
+	ApplicationId_ROOM_CONTROL_SYSTEM                ApplicationId = 0x03
+	ApplicationId_LIGHTING                           ApplicationId = 0x04
+	ApplicationId_VENTILATION                        ApplicationId = 0x05
+	ApplicationId_IRRIGATION_CONTROL                 ApplicationId = 0x06
 	ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL ApplicationId = 0x07
-	ApplicationId_HEATING ApplicationId = 0x08
-	ApplicationId_AIR_CONDITIONING ApplicationId = 0x09
-	ApplicationId_TRIGGER_CONTROL ApplicationId = 0x0A
-	ApplicationId_ENABLE_CONTROL ApplicationId = 0x0B
-	ApplicationId_AUDIO_AND_VIDEO ApplicationId = 0x0C
-	ApplicationId_SECURITY ApplicationId = 0x0D
-	ApplicationId_METERING ApplicationId = 0x0E
-	ApplicationId_ACCESS_CONTROL ApplicationId = 0x0F
-	ApplicationId_CLOCK_AND_TIMEKEEPING ApplicationId = 0x10
-	ApplicationId_TELEPHONY_STATUS_AND_CONTROL ApplicationId = 0x11
-	ApplicationId_MEASUREMENT ApplicationId = 0x12
-	ApplicationId_TESTING ApplicationId = 0x13
-	ApplicationId_MEDIA_TRANSPORT_CONTROL ApplicationId = 0x14
-	ApplicationId_ERROR_REPORTING ApplicationId = 0x15
-	ApplicationId_HVAC_ACTUATOR ApplicationId = 0x16
-	ApplicationId_INFO_MESSAGES ApplicationId = 0x17
-	ApplicationId_NETWORK_CONTROL ApplicationId = 0x18
+	ApplicationId_HEATING                            ApplicationId = 0x08
+	ApplicationId_AIR_CONDITIONING                   ApplicationId = 0x09
+	ApplicationId_TRIGGER_CONTROL                    ApplicationId = 0x0A
+	ApplicationId_ENABLE_CONTROL                     ApplicationId = 0x0B
+	ApplicationId_AUDIO_AND_VIDEO                    ApplicationId = 0x0C
+	ApplicationId_SECURITY                           ApplicationId = 0x0D
+	ApplicationId_METERING                           ApplicationId = 0x0E
+	ApplicationId_ACCESS_CONTROL                     ApplicationId = 0x0F
+	ApplicationId_CLOCK_AND_TIMEKEEPING              ApplicationId = 0x10
+	ApplicationId_TELEPHONY_STATUS_AND_CONTROL       ApplicationId = 0x11
+	ApplicationId_MEASUREMENT                        ApplicationId = 0x12
+	ApplicationId_TESTING                            ApplicationId = 0x13
+	ApplicationId_MEDIA_TRANSPORT_CONTROL            ApplicationId = 0x14
+	ApplicationId_ERROR_REPORTING                    ApplicationId = 0x15
+	ApplicationId_HVAC_ACTUATOR                      ApplicationId = 0x16
+	ApplicationId_INFO_MESSAGES                      ApplicationId = 0x17
+	ApplicationId_NETWORK_CONTROL                    ApplicationId = 0x18
 )
 
 var ApplicationIdValues []ApplicationId
 
 func init() {
 	_ = errors.New
-	ApplicationIdValues = []ApplicationId {
+	ApplicationIdValues = []ApplicationId{
 		ApplicationId_RESERVED,
 		ApplicationId_FREE_USAGE,
 		ApplicationId_TEMPERATURE_BROADCAST,
@@ -97,56 +97,56 @@ func init() {
 
 func ApplicationIdByValue(value uint8) (enum ApplicationId, ok bool) {
 	switch value {
-		case 0x00:
-			return ApplicationId_RESERVED, true
-		case 0x01:
-			return ApplicationId_FREE_USAGE, true
-		case 0x02:
-			return ApplicationId_TEMPERATURE_BROADCAST, true
-		case 0x03:
-			return ApplicationId_ROOM_CONTROL_SYSTEM, true
-		case 0x04:
-			return ApplicationId_LIGHTING, true
-		case 0x05:
-			return ApplicationId_VENTILATION, true
-		case 0x06:
-			return ApplicationId_IRRIGATION_CONTROL, true
-		case 0x07:
-			return ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL, true
-		case 0x08:
-			return ApplicationId_HEATING, true
-		case 0x09:
-			return ApplicationId_AIR_CONDITIONING, true
-		case 0x0A:
-			return ApplicationId_TRIGGER_CONTROL, true
-		case 0x0B:
-			return ApplicationId_ENABLE_CONTROL, true
-		case 0x0C:
-			return ApplicationId_AUDIO_AND_VIDEO, true
-		case 0x0D:
-			return ApplicationId_SECURITY, true
-		case 0x0E:
-			return ApplicationId_METERING, true
-		case 0x0F:
-			return ApplicationId_ACCESS_CONTROL, true
-		case 0x10:
-			return ApplicationId_CLOCK_AND_TIMEKEEPING, true
-		case 0x11:
-			return ApplicationId_TELEPHONY_STATUS_AND_CONTROL, true
-		case 0x12:
-			return ApplicationId_MEASUREMENT, true
-		case 0x13:
-			return ApplicationId_TESTING, true
-		case 0x14:
-			return ApplicationId_MEDIA_TRANSPORT_CONTROL, true
-		case 0x15:
-			return ApplicationId_ERROR_REPORTING, true
-		case 0x16:
-			return ApplicationId_HVAC_ACTUATOR, true
-		case 0x17:
-			return ApplicationId_INFO_MESSAGES, true
-		case 0x18:
-			return ApplicationId_NETWORK_CONTROL, true
+	case 0x00:
+		return ApplicationId_RESERVED, true
+	case 0x01:
+		return ApplicationId_FREE_USAGE, true
+	case 0x02:
+		return ApplicationId_TEMPERATURE_BROADCAST, true
+	case 0x03:
+		return ApplicationId_ROOM_CONTROL_SYSTEM, true
+	case 0x04:
+		return ApplicationId_LIGHTING, true
+	case 0x05:
+		return ApplicationId_VENTILATION, true
+	case 0x06:
+		return ApplicationId_IRRIGATION_CONTROL, true
+	case 0x07:
+		return ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL, true
+	case 0x08:
+		return ApplicationId_HEATING, true
+	case 0x09:
+		return ApplicationId_AIR_CONDITIONING, true
+	case 0x0A:
+		return ApplicationId_TRIGGER_CONTROL, true
+	case 0x0B:
+		return ApplicationId_ENABLE_CONTROL, true
+	case 0x0C:
+		return ApplicationId_AUDIO_AND_VIDEO, true
+	case 0x0D:
+		return ApplicationId_SECURITY, true
+	case 0x0E:
+		return ApplicationId_METERING, true
+	case 0x0F:
+		return ApplicationId_ACCESS_CONTROL, true
+	case 0x10:
+		return ApplicationId_CLOCK_AND_TIMEKEEPING, true
+	case 0x11:
+		return ApplicationId_TELEPHONY_STATUS_AND_CONTROL, true
+	case 0x12:
+		return ApplicationId_MEASUREMENT, true
+	case 0x13:
+		return ApplicationId_TESTING, true
+	case 0x14:
+		return ApplicationId_MEDIA_TRANSPORT_CONTROL, true
+	case 0x15:
+		return ApplicationId_ERROR_REPORTING, true
+	case 0x16:
+		return ApplicationId_HVAC_ACTUATOR, true
+	case 0x17:
+		return ApplicationId_INFO_MESSAGES, true
+	case 0x18:
+		return ApplicationId_NETWORK_CONTROL, true
 	}
 	return 0, false
 }
@@ -207,13 +207,13 @@ func ApplicationIdByName(value string) (enum ApplicationId, ok bool) {
 	return 0, false
 }
 
-func ApplicationIdKnows(value uint8)  bool {
+func ApplicationIdKnows(value uint8) bool {
 	for _, typeValue := range ApplicationIdValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastApplicationId(structType interface{}) ApplicationId {
@@ -323,4 +323,3 @@ func (e ApplicationId) PLC4XEnumName() string {
 func (e ApplicationId) String() string {
 	return e.PLC4XEnumName()
 }
-

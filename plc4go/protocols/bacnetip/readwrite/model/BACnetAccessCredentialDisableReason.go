@@ -34,25 +34,25 @@ type IBACnetAccessCredentialDisableReason interface {
 	utils.Serializable
 }
 
-const(
-	BACnetAccessCredentialDisableReason_DISABLED BACnetAccessCredentialDisableReason = 0
+const (
+	BACnetAccessCredentialDisableReason_DISABLED                    BACnetAccessCredentialDisableReason = 0
 	BACnetAccessCredentialDisableReason_DISABLED_NEEDS_PROVISIONING BACnetAccessCredentialDisableReason = 1
-	BACnetAccessCredentialDisableReason_DISABLED_UNASSIGNED BACnetAccessCredentialDisableReason = 2
-	BACnetAccessCredentialDisableReason_DISABLED_NOT_YET_ACTIVE BACnetAccessCredentialDisableReason = 3
-	BACnetAccessCredentialDisableReason_DISABLED_EXPIRED BACnetAccessCredentialDisableReason = 4
-	BACnetAccessCredentialDisableReason_DISABLED_LOCKOUT BACnetAccessCredentialDisableReason = 5
-	BACnetAccessCredentialDisableReason_DISABLED_MAX_DAYS BACnetAccessCredentialDisableReason = 6
-	BACnetAccessCredentialDisableReason_DISABLED_MAX_USES BACnetAccessCredentialDisableReason = 7
-	BACnetAccessCredentialDisableReason_DISABLED_INACTIVITY BACnetAccessCredentialDisableReason = 8
-	BACnetAccessCredentialDisableReason_DISABLED_MANUAL BACnetAccessCredentialDisableReason = 9
-	BACnetAccessCredentialDisableReason_VENDOR_PROPRIETARY_VALUE BACnetAccessCredentialDisableReason = 0XFFFF
+	BACnetAccessCredentialDisableReason_DISABLED_UNASSIGNED         BACnetAccessCredentialDisableReason = 2
+	BACnetAccessCredentialDisableReason_DISABLED_NOT_YET_ACTIVE     BACnetAccessCredentialDisableReason = 3
+	BACnetAccessCredentialDisableReason_DISABLED_EXPIRED            BACnetAccessCredentialDisableReason = 4
+	BACnetAccessCredentialDisableReason_DISABLED_LOCKOUT            BACnetAccessCredentialDisableReason = 5
+	BACnetAccessCredentialDisableReason_DISABLED_MAX_DAYS           BACnetAccessCredentialDisableReason = 6
+	BACnetAccessCredentialDisableReason_DISABLED_MAX_USES           BACnetAccessCredentialDisableReason = 7
+	BACnetAccessCredentialDisableReason_DISABLED_INACTIVITY         BACnetAccessCredentialDisableReason = 8
+	BACnetAccessCredentialDisableReason_DISABLED_MANUAL             BACnetAccessCredentialDisableReason = 9
+	BACnetAccessCredentialDisableReason_VENDOR_PROPRIETARY_VALUE    BACnetAccessCredentialDisableReason = 0xFFFF
 )
 
 var BACnetAccessCredentialDisableReasonValues []BACnetAccessCredentialDisableReason
 
 func init() {
 	_ = errors.New
-	BACnetAccessCredentialDisableReasonValues = []BACnetAccessCredentialDisableReason {
+	BACnetAccessCredentialDisableReasonValues = []BACnetAccessCredentialDisableReason{
 		BACnetAccessCredentialDisableReason_DISABLED,
 		BACnetAccessCredentialDisableReason_DISABLED_NEEDS_PROVISIONING,
 		BACnetAccessCredentialDisableReason_DISABLED_UNASSIGNED,
@@ -69,28 +69,28 @@ func init() {
 
 func BACnetAccessCredentialDisableReasonByValue(value uint16) (enum BACnetAccessCredentialDisableReason, ok bool) {
 	switch value {
-		case 0:
-			return BACnetAccessCredentialDisableReason_DISABLED, true
-		case 0XFFFF:
-			return BACnetAccessCredentialDisableReason_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetAccessCredentialDisableReason_DISABLED_NEEDS_PROVISIONING, true
-		case 2:
-			return BACnetAccessCredentialDisableReason_DISABLED_UNASSIGNED, true
-		case 3:
-			return BACnetAccessCredentialDisableReason_DISABLED_NOT_YET_ACTIVE, true
-		case 4:
-			return BACnetAccessCredentialDisableReason_DISABLED_EXPIRED, true
-		case 5:
-			return BACnetAccessCredentialDisableReason_DISABLED_LOCKOUT, true
-		case 6:
-			return BACnetAccessCredentialDisableReason_DISABLED_MAX_DAYS, true
-		case 7:
-			return BACnetAccessCredentialDisableReason_DISABLED_MAX_USES, true
-		case 8:
-			return BACnetAccessCredentialDisableReason_DISABLED_INACTIVITY, true
-		case 9:
-			return BACnetAccessCredentialDisableReason_DISABLED_MANUAL, true
+	case 0:
+		return BACnetAccessCredentialDisableReason_DISABLED, true
+	case 0xFFFF:
+		return BACnetAccessCredentialDisableReason_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetAccessCredentialDisableReason_DISABLED_NEEDS_PROVISIONING, true
+	case 2:
+		return BACnetAccessCredentialDisableReason_DISABLED_UNASSIGNED, true
+	case 3:
+		return BACnetAccessCredentialDisableReason_DISABLED_NOT_YET_ACTIVE, true
+	case 4:
+		return BACnetAccessCredentialDisableReason_DISABLED_EXPIRED, true
+	case 5:
+		return BACnetAccessCredentialDisableReason_DISABLED_LOCKOUT, true
+	case 6:
+		return BACnetAccessCredentialDisableReason_DISABLED_MAX_DAYS, true
+	case 7:
+		return BACnetAccessCredentialDisableReason_DISABLED_MAX_USES, true
+	case 8:
+		return BACnetAccessCredentialDisableReason_DISABLED_INACTIVITY, true
+	case 9:
+		return BACnetAccessCredentialDisableReason_DISABLED_MANUAL, true
 	}
 	return 0, false
 }
@@ -123,13 +123,13 @@ func BACnetAccessCredentialDisableReasonByName(value string) (enum BACnetAccessC
 	return 0, false
 }
 
-func BACnetAccessCredentialDisableReasonKnows(value uint16)  bool {
+func BACnetAccessCredentialDisableReasonKnows(value uint16) bool {
 	for _, typeValue := range BACnetAccessCredentialDisableReasonValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetAccessCredentialDisableReason(structType interface{}) BACnetAccessCredentialDisableReason {
@@ -211,4 +211,3 @@ func (e BACnetAccessCredentialDisableReason) PLC4XEnumName() string {
 func (e BACnetAccessCredentialDisableReason) String() string {
 	return e.PLC4XEnumName()
 }
-

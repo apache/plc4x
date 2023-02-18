@@ -36,10 +36,10 @@ type IErrorReportingCommandTypeContainer interface {
 	CommandType() ErrorReportingCommandType
 }
 
-const(
-	ErrorReportingCommandTypeContainer_ErrorReportingCommandDeprecated ErrorReportingCommandTypeContainer = 0x05
-	ErrorReportingCommandTypeContainer_ErrorReportingCommandErrorReport ErrorReportingCommandTypeContainer = 0x15
-	ErrorReportingCommandTypeContainer_ErrorReportingCommandAcknowledge ErrorReportingCommandTypeContainer = 0x25
+const (
+	ErrorReportingCommandTypeContainer_ErrorReportingCommandDeprecated      ErrorReportingCommandTypeContainer = 0x05
+	ErrorReportingCommandTypeContainer_ErrorReportingCommandErrorReport     ErrorReportingCommandTypeContainer = 0x15
+	ErrorReportingCommandTypeContainer_ErrorReportingCommandAcknowledge     ErrorReportingCommandTypeContainer = 0x25
 	ErrorReportingCommandTypeContainer_ErrorReportingCommandClearMostSevere ErrorReportingCommandTypeContainer = 0x35
 )
 
@@ -47,7 +47,7 @@ var ErrorReportingCommandTypeContainerValues []ErrorReportingCommandTypeContaine
 
 func init() {
 	_ = errors.New
-	ErrorReportingCommandTypeContainerValues = []ErrorReportingCommandTypeContainer {
+	ErrorReportingCommandTypeContainerValues = []ErrorReportingCommandTypeContainer{
 		ErrorReportingCommandTypeContainer_ErrorReportingCommandDeprecated,
 		ErrorReportingCommandTypeContainer_ErrorReportingCommandErrorReport,
 		ErrorReportingCommandTypeContainer_ErrorReportingCommandAcknowledge,
@@ -55,22 +55,26 @@ func init() {
 	}
 }
 
-
 func (e ErrorReportingCommandTypeContainer) NumBytes() uint8 {
-	switch e  {
-		case 0x05: { /* '0x05' */
-            return 5
+	switch e {
+	case 0x05:
+		{ /* '0x05' */
+			return 5
 		}
-		case 0x15: { /* '0x15' */
-            return 5
+	case 0x15:
+		{ /* '0x15' */
+			return 5
 		}
-		case 0x25: { /* '0x25' */
-            return 5
+	case 0x25:
+		{ /* '0x25' */
+			return 5
 		}
-		case 0x35: { /* '0x35' */
-            return 5
+	case 0x35:
+		{ /* '0x35' */
+			return 5
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -86,20 +90,25 @@ func ErrorReportingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (E
 }
 
 func (e ErrorReportingCommandTypeContainer) CommandType() ErrorReportingCommandType {
-	switch e  {
-		case 0x05: { /* '0x05' */
+	switch e {
+	case 0x05:
+		{ /* '0x05' */
 			return ErrorReportingCommandType_DEPRECATED
 		}
-		case 0x15: { /* '0x15' */
+	case 0x15:
+		{ /* '0x15' */
 			return ErrorReportingCommandType_ERROR_REPORT
 		}
-		case 0x25: { /* '0x25' */
+	case 0x25:
+		{ /* '0x25' */
 			return ErrorReportingCommandType_ACKNOWLEDGE
 		}
-		case 0x35: { /* '0x35' */
+	case 0x35:
+		{ /* '0x35' */
 			return ErrorReportingCommandType_CLEAR_MOST_SEVERE
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -115,14 +124,14 @@ func ErrorReportingCommandTypeContainerFirstEnumForFieldCommandType(value ErrorR
 }
 func ErrorReportingCommandTypeContainerByValue(value uint8) (enum ErrorReportingCommandTypeContainer, ok bool) {
 	switch value {
-		case 0x05:
-			return ErrorReportingCommandTypeContainer_ErrorReportingCommandDeprecated, true
-		case 0x15:
-			return ErrorReportingCommandTypeContainer_ErrorReportingCommandErrorReport, true
-		case 0x25:
-			return ErrorReportingCommandTypeContainer_ErrorReportingCommandAcknowledge, true
-		case 0x35:
-			return ErrorReportingCommandTypeContainer_ErrorReportingCommandClearMostSevere, true
+	case 0x05:
+		return ErrorReportingCommandTypeContainer_ErrorReportingCommandDeprecated, true
+	case 0x15:
+		return ErrorReportingCommandTypeContainer_ErrorReportingCommandErrorReport, true
+	case 0x25:
+		return ErrorReportingCommandTypeContainer_ErrorReportingCommandAcknowledge, true
+	case 0x35:
+		return ErrorReportingCommandTypeContainer_ErrorReportingCommandClearMostSevere, true
 	}
 	return 0, false
 }
@@ -141,13 +150,13 @@ func ErrorReportingCommandTypeContainerByName(value string) (enum ErrorReporting
 	return 0, false
 }
 
-func ErrorReportingCommandTypeContainerKnows(value uint8)  bool {
+func ErrorReportingCommandTypeContainerKnows(value uint8) bool {
 	for _, typeValue := range ErrorReportingCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastErrorReportingCommandTypeContainer(structType interface{}) ErrorReportingCommandTypeContainer {
@@ -215,4 +224,3 @@ func (e ErrorReportingCommandTypeContainer) PLC4XEnumName() string {
 func (e ErrorReportingCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
-

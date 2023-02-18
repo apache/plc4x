@@ -37,55 +37,55 @@ type IAccessControlCommandTypeContainer interface {
 	Category() AccessControlCategory
 }
 
-const(
-	AccessControlCommandTypeContainer_AccessControlCommandCloseAccessPoint AccessControlCommandTypeContainer = 0x02
-	AccessControlCommandTypeContainer_AccessControlCommandLockAccessPoint AccessControlCommandTypeContainer = 0x0A
-	AccessControlCommandTypeContainer_AccessControlCommandAccessPointLeftOpen AccessControlCommandTypeContainer = 0x12
-	AccessControlCommandTypeContainer_AccessControlCommandAccessPointForcedOpen AccessControlCommandTypeContainer = 0x1A
-	AccessControlCommandTypeContainer_AccessControlCommandAccessPointClosed AccessControlCommandTypeContainer = 0x22
-	AccessControlCommandTypeContainer_AccessControlCommandRequestToExit AccessControlCommandTypeContainer = 0x32
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_0Bytes AccessControlCommandTypeContainer = 0xA0
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_1Bytes AccessControlCommandTypeContainer = 0xA1
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_2Bytes AccessControlCommandTypeContainer = 0xA2
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_3Bytes AccessControlCommandTypeContainer = 0xA3
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_4Bytes AccessControlCommandTypeContainer = 0xA4
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_5Bytes AccessControlCommandTypeContainer = 0xA5
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_6Bytes AccessControlCommandTypeContainer = 0xA6
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_7Bytes AccessControlCommandTypeContainer = 0xA7
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_8Bytes AccessControlCommandTypeContainer = 0xA8
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_9Bytes AccessControlCommandTypeContainer = 0xA9
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_10Bytes AccessControlCommandTypeContainer = 0xAA
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_11Bytes AccessControlCommandTypeContainer = 0xAB
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_12Bytes AccessControlCommandTypeContainer = 0xAC
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_13Bytes AccessControlCommandTypeContainer = 0xAD
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_14Bytes AccessControlCommandTypeContainer = 0xAE
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_15Bytes AccessControlCommandTypeContainer = 0xAF
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_16Bytes AccessControlCommandTypeContainer = 0xB0
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_17Bytes AccessControlCommandTypeContainer = 0xB1
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_18Bytes AccessControlCommandTypeContainer = 0xB2
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_19Bytes AccessControlCommandTypeContainer = 0xB3
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_20Bytes AccessControlCommandTypeContainer = 0xB4
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_21Bytes AccessControlCommandTypeContainer = 0xB5
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_22Bytes AccessControlCommandTypeContainer = 0xB6
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_23Bytes AccessControlCommandTypeContainer = 0xB7
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_24Bytes AccessControlCommandTypeContainer = 0xB8
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_25Bytes AccessControlCommandTypeContainer = 0xB9
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_26Bytes AccessControlCommandTypeContainer = 0xBA
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_27Bytes AccessControlCommandTypeContainer = 0xBB
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_28Bytes AccessControlCommandTypeContainer = 0xBC
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_29Bytes AccessControlCommandTypeContainer = 0xBD
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_30Bytes AccessControlCommandTypeContainer = 0xBE
-	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_31Bytes AccessControlCommandTypeContainer = 0xBF
-	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_0Bytes AccessControlCommandTypeContainer = 0xC0
-	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_1Bytes AccessControlCommandTypeContainer = 0xC1
-	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_2Bytes AccessControlCommandTypeContainer = 0xC2
-	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_3Bytes AccessControlCommandTypeContainer = 0xC3
-	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_4Bytes AccessControlCommandTypeContainer = 0xC4
-	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_5Bytes AccessControlCommandTypeContainer = 0xC5
-	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_6Bytes AccessControlCommandTypeContainer = 0xC6
-	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_7Bytes AccessControlCommandTypeContainer = 0xC7
-	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_8Bytes AccessControlCommandTypeContainer = 0xC8
-	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_9Bytes AccessControlCommandTypeContainer = 0xC9
+const (
+	AccessControlCommandTypeContainer_AccessControlCommandCloseAccessPoint             AccessControlCommandTypeContainer = 0x02
+	AccessControlCommandTypeContainer_AccessControlCommandLockAccessPoint              AccessControlCommandTypeContainer = 0x0A
+	AccessControlCommandTypeContainer_AccessControlCommandAccessPointLeftOpen          AccessControlCommandTypeContainer = 0x12
+	AccessControlCommandTypeContainer_AccessControlCommandAccessPointForcedOpen        AccessControlCommandTypeContainer = 0x1A
+	AccessControlCommandTypeContainer_AccessControlCommandAccessPointClosed            AccessControlCommandTypeContainer = 0x22
+	AccessControlCommandTypeContainer_AccessControlCommandRequestToExit                AccessControlCommandTypeContainer = 0x32
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_0Bytes    AccessControlCommandTypeContainer = 0xA0
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_1Bytes    AccessControlCommandTypeContainer = 0xA1
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_2Bytes    AccessControlCommandTypeContainer = 0xA2
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_3Bytes    AccessControlCommandTypeContainer = 0xA3
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_4Bytes    AccessControlCommandTypeContainer = 0xA4
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_5Bytes    AccessControlCommandTypeContainer = 0xA5
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_6Bytes    AccessControlCommandTypeContainer = 0xA6
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_7Bytes    AccessControlCommandTypeContainer = 0xA7
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_8Bytes    AccessControlCommandTypeContainer = 0xA8
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_9Bytes    AccessControlCommandTypeContainer = 0xA9
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_10Bytes   AccessControlCommandTypeContainer = 0xAA
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_11Bytes   AccessControlCommandTypeContainer = 0xAB
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_12Bytes   AccessControlCommandTypeContainer = 0xAC
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_13Bytes   AccessControlCommandTypeContainer = 0xAD
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_14Bytes   AccessControlCommandTypeContainer = 0xAE
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_15Bytes   AccessControlCommandTypeContainer = 0xAF
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_16Bytes   AccessControlCommandTypeContainer = 0xB0
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_17Bytes   AccessControlCommandTypeContainer = 0xB1
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_18Bytes   AccessControlCommandTypeContainer = 0xB2
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_19Bytes   AccessControlCommandTypeContainer = 0xB3
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_20Bytes   AccessControlCommandTypeContainer = 0xB4
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_21Bytes   AccessControlCommandTypeContainer = 0xB5
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_22Bytes   AccessControlCommandTypeContainer = 0xB6
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_23Bytes   AccessControlCommandTypeContainer = 0xB7
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_24Bytes   AccessControlCommandTypeContainer = 0xB8
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_25Bytes   AccessControlCommandTypeContainer = 0xB9
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_26Bytes   AccessControlCommandTypeContainer = 0xBA
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_27Bytes   AccessControlCommandTypeContainer = 0xBB
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_28Bytes   AccessControlCommandTypeContainer = 0xBC
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_29Bytes   AccessControlCommandTypeContainer = 0xBD
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_30Bytes   AccessControlCommandTypeContainer = 0xBE
+	AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_31Bytes   AccessControlCommandTypeContainer = 0xBF
+	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_0Bytes  AccessControlCommandTypeContainer = 0xC0
+	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_1Bytes  AccessControlCommandTypeContainer = 0xC1
+	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_2Bytes  AccessControlCommandTypeContainer = 0xC2
+	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_3Bytes  AccessControlCommandTypeContainer = 0xC3
+	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_4Bytes  AccessControlCommandTypeContainer = 0xC4
+	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_5Bytes  AccessControlCommandTypeContainer = 0xC5
+	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_6Bytes  AccessControlCommandTypeContainer = 0xC6
+	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_7Bytes  AccessControlCommandTypeContainer = 0xC7
+	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_8Bytes  AccessControlCommandTypeContainer = 0xC8
+	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_9Bytes  AccessControlCommandTypeContainer = 0xC9
 	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_10Bytes AccessControlCommandTypeContainer = 0xCA
 	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_11Bytes AccessControlCommandTypeContainer = 0xCB
 	AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_12Bytes AccessControlCommandTypeContainer = 0xCC
@@ -114,7 +114,7 @@ var AccessControlCommandTypeContainerValues []AccessControlCommandTypeContainer
 
 func init() {
 	_ = errors.New
-	AccessControlCommandTypeContainerValues = []AccessControlCommandTypeContainer {
+	AccessControlCommandTypeContainerValues = []AccessControlCommandTypeContainer{
 		AccessControlCommandTypeContainer_AccessControlCommandCloseAccessPoint,
 		AccessControlCommandTypeContainer_AccessControlCommandLockAccessPoint,
 		AccessControlCommandTypeContainer_AccessControlCommandAccessPointLeftOpen,
@@ -188,220 +188,290 @@ func init() {
 	}
 }
 
-
 func (e AccessControlCommandTypeContainer) NumBytes() uint8 {
-	switch e  {
-		case 0x02: { /* '0x02' */
-            return 2
+	switch e {
+	case 0x02:
+		{ /* '0x02' */
+			return 2
+		}
+	case 0x0A:
+		{ /* '0x0A' */
+			return 2
+		}
+	case 0x12:
+		{ /* '0x12' */
+			return 2
+		}
+	case 0x1A:
+		{ /* '0x1A' */
+			return 2
+		}
+	case 0x22:
+		{ /* '0x22' */
+			return 2
+		}
+	case 0x32:
+		{ /* '0x32' */
+			return 2
+		}
+	case 0xA0:
+		{ /* '0xA0' */
+			return 0
+		}
+	case 0xA1:
+		{ /* '0xA1' */
+			return 1
+		}
+	case 0xA2:
+		{ /* '0xA2' */
+			return 2
+		}
+	case 0xA3:
+		{ /* '0xA3' */
+			return 3
+		}
+	case 0xA4:
+		{ /* '0xA4' */
+			return 4
+		}
+	case 0xA5:
+		{ /* '0xA5' */
+			return 5
+		}
+	case 0xA6:
+		{ /* '0xA6' */
+			return 6
+		}
+	case 0xA7:
+		{ /* '0xA7' */
+			return 7
+		}
+	case 0xA8:
+		{ /* '0xA8' */
+			return 8
+		}
+	case 0xA9:
+		{ /* '0xA9' */
+			return 9
+		}
+	case 0xAA:
+		{ /* '0xAA' */
+			return 10
+		}
+	case 0xAB:
+		{ /* '0xAB' */
+			return 11
+		}
+	case 0xAC:
+		{ /* '0xAC' */
+			return 12
+		}
+	case 0xAD:
+		{ /* '0xAD' */
+			return 13
+		}
+	case 0xAE:
+		{ /* '0xAE' */
+			return 14
+		}
+	case 0xAF:
+		{ /* '0xAF' */
+			return 15
+		}
+	case 0xB0:
+		{ /* '0xB0' */
+			return 16
+		}
+	case 0xB1:
+		{ /* '0xB1' */
+			return 17
+		}
+	case 0xB2:
+		{ /* '0xB2' */
+			return 18
+		}
+	case 0xB3:
+		{ /* '0xB3' */
+			return 19
 		}
-		case 0x0A: { /* '0x0A' */
-            return 2
+	case 0xB4:
+		{ /* '0xB4' */
+			return 20
 		}
-		case 0x12: { /* '0x12' */
-            return 2
+	case 0xB5:
+		{ /* '0xB5' */
+			return 21
 		}
-		case 0x1A: { /* '0x1A' */
-            return 2
+	case 0xB6:
+		{ /* '0xB6' */
+			return 22
 		}
-		case 0x22: { /* '0x22' */
-            return 2
+	case 0xB7:
+		{ /* '0xB7' */
+			return 23
 		}
-		case 0x32: { /* '0x32' */
-            return 2
+	case 0xB8:
+		{ /* '0xB8' */
+			return 24
 		}
-		case 0xA0: { /* '0xA0' */
-            return 0
+	case 0xB9:
+		{ /* '0xB9' */
+			return 25
 		}
-		case 0xA1: { /* '0xA1' */
-            return 1
+	case 0xBA:
+		{ /* '0xBA' */
+			return 26
 		}
-		case 0xA2: { /* '0xA2' */
-            return 2
+	case 0xBB:
+		{ /* '0xBB' */
+			return 27
 		}
-		case 0xA3: { /* '0xA3' */
-            return 3
+	case 0xBC:
+		{ /* '0xBC' */
+			return 28
 		}
-		case 0xA4: { /* '0xA4' */
-            return 4
+	case 0xBD:
+		{ /* '0xBD' */
+			return 29
 		}
-		case 0xA5: { /* '0xA5' */
-            return 5
+	case 0xBE:
+		{ /* '0xBE' */
+			return 30
 		}
-		case 0xA6: { /* '0xA6' */
-            return 6
+	case 0xBF:
+		{ /* '0xBF' */
+			return 31
 		}
-		case 0xA7: { /* '0xA7' */
-            return 7
+	case 0xC0:
+		{ /* '0xC0' */
+			return 0
 		}
-		case 0xA8: { /* '0xA8' */
-            return 8
+	case 0xC1:
+		{ /* '0xC1' */
+			return 1
 		}
-		case 0xA9: { /* '0xA9' */
-            return 9
+	case 0xC2:
+		{ /* '0xC2' */
+			return 2
 		}
-		case 0xAA: { /* '0xAA' */
-            return 10
+	case 0xC3:
+		{ /* '0xC3' */
+			return 3
 		}
-		case 0xAB: { /* '0xAB' */
-            return 11
+	case 0xC4:
+		{ /* '0xC4' */
+			return 4
 		}
-		case 0xAC: { /* '0xAC' */
-            return 12
+	case 0xC5:
+		{ /* '0xC5' */
+			return 5
 		}
-		case 0xAD: { /* '0xAD' */
-            return 13
+	case 0xC6:
+		{ /* '0xC6' */
+			return 6
 		}
-		case 0xAE: { /* '0xAE' */
-            return 14
+	case 0xC7:
+		{ /* '0xC7' */
+			return 7
 		}
-		case 0xAF: { /* '0xAF' */
-            return 15
+	case 0xC8:
+		{ /* '0xC8' */
+			return 8
 		}
-		case 0xB0: { /* '0xB0' */
-            return 16
+	case 0xC9:
+		{ /* '0xC9' */
+			return 9
 		}
-		case 0xB1: { /* '0xB1' */
-            return 17
+	case 0xCA:
+		{ /* '0xCA' */
+			return 10
 		}
-		case 0xB2: { /* '0xB2' */
-            return 18
+	case 0xCB:
+		{ /* '0xCB' */
+			return 11
 		}
-		case 0xB3: { /* '0xB3' */
-            return 19
+	case 0xCC:
+		{ /* '0xCC' */
+			return 12
 		}
-		case 0xB4: { /* '0xB4' */
-            return 20
+	case 0xCD:
+		{ /* '0xCD' */
+			return 13
 		}
-		case 0xB5: { /* '0xB5' */
-            return 21
+	case 0xCE:
+		{ /* '0xCE' */
+			return 14
 		}
-		case 0xB6: { /* '0xB6' */
-            return 22
+	case 0xCF:
+		{ /* '0xCF' */
+			return 15
 		}
-		case 0xB7: { /* '0xB7' */
-            return 23
+	case 0xD0:
+		{ /* '0xD0' */
+			return 16
 		}
-		case 0xB8: { /* '0xB8' */
-            return 24
+	case 0xD1:
+		{ /* '0xD1' */
+			return 17
 		}
-		case 0xB9: { /* '0xB9' */
-            return 25
+	case 0xD2:
+		{ /* '0xD2' */
+			return 18
 		}
-		case 0xBA: { /* '0xBA' */
-            return 26
+	case 0xD3:
+		{ /* '0xD3' */
+			return 19
 		}
-		case 0xBB: { /* '0xBB' */
-            return 27
+	case 0xD4:
+		{ /* '0xD4' */
+			return 20
 		}
-		case 0xBC: { /* '0xBC' */
-            return 28
+	case 0xD5:
+		{ /* '0xD5' */
+			return 21
 		}
-		case 0xBD: { /* '0xBD' */
-            return 29
+	case 0xD6:
+		{ /* '0xD6' */
+			return 22
 		}
-		case 0xBE: { /* '0xBE' */
-            return 30
+	case 0xD7:
+		{ /* '0xD7' */
+			return 23
 		}
-		case 0xBF: { /* '0xBF' */
-            return 31
+	case 0xD8:
+		{ /* '0xD8' */
+			return 24
 		}
-		case 0xC0: { /* '0xC0' */
-            return 0
+	case 0xD9:
+		{ /* '0xD9' */
+			return 25
 		}
-		case 0xC1: { /* '0xC1' */
-            return 1
+	case 0xDA:
+		{ /* '0xDA' */
+			return 26
 		}
-		case 0xC2: { /* '0xC2' */
-            return 2
+	case 0xDB:
+		{ /* '0xDB' */
+			return 27
 		}
-		case 0xC3: { /* '0xC3' */
-            return 3
+	case 0xDC:
+		{ /* '0xDC' */
+			return 28
 		}
-		case 0xC4: { /* '0xC4' */
-            return 4
+	case 0xDD:
+		{ /* '0xDD' */
+			return 29
 		}
-		case 0xC5: { /* '0xC5' */
-            return 5
+	case 0xDE:
+		{ /* '0xDE' */
+			return 30
 		}
-		case 0xC6: { /* '0xC6' */
-            return 6
+	case 0xDF:
+		{ /* '0xDF' */
+			return 31
 		}
-		case 0xC7: { /* '0xC7' */
-            return 7
-		}
-		case 0xC8: { /* '0xC8' */
-            return 8
-		}
-		case 0xC9: { /* '0xC9' */
-            return 9
-		}
-		case 0xCA: { /* '0xCA' */
-            return 10
-		}
-		case 0xCB: { /* '0xCB' */
-            return 11
-		}
-		case 0xCC: { /* '0xCC' */
-            return 12
-		}
-		case 0xCD: { /* '0xCD' */
-            return 13
-		}
-		case 0xCE: { /* '0xCE' */
-            return 14
-		}
-		case 0xCF: { /* '0xCF' */
-            return 15
-		}
-		case 0xD0: { /* '0xD0' */
-            return 16
-		}
-		case 0xD1: { /* '0xD1' */
-            return 17
-		}
-		case 0xD2: { /* '0xD2' */
-            return 18
-		}
-		case 0xD3: { /* '0xD3' */
-            return 19
-		}
-		case 0xD4: { /* '0xD4' */
-            return 20
-		}
-		case 0xD5: { /* '0xD5' */
-            return 21
-		}
-		case 0xD6: { /* '0xD6' */
-            return 22
-		}
-		case 0xD7: { /* '0xD7' */
-            return 23
-		}
-		case 0xD8: { /* '0xD8' */
-            return 24
-		}
-		case 0xD9: { /* '0xD9' */
-            return 25
-		}
-		case 0xDA: { /* '0xDA' */
-            return 26
-		}
-		case 0xDB: { /* '0xDB' */
-            return 27
-		}
-		case 0xDC: { /* '0xDC' */
-            return 28
-		}
-		case 0xDD: { /* '0xDD' */
-            return 29
-		}
-		case 0xDE: { /* '0xDE' */
-            return 30
-		}
-		case 0xDF: { /* '0xDF' */
-            return 31
-		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -417,218 +487,289 @@ func AccessControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (Ac
 }
 
 func (e AccessControlCommandTypeContainer) CommandType() AccessControlCommandType {
-	switch e  {
-		case 0x02: { /* '0x02' */
+	switch e {
+	case 0x02:
+		{ /* '0x02' */
 			return AccessControlCommandType_CLOSE_ACCESS_POINT
 		}
-		case 0x0A: { /* '0x0A' */
+	case 0x0A:
+		{ /* '0x0A' */
 			return AccessControlCommandType_LOCK_ACCESS_POINT
 		}
-		case 0x12: { /* '0x12' */
+	case 0x12:
+		{ /* '0x12' */
 			return AccessControlCommandType_ACCESS_POINT_LEFT_OPEN
 		}
-		case 0x1A: { /* '0x1A' */
+	case 0x1A:
+		{ /* '0x1A' */
 			return AccessControlCommandType_ACCESS_POINT_FORCED_OPEN
 		}
-		case 0x22: { /* '0x22' */
+	case 0x22:
+		{ /* '0x22' */
 			return AccessControlCommandType_ACCESS_POINT_CLOSED
 		}
-		case 0x32: { /* '0x32' */
+	case 0x32:
+		{ /* '0x32' */
 			return AccessControlCommandType_REQUEST_TO_EXIT
 		}
-		case 0xA0: { /* '0xA0' */
+	case 0xA0:
+		{ /* '0xA0' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xA1: { /* '0xA1' */
+	case 0xA1:
+		{ /* '0xA1' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xA2: { /* '0xA2' */
+	case 0xA2:
+		{ /* '0xA2' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xA3: { /* '0xA3' */
+	case 0xA3:
+		{ /* '0xA3' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xA4: { /* '0xA4' */
+	case 0xA4:
+		{ /* '0xA4' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xA5: { /* '0xA5' */
+	case 0xA5:
+		{ /* '0xA5' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xA6: { /* '0xA6' */
+	case 0xA6:
+		{ /* '0xA6' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xA7: { /* '0xA7' */
+	case 0xA7:
+		{ /* '0xA7' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xA8: { /* '0xA8' */
+	case 0xA8:
+		{ /* '0xA8' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xA9: { /* '0xA9' */
+	case 0xA9:
+		{ /* '0xA9' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xAA: { /* '0xAA' */
+	case 0xAA:
+		{ /* '0xAA' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xAB: { /* '0xAB' */
+	case 0xAB:
+		{ /* '0xAB' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xAC: { /* '0xAC' */
+	case 0xAC:
+		{ /* '0xAC' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xAD: { /* '0xAD' */
+	case 0xAD:
+		{ /* '0xAD' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xAE: { /* '0xAE' */
+	case 0xAE:
+		{ /* '0xAE' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xAF: { /* '0xAF' */
+	case 0xAF:
+		{ /* '0xAF' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xB0: { /* '0xB0' */
+	case 0xB0:
+		{ /* '0xB0' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xB1: { /* '0xB1' */
+	case 0xB1:
+		{ /* '0xB1' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xB2: { /* '0xB2' */
+	case 0xB2:
+		{ /* '0xB2' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xB3: { /* '0xB3' */
+	case 0xB3:
+		{ /* '0xB3' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xB4: { /* '0xB4' */
+	case 0xB4:
+		{ /* '0xB4' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xB5: { /* '0xB5' */
+	case 0xB5:
+		{ /* '0xB5' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xB6: { /* '0xB6' */
+	case 0xB6:
+		{ /* '0xB6' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xB7: { /* '0xB7' */
+	case 0xB7:
+		{ /* '0xB7' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xB8: { /* '0xB8' */
+	case 0xB8:
+		{ /* '0xB8' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xB9: { /* '0xB9' */
+	case 0xB9:
+		{ /* '0xB9' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xBA: { /* '0xBA' */
+	case 0xBA:
+		{ /* '0xBA' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xBB: { /* '0xBB' */
+	case 0xBB:
+		{ /* '0xBB' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xBC: { /* '0xBC' */
+	case 0xBC:
+		{ /* '0xBC' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xBD: { /* '0xBD' */
+	case 0xBD:
+		{ /* '0xBD' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xBE: { /* '0xBE' */
+	case 0xBE:
+		{ /* '0xBE' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xBF: { /* '0xBF' */
+	case 0xBF:
+		{ /* '0xBF' */
 			return AccessControlCommandType_VALID_ACCESS
 		}
-		case 0xC0: { /* '0xC0' */
+	case 0xC0:
+		{ /* '0xC0' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xC1: { /* '0xC1' */
+	case 0xC1:
+		{ /* '0xC1' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xC2: { /* '0xC2' */
+	case 0xC2:
+		{ /* '0xC2' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xC3: { /* '0xC3' */
+	case 0xC3:
+		{ /* '0xC3' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xC4: { /* '0xC4' */
+	case 0xC4:
+		{ /* '0xC4' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xC5: { /* '0xC5' */
+	case 0xC5:
+		{ /* '0xC5' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xC6: { /* '0xC6' */
+	case 0xC6:
+		{ /* '0xC6' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xC7: { /* '0xC7' */
+	case 0xC7:
+		{ /* '0xC7' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xC8: { /* '0xC8' */
+	case 0xC8:
+		{ /* '0xC8' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xC9: { /* '0xC9' */
+	case 0xC9:
+		{ /* '0xC9' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xCA: { /* '0xCA' */
+	case 0xCA:
+		{ /* '0xCA' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xCB: { /* '0xCB' */
+	case 0xCB:
+		{ /* '0xCB' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xCC: { /* '0xCC' */
+	case 0xCC:
+		{ /* '0xCC' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xCD: { /* '0xCD' */
+	case 0xCD:
+		{ /* '0xCD' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xCE: { /* '0xCE' */
+	case 0xCE:
+		{ /* '0xCE' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xCF: { /* '0xCF' */
+	case 0xCF:
+		{ /* '0xCF' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xD0: { /* '0xD0' */
+	case 0xD0:
+		{ /* '0xD0' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xD1: { /* '0xD1' */
+	case 0xD1:
+		{ /* '0xD1' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xD2: { /* '0xD2' */
+	case 0xD2:
+		{ /* '0xD2' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xD3: { /* '0xD3' */
+	case 0xD3:
+		{ /* '0xD3' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xD4: { /* '0xD4' */
+	case 0xD4:
+		{ /* '0xD4' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xD5: { /* '0xD5' */
+	case 0xD5:
+		{ /* '0xD5' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xD6: { /* '0xD6' */
+	case 0xD6:
+		{ /* '0xD6' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xD7: { /* '0xD7' */
+	case 0xD7:
+		{ /* '0xD7' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xD8: { /* '0xD8' */
+	case 0xD8:
+		{ /* '0xD8' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xD9: { /* '0xD9' */
+	case 0xD9:
+		{ /* '0xD9' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xDA: { /* '0xDA' */
+	case 0xDA:
+		{ /* '0xDA' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xDB: { /* '0xDB' */
+	case 0xDB:
+		{ /* '0xDB' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xDC: { /* '0xDC' */
+	case 0xDC:
+		{ /* '0xDC' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xDD: { /* '0xDD' */
+	case 0xDD:
+		{ /* '0xDD' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xDE: { /* '0xDE' */
+	case 0xDE:
+		{ /* '0xDE' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		case 0xDF: { /* '0xDF' */
+	case 0xDF:
+		{ /* '0xDF' */
 			return AccessControlCommandType_INVALID_ACCESS
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -644,218 +785,289 @@ func AccessControlCommandTypeContainerFirstEnumForFieldCommandType(value AccessC
 }
 
 func (e AccessControlCommandTypeContainer) Category() AccessControlCategory {
-	switch e  {
-		case 0x02: { /* '0x02' */
+	switch e {
+	case 0x02:
+		{ /* '0x02' */
 			return AccessControlCategory_SYSTEM_REQUEST
 		}
-		case 0x0A: { /* '0x0A' */
+	case 0x0A:
+		{ /* '0x0A' */
 			return AccessControlCategory_SYSTEM_REQUEST
 		}
-		case 0x12: { /* '0x12' */
+	case 0x12:
+		{ /* '0x12' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0x1A: { /* '0x1A' */
+	case 0x1A:
+		{ /* '0x1A' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0x22: { /* '0x22' */
+	case 0x22:
+		{ /* '0x22' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0x32: { /* '0x32' */
+	case 0x32:
+		{ /* '0x32' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xA0: { /* '0xA0' */
+	case 0xA0:
+		{ /* '0xA0' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xA1: { /* '0xA1' */
+	case 0xA1:
+		{ /* '0xA1' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xA2: { /* '0xA2' */
+	case 0xA2:
+		{ /* '0xA2' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xA3: { /* '0xA3' */
+	case 0xA3:
+		{ /* '0xA3' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xA4: { /* '0xA4' */
+	case 0xA4:
+		{ /* '0xA4' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xA5: { /* '0xA5' */
+	case 0xA5:
+		{ /* '0xA5' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xA6: { /* '0xA6' */
+	case 0xA6:
+		{ /* '0xA6' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xA7: { /* '0xA7' */
+	case 0xA7:
+		{ /* '0xA7' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xA8: { /* '0xA8' */
+	case 0xA8:
+		{ /* '0xA8' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xA9: { /* '0xA9' */
+	case 0xA9:
+		{ /* '0xA9' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xAA: { /* '0xAA' */
+	case 0xAA:
+		{ /* '0xAA' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xAB: { /* '0xAB' */
+	case 0xAB:
+		{ /* '0xAB' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xAC: { /* '0xAC' */
+	case 0xAC:
+		{ /* '0xAC' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xAD: { /* '0xAD' */
+	case 0xAD:
+		{ /* '0xAD' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xAE: { /* '0xAE' */
+	case 0xAE:
+		{ /* '0xAE' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xAF: { /* '0xAF' */
+	case 0xAF:
+		{ /* '0xAF' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xB0: { /* '0xB0' */
+	case 0xB0:
+		{ /* '0xB0' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xB1: { /* '0xB1' */
+	case 0xB1:
+		{ /* '0xB1' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xB2: { /* '0xB2' */
+	case 0xB2:
+		{ /* '0xB2' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xB3: { /* '0xB3' */
+	case 0xB3:
+		{ /* '0xB3' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xB4: { /* '0xB4' */
+	case 0xB4:
+		{ /* '0xB4' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xB5: { /* '0xB5' */
+	case 0xB5:
+		{ /* '0xB5' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xB6: { /* '0xB6' */
+	case 0xB6:
+		{ /* '0xB6' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xB7: { /* '0xB7' */
+	case 0xB7:
+		{ /* '0xB7' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xB8: { /* '0xB8' */
+	case 0xB8:
+		{ /* '0xB8' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xB9: { /* '0xB9' */
+	case 0xB9:
+		{ /* '0xB9' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xBA: { /* '0xBA' */
+	case 0xBA:
+		{ /* '0xBA' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xBB: { /* '0xBB' */
+	case 0xBB:
+		{ /* '0xBB' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xBC: { /* '0xBC' */
+	case 0xBC:
+		{ /* '0xBC' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xBD: { /* '0xBD' */
+	case 0xBD:
+		{ /* '0xBD' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xBE: { /* '0xBE' */
+	case 0xBE:
+		{ /* '0xBE' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xBF: { /* '0xBF' */
+	case 0xBF:
+		{ /* '0xBF' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xC0: { /* '0xC0' */
+	case 0xC0:
+		{ /* '0xC0' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xC1: { /* '0xC1' */
+	case 0xC1:
+		{ /* '0xC1' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xC2: { /* '0xC2' */
+	case 0xC2:
+		{ /* '0xC2' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xC3: { /* '0xC3' */
+	case 0xC3:
+		{ /* '0xC3' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xC4: { /* '0xC4' */
+	case 0xC4:
+		{ /* '0xC4' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xC5: { /* '0xC5' */
+	case 0xC5:
+		{ /* '0xC5' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xC6: { /* '0xC6' */
+	case 0xC6:
+		{ /* '0xC6' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xC7: { /* '0xC7' */
+	case 0xC7:
+		{ /* '0xC7' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xC8: { /* '0xC8' */
+	case 0xC8:
+		{ /* '0xC8' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xC9: { /* '0xC9' */
+	case 0xC9:
+		{ /* '0xC9' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xCA: { /* '0xCA' */
+	case 0xCA:
+		{ /* '0xCA' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xCB: { /* '0xCB' */
+	case 0xCB:
+		{ /* '0xCB' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xCC: { /* '0xCC' */
+	case 0xCC:
+		{ /* '0xCC' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xCD: { /* '0xCD' */
+	case 0xCD:
+		{ /* '0xCD' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xCE: { /* '0xCE' */
+	case 0xCE:
+		{ /* '0xCE' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xCF: { /* '0xCF' */
+	case 0xCF:
+		{ /* '0xCF' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xD0: { /* '0xD0' */
+	case 0xD0:
+		{ /* '0xD0' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xD1: { /* '0xD1' */
+	case 0xD1:
+		{ /* '0xD1' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xD2: { /* '0xD2' */
+	case 0xD2:
+		{ /* '0xD2' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xD3: { /* '0xD3' */
+	case 0xD3:
+		{ /* '0xD3' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xD4: { /* '0xD4' */
+	case 0xD4:
+		{ /* '0xD4' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xD5: { /* '0xD5' */
+	case 0xD5:
+		{ /* '0xD5' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xD6: { /* '0xD6' */
+	case 0xD6:
+		{ /* '0xD6' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xD7: { /* '0xD7' */
+	case 0xD7:
+		{ /* '0xD7' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xD8: { /* '0xD8' */
+	case 0xD8:
+		{ /* '0xD8' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xD9: { /* '0xD9' */
+	case 0xD9:
+		{ /* '0xD9' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xDA: { /* '0xDA' */
+	case 0xDA:
+		{ /* '0xDA' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xDB: { /* '0xDB' */
+	case 0xDB:
+		{ /* '0xDB' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xDC: { /* '0xDC' */
+	case 0xDC:
+		{ /* '0xDC' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xDD: { /* '0xDD' */
+	case 0xDD:
+		{ /* '0xDD' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xDE: { /* '0xDE' */
+	case 0xDE:
+		{ /* '0xDE' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		case 0xDF: { /* '0xDF' */
+	case 0xDF:
+		{ /* '0xDF' */
 			return AccessControlCategory_SYSTEM_ACTIVITY
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -871,146 +1083,146 @@ func AccessControlCommandTypeContainerFirstEnumForFieldCategory(value AccessCont
 }
 func AccessControlCommandTypeContainerByValue(value uint8) (enum AccessControlCommandTypeContainer, ok bool) {
 	switch value {
-		case 0x02:
-			return AccessControlCommandTypeContainer_AccessControlCommandCloseAccessPoint, true
-		case 0x0A:
-			return AccessControlCommandTypeContainer_AccessControlCommandLockAccessPoint, true
-		case 0x12:
-			return AccessControlCommandTypeContainer_AccessControlCommandAccessPointLeftOpen, true
-		case 0x1A:
-			return AccessControlCommandTypeContainer_AccessControlCommandAccessPointForcedOpen, true
-		case 0x22:
-			return AccessControlCommandTypeContainer_AccessControlCommandAccessPointClosed, true
-		case 0x32:
-			return AccessControlCommandTypeContainer_AccessControlCommandRequestToExit, true
-		case 0xA0:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_0Bytes, true
-		case 0xA1:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_1Bytes, true
-		case 0xA2:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_2Bytes, true
-		case 0xA3:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_3Bytes, true
-		case 0xA4:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_4Bytes, true
-		case 0xA5:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_5Bytes, true
-		case 0xA6:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_6Bytes, true
-		case 0xA7:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_7Bytes, true
-		case 0xA8:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_8Bytes, true
-		case 0xA9:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_9Bytes, true
-		case 0xAA:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_10Bytes, true
-		case 0xAB:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_11Bytes, true
-		case 0xAC:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_12Bytes, true
-		case 0xAD:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_13Bytes, true
-		case 0xAE:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_14Bytes, true
-		case 0xAF:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_15Bytes, true
-		case 0xB0:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_16Bytes, true
-		case 0xB1:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_17Bytes, true
-		case 0xB2:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_18Bytes, true
-		case 0xB3:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_19Bytes, true
-		case 0xB4:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_20Bytes, true
-		case 0xB5:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_21Bytes, true
-		case 0xB6:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_22Bytes, true
-		case 0xB7:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_23Bytes, true
-		case 0xB8:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_24Bytes, true
-		case 0xB9:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_25Bytes, true
-		case 0xBA:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_26Bytes, true
-		case 0xBB:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_27Bytes, true
-		case 0xBC:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_28Bytes, true
-		case 0xBD:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_29Bytes, true
-		case 0xBE:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_30Bytes, true
-		case 0xBF:
-			return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_31Bytes, true
-		case 0xC0:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_0Bytes, true
-		case 0xC1:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_1Bytes, true
-		case 0xC2:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_2Bytes, true
-		case 0xC3:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_3Bytes, true
-		case 0xC4:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_4Bytes, true
-		case 0xC5:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_5Bytes, true
-		case 0xC6:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_6Bytes, true
-		case 0xC7:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_7Bytes, true
-		case 0xC8:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_8Bytes, true
-		case 0xC9:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_9Bytes, true
-		case 0xCA:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_10Bytes, true
-		case 0xCB:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_11Bytes, true
-		case 0xCC:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_12Bytes, true
-		case 0xCD:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_13Bytes, true
-		case 0xCE:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_14Bytes, true
-		case 0xCF:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_15Bytes, true
-		case 0xD0:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_16Bytes, true
-		case 0xD1:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_17Bytes, true
-		case 0xD2:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_18Bytes, true
-		case 0xD3:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_19Bytes, true
-		case 0xD4:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_20Bytes, true
-		case 0xD5:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_21Bytes, true
-		case 0xD6:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_22Bytes, true
-		case 0xD7:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_23Bytes, true
-		case 0xD8:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_24Bytes, true
-		case 0xD9:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_25Bytes, true
-		case 0xDA:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_26Bytes, true
-		case 0xDB:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_27Bytes, true
-		case 0xDC:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_28Bytes, true
-		case 0xDD:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_29Bytes, true
-		case 0xDE:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_30Bytes, true
-		case 0xDF:
-			return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_31Bytes, true
+	case 0x02:
+		return AccessControlCommandTypeContainer_AccessControlCommandCloseAccessPoint, true
+	case 0x0A:
+		return AccessControlCommandTypeContainer_AccessControlCommandLockAccessPoint, true
+	case 0x12:
+		return AccessControlCommandTypeContainer_AccessControlCommandAccessPointLeftOpen, true
+	case 0x1A:
+		return AccessControlCommandTypeContainer_AccessControlCommandAccessPointForcedOpen, true
+	case 0x22:
+		return AccessControlCommandTypeContainer_AccessControlCommandAccessPointClosed, true
+	case 0x32:
+		return AccessControlCommandTypeContainer_AccessControlCommandRequestToExit, true
+	case 0xA0:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_0Bytes, true
+	case 0xA1:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_1Bytes, true
+	case 0xA2:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_2Bytes, true
+	case 0xA3:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_3Bytes, true
+	case 0xA4:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_4Bytes, true
+	case 0xA5:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_5Bytes, true
+	case 0xA6:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_6Bytes, true
+	case 0xA7:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_7Bytes, true
+	case 0xA8:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_8Bytes, true
+	case 0xA9:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_9Bytes, true
+	case 0xAA:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_10Bytes, true
+	case 0xAB:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_11Bytes, true
+	case 0xAC:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_12Bytes, true
+	case 0xAD:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_13Bytes, true
+	case 0xAE:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_14Bytes, true
+	case 0xAF:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_15Bytes, true
+	case 0xB0:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_16Bytes, true
+	case 0xB1:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_17Bytes, true
+	case 0xB2:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_18Bytes, true
+	case 0xB3:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_19Bytes, true
+	case 0xB4:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_20Bytes, true
+	case 0xB5:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_21Bytes, true
+	case 0xB6:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_22Bytes, true
+	case 0xB7:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_23Bytes, true
+	case 0xB8:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_24Bytes, true
+	case 0xB9:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_25Bytes, true
+	case 0xBA:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_26Bytes, true
+	case 0xBB:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_27Bytes, true
+	case 0xBC:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_28Bytes, true
+	case 0xBD:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_29Bytes, true
+	case 0xBE:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_30Bytes, true
+	case 0xBF:
+		return AccessControlCommandTypeContainer_AccessControlCommandValidAccessRequest_31Bytes, true
+	case 0xC0:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_0Bytes, true
+	case 0xC1:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_1Bytes, true
+	case 0xC2:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_2Bytes, true
+	case 0xC3:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_3Bytes, true
+	case 0xC4:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_4Bytes, true
+	case 0xC5:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_5Bytes, true
+	case 0xC6:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_6Bytes, true
+	case 0xC7:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_7Bytes, true
+	case 0xC8:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_8Bytes, true
+	case 0xC9:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_9Bytes, true
+	case 0xCA:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_10Bytes, true
+	case 0xCB:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_11Bytes, true
+	case 0xCC:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_12Bytes, true
+	case 0xCD:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_13Bytes, true
+	case 0xCE:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_14Bytes, true
+	case 0xCF:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_15Bytes, true
+	case 0xD0:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_16Bytes, true
+	case 0xD1:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_17Bytes, true
+	case 0xD2:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_18Bytes, true
+	case 0xD3:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_19Bytes, true
+	case 0xD4:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_20Bytes, true
+	case 0xD5:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_21Bytes, true
+	case 0xD6:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_22Bytes, true
+	case 0xD7:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_23Bytes, true
+	case 0xD8:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_24Bytes, true
+	case 0xD9:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_25Bytes, true
+	case 0xDA:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_26Bytes, true
+	case 0xDB:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_27Bytes, true
+	case 0xDC:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_28Bytes, true
+	case 0xDD:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_29Bytes, true
+	case 0xDE:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_30Bytes, true
+	case 0xDF:
+		return AccessControlCommandTypeContainer_AccessControlCommandInvalidAccessRequest_31Bytes, true
 	}
 	return 0, false
 }
@@ -1161,13 +1373,13 @@ func AccessControlCommandTypeContainerByName(value string) (enum AccessControlCo
 	return 0, false
 }
 
-func AccessControlCommandTypeContainerKnows(value uint8)  bool {
+func AccessControlCommandTypeContainerKnows(value uint8) bool {
 	for _, typeValue := range AccessControlCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastAccessControlCommandTypeContainer(structType interface{}) AccessControlCommandTypeContainer {
@@ -1367,4 +1579,3 @@ func (e AccessControlCommandTypeContainer) PLC4XEnumName() string {
 func (e AccessControlCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
-

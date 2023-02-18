@@ -34,17 +34,17 @@ type IBACnetDoorSecuredStatus interface {
 	utils.Serializable
 }
 
-const(
-	BACnetDoorSecuredStatus_SECURED BACnetDoorSecuredStatus = 0
+const (
+	BACnetDoorSecuredStatus_SECURED   BACnetDoorSecuredStatus = 0
 	BACnetDoorSecuredStatus_UNSECURED BACnetDoorSecuredStatus = 1
-	BACnetDoorSecuredStatus_UNKNOWN BACnetDoorSecuredStatus = 2
+	BACnetDoorSecuredStatus_UNKNOWN   BACnetDoorSecuredStatus = 2
 )
 
 var BACnetDoorSecuredStatusValues []BACnetDoorSecuredStatus
 
 func init() {
 	_ = errors.New
-	BACnetDoorSecuredStatusValues = []BACnetDoorSecuredStatus {
+	BACnetDoorSecuredStatusValues = []BACnetDoorSecuredStatus{
 		BACnetDoorSecuredStatus_SECURED,
 		BACnetDoorSecuredStatus_UNSECURED,
 		BACnetDoorSecuredStatus_UNKNOWN,
@@ -53,12 +53,12 @@ func init() {
 
 func BACnetDoorSecuredStatusByValue(value uint8) (enum BACnetDoorSecuredStatus, ok bool) {
 	switch value {
-		case 0:
-			return BACnetDoorSecuredStatus_SECURED, true
-		case 1:
-			return BACnetDoorSecuredStatus_UNSECURED, true
-		case 2:
-			return BACnetDoorSecuredStatus_UNKNOWN, true
+	case 0:
+		return BACnetDoorSecuredStatus_SECURED, true
+	case 1:
+		return BACnetDoorSecuredStatus_UNSECURED, true
+	case 2:
+		return BACnetDoorSecuredStatus_UNKNOWN, true
 	}
 	return 0, false
 }
@@ -75,13 +75,13 @@ func BACnetDoorSecuredStatusByName(value string) (enum BACnetDoorSecuredStatus, 
 	return 0, false
 }
 
-func BACnetDoorSecuredStatusKnows(value uint8)  bool {
+func BACnetDoorSecuredStatusKnows(value uint8) bool {
 	for _, typeValue := range BACnetDoorSecuredStatusValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetDoorSecuredStatus(structType interface{}) BACnetDoorSecuredStatus {
@@ -147,4 +147,3 @@ func (e BACnetDoorSecuredStatus) PLC4XEnumName() string {
 func (e BACnetDoorSecuredStatus) String() string {
 	return e.PLC4XEnumName()
 }
-

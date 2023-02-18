@@ -37,7 +37,7 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "HVACStatusFlags":
 		return model.HVACStatusFlagsParseWithBuffer(context.Background(), io)
 	case "ParameterValue":
-        parameterType, _ := model.ParameterTypeByName(arguments[0])
+		parameterType, _ := model.ParameterTypeByName(arguments[0])
 		numBytes, err := utils.StrToUint8(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
@@ -80,7 +80,7 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "LightingData":
 		return model.LightingDataParseWithBuffer(context.Background(), io)
 	case "SALData":
-        applicationId, _ := model.ApplicationIdByName(arguments[0])
+		applicationId, _ := model.ApplicationIdByName(arguments[0])
 		return model.SALDataParseWithBuffer(context.Background(), io, applicationId)
 	case "CBusCommand":
 		var cBusOptions model.CBusOptions
@@ -152,7 +152,7 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "ParameterChange":
 		return model.ParameterChangeParseWithBuffer(context.Background(), io)
 	case "ErrorReportingSystemCategoryType":
-        errorReportingSystemCategoryClass, _ := model.ErrorReportingSystemCategoryClassByName(arguments[0])
+		errorReportingSystemCategoryClass, _ := model.ErrorReportingSystemCategoryClassByName(arguments[0])
 		return model.ErrorReportingSystemCategoryTypeParseWithBuffer(context.Background(), io, errorReportingSystemCategoryClass)
 	case "Confirmation":
 		return model.ConfirmationParseWithBuffer(context.Background(), io)
@@ -195,7 +195,7 @@ func (m CbusParserHelper) Parse(typeName string, arguments []string, io utils.Re
 	case "TamperStatus":
 		return model.TamperStatusParseWithBuffer(context.Background(), io)
 	case "IdentifyReplyCommand":
-        attribute, _ := model.AttributeByName(arguments[0])
+		attribute, _ := model.AttributeByName(arguments[0])
 		numBytes, err := utils.StrToUint8(arguments[1])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")

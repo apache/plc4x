@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"encoding/binary"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -35,12 +34,16 @@ type EipPacket interface {
 	utils.Serializable
 	// GetCommand returns Command (discriminator field)
 	GetCommand() uint16
+	// GetPacketLength returns PacketLength (discriminator field)
+	GetPacketLength() uint16
+	// GetResponse returns Response (discriminator field)
+	GetResponse() bool
 	// GetSessionHandle returns SessionHandle (property field)
 	GetSessionHandle() uint32
 	// GetStatus returns Status (property field)
 	GetStatus() uint32
 	// GetSenderContext returns SenderContext (property field)
-	GetSenderContext() []uint8
+	GetSenderContext() []byte
 	// GetOptions returns Options (property field)
 	GetOptions() uint32
 }
@@ -57,14 +60,19 @@ type _EipPacket struct {
 	_EipPacketChildRequirements
 	SessionHandle uint32
 	Status        uint32
-	SenderContext []uint8
+	SenderContext []byte
 	Options       uint32
+
+	// Arguments.
+	Order IntegerEncoding
 }
 
 type _EipPacketChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
 	GetCommand() uint16
+	GetResponse() bool
+	GetPacketLength() uint16
 }
 
 type EipPacketParent interface {
@@ -74,7 +82,7 @@ type EipPacketParent interface {
 
 type EipPacketChild interface {
 	utils.Serializable
-	InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32)
+	InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32)
 	GetParent() *EipPacket
 
 	GetTypeName() string
@@ -94,7 +102,7 @@ func (m *_EipPacket) GetStatus() uint32 {
 	return m.Status
 }
 
-func (m *_EipPacket) GetSenderContext() []uint8 {
+func (m *_EipPacket) GetSenderContext() []byte {
 	return m.SenderContext
 }
 
@@ -108,8 +116,8 @@ func (m *_EipPacket) GetOptions() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewEipPacket factory function for _EipPacket
-func NewEipPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_EipPacket {
-	return &_EipPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
+func NewEipPacket(sessionHandle uint32, status uint32, senderContext []byte, options uint32, order IntegerEncoding) *_EipPacket {
+	return &_EipPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options, Order: order}
 }
 
 // Deprecated: use the interface for direct cast
@@ -156,11 +164,11 @@ func (m *_EipPacket) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipPacketParse(theBytes []byte) (EipPacket, error) {
-	return EipPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+func EipPacketParse(theBytes []byte, order IntegerEncoding, response bool) (EipPacket, error) {
+	return EipPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order, response)
 }
 
-func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EipPacket, error) {
+func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding, response bool) (EipPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipPacket"); pullErr != nil {
@@ -195,32 +203,11 @@ func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of EipPacket")
 	}
 	status := _status
-
-	// Array field (senderContext)
-	if pullErr := readBuffer.PullContext("senderContext", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for senderContext")
-	}
-	// Count array
-	senderContext := make([]uint8, uint16(8))
-	// This happens when the size is set conditional to 0
-	if len(senderContext) == 0 {
-		senderContext = nil
-	}
-	{
-		_numItems := uint16(uint16(8))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'senderContext' field of EipPacket")
-			}
-			senderContext[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("senderContext", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for senderContext")
+	// Byte Array field (senderContext)
+	numberOfBytessenderContext := int(uint16(8))
+	senderContext, _readArrayErr := readBuffer.ReadByteArray("senderContext", numberOfBytessenderContext)
+	if _readArrayErr != nil {
+		return nil, errors.Wrap(_readArrayErr, "Error parsing 'senderContext' field of EipPacket")
 	}
 
 	// Simple Field (options)
@@ -233,21 +220,37 @@ func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type EipPacketChildSerializeRequirement interface {
 		EipPacket
-		InitializeParent(EipPacket, uint32, uint32, []uint8, uint32)
+		InitializeParent(EipPacket, uint32, uint32, []byte, uint32)
 		GetParent() EipPacket
 	}
 	var _childTemp interface{}
 	var _child EipPacketChildSerializeRequirement
 	var typeSwitchError error
 	switch {
-	case command == 0x0065: // EipConnectionRequest
-		_childTemp, typeSwitchError = EipConnectionRequestParseWithBuffer(ctx, readBuffer)
+	case command == 0x0001 && response == bool(false): // NullCommandRequest
+		_childTemp, typeSwitchError = NullCommandRequestParseWithBuffer(ctx, readBuffer, order, response)
+	case command == 0x0001 && response == bool(true): // NullCommandResponse
+		_childTemp, typeSwitchError = NullCommandResponseParseWithBuffer(ctx, readBuffer, order, response)
+	case command == 0x0004 && response == bool(false): // ListServicesRequest
+		_childTemp, typeSwitchError = ListServicesRequestParseWithBuffer(ctx, readBuffer, order, response)
+	case command == 0x0004 && response == bool(true) && packetLength == uint16(0): // NullListServicesResponse
+		_childTemp, typeSwitchError = NullListServicesResponseParseWithBuffer(ctx, readBuffer, order, response)
+	case command == 0x0004 && response == bool(true): // ListServicesResponse
+		_childTemp, typeSwitchError = ListServicesResponseParseWithBuffer(ctx, readBuffer, order, response)
+	case command == 0x0065 && response == bool(false): // EipConnectionRequest
+		_childTemp, typeSwitchError = EipConnectionRequestParseWithBuffer(ctx, readBuffer, order, response)
+	case command == 0x0065 && response == bool(true) && packetLength == uint16(0): // NullEipConnectionResponse
+		_childTemp, typeSwitchError = NullEipConnectionResponseParseWithBuffer(ctx, readBuffer, order, response)
+	case command == 0x0065 && response == bool(true): // EipConnectionResponse
+		_childTemp, typeSwitchError = EipConnectionResponseParseWithBuffer(ctx, readBuffer, order, response)
 	case command == 0x0066: // EipDisconnectRequest
-		_childTemp, typeSwitchError = EipDisconnectRequestParseWithBuffer(ctx, readBuffer)
+		_childTemp, typeSwitchError = EipDisconnectRequestParseWithBuffer(ctx, readBuffer, order, response)
 	case command == 0x006F: // CipRRData
-		_childTemp, typeSwitchError = CipRRDataParseWithBuffer(ctx, readBuffer, packetLength)
+		_childTemp, typeSwitchError = CipRRDataParseWithBuffer(ctx, readBuffer, order, response)
+	case command == 0x0070: // SendUnitData
+		_childTemp, typeSwitchError = SendUnitDataParseWithBuffer(ctx, readBuffer, order, response)
 	default:
-		typeSwitchError = errors.Errorf("Unmapped type for parameters [command=%v]", command)
+		typeSwitchError = errors.Errorf("Unmapped type for parameters [command=%v, response=%v, packetLength=%v]", command, response, packetLength)
 	}
 	if typeSwitchError != nil {
 		return nil, errors.Wrap(typeSwitchError, "Error parsing sub-type for type-switch of EipPacket")
@@ -303,18 +306,9 @@ func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	}
 
 	// Array Field (senderContext)
-	if pushErr := writeBuffer.PushContext("senderContext", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for senderContext")
-	}
-	for _curItem, _element := range m.GetSenderContext() {
-		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'senderContext' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("senderContext", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for senderContext")
+	// Byte Array field (senderContext)
+	if err := writeBuffer.WriteByteArray("senderContext", m.GetSenderContext()); err != nil {
+		return errors.Wrap(err, "Error serializing 'senderContext' field")
 	}
 
 	// Simple Field (options)
@@ -334,6 +328,16 @@ func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	}
 	return nil
 }
+
+////
+// Arguments Getter
+
+func (m *_EipPacket) GetOrder() IntegerEncoding {
+	return m.Order
+}
+
+//
+////
 
 func (m *_EipPacket) isEipPacket() bool {
 	return true

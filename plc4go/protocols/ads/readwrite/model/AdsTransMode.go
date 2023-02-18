@@ -34,13 +34,13 @@ type IAdsTransMode interface {
 	utils.Serializable
 }
 
-const(
-	AdsTransMode_NONE AdsTransMode = 0
-	AdsTransMode_CLIENT_CYCLE AdsTransMode = 1
-	AdsTransMode_CLIENT_ON_CHANGE AdsTransMode = 2
-	AdsTransMode_CYCLIC AdsTransMode = 3
-	AdsTransMode_ON_CHANGE AdsTransMode = 4
-	AdsTransMode_CYCLIC_IN_CONTEXT AdsTransMode = 5
+const (
+	AdsTransMode_NONE                 AdsTransMode = 0
+	AdsTransMode_CLIENT_CYCLE         AdsTransMode = 1
+	AdsTransMode_CLIENT_ON_CHANGE     AdsTransMode = 2
+	AdsTransMode_CYCLIC               AdsTransMode = 3
+	AdsTransMode_ON_CHANGE            AdsTransMode = 4
+	AdsTransMode_CYCLIC_IN_CONTEXT    AdsTransMode = 5
 	AdsTransMode_ON_CHANGE_IN_CONTEXT AdsTransMode = 6
 )
 
@@ -48,7 +48,7 @@ var AdsTransModeValues []AdsTransMode
 
 func init() {
 	_ = errors.New
-	AdsTransModeValues = []AdsTransMode {
+	AdsTransModeValues = []AdsTransMode{
 		AdsTransMode_NONE,
 		AdsTransMode_CLIENT_CYCLE,
 		AdsTransMode_CLIENT_ON_CHANGE,
@@ -61,20 +61,20 @@ func init() {
 
 func AdsTransModeByValue(value uint32) (enum AdsTransMode, ok bool) {
 	switch value {
-		case 0:
-			return AdsTransMode_NONE, true
-		case 1:
-			return AdsTransMode_CLIENT_CYCLE, true
-		case 2:
-			return AdsTransMode_CLIENT_ON_CHANGE, true
-		case 3:
-			return AdsTransMode_CYCLIC, true
-		case 4:
-			return AdsTransMode_ON_CHANGE, true
-		case 5:
-			return AdsTransMode_CYCLIC_IN_CONTEXT, true
-		case 6:
-			return AdsTransMode_ON_CHANGE_IN_CONTEXT, true
+	case 0:
+		return AdsTransMode_NONE, true
+	case 1:
+		return AdsTransMode_CLIENT_CYCLE, true
+	case 2:
+		return AdsTransMode_CLIENT_ON_CHANGE, true
+	case 3:
+		return AdsTransMode_CYCLIC, true
+	case 4:
+		return AdsTransMode_ON_CHANGE, true
+	case 5:
+		return AdsTransMode_CYCLIC_IN_CONTEXT, true
+	case 6:
+		return AdsTransMode_ON_CHANGE_IN_CONTEXT, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func AdsTransModeByName(value string) (enum AdsTransMode, ok bool) {
 	return 0, false
 }
 
-func AdsTransModeKnows(value uint32)  bool {
+func AdsTransModeKnows(value uint32) bool {
 	for _, typeValue := range AdsTransModeValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastAdsTransMode(structType interface{}) AdsTransMode {
@@ -179,4 +179,3 @@ func (e AdsTransMode) PLC4XEnumName() string {
 func (e AdsTransMode) String() string {
 	return e.PLC4XEnumName()
 }
-

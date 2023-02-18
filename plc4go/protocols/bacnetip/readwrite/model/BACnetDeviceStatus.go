@@ -34,21 +34,21 @@ type IBACnetDeviceStatus interface {
 	utils.Serializable
 }
 
-const(
-	BACnetDeviceStatus_OPERATIONAL BACnetDeviceStatus = 0
-	BACnetDeviceStatus_OPERATIONAL_READ_ONLY BACnetDeviceStatus = 1
-	BACnetDeviceStatus_DOWNLOAD_REQUIRED BACnetDeviceStatus = 2
-	BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS BACnetDeviceStatus = 3
-	BACnetDeviceStatus_NON_OPERATIONAL BACnetDeviceStatus = 4
-	BACnetDeviceStatus_BACKUP_IN_PROGRESS BACnetDeviceStatus = 5
-	BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE BACnetDeviceStatus = 0XFFFF
+const (
+	BACnetDeviceStatus_OPERATIONAL              BACnetDeviceStatus = 0
+	BACnetDeviceStatus_OPERATIONAL_READ_ONLY    BACnetDeviceStatus = 1
+	BACnetDeviceStatus_DOWNLOAD_REQUIRED        BACnetDeviceStatus = 2
+	BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS     BACnetDeviceStatus = 3
+	BACnetDeviceStatus_NON_OPERATIONAL          BACnetDeviceStatus = 4
+	BACnetDeviceStatus_BACKUP_IN_PROGRESS       BACnetDeviceStatus = 5
+	BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE BACnetDeviceStatus = 0xFFFF
 )
 
 var BACnetDeviceStatusValues []BACnetDeviceStatus
 
 func init() {
 	_ = errors.New
-	BACnetDeviceStatusValues = []BACnetDeviceStatus {
+	BACnetDeviceStatusValues = []BACnetDeviceStatus{
 		BACnetDeviceStatus_OPERATIONAL,
 		BACnetDeviceStatus_OPERATIONAL_READ_ONLY,
 		BACnetDeviceStatus_DOWNLOAD_REQUIRED,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetDeviceStatusByValue(value uint16) (enum BACnetDeviceStatus, ok bool) {
 	switch value {
-		case 0:
-			return BACnetDeviceStatus_OPERATIONAL, true
-		case 0XFFFF:
-			return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetDeviceStatus_OPERATIONAL_READ_ONLY, true
-		case 2:
-			return BACnetDeviceStatus_DOWNLOAD_REQUIRED, true
-		case 3:
-			return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS, true
-		case 4:
-			return BACnetDeviceStatus_NON_OPERATIONAL, true
-		case 5:
-			return BACnetDeviceStatus_BACKUP_IN_PROGRESS, true
+	case 0:
+		return BACnetDeviceStatus_OPERATIONAL, true
+	case 0xFFFF:
+		return BACnetDeviceStatus_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetDeviceStatus_OPERATIONAL_READ_ONLY, true
+	case 2:
+		return BACnetDeviceStatus_DOWNLOAD_REQUIRED, true
+	case 3:
+		return BACnetDeviceStatus_DOWNLOAD_IN_PROGRESS, true
+	case 4:
+		return BACnetDeviceStatus_NON_OPERATIONAL, true
+	case 5:
+		return BACnetDeviceStatus_BACKUP_IN_PROGRESS, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetDeviceStatusByName(value string) (enum BACnetDeviceStatus, ok bool) {
 	return 0, false
 }
 
-func BACnetDeviceStatusKnows(value uint16)  bool {
+func BACnetDeviceStatusKnows(value uint16) bool {
 	for _, typeValue := range BACnetDeviceStatusValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetDeviceStatus(structType interface{}) BACnetDeviceStatus {
@@ -179,4 +179,3 @@ func (e BACnetDeviceStatus) PLC4XEnumName() string {
 func (e BACnetDeviceStatus) String() string {
 	return e.PLC4XEnumName()
 }
-

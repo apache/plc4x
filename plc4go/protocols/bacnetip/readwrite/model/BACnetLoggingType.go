@@ -34,18 +34,18 @@ type IBACnetLoggingType interface {
 	utils.Serializable
 }
 
-const(
-	BACnetLoggingType_POLLED BACnetLoggingType = 0
-	BACnetLoggingType_COV BACnetLoggingType = 1
-	BACnetLoggingType_TRIGGERED BACnetLoggingType = 2
-	BACnetLoggingType_VENDOR_PROPRIETARY_VALUE BACnetLoggingType = 0XFF
+const (
+	BACnetLoggingType_POLLED                   BACnetLoggingType = 0
+	BACnetLoggingType_COV                      BACnetLoggingType = 1
+	BACnetLoggingType_TRIGGERED                BACnetLoggingType = 2
+	BACnetLoggingType_VENDOR_PROPRIETARY_VALUE BACnetLoggingType = 0xFF
 )
 
 var BACnetLoggingTypeValues []BACnetLoggingType
 
 func init() {
 	_ = errors.New
-	BACnetLoggingTypeValues = []BACnetLoggingType {
+	BACnetLoggingTypeValues = []BACnetLoggingType{
 		BACnetLoggingType_POLLED,
 		BACnetLoggingType_COV,
 		BACnetLoggingType_TRIGGERED,
@@ -55,14 +55,14 @@ func init() {
 
 func BACnetLoggingTypeByValue(value uint8) (enum BACnetLoggingType, ok bool) {
 	switch value {
-		case 0:
-			return BACnetLoggingType_POLLED, true
-		case 0XFF:
-			return BACnetLoggingType_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetLoggingType_COV, true
-		case 2:
-			return BACnetLoggingType_TRIGGERED, true
+	case 0:
+		return BACnetLoggingType_POLLED, true
+	case 0xFF:
+		return BACnetLoggingType_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetLoggingType_COV, true
+	case 2:
+		return BACnetLoggingType_TRIGGERED, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func BACnetLoggingTypeByName(value string) (enum BACnetLoggingType, ok bool) {
 	return 0, false
 }
 
-func BACnetLoggingTypeKnows(value uint8)  bool {
+func BACnetLoggingTypeKnows(value uint8) bool {
 	for _, typeValue := range BACnetLoggingTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetLoggingType(structType interface{}) BACnetLoggingType {
@@ -155,4 +155,3 @@ func (e BACnetLoggingType) PLC4XEnumName() string {
 func (e BACnetLoggingType) String() string {
 	return e.PLC4XEnumName()
 }
-

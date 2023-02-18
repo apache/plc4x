@@ -34,21 +34,21 @@ type IBACnetLiftGroupMode interface {
 	utils.Serializable
 }
 
-const(
-	BACnetLiftGroupMode_UNKNOWN BACnetLiftGroupMode = 0
-	BACnetLiftGroupMode_NORMAL BACnetLiftGroupMode = 1
-	BACnetLiftGroupMode_DOWN_PEAK BACnetLiftGroupMode = 2
-	BACnetLiftGroupMode_TWO_WAY BACnetLiftGroupMode = 3
-	BACnetLiftGroupMode_FOUR_WAY BACnetLiftGroupMode = 4
+const (
+	BACnetLiftGroupMode_UNKNOWN         BACnetLiftGroupMode = 0
+	BACnetLiftGroupMode_NORMAL          BACnetLiftGroupMode = 1
+	BACnetLiftGroupMode_DOWN_PEAK       BACnetLiftGroupMode = 2
+	BACnetLiftGroupMode_TWO_WAY         BACnetLiftGroupMode = 3
+	BACnetLiftGroupMode_FOUR_WAY        BACnetLiftGroupMode = 4
 	BACnetLiftGroupMode_EMERGENCY_POWER BACnetLiftGroupMode = 5
-	BACnetLiftGroupMode_UP_PEAK BACnetLiftGroupMode = 6
+	BACnetLiftGroupMode_UP_PEAK         BACnetLiftGroupMode = 6
 )
 
 var BACnetLiftGroupModeValues []BACnetLiftGroupMode
 
 func init() {
 	_ = errors.New
-	BACnetLiftGroupModeValues = []BACnetLiftGroupMode {
+	BACnetLiftGroupModeValues = []BACnetLiftGroupMode{
 		BACnetLiftGroupMode_UNKNOWN,
 		BACnetLiftGroupMode_NORMAL,
 		BACnetLiftGroupMode_DOWN_PEAK,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetLiftGroupModeByValue(value uint8) (enum BACnetLiftGroupMode, ok bool) {
 	switch value {
-		case 0:
-			return BACnetLiftGroupMode_UNKNOWN, true
-		case 1:
-			return BACnetLiftGroupMode_NORMAL, true
-		case 2:
-			return BACnetLiftGroupMode_DOWN_PEAK, true
-		case 3:
-			return BACnetLiftGroupMode_TWO_WAY, true
-		case 4:
-			return BACnetLiftGroupMode_FOUR_WAY, true
-		case 5:
-			return BACnetLiftGroupMode_EMERGENCY_POWER, true
-		case 6:
-			return BACnetLiftGroupMode_UP_PEAK, true
+	case 0:
+		return BACnetLiftGroupMode_UNKNOWN, true
+	case 1:
+		return BACnetLiftGroupMode_NORMAL, true
+	case 2:
+		return BACnetLiftGroupMode_DOWN_PEAK, true
+	case 3:
+		return BACnetLiftGroupMode_TWO_WAY, true
+	case 4:
+		return BACnetLiftGroupMode_FOUR_WAY, true
+	case 5:
+		return BACnetLiftGroupMode_EMERGENCY_POWER, true
+	case 6:
+		return BACnetLiftGroupMode_UP_PEAK, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetLiftGroupModeByName(value string) (enum BACnetLiftGroupMode, ok bool)
 	return 0, false
 }
 
-func BACnetLiftGroupModeKnows(value uint8)  bool {
+func BACnetLiftGroupModeKnows(value uint8) bool {
 	for _, typeValue := range BACnetLiftGroupModeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetLiftGroupMode(structType interface{}) BACnetLiftGroupMode {
@@ -179,4 +179,3 @@ func (e BACnetLiftGroupMode) PLC4XEnumName() string {
 func (e BACnetLiftGroupMode) String() string {
 	return e.PLC4XEnumName()
 }
-

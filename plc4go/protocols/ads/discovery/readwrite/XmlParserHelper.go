@@ -21,8 +21,8 @@ package readwrite
 
 import (
 	"context"
-	"strings"
 	"strconv"
+	"strings"
 
 	"github.com/apache/plc4x/plc4go/protocols/ads/discovery/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -43,17 +43,17 @@ func init() {
 }
 
 func (m AdsDiscoveryXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
-    switch typeName {
-        case "AdsDiscovery":
-			return model.AdsDiscoveryParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-        case "AdsDiscoveryBlock":
-			return model.AdsDiscoveryBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-        case "AdsDiscoveryConstants":
-			return model.AdsDiscoveryConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-        case "AmsNetId":
-			return model.AmsNetIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-        case "AmsString":
-			return model.AmsStringParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
-    }
-    return nil, errors.Errorf("Unsupported type %s", typeName)
+	switch typeName {
+	case "AdsDiscovery":
+		return model.AdsDiscoveryParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsDiscoveryBlock":
+		return model.AdsDiscoveryBlockParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AdsDiscoveryConstants":
+		return model.AdsDiscoveryConstantsParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AmsNetId":
+		return model.AmsNetIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "AmsString":
+		return model.AmsStringParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	}
+	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

@@ -34,24 +34,24 @@ type IBACnetEscalatorFault interface {
 	utils.Serializable
 }
 
-const(
-	BACnetEscalatorFault_CONTROLLER_FAULT BACnetEscalatorFault = 0
-	BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT BACnetEscalatorFault = 1
+const (
+	BACnetEscalatorFault_CONTROLLER_FAULT           BACnetEscalatorFault = 0
+	BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT      BACnetEscalatorFault = 1
 	BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT BACnetEscalatorFault = 2
-	BACnetEscalatorFault_OVERSPEED_FAULT BACnetEscalatorFault = 3
-	BACnetEscalatorFault_POWER_SUPPLY_FAULT BACnetEscalatorFault = 4
-	BACnetEscalatorFault_SAFETY_DEVICE_FAULT BACnetEscalatorFault = 5
-	BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT BACnetEscalatorFault = 6
+	BACnetEscalatorFault_OVERSPEED_FAULT            BACnetEscalatorFault = 3
+	BACnetEscalatorFault_POWER_SUPPLY_FAULT         BACnetEscalatorFault = 4
+	BACnetEscalatorFault_SAFETY_DEVICE_FAULT        BACnetEscalatorFault = 5
+	BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT    BACnetEscalatorFault = 6
 	BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED BACnetEscalatorFault = 7
-	BACnetEscalatorFault_COMB_PLATE_FAULT BACnetEscalatorFault = 8
-	BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE BACnetEscalatorFault = 0XFFFF
+	BACnetEscalatorFault_COMB_PLATE_FAULT           BACnetEscalatorFault = 8
+	BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE   BACnetEscalatorFault = 0xFFFF
 )
 
 var BACnetEscalatorFaultValues []BACnetEscalatorFault
 
 func init() {
 	_ = errors.New
-	BACnetEscalatorFaultValues = []BACnetEscalatorFault {
+	BACnetEscalatorFaultValues = []BACnetEscalatorFault{
 		BACnetEscalatorFault_CONTROLLER_FAULT,
 		BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT,
 		BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT,
@@ -67,26 +67,26 @@ func init() {
 
 func BACnetEscalatorFaultByValue(value uint16) (enum BACnetEscalatorFault, ok bool) {
 	switch value {
-		case 0:
-			return BACnetEscalatorFault_CONTROLLER_FAULT, true
-		case 0XFFFF:
-			return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT, true
-		case 2:
-			return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT, true
-		case 3:
-			return BACnetEscalatorFault_OVERSPEED_FAULT, true
-		case 4:
-			return BACnetEscalatorFault_POWER_SUPPLY_FAULT, true
-		case 5:
-			return BACnetEscalatorFault_SAFETY_DEVICE_FAULT, true
-		case 6:
-			return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT, true
-		case 7:
-			return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED, true
-		case 8:
-			return BACnetEscalatorFault_COMB_PLATE_FAULT, true
+	case 0:
+		return BACnetEscalatorFault_CONTROLLER_FAULT, true
+	case 0xFFFF:
+		return BACnetEscalatorFault_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetEscalatorFault_DRIVE_AND_MOTOR_FAULT, true
+	case 2:
+		return BACnetEscalatorFault_MECHANICAL_COMPONENT_FAULT, true
+	case 3:
+		return BACnetEscalatorFault_OVERSPEED_FAULT, true
+	case 4:
+		return BACnetEscalatorFault_POWER_SUPPLY_FAULT, true
+	case 5:
+		return BACnetEscalatorFault_SAFETY_DEVICE_FAULT, true
+	case 6:
+		return BACnetEscalatorFault_CONTROLLER_SUPPLY_FAULT, true
+	case 7:
+		return BACnetEscalatorFault_DRIVE_TEMPERATURE_EXCEEDED, true
+	case 8:
+		return BACnetEscalatorFault_COMB_PLATE_FAULT, true
 	}
 	return 0, false
 }
@@ -117,13 +117,13 @@ func BACnetEscalatorFaultByName(value string) (enum BACnetEscalatorFault, ok boo
 	return 0, false
 }
 
-func BACnetEscalatorFaultKnows(value uint16)  bool {
+func BACnetEscalatorFaultKnows(value uint16) bool {
 	for _, typeValue := range BACnetEscalatorFaultValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetEscalatorFault(structType interface{}) BACnetEscalatorFault {
@@ -203,4 +203,3 @@ func (e BACnetEscalatorFault) PLC4XEnumName() string {
 func (e BACnetEscalatorFault) String() string {
 	return e.PLC4XEnumName()
 }
-

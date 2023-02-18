@@ -36,18 +36,18 @@ type ITelephonyCommandTypeContainer interface {
 	CommandType() TelephonyCommandType
 }
 
-const(
-	TelephonyCommandTypeContainer_TelephonyCommandLineOnHook TelephonyCommandTypeContainer = 0x09
-	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_0Bytes TelephonyCommandTypeContainer = 0xA0
-	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_1Bytes TelephonyCommandTypeContainer = 0xA1
-	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_2Bytes TelephonyCommandTypeContainer = 0xA2
-	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_3Bytes TelephonyCommandTypeContainer = 0xA3
-	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_4Bytes TelephonyCommandTypeContainer = 0xA4
-	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_5Bytes TelephonyCommandTypeContainer = 0xA5
-	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_6Bytes TelephonyCommandTypeContainer = 0xA6
-	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_7Bytes TelephonyCommandTypeContainer = 0xA7
-	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_8Bytes TelephonyCommandTypeContainer = 0xA8
-	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_9Bytes TelephonyCommandTypeContainer = 0xA9
+const (
+	TelephonyCommandTypeContainer_TelephonyCommandLineOnHook          TelephonyCommandTypeContainer = 0x09
+	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_0Bytes  TelephonyCommandTypeContainer = 0xA0
+	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_1Bytes  TelephonyCommandTypeContainer = 0xA1
+	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_2Bytes  TelephonyCommandTypeContainer = 0xA2
+	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_3Bytes  TelephonyCommandTypeContainer = 0xA3
+	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_4Bytes  TelephonyCommandTypeContainer = 0xA4
+	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_5Bytes  TelephonyCommandTypeContainer = 0xA5
+	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_6Bytes  TelephonyCommandTypeContainer = 0xA6
+	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_7Bytes  TelephonyCommandTypeContainer = 0xA7
+	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_8Bytes  TelephonyCommandTypeContainer = 0xA8
+	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_9Bytes  TelephonyCommandTypeContainer = 0xA9
 	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_10Bytes TelephonyCommandTypeContainer = 0xAA
 	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_11Bytes TelephonyCommandTypeContainer = 0xAB
 	TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_12Bytes TelephonyCommandTypeContainer = 0xAC
@@ -76,7 +76,7 @@ var TelephonyCommandTypeContainerValues []TelephonyCommandTypeContainer
 
 func init() {
 	_ = errors.New
-	TelephonyCommandTypeContainerValues = []TelephonyCommandTypeContainer {
+	TelephonyCommandTypeContainerValues = []TelephonyCommandTypeContainer{
 		TelephonyCommandTypeContainer_TelephonyCommandLineOnHook,
 		TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_0Bytes,
 		TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_1Bytes,
@@ -113,109 +113,142 @@ func init() {
 	}
 }
 
-
 func (e TelephonyCommandTypeContainer) NumBytes() uint8 {
-	switch e  {
-		case 0x09: { /* '0x09' */
-            return 1
+	switch e {
+	case 0x09:
+		{ /* '0x09' */
+			return 1
 		}
-		case 0xA0: { /* '0xA0' */
-            return 0
+	case 0xA0:
+		{ /* '0xA0' */
+			return 0
 		}
-		case 0xA1: { /* '0xA1' */
-            return 1
+	case 0xA1:
+		{ /* '0xA1' */
+			return 1
 		}
-		case 0xA2: { /* '0xA2' */
-            return 2
+	case 0xA2:
+		{ /* '0xA2' */
+			return 2
 		}
-		case 0xA3: { /* '0xA3' */
-            return 3
+	case 0xA3:
+		{ /* '0xA3' */
+			return 3
 		}
-		case 0xA4: { /* '0xA4' */
-            return 4
+	case 0xA4:
+		{ /* '0xA4' */
+			return 4
 		}
-		case 0xA5: { /* '0xA5' */
-            return 5
+	case 0xA5:
+		{ /* '0xA5' */
+			return 5
 		}
-		case 0xA6: { /* '0xA6' */
-            return 6
+	case 0xA6:
+		{ /* '0xA6' */
+			return 6
 		}
-		case 0xA7: { /* '0xA7' */
-            return 7
+	case 0xA7:
+		{ /* '0xA7' */
+			return 7
 		}
-		case 0xA8: { /* '0xA8' */
-            return 8
+	case 0xA8:
+		{ /* '0xA8' */
+			return 8
 		}
-		case 0xA9: { /* '0xA9' */
-            return 9
+	case 0xA9:
+		{ /* '0xA9' */
+			return 9
 		}
-		case 0xAA: { /* '0xAA' */
-            return 10
+	case 0xAA:
+		{ /* '0xAA' */
+			return 10
 		}
-		case 0xAB: { /* '0xAB' */
-            return 11
+	case 0xAB:
+		{ /* '0xAB' */
+			return 11
 		}
-		case 0xAC: { /* '0xAC' */
-            return 12
+	case 0xAC:
+		{ /* '0xAC' */
+			return 12
 		}
-		case 0xAD: { /* '0xAD' */
-            return 13
+	case 0xAD:
+		{ /* '0xAD' */
+			return 13
 		}
-		case 0xAE: { /* '0xAE' */
-            return 14
+	case 0xAE:
+		{ /* '0xAE' */
+			return 14
 		}
-		case 0xAF: { /* '0xAF' */
-            return 15
+	case 0xAF:
+		{ /* '0xAF' */
+			return 15
 		}
-		case 0xB0: { /* '0xB0' */
-            return 16
+	case 0xB0:
+		{ /* '0xB0' */
+			return 16
 		}
-		case 0xB1: { /* '0xB1' */
-            return 17
+	case 0xB1:
+		{ /* '0xB1' */
+			return 17
 		}
-		case 0xB2: { /* '0xB2' */
-            return 18
+	case 0xB2:
+		{ /* '0xB2' */
+			return 18
 		}
-		case 0xB3: { /* '0xB3' */
-            return 19
+	case 0xB3:
+		{ /* '0xB3' */
+			return 19
 		}
-		case 0xB4: { /* '0xB4' */
-            return 20
+	case 0xB4:
+		{ /* '0xB4' */
+			return 20
 		}
-		case 0xB5: { /* '0xB5' */
-            return 21
+	case 0xB5:
+		{ /* '0xB5' */
+			return 21
 		}
-		case 0xB6: { /* '0xB6' */
-            return 22
+	case 0xB6:
+		{ /* '0xB6' */
+			return 22
 		}
-		case 0xB7: { /* '0xB7' */
-            return 23
+	case 0xB7:
+		{ /* '0xB7' */
+			return 23
 		}
-		case 0xB8: { /* '0xB8' */
-            return 24
+	case 0xB8:
+		{ /* '0xB8' */
+			return 24
 		}
-		case 0xB9: { /* '0xB9' */
-            return 25
+	case 0xB9:
+		{ /* '0xB9' */
+			return 25
 		}
-		case 0xBA: { /* '0xBA' */
-            return 26
+	case 0xBA:
+		{ /* '0xBA' */
+			return 26
 		}
-		case 0xBB: { /* '0xBB' */
-            return 27
+	case 0xBB:
+		{ /* '0xBB' */
+			return 27
 		}
-		case 0xBC: { /* '0xBC' */
-            return 28
+	case 0xBC:
+		{ /* '0xBC' */
+			return 28
 		}
-		case 0xBD: { /* '0xBD' */
-            return 29
+	case 0xBD:
+		{ /* '0xBD' */
+			return 29
 		}
-		case 0xBE: { /* '0xBE' */
-            return 30
+	case 0xBE:
+		{ /* '0xBE' */
+			return 30
 		}
-		case 0xBF: { /* '0xBF' */
-            return 31
+	case 0xBF:
+		{ /* '0xBF' */
+			return 31
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -231,107 +264,141 @@ func TelephonyCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (Teleph
 }
 
 func (e TelephonyCommandTypeContainer) CommandType() TelephonyCommandType {
-	switch e  {
-		case 0x09: { /* '0x09' */
+	switch e {
+	case 0x09:
+		{ /* '0x09' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xA0: { /* '0xA0' */
+	case 0xA0:
+		{ /* '0xA0' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xA1: { /* '0xA1' */
+	case 0xA1:
+		{ /* '0xA1' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xA2: { /* '0xA2' */
+	case 0xA2:
+		{ /* '0xA2' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xA3: { /* '0xA3' */
+	case 0xA3:
+		{ /* '0xA3' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xA4: { /* '0xA4' */
+	case 0xA4:
+		{ /* '0xA4' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xA5: { /* '0xA5' */
+	case 0xA5:
+		{ /* '0xA5' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xA6: { /* '0xA6' */
+	case 0xA6:
+		{ /* '0xA6' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xA7: { /* '0xA7' */
+	case 0xA7:
+		{ /* '0xA7' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xA8: { /* '0xA8' */
+	case 0xA8:
+		{ /* '0xA8' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xA9: { /* '0xA9' */
+	case 0xA9:
+		{ /* '0xA9' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xAA: { /* '0xAA' */
+	case 0xAA:
+		{ /* '0xAA' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xAB: { /* '0xAB' */
+	case 0xAB:
+		{ /* '0xAB' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xAC: { /* '0xAC' */
+	case 0xAC:
+		{ /* '0xAC' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xAD: { /* '0xAD' */
+	case 0xAD:
+		{ /* '0xAD' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xAE: { /* '0xAE' */
+	case 0xAE:
+		{ /* '0xAE' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xAF: { /* '0xAF' */
+	case 0xAF:
+		{ /* '0xAF' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xB0: { /* '0xB0' */
+	case 0xB0:
+		{ /* '0xB0' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xB1: { /* '0xB1' */
+	case 0xB1:
+		{ /* '0xB1' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xB2: { /* '0xB2' */
+	case 0xB2:
+		{ /* '0xB2' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xB3: { /* '0xB3' */
+	case 0xB3:
+		{ /* '0xB3' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xB4: { /* '0xB4' */
+	case 0xB4:
+		{ /* '0xB4' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xB5: { /* '0xB5' */
+	case 0xB5:
+		{ /* '0xB5' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xB6: { /* '0xB6' */
+	case 0xB6:
+		{ /* '0xB6' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xB7: { /* '0xB7' */
+	case 0xB7:
+		{ /* '0xB7' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xB8: { /* '0xB8' */
+	case 0xB8:
+		{ /* '0xB8' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xB9: { /* '0xB9' */
+	case 0xB9:
+		{ /* '0xB9' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xBA: { /* '0xBA' */
+	case 0xBA:
+		{ /* '0xBA' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xBB: { /* '0xBB' */
+	case 0xBB:
+		{ /* '0xBB' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xBC: { /* '0xBC' */
+	case 0xBC:
+		{ /* '0xBC' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xBD: { /* '0xBD' */
+	case 0xBD:
+		{ /* '0xBD' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xBE: { /* '0xBE' */
+	case 0xBE:
+		{ /* '0xBE' */
 			return TelephonyCommandType_EVENT
 		}
-		case 0xBF: { /* '0xBF' */
+	case 0xBF:
+		{ /* '0xBF' */
 			return TelephonyCommandType_EVENT
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -347,72 +414,72 @@ func TelephonyCommandTypeContainerFirstEnumForFieldCommandType(value TelephonyCo
 }
 func TelephonyCommandTypeContainerByValue(value uint8) (enum TelephonyCommandTypeContainer, ok bool) {
 	switch value {
-		case 0x09:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOnHook, true
-		case 0xA0:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_0Bytes, true
-		case 0xA1:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_1Bytes, true
-		case 0xA2:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_2Bytes, true
-		case 0xA3:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_3Bytes, true
-		case 0xA4:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_4Bytes, true
-		case 0xA5:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_5Bytes, true
-		case 0xA6:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_6Bytes, true
-		case 0xA7:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_7Bytes, true
-		case 0xA8:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_8Bytes, true
-		case 0xA9:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_9Bytes, true
-		case 0xAA:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_10Bytes, true
-		case 0xAB:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_11Bytes, true
-		case 0xAC:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_12Bytes, true
-		case 0xAD:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_13Bytes, true
-		case 0xAE:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_14Bytes, true
-		case 0xAF:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_15Bytes, true
-		case 0xB0:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_16Bytes, true
-		case 0xB1:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_17Bytes, true
-		case 0xB2:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_18Bytes, true
-		case 0xB3:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_19Bytes, true
-		case 0xB4:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_20Bytes, true
-		case 0xB5:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_21Bytes, true
-		case 0xB6:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_22Bytes, true
-		case 0xB7:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_23Bytes, true
-		case 0xB8:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_24Bytes, true
-		case 0xB9:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_25Bytes, true
-		case 0xBA:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_26Bytes, true
-		case 0xBB:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_27Bytes, true
-		case 0xBC:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_28Bytes, true
-		case 0xBD:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_29Bytes, true
-		case 0xBE:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_30Bytes, true
-		case 0xBF:
-			return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_31Bytes, true
+	case 0x09:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOnHook, true
+	case 0xA0:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_0Bytes, true
+	case 0xA1:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_1Bytes, true
+	case 0xA2:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_2Bytes, true
+	case 0xA3:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_3Bytes, true
+	case 0xA4:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_4Bytes, true
+	case 0xA5:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_5Bytes, true
+	case 0xA6:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_6Bytes, true
+	case 0xA7:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_7Bytes, true
+	case 0xA8:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_8Bytes, true
+	case 0xA9:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_9Bytes, true
+	case 0xAA:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_10Bytes, true
+	case 0xAB:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_11Bytes, true
+	case 0xAC:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_12Bytes, true
+	case 0xAD:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_13Bytes, true
+	case 0xAE:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_14Bytes, true
+	case 0xAF:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_15Bytes, true
+	case 0xB0:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_16Bytes, true
+	case 0xB1:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_17Bytes, true
+	case 0xB2:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_18Bytes, true
+	case 0xB3:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_19Bytes, true
+	case 0xB4:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_20Bytes, true
+	case 0xB5:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_21Bytes, true
+	case 0xB6:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_22Bytes, true
+	case 0xB7:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_23Bytes, true
+	case 0xB8:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_24Bytes, true
+	case 0xB9:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_25Bytes, true
+	case 0xBA:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_26Bytes, true
+	case 0xBB:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_27Bytes, true
+	case 0xBC:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_28Bytes, true
+	case 0xBD:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_29Bytes, true
+	case 0xBE:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_30Bytes, true
+	case 0xBF:
+		return TelephonyCommandTypeContainer_TelephonyCommandLineOffHook_31Bytes, true
 	}
 	return 0, false
 }
@@ -489,13 +556,13 @@ func TelephonyCommandTypeContainerByName(value string) (enum TelephonyCommandTyp
 	return 0, false
 }
 
-func TelephonyCommandTypeContainerKnows(value uint8)  bool {
+func TelephonyCommandTypeContainerKnows(value uint8) bool {
 	for _, typeValue := range TelephonyCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTelephonyCommandTypeContainer(structType interface{}) TelephonyCommandTypeContainer {
@@ -621,4 +688,3 @@ func (e TelephonyCommandTypeContainer) PLC4XEnumName() string {
 func (e TelephonyCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
-

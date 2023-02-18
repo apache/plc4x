@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -33,8 +34,14 @@ type CipRRData interface {
 	utils.LengthAware
 	utils.Serializable
 	EipPacket
-	// GetExchange returns Exchange (property field)
-	GetExchange() CipExchange
+	// GetInterfaceHandle returns InterfaceHandle (property field)
+	GetInterfaceHandle() uint32
+	// GetTimeout returns Timeout (property field)
+	GetTimeout() uint16
+	// GetItemCount returns ItemCount (property field)
+	GetItemCount() uint16
+	// GetTypeId returns TypeId (property field)
+	GetTypeId() []TypeId
 }
 
 // CipRRDataExactly can be used when we want exactly this type and not a type which fulfills CipRRData.
@@ -47,13 +54,10 @@ type CipRRDataExactly interface {
 // _CipRRData is the data-structure of this message
 type _CipRRData struct {
 	*_EipPacket
-	Exchange CipExchange
-
-	// Arguments.
-	PacketLength uint16
-	// Reserved Fields
-	reservedField0 *uint32
-	reservedField1 *uint16
+	InterfaceHandle uint32
+	Timeout         uint16
+	ItemCount       uint16
+	TypeId          []TypeId
 }
 
 ///////////////////////////////////////////////////////////
@@ -65,12 +69,20 @@ func (m *_CipRRData) GetCommand() uint16 {
 	return 0x006F
 }
 
+func (m *_CipRRData) GetResponse() bool {
+	return false
+}
+
+func (m *_CipRRData) GetPacketLength() uint16 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_CipRRData) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
+func (m *_CipRRData) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32) {
 	m.SessionHandle = sessionHandle
 	m.Status = status
 	m.SenderContext = senderContext
@@ -86,8 +98,20 @@ func (m *_CipRRData) GetParent() EipPacket {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CipRRData) GetExchange() CipExchange {
-	return m.Exchange
+func (m *_CipRRData) GetInterfaceHandle() uint32 {
+	return m.InterfaceHandle
+}
+
+func (m *_CipRRData) GetTimeout() uint16 {
+	return m.Timeout
+}
+
+func (m *_CipRRData) GetItemCount() uint16 {
+	return m.ItemCount
+}
+
+func (m *_CipRRData) GetTypeId() []TypeId {
+	return m.TypeId
 }
 
 ///////////////////////
@@ -96,10 +120,13 @@ func (m *_CipRRData) GetExchange() CipExchange {
 ///////////////////////////////////////////////////////////
 
 // NewCipRRData factory function for _CipRRData
-func NewCipRRData(exchange CipExchange, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, packetLength uint16) *_CipRRData {
+func NewCipRRData(interfaceHandle uint32, timeout uint16, itemCount uint16, typeId []TypeId, sessionHandle uint32, status uint32, senderContext []byte, options uint32, order IntegerEncoding) *_CipRRData {
 	_result := &_CipRRData{
-		Exchange:   exchange,
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
+		InterfaceHandle: interfaceHandle,
+		Timeout:         timeout,
+		ItemCount:       itemCount,
+		TypeId:          typeId,
+		_EipPacket:      NewEipPacket(sessionHandle, status, senderContext, options, order),
 	}
 	_result._EipPacket._EipPacketChildRequirements = _result
 	return _result
@@ -123,14 +150,24 @@ func (m *_CipRRData) GetTypeName() string {
 func (m *_CipRRData) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
-	// Reserved Field (reserved)
+	// Simple field (interfaceHandle)
 	lengthInBits += 32
 
-	// Reserved Field (reserved)
+	// Simple field (timeout)
 	lengthInBits += 16
 
-	// Simple field (exchange)
-	lengthInBits += m.Exchange.GetLengthInBits(ctx)
+	// Simple field (itemCount)
+	lengthInBits += 16
+
+	// Array field
+	if len(m.TypeId) > 0 {
+		for _curItem, element := range m.TypeId {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.TypeId), _curItem)
+			_ = arrayCtx
+			_ = _curItem
+			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
+		}
+	}
 
 	return lengthInBits
 }
@@ -139,11 +176,11 @@ func (m *_CipRRData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipRRDataParse(theBytes []byte, packetLength uint16) (CipRRData, error) {
-	return CipRRDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), packetLength)
+func CipRRDataParse(theBytes []byte, order IntegerEncoding, response bool) (CipRRData, error) {
+	return CipRRDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order, response)
 }
 
-func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CipRRData, error) {
+func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding, response bool) (CipRRData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipRRData"); pullErr != nil {
@@ -152,51 +189,52 @@ func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint32
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint32("reserved", 32)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipRRData")
-		}
-		if reserved != uint32(0x00000000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
-				"expected value": uint32(0x00000000),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	// Simple Field (interfaceHandle)
+	_interfaceHandle, _interfaceHandleErr := readBuffer.ReadUint32("interfaceHandle", 32)
+	if _interfaceHandleErr != nil {
+		return nil, errors.Wrap(_interfaceHandleErr, "Error parsing 'interfaceHandle' field of CipRRData")
 	}
+	interfaceHandle := _interfaceHandle
 
-	var reservedField1 *uint16
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipRRData")
-		}
-		if reserved != uint16(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
-				"expected value": uint16(0x0000),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	// Simple Field (timeout)
+	_timeout, _timeoutErr := readBuffer.ReadUint16("timeout", 16)
+	if _timeoutErr != nil {
+		return nil, errors.Wrap(_timeoutErr, "Error parsing 'timeout' field of CipRRData")
 	}
+	timeout := _timeout
 
-	// Simple Field (exchange)
-	if pullErr := readBuffer.PullContext("exchange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for exchange")
+	// Simple Field (itemCount)
+	_itemCount, _itemCountErr := readBuffer.ReadUint16("itemCount", 16)
+	if _itemCountErr != nil {
+		return nil, errors.Wrap(_itemCountErr, "Error parsing 'itemCount' field of CipRRData")
 	}
-	_exchange, _exchangeErr := CipExchangeParseWithBuffer(ctx, readBuffer, uint16(uint16(packetLength)-uint16(uint16(6))))
-	if _exchangeErr != nil {
-		return nil, errors.Wrap(_exchangeErr, "Error parsing 'exchange' field of CipRRData")
+	itemCount := _itemCount
+
+	// Array field (typeId)
+	if pullErr := readBuffer.PullContext("typeId", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for typeId")
 	}
-	exchange := _exchange.(CipExchange)
-	if closeErr := readBuffer.CloseContext("exchange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for exchange")
+	// Count array
+	typeId := make([]TypeId, itemCount)
+	// This happens when the size is set conditional to 0
+	if len(typeId) == 0 {
+		typeId = nil
+	}
+	{
+		_numItems := uint16(itemCount)
+		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
+			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			_ = arrayCtx
+			_ = _curItem
+			_item, _err := TypeIdParseWithBuffer(arrayCtx, readBuffer, order)
+			if _err != nil {
+				return nil, errors.Wrap(_err, "Error parsing 'typeId' field of CipRRData")
+			}
+			typeId[_curItem] = _item.(TypeId)
+		}
+	}
+	if closeErr := readBuffer.CloseContext("typeId", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for typeId")
 	}
 
 	if closeErr := readBuffer.CloseContext("CipRRData"); closeErr != nil {
@@ -205,17 +243,20 @@ func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 
 	// Create a partially initialized instance
 	_child := &_CipRRData{
-		_EipPacket:     &_EipPacket{},
-		Exchange:       exchange,
-		reservedField0: reservedField0,
-		reservedField1: reservedField1,
+		_EipPacket: &_EipPacket{
+			Order: order,
+		},
+		InterfaceHandle: interfaceHandle,
+		Timeout:         timeout,
+		ItemCount:       itemCount,
+		TypeId:          typeId,
 	}
 	_child._EipPacket._EipPacketChildRequirements = _child
 	return _child, nil
 }
 
 func (m *_CipRRData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -230,48 +271,42 @@ func (m *_CipRRData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(pushErr, "Error pushing for CipRRData")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint32 = uint32(0x00000000)
-			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
-					"expected value": uint32(0x00000000),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint32("reserved", 32, reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		// Simple Field (interfaceHandle)
+		interfaceHandle := uint32(m.GetInterfaceHandle())
+		_interfaceHandleErr := writeBuffer.WriteUint32("interfaceHandle", 32, (interfaceHandle))
+		if _interfaceHandleErr != nil {
+			return errors.Wrap(_interfaceHandleErr, "Error serializing 'interfaceHandle' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint16 = uint16(0x0000)
-			if m.reservedField1 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
-					"expected value": uint16(0x0000),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField1
-			}
-			_err := writeBuffer.WriteUint16("reserved", 16, reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		// Simple Field (timeout)
+		timeout := uint16(m.GetTimeout())
+		_timeoutErr := writeBuffer.WriteUint16("timeout", 16, (timeout))
+		if _timeoutErr != nil {
+			return errors.Wrap(_timeoutErr, "Error serializing 'timeout' field")
 		}
 
-		// Simple Field (exchange)
-		if pushErr := writeBuffer.PushContext("exchange"); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for exchange")
+		// Simple Field (itemCount)
+		itemCount := uint16(m.GetItemCount())
+		_itemCountErr := writeBuffer.WriteUint16("itemCount", 16, (itemCount))
+		if _itemCountErr != nil {
+			return errors.Wrap(_itemCountErr, "Error serializing 'itemCount' field")
 		}
-		_exchangeErr := writeBuffer.WriteSerializable(ctx, m.GetExchange())
-		if popErr := writeBuffer.PopContext("exchange"); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for exchange")
+
+		// Array Field (typeId)
+		if pushErr := writeBuffer.PushContext("typeId", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for typeId")
 		}
-		if _exchangeErr != nil {
-			return errors.Wrap(_exchangeErr, "Error serializing 'exchange' field")
+		for _curItem, _element := range m.GetTypeId() {
+			_ = _curItem
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetTypeId()), _curItem)
+			_ = arrayCtx
+			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
+			if _elementErr != nil {
+				return errors.Wrap(_elementErr, "Error serializing 'typeId' field")
+			}
+		}
+		if popErr := writeBuffer.PopContext("typeId", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for typeId")
 		}
 
 		if popErr := writeBuffer.PopContext("CipRRData"); popErr != nil {
@@ -281,16 +316,6 @@ func (m *_CipRRData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	}
 	return m.SerializeParent(ctx, writeBuffer, m, ser)
 }
-
-////
-// Arguments Getter
-
-func (m *_CipRRData) GetPacketLength() uint16 {
-	return m.PacketLength
-}
-
-//
-////
 
 func (m *_CipRRData) isCipRRData() bool {
 	return true

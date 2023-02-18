@@ -35,21 +35,21 @@ type IRequestType interface {
 	ControlChar() uint8
 }
 
-const(
-	RequestType_UNKNOWN RequestType = 0x00
+const (
+	RequestType_UNKNOWN                RequestType = 0x00
 	RequestType_SMART_CONNECT_SHORTCUT RequestType = 0x7C
-	RequestType_RESET RequestType = 0x7E
-	RequestType_DIRECT_COMMAND RequestType = 0x40
-	RequestType_REQUEST_COMMAND RequestType = 0x5C
-	RequestType_NULL RequestType = 0x6E
-	RequestType_EMPTY RequestType = 0x0D
+	RequestType_RESET                  RequestType = 0x7E
+	RequestType_DIRECT_COMMAND         RequestType = 0x40
+	RequestType_REQUEST_COMMAND        RequestType = 0x5C
+	RequestType_NULL                   RequestType = 0x6E
+	RequestType_EMPTY                  RequestType = 0x0D
 )
 
 var RequestTypeValues []RequestType
 
 func init() {
 	_ = errors.New
-	RequestTypeValues = []RequestType {
+	RequestTypeValues = []RequestType{
 		RequestType_UNKNOWN,
 		RequestType_SMART_CONNECT_SHORTCUT,
 		RequestType_RESET,
@@ -60,31 +60,38 @@ func init() {
 	}
 }
 
-
 func (e RequestType) ControlChar() uint8 {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return 0x00
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 0x00
 		}
-		case 0x0D: { /* '0x0D' */
-            return 0x00
+	case 0x0D:
+		{ /* '0x0D' */
+			return 0x00
 		}
-		case 0x40: { /* '0x40' */
-            return 0x40
+	case 0x40:
+		{ /* '0x40' */
+			return 0x40
 		}
-		case 0x5C: { /* '0x5C' */
-            return 0x5C
+	case 0x5C:
+		{ /* '0x5C' */
+			return 0x5C
 		}
-		case 0x6E: { /* '0x6E' */
-            return 0x00
+	case 0x6E:
+		{ /* '0x6E' */
+			return 0x00
 		}
-		case 0x7C: { /* '0x7C' */
-            return 0x7C
+	case 0x7C:
+		{ /* '0x7C' */
+			return 0x7C
 		}
-		case 0x7E: { /* '0x7E' */
-            return 0x7E
+	case 0x7E:
+		{ /* '0x7E' */
+			return 0x7E
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -100,20 +107,20 @@ func RequestTypeFirstEnumForFieldControlChar(value uint8) (RequestType, error) {
 }
 func RequestTypeByValue(value uint8) (enum RequestType, ok bool) {
 	switch value {
-		case 0x00:
-			return RequestType_UNKNOWN, true
-		case 0x0D:
-			return RequestType_EMPTY, true
-		case 0x40:
-			return RequestType_DIRECT_COMMAND, true
-		case 0x5C:
-			return RequestType_REQUEST_COMMAND, true
-		case 0x6E:
-			return RequestType_NULL, true
-		case 0x7C:
-			return RequestType_SMART_CONNECT_SHORTCUT, true
-		case 0x7E:
-			return RequestType_RESET, true
+	case 0x00:
+		return RequestType_UNKNOWN, true
+	case 0x0D:
+		return RequestType_EMPTY, true
+	case 0x40:
+		return RequestType_DIRECT_COMMAND, true
+	case 0x5C:
+		return RequestType_REQUEST_COMMAND, true
+	case 0x6E:
+		return RequestType_NULL, true
+	case 0x7C:
+		return RequestType_SMART_CONNECT_SHORTCUT, true
+	case 0x7E:
+		return RequestType_RESET, true
 	}
 	return 0, false
 }
@@ -138,13 +145,13 @@ func RequestTypeByName(value string) (enum RequestType, ok bool) {
 	return 0, false
 }
 
-func RequestTypeKnows(value uint8)  bool {
+func RequestTypeKnows(value uint8) bool {
 	for _, typeValue := range RequestTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastRequestType(structType interface{}) RequestType {
@@ -218,4 +225,3 @@ func (e RequestType) PLC4XEnumName() string {
 func (e RequestType) String() string {
 	return e.PLC4XEnumName()
 }
-

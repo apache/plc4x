@@ -34,8 +34,8 @@ type ITagClass interface {
 	utils.Serializable
 }
 
-const(
-	TagClass_APPLICATION_TAGS TagClass = 0x0
+const (
+	TagClass_APPLICATION_TAGS      TagClass = 0x0
 	TagClass_CONTEXT_SPECIFIC_TAGS TagClass = 0x1
 )
 
@@ -43,7 +43,7 @@ var TagClassValues []TagClass
 
 func init() {
 	_ = errors.New
-	TagClassValues = []TagClass {
+	TagClassValues = []TagClass{
 		TagClass_APPLICATION_TAGS,
 		TagClass_CONTEXT_SPECIFIC_TAGS,
 	}
@@ -51,10 +51,10 @@ func init() {
 
 func TagClassByValue(value uint8) (enum TagClass, ok bool) {
 	switch value {
-		case 0x0:
-			return TagClass_APPLICATION_TAGS, true
-		case 0x1:
-			return TagClass_CONTEXT_SPECIFIC_TAGS, true
+	case 0x0:
+		return TagClass_APPLICATION_TAGS, true
+	case 0x1:
+		return TagClass_CONTEXT_SPECIFIC_TAGS, true
 	}
 	return 0, false
 }
@@ -69,13 +69,13 @@ func TagClassByName(value string) (enum TagClass, ok bool) {
 	return 0, false
 }
 
-func TagClassKnows(value uint8)  bool {
+func TagClassKnows(value uint8) bool {
 	for _, typeValue := range TagClassValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTagClass(structType interface{}) TagClass {
@@ -139,4 +139,3 @@ func (e TagClass) PLC4XEnumName() string {
 func (e TagClass) String() string {
 	return e.PLC4XEnumName()
 }
-

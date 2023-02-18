@@ -35,33 +35,33 @@ type IAirConditioningCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const(
-	AirConditioningCommandType_SET_ZONE_GROUP_OFF AirConditioningCommandType = 0x00
-	AirConditioningCommandType_ZONE_HVAC_PLANT_STATUS AirConditioningCommandType = 0x01
-	AirConditioningCommandType_ZONE_HUMIDITY_PLANT_STATUS AirConditioningCommandType = 0x02
-	AirConditioningCommandType_ZONE_TEMPERATURE AirConditioningCommandType = 0x03
-	AirConditioningCommandType_ZONE_HUMIDITY AirConditioningCommandType = 0x04
-	AirConditioningCommandType_REFRESH AirConditioningCommandType = 0x05
-	AirConditioningCommandType_SET_ZONE_HVAC_MODE AirConditioningCommandType = 0x06
-	AirConditioningCommandType_SET_PLANT_HVAC_LEVEL AirConditioningCommandType = 0x07
-	AirConditioningCommandType_SET_ZONE_HUMIDITY_MODE AirConditioningCommandType = 0x08
-	AirConditioningCommandType_SET_PLANT_HUMIDITY_LEVEL AirConditioningCommandType = 0x09
-	AirConditioningCommandType_SET_HVAC_UPPER_GUARD_LIMIT AirConditioningCommandType = 0x0A
-	AirConditioningCommandType_SET_HVAC_LOWER_GUARD_LIMIT AirConditioningCommandType = 0x0B
-	AirConditioningCommandType_SET_HVAC_SETBACK_LIMIT AirConditioningCommandType = 0x0C
+const (
+	AirConditioningCommandType_SET_ZONE_GROUP_OFF             AirConditioningCommandType = 0x00
+	AirConditioningCommandType_ZONE_HVAC_PLANT_STATUS         AirConditioningCommandType = 0x01
+	AirConditioningCommandType_ZONE_HUMIDITY_PLANT_STATUS     AirConditioningCommandType = 0x02
+	AirConditioningCommandType_ZONE_TEMPERATURE               AirConditioningCommandType = 0x03
+	AirConditioningCommandType_ZONE_HUMIDITY                  AirConditioningCommandType = 0x04
+	AirConditioningCommandType_REFRESH                        AirConditioningCommandType = 0x05
+	AirConditioningCommandType_SET_ZONE_HVAC_MODE             AirConditioningCommandType = 0x06
+	AirConditioningCommandType_SET_PLANT_HVAC_LEVEL           AirConditioningCommandType = 0x07
+	AirConditioningCommandType_SET_ZONE_HUMIDITY_MODE         AirConditioningCommandType = 0x08
+	AirConditioningCommandType_SET_PLANT_HUMIDITY_LEVEL       AirConditioningCommandType = 0x09
+	AirConditioningCommandType_SET_HVAC_UPPER_GUARD_LIMIT     AirConditioningCommandType = 0x0A
+	AirConditioningCommandType_SET_HVAC_LOWER_GUARD_LIMIT     AirConditioningCommandType = 0x0B
+	AirConditioningCommandType_SET_HVAC_SETBACK_LIMIT         AirConditioningCommandType = 0x0C
 	AirConditioningCommandType_SET_HUMIDITY_UPPER_GUARD_LIMIT AirConditioningCommandType = 0x0D
 	AirConditioningCommandType_SET_HUMIDITY_LOWER_GUARD_LIMIT AirConditioningCommandType = 0x0E
-	AirConditioningCommandType_SET_ZONE_GROUP_ON AirConditioningCommandType = 0x0F
-	AirConditioningCommandType_SET_HUMIDITY_SETBACK_LIMIT AirConditioningCommandType = 0x10
-	AirConditioningCommandType_HVAC_SCHEDULE_ENTRY AirConditioningCommandType = 0x11
-	AirConditioningCommandType_HUMIDITY_SCHEDULE_ENTRY AirConditioningCommandType = 0x12
+	AirConditioningCommandType_SET_ZONE_GROUP_ON              AirConditioningCommandType = 0x0F
+	AirConditioningCommandType_SET_HUMIDITY_SETBACK_LIMIT     AirConditioningCommandType = 0x10
+	AirConditioningCommandType_HVAC_SCHEDULE_ENTRY            AirConditioningCommandType = 0x11
+	AirConditioningCommandType_HUMIDITY_SCHEDULE_ENTRY        AirConditioningCommandType = 0x12
 )
 
 var AirConditioningCommandTypeValues []AirConditioningCommandType
 
 func init() {
 	_ = errors.New
-	AirConditioningCommandTypeValues = []AirConditioningCommandType {
+	AirConditioningCommandTypeValues = []AirConditioningCommandType{
 		AirConditioningCommandType_SET_ZONE_GROUP_OFF,
 		AirConditioningCommandType_ZONE_HVAC_PLANT_STATUS,
 		AirConditioningCommandType_ZONE_HUMIDITY_PLANT_STATUS,
@@ -84,67 +84,86 @@ func init() {
 	}
 }
 
-
 func (e AirConditioningCommandType) NumberOfArguments() uint8 {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return 0
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 0
 		}
-		case 0x01: { /* '0x01' */
-            return 5
+	case 0x01:
+		{ /* '0x01' */
+			return 5
 		}
-		case 0x02: { /* '0x02' */
-            return 5
+	case 0x02:
+		{ /* '0x02' */
+			return 5
 		}
-		case 0x03: { /* '0x03' */
-            return 4
+	case 0x03:
+		{ /* '0x03' */
+			return 4
 		}
-		case 0x04: { /* '0x04' */
-            return 4
+	case 0x04:
+		{ /* '0x04' */
+			return 4
 		}
-		case 0x05: { /* '0x05' */
-            return 1
+	case 0x05:
+		{ /* '0x05' */
+			return 1
 		}
-		case 0x06: { /* '0x06' */
-            return 5
+	case 0x06:
+		{ /* '0x06' */
+			return 5
 		}
-		case 0x07: { /* '0x07' */
-            return 5
+	case 0x07:
+		{ /* '0x07' */
+			return 5
 		}
-		case 0x08: { /* '0x08' */
-            return 5
+	case 0x08:
+		{ /* '0x08' */
+			return 5
 		}
-		case 0x09: { /* '0x09' */
-            return 5
+	case 0x09:
+		{ /* '0x09' */
+			return 5
 		}
-		case 0x0A: { /* '0x0A' */
-            return 4
+	case 0x0A:
+		{ /* '0x0A' */
+			return 4
 		}
-		case 0x0B: { /* '0x0B' */
-            return 4
+	case 0x0B:
+		{ /* '0x0B' */
+			return 4
 		}
-		case 0x0C: { /* '0x0C' */
-            return 4
+	case 0x0C:
+		{ /* '0x0C' */
+			return 4
 		}
-		case 0x0D: { /* '0x0D' */
-            return 4
+	case 0x0D:
+		{ /* '0x0D' */
+			return 4
 		}
-		case 0x0E: { /* '0x0E' */
-            return 4
+	case 0x0E:
+		{ /* '0x0E' */
+			return 4
 		}
-		case 0x0F: { /* '0x0F' */
-            return 1
+	case 0x0F:
+		{ /* '0x0F' */
+			return 1
 		}
-		case 0x10: { /* '0x10' */
-            return 1
+	case 0x10:
+		{ /* '0x10' */
+			return 1
 		}
-		case 0x11: { /* '0x11' */
-            return 7
+	case 0x11:
+		{ /* '0x11' */
+			return 7
 		}
-		case 0x12: { /* '0x12' */
-            return 7
+	case 0x12:
+		{ /* '0x12' */
+			return 7
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -160,44 +179,44 @@ func AirConditioningCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (
 }
 func AirConditioningCommandTypeByValue(value uint8) (enum AirConditioningCommandType, ok bool) {
 	switch value {
-		case 0x00:
-			return AirConditioningCommandType_SET_ZONE_GROUP_OFF, true
-		case 0x01:
-			return AirConditioningCommandType_ZONE_HVAC_PLANT_STATUS, true
-		case 0x02:
-			return AirConditioningCommandType_ZONE_HUMIDITY_PLANT_STATUS, true
-		case 0x03:
-			return AirConditioningCommandType_ZONE_TEMPERATURE, true
-		case 0x04:
-			return AirConditioningCommandType_ZONE_HUMIDITY, true
-		case 0x05:
-			return AirConditioningCommandType_REFRESH, true
-		case 0x06:
-			return AirConditioningCommandType_SET_ZONE_HVAC_MODE, true
-		case 0x07:
-			return AirConditioningCommandType_SET_PLANT_HVAC_LEVEL, true
-		case 0x08:
-			return AirConditioningCommandType_SET_ZONE_HUMIDITY_MODE, true
-		case 0x09:
-			return AirConditioningCommandType_SET_PLANT_HUMIDITY_LEVEL, true
-		case 0x0A:
-			return AirConditioningCommandType_SET_HVAC_UPPER_GUARD_LIMIT, true
-		case 0x0B:
-			return AirConditioningCommandType_SET_HVAC_LOWER_GUARD_LIMIT, true
-		case 0x0C:
-			return AirConditioningCommandType_SET_HVAC_SETBACK_LIMIT, true
-		case 0x0D:
-			return AirConditioningCommandType_SET_HUMIDITY_UPPER_GUARD_LIMIT, true
-		case 0x0E:
-			return AirConditioningCommandType_SET_HUMIDITY_LOWER_GUARD_LIMIT, true
-		case 0x0F:
-			return AirConditioningCommandType_SET_ZONE_GROUP_ON, true
-		case 0x10:
-			return AirConditioningCommandType_SET_HUMIDITY_SETBACK_LIMIT, true
-		case 0x11:
-			return AirConditioningCommandType_HVAC_SCHEDULE_ENTRY, true
-		case 0x12:
-			return AirConditioningCommandType_HUMIDITY_SCHEDULE_ENTRY, true
+	case 0x00:
+		return AirConditioningCommandType_SET_ZONE_GROUP_OFF, true
+	case 0x01:
+		return AirConditioningCommandType_ZONE_HVAC_PLANT_STATUS, true
+	case 0x02:
+		return AirConditioningCommandType_ZONE_HUMIDITY_PLANT_STATUS, true
+	case 0x03:
+		return AirConditioningCommandType_ZONE_TEMPERATURE, true
+	case 0x04:
+		return AirConditioningCommandType_ZONE_HUMIDITY, true
+	case 0x05:
+		return AirConditioningCommandType_REFRESH, true
+	case 0x06:
+		return AirConditioningCommandType_SET_ZONE_HVAC_MODE, true
+	case 0x07:
+		return AirConditioningCommandType_SET_PLANT_HVAC_LEVEL, true
+	case 0x08:
+		return AirConditioningCommandType_SET_ZONE_HUMIDITY_MODE, true
+	case 0x09:
+		return AirConditioningCommandType_SET_PLANT_HUMIDITY_LEVEL, true
+	case 0x0A:
+		return AirConditioningCommandType_SET_HVAC_UPPER_GUARD_LIMIT, true
+	case 0x0B:
+		return AirConditioningCommandType_SET_HVAC_LOWER_GUARD_LIMIT, true
+	case 0x0C:
+		return AirConditioningCommandType_SET_HVAC_SETBACK_LIMIT, true
+	case 0x0D:
+		return AirConditioningCommandType_SET_HUMIDITY_UPPER_GUARD_LIMIT, true
+	case 0x0E:
+		return AirConditioningCommandType_SET_HUMIDITY_LOWER_GUARD_LIMIT, true
+	case 0x0F:
+		return AirConditioningCommandType_SET_ZONE_GROUP_ON, true
+	case 0x10:
+		return AirConditioningCommandType_SET_HUMIDITY_SETBACK_LIMIT, true
+	case 0x11:
+		return AirConditioningCommandType_HVAC_SCHEDULE_ENTRY, true
+	case 0x12:
+		return AirConditioningCommandType_HUMIDITY_SCHEDULE_ENTRY, true
 	}
 	return 0, false
 }
@@ -246,13 +265,13 @@ func AirConditioningCommandTypeByName(value string) (enum AirConditioningCommand
 	return 0, false
 }
 
-func AirConditioningCommandTypeKnows(value uint8)  bool {
+func AirConditioningCommandTypeKnows(value uint8) bool {
 	for _, typeValue := range AirConditioningCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastAirConditioningCommandType(structType interface{}) AirConditioningCommandType {
@@ -350,4 +369,3 @@ func (e AirConditioningCommandType) PLC4XEnumName() string {
 func (e AirConditioningCommandType) String() string {
 	return e.PLC4XEnumName()
 }
-

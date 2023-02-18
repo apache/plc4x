@@ -34,21 +34,21 @@ type IBACnetBinaryLightingPV interface {
 	utils.Serializable
 }
 
-const(
-	BACnetBinaryLightingPV_OFF BACnetBinaryLightingPV = 0
-	BACnetBinaryLightingPV_ON BACnetBinaryLightingPV = 1
-	BACnetBinaryLightingPV_WARN BACnetBinaryLightingPV = 2
-	BACnetBinaryLightingPV_WARN_OFF BACnetBinaryLightingPV = 3
-	BACnetBinaryLightingPV_WARN_RELINQUISH BACnetBinaryLightingPV = 4
-	BACnetBinaryLightingPV_STOP BACnetBinaryLightingPV = 5
-	BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE BACnetBinaryLightingPV = 0XFF
+const (
+	BACnetBinaryLightingPV_OFF                      BACnetBinaryLightingPV = 0
+	BACnetBinaryLightingPV_ON                       BACnetBinaryLightingPV = 1
+	BACnetBinaryLightingPV_WARN                     BACnetBinaryLightingPV = 2
+	BACnetBinaryLightingPV_WARN_OFF                 BACnetBinaryLightingPV = 3
+	BACnetBinaryLightingPV_WARN_RELINQUISH          BACnetBinaryLightingPV = 4
+	BACnetBinaryLightingPV_STOP                     BACnetBinaryLightingPV = 5
+	BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE BACnetBinaryLightingPV = 0xFF
 )
 
 var BACnetBinaryLightingPVValues []BACnetBinaryLightingPV
 
 func init() {
 	_ = errors.New
-	BACnetBinaryLightingPVValues = []BACnetBinaryLightingPV {
+	BACnetBinaryLightingPVValues = []BACnetBinaryLightingPV{
 		BACnetBinaryLightingPV_OFF,
 		BACnetBinaryLightingPV_ON,
 		BACnetBinaryLightingPV_WARN,
@@ -61,20 +61,20 @@ func init() {
 
 func BACnetBinaryLightingPVByValue(value uint8) (enum BACnetBinaryLightingPV, ok bool) {
 	switch value {
-		case 0:
-			return BACnetBinaryLightingPV_OFF, true
-		case 0XFF:
-			return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetBinaryLightingPV_ON, true
-		case 2:
-			return BACnetBinaryLightingPV_WARN, true
-		case 3:
-			return BACnetBinaryLightingPV_WARN_OFF, true
-		case 4:
-			return BACnetBinaryLightingPV_WARN_RELINQUISH, true
-		case 5:
-			return BACnetBinaryLightingPV_STOP, true
+	case 0:
+		return BACnetBinaryLightingPV_OFF, true
+	case 0xFF:
+		return BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetBinaryLightingPV_ON, true
+	case 2:
+		return BACnetBinaryLightingPV_WARN, true
+	case 3:
+		return BACnetBinaryLightingPV_WARN_OFF, true
+	case 4:
+		return BACnetBinaryLightingPV_WARN_RELINQUISH, true
+	case 5:
+		return BACnetBinaryLightingPV_STOP, true
 	}
 	return 0, false
 }
@@ -99,13 +99,13 @@ func BACnetBinaryLightingPVByName(value string) (enum BACnetBinaryLightingPV, ok
 	return 0, false
 }
 
-func BACnetBinaryLightingPVKnows(value uint8)  bool {
+func BACnetBinaryLightingPVKnows(value uint8) bool {
 	for _, typeValue := range BACnetBinaryLightingPVValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetBinaryLightingPV(structType interface{}) BACnetBinaryLightingPV {
@@ -179,4 +179,3 @@ func (e BACnetBinaryLightingPV) PLC4XEnumName() string {
 func (e BACnetBinaryLightingPV) String() string {
 	return e.PLC4XEnumName()
 }
-

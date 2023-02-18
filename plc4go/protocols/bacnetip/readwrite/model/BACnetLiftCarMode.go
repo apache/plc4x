@@ -34,29 +34,29 @@ type IBACnetLiftCarMode interface {
 	utils.Serializable
 }
 
-const(
-	BACnetLiftCarMode_UNKNOWN BACnetLiftCarMode = 0
-	BACnetLiftCarMode_NORMAL BACnetLiftCarMode = 1
-	BACnetLiftCarMode_VIP BACnetLiftCarMode = 2
-	BACnetLiftCarMode_HOMING BACnetLiftCarMode = 3
-	BACnetLiftCarMode_PARKING BACnetLiftCarMode = 4
-	BACnetLiftCarMode_ATTENDANT_CONTROL BACnetLiftCarMode = 5
-	BACnetLiftCarMode_FIREFIGHTER_CONTROL BACnetLiftCarMode = 6
-	BACnetLiftCarMode_EMERGENCY_POWER BACnetLiftCarMode = 7
-	BACnetLiftCarMode_INSPECTION BACnetLiftCarMode = 8
-	BACnetLiftCarMode_CABINET_RECALL BACnetLiftCarMode = 9
-	BACnetLiftCarMode_EARTHQUAKE_OPERATION BACnetLiftCarMode = 10
-	BACnetLiftCarMode_FIRE_OPERATION BACnetLiftCarMode = 11
-	BACnetLiftCarMode_OUT_OF_SERVICE BACnetLiftCarMode = 12
-	BACnetLiftCarMode_OCCUPANT_EVACUATION BACnetLiftCarMode = 13
-	BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE BACnetLiftCarMode = 0XFFFF
+const (
+	BACnetLiftCarMode_UNKNOWN                  BACnetLiftCarMode = 0
+	BACnetLiftCarMode_NORMAL                   BACnetLiftCarMode = 1
+	BACnetLiftCarMode_VIP                      BACnetLiftCarMode = 2
+	BACnetLiftCarMode_HOMING                   BACnetLiftCarMode = 3
+	BACnetLiftCarMode_PARKING                  BACnetLiftCarMode = 4
+	BACnetLiftCarMode_ATTENDANT_CONTROL        BACnetLiftCarMode = 5
+	BACnetLiftCarMode_FIREFIGHTER_CONTROL      BACnetLiftCarMode = 6
+	BACnetLiftCarMode_EMERGENCY_POWER          BACnetLiftCarMode = 7
+	BACnetLiftCarMode_INSPECTION               BACnetLiftCarMode = 8
+	BACnetLiftCarMode_CABINET_RECALL           BACnetLiftCarMode = 9
+	BACnetLiftCarMode_EARTHQUAKE_OPERATION     BACnetLiftCarMode = 10
+	BACnetLiftCarMode_FIRE_OPERATION           BACnetLiftCarMode = 11
+	BACnetLiftCarMode_OUT_OF_SERVICE           BACnetLiftCarMode = 12
+	BACnetLiftCarMode_OCCUPANT_EVACUATION      BACnetLiftCarMode = 13
+	BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE BACnetLiftCarMode = 0xFFFF
 )
 
 var BACnetLiftCarModeValues []BACnetLiftCarMode
 
 func init() {
 	_ = errors.New
-	BACnetLiftCarModeValues = []BACnetLiftCarMode {
+	BACnetLiftCarModeValues = []BACnetLiftCarMode{
 		BACnetLiftCarMode_UNKNOWN,
 		BACnetLiftCarMode_NORMAL,
 		BACnetLiftCarMode_VIP,
@@ -77,36 +77,36 @@ func init() {
 
 func BACnetLiftCarModeByValue(value uint16) (enum BACnetLiftCarMode, ok bool) {
 	switch value {
-		case 0:
-			return BACnetLiftCarMode_UNKNOWN, true
-		case 0XFFFF:
-			return BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetLiftCarMode_NORMAL, true
-		case 10:
-			return BACnetLiftCarMode_EARTHQUAKE_OPERATION, true
-		case 11:
-			return BACnetLiftCarMode_FIRE_OPERATION, true
-		case 12:
-			return BACnetLiftCarMode_OUT_OF_SERVICE, true
-		case 13:
-			return BACnetLiftCarMode_OCCUPANT_EVACUATION, true
-		case 2:
-			return BACnetLiftCarMode_VIP, true
-		case 3:
-			return BACnetLiftCarMode_HOMING, true
-		case 4:
-			return BACnetLiftCarMode_PARKING, true
-		case 5:
-			return BACnetLiftCarMode_ATTENDANT_CONTROL, true
-		case 6:
-			return BACnetLiftCarMode_FIREFIGHTER_CONTROL, true
-		case 7:
-			return BACnetLiftCarMode_EMERGENCY_POWER, true
-		case 8:
-			return BACnetLiftCarMode_INSPECTION, true
-		case 9:
-			return BACnetLiftCarMode_CABINET_RECALL, true
+	case 0:
+		return BACnetLiftCarMode_UNKNOWN, true
+	case 0xFFFF:
+		return BACnetLiftCarMode_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetLiftCarMode_NORMAL, true
+	case 10:
+		return BACnetLiftCarMode_EARTHQUAKE_OPERATION, true
+	case 11:
+		return BACnetLiftCarMode_FIRE_OPERATION, true
+	case 12:
+		return BACnetLiftCarMode_OUT_OF_SERVICE, true
+	case 13:
+		return BACnetLiftCarMode_OCCUPANT_EVACUATION, true
+	case 2:
+		return BACnetLiftCarMode_VIP, true
+	case 3:
+		return BACnetLiftCarMode_HOMING, true
+	case 4:
+		return BACnetLiftCarMode_PARKING, true
+	case 5:
+		return BACnetLiftCarMode_ATTENDANT_CONTROL, true
+	case 6:
+		return BACnetLiftCarMode_FIREFIGHTER_CONTROL, true
+	case 7:
+		return BACnetLiftCarMode_EMERGENCY_POWER, true
+	case 8:
+		return BACnetLiftCarMode_INSPECTION, true
+	case 9:
+		return BACnetLiftCarMode_CABINET_RECALL, true
 	}
 	return 0, false
 }
@@ -147,13 +147,13 @@ func BACnetLiftCarModeByName(value string) (enum BACnetLiftCarMode, ok bool) {
 	return 0, false
 }
 
-func BACnetLiftCarModeKnows(value uint16)  bool {
+func BACnetLiftCarModeKnows(value uint16) bool {
 	for _, typeValue := range BACnetLiftCarModeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetLiftCarMode(structType interface{}) BACnetLiftCarMode {
@@ -243,4 +243,3 @@ func (e BACnetLiftCarMode) PLC4XEnumName() string {
 func (e BACnetLiftCarMode) String() string {
 	return e.PLC4XEnumName()
 }
-

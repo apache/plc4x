@@ -34,12 +34,12 @@ type IBACnetProgramState interface {
 	utils.Serializable
 }
 
-const(
-	BACnetProgramState_IDLE BACnetProgramState = 0
-	BACnetProgramState_LOADING BACnetProgramState = 1
-	BACnetProgramState_RUNNING BACnetProgramState = 2
-	BACnetProgramState_WAITING BACnetProgramState = 3
-	BACnetProgramState_HALTED BACnetProgramState = 4
+const (
+	BACnetProgramState_IDLE      BACnetProgramState = 0
+	BACnetProgramState_LOADING   BACnetProgramState = 1
+	BACnetProgramState_RUNNING   BACnetProgramState = 2
+	BACnetProgramState_WAITING   BACnetProgramState = 3
+	BACnetProgramState_HALTED    BACnetProgramState = 4
 	BACnetProgramState_UNLOADING BACnetProgramState = 5
 )
 
@@ -47,7 +47,7 @@ var BACnetProgramStateValues []BACnetProgramState
 
 func init() {
 	_ = errors.New
-	BACnetProgramStateValues = []BACnetProgramState {
+	BACnetProgramStateValues = []BACnetProgramState{
 		BACnetProgramState_IDLE,
 		BACnetProgramState_LOADING,
 		BACnetProgramState_RUNNING,
@@ -59,18 +59,18 @@ func init() {
 
 func BACnetProgramStateByValue(value uint8) (enum BACnetProgramState, ok bool) {
 	switch value {
-		case 0:
-			return BACnetProgramState_IDLE, true
-		case 1:
-			return BACnetProgramState_LOADING, true
-		case 2:
-			return BACnetProgramState_RUNNING, true
-		case 3:
-			return BACnetProgramState_WAITING, true
-		case 4:
-			return BACnetProgramState_HALTED, true
-		case 5:
-			return BACnetProgramState_UNLOADING, true
+	case 0:
+		return BACnetProgramState_IDLE, true
+	case 1:
+		return BACnetProgramState_LOADING, true
+	case 2:
+		return BACnetProgramState_RUNNING, true
+	case 3:
+		return BACnetProgramState_WAITING, true
+	case 4:
+		return BACnetProgramState_HALTED, true
+	case 5:
+		return BACnetProgramState_UNLOADING, true
 	}
 	return 0, false
 }
@@ -93,13 +93,13 @@ func BACnetProgramStateByName(value string) (enum BACnetProgramState, ok bool) {
 	return 0, false
 }
 
-func BACnetProgramStateKnows(value uint8)  bool {
+func BACnetProgramStateKnows(value uint8) bool {
 	for _, typeValue := range BACnetProgramStateValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetProgramState(structType interface{}) BACnetProgramState {
@@ -171,4 +171,3 @@ func (e BACnetProgramState) PLC4XEnumName() string {
 func (e BACnetProgramState) String() string {
 	return e.PLC4XEnumName()
 }
-

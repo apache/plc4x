@@ -34,266 +34,266 @@ type IBACnetEngineeringUnits interface {
 	utils.Serializable
 }
 
-const(
-	BACnetEngineeringUnits_METERS_PER_SECOND_PER_SECOND BACnetEngineeringUnits = 166
-	BACnetEngineeringUnits_SQUARE_METERS BACnetEngineeringUnits = 0
-	BACnetEngineeringUnits_SQUARE_CENTIMETERS BACnetEngineeringUnits = 116
-	BACnetEngineeringUnits_SQUARE_FEET BACnetEngineeringUnits = 1
-	BACnetEngineeringUnits_SQUARE_INCHES BACnetEngineeringUnits = 115
-	BACnetEngineeringUnits_CURRENCY1 BACnetEngineeringUnits = 105
-	BACnetEngineeringUnits_CURRENCY2 BACnetEngineeringUnits = 106
-	BACnetEngineeringUnits_CURRENCY3 BACnetEngineeringUnits = 107
-	BACnetEngineeringUnits_CURRENCY4 BACnetEngineeringUnits = 108
-	BACnetEngineeringUnits_CURRENCY5 BACnetEngineeringUnits = 109
-	BACnetEngineeringUnits_CURRENCY6 BACnetEngineeringUnits = 110
-	BACnetEngineeringUnits_CURRENCY7 BACnetEngineeringUnits = 111
-	BACnetEngineeringUnits_CURRENCY8 BACnetEngineeringUnits = 112
-	BACnetEngineeringUnits_CURRENCY9 BACnetEngineeringUnits = 113
-	BACnetEngineeringUnits_CURRENCY10 BACnetEngineeringUnits = 114
-	BACnetEngineeringUnits_MILLIAMPERES BACnetEngineeringUnits = 2
-	BACnetEngineeringUnits_AMPERES BACnetEngineeringUnits = 3
-	BACnetEngineeringUnits_AMPERES_PER_METER BACnetEngineeringUnits = 167
-	BACnetEngineeringUnits_AMPERES_PER_SQUARE_METER BACnetEngineeringUnits = 168
-	BACnetEngineeringUnits_AMPERE_SQUARE_METERS BACnetEngineeringUnits = 169
-	BACnetEngineeringUnits_DECIBELS BACnetEngineeringUnits = 199
-	BACnetEngineeringUnits_DECIBELS_MILLIVOLT BACnetEngineeringUnits = 200
-	BACnetEngineeringUnits_DECIBELS_VOLT BACnetEngineeringUnits = 201
-	BACnetEngineeringUnits_FARADS BACnetEngineeringUnits = 170
-	BACnetEngineeringUnits_HENRYS BACnetEngineeringUnits = 171
-	BACnetEngineeringUnits_OHMS BACnetEngineeringUnits = 4
-	BACnetEngineeringUnits_OHM_METER_SQUARED_PER_METER BACnetEngineeringUnits = 237
-	BACnetEngineeringUnits_OHM_METERS BACnetEngineeringUnits = 172
-	BACnetEngineeringUnits_MILLIOHMS BACnetEngineeringUnits = 145
-	BACnetEngineeringUnits_KILOHMS BACnetEngineeringUnits = 122
-	BACnetEngineeringUnits_MEGOHMS BACnetEngineeringUnits = 123
-	BACnetEngineeringUnits_MICROSIEMENS BACnetEngineeringUnits = 190
-	BACnetEngineeringUnits_MILLISIEMENS BACnetEngineeringUnits = 202
-	BACnetEngineeringUnits_SIEMENS BACnetEngineeringUnits = 173
-	BACnetEngineeringUnits_SIEMENS_PER_METER BACnetEngineeringUnits = 174
-	BACnetEngineeringUnits_TESLAS BACnetEngineeringUnits = 175
-	BACnetEngineeringUnits_VOLTS BACnetEngineeringUnits = 5
-	BACnetEngineeringUnits_MILLIVOLTS BACnetEngineeringUnits = 124
-	BACnetEngineeringUnits_KILOVOLTS BACnetEngineeringUnits = 6
-	BACnetEngineeringUnits_MEGAVOLTS BACnetEngineeringUnits = 7
-	BACnetEngineeringUnits_VOLT_AMPERES BACnetEngineeringUnits = 8
-	BACnetEngineeringUnits_KILOVOLT_AMPERES BACnetEngineeringUnits = 9
-	BACnetEngineeringUnits_MEGAVOLT_AMPERES BACnetEngineeringUnits = 10
-	BACnetEngineeringUnits_VOLT_AMPERES_REACTIVE BACnetEngineeringUnits = 11
-	BACnetEngineeringUnits_KILOVOLT_AMPERES_REACTIVE BACnetEngineeringUnits = 12
-	BACnetEngineeringUnits_MEGAVOLT_AMPERES_REACTIVE BACnetEngineeringUnits = 13
-	BACnetEngineeringUnits_VOLTS_PER_DEGREE_KELVIN BACnetEngineeringUnits = 176
-	BACnetEngineeringUnits_VOLTS_PER_METER BACnetEngineeringUnits = 177
-	BACnetEngineeringUnits_DEGREES_PHASE BACnetEngineeringUnits = 14
-	BACnetEngineeringUnits_POWER_FACTOR BACnetEngineeringUnits = 15
-	BACnetEngineeringUnits_WEBERS BACnetEngineeringUnits = 178
-	BACnetEngineeringUnits_AMPERE_SECONDS BACnetEngineeringUnits = 238
-	BACnetEngineeringUnits_VOLT_AMPERE_HOURS BACnetEngineeringUnits = 239
-	BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS BACnetEngineeringUnits = 240
-	BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS BACnetEngineeringUnits = 241
-	BACnetEngineeringUnits_VOLT_AMPERE_HOURS_REACTIVE BACnetEngineeringUnits = 242
-	BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS_REACTIVE BACnetEngineeringUnits = 243
-	BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS_REACTIVE BACnetEngineeringUnits = 244
-	BACnetEngineeringUnits_VOLT_SQUARE_HOURS BACnetEngineeringUnits = 245
-	BACnetEngineeringUnits_AMPERE_SQUARE_HOURS BACnetEngineeringUnits = 246
-	BACnetEngineeringUnits_JOULES BACnetEngineeringUnits = 16
-	BACnetEngineeringUnits_KILOJOULES BACnetEngineeringUnits = 17
-	BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM BACnetEngineeringUnits = 125
-	BACnetEngineeringUnits_MEGAJOULES BACnetEngineeringUnits = 126
-	BACnetEngineeringUnits_WATT_HOURS BACnetEngineeringUnits = 18
-	BACnetEngineeringUnits_KILOWATT_HOURS BACnetEngineeringUnits = 19
-	BACnetEngineeringUnits_MEGAWATT_HOURS BACnetEngineeringUnits = 146
-	BACnetEngineeringUnits_WATT_HOURS_REACTIVE BACnetEngineeringUnits = 203
-	BACnetEngineeringUnits_KILOWATT_HOURS_REACTIVE BACnetEngineeringUnits = 204
-	BACnetEngineeringUnits_MEGAWATT_HOURS_REACTIVE BACnetEngineeringUnits = 205
-	BACnetEngineeringUnits_BTUS BACnetEngineeringUnits = 20
-	BACnetEngineeringUnits_KILO_BTUS BACnetEngineeringUnits = 147
-	BACnetEngineeringUnits_MEGA_BTUS BACnetEngineeringUnits = 148
-	BACnetEngineeringUnits_THERMS BACnetEngineeringUnits = 21
-	BACnetEngineeringUnits_TON_HOURS BACnetEngineeringUnits = 22
-	BACnetEngineeringUnits_JOULES_PER_KILOGRAM_DRY_AIR BACnetEngineeringUnits = 23
-	BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM_DRY_AIR BACnetEngineeringUnits = 149
-	BACnetEngineeringUnits_MEGAJOULES_PER_KILOGRAM_DRY_AIR BACnetEngineeringUnits = 150
-	BACnetEngineeringUnits_BTUS_PER_POUND_DRY_AIR BACnetEngineeringUnits = 24
-	BACnetEngineeringUnits_BTUS_PER_POUND BACnetEngineeringUnits = 117
-	BACnetEngineeringUnits_GRAMS_OF_WATER_PER_KILOGRAM_DRY_AIR BACnetEngineeringUnits = 28
-	BACnetEngineeringUnits_PERCENT_RELATIVE_HUMIDITY BACnetEngineeringUnits = 29
-	BACnetEngineeringUnits_MICROMETERS BACnetEngineeringUnits = 194
-	BACnetEngineeringUnits_MILLIMETERS BACnetEngineeringUnits = 30
-	BACnetEngineeringUnits_CENTIMETERS BACnetEngineeringUnits = 118
-	BACnetEngineeringUnits_KILOMETERS BACnetEngineeringUnits = 193
-	BACnetEngineeringUnits_METERS BACnetEngineeringUnits = 31
-	BACnetEngineeringUnits_INCHES BACnetEngineeringUnits = 32
-	BACnetEngineeringUnits_FEET BACnetEngineeringUnits = 33
-	BACnetEngineeringUnits_CANDELAS BACnetEngineeringUnits = 179
-	BACnetEngineeringUnits_CANDELAS_PER_SQUARE_METER BACnetEngineeringUnits = 180
-	BACnetEngineeringUnits_WATTS_PER_SQUARE_FOOT BACnetEngineeringUnits = 34
-	BACnetEngineeringUnits_WATTS_PER_SQUARE_METER BACnetEngineeringUnits = 35
-	BACnetEngineeringUnits_LUMENS BACnetEngineeringUnits = 36
-	BACnetEngineeringUnits_LUXES BACnetEngineeringUnits = 37
-	BACnetEngineeringUnits_FOOT_CANDLES BACnetEngineeringUnits = 38
-	BACnetEngineeringUnits_MILLIGRAMS BACnetEngineeringUnits = 196
-	BACnetEngineeringUnits_GRAMS BACnetEngineeringUnits = 195
-	BACnetEngineeringUnits_KILOGRAMS BACnetEngineeringUnits = 39
-	BACnetEngineeringUnits_POUNDS_MASS BACnetEngineeringUnits = 40
-	BACnetEngineeringUnits_TONS BACnetEngineeringUnits = 41
-	BACnetEngineeringUnits_GRAMS_PER_SECOND BACnetEngineeringUnits = 154
-	BACnetEngineeringUnits_GRAMS_PER_MINUTE BACnetEngineeringUnits = 155
-	BACnetEngineeringUnits_KILOGRAMS_PER_SECOND BACnetEngineeringUnits = 42
-	BACnetEngineeringUnits_KILOGRAMS_PER_MINUTE BACnetEngineeringUnits = 43
-	BACnetEngineeringUnits_KILOGRAMS_PER_HOUR BACnetEngineeringUnits = 44
-	BACnetEngineeringUnits_POUNDS_MASS_PER_SECOND BACnetEngineeringUnits = 119
-	BACnetEngineeringUnits_POUNDS_MASS_PER_MINUTE BACnetEngineeringUnits = 45
-	BACnetEngineeringUnits_POUNDS_MASS_PER_HOUR BACnetEngineeringUnits = 46
-	BACnetEngineeringUnits_TONS_PER_HOUR BACnetEngineeringUnits = 156
-	BACnetEngineeringUnits_IWATTS BACnetEngineeringUnits = 132
-	BACnetEngineeringUnits_WATTS BACnetEngineeringUnits = 47
-	BACnetEngineeringUnits_KILOWATTS BACnetEngineeringUnits = 48
-	BACnetEngineeringUnits_MEGAWATTS BACnetEngineeringUnits = 49
-	BACnetEngineeringUnits_BTUS_PER_HOUR BACnetEngineeringUnits = 50
-	BACnetEngineeringUnits_KILO_BTUS_PER_HOUR BACnetEngineeringUnits = 157
-	BACnetEngineeringUnits_JOULE_PER_HOURS BACnetEngineeringUnits = 247
-	BACnetEngineeringUnits_HORSEPOWER BACnetEngineeringUnits = 51
-	BACnetEngineeringUnits_TONS_REFRIGERATION BACnetEngineeringUnits = 52
-	BACnetEngineeringUnits_PASCALS BACnetEngineeringUnits = 53
-	BACnetEngineeringUnits_HECTOPASCALS BACnetEngineeringUnits = 133
-	BACnetEngineeringUnits_KILOPASCALS BACnetEngineeringUnits = 54
-	BACnetEngineeringUnits_MILLIBARS BACnetEngineeringUnits = 134
-	BACnetEngineeringUnits_BARS BACnetEngineeringUnits = 55
-	BACnetEngineeringUnits_POUNDS_FORCE_PER_SQUARE_INCH BACnetEngineeringUnits = 56
-	BACnetEngineeringUnits_MILLIMETERS_OF_WATER BACnetEngineeringUnits = 206
-	BACnetEngineeringUnits_CENTIMETERS_OF_WATER BACnetEngineeringUnits = 57
-	BACnetEngineeringUnits_INCHES_OF_WATER BACnetEngineeringUnits = 58
-	BACnetEngineeringUnits_MILLIMETERS_OF_MERCURY BACnetEngineeringUnits = 59
-	BACnetEngineeringUnits_CENTIMETERS_OF_MERCURY BACnetEngineeringUnits = 60
-	BACnetEngineeringUnits_INCHES_OF_MERCURY BACnetEngineeringUnits = 61
-	BACnetEngineeringUnits_DEGREES_CELSIUS BACnetEngineeringUnits = 62
-	BACnetEngineeringUnits_DEGREES_KELVIN BACnetEngineeringUnits = 63
-	BACnetEngineeringUnits_DEGREES_KELVIN_PER_HOUR BACnetEngineeringUnits = 181
-	BACnetEngineeringUnits_DEGREES_KELVIN_PER_MINUTE BACnetEngineeringUnits = 182
-	BACnetEngineeringUnits_DEGREES_FAHRENHEIT BACnetEngineeringUnits = 64
-	BACnetEngineeringUnits_DEGREE_DAYS_CELSIUS BACnetEngineeringUnits = 65
-	BACnetEngineeringUnits_DEGREE_DAYS_FAHRENHEIT BACnetEngineeringUnits = 66
-	BACnetEngineeringUnits_DELTA_DEGREES_FAHRENHEIT BACnetEngineeringUnits = 120
-	BACnetEngineeringUnits_DELTA_DEGREES_KELVIN BACnetEngineeringUnits = 121
-	BACnetEngineeringUnits_YEARS BACnetEngineeringUnits = 67
-	BACnetEngineeringUnits_MONTHS BACnetEngineeringUnits = 68
-	BACnetEngineeringUnits_WEEKS BACnetEngineeringUnits = 69
-	BACnetEngineeringUnits_DAYS BACnetEngineeringUnits = 70
-	BACnetEngineeringUnits_HOURS BACnetEngineeringUnits = 71
-	BACnetEngineeringUnits_MINUTES BACnetEngineeringUnits = 72
-	BACnetEngineeringUnits_SECONDS BACnetEngineeringUnits = 73
-	BACnetEngineeringUnits_HUNDREDTHS_SECONDS BACnetEngineeringUnits = 158
-	BACnetEngineeringUnits_MILLISECONDS BACnetEngineeringUnits = 159
-	BACnetEngineeringUnits_NEWTON_METERS BACnetEngineeringUnits = 160
-	BACnetEngineeringUnits_MILLIMETERS_PER_SECOND BACnetEngineeringUnits = 161
-	BACnetEngineeringUnits_MILLIMETERS_PER_MINUTE BACnetEngineeringUnits = 162
-	BACnetEngineeringUnits_METERS_PER_SECOND BACnetEngineeringUnits = 74
-	BACnetEngineeringUnits_METERS_PER_MINUTE BACnetEngineeringUnits = 163
-	BACnetEngineeringUnits_METERS_PER_HOUR BACnetEngineeringUnits = 164
-	BACnetEngineeringUnits_KILOMETERS_PER_HOUR BACnetEngineeringUnits = 75
-	BACnetEngineeringUnits_FEET_PER_SECOND BACnetEngineeringUnits = 76
-	BACnetEngineeringUnits_FEET_PER_MINUTE BACnetEngineeringUnits = 77
-	BACnetEngineeringUnits_MILES_PER_HOUR BACnetEngineeringUnits = 78
-	BACnetEngineeringUnits_CUBIC_FEET BACnetEngineeringUnits = 79
-	BACnetEngineeringUnits_CUBIC_METERS BACnetEngineeringUnits = 80
-	BACnetEngineeringUnits_IMPERIAL_GALLONS BACnetEngineeringUnits = 81
-	BACnetEngineeringUnits_MILLILITERS BACnetEngineeringUnits = 197
-	BACnetEngineeringUnits_LITERS BACnetEngineeringUnits = 82
-	BACnetEngineeringUnits_US_GALLONS BACnetEngineeringUnits = 83
-	BACnetEngineeringUnits_CUBIC_FEET_PER_SECOND BACnetEngineeringUnits = 142
-	BACnetEngineeringUnits_CUBIC_FEET_PER_MINUTE BACnetEngineeringUnits = 84
+const (
+	BACnetEngineeringUnits_METERS_PER_SECOND_PER_SECOND           BACnetEngineeringUnits = 166
+	BACnetEngineeringUnits_SQUARE_METERS                          BACnetEngineeringUnits = 0
+	BACnetEngineeringUnits_SQUARE_CENTIMETERS                     BACnetEngineeringUnits = 116
+	BACnetEngineeringUnits_SQUARE_FEET                            BACnetEngineeringUnits = 1
+	BACnetEngineeringUnits_SQUARE_INCHES                          BACnetEngineeringUnits = 115
+	BACnetEngineeringUnits_CURRENCY1                              BACnetEngineeringUnits = 105
+	BACnetEngineeringUnits_CURRENCY2                              BACnetEngineeringUnits = 106
+	BACnetEngineeringUnits_CURRENCY3                              BACnetEngineeringUnits = 107
+	BACnetEngineeringUnits_CURRENCY4                              BACnetEngineeringUnits = 108
+	BACnetEngineeringUnits_CURRENCY5                              BACnetEngineeringUnits = 109
+	BACnetEngineeringUnits_CURRENCY6                              BACnetEngineeringUnits = 110
+	BACnetEngineeringUnits_CURRENCY7                              BACnetEngineeringUnits = 111
+	BACnetEngineeringUnits_CURRENCY8                              BACnetEngineeringUnits = 112
+	BACnetEngineeringUnits_CURRENCY9                              BACnetEngineeringUnits = 113
+	BACnetEngineeringUnits_CURRENCY10                             BACnetEngineeringUnits = 114
+	BACnetEngineeringUnits_MILLIAMPERES                           BACnetEngineeringUnits = 2
+	BACnetEngineeringUnits_AMPERES                                BACnetEngineeringUnits = 3
+	BACnetEngineeringUnits_AMPERES_PER_METER                      BACnetEngineeringUnits = 167
+	BACnetEngineeringUnits_AMPERES_PER_SQUARE_METER               BACnetEngineeringUnits = 168
+	BACnetEngineeringUnits_AMPERE_SQUARE_METERS                   BACnetEngineeringUnits = 169
+	BACnetEngineeringUnits_DECIBELS                               BACnetEngineeringUnits = 199
+	BACnetEngineeringUnits_DECIBELS_MILLIVOLT                     BACnetEngineeringUnits = 200
+	BACnetEngineeringUnits_DECIBELS_VOLT                          BACnetEngineeringUnits = 201
+	BACnetEngineeringUnits_FARADS                                 BACnetEngineeringUnits = 170
+	BACnetEngineeringUnits_HENRYS                                 BACnetEngineeringUnits = 171
+	BACnetEngineeringUnits_OHMS                                   BACnetEngineeringUnits = 4
+	BACnetEngineeringUnits_OHM_METER_SQUARED_PER_METER            BACnetEngineeringUnits = 237
+	BACnetEngineeringUnits_OHM_METERS                             BACnetEngineeringUnits = 172
+	BACnetEngineeringUnits_MILLIOHMS                              BACnetEngineeringUnits = 145
+	BACnetEngineeringUnits_KILOHMS                                BACnetEngineeringUnits = 122
+	BACnetEngineeringUnits_MEGOHMS                                BACnetEngineeringUnits = 123
+	BACnetEngineeringUnits_MICROSIEMENS                           BACnetEngineeringUnits = 190
+	BACnetEngineeringUnits_MILLISIEMENS                           BACnetEngineeringUnits = 202
+	BACnetEngineeringUnits_SIEMENS                                BACnetEngineeringUnits = 173
+	BACnetEngineeringUnits_SIEMENS_PER_METER                      BACnetEngineeringUnits = 174
+	BACnetEngineeringUnits_TESLAS                                 BACnetEngineeringUnits = 175
+	BACnetEngineeringUnits_VOLTS                                  BACnetEngineeringUnits = 5
+	BACnetEngineeringUnits_MILLIVOLTS                             BACnetEngineeringUnits = 124
+	BACnetEngineeringUnits_KILOVOLTS                              BACnetEngineeringUnits = 6
+	BACnetEngineeringUnits_MEGAVOLTS                              BACnetEngineeringUnits = 7
+	BACnetEngineeringUnits_VOLT_AMPERES                           BACnetEngineeringUnits = 8
+	BACnetEngineeringUnits_KILOVOLT_AMPERES                       BACnetEngineeringUnits = 9
+	BACnetEngineeringUnits_MEGAVOLT_AMPERES                       BACnetEngineeringUnits = 10
+	BACnetEngineeringUnits_VOLT_AMPERES_REACTIVE                  BACnetEngineeringUnits = 11
+	BACnetEngineeringUnits_KILOVOLT_AMPERES_REACTIVE              BACnetEngineeringUnits = 12
+	BACnetEngineeringUnits_MEGAVOLT_AMPERES_REACTIVE              BACnetEngineeringUnits = 13
+	BACnetEngineeringUnits_VOLTS_PER_DEGREE_KELVIN                BACnetEngineeringUnits = 176
+	BACnetEngineeringUnits_VOLTS_PER_METER                        BACnetEngineeringUnits = 177
+	BACnetEngineeringUnits_DEGREES_PHASE                          BACnetEngineeringUnits = 14
+	BACnetEngineeringUnits_POWER_FACTOR                           BACnetEngineeringUnits = 15
+	BACnetEngineeringUnits_WEBERS                                 BACnetEngineeringUnits = 178
+	BACnetEngineeringUnits_AMPERE_SECONDS                         BACnetEngineeringUnits = 238
+	BACnetEngineeringUnits_VOLT_AMPERE_HOURS                      BACnetEngineeringUnits = 239
+	BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS                  BACnetEngineeringUnits = 240
+	BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS                  BACnetEngineeringUnits = 241
+	BACnetEngineeringUnits_VOLT_AMPERE_HOURS_REACTIVE             BACnetEngineeringUnits = 242
+	BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS_REACTIVE         BACnetEngineeringUnits = 243
+	BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS_REACTIVE         BACnetEngineeringUnits = 244
+	BACnetEngineeringUnits_VOLT_SQUARE_HOURS                      BACnetEngineeringUnits = 245
+	BACnetEngineeringUnits_AMPERE_SQUARE_HOURS                    BACnetEngineeringUnits = 246
+	BACnetEngineeringUnits_JOULES                                 BACnetEngineeringUnits = 16
+	BACnetEngineeringUnits_KILOJOULES                             BACnetEngineeringUnits = 17
+	BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM                BACnetEngineeringUnits = 125
+	BACnetEngineeringUnits_MEGAJOULES                             BACnetEngineeringUnits = 126
+	BACnetEngineeringUnits_WATT_HOURS                             BACnetEngineeringUnits = 18
+	BACnetEngineeringUnits_KILOWATT_HOURS                         BACnetEngineeringUnits = 19
+	BACnetEngineeringUnits_MEGAWATT_HOURS                         BACnetEngineeringUnits = 146
+	BACnetEngineeringUnits_WATT_HOURS_REACTIVE                    BACnetEngineeringUnits = 203
+	BACnetEngineeringUnits_KILOWATT_HOURS_REACTIVE                BACnetEngineeringUnits = 204
+	BACnetEngineeringUnits_MEGAWATT_HOURS_REACTIVE                BACnetEngineeringUnits = 205
+	BACnetEngineeringUnits_BTUS                                   BACnetEngineeringUnits = 20
+	BACnetEngineeringUnits_KILO_BTUS                              BACnetEngineeringUnits = 147
+	BACnetEngineeringUnits_MEGA_BTUS                              BACnetEngineeringUnits = 148
+	BACnetEngineeringUnits_THERMS                                 BACnetEngineeringUnits = 21
+	BACnetEngineeringUnits_TON_HOURS                              BACnetEngineeringUnits = 22
+	BACnetEngineeringUnits_JOULES_PER_KILOGRAM_DRY_AIR            BACnetEngineeringUnits = 23
+	BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM_DRY_AIR        BACnetEngineeringUnits = 149
+	BACnetEngineeringUnits_MEGAJOULES_PER_KILOGRAM_DRY_AIR        BACnetEngineeringUnits = 150
+	BACnetEngineeringUnits_BTUS_PER_POUND_DRY_AIR                 BACnetEngineeringUnits = 24
+	BACnetEngineeringUnits_BTUS_PER_POUND                         BACnetEngineeringUnits = 117
+	BACnetEngineeringUnits_GRAMS_OF_WATER_PER_KILOGRAM_DRY_AIR    BACnetEngineeringUnits = 28
+	BACnetEngineeringUnits_PERCENT_RELATIVE_HUMIDITY              BACnetEngineeringUnits = 29
+	BACnetEngineeringUnits_MICROMETERS                            BACnetEngineeringUnits = 194
+	BACnetEngineeringUnits_MILLIMETERS                            BACnetEngineeringUnits = 30
+	BACnetEngineeringUnits_CENTIMETERS                            BACnetEngineeringUnits = 118
+	BACnetEngineeringUnits_KILOMETERS                             BACnetEngineeringUnits = 193
+	BACnetEngineeringUnits_METERS                                 BACnetEngineeringUnits = 31
+	BACnetEngineeringUnits_INCHES                                 BACnetEngineeringUnits = 32
+	BACnetEngineeringUnits_FEET                                   BACnetEngineeringUnits = 33
+	BACnetEngineeringUnits_CANDELAS                               BACnetEngineeringUnits = 179
+	BACnetEngineeringUnits_CANDELAS_PER_SQUARE_METER              BACnetEngineeringUnits = 180
+	BACnetEngineeringUnits_WATTS_PER_SQUARE_FOOT                  BACnetEngineeringUnits = 34
+	BACnetEngineeringUnits_WATTS_PER_SQUARE_METER                 BACnetEngineeringUnits = 35
+	BACnetEngineeringUnits_LUMENS                                 BACnetEngineeringUnits = 36
+	BACnetEngineeringUnits_LUXES                                  BACnetEngineeringUnits = 37
+	BACnetEngineeringUnits_FOOT_CANDLES                           BACnetEngineeringUnits = 38
+	BACnetEngineeringUnits_MILLIGRAMS                             BACnetEngineeringUnits = 196
+	BACnetEngineeringUnits_GRAMS                                  BACnetEngineeringUnits = 195
+	BACnetEngineeringUnits_KILOGRAMS                              BACnetEngineeringUnits = 39
+	BACnetEngineeringUnits_POUNDS_MASS                            BACnetEngineeringUnits = 40
+	BACnetEngineeringUnits_TONS                                   BACnetEngineeringUnits = 41
+	BACnetEngineeringUnits_GRAMS_PER_SECOND                       BACnetEngineeringUnits = 154
+	BACnetEngineeringUnits_GRAMS_PER_MINUTE                       BACnetEngineeringUnits = 155
+	BACnetEngineeringUnits_KILOGRAMS_PER_SECOND                   BACnetEngineeringUnits = 42
+	BACnetEngineeringUnits_KILOGRAMS_PER_MINUTE                   BACnetEngineeringUnits = 43
+	BACnetEngineeringUnits_KILOGRAMS_PER_HOUR                     BACnetEngineeringUnits = 44
+	BACnetEngineeringUnits_POUNDS_MASS_PER_SECOND                 BACnetEngineeringUnits = 119
+	BACnetEngineeringUnits_POUNDS_MASS_PER_MINUTE                 BACnetEngineeringUnits = 45
+	BACnetEngineeringUnits_POUNDS_MASS_PER_HOUR                   BACnetEngineeringUnits = 46
+	BACnetEngineeringUnits_TONS_PER_HOUR                          BACnetEngineeringUnits = 156
+	BACnetEngineeringUnits_IWATTS                                 BACnetEngineeringUnits = 132
+	BACnetEngineeringUnits_WATTS                                  BACnetEngineeringUnits = 47
+	BACnetEngineeringUnits_KILOWATTS                              BACnetEngineeringUnits = 48
+	BACnetEngineeringUnits_MEGAWATTS                              BACnetEngineeringUnits = 49
+	BACnetEngineeringUnits_BTUS_PER_HOUR                          BACnetEngineeringUnits = 50
+	BACnetEngineeringUnits_KILO_BTUS_PER_HOUR                     BACnetEngineeringUnits = 157
+	BACnetEngineeringUnits_JOULE_PER_HOURS                        BACnetEngineeringUnits = 247
+	BACnetEngineeringUnits_HORSEPOWER                             BACnetEngineeringUnits = 51
+	BACnetEngineeringUnits_TONS_REFRIGERATION                     BACnetEngineeringUnits = 52
+	BACnetEngineeringUnits_PASCALS                                BACnetEngineeringUnits = 53
+	BACnetEngineeringUnits_HECTOPASCALS                           BACnetEngineeringUnits = 133
+	BACnetEngineeringUnits_KILOPASCALS                            BACnetEngineeringUnits = 54
+	BACnetEngineeringUnits_MILLIBARS                              BACnetEngineeringUnits = 134
+	BACnetEngineeringUnits_BARS                                   BACnetEngineeringUnits = 55
+	BACnetEngineeringUnits_POUNDS_FORCE_PER_SQUARE_INCH           BACnetEngineeringUnits = 56
+	BACnetEngineeringUnits_MILLIMETERS_OF_WATER                   BACnetEngineeringUnits = 206
+	BACnetEngineeringUnits_CENTIMETERS_OF_WATER                   BACnetEngineeringUnits = 57
+	BACnetEngineeringUnits_INCHES_OF_WATER                        BACnetEngineeringUnits = 58
+	BACnetEngineeringUnits_MILLIMETERS_OF_MERCURY                 BACnetEngineeringUnits = 59
+	BACnetEngineeringUnits_CENTIMETERS_OF_MERCURY                 BACnetEngineeringUnits = 60
+	BACnetEngineeringUnits_INCHES_OF_MERCURY                      BACnetEngineeringUnits = 61
+	BACnetEngineeringUnits_DEGREES_CELSIUS                        BACnetEngineeringUnits = 62
+	BACnetEngineeringUnits_DEGREES_KELVIN                         BACnetEngineeringUnits = 63
+	BACnetEngineeringUnits_DEGREES_KELVIN_PER_HOUR                BACnetEngineeringUnits = 181
+	BACnetEngineeringUnits_DEGREES_KELVIN_PER_MINUTE              BACnetEngineeringUnits = 182
+	BACnetEngineeringUnits_DEGREES_FAHRENHEIT                     BACnetEngineeringUnits = 64
+	BACnetEngineeringUnits_DEGREE_DAYS_CELSIUS                    BACnetEngineeringUnits = 65
+	BACnetEngineeringUnits_DEGREE_DAYS_FAHRENHEIT                 BACnetEngineeringUnits = 66
+	BACnetEngineeringUnits_DELTA_DEGREES_FAHRENHEIT               BACnetEngineeringUnits = 120
+	BACnetEngineeringUnits_DELTA_DEGREES_KELVIN                   BACnetEngineeringUnits = 121
+	BACnetEngineeringUnits_YEARS                                  BACnetEngineeringUnits = 67
+	BACnetEngineeringUnits_MONTHS                                 BACnetEngineeringUnits = 68
+	BACnetEngineeringUnits_WEEKS                                  BACnetEngineeringUnits = 69
+	BACnetEngineeringUnits_DAYS                                   BACnetEngineeringUnits = 70
+	BACnetEngineeringUnits_HOURS                                  BACnetEngineeringUnits = 71
+	BACnetEngineeringUnits_MINUTES                                BACnetEngineeringUnits = 72
+	BACnetEngineeringUnits_SECONDS                                BACnetEngineeringUnits = 73
+	BACnetEngineeringUnits_HUNDREDTHS_SECONDS                     BACnetEngineeringUnits = 158
+	BACnetEngineeringUnits_MILLISECONDS                           BACnetEngineeringUnits = 159
+	BACnetEngineeringUnits_NEWTON_METERS                          BACnetEngineeringUnits = 160
+	BACnetEngineeringUnits_MILLIMETERS_PER_SECOND                 BACnetEngineeringUnits = 161
+	BACnetEngineeringUnits_MILLIMETERS_PER_MINUTE                 BACnetEngineeringUnits = 162
+	BACnetEngineeringUnits_METERS_PER_SECOND                      BACnetEngineeringUnits = 74
+	BACnetEngineeringUnits_METERS_PER_MINUTE                      BACnetEngineeringUnits = 163
+	BACnetEngineeringUnits_METERS_PER_HOUR                        BACnetEngineeringUnits = 164
+	BACnetEngineeringUnits_KILOMETERS_PER_HOUR                    BACnetEngineeringUnits = 75
+	BACnetEngineeringUnits_FEET_PER_SECOND                        BACnetEngineeringUnits = 76
+	BACnetEngineeringUnits_FEET_PER_MINUTE                        BACnetEngineeringUnits = 77
+	BACnetEngineeringUnits_MILES_PER_HOUR                         BACnetEngineeringUnits = 78
+	BACnetEngineeringUnits_CUBIC_FEET                             BACnetEngineeringUnits = 79
+	BACnetEngineeringUnits_CUBIC_METERS                           BACnetEngineeringUnits = 80
+	BACnetEngineeringUnits_IMPERIAL_GALLONS                       BACnetEngineeringUnits = 81
+	BACnetEngineeringUnits_MILLILITERS                            BACnetEngineeringUnits = 197
+	BACnetEngineeringUnits_LITERS                                 BACnetEngineeringUnits = 82
+	BACnetEngineeringUnits_US_GALLONS                             BACnetEngineeringUnits = 83
+	BACnetEngineeringUnits_CUBIC_FEET_PER_SECOND                  BACnetEngineeringUnits = 142
+	BACnetEngineeringUnits_CUBIC_FEET_PER_MINUTE                  BACnetEngineeringUnits = 84
 	BACnetEngineeringUnits_MILLION_STANDARD_CUBIC_FEET_PER_MINUTE BACnetEngineeringUnits = 254
-	BACnetEngineeringUnits_CUBIC_FEET_PER_HOUR BACnetEngineeringUnits = 191
-	BACnetEngineeringUnits_CUBIC_FEET_PER_DAY BACnetEngineeringUnits = 248
-	BACnetEngineeringUnits_STANDARD_CUBIC_FEET_PER_DAY BACnetEngineeringUnits = 47808
-	BACnetEngineeringUnits_MILLION_STANDARD_CUBIC_FEET_PER_DAY BACnetEngineeringUnits = 47809
-	BACnetEngineeringUnits_THOUSAND_CUBIC_FEET_PER_DAY BACnetEngineeringUnits = 47810
-	BACnetEngineeringUnits_THOUSAND_STANDARD_CUBIC_FEET_PER_DAY BACnetEngineeringUnits = 47811
-	BACnetEngineeringUnits_POUNDS_MASS_PER_DAY BACnetEngineeringUnits = 47812
-	BACnetEngineeringUnits_CUBIC_METERS_PER_SECOND BACnetEngineeringUnits = 85
-	BACnetEngineeringUnits_CUBIC_METERS_PER_MINUTE BACnetEngineeringUnits = 165
-	BACnetEngineeringUnits_CUBIC_METERS_PER_HOUR BACnetEngineeringUnits = 135
-	BACnetEngineeringUnits_CUBIC_METERS_PER_DAY BACnetEngineeringUnits = 249
-	BACnetEngineeringUnits_IMPERIAL_GALLONS_PER_MINUTE BACnetEngineeringUnits = 86
-	BACnetEngineeringUnits_MILLILITERS_PER_SECOND BACnetEngineeringUnits = 198
-	BACnetEngineeringUnits_LITERS_PER_SECOND BACnetEngineeringUnits = 87
-	BACnetEngineeringUnits_LITERS_PER_MINUTE BACnetEngineeringUnits = 88
-	BACnetEngineeringUnits_LITERS_PER_HOUR BACnetEngineeringUnits = 136
-	BACnetEngineeringUnits_US_GALLONS_PER_MINUTE BACnetEngineeringUnits = 89
-	BACnetEngineeringUnits_US_GALLONS_PER_HOUR BACnetEngineeringUnits = 192
-	BACnetEngineeringUnits_DEGREES_ANGULAR BACnetEngineeringUnits = 90
-	BACnetEngineeringUnits_DEGREES_CELSIUS_PER_HOUR BACnetEngineeringUnits = 91
-	BACnetEngineeringUnits_DEGREES_CELSIUS_PER_MINUTE BACnetEngineeringUnits = 92
-	BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_HOUR BACnetEngineeringUnits = 93
-	BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_MINUTE BACnetEngineeringUnits = 94
-	BACnetEngineeringUnits_JOULE_SECONDS BACnetEngineeringUnits = 183
-	BACnetEngineeringUnits_KILOGRAMS_PER_CUBIC_METER BACnetEngineeringUnits = 186
-	BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_METER BACnetEngineeringUnits = 137
-	BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_FOOT BACnetEngineeringUnits = 138
-	BACnetEngineeringUnits_WATT_HOURS_PER_CUBIC_METER BACnetEngineeringUnits = 250
-	BACnetEngineeringUnits_JOULES_PER_CUBIC_METER BACnetEngineeringUnits = 251
-	BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_METER BACnetEngineeringUnits = 139
-	BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_FOOT BACnetEngineeringUnits = 140
-	BACnetEngineeringUnits_MOLE_PERCENT BACnetEngineeringUnits = 252
-	BACnetEngineeringUnits_NO_UNITS BACnetEngineeringUnits = 95
-	BACnetEngineeringUnits_NEWTON_SECONDS BACnetEngineeringUnits = 187
-	BACnetEngineeringUnits_NEWTONS_PER_METER BACnetEngineeringUnits = 188
-	BACnetEngineeringUnits_PARTS_PER_MILLION BACnetEngineeringUnits = 96
-	BACnetEngineeringUnits_PARTS_PER_BILLION BACnetEngineeringUnits = 97
-	BACnetEngineeringUnits_PASCAL_SECONDS BACnetEngineeringUnits = 253
-	BACnetEngineeringUnits_PERCENT BACnetEngineeringUnits = 98
-	BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_FOOT BACnetEngineeringUnits = 143
-	BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_METER BACnetEngineeringUnits = 144
-	BACnetEngineeringUnits_PERCENT_PER_SECOND BACnetEngineeringUnits = 99
-	BACnetEngineeringUnits_PER_MINUTE BACnetEngineeringUnits = 100
-	BACnetEngineeringUnits_PER_SECOND BACnetEngineeringUnits = 101
-	BACnetEngineeringUnits_PSI_PER_DEGREE_FAHRENHEIT BACnetEngineeringUnits = 102
-	BACnetEngineeringUnits_RADIANS BACnetEngineeringUnits = 103
-	BACnetEngineeringUnits_RADIANS_PER_SECOND BACnetEngineeringUnits = 184
-	BACnetEngineeringUnits_REVOLUTIONS_PER_MINUTE BACnetEngineeringUnits = 104
-	BACnetEngineeringUnits_SQUARE_METERS_PER_NEWTON BACnetEngineeringUnits = 185
-	BACnetEngineeringUnits_WATTS_PER_METER_PER_DEGREE_KELVIN BACnetEngineeringUnits = 189
-	BACnetEngineeringUnits_WATTS_PER_SQUARE_METER_DEGREE_KELVIN BACnetEngineeringUnits = 141
-	BACnetEngineeringUnits_PER_MILLE BACnetEngineeringUnits = 207
-	BACnetEngineeringUnits_GRAMS_PER_GRAM BACnetEngineeringUnits = 208
-	BACnetEngineeringUnits_KILOGRAMS_PER_KILOGRAM BACnetEngineeringUnits = 209
-	BACnetEngineeringUnits_GRAMS_PER_KILOGRAM BACnetEngineeringUnits = 210
-	BACnetEngineeringUnits_MILLIGRAMS_PER_GRAM BACnetEngineeringUnits = 211
-	BACnetEngineeringUnits_MILLIGRAMS_PER_KILOGRAM BACnetEngineeringUnits = 212
-	BACnetEngineeringUnits_GRAMS_PER_MILLILITER BACnetEngineeringUnits = 213
-	BACnetEngineeringUnits_GRAMS_PER_LITER BACnetEngineeringUnits = 214
-	BACnetEngineeringUnits_MILLIGRAMS_PER_LITER BACnetEngineeringUnits = 215
-	BACnetEngineeringUnits_MICROGRAMS_PER_LITER BACnetEngineeringUnits = 216
-	BACnetEngineeringUnits_GRAMS_PER_CUBIC_METER BACnetEngineeringUnits = 217
-	BACnetEngineeringUnits_MILLIGRAMS_PER_CUBIC_METER BACnetEngineeringUnits = 218
-	BACnetEngineeringUnits_MICROGRAMS_PER_CUBIC_METER BACnetEngineeringUnits = 219
-	BACnetEngineeringUnits_NANOGRAMS_PER_CUBIC_METER BACnetEngineeringUnits = 220
-	BACnetEngineeringUnits_GRAMS_PER_CUBIC_CENTIMETER BACnetEngineeringUnits = 221
-	BACnetEngineeringUnits_BECQUERELS BACnetEngineeringUnits = 222
-	BACnetEngineeringUnits_KILOBECQUERELS BACnetEngineeringUnits = 223
-	BACnetEngineeringUnits_MEGABECQUERELS BACnetEngineeringUnits = 224
-	BACnetEngineeringUnits_GRAY BACnetEngineeringUnits = 225
-	BACnetEngineeringUnits_MILLIGRAY BACnetEngineeringUnits = 226
-	BACnetEngineeringUnits_MICROGRAY BACnetEngineeringUnits = 227
-	BACnetEngineeringUnits_SIEVERTS BACnetEngineeringUnits = 228
-	BACnetEngineeringUnits_MILLISIEVERTS BACnetEngineeringUnits = 229
-	BACnetEngineeringUnits_MICROSIEVERTS BACnetEngineeringUnits = 230
-	BACnetEngineeringUnits_MICROSIEVERTS_PER_HOUR BACnetEngineeringUnits = 231
-	BACnetEngineeringUnits_MILLIREMS BACnetEngineeringUnits = 47814
-	BACnetEngineeringUnits_MILLIREMS_PER_HOUR BACnetEngineeringUnits = 47815
-	BACnetEngineeringUnits_DECIBELS_A BACnetEngineeringUnits = 232
-	BACnetEngineeringUnits_NEPHELOMETRIC_TURBIDITY_UNIT BACnetEngineeringUnits = 233
-	BACnetEngineeringUnits_P_H BACnetEngineeringUnits = 234
-	BACnetEngineeringUnits_GRAMS_PER_SQUARE_METER BACnetEngineeringUnits = 235
-	BACnetEngineeringUnits_MINUTES_PER_DEGREE_KELVIN BACnetEngineeringUnits = 236
-	BACnetEngineeringUnits_VENDOR_PROPRIETARY_VALUE BACnetEngineeringUnits = 0XFF
+	BACnetEngineeringUnits_CUBIC_FEET_PER_HOUR                    BACnetEngineeringUnits = 191
+	BACnetEngineeringUnits_CUBIC_FEET_PER_DAY                     BACnetEngineeringUnits = 248
+	BACnetEngineeringUnits_STANDARD_CUBIC_FEET_PER_DAY            BACnetEngineeringUnits = 47808
+	BACnetEngineeringUnits_MILLION_STANDARD_CUBIC_FEET_PER_DAY    BACnetEngineeringUnits = 47809
+	BACnetEngineeringUnits_THOUSAND_CUBIC_FEET_PER_DAY            BACnetEngineeringUnits = 47810
+	BACnetEngineeringUnits_THOUSAND_STANDARD_CUBIC_FEET_PER_DAY   BACnetEngineeringUnits = 47811
+	BACnetEngineeringUnits_POUNDS_MASS_PER_DAY                    BACnetEngineeringUnits = 47812
+	BACnetEngineeringUnits_CUBIC_METERS_PER_SECOND                BACnetEngineeringUnits = 85
+	BACnetEngineeringUnits_CUBIC_METERS_PER_MINUTE                BACnetEngineeringUnits = 165
+	BACnetEngineeringUnits_CUBIC_METERS_PER_HOUR                  BACnetEngineeringUnits = 135
+	BACnetEngineeringUnits_CUBIC_METERS_PER_DAY                   BACnetEngineeringUnits = 249
+	BACnetEngineeringUnits_IMPERIAL_GALLONS_PER_MINUTE            BACnetEngineeringUnits = 86
+	BACnetEngineeringUnits_MILLILITERS_PER_SECOND                 BACnetEngineeringUnits = 198
+	BACnetEngineeringUnits_LITERS_PER_SECOND                      BACnetEngineeringUnits = 87
+	BACnetEngineeringUnits_LITERS_PER_MINUTE                      BACnetEngineeringUnits = 88
+	BACnetEngineeringUnits_LITERS_PER_HOUR                        BACnetEngineeringUnits = 136
+	BACnetEngineeringUnits_US_GALLONS_PER_MINUTE                  BACnetEngineeringUnits = 89
+	BACnetEngineeringUnits_US_GALLONS_PER_HOUR                    BACnetEngineeringUnits = 192
+	BACnetEngineeringUnits_DEGREES_ANGULAR                        BACnetEngineeringUnits = 90
+	BACnetEngineeringUnits_DEGREES_CELSIUS_PER_HOUR               BACnetEngineeringUnits = 91
+	BACnetEngineeringUnits_DEGREES_CELSIUS_PER_MINUTE             BACnetEngineeringUnits = 92
+	BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_HOUR            BACnetEngineeringUnits = 93
+	BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_MINUTE          BACnetEngineeringUnits = 94
+	BACnetEngineeringUnits_JOULE_SECONDS                          BACnetEngineeringUnits = 183
+	BACnetEngineeringUnits_KILOGRAMS_PER_CUBIC_METER              BACnetEngineeringUnits = 186
+	BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_METER        BACnetEngineeringUnits = 137
+	BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_FOOT         BACnetEngineeringUnits = 138
+	BACnetEngineeringUnits_WATT_HOURS_PER_CUBIC_METER             BACnetEngineeringUnits = 250
+	BACnetEngineeringUnits_JOULES_PER_CUBIC_METER                 BACnetEngineeringUnits = 251
+	BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_METER            BACnetEngineeringUnits = 139
+	BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_FOOT             BACnetEngineeringUnits = 140
+	BACnetEngineeringUnits_MOLE_PERCENT                           BACnetEngineeringUnits = 252
+	BACnetEngineeringUnits_NO_UNITS                               BACnetEngineeringUnits = 95
+	BACnetEngineeringUnits_NEWTON_SECONDS                         BACnetEngineeringUnits = 187
+	BACnetEngineeringUnits_NEWTONS_PER_METER                      BACnetEngineeringUnits = 188
+	BACnetEngineeringUnits_PARTS_PER_MILLION                      BACnetEngineeringUnits = 96
+	BACnetEngineeringUnits_PARTS_PER_BILLION                      BACnetEngineeringUnits = 97
+	BACnetEngineeringUnits_PASCAL_SECONDS                         BACnetEngineeringUnits = 253
+	BACnetEngineeringUnits_PERCENT                                BACnetEngineeringUnits = 98
+	BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_FOOT           BACnetEngineeringUnits = 143
+	BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_METER          BACnetEngineeringUnits = 144
+	BACnetEngineeringUnits_PERCENT_PER_SECOND                     BACnetEngineeringUnits = 99
+	BACnetEngineeringUnits_PER_MINUTE                             BACnetEngineeringUnits = 100
+	BACnetEngineeringUnits_PER_SECOND                             BACnetEngineeringUnits = 101
+	BACnetEngineeringUnits_PSI_PER_DEGREE_FAHRENHEIT              BACnetEngineeringUnits = 102
+	BACnetEngineeringUnits_RADIANS                                BACnetEngineeringUnits = 103
+	BACnetEngineeringUnits_RADIANS_PER_SECOND                     BACnetEngineeringUnits = 184
+	BACnetEngineeringUnits_REVOLUTIONS_PER_MINUTE                 BACnetEngineeringUnits = 104
+	BACnetEngineeringUnits_SQUARE_METERS_PER_NEWTON               BACnetEngineeringUnits = 185
+	BACnetEngineeringUnits_WATTS_PER_METER_PER_DEGREE_KELVIN      BACnetEngineeringUnits = 189
+	BACnetEngineeringUnits_WATTS_PER_SQUARE_METER_DEGREE_KELVIN   BACnetEngineeringUnits = 141
+	BACnetEngineeringUnits_PER_MILLE                              BACnetEngineeringUnits = 207
+	BACnetEngineeringUnits_GRAMS_PER_GRAM                         BACnetEngineeringUnits = 208
+	BACnetEngineeringUnits_KILOGRAMS_PER_KILOGRAM                 BACnetEngineeringUnits = 209
+	BACnetEngineeringUnits_GRAMS_PER_KILOGRAM                     BACnetEngineeringUnits = 210
+	BACnetEngineeringUnits_MILLIGRAMS_PER_GRAM                    BACnetEngineeringUnits = 211
+	BACnetEngineeringUnits_MILLIGRAMS_PER_KILOGRAM                BACnetEngineeringUnits = 212
+	BACnetEngineeringUnits_GRAMS_PER_MILLILITER                   BACnetEngineeringUnits = 213
+	BACnetEngineeringUnits_GRAMS_PER_LITER                        BACnetEngineeringUnits = 214
+	BACnetEngineeringUnits_MILLIGRAMS_PER_LITER                   BACnetEngineeringUnits = 215
+	BACnetEngineeringUnits_MICROGRAMS_PER_LITER                   BACnetEngineeringUnits = 216
+	BACnetEngineeringUnits_GRAMS_PER_CUBIC_METER                  BACnetEngineeringUnits = 217
+	BACnetEngineeringUnits_MILLIGRAMS_PER_CUBIC_METER             BACnetEngineeringUnits = 218
+	BACnetEngineeringUnits_MICROGRAMS_PER_CUBIC_METER             BACnetEngineeringUnits = 219
+	BACnetEngineeringUnits_NANOGRAMS_PER_CUBIC_METER              BACnetEngineeringUnits = 220
+	BACnetEngineeringUnits_GRAMS_PER_CUBIC_CENTIMETER             BACnetEngineeringUnits = 221
+	BACnetEngineeringUnits_BECQUERELS                             BACnetEngineeringUnits = 222
+	BACnetEngineeringUnits_KILOBECQUERELS                         BACnetEngineeringUnits = 223
+	BACnetEngineeringUnits_MEGABECQUERELS                         BACnetEngineeringUnits = 224
+	BACnetEngineeringUnits_GRAY                                   BACnetEngineeringUnits = 225
+	BACnetEngineeringUnits_MILLIGRAY                              BACnetEngineeringUnits = 226
+	BACnetEngineeringUnits_MICROGRAY                              BACnetEngineeringUnits = 227
+	BACnetEngineeringUnits_SIEVERTS                               BACnetEngineeringUnits = 228
+	BACnetEngineeringUnits_MILLISIEVERTS                          BACnetEngineeringUnits = 229
+	BACnetEngineeringUnits_MICROSIEVERTS                          BACnetEngineeringUnits = 230
+	BACnetEngineeringUnits_MICROSIEVERTS_PER_HOUR                 BACnetEngineeringUnits = 231
+	BACnetEngineeringUnits_MILLIREMS                              BACnetEngineeringUnits = 47814
+	BACnetEngineeringUnits_MILLIREMS_PER_HOUR                     BACnetEngineeringUnits = 47815
+	BACnetEngineeringUnits_DECIBELS_A                             BACnetEngineeringUnits = 232
+	BACnetEngineeringUnits_NEPHELOMETRIC_TURBIDITY_UNIT           BACnetEngineeringUnits = 233
+	BACnetEngineeringUnits_P_H                                    BACnetEngineeringUnits = 234
+	BACnetEngineeringUnits_GRAMS_PER_SQUARE_METER                 BACnetEngineeringUnits = 235
+	BACnetEngineeringUnits_MINUTES_PER_DEGREE_KELVIN              BACnetEngineeringUnits = 236
+	BACnetEngineeringUnits_VENDOR_PROPRIETARY_VALUE               BACnetEngineeringUnits = 0xFF
 )
 
 var BACnetEngineeringUnitsValues []BACnetEngineeringUnits
 
 func init() {
 	_ = errors.New
-	BACnetEngineeringUnitsValues = []BACnetEngineeringUnits {
+	BACnetEngineeringUnitsValues = []BACnetEngineeringUnits{
 		BACnetEngineeringUnits_METERS_PER_SECOND_PER_SECOND,
 		BACnetEngineeringUnits_SQUARE_METERS,
 		BACnetEngineeringUnits_SQUARE_CENTIMETERS,
@@ -551,510 +551,510 @@ func init() {
 
 func BACnetEngineeringUnitsByValue(value uint32) (enum BACnetEngineeringUnits, ok bool) {
 	switch value {
-		case 0:
-			return BACnetEngineeringUnits_SQUARE_METERS, true
-		case 0XFF:
-			return BACnetEngineeringUnits_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetEngineeringUnits_SQUARE_FEET, true
-		case 10:
-			return BACnetEngineeringUnits_MEGAVOLT_AMPERES, true
-		case 100:
-			return BACnetEngineeringUnits_PER_MINUTE, true
-		case 101:
-			return BACnetEngineeringUnits_PER_SECOND, true
-		case 102:
-			return BACnetEngineeringUnits_PSI_PER_DEGREE_FAHRENHEIT, true
-		case 103:
-			return BACnetEngineeringUnits_RADIANS, true
-		case 104:
-			return BACnetEngineeringUnits_REVOLUTIONS_PER_MINUTE, true
-		case 105:
-			return BACnetEngineeringUnits_CURRENCY1, true
-		case 106:
-			return BACnetEngineeringUnits_CURRENCY2, true
-		case 107:
-			return BACnetEngineeringUnits_CURRENCY3, true
-		case 108:
-			return BACnetEngineeringUnits_CURRENCY4, true
-		case 109:
-			return BACnetEngineeringUnits_CURRENCY5, true
-		case 11:
-			return BACnetEngineeringUnits_VOLT_AMPERES_REACTIVE, true
-		case 110:
-			return BACnetEngineeringUnits_CURRENCY6, true
-		case 111:
-			return BACnetEngineeringUnits_CURRENCY7, true
-		case 112:
-			return BACnetEngineeringUnits_CURRENCY8, true
-		case 113:
-			return BACnetEngineeringUnits_CURRENCY9, true
-		case 114:
-			return BACnetEngineeringUnits_CURRENCY10, true
-		case 115:
-			return BACnetEngineeringUnits_SQUARE_INCHES, true
-		case 116:
-			return BACnetEngineeringUnits_SQUARE_CENTIMETERS, true
-		case 117:
-			return BACnetEngineeringUnits_BTUS_PER_POUND, true
-		case 118:
-			return BACnetEngineeringUnits_CENTIMETERS, true
-		case 119:
-			return BACnetEngineeringUnits_POUNDS_MASS_PER_SECOND, true
-		case 12:
-			return BACnetEngineeringUnits_KILOVOLT_AMPERES_REACTIVE, true
-		case 120:
-			return BACnetEngineeringUnits_DELTA_DEGREES_FAHRENHEIT, true
-		case 121:
-			return BACnetEngineeringUnits_DELTA_DEGREES_KELVIN, true
-		case 122:
-			return BACnetEngineeringUnits_KILOHMS, true
-		case 123:
-			return BACnetEngineeringUnits_MEGOHMS, true
-		case 124:
-			return BACnetEngineeringUnits_MILLIVOLTS, true
-		case 125:
-			return BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM, true
-		case 126:
-			return BACnetEngineeringUnits_MEGAJOULES, true
-		case 13:
-			return BACnetEngineeringUnits_MEGAVOLT_AMPERES_REACTIVE, true
-		case 132:
-			return BACnetEngineeringUnits_IWATTS, true
-		case 133:
-			return BACnetEngineeringUnits_HECTOPASCALS, true
-		case 134:
-			return BACnetEngineeringUnits_MILLIBARS, true
-		case 135:
-			return BACnetEngineeringUnits_CUBIC_METERS_PER_HOUR, true
-		case 136:
-			return BACnetEngineeringUnits_LITERS_PER_HOUR, true
-		case 137:
-			return BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_METER, true
-		case 138:
-			return BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_FOOT, true
-		case 139:
-			return BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_METER, true
-		case 14:
-			return BACnetEngineeringUnits_DEGREES_PHASE, true
-		case 140:
-			return BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_FOOT, true
-		case 141:
-			return BACnetEngineeringUnits_WATTS_PER_SQUARE_METER_DEGREE_KELVIN, true
-		case 142:
-			return BACnetEngineeringUnits_CUBIC_FEET_PER_SECOND, true
-		case 143:
-			return BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_FOOT, true
-		case 144:
-			return BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_METER, true
-		case 145:
-			return BACnetEngineeringUnits_MILLIOHMS, true
-		case 146:
-			return BACnetEngineeringUnits_MEGAWATT_HOURS, true
-		case 147:
-			return BACnetEngineeringUnits_KILO_BTUS, true
-		case 148:
-			return BACnetEngineeringUnits_MEGA_BTUS, true
-		case 149:
-			return BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM_DRY_AIR, true
-		case 15:
-			return BACnetEngineeringUnits_POWER_FACTOR, true
-		case 150:
-			return BACnetEngineeringUnits_MEGAJOULES_PER_KILOGRAM_DRY_AIR, true
-		case 154:
-			return BACnetEngineeringUnits_GRAMS_PER_SECOND, true
-		case 155:
-			return BACnetEngineeringUnits_GRAMS_PER_MINUTE, true
-		case 156:
-			return BACnetEngineeringUnits_TONS_PER_HOUR, true
-		case 157:
-			return BACnetEngineeringUnits_KILO_BTUS_PER_HOUR, true
-		case 158:
-			return BACnetEngineeringUnits_HUNDREDTHS_SECONDS, true
-		case 159:
-			return BACnetEngineeringUnits_MILLISECONDS, true
-		case 16:
-			return BACnetEngineeringUnits_JOULES, true
-		case 160:
-			return BACnetEngineeringUnits_NEWTON_METERS, true
-		case 161:
-			return BACnetEngineeringUnits_MILLIMETERS_PER_SECOND, true
-		case 162:
-			return BACnetEngineeringUnits_MILLIMETERS_PER_MINUTE, true
-		case 163:
-			return BACnetEngineeringUnits_METERS_PER_MINUTE, true
-		case 164:
-			return BACnetEngineeringUnits_METERS_PER_HOUR, true
-		case 165:
-			return BACnetEngineeringUnits_CUBIC_METERS_PER_MINUTE, true
-		case 166:
-			return BACnetEngineeringUnits_METERS_PER_SECOND_PER_SECOND, true
-		case 167:
-			return BACnetEngineeringUnits_AMPERES_PER_METER, true
-		case 168:
-			return BACnetEngineeringUnits_AMPERES_PER_SQUARE_METER, true
-		case 169:
-			return BACnetEngineeringUnits_AMPERE_SQUARE_METERS, true
-		case 17:
-			return BACnetEngineeringUnits_KILOJOULES, true
-		case 170:
-			return BACnetEngineeringUnits_FARADS, true
-		case 171:
-			return BACnetEngineeringUnits_HENRYS, true
-		case 172:
-			return BACnetEngineeringUnits_OHM_METERS, true
-		case 173:
-			return BACnetEngineeringUnits_SIEMENS, true
-		case 174:
-			return BACnetEngineeringUnits_SIEMENS_PER_METER, true
-		case 175:
-			return BACnetEngineeringUnits_TESLAS, true
-		case 176:
-			return BACnetEngineeringUnits_VOLTS_PER_DEGREE_KELVIN, true
-		case 177:
-			return BACnetEngineeringUnits_VOLTS_PER_METER, true
-		case 178:
-			return BACnetEngineeringUnits_WEBERS, true
-		case 179:
-			return BACnetEngineeringUnits_CANDELAS, true
-		case 18:
-			return BACnetEngineeringUnits_WATT_HOURS, true
-		case 180:
-			return BACnetEngineeringUnits_CANDELAS_PER_SQUARE_METER, true
-		case 181:
-			return BACnetEngineeringUnits_DEGREES_KELVIN_PER_HOUR, true
-		case 182:
-			return BACnetEngineeringUnits_DEGREES_KELVIN_PER_MINUTE, true
-		case 183:
-			return BACnetEngineeringUnits_JOULE_SECONDS, true
-		case 184:
-			return BACnetEngineeringUnits_RADIANS_PER_SECOND, true
-		case 185:
-			return BACnetEngineeringUnits_SQUARE_METERS_PER_NEWTON, true
-		case 186:
-			return BACnetEngineeringUnits_KILOGRAMS_PER_CUBIC_METER, true
-		case 187:
-			return BACnetEngineeringUnits_NEWTON_SECONDS, true
-		case 188:
-			return BACnetEngineeringUnits_NEWTONS_PER_METER, true
-		case 189:
-			return BACnetEngineeringUnits_WATTS_PER_METER_PER_DEGREE_KELVIN, true
-		case 19:
-			return BACnetEngineeringUnits_KILOWATT_HOURS, true
-		case 190:
-			return BACnetEngineeringUnits_MICROSIEMENS, true
-		case 191:
-			return BACnetEngineeringUnits_CUBIC_FEET_PER_HOUR, true
-		case 192:
-			return BACnetEngineeringUnits_US_GALLONS_PER_HOUR, true
-		case 193:
-			return BACnetEngineeringUnits_KILOMETERS, true
-		case 194:
-			return BACnetEngineeringUnits_MICROMETERS, true
-		case 195:
-			return BACnetEngineeringUnits_GRAMS, true
-		case 196:
-			return BACnetEngineeringUnits_MILLIGRAMS, true
-		case 197:
-			return BACnetEngineeringUnits_MILLILITERS, true
-		case 198:
-			return BACnetEngineeringUnits_MILLILITERS_PER_SECOND, true
-		case 199:
-			return BACnetEngineeringUnits_DECIBELS, true
-		case 2:
-			return BACnetEngineeringUnits_MILLIAMPERES, true
-		case 20:
-			return BACnetEngineeringUnits_BTUS, true
-		case 200:
-			return BACnetEngineeringUnits_DECIBELS_MILLIVOLT, true
-		case 201:
-			return BACnetEngineeringUnits_DECIBELS_VOLT, true
-		case 202:
-			return BACnetEngineeringUnits_MILLISIEMENS, true
-		case 203:
-			return BACnetEngineeringUnits_WATT_HOURS_REACTIVE, true
-		case 204:
-			return BACnetEngineeringUnits_KILOWATT_HOURS_REACTIVE, true
-		case 205:
-			return BACnetEngineeringUnits_MEGAWATT_HOURS_REACTIVE, true
-		case 206:
-			return BACnetEngineeringUnits_MILLIMETERS_OF_WATER, true
-		case 207:
-			return BACnetEngineeringUnits_PER_MILLE, true
-		case 208:
-			return BACnetEngineeringUnits_GRAMS_PER_GRAM, true
-		case 209:
-			return BACnetEngineeringUnits_KILOGRAMS_PER_KILOGRAM, true
-		case 21:
-			return BACnetEngineeringUnits_THERMS, true
-		case 210:
-			return BACnetEngineeringUnits_GRAMS_PER_KILOGRAM, true
-		case 211:
-			return BACnetEngineeringUnits_MILLIGRAMS_PER_GRAM, true
-		case 212:
-			return BACnetEngineeringUnits_MILLIGRAMS_PER_KILOGRAM, true
-		case 213:
-			return BACnetEngineeringUnits_GRAMS_PER_MILLILITER, true
-		case 214:
-			return BACnetEngineeringUnits_GRAMS_PER_LITER, true
-		case 215:
-			return BACnetEngineeringUnits_MILLIGRAMS_PER_LITER, true
-		case 216:
-			return BACnetEngineeringUnits_MICROGRAMS_PER_LITER, true
-		case 217:
-			return BACnetEngineeringUnits_GRAMS_PER_CUBIC_METER, true
-		case 218:
-			return BACnetEngineeringUnits_MILLIGRAMS_PER_CUBIC_METER, true
-		case 219:
-			return BACnetEngineeringUnits_MICROGRAMS_PER_CUBIC_METER, true
-		case 22:
-			return BACnetEngineeringUnits_TON_HOURS, true
-		case 220:
-			return BACnetEngineeringUnits_NANOGRAMS_PER_CUBIC_METER, true
-		case 221:
-			return BACnetEngineeringUnits_GRAMS_PER_CUBIC_CENTIMETER, true
-		case 222:
-			return BACnetEngineeringUnits_BECQUERELS, true
-		case 223:
-			return BACnetEngineeringUnits_KILOBECQUERELS, true
-		case 224:
-			return BACnetEngineeringUnits_MEGABECQUERELS, true
-		case 225:
-			return BACnetEngineeringUnits_GRAY, true
-		case 226:
-			return BACnetEngineeringUnits_MILLIGRAY, true
-		case 227:
-			return BACnetEngineeringUnits_MICROGRAY, true
-		case 228:
-			return BACnetEngineeringUnits_SIEVERTS, true
-		case 229:
-			return BACnetEngineeringUnits_MILLISIEVERTS, true
-		case 23:
-			return BACnetEngineeringUnits_JOULES_PER_KILOGRAM_DRY_AIR, true
-		case 230:
-			return BACnetEngineeringUnits_MICROSIEVERTS, true
-		case 231:
-			return BACnetEngineeringUnits_MICROSIEVERTS_PER_HOUR, true
-		case 232:
-			return BACnetEngineeringUnits_DECIBELS_A, true
-		case 233:
-			return BACnetEngineeringUnits_NEPHELOMETRIC_TURBIDITY_UNIT, true
-		case 234:
-			return BACnetEngineeringUnits_P_H, true
-		case 235:
-			return BACnetEngineeringUnits_GRAMS_PER_SQUARE_METER, true
-		case 236:
-			return BACnetEngineeringUnits_MINUTES_PER_DEGREE_KELVIN, true
-		case 237:
-			return BACnetEngineeringUnits_OHM_METER_SQUARED_PER_METER, true
-		case 238:
-			return BACnetEngineeringUnits_AMPERE_SECONDS, true
-		case 239:
-			return BACnetEngineeringUnits_VOLT_AMPERE_HOURS, true
-		case 24:
-			return BACnetEngineeringUnits_BTUS_PER_POUND_DRY_AIR, true
-		case 240:
-			return BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS, true
-		case 241:
-			return BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS, true
-		case 242:
-			return BACnetEngineeringUnits_VOLT_AMPERE_HOURS_REACTIVE, true
-		case 243:
-			return BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS_REACTIVE, true
-		case 244:
-			return BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS_REACTIVE, true
-		case 245:
-			return BACnetEngineeringUnits_VOLT_SQUARE_HOURS, true
-		case 246:
-			return BACnetEngineeringUnits_AMPERE_SQUARE_HOURS, true
-		case 247:
-			return BACnetEngineeringUnits_JOULE_PER_HOURS, true
-		case 248:
-			return BACnetEngineeringUnits_CUBIC_FEET_PER_DAY, true
-		case 249:
-			return BACnetEngineeringUnits_CUBIC_METERS_PER_DAY, true
-		case 250:
-			return BACnetEngineeringUnits_WATT_HOURS_PER_CUBIC_METER, true
-		case 251:
-			return BACnetEngineeringUnits_JOULES_PER_CUBIC_METER, true
-		case 252:
-			return BACnetEngineeringUnits_MOLE_PERCENT, true
-		case 253:
-			return BACnetEngineeringUnits_PASCAL_SECONDS, true
-		case 254:
-			return BACnetEngineeringUnits_MILLION_STANDARD_CUBIC_FEET_PER_MINUTE, true
-		case 28:
-			return BACnetEngineeringUnits_GRAMS_OF_WATER_PER_KILOGRAM_DRY_AIR, true
-		case 29:
-			return BACnetEngineeringUnits_PERCENT_RELATIVE_HUMIDITY, true
-		case 3:
-			return BACnetEngineeringUnits_AMPERES, true
-		case 30:
-			return BACnetEngineeringUnits_MILLIMETERS, true
-		case 31:
-			return BACnetEngineeringUnits_METERS, true
-		case 32:
-			return BACnetEngineeringUnits_INCHES, true
-		case 33:
-			return BACnetEngineeringUnits_FEET, true
-		case 34:
-			return BACnetEngineeringUnits_WATTS_PER_SQUARE_FOOT, true
-		case 35:
-			return BACnetEngineeringUnits_WATTS_PER_SQUARE_METER, true
-		case 36:
-			return BACnetEngineeringUnits_LUMENS, true
-		case 37:
-			return BACnetEngineeringUnits_LUXES, true
-		case 38:
-			return BACnetEngineeringUnits_FOOT_CANDLES, true
-		case 39:
-			return BACnetEngineeringUnits_KILOGRAMS, true
-		case 4:
-			return BACnetEngineeringUnits_OHMS, true
-		case 40:
-			return BACnetEngineeringUnits_POUNDS_MASS, true
-		case 41:
-			return BACnetEngineeringUnits_TONS, true
-		case 42:
-			return BACnetEngineeringUnits_KILOGRAMS_PER_SECOND, true
-		case 43:
-			return BACnetEngineeringUnits_KILOGRAMS_PER_MINUTE, true
-		case 44:
-			return BACnetEngineeringUnits_KILOGRAMS_PER_HOUR, true
-		case 45:
-			return BACnetEngineeringUnits_POUNDS_MASS_PER_MINUTE, true
-		case 46:
-			return BACnetEngineeringUnits_POUNDS_MASS_PER_HOUR, true
-		case 47:
-			return BACnetEngineeringUnits_WATTS, true
-		case 47808:
-			return BACnetEngineeringUnits_STANDARD_CUBIC_FEET_PER_DAY, true
-		case 47809:
-			return BACnetEngineeringUnits_MILLION_STANDARD_CUBIC_FEET_PER_DAY, true
-		case 47810:
-			return BACnetEngineeringUnits_THOUSAND_CUBIC_FEET_PER_DAY, true
-		case 47811:
-			return BACnetEngineeringUnits_THOUSAND_STANDARD_CUBIC_FEET_PER_DAY, true
-		case 47812:
-			return BACnetEngineeringUnits_POUNDS_MASS_PER_DAY, true
-		case 47814:
-			return BACnetEngineeringUnits_MILLIREMS, true
-		case 47815:
-			return BACnetEngineeringUnits_MILLIREMS_PER_HOUR, true
-		case 48:
-			return BACnetEngineeringUnits_KILOWATTS, true
-		case 49:
-			return BACnetEngineeringUnits_MEGAWATTS, true
-		case 5:
-			return BACnetEngineeringUnits_VOLTS, true
-		case 50:
-			return BACnetEngineeringUnits_BTUS_PER_HOUR, true
-		case 51:
-			return BACnetEngineeringUnits_HORSEPOWER, true
-		case 52:
-			return BACnetEngineeringUnits_TONS_REFRIGERATION, true
-		case 53:
-			return BACnetEngineeringUnits_PASCALS, true
-		case 54:
-			return BACnetEngineeringUnits_KILOPASCALS, true
-		case 55:
-			return BACnetEngineeringUnits_BARS, true
-		case 56:
-			return BACnetEngineeringUnits_POUNDS_FORCE_PER_SQUARE_INCH, true
-		case 57:
-			return BACnetEngineeringUnits_CENTIMETERS_OF_WATER, true
-		case 58:
-			return BACnetEngineeringUnits_INCHES_OF_WATER, true
-		case 59:
-			return BACnetEngineeringUnits_MILLIMETERS_OF_MERCURY, true
-		case 6:
-			return BACnetEngineeringUnits_KILOVOLTS, true
-		case 60:
-			return BACnetEngineeringUnits_CENTIMETERS_OF_MERCURY, true
-		case 61:
-			return BACnetEngineeringUnits_INCHES_OF_MERCURY, true
-		case 62:
-			return BACnetEngineeringUnits_DEGREES_CELSIUS, true
-		case 63:
-			return BACnetEngineeringUnits_DEGREES_KELVIN, true
-		case 64:
-			return BACnetEngineeringUnits_DEGREES_FAHRENHEIT, true
-		case 65:
-			return BACnetEngineeringUnits_DEGREE_DAYS_CELSIUS, true
-		case 66:
-			return BACnetEngineeringUnits_DEGREE_DAYS_FAHRENHEIT, true
-		case 67:
-			return BACnetEngineeringUnits_YEARS, true
-		case 68:
-			return BACnetEngineeringUnits_MONTHS, true
-		case 69:
-			return BACnetEngineeringUnits_WEEKS, true
-		case 7:
-			return BACnetEngineeringUnits_MEGAVOLTS, true
-		case 70:
-			return BACnetEngineeringUnits_DAYS, true
-		case 71:
-			return BACnetEngineeringUnits_HOURS, true
-		case 72:
-			return BACnetEngineeringUnits_MINUTES, true
-		case 73:
-			return BACnetEngineeringUnits_SECONDS, true
-		case 74:
-			return BACnetEngineeringUnits_METERS_PER_SECOND, true
-		case 75:
-			return BACnetEngineeringUnits_KILOMETERS_PER_HOUR, true
-		case 76:
-			return BACnetEngineeringUnits_FEET_PER_SECOND, true
-		case 77:
-			return BACnetEngineeringUnits_FEET_PER_MINUTE, true
-		case 78:
-			return BACnetEngineeringUnits_MILES_PER_HOUR, true
-		case 79:
-			return BACnetEngineeringUnits_CUBIC_FEET, true
-		case 8:
-			return BACnetEngineeringUnits_VOLT_AMPERES, true
-		case 80:
-			return BACnetEngineeringUnits_CUBIC_METERS, true
-		case 81:
-			return BACnetEngineeringUnits_IMPERIAL_GALLONS, true
-		case 82:
-			return BACnetEngineeringUnits_LITERS, true
-		case 83:
-			return BACnetEngineeringUnits_US_GALLONS, true
-		case 84:
-			return BACnetEngineeringUnits_CUBIC_FEET_PER_MINUTE, true
-		case 85:
-			return BACnetEngineeringUnits_CUBIC_METERS_PER_SECOND, true
-		case 86:
-			return BACnetEngineeringUnits_IMPERIAL_GALLONS_PER_MINUTE, true
-		case 87:
-			return BACnetEngineeringUnits_LITERS_PER_SECOND, true
-		case 88:
-			return BACnetEngineeringUnits_LITERS_PER_MINUTE, true
-		case 89:
-			return BACnetEngineeringUnits_US_GALLONS_PER_MINUTE, true
-		case 9:
-			return BACnetEngineeringUnits_KILOVOLT_AMPERES, true
-		case 90:
-			return BACnetEngineeringUnits_DEGREES_ANGULAR, true
-		case 91:
-			return BACnetEngineeringUnits_DEGREES_CELSIUS_PER_HOUR, true
-		case 92:
-			return BACnetEngineeringUnits_DEGREES_CELSIUS_PER_MINUTE, true
-		case 93:
-			return BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_HOUR, true
-		case 94:
-			return BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_MINUTE, true
-		case 95:
-			return BACnetEngineeringUnits_NO_UNITS, true
-		case 96:
-			return BACnetEngineeringUnits_PARTS_PER_MILLION, true
-		case 97:
-			return BACnetEngineeringUnits_PARTS_PER_BILLION, true
-		case 98:
-			return BACnetEngineeringUnits_PERCENT, true
-		case 99:
-			return BACnetEngineeringUnits_PERCENT_PER_SECOND, true
+	case 0:
+		return BACnetEngineeringUnits_SQUARE_METERS, true
+	case 0xFF:
+		return BACnetEngineeringUnits_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetEngineeringUnits_SQUARE_FEET, true
+	case 10:
+		return BACnetEngineeringUnits_MEGAVOLT_AMPERES, true
+	case 100:
+		return BACnetEngineeringUnits_PER_MINUTE, true
+	case 101:
+		return BACnetEngineeringUnits_PER_SECOND, true
+	case 102:
+		return BACnetEngineeringUnits_PSI_PER_DEGREE_FAHRENHEIT, true
+	case 103:
+		return BACnetEngineeringUnits_RADIANS, true
+	case 104:
+		return BACnetEngineeringUnits_REVOLUTIONS_PER_MINUTE, true
+	case 105:
+		return BACnetEngineeringUnits_CURRENCY1, true
+	case 106:
+		return BACnetEngineeringUnits_CURRENCY2, true
+	case 107:
+		return BACnetEngineeringUnits_CURRENCY3, true
+	case 108:
+		return BACnetEngineeringUnits_CURRENCY4, true
+	case 109:
+		return BACnetEngineeringUnits_CURRENCY5, true
+	case 11:
+		return BACnetEngineeringUnits_VOLT_AMPERES_REACTIVE, true
+	case 110:
+		return BACnetEngineeringUnits_CURRENCY6, true
+	case 111:
+		return BACnetEngineeringUnits_CURRENCY7, true
+	case 112:
+		return BACnetEngineeringUnits_CURRENCY8, true
+	case 113:
+		return BACnetEngineeringUnits_CURRENCY9, true
+	case 114:
+		return BACnetEngineeringUnits_CURRENCY10, true
+	case 115:
+		return BACnetEngineeringUnits_SQUARE_INCHES, true
+	case 116:
+		return BACnetEngineeringUnits_SQUARE_CENTIMETERS, true
+	case 117:
+		return BACnetEngineeringUnits_BTUS_PER_POUND, true
+	case 118:
+		return BACnetEngineeringUnits_CENTIMETERS, true
+	case 119:
+		return BACnetEngineeringUnits_POUNDS_MASS_PER_SECOND, true
+	case 12:
+		return BACnetEngineeringUnits_KILOVOLT_AMPERES_REACTIVE, true
+	case 120:
+		return BACnetEngineeringUnits_DELTA_DEGREES_FAHRENHEIT, true
+	case 121:
+		return BACnetEngineeringUnits_DELTA_DEGREES_KELVIN, true
+	case 122:
+		return BACnetEngineeringUnits_KILOHMS, true
+	case 123:
+		return BACnetEngineeringUnits_MEGOHMS, true
+	case 124:
+		return BACnetEngineeringUnits_MILLIVOLTS, true
+	case 125:
+		return BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM, true
+	case 126:
+		return BACnetEngineeringUnits_MEGAJOULES, true
+	case 13:
+		return BACnetEngineeringUnits_MEGAVOLT_AMPERES_REACTIVE, true
+	case 132:
+		return BACnetEngineeringUnits_IWATTS, true
+	case 133:
+		return BACnetEngineeringUnits_HECTOPASCALS, true
+	case 134:
+		return BACnetEngineeringUnits_MILLIBARS, true
+	case 135:
+		return BACnetEngineeringUnits_CUBIC_METERS_PER_HOUR, true
+	case 136:
+		return BACnetEngineeringUnits_LITERS_PER_HOUR, true
+	case 137:
+		return BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_METER, true
+	case 138:
+		return BACnetEngineeringUnits_KILOWATT_HOURS_PER_SQUARE_FOOT, true
+	case 139:
+		return BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_METER, true
+	case 14:
+		return BACnetEngineeringUnits_DEGREES_PHASE, true
+	case 140:
+		return BACnetEngineeringUnits_MEGAJOULES_PER_SQUARE_FOOT, true
+	case 141:
+		return BACnetEngineeringUnits_WATTS_PER_SQUARE_METER_DEGREE_KELVIN, true
+	case 142:
+		return BACnetEngineeringUnits_CUBIC_FEET_PER_SECOND, true
+	case 143:
+		return BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_FOOT, true
+	case 144:
+		return BACnetEngineeringUnits_PERCENT_OBSCURATION_PER_METER, true
+	case 145:
+		return BACnetEngineeringUnits_MILLIOHMS, true
+	case 146:
+		return BACnetEngineeringUnits_MEGAWATT_HOURS, true
+	case 147:
+		return BACnetEngineeringUnits_KILO_BTUS, true
+	case 148:
+		return BACnetEngineeringUnits_MEGA_BTUS, true
+	case 149:
+		return BACnetEngineeringUnits_KILOJOULES_PER_KILOGRAM_DRY_AIR, true
+	case 15:
+		return BACnetEngineeringUnits_POWER_FACTOR, true
+	case 150:
+		return BACnetEngineeringUnits_MEGAJOULES_PER_KILOGRAM_DRY_AIR, true
+	case 154:
+		return BACnetEngineeringUnits_GRAMS_PER_SECOND, true
+	case 155:
+		return BACnetEngineeringUnits_GRAMS_PER_MINUTE, true
+	case 156:
+		return BACnetEngineeringUnits_TONS_PER_HOUR, true
+	case 157:
+		return BACnetEngineeringUnits_KILO_BTUS_PER_HOUR, true
+	case 158:
+		return BACnetEngineeringUnits_HUNDREDTHS_SECONDS, true
+	case 159:
+		return BACnetEngineeringUnits_MILLISECONDS, true
+	case 16:
+		return BACnetEngineeringUnits_JOULES, true
+	case 160:
+		return BACnetEngineeringUnits_NEWTON_METERS, true
+	case 161:
+		return BACnetEngineeringUnits_MILLIMETERS_PER_SECOND, true
+	case 162:
+		return BACnetEngineeringUnits_MILLIMETERS_PER_MINUTE, true
+	case 163:
+		return BACnetEngineeringUnits_METERS_PER_MINUTE, true
+	case 164:
+		return BACnetEngineeringUnits_METERS_PER_HOUR, true
+	case 165:
+		return BACnetEngineeringUnits_CUBIC_METERS_PER_MINUTE, true
+	case 166:
+		return BACnetEngineeringUnits_METERS_PER_SECOND_PER_SECOND, true
+	case 167:
+		return BACnetEngineeringUnits_AMPERES_PER_METER, true
+	case 168:
+		return BACnetEngineeringUnits_AMPERES_PER_SQUARE_METER, true
+	case 169:
+		return BACnetEngineeringUnits_AMPERE_SQUARE_METERS, true
+	case 17:
+		return BACnetEngineeringUnits_KILOJOULES, true
+	case 170:
+		return BACnetEngineeringUnits_FARADS, true
+	case 171:
+		return BACnetEngineeringUnits_HENRYS, true
+	case 172:
+		return BACnetEngineeringUnits_OHM_METERS, true
+	case 173:
+		return BACnetEngineeringUnits_SIEMENS, true
+	case 174:
+		return BACnetEngineeringUnits_SIEMENS_PER_METER, true
+	case 175:
+		return BACnetEngineeringUnits_TESLAS, true
+	case 176:
+		return BACnetEngineeringUnits_VOLTS_PER_DEGREE_KELVIN, true
+	case 177:
+		return BACnetEngineeringUnits_VOLTS_PER_METER, true
+	case 178:
+		return BACnetEngineeringUnits_WEBERS, true
+	case 179:
+		return BACnetEngineeringUnits_CANDELAS, true
+	case 18:
+		return BACnetEngineeringUnits_WATT_HOURS, true
+	case 180:
+		return BACnetEngineeringUnits_CANDELAS_PER_SQUARE_METER, true
+	case 181:
+		return BACnetEngineeringUnits_DEGREES_KELVIN_PER_HOUR, true
+	case 182:
+		return BACnetEngineeringUnits_DEGREES_KELVIN_PER_MINUTE, true
+	case 183:
+		return BACnetEngineeringUnits_JOULE_SECONDS, true
+	case 184:
+		return BACnetEngineeringUnits_RADIANS_PER_SECOND, true
+	case 185:
+		return BACnetEngineeringUnits_SQUARE_METERS_PER_NEWTON, true
+	case 186:
+		return BACnetEngineeringUnits_KILOGRAMS_PER_CUBIC_METER, true
+	case 187:
+		return BACnetEngineeringUnits_NEWTON_SECONDS, true
+	case 188:
+		return BACnetEngineeringUnits_NEWTONS_PER_METER, true
+	case 189:
+		return BACnetEngineeringUnits_WATTS_PER_METER_PER_DEGREE_KELVIN, true
+	case 19:
+		return BACnetEngineeringUnits_KILOWATT_HOURS, true
+	case 190:
+		return BACnetEngineeringUnits_MICROSIEMENS, true
+	case 191:
+		return BACnetEngineeringUnits_CUBIC_FEET_PER_HOUR, true
+	case 192:
+		return BACnetEngineeringUnits_US_GALLONS_PER_HOUR, true
+	case 193:
+		return BACnetEngineeringUnits_KILOMETERS, true
+	case 194:
+		return BACnetEngineeringUnits_MICROMETERS, true
+	case 195:
+		return BACnetEngineeringUnits_GRAMS, true
+	case 196:
+		return BACnetEngineeringUnits_MILLIGRAMS, true
+	case 197:
+		return BACnetEngineeringUnits_MILLILITERS, true
+	case 198:
+		return BACnetEngineeringUnits_MILLILITERS_PER_SECOND, true
+	case 199:
+		return BACnetEngineeringUnits_DECIBELS, true
+	case 2:
+		return BACnetEngineeringUnits_MILLIAMPERES, true
+	case 20:
+		return BACnetEngineeringUnits_BTUS, true
+	case 200:
+		return BACnetEngineeringUnits_DECIBELS_MILLIVOLT, true
+	case 201:
+		return BACnetEngineeringUnits_DECIBELS_VOLT, true
+	case 202:
+		return BACnetEngineeringUnits_MILLISIEMENS, true
+	case 203:
+		return BACnetEngineeringUnits_WATT_HOURS_REACTIVE, true
+	case 204:
+		return BACnetEngineeringUnits_KILOWATT_HOURS_REACTIVE, true
+	case 205:
+		return BACnetEngineeringUnits_MEGAWATT_HOURS_REACTIVE, true
+	case 206:
+		return BACnetEngineeringUnits_MILLIMETERS_OF_WATER, true
+	case 207:
+		return BACnetEngineeringUnits_PER_MILLE, true
+	case 208:
+		return BACnetEngineeringUnits_GRAMS_PER_GRAM, true
+	case 209:
+		return BACnetEngineeringUnits_KILOGRAMS_PER_KILOGRAM, true
+	case 21:
+		return BACnetEngineeringUnits_THERMS, true
+	case 210:
+		return BACnetEngineeringUnits_GRAMS_PER_KILOGRAM, true
+	case 211:
+		return BACnetEngineeringUnits_MILLIGRAMS_PER_GRAM, true
+	case 212:
+		return BACnetEngineeringUnits_MILLIGRAMS_PER_KILOGRAM, true
+	case 213:
+		return BACnetEngineeringUnits_GRAMS_PER_MILLILITER, true
+	case 214:
+		return BACnetEngineeringUnits_GRAMS_PER_LITER, true
+	case 215:
+		return BACnetEngineeringUnits_MILLIGRAMS_PER_LITER, true
+	case 216:
+		return BACnetEngineeringUnits_MICROGRAMS_PER_LITER, true
+	case 217:
+		return BACnetEngineeringUnits_GRAMS_PER_CUBIC_METER, true
+	case 218:
+		return BACnetEngineeringUnits_MILLIGRAMS_PER_CUBIC_METER, true
+	case 219:
+		return BACnetEngineeringUnits_MICROGRAMS_PER_CUBIC_METER, true
+	case 22:
+		return BACnetEngineeringUnits_TON_HOURS, true
+	case 220:
+		return BACnetEngineeringUnits_NANOGRAMS_PER_CUBIC_METER, true
+	case 221:
+		return BACnetEngineeringUnits_GRAMS_PER_CUBIC_CENTIMETER, true
+	case 222:
+		return BACnetEngineeringUnits_BECQUERELS, true
+	case 223:
+		return BACnetEngineeringUnits_KILOBECQUERELS, true
+	case 224:
+		return BACnetEngineeringUnits_MEGABECQUERELS, true
+	case 225:
+		return BACnetEngineeringUnits_GRAY, true
+	case 226:
+		return BACnetEngineeringUnits_MILLIGRAY, true
+	case 227:
+		return BACnetEngineeringUnits_MICROGRAY, true
+	case 228:
+		return BACnetEngineeringUnits_SIEVERTS, true
+	case 229:
+		return BACnetEngineeringUnits_MILLISIEVERTS, true
+	case 23:
+		return BACnetEngineeringUnits_JOULES_PER_KILOGRAM_DRY_AIR, true
+	case 230:
+		return BACnetEngineeringUnits_MICROSIEVERTS, true
+	case 231:
+		return BACnetEngineeringUnits_MICROSIEVERTS_PER_HOUR, true
+	case 232:
+		return BACnetEngineeringUnits_DECIBELS_A, true
+	case 233:
+		return BACnetEngineeringUnits_NEPHELOMETRIC_TURBIDITY_UNIT, true
+	case 234:
+		return BACnetEngineeringUnits_P_H, true
+	case 235:
+		return BACnetEngineeringUnits_GRAMS_PER_SQUARE_METER, true
+	case 236:
+		return BACnetEngineeringUnits_MINUTES_PER_DEGREE_KELVIN, true
+	case 237:
+		return BACnetEngineeringUnits_OHM_METER_SQUARED_PER_METER, true
+	case 238:
+		return BACnetEngineeringUnits_AMPERE_SECONDS, true
+	case 239:
+		return BACnetEngineeringUnits_VOLT_AMPERE_HOURS, true
+	case 24:
+		return BACnetEngineeringUnits_BTUS_PER_POUND_DRY_AIR, true
+	case 240:
+		return BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS, true
+	case 241:
+		return BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS, true
+	case 242:
+		return BACnetEngineeringUnits_VOLT_AMPERE_HOURS_REACTIVE, true
+	case 243:
+		return BACnetEngineeringUnits_KILOVOLT_AMPERE_HOURS_REACTIVE, true
+	case 244:
+		return BACnetEngineeringUnits_MEGAVOLT_AMPERE_HOURS_REACTIVE, true
+	case 245:
+		return BACnetEngineeringUnits_VOLT_SQUARE_HOURS, true
+	case 246:
+		return BACnetEngineeringUnits_AMPERE_SQUARE_HOURS, true
+	case 247:
+		return BACnetEngineeringUnits_JOULE_PER_HOURS, true
+	case 248:
+		return BACnetEngineeringUnits_CUBIC_FEET_PER_DAY, true
+	case 249:
+		return BACnetEngineeringUnits_CUBIC_METERS_PER_DAY, true
+	case 250:
+		return BACnetEngineeringUnits_WATT_HOURS_PER_CUBIC_METER, true
+	case 251:
+		return BACnetEngineeringUnits_JOULES_PER_CUBIC_METER, true
+	case 252:
+		return BACnetEngineeringUnits_MOLE_PERCENT, true
+	case 253:
+		return BACnetEngineeringUnits_PASCAL_SECONDS, true
+	case 254:
+		return BACnetEngineeringUnits_MILLION_STANDARD_CUBIC_FEET_PER_MINUTE, true
+	case 28:
+		return BACnetEngineeringUnits_GRAMS_OF_WATER_PER_KILOGRAM_DRY_AIR, true
+	case 29:
+		return BACnetEngineeringUnits_PERCENT_RELATIVE_HUMIDITY, true
+	case 3:
+		return BACnetEngineeringUnits_AMPERES, true
+	case 30:
+		return BACnetEngineeringUnits_MILLIMETERS, true
+	case 31:
+		return BACnetEngineeringUnits_METERS, true
+	case 32:
+		return BACnetEngineeringUnits_INCHES, true
+	case 33:
+		return BACnetEngineeringUnits_FEET, true
+	case 34:
+		return BACnetEngineeringUnits_WATTS_PER_SQUARE_FOOT, true
+	case 35:
+		return BACnetEngineeringUnits_WATTS_PER_SQUARE_METER, true
+	case 36:
+		return BACnetEngineeringUnits_LUMENS, true
+	case 37:
+		return BACnetEngineeringUnits_LUXES, true
+	case 38:
+		return BACnetEngineeringUnits_FOOT_CANDLES, true
+	case 39:
+		return BACnetEngineeringUnits_KILOGRAMS, true
+	case 4:
+		return BACnetEngineeringUnits_OHMS, true
+	case 40:
+		return BACnetEngineeringUnits_POUNDS_MASS, true
+	case 41:
+		return BACnetEngineeringUnits_TONS, true
+	case 42:
+		return BACnetEngineeringUnits_KILOGRAMS_PER_SECOND, true
+	case 43:
+		return BACnetEngineeringUnits_KILOGRAMS_PER_MINUTE, true
+	case 44:
+		return BACnetEngineeringUnits_KILOGRAMS_PER_HOUR, true
+	case 45:
+		return BACnetEngineeringUnits_POUNDS_MASS_PER_MINUTE, true
+	case 46:
+		return BACnetEngineeringUnits_POUNDS_MASS_PER_HOUR, true
+	case 47:
+		return BACnetEngineeringUnits_WATTS, true
+	case 47808:
+		return BACnetEngineeringUnits_STANDARD_CUBIC_FEET_PER_DAY, true
+	case 47809:
+		return BACnetEngineeringUnits_MILLION_STANDARD_CUBIC_FEET_PER_DAY, true
+	case 47810:
+		return BACnetEngineeringUnits_THOUSAND_CUBIC_FEET_PER_DAY, true
+	case 47811:
+		return BACnetEngineeringUnits_THOUSAND_STANDARD_CUBIC_FEET_PER_DAY, true
+	case 47812:
+		return BACnetEngineeringUnits_POUNDS_MASS_PER_DAY, true
+	case 47814:
+		return BACnetEngineeringUnits_MILLIREMS, true
+	case 47815:
+		return BACnetEngineeringUnits_MILLIREMS_PER_HOUR, true
+	case 48:
+		return BACnetEngineeringUnits_KILOWATTS, true
+	case 49:
+		return BACnetEngineeringUnits_MEGAWATTS, true
+	case 5:
+		return BACnetEngineeringUnits_VOLTS, true
+	case 50:
+		return BACnetEngineeringUnits_BTUS_PER_HOUR, true
+	case 51:
+		return BACnetEngineeringUnits_HORSEPOWER, true
+	case 52:
+		return BACnetEngineeringUnits_TONS_REFRIGERATION, true
+	case 53:
+		return BACnetEngineeringUnits_PASCALS, true
+	case 54:
+		return BACnetEngineeringUnits_KILOPASCALS, true
+	case 55:
+		return BACnetEngineeringUnits_BARS, true
+	case 56:
+		return BACnetEngineeringUnits_POUNDS_FORCE_PER_SQUARE_INCH, true
+	case 57:
+		return BACnetEngineeringUnits_CENTIMETERS_OF_WATER, true
+	case 58:
+		return BACnetEngineeringUnits_INCHES_OF_WATER, true
+	case 59:
+		return BACnetEngineeringUnits_MILLIMETERS_OF_MERCURY, true
+	case 6:
+		return BACnetEngineeringUnits_KILOVOLTS, true
+	case 60:
+		return BACnetEngineeringUnits_CENTIMETERS_OF_MERCURY, true
+	case 61:
+		return BACnetEngineeringUnits_INCHES_OF_MERCURY, true
+	case 62:
+		return BACnetEngineeringUnits_DEGREES_CELSIUS, true
+	case 63:
+		return BACnetEngineeringUnits_DEGREES_KELVIN, true
+	case 64:
+		return BACnetEngineeringUnits_DEGREES_FAHRENHEIT, true
+	case 65:
+		return BACnetEngineeringUnits_DEGREE_DAYS_CELSIUS, true
+	case 66:
+		return BACnetEngineeringUnits_DEGREE_DAYS_FAHRENHEIT, true
+	case 67:
+		return BACnetEngineeringUnits_YEARS, true
+	case 68:
+		return BACnetEngineeringUnits_MONTHS, true
+	case 69:
+		return BACnetEngineeringUnits_WEEKS, true
+	case 7:
+		return BACnetEngineeringUnits_MEGAVOLTS, true
+	case 70:
+		return BACnetEngineeringUnits_DAYS, true
+	case 71:
+		return BACnetEngineeringUnits_HOURS, true
+	case 72:
+		return BACnetEngineeringUnits_MINUTES, true
+	case 73:
+		return BACnetEngineeringUnits_SECONDS, true
+	case 74:
+		return BACnetEngineeringUnits_METERS_PER_SECOND, true
+	case 75:
+		return BACnetEngineeringUnits_KILOMETERS_PER_HOUR, true
+	case 76:
+		return BACnetEngineeringUnits_FEET_PER_SECOND, true
+	case 77:
+		return BACnetEngineeringUnits_FEET_PER_MINUTE, true
+	case 78:
+		return BACnetEngineeringUnits_MILES_PER_HOUR, true
+	case 79:
+		return BACnetEngineeringUnits_CUBIC_FEET, true
+	case 8:
+		return BACnetEngineeringUnits_VOLT_AMPERES, true
+	case 80:
+		return BACnetEngineeringUnits_CUBIC_METERS, true
+	case 81:
+		return BACnetEngineeringUnits_IMPERIAL_GALLONS, true
+	case 82:
+		return BACnetEngineeringUnits_LITERS, true
+	case 83:
+		return BACnetEngineeringUnits_US_GALLONS, true
+	case 84:
+		return BACnetEngineeringUnits_CUBIC_FEET_PER_MINUTE, true
+	case 85:
+		return BACnetEngineeringUnits_CUBIC_METERS_PER_SECOND, true
+	case 86:
+		return BACnetEngineeringUnits_IMPERIAL_GALLONS_PER_MINUTE, true
+	case 87:
+		return BACnetEngineeringUnits_LITERS_PER_SECOND, true
+	case 88:
+		return BACnetEngineeringUnits_LITERS_PER_MINUTE, true
+	case 89:
+		return BACnetEngineeringUnits_US_GALLONS_PER_MINUTE, true
+	case 9:
+		return BACnetEngineeringUnits_KILOVOLT_AMPERES, true
+	case 90:
+		return BACnetEngineeringUnits_DEGREES_ANGULAR, true
+	case 91:
+		return BACnetEngineeringUnits_DEGREES_CELSIUS_PER_HOUR, true
+	case 92:
+		return BACnetEngineeringUnits_DEGREES_CELSIUS_PER_MINUTE, true
+	case 93:
+		return BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_HOUR, true
+	case 94:
+		return BACnetEngineeringUnits_DEGREES_FAHRENHEIT_PER_MINUTE, true
+	case 95:
+		return BACnetEngineeringUnits_NO_UNITS, true
+	case 96:
+		return BACnetEngineeringUnits_PARTS_PER_MILLION, true
+	case 97:
+		return BACnetEngineeringUnits_PARTS_PER_BILLION, true
+	case 98:
+		return BACnetEngineeringUnits_PERCENT, true
+	case 99:
+		return BACnetEngineeringUnits_PERCENT_PER_SECOND, true
 	}
 	return 0, false
 }
@@ -1569,13 +1569,13 @@ func BACnetEngineeringUnitsByName(value string) (enum BACnetEngineeringUnits, ok
 	return 0, false
 }
 
-func BACnetEngineeringUnitsKnows(value uint32)  bool {
+func BACnetEngineeringUnitsKnows(value uint32) bool {
 	for _, typeValue := range BACnetEngineeringUnitsValues {
 		if uint32(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetEngineeringUnits(structType interface{}) BACnetEngineeringUnits {
@@ -2139,4 +2139,3 @@ func (e BACnetEngineeringUnits) PLC4XEnumName() string {
 func (e BACnetEngineeringUnits) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -22,11 +22,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.CaseUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultBooleanTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultFloatTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultIntegerTypeReference;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultVstringTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultStringLiteral;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultTernaryTerm;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer;
@@ -122,6 +120,9 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         }
         if (typeReference.isNonSimpleTypeReference()) {
             return typeReference.asNonSimpleTypeReference().orElseThrow().getName();
+        }
+        if (typeReference instanceof ByteOrderTypeReference) {
+            return "binary.byteOrder";
         }
         SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow();
         switch (simpleTypeReference.getBaseType()) {
@@ -583,6 +584,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         Tracer tracer = Tracer.start("castExpression");
         if (typeReference instanceof SimpleTypeReference) {
             return tracer.dive("simpleTypeRef") + getLanguageTypeNameForTypeReference(typeReference);
+        } else if (typeReference instanceof ByteOrderTypeReference) {
+            return tracer.dive( "byteOrderTypeRef") + "binary.ByteOrder";
         } else if (typeReference != null) {
             return tracer.dive("anyTypeRef") + "Cast" + getLanguageTypeNameForTypeReference(typeReference);
         } else {
@@ -618,10 +621,16 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             String inlineIf = "utils.InlineIf(" + toExpression(field, new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
                 "func() interface{} {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
                 "func() interface{} {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
-            if (fieldType.isNonSimpleTypeReference()) {
-                return tracer.dive("nonsimpletypereference") + castExpressionForTypeReference + "(" + inlineIf + ")";
+            if (fieldType != null) {
+                if (fieldType instanceof ByteOrderTypeReference) {
+                    return tracer.dive("byteordertypereference") + "(" + inlineIf + ").(binary.ByteOrder)";
+                }
+                if (fieldType.isNonSimpleTypeReference()) {
+                    return tracer.dive("nonsimpletypereference") + castExpressionForTypeReference + "(" + inlineIf + ")";
+                }
+                return tracer + inlineIf + ".(" + castExpressionForTypeReference + ")";
             }
-            return tracer + inlineIf + ".(" + castExpressionForTypeReference + ")";
+            return tracer + inlineIf;
         } else {
             throw new RuntimeException("Unsupported ternary operation type " + ternaryTerm.getOperation());
         }
@@ -725,6 +734,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             VariableLiteral variableLiteral = (VariableLiteral) term;
             if ("curPos".equals(((VariableLiteral) term).getName())) {
                 return "(positionAware.GetPos() - startPos)";
+            } else if ("BIG_ENDIAN".equals(((VariableLiteral) term).getName()) && (fieldType instanceof ByteOrderTypeReference)) {
+                return "binary.BigEndian";
+            } else if ("LITTLE_ENDIAN".equals(((VariableLiteral) term).getName()) && (fieldType instanceof ByteOrderTypeReference)) {
+                return "binary.LittleEndian";
             }
             return tracer + toVariableExpression(field, fieldType, (VariableLiteral) term, parserArguments, serializerArguments, serialize, suppressPointerAccess);
         } else {
@@ -891,15 +904,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 variableLiteral.getChild()
                     .map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");
-        }/*
+        }
         if ((parserArguments != null) && parserArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("parser argument");
-            return tracer + "m." + capitalize(variableLiteralName) +
+            return tracer + variableLiteralName +
                 variableLiteral.getChild()
                     .map(child -> "." + capitalize(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, false, suppressPointerAccess, true)))
                     .orElse("");
-        }*/
+        }
         String indexCall = "";
         if (variableLiteral.getIndex().isPresent()) {
             tracer = tracer.dive("indexCall");
@@ -1582,17 +1595,18 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String getEndiannessOptions(boolean read, boolean separatorPrefix) {
+        return getEndiannessOptions(read, separatorPrefix, Collections.emptyList());
+    }
+
+    public String getEndiannessOptions(boolean read, boolean separatorPrefix, List<Argument> parserArguments) {
         Optional<Term> byteOrder = thisType.getAttribute("byteOrder");
         if (byteOrder.isPresent()) {
             emitRequiredImport("encoding/binary");
 
             String functionName = read ? "WithByteOrderForReadBufferByteBased" : "WithByteOrderForByteBasedBuffer";
-            String byteOrderValue = ((VariableLiteral) byteOrder.get()).getName();
-            if("BIG_ENDIAN".equals(byteOrderValue)) {
-                return (separatorPrefix ? ", " : "") + "utils." + functionName + "(binary.BigEndian)";
-            } else if ("LITTLE_ENDIAN".equals(byteOrderValue)) {
-                return (separatorPrefix ? ", " : "") + "utils." + functionName + "(binary.LittleEndian)";
-            }
+
+            String expression = toParseExpression(null, new DefaultByteOrderTypeReference(), byteOrder.orElseThrow(), parserArguments);
+            return (separatorPrefix ? ", " : "") + "utils." + functionName + "(" + expression + ")";
         }
         return "";
     }

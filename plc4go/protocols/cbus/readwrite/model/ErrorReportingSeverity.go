@@ -34,22 +34,22 @@ type IErrorReportingSeverity interface {
 	utils.Serializable
 }
 
-const(
-	ErrorReportingSeverity_ALL_OK ErrorReportingSeverity = 0x0
-	ErrorReportingSeverity_OK ErrorReportingSeverity = 0x1
-	ErrorReportingSeverity_MINOR_FAILURE ErrorReportingSeverity = 0x2
+const (
+	ErrorReportingSeverity_ALL_OK          ErrorReportingSeverity = 0x0
+	ErrorReportingSeverity_OK              ErrorReportingSeverity = 0x1
+	ErrorReportingSeverity_MINOR_FAILURE   ErrorReportingSeverity = 0x2
 	ErrorReportingSeverity_GENERAL_FAILURE ErrorReportingSeverity = 0x3
 	ErrorReportingSeverity_EXTREME_FAILURE ErrorReportingSeverity = 0x4
-	ErrorReportingSeverity_RESERVED_1 ErrorReportingSeverity = 0x5
-	ErrorReportingSeverity_RESERVED_2 ErrorReportingSeverity = 0x6
-	ErrorReportingSeverity_RESERVED_3 ErrorReportingSeverity = 0x7
+	ErrorReportingSeverity_RESERVED_1      ErrorReportingSeverity = 0x5
+	ErrorReportingSeverity_RESERVED_2      ErrorReportingSeverity = 0x6
+	ErrorReportingSeverity_RESERVED_3      ErrorReportingSeverity = 0x7
 )
 
 var ErrorReportingSeverityValues []ErrorReportingSeverity
 
 func init() {
 	_ = errors.New
-	ErrorReportingSeverityValues = []ErrorReportingSeverity {
+	ErrorReportingSeverityValues = []ErrorReportingSeverity{
 		ErrorReportingSeverity_ALL_OK,
 		ErrorReportingSeverity_OK,
 		ErrorReportingSeverity_MINOR_FAILURE,
@@ -63,22 +63,22 @@ func init() {
 
 func ErrorReportingSeverityByValue(value uint8) (enum ErrorReportingSeverity, ok bool) {
 	switch value {
-		case 0x0:
-			return ErrorReportingSeverity_ALL_OK, true
-		case 0x1:
-			return ErrorReportingSeverity_OK, true
-		case 0x2:
-			return ErrorReportingSeverity_MINOR_FAILURE, true
-		case 0x3:
-			return ErrorReportingSeverity_GENERAL_FAILURE, true
-		case 0x4:
-			return ErrorReportingSeverity_EXTREME_FAILURE, true
-		case 0x5:
-			return ErrorReportingSeverity_RESERVED_1, true
-		case 0x6:
-			return ErrorReportingSeverity_RESERVED_2, true
-		case 0x7:
-			return ErrorReportingSeverity_RESERVED_3, true
+	case 0x0:
+		return ErrorReportingSeverity_ALL_OK, true
+	case 0x1:
+		return ErrorReportingSeverity_OK, true
+	case 0x2:
+		return ErrorReportingSeverity_MINOR_FAILURE, true
+	case 0x3:
+		return ErrorReportingSeverity_GENERAL_FAILURE, true
+	case 0x4:
+		return ErrorReportingSeverity_EXTREME_FAILURE, true
+	case 0x5:
+		return ErrorReportingSeverity_RESERVED_1, true
+	case 0x6:
+		return ErrorReportingSeverity_RESERVED_2, true
+	case 0x7:
+		return ErrorReportingSeverity_RESERVED_3, true
 	}
 	return 0, false
 }
@@ -105,13 +105,13 @@ func ErrorReportingSeverityByName(value string) (enum ErrorReportingSeverity, ok
 	return 0, false
 }
 
-func ErrorReportingSeverityKnows(value uint8)  bool {
+func ErrorReportingSeverityKnows(value uint8) bool {
 	for _, typeValue := range ErrorReportingSeverityValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastErrorReportingSeverity(structType interface{}) ErrorReportingSeverity {
@@ -187,4 +187,3 @@ func (e ErrorReportingSeverity) PLC4XEnumName() string {
 func (e ErrorReportingSeverity) String() string {
 	return e.PLC4XEnumName()
 }
-

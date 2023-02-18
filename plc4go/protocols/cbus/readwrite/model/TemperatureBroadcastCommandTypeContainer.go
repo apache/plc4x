@@ -36,17 +36,17 @@ type ITemperatureBroadcastCommandTypeContainer interface {
 	CommandType() TemperatureBroadcastCommandType
 }
 
-const(
-	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent0_2Bytes TemperatureBroadcastCommandTypeContainer = 0x02
-	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent1_2Bytes TemperatureBroadcastCommandTypeContainer = 0x0A
-	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent2_2Bytes TemperatureBroadcastCommandTypeContainer = 0x12
-	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent3_2Bytes TemperatureBroadcastCommandTypeContainer = 0x1A
-	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent4_2Bytes TemperatureBroadcastCommandTypeContainer = 0x22
-	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent5_2Bytes TemperatureBroadcastCommandTypeContainer = 0x2A
-	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent6_2Bytes TemperatureBroadcastCommandTypeContainer = 0x32
-	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent7_2Bytes TemperatureBroadcastCommandTypeContainer = 0x3A
-	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent8_2Bytes TemperatureBroadcastCommandTypeContainer = 0x42
-	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent9_2Bytes TemperatureBroadcastCommandTypeContainer = 0x4A
+const (
+	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent0_2Bytes  TemperatureBroadcastCommandTypeContainer = 0x02
+	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent1_2Bytes  TemperatureBroadcastCommandTypeContainer = 0x0A
+	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent2_2Bytes  TemperatureBroadcastCommandTypeContainer = 0x12
+	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent3_2Bytes  TemperatureBroadcastCommandTypeContainer = 0x1A
+	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent4_2Bytes  TemperatureBroadcastCommandTypeContainer = 0x22
+	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent5_2Bytes  TemperatureBroadcastCommandTypeContainer = 0x2A
+	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent6_2Bytes  TemperatureBroadcastCommandTypeContainer = 0x32
+	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent7_2Bytes  TemperatureBroadcastCommandTypeContainer = 0x3A
+	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent8_2Bytes  TemperatureBroadcastCommandTypeContainer = 0x42
+	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent9_2Bytes  TemperatureBroadcastCommandTypeContainer = 0x4A
 	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent10_2Bytes TemperatureBroadcastCommandTypeContainer = 0x52
 	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent11_2Bytes TemperatureBroadcastCommandTypeContainer = 0x5A
 	TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent12_2Bytes TemperatureBroadcastCommandTypeContainer = 0x62
@@ -59,7 +59,7 @@ var TemperatureBroadcastCommandTypeContainerValues []TemperatureBroadcastCommand
 
 func init() {
 	_ = errors.New
-	TemperatureBroadcastCommandTypeContainerValues = []TemperatureBroadcastCommandTypeContainer {
+	TemperatureBroadcastCommandTypeContainerValues = []TemperatureBroadcastCommandTypeContainer{
 		TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent0_2Bytes,
 		TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent1_2Bytes,
 		TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent2_2Bytes,
@@ -79,58 +79,74 @@ func init() {
 	}
 }
 
-
 func (e TemperatureBroadcastCommandTypeContainer) NumBytes() uint8 {
-	switch e  {
-		case 0x02: { /* '0x02' */
-            return 2
+	switch e {
+	case 0x02:
+		{ /* '0x02' */
+			return 2
 		}
-		case 0x0A: { /* '0x0A' */
-            return 2
+	case 0x0A:
+		{ /* '0x0A' */
+			return 2
 		}
-		case 0x12: { /* '0x12' */
-            return 2
+	case 0x12:
+		{ /* '0x12' */
+			return 2
 		}
-		case 0x1A: { /* '0x1A' */
-            return 2
+	case 0x1A:
+		{ /* '0x1A' */
+			return 2
 		}
-		case 0x22: { /* '0x22' */
-            return 2
+	case 0x22:
+		{ /* '0x22' */
+			return 2
 		}
-		case 0x2A: { /* '0x2A' */
-            return 2
+	case 0x2A:
+		{ /* '0x2A' */
+			return 2
 		}
-		case 0x32: { /* '0x32' */
-            return 2
+	case 0x32:
+		{ /* '0x32' */
+			return 2
 		}
-		case 0x3A: { /* '0x3A' */
-            return 2
+	case 0x3A:
+		{ /* '0x3A' */
+			return 2
 		}
-		case 0x42: { /* '0x42' */
-            return 2
+	case 0x42:
+		{ /* '0x42' */
+			return 2
 		}
-		case 0x4A: { /* '0x4A' */
-            return 2
+	case 0x4A:
+		{ /* '0x4A' */
+			return 2
 		}
-		case 0x52: { /* '0x52' */
-            return 2
+	case 0x52:
+		{ /* '0x52' */
+			return 2
 		}
-		case 0x5A: { /* '0x5A' */
-            return 2
+	case 0x5A:
+		{ /* '0x5A' */
+			return 2
 		}
-		case 0x62: { /* '0x62' */
-            return 2
+	case 0x62:
+		{ /* '0x62' */
+			return 2
 		}
-		case 0x6A: { /* '0x6A' */
-            return 2
+	case 0x6A:
+		{ /* '0x6A' */
+			return 2
 		}
-		case 0x72: { /* '0x72' */
-            return 2
+	case 0x72:
+		{ /* '0x72' */
+			return 2
 		}
-		case 0x7A: { /* '0x7A' */
-            return 2
+	case 0x7A:
+		{ /* '0x7A' */
+			return 2
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -146,56 +162,73 @@ func TemperatureBroadcastCommandTypeContainerFirstEnumForFieldNumBytes(value uin
 }
 
 func (e TemperatureBroadcastCommandTypeContainer) CommandType() TemperatureBroadcastCommandType {
-	switch e  {
-		case 0x02: { /* '0x02' */
+	switch e {
+	case 0x02:
+		{ /* '0x02' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x0A: { /* '0x0A' */
+	case 0x0A:
+		{ /* '0x0A' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x12: { /* '0x12' */
+	case 0x12:
+		{ /* '0x12' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x1A: { /* '0x1A' */
+	case 0x1A:
+		{ /* '0x1A' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x22: { /* '0x22' */
+	case 0x22:
+		{ /* '0x22' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x2A: { /* '0x2A' */
+	case 0x2A:
+		{ /* '0x2A' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x32: { /* '0x32' */
+	case 0x32:
+		{ /* '0x32' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x3A: { /* '0x3A' */
+	case 0x3A:
+		{ /* '0x3A' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x42: { /* '0x42' */
+	case 0x42:
+		{ /* '0x42' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x4A: { /* '0x4A' */
+	case 0x4A:
+		{ /* '0x4A' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x52: { /* '0x52' */
+	case 0x52:
+		{ /* '0x52' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x5A: { /* '0x5A' */
+	case 0x5A:
+		{ /* '0x5A' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x62: { /* '0x62' */
+	case 0x62:
+		{ /* '0x62' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x6A: { /* '0x6A' */
+	case 0x6A:
+		{ /* '0x6A' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x72: { /* '0x72' */
+	case 0x72:
+		{ /* '0x72' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		case 0x7A: { /* '0x7A' */
+	case 0x7A:
+		{ /* '0x7A' */
 			return TemperatureBroadcastCommandType_BROADCAST_EVENT
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -211,38 +244,38 @@ func TemperatureBroadcastCommandTypeContainerFirstEnumForFieldCommandType(value 
 }
 func TemperatureBroadcastCommandTypeContainerByValue(value uint8) (enum TemperatureBroadcastCommandTypeContainer, ok bool) {
 	switch value {
-		case 0x02:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent0_2Bytes, true
-		case 0x0A:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent1_2Bytes, true
-		case 0x12:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent2_2Bytes, true
-		case 0x1A:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent3_2Bytes, true
-		case 0x22:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent4_2Bytes, true
-		case 0x2A:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent5_2Bytes, true
-		case 0x32:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent6_2Bytes, true
-		case 0x3A:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent7_2Bytes, true
-		case 0x42:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent8_2Bytes, true
-		case 0x4A:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent9_2Bytes, true
-		case 0x52:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent10_2Bytes, true
-		case 0x5A:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent11_2Bytes, true
-		case 0x62:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent12_2Bytes, true
-		case 0x6A:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent13_2Bytes, true
-		case 0x72:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent14_2Bytes, true
-		case 0x7A:
-			return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent15_2Bytes, true
+	case 0x02:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent0_2Bytes, true
+	case 0x0A:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent1_2Bytes, true
+	case 0x12:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent2_2Bytes, true
+	case 0x1A:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent3_2Bytes, true
+	case 0x22:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent4_2Bytes, true
+	case 0x2A:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent5_2Bytes, true
+	case 0x32:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent6_2Bytes, true
+	case 0x3A:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent7_2Bytes, true
+	case 0x42:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent8_2Bytes, true
+	case 0x4A:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent9_2Bytes, true
+	case 0x52:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent10_2Bytes, true
+	case 0x5A:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent11_2Bytes, true
+	case 0x62:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent12_2Bytes, true
+	case 0x6A:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent13_2Bytes, true
+	case 0x72:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent14_2Bytes, true
+	case 0x7A:
+		return TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent15_2Bytes, true
 	}
 	return 0, false
 }
@@ -285,13 +318,13 @@ func TemperatureBroadcastCommandTypeContainerByName(value string) (enum Temperat
 	return 0, false
 }
 
-func TemperatureBroadcastCommandTypeContainerKnows(value uint8)  bool {
+func TemperatureBroadcastCommandTypeContainerKnows(value uint8) bool {
 	for _, typeValue := range TemperatureBroadcastCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTemperatureBroadcastCommandTypeContainer(structType interface{}) TemperatureBroadcastCommandTypeContainer {
@@ -383,4 +416,3 @@ func (e TemperatureBroadcastCommandTypeContainer) PLC4XEnumName() string {
 func (e TemperatureBroadcastCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
-

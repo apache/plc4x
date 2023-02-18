@@ -34,19 +34,19 @@ type IBACnetLightingInProgress interface {
 	utils.Serializable
 }
 
-const(
-	BACnetLightingInProgress_IDLE BACnetLightingInProgress = 0
-	BACnetLightingInProgress_FADE_ACTIVE BACnetLightingInProgress = 1
-	BACnetLightingInProgress_RAMP_ACTIVE BACnetLightingInProgress = 2
+const (
+	BACnetLightingInProgress_IDLE           BACnetLightingInProgress = 0
+	BACnetLightingInProgress_FADE_ACTIVE    BACnetLightingInProgress = 1
+	BACnetLightingInProgress_RAMP_ACTIVE    BACnetLightingInProgress = 2
 	BACnetLightingInProgress_NOT_CONTROLLED BACnetLightingInProgress = 3
-	BACnetLightingInProgress_OTHER BACnetLightingInProgress = 4
+	BACnetLightingInProgress_OTHER          BACnetLightingInProgress = 4
 )
 
 var BACnetLightingInProgressValues []BACnetLightingInProgress
 
 func init() {
 	_ = errors.New
-	BACnetLightingInProgressValues = []BACnetLightingInProgress {
+	BACnetLightingInProgressValues = []BACnetLightingInProgress{
 		BACnetLightingInProgress_IDLE,
 		BACnetLightingInProgress_FADE_ACTIVE,
 		BACnetLightingInProgress_RAMP_ACTIVE,
@@ -57,16 +57,16 @@ func init() {
 
 func BACnetLightingInProgressByValue(value uint8) (enum BACnetLightingInProgress, ok bool) {
 	switch value {
-		case 0:
-			return BACnetLightingInProgress_IDLE, true
-		case 1:
-			return BACnetLightingInProgress_FADE_ACTIVE, true
-		case 2:
-			return BACnetLightingInProgress_RAMP_ACTIVE, true
-		case 3:
-			return BACnetLightingInProgress_NOT_CONTROLLED, true
-		case 4:
-			return BACnetLightingInProgress_OTHER, true
+	case 0:
+		return BACnetLightingInProgress_IDLE, true
+	case 1:
+		return BACnetLightingInProgress_FADE_ACTIVE, true
+	case 2:
+		return BACnetLightingInProgress_RAMP_ACTIVE, true
+	case 3:
+		return BACnetLightingInProgress_NOT_CONTROLLED, true
+	case 4:
+		return BACnetLightingInProgress_OTHER, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func BACnetLightingInProgressByName(value string) (enum BACnetLightingInProgress
 	return 0, false
 }
 
-func BACnetLightingInProgressKnows(value uint8)  bool {
+func BACnetLightingInProgressKnows(value uint8) bool {
 	for _, typeValue := range BACnetLightingInProgressValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetLightingInProgress(structType interface{}) BACnetLightingInProgress {
@@ -163,4 +163,3 @@ func (e BACnetLightingInProgress) PLC4XEnumName() string {
 func (e BACnetLightingInProgress) String() string {
 	return e.PLC4XEnumName()
 }
-

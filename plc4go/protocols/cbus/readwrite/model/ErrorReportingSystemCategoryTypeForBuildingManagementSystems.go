@@ -34,30 +34,30 @@ type IErrorReportingSystemCategoryTypeForBuildingManagementSystems interface {
 	utils.Serializable
 }
 
-const(
+const (
 	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_BMS_DIAGNOSTIC_REPORTING ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x0
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_1 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x1
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_2 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x2
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_3 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x3
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_4 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x4
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_5 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x5
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_6 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x6
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_7 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x7
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_8 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x8
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_9 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x9
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_10 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xA
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_11 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xB
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_12 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xC
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_13 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xD
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_14 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xE
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_15 ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xF
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_1               ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x1
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_2               ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x2
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_3               ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x3
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_4               ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x4
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_5               ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x5
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_6               ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x6
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_7               ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x7
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_8               ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x8
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_9               ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0x9
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_10              ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xA
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_11              ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xB
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_12              ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xC
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_13              ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xD
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_14              ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xE
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_15              ErrorReportingSystemCategoryTypeForBuildingManagementSystems = 0xF
 )
 
 var ErrorReportingSystemCategoryTypeForBuildingManagementSystemsValues []ErrorReportingSystemCategoryTypeForBuildingManagementSystems
 
 func init() {
 	_ = errors.New
-	ErrorReportingSystemCategoryTypeForBuildingManagementSystemsValues = []ErrorReportingSystemCategoryTypeForBuildingManagementSystems {
+	ErrorReportingSystemCategoryTypeForBuildingManagementSystemsValues = []ErrorReportingSystemCategoryTypeForBuildingManagementSystems{
 		ErrorReportingSystemCategoryTypeForBuildingManagementSystems_BMS_DIAGNOSTIC_REPORTING,
 		ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_1,
 		ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_2,
@@ -79,38 +79,38 @@ func init() {
 
 func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsByValue(value uint8) (enum ErrorReportingSystemCategoryTypeForBuildingManagementSystems, ok bool) {
 	switch value {
-		case 0x0:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_BMS_DIAGNOSTIC_REPORTING, true
-		case 0x1:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_1, true
-		case 0x2:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_2, true
-		case 0x3:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_3, true
-		case 0x4:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_4, true
-		case 0x5:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_5, true
-		case 0x6:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_6, true
-		case 0x7:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_7, true
-		case 0x8:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_8, true
-		case 0x9:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_9, true
-		case 0xA:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_10, true
-		case 0xB:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_11, true
-		case 0xC:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_12, true
-		case 0xD:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_13, true
-		case 0xE:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_14, true
-		case 0xF:
-			return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_15, true
+	case 0x0:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_BMS_DIAGNOSTIC_REPORTING, true
+	case 0x1:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_1, true
+	case 0x2:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_2, true
+	case 0x3:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_3, true
+	case 0x4:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_4, true
+	case 0x5:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_5, true
+	case 0x6:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_6, true
+	case 0x7:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_7, true
+	case 0x8:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_8, true
+	case 0x9:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_9, true
+	case 0xA:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_10, true
+	case 0xB:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_11, true
+	case 0xC:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_12, true
+	case 0xD:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_13, true
+	case 0xE:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_14, true
+	case 0xF:
+		return ErrorReportingSystemCategoryTypeForBuildingManagementSystems_RESERVED_15, true
 	}
 	return 0, false
 }
@@ -153,13 +153,13 @@ func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsByName(value st
 	return 0, false
 }
 
-func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsKnows(value uint8)  bool {
+func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsKnows(value uint8) bool {
 	for _, typeValue := range ErrorReportingSystemCategoryTypeForBuildingManagementSystemsValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastErrorReportingSystemCategoryTypeForBuildingManagementSystems(structType interface{}) ErrorReportingSystemCategoryTypeForBuildingManagementSystems {
@@ -251,4 +251,3 @@ func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) PLC4XEnumN
 func (e ErrorReportingSystemCategoryTypeForBuildingManagementSystems) String() string {
 	return e.PLC4XEnumName()
 }
-

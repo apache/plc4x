@@ -61,12 +61,20 @@ func (m *_EipConnectionRequest) GetCommand() uint16 {
 	return 0x0065
 }
 
+func (m *_EipConnectionRequest) GetResponse() bool {
+	return bool(false)
+}
+
+func (m *_EipConnectionRequest) GetPacketLength() uint16 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_EipConnectionRequest) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
+func (m *_EipConnectionRequest) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32) {
 	m.SessionHandle = sessionHandle
 	m.Status = status
 	m.SenderContext = senderContext
@@ -96,9 +104,9 @@ func (m *_EipConnectionRequest) GetFlags() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewEipConnectionRequest factory function for _EipConnectionRequest
-func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_EipConnectionRequest {
+func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32, order IntegerEncoding) *_EipConnectionRequest {
 	_result := &_EipConnectionRequest{
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
+		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options, order),
 	}
 	_result._EipPacket._EipPacketChildRequirements = _result
 	return _result
@@ -135,11 +143,11 @@ func (m *_EipConnectionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipConnectionRequestParse(theBytes []byte) (EipConnectionRequest, error) {
-	return EipConnectionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
+func EipConnectionRequestParse(theBytes []byte, order IntegerEncoding, response bool) (EipConnectionRequest, error) {
+	return EipConnectionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order, response)
 }
 
-func EipConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EipConnectionRequest, error) {
+func EipConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding, response bool) (EipConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipConnectionRequest"); pullErr != nil {
@@ -172,14 +180,16 @@ func EipConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 
 	// Create a partially initialized instance
 	_child := &_EipConnectionRequest{
-		_EipPacket: &_EipPacket{},
+		_EipPacket: &_EipPacket{
+			Order: order,
+		},
 	}
 	_child._EipPacket._EipPacketChildRequirements = _child
 	return _child, nil
 }
 
 func (m *_EipConnectionRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

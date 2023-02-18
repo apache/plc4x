@@ -35,10 +35,10 @@ type IErrorReportingCommandType interface {
 	NumberOfArguments() uint8
 }
 
-const(
-	ErrorReportingCommandType_DEPRECATED ErrorReportingCommandType = 0x00
-	ErrorReportingCommandType_ERROR_REPORT ErrorReportingCommandType = 0x01
-	ErrorReportingCommandType_ACKNOWLEDGE ErrorReportingCommandType = 0x02
+const (
+	ErrorReportingCommandType_DEPRECATED        ErrorReportingCommandType = 0x00
+	ErrorReportingCommandType_ERROR_REPORT      ErrorReportingCommandType = 0x01
+	ErrorReportingCommandType_ACKNOWLEDGE       ErrorReportingCommandType = 0x02
 	ErrorReportingCommandType_CLEAR_MOST_SEVERE ErrorReportingCommandType = 0x03
 )
 
@@ -46,7 +46,7 @@ var ErrorReportingCommandTypeValues []ErrorReportingCommandType
 
 func init() {
 	_ = errors.New
-	ErrorReportingCommandTypeValues = []ErrorReportingCommandType {
+	ErrorReportingCommandTypeValues = []ErrorReportingCommandType{
 		ErrorReportingCommandType_DEPRECATED,
 		ErrorReportingCommandType_ERROR_REPORT,
 		ErrorReportingCommandType_ACKNOWLEDGE,
@@ -54,22 +54,26 @@ func init() {
 	}
 }
 
-
 func (e ErrorReportingCommandType) NumberOfArguments() uint8 {
-	switch e  {
-		case 0x00: { /* '0x00' */
-            return 8
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
+			return 8
 		}
-		case 0x01: { /* '0x01' */
-            return 8
+	case 0x01:
+		{ /* '0x01' */
+			return 8
 		}
-		case 0x02: { /* '0x02' */
-            return 8
+	case 0x02:
+		{ /* '0x02' */
+			return 8
 		}
-		case 0x03: { /* '0x03' */
-            return 8
+	case 0x03:
+		{ /* '0x03' */
+			return 8
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -85,14 +89,14 @@ func ErrorReportingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (E
 }
 func ErrorReportingCommandTypeByValue(value uint8) (enum ErrorReportingCommandType, ok bool) {
 	switch value {
-		case 0x00:
-			return ErrorReportingCommandType_DEPRECATED, true
-		case 0x01:
-			return ErrorReportingCommandType_ERROR_REPORT, true
-		case 0x02:
-			return ErrorReportingCommandType_ACKNOWLEDGE, true
-		case 0x03:
-			return ErrorReportingCommandType_CLEAR_MOST_SEVERE, true
+	case 0x00:
+		return ErrorReportingCommandType_DEPRECATED, true
+	case 0x01:
+		return ErrorReportingCommandType_ERROR_REPORT, true
+	case 0x02:
+		return ErrorReportingCommandType_ACKNOWLEDGE, true
+	case 0x03:
+		return ErrorReportingCommandType_CLEAR_MOST_SEVERE, true
 	}
 	return 0, false
 }
@@ -111,13 +115,13 @@ func ErrorReportingCommandTypeByName(value string) (enum ErrorReportingCommandTy
 	return 0, false
 }
 
-func ErrorReportingCommandTypeKnows(value uint8)  bool {
+func ErrorReportingCommandTypeKnows(value uint8) bool {
 	for _, typeValue := range ErrorReportingCommandTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastErrorReportingCommandType(structType interface{}) ErrorReportingCommandType {
@@ -185,4 +189,3 @@ func (e ErrorReportingCommandType) PLC4XEnumName() string {
 func (e ErrorReportingCommandType) String() string {
 	return e.PLC4XEnumName()
 }
-

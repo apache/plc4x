@@ -36,270 +36,270 @@ type IApplicationIdContainer interface {
 	ApplicationId() ApplicationId
 }
 
-const(
-	ApplicationIdContainer_RESERVED_00 ApplicationIdContainer = 0x00
-	ApplicationIdContainer_FREE_USAGE_01 ApplicationIdContainer = 0x01
-	ApplicationIdContainer_FREE_USAGE_02 ApplicationIdContainer = 0x02
-	ApplicationIdContainer_FREE_USAGE_03 ApplicationIdContainer = 0x03
-	ApplicationIdContainer_FREE_USAGE_04 ApplicationIdContainer = 0x04
-	ApplicationIdContainer_FREE_USAGE_05 ApplicationIdContainer = 0x05
-	ApplicationIdContainer_FREE_USAGE_06 ApplicationIdContainer = 0x06
-	ApplicationIdContainer_FREE_USAGE_07 ApplicationIdContainer = 0x07
-	ApplicationIdContainer_FREE_USAGE_08 ApplicationIdContainer = 0x08
-	ApplicationIdContainer_FREE_USAGE_09 ApplicationIdContainer = 0x09
-	ApplicationIdContainer_FREE_USAGE_0A ApplicationIdContainer = 0x0A
-	ApplicationIdContainer_FREE_USAGE_0B ApplicationIdContainer = 0x0B
-	ApplicationIdContainer_FREE_USAGE_0C ApplicationIdContainer = 0x0C
-	ApplicationIdContainer_FREE_USAGE_0D ApplicationIdContainer = 0x0D
-	ApplicationIdContainer_FREE_USAGE_0E ApplicationIdContainer = 0x0E
-	ApplicationIdContainer_FREE_USAGE_0F ApplicationIdContainer = 0x0F
-	ApplicationIdContainer_RESERVED_10 ApplicationIdContainer = 0x10
-	ApplicationIdContainer_RESERVED_11 ApplicationIdContainer = 0x11
-	ApplicationIdContainer_RESERVED_12 ApplicationIdContainer = 0x12
-	ApplicationIdContainer_RESERVED_13 ApplicationIdContainer = 0x13
-	ApplicationIdContainer_RESERVED_14 ApplicationIdContainer = 0x14
-	ApplicationIdContainer_RESERVED_15 ApplicationIdContainer = 0x15
-	ApplicationIdContainer_RESERVED_16 ApplicationIdContainer = 0x16
-	ApplicationIdContainer_RESERVED_17 ApplicationIdContainer = 0x17
-	ApplicationIdContainer_RESERVED_18 ApplicationIdContainer = 0x18
-	ApplicationIdContainer_TEMPERATURE_BROADCAST_19 ApplicationIdContainer = 0x19
-	ApplicationIdContainer_RESERVED_1A ApplicationIdContainer = 0x1A
-	ApplicationIdContainer_RESERVED_1B ApplicationIdContainer = 0x1B
-	ApplicationIdContainer_RESERVED_1C ApplicationIdContainer = 0x1C
-	ApplicationIdContainer_RESERVED_1D ApplicationIdContainer = 0x1D
-	ApplicationIdContainer_RESERVED_1E ApplicationIdContainer = 0x1E
-	ApplicationIdContainer_RESERVED_1F ApplicationIdContainer = 0x1F
-	ApplicationIdContainer_RESERVED_20 ApplicationIdContainer = 0x20
-	ApplicationIdContainer_RESERVED_21 ApplicationIdContainer = 0x21
-	ApplicationIdContainer_RESERVED_22 ApplicationIdContainer = 0x22
-	ApplicationIdContainer_RESERVED_23 ApplicationIdContainer = 0x23
-	ApplicationIdContainer_RESERVED_24 ApplicationIdContainer = 0x24
-	ApplicationIdContainer_RESERVED_25 ApplicationIdContainer = 0x25
-	ApplicationIdContainer_ROOM_CONTROL_SYSTEM_26 ApplicationIdContainer = 0x26
-	ApplicationIdContainer_RESERVED_27 ApplicationIdContainer = 0x27
-	ApplicationIdContainer_RESERVED_28 ApplicationIdContainer = 0x28
-	ApplicationIdContainer_RESERVED_29 ApplicationIdContainer = 0x29
-	ApplicationIdContainer_RESERVED_2A ApplicationIdContainer = 0x2A
-	ApplicationIdContainer_RESERVED_2B ApplicationIdContainer = 0x2B
-	ApplicationIdContainer_RESERVED_2C ApplicationIdContainer = 0x2C
-	ApplicationIdContainer_RESERVED_2D ApplicationIdContainer = 0x2D
-	ApplicationIdContainer_RESERVED_2E ApplicationIdContainer = 0x2E
-	ApplicationIdContainer_RESERVED_2F ApplicationIdContainer = 0x2F
-	ApplicationIdContainer_LIGHTING_30 ApplicationIdContainer = 0x30
-	ApplicationIdContainer_LIGHTING_31 ApplicationIdContainer = 0x31
-	ApplicationIdContainer_LIGHTING_32 ApplicationIdContainer = 0x32
-	ApplicationIdContainer_LIGHTING_33 ApplicationIdContainer = 0x33
-	ApplicationIdContainer_LIGHTING_34 ApplicationIdContainer = 0x34
-	ApplicationIdContainer_LIGHTING_35 ApplicationIdContainer = 0x35
-	ApplicationIdContainer_LIGHTING_36 ApplicationIdContainer = 0x36
-	ApplicationIdContainer_LIGHTING_37 ApplicationIdContainer = 0x37
-	ApplicationIdContainer_LIGHTING_38 ApplicationIdContainer = 0x38
-	ApplicationIdContainer_LIGHTING_39 ApplicationIdContainer = 0x39
-	ApplicationIdContainer_LIGHTING_3A ApplicationIdContainer = 0x3A
-	ApplicationIdContainer_LIGHTING_3B ApplicationIdContainer = 0x3B
-	ApplicationIdContainer_LIGHTING_3C ApplicationIdContainer = 0x3C
-	ApplicationIdContainer_LIGHTING_3D ApplicationIdContainer = 0x3D
-	ApplicationIdContainer_LIGHTING_3E ApplicationIdContainer = 0x3E
-	ApplicationIdContainer_LIGHTING_3F ApplicationIdContainer = 0x3F
-	ApplicationIdContainer_LIGHTING_40 ApplicationIdContainer = 0x40
-	ApplicationIdContainer_LIGHTING_41 ApplicationIdContainer = 0x41
-	ApplicationIdContainer_LIGHTING_42 ApplicationIdContainer = 0x42
-	ApplicationIdContainer_LIGHTING_43 ApplicationIdContainer = 0x43
-	ApplicationIdContainer_LIGHTING_44 ApplicationIdContainer = 0x44
-	ApplicationIdContainer_LIGHTING_45 ApplicationIdContainer = 0x45
-	ApplicationIdContainer_LIGHTING_46 ApplicationIdContainer = 0x46
-	ApplicationIdContainer_LIGHTING_47 ApplicationIdContainer = 0x47
-	ApplicationIdContainer_LIGHTING_48 ApplicationIdContainer = 0x48
-	ApplicationIdContainer_LIGHTING_49 ApplicationIdContainer = 0x49
-	ApplicationIdContainer_LIGHTING_4A ApplicationIdContainer = 0x4A
-	ApplicationIdContainer_LIGHTING_4B ApplicationIdContainer = 0x4B
-	ApplicationIdContainer_LIGHTING_4C ApplicationIdContainer = 0x4C
-	ApplicationIdContainer_LIGHTING_4D ApplicationIdContainer = 0x4D
-	ApplicationIdContainer_LIGHTING_4E ApplicationIdContainer = 0x4E
-	ApplicationIdContainer_LIGHTING_4F ApplicationIdContainer = 0x4F
-	ApplicationIdContainer_LIGHTING_50 ApplicationIdContainer = 0x50
-	ApplicationIdContainer_LIGHTING_51 ApplicationIdContainer = 0x51
-	ApplicationIdContainer_LIGHTING_52 ApplicationIdContainer = 0x52
-	ApplicationIdContainer_LIGHTING_53 ApplicationIdContainer = 0x53
-	ApplicationIdContainer_LIGHTING_54 ApplicationIdContainer = 0x54
-	ApplicationIdContainer_LIGHTING_55 ApplicationIdContainer = 0x55
-	ApplicationIdContainer_LIGHTING_56 ApplicationIdContainer = 0x56
-	ApplicationIdContainer_LIGHTING_57 ApplicationIdContainer = 0x57
-	ApplicationIdContainer_LIGHTING_58 ApplicationIdContainer = 0x58
-	ApplicationIdContainer_LIGHTING_59 ApplicationIdContainer = 0x59
-	ApplicationIdContainer_LIGHTING_5A ApplicationIdContainer = 0x5A
-	ApplicationIdContainer_LIGHTING_5B ApplicationIdContainer = 0x5B
-	ApplicationIdContainer_LIGHTING_5C ApplicationIdContainer = 0x5C
-	ApplicationIdContainer_LIGHTING_5D ApplicationIdContainer = 0x5D
-	ApplicationIdContainer_LIGHTING_5E ApplicationIdContainer = 0x5E
-	ApplicationIdContainer_LIGHTING_5F ApplicationIdContainer = 0x5F
-	ApplicationIdContainer_RESERVED_60 ApplicationIdContainer = 0x60
-	ApplicationIdContainer_RESERVED_61 ApplicationIdContainer = 0x61
-	ApplicationIdContainer_RESERVED_62 ApplicationIdContainer = 0x62
-	ApplicationIdContainer_RESERVED_63 ApplicationIdContainer = 0x63
-	ApplicationIdContainer_RESERVED_64 ApplicationIdContainer = 0x64
-	ApplicationIdContainer_RESERVED_65 ApplicationIdContainer = 0x65
-	ApplicationIdContainer_RESERVED_66 ApplicationIdContainer = 0x66
-	ApplicationIdContainer_RESERVED_67 ApplicationIdContainer = 0x67
-	ApplicationIdContainer_RESERVED_68 ApplicationIdContainer = 0x68
-	ApplicationIdContainer_RESERVED_69 ApplicationIdContainer = 0x69
-	ApplicationIdContainer_RESERVED_6A ApplicationIdContainer = 0x6A
-	ApplicationIdContainer_RESERVED_6B ApplicationIdContainer = 0x6B
-	ApplicationIdContainer_RESERVED_6C ApplicationIdContainer = 0x6C
-	ApplicationIdContainer_RESERVED_6D ApplicationIdContainer = 0x6D
-	ApplicationIdContainer_RESERVED_6E ApplicationIdContainer = 0x6E
-	ApplicationIdContainer_RESERVED_6F ApplicationIdContainer = 0x6F
-	ApplicationIdContainer_VENTILATION_70 ApplicationIdContainer = 0x70
-	ApplicationIdContainer_IRRIGATION_CONTROL_71 ApplicationIdContainer = 0x71
+const (
+	ApplicationIdContainer_RESERVED_00                           ApplicationIdContainer = 0x00
+	ApplicationIdContainer_FREE_USAGE_01                         ApplicationIdContainer = 0x01
+	ApplicationIdContainer_FREE_USAGE_02                         ApplicationIdContainer = 0x02
+	ApplicationIdContainer_FREE_USAGE_03                         ApplicationIdContainer = 0x03
+	ApplicationIdContainer_FREE_USAGE_04                         ApplicationIdContainer = 0x04
+	ApplicationIdContainer_FREE_USAGE_05                         ApplicationIdContainer = 0x05
+	ApplicationIdContainer_FREE_USAGE_06                         ApplicationIdContainer = 0x06
+	ApplicationIdContainer_FREE_USAGE_07                         ApplicationIdContainer = 0x07
+	ApplicationIdContainer_FREE_USAGE_08                         ApplicationIdContainer = 0x08
+	ApplicationIdContainer_FREE_USAGE_09                         ApplicationIdContainer = 0x09
+	ApplicationIdContainer_FREE_USAGE_0A                         ApplicationIdContainer = 0x0A
+	ApplicationIdContainer_FREE_USAGE_0B                         ApplicationIdContainer = 0x0B
+	ApplicationIdContainer_FREE_USAGE_0C                         ApplicationIdContainer = 0x0C
+	ApplicationIdContainer_FREE_USAGE_0D                         ApplicationIdContainer = 0x0D
+	ApplicationIdContainer_FREE_USAGE_0E                         ApplicationIdContainer = 0x0E
+	ApplicationIdContainer_FREE_USAGE_0F                         ApplicationIdContainer = 0x0F
+	ApplicationIdContainer_RESERVED_10                           ApplicationIdContainer = 0x10
+	ApplicationIdContainer_RESERVED_11                           ApplicationIdContainer = 0x11
+	ApplicationIdContainer_RESERVED_12                           ApplicationIdContainer = 0x12
+	ApplicationIdContainer_RESERVED_13                           ApplicationIdContainer = 0x13
+	ApplicationIdContainer_RESERVED_14                           ApplicationIdContainer = 0x14
+	ApplicationIdContainer_RESERVED_15                           ApplicationIdContainer = 0x15
+	ApplicationIdContainer_RESERVED_16                           ApplicationIdContainer = 0x16
+	ApplicationIdContainer_RESERVED_17                           ApplicationIdContainer = 0x17
+	ApplicationIdContainer_RESERVED_18                           ApplicationIdContainer = 0x18
+	ApplicationIdContainer_TEMPERATURE_BROADCAST_19              ApplicationIdContainer = 0x19
+	ApplicationIdContainer_RESERVED_1A                           ApplicationIdContainer = 0x1A
+	ApplicationIdContainer_RESERVED_1B                           ApplicationIdContainer = 0x1B
+	ApplicationIdContainer_RESERVED_1C                           ApplicationIdContainer = 0x1C
+	ApplicationIdContainer_RESERVED_1D                           ApplicationIdContainer = 0x1D
+	ApplicationIdContainer_RESERVED_1E                           ApplicationIdContainer = 0x1E
+	ApplicationIdContainer_RESERVED_1F                           ApplicationIdContainer = 0x1F
+	ApplicationIdContainer_RESERVED_20                           ApplicationIdContainer = 0x20
+	ApplicationIdContainer_RESERVED_21                           ApplicationIdContainer = 0x21
+	ApplicationIdContainer_RESERVED_22                           ApplicationIdContainer = 0x22
+	ApplicationIdContainer_RESERVED_23                           ApplicationIdContainer = 0x23
+	ApplicationIdContainer_RESERVED_24                           ApplicationIdContainer = 0x24
+	ApplicationIdContainer_RESERVED_25                           ApplicationIdContainer = 0x25
+	ApplicationIdContainer_ROOM_CONTROL_SYSTEM_26                ApplicationIdContainer = 0x26
+	ApplicationIdContainer_RESERVED_27                           ApplicationIdContainer = 0x27
+	ApplicationIdContainer_RESERVED_28                           ApplicationIdContainer = 0x28
+	ApplicationIdContainer_RESERVED_29                           ApplicationIdContainer = 0x29
+	ApplicationIdContainer_RESERVED_2A                           ApplicationIdContainer = 0x2A
+	ApplicationIdContainer_RESERVED_2B                           ApplicationIdContainer = 0x2B
+	ApplicationIdContainer_RESERVED_2C                           ApplicationIdContainer = 0x2C
+	ApplicationIdContainer_RESERVED_2D                           ApplicationIdContainer = 0x2D
+	ApplicationIdContainer_RESERVED_2E                           ApplicationIdContainer = 0x2E
+	ApplicationIdContainer_RESERVED_2F                           ApplicationIdContainer = 0x2F
+	ApplicationIdContainer_LIGHTING_30                           ApplicationIdContainer = 0x30
+	ApplicationIdContainer_LIGHTING_31                           ApplicationIdContainer = 0x31
+	ApplicationIdContainer_LIGHTING_32                           ApplicationIdContainer = 0x32
+	ApplicationIdContainer_LIGHTING_33                           ApplicationIdContainer = 0x33
+	ApplicationIdContainer_LIGHTING_34                           ApplicationIdContainer = 0x34
+	ApplicationIdContainer_LIGHTING_35                           ApplicationIdContainer = 0x35
+	ApplicationIdContainer_LIGHTING_36                           ApplicationIdContainer = 0x36
+	ApplicationIdContainer_LIGHTING_37                           ApplicationIdContainer = 0x37
+	ApplicationIdContainer_LIGHTING_38                           ApplicationIdContainer = 0x38
+	ApplicationIdContainer_LIGHTING_39                           ApplicationIdContainer = 0x39
+	ApplicationIdContainer_LIGHTING_3A                           ApplicationIdContainer = 0x3A
+	ApplicationIdContainer_LIGHTING_3B                           ApplicationIdContainer = 0x3B
+	ApplicationIdContainer_LIGHTING_3C                           ApplicationIdContainer = 0x3C
+	ApplicationIdContainer_LIGHTING_3D                           ApplicationIdContainer = 0x3D
+	ApplicationIdContainer_LIGHTING_3E                           ApplicationIdContainer = 0x3E
+	ApplicationIdContainer_LIGHTING_3F                           ApplicationIdContainer = 0x3F
+	ApplicationIdContainer_LIGHTING_40                           ApplicationIdContainer = 0x40
+	ApplicationIdContainer_LIGHTING_41                           ApplicationIdContainer = 0x41
+	ApplicationIdContainer_LIGHTING_42                           ApplicationIdContainer = 0x42
+	ApplicationIdContainer_LIGHTING_43                           ApplicationIdContainer = 0x43
+	ApplicationIdContainer_LIGHTING_44                           ApplicationIdContainer = 0x44
+	ApplicationIdContainer_LIGHTING_45                           ApplicationIdContainer = 0x45
+	ApplicationIdContainer_LIGHTING_46                           ApplicationIdContainer = 0x46
+	ApplicationIdContainer_LIGHTING_47                           ApplicationIdContainer = 0x47
+	ApplicationIdContainer_LIGHTING_48                           ApplicationIdContainer = 0x48
+	ApplicationIdContainer_LIGHTING_49                           ApplicationIdContainer = 0x49
+	ApplicationIdContainer_LIGHTING_4A                           ApplicationIdContainer = 0x4A
+	ApplicationIdContainer_LIGHTING_4B                           ApplicationIdContainer = 0x4B
+	ApplicationIdContainer_LIGHTING_4C                           ApplicationIdContainer = 0x4C
+	ApplicationIdContainer_LIGHTING_4D                           ApplicationIdContainer = 0x4D
+	ApplicationIdContainer_LIGHTING_4E                           ApplicationIdContainer = 0x4E
+	ApplicationIdContainer_LIGHTING_4F                           ApplicationIdContainer = 0x4F
+	ApplicationIdContainer_LIGHTING_50                           ApplicationIdContainer = 0x50
+	ApplicationIdContainer_LIGHTING_51                           ApplicationIdContainer = 0x51
+	ApplicationIdContainer_LIGHTING_52                           ApplicationIdContainer = 0x52
+	ApplicationIdContainer_LIGHTING_53                           ApplicationIdContainer = 0x53
+	ApplicationIdContainer_LIGHTING_54                           ApplicationIdContainer = 0x54
+	ApplicationIdContainer_LIGHTING_55                           ApplicationIdContainer = 0x55
+	ApplicationIdContainer_LIGHTING_56                           ApplicationIdContainer = 0x56
+	ApplicationIdContainer_LIGHTING_57                           ApplicationIdContainer = 0x57
+	ApplicationIdContainer_LIGHTING_58                           ApplicationIdContainer = 0x58
+	ApplicationIdContainer_LIGHTING_59                           ApplicationIdContainer = 0x59
+	ApplicationIdContainer_LIGHTING_5A                           ApplicationIdContainer = 0x5A
+	ApplicationIdContainer_LIGHTING_5B                           ApplicationIdContainer = 0x5B
+	ApplicationIdContainer_LIGHTING_5C                           ApplicationIdContainer = 0x5C
+	ApplicationIdContainer_LIGHTING_5D                           ApplicationIdContainer = 0x5D
+	ApplicationIdContainer_LIGHTING_5E                           ApplicationIdContainer = 0x5E
+	ApplicationIdContainer_LIGHTING_5F                           ApplicationIdContainer = 0x5F
+	ApplicationIdContainer_RESERVED_60                           ApplicationIdContainer = 0x60
+	ApplicationIdContainer_RESERVED_61                           ApplicationIdContainer = 0x61
+	ApplicationIdContainer_RESERVED_62                           ApplicationIdContainer = 0x62
+	ApplicationIdContainer_RESERVED_63                           ApplicationIdContainer = 0x63
+	ApplicationIdContainer_RESERVED_64                           ApplicationIdContainer = 0x64
+	ApplicationIdContainer_RESERVED_65                           ApplicationIdContainer = 0x65
+	ApplicationIdContainer_RESERVED_66                           ApplicationIdContainer = 0x66
+	ApplicationIdContainer_RESERVED_67                           ApplicationIdContainer = 0x67
+	ApplicationIdContainer_RESERVED_68                           ApplicationIdContainer = 0x68
+	ApplicationIdContainer_RESERVED_69                           ApplicationIdContainer = 0x69
+	ApplicationIdContainer_RESERVED_6A                           ApplicationIdContainer = 0x6A
+	ApplicationIdContainer_RESERVED_6B                           ApplicationIdContainer = 0x6B
+	ApplicationIdContainer_RESERVED_6C                           ApplicationIdContainer = 0x6C
+	ApplicationIdContainer_RESERVED_6D                           ApplicationIdContainer = 0x6D
+	ApplicationIdContainer_RESERVED_6E                           ApplicationIdContainer = 0x6E
+	ApplicationIdContainer_RESERVED_6F                           ApplicationIdContainer = 0x6F
+	ApplicationIdContainer_VENTILATION_70                        ApplicationIdContainer = 0x70
+	ApplicationIdContainer_IRRIGATION_CONTROL_71                 ApplicationIdContainer = 0x71
 	ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72 ApplicationIdContainer = 0x72
-	ApplicationIdContainer_HVAC_ACTUATOR_73 ApplicationIdContainer = 0x73
-	ApplicationIdContainer_HVAC_ACTUATOR_74 ApplicationIdContainer = 0x74
-	ApplicationIdContainer_RESERVED_75 ApplicationIdContainer = 0x75
-	ApplicationIdContainer_RESERVED_76 ApplicationIdContainer = 0x76
-	ApplicationIdContainer_RESERVED_77 ApplicationIdContainer = 0x77
-	ApplicationIdContainer_RESERVED_78 ApplicationIdContainer = 0x78
-	ApplicationIdContainer_RESERVED_79 ApplicationIdContainer = 0x79
-	ApplicationIdContainer_RESERVED_7A ApplicationIdContainer = 0x7A
-	ApplicationIdContainer_RESERVED_7B ApplicationIdContainer = 0x7B
-	ApplicationIdContainer_RESERVED_7C ApplicationIdContainer = 0x7C
-	ApplicationIdContainer_RESERVED_7D ApplicationIdContainer = 0x7D
-	ApplicationIdContainer_RESERVED_7E ApplicationIdContainer = 0x7E
-	ApplicationIdContainer_RESERVED_7F ApplicationIdContainer = 0x7F
-	ApplicationIdContainer_RESERVED_80 ApplicationIdContainer = 0x80
-	ApplicationIdContainer_RESERVED_81 ApplicationIdContainer = 0x81
-	ApplicationIdContainer_RESERVED_82 ApplicationIdContainer = 0x82
-	ApplicationIdContainer_RESERVED_83 ApplicationIdContainer = 0x83
-	ApplicationIdContainer_RESERVED_84 ApplicationIdContainer = 0x84
-	ApplicationIdContainer_RESERVED_85 ApplicationIdContainer = 0x85
-	ApplicationIdContainer_RESERVED_86 ApplicationIdContainer = 0x86
-	ApplicationIdContainer_RESERVED_87 ApplicationIdContainer = 0x87
-	ApplicationIdContainer_HEATING_88 ApplicationIdContainer = 0x88
-	ApplicationIdContainer_RESERVED_89 ApplicationIdContainer = 0x89
-	ApplicationIdContainer_RESERVED_8A ApplicationIdContainer = 0x8A
-	ApplicationIdContainer_RESERVED_8B ApplicationIdContainer = 0x8B
-	ApplicationIdContainer_RESERVED_8C ApplicationIdContainer = 0x8C
-	ApplicationIdContainer_RESERVED_8D ApplicationIdContainer = 0x8D
-	ApplicationIdContainer_RESERVED_8E ApplicationIdContainer = 0x8E
-	ApplicationIdContainer_RESERVED_8F ApplicationIdContainer = 0x8F
-	ApplicationIdContainer_RESERVED_90 ApplicationIdContainer = 0x90
-	ApplicationIdContainer_RESERVED_91 ApplicationIdContainer = 0x91
-	ApplicationIdContainer_RESERVED_92 ApplicationIdContainer = 0x92
-	ApplicationIdContainer_RESERVED_93 ApplicationIdContainer = 0x93
-	ApplicationIdContainer_RESERVED_94 ApplicationIdContainer = 0x94
-	ApplicationIdContainer_RESERVED_95 ApplicationIdContainer = 0x95
-	ApplicationIdContainer_RESERVED_96 ApplicationIdContainer = 0x96
-	ApplicationIdContainer_RESERVED_97 ApplicationIdContainer = 0x97
-	ApplicationIdContainer_RESERVED_98 ApplicationIdContainer = 0x98
-	ApplicationIdContainer_RESERVED_99 ApplicationIdContainer = 0x99
-	ApplicationIdContainer_RESERVED_9A ApplicationIdContainer = 0x9A
-	ApplicationIdContainer_RESERVED_9B ApplicationIdContainer = 0x9B
-	ApplicationIdContainer_RESERVED_9C ApplicationIdContainer = 0x9C
-	ApplicationIdContainer_RESERVED_9D ApplicationIdContainer = 0x9D
-	ApplicationIdContainer_RESERVED_9E ApplicationIdContainer = 0x9E
-	ApplicationIdContainer_RESERVED_9F ApplicationIdContainer = 0x9F
-	ApplicationIdContainer_RESERVED_A0 ApplicationIdContainer = 0xA0
-	ApplicationIdContainer_RESERVED_A1 ApplicationIdContainer = 0xA1
-	ApplicationIdContainer_RESERVED_A2 ApplicationIdContainer = 0xA2
-	ApplicationIdContainer_RESERVED_A3 ApplicationIdContainer = 0xA3
-	ApplicationIdContainer_RESERVED_A4 ApplicationIdContainer = 0xA4
-	ApplicationIdContainer_RESERVED_A5 ApplicationIdContainer = 0xA5
-	ApplicationIdContainer_RESERVED_A6 ApplicationIdContainer = 0xA6
-	ApplicationIdContainer_RESERVED_A7 ApplicationIdContainer = 0xA7
-	ApplicationIdContainer_RESERVED_A8 ApplicationIdContainer = 0xA8
-	ApplicationIdContainer_RESERVED_A9 ApplicationIdContainer = 0xA9
-	ApplicationIdContainer_RESERVED_AA ApplicationIdContainer = 0xAA
-	ApplicationIdContainer_RESERVED_AB ApplicationIdContainer = 0xAB
-	ApplicationIdContainer_AIR_CONDITIONING_AC ApplicationIdContainer = 0xAC
-	ApplicationIdContainer_INFO_MESSAGES ApplicationIdContainer = 0xAD
-	ApplicationIdContainer_RESERVED_AE ApplicationIdContainer = 0xAE
-	ApplicationIdContainer_RESERVED_AF ApplicationIdContainer = 0xAF
-	ApplicationIdContainer_RESERVED_B0 ApplicationIdContainer = 0xB0
-	ApplicationIdContainer_RESERVED_B1 ApplicationIdContainer = 0xB1
-	ApplicationIdContainer_RESERVED_B2 ApplicationIdContainer = 0xB2
-	ApplicationIdContainer_RESERVED_B3 ApplicationIdContainer = 0xB3
-	ApplicationIdContainer_RESERVED_B4 ApplicationIdContainer = 0xB4
-	ApplicationIdContainer_RESERVED_B5 ApplicationIdContainer = 0xB5
-	ApplicationIdContainer_RESERVED_B6 ApplicationIdContainer = 0xB6
-	ApplicationIdContainer_RESERVED_B7 ApplicationIdContainer = 0xB7
-	ApplicationIdContainer_RESERVED_B8 ApplicationIdContainer = 0xB8
-	ApplicationIdContainer_RESERVED_B9 ApplicationIdContainer = 0xB9
-	ApplicationIdContainer_RESERVED_BA ApplicationIdContainer = 0xBA
-	ApplicationIdContainer_RESERVED_BB ApplicationIdContainer = 0xBB
-	ApplicationIdContainer_RESERVED_BC ApplicationIdContainer = 0xBC
-	ApplicationIdContainer_RESERVED_BD ApplicationIdContainer = 0xBD
-	ApplicationIdContainer_RESERVED_BE ApplicationIdContainer = 0xBE
-	ApplicationIdContainer_RESERVED_BF ApplicationIdContainer = 0xBF
-	ApplicationIdContainer_MEDIA_TRANSPORT_CONTROL_C0 ApplicationIdContainer = 0xC0
-	ApplicationIdContainer_RESERVED_C1 ApplicationIdContainer = 0xC1
-	ApplicationIdContainer_RESERVED_C2 ApplicationIdContainer = 0xC2
-	ApplicationIdContainer_RESERVED_C3 ApplicationIdContainer = 0xC3
-	ApplicationIdContainer_RESERVED_C4 ApplicationIdContainer = 0xC4
-	ApplicationIdContainer_RESERVED_C5 ApplicationIdContainer = 0xC5
-	ApplicationIdContainer_RESERVED_C6 ApplicationIdContainer = 0xC6
-	ApplicationIdContainer_RESERVED_C7 ApplicationIdContainer = 0xC7
-	ApplicationIdContainer_RESERVED_C8 ApplicationIdContainer = 0xC8
-	ApplicationIdContainer_RESERVED_C9 ApplicationIdContainer = 0xC9
-	ApplicationIdContainer_TRIGGER_CONTROL_CA ApplicationIdContainer = 0xCA
-	ApplicationIdContainer_ENABLE_CONTROL_CB ApplicationIdContainer = 0xCB
-	ApplicationIdContainer_I_HAVE_NO_IDEA_CC ApplicationIdContainer = 0xCC
-	ApplicationIdContainer_AUDIO_AND_VIDEO_CD ApplicationIdContainer = 0xCD
-	ApplicationIdContainer_ERROR_REPORTING_CE ApplicationIdContainer = 0xCE
-	ApplicationIdContainer_RESERVED_CF ApplicationIdContainer = 0xCF
-	ApplicationIdContainer_SECURITY_D0 ApplicationIdContainer = 0xD0
-	ApplicationIdContainer_METERING_D1 ApplicationIdContainer = 0xD1
-	ApplicationIdContainer_RESERVED_D2 ApplicationIdContainer = 0xD2
-	ApplicationIdContainer_RESERVED_D3 ApplicationIdContainer = 0xD3
-	ApplicationIdContainer_RESERVED_D4 ApplicationIdContainer = 0xD4
-	ApplicationIdContainer_ACCESS_CONTROL_D5 ApplicationIdContainer = 0xD5
-	ApplicationIdContainer_RESERVED_D6 ApplicationIdContainer = 0xD6
-	ApplicationIdContainer_RESERVED_D7 ApplicationIdContainer = 0xD7
-	ApplicationIdContainer_RESERVED_D8 ApplicationIdContainer = 0xD8
-	ApplicationIdContainer_RESERVED_D9 ApplicationIdContainer = 0xD9
-	ApplicationIdContainer_RESERVED_DA ApplicationIdContainer = 0xDA
-	ApplicationIdContainer_RESERVED_DB ApplicationIdContainer = 0xDB
-	ApplicationIdContainer_RESERVED_DC ApplicationIdContainer = 0xDC
-	ApplicationIdContainer_RESERVED_DD ApplicationIdContainer = 0xDD
-	ApplicationIdContainer_RESERVED_DE ApplicationIdContainer = 0xDE
-	ApplicationIdContainer_CLOCK_AND_TIMEKEEPING_DF ApplicationIdContainer = 0xDF
-	ApplicationIdContainer_TELEPHONY_STATUS_AND_CONTROL_E0 ApplicationIdContainer = 0xE0
-	ApplicationIdContainer_RESERVED_E1 ApplicationIdContainer = 0xE1
-	ApplicationIdContainer_RESERVED_E2 ApplicationIdContainer = 0xE2
-	ApplicationIdContainer_RESERVED_E3 ApplicationIdContainer = 0xE3
-	ApplicationIdContainer_MEASUREMENT_E4 ApplicationIdContainer = 0xE4
-	ApplicationIdContainer_RESERVED_E5 ApplicationIdContainer = 0xE5
-	ApplicationIdContainer_RESERVED_E6 ApplicationIdContainer = 0xE6
-	ApplicationIdContainer_RESERVED_E7 ApplicationIdContainer = 0xE7
-	ApplicationIdContainer_RESERVED_E8 ApplicationIdContainer = 0xE8
-	ApplicationIdContainer_RESERVED_E9 ApplicationIdContainer = 0xE9
-	ApplicationIdContainer_RESERVED_EA ApplicationIdContainer = 0xEA
-	ApplicationIdContainer_RESERVED_EB ApplicationIdContainer = 0xEB
-	ApplicationIdContainer_RESERVED_EC ApplicationIdContainer = 0xEC
-	ApplicationIdContainer_RESERVED_ED ApplicationIdContainer = 0xED
-	ApplicationIdContainer_RESERVED_EE ApplicationIdContainer = 0xEE
-	ApplicationIdContainer_RESERVED_EF ApplicationIdContainer = 0xEF
-	ApplicationIdContainer_RESERVED_F0 ApplicationIdContainer = 0xF0
-	ApplicationIdContainer_RESERVED_F1 ApplicationIdContainer = 0xF1
-	ApplicationIdContainer_RESERVED_F2 ApplicationIdContainer = 0xF2
-	ApplicationIdContainer_RESERVED_F3 ApplicationIdContainer = 0xF3
-	ApplicationIdContainer_RESERVED_F4 ApplicationIdContainer = 0xF4
-	ApplicationIdContainer_RESERVED_F5 ApplicationIdContainer = 0xF5
-	ApplicationIdContainer_RESERVED_F6 ApplicationIdContainer = 0xF6
-	ApplicationIdContainer_RESERVED_F7 ApplicationIdContainer = 0xF7
-	ApplicationIdContainer_RESERVED_F8 ApplicationIdContainer = 0xF8
-	ApplicationIdContainer_RESERVED_F9 ApplicationIdContainer = 0xF9
-	ApplicationIdContainer_TESTING_FA ApplicationIdContainer = 0xFA
-	ApplicationIdContainer_RESERVED_FB ApplicationIdContainer = 0xFB
-	ApplicationIdContainer_RESERVED_FC ApplicationIdContainer = 0xFC
-	ApplicationIdContainer_RESERVED_FD ApplicationIdContainer = 0xFD
-	ApplicationIdContainer_RESERVED_FE ApplicationIdContainer = 0xFE
-	ApplicationIdContainer_NETWORK_CONTROL ApplicationIdContainer = 0xFF
+	ApplicationIdContainer_HVAC_ACTUATOR_73                      ApplicationIdContainer = 0x73
+	ApplicationIdContainer_HVAC_ACTUATOR_74                      ApplicationIdContainer = 0x74
+	ApplicationIdContainer_RESERVED_75                           ApplicationIdContainer = 0x75
+	ApplicationIdContainer_RESERVED_76                           ApplicationIdContainer = 0x76
+	ApplicationIdContainer_RESERVED_77                           ApplicationIdContainer = 0x77
+	ApplicationIdContainer_RESERVED_78                           ApplicationIdContainer = 0x78
+	ApplicationIdContainer_RESERVED_79                           ApplicationIdContainer = 0x79
+	ApplicationIdContainer_RESERVED_7A                           ApplicationIdContainer = 0x7A
+	ApplicationIdContainer_RESERVED_7B                           ApplicationIdContainer = 0x7B
+	ApplicationIdContainer_RESERVED_7C                           ApplicationIdContainer = 0x7C
+	ApplicationIdContainer_RESERVED_7D                           ApplicationIdContainer = 0x7D
+	ApplicationIdContainer_RESERVED_7E                           ApplicationIdContainer = 0x7E
+	ApplicationIdContainer_RESERVED_7F                           ApplicationIdContainer = 0x7F
+	ApplicationIdContainer_RESERVED_80                           ApplicationIdContainer = 0x80
+	ApplicationIdContainer_RESERVED_81                           ApplicationIdContainer = 0x81
+	ApplicationIdContainer_RESERVED_82                           ApplicationIdContainer = 0x82
+	ApplicationIdContainer_RESERVED_83                           ApplicationIdContainer = 0x83
+	ApplicationIdContainer_RESERVED_84                           ApplicationIdContainer = 0x84
+	ApplicationIdContainer_RESERVED_85                           ApplicationIdContainer = 0x85
+	ApplicationIdContainer_RESERVED_86                           ApplicationIdContainer = 0x86
+	ApplicationIdContainer_RESERVED_87                           ApplicationIdContainer = 0x87
+	ApplicationIdContainer_HEATING_88                            ApplicationIdContainer = 0x88
+	ApplicationIdContainer_RESERVED_89                           ApplicationIdContainer = 0x89
+	ApplicationIdContainer_RESERVED_8A                           ApplicationIdContainer = 0x8A
+	ApplicationIdContainer_RESERVED_8B                           ApplicationIdContainer = 0x8B
+	ApplicationIdContainer_RESERVED_8C                           ApplicationIdContainer = 0x8C
+	ApplicationIdContainer_RESERVED_8D                           ApplicationIdContainer = 0x8D
+	ApplicationIdContainer_RESERVED_8E                           ApplicationIdContainer = 0x8E
+	ApplicationIdContainer_RESERVED_8F                           ApplicationIdContainer = 0x8F
+	ApplicationIdContainer_RESERVED_90                           ApplicationIdContainer = 0x90
+	ApplicationIdContainer_RESERVED_91                           ApplicationIdContainer = 0x91
+	ApplicationIdContainer_RESERVED_92                           ApplicationIdContainer = 0x92
+	ApplicationIdContainer_RESERVED_93                           ApplicationIdContainer = 0x93
+	ApplicationIdContainer_RESERVED_94                           ApplicationIdContainer = 0x94
+	ApplicationIdContainer_RESERVED_95                           ApplicationIdContainer = 0x95
+	ApplicationIdContainer_RESERVED_96                           ApplicationIdContainer = 0x96
+	ApplicationIdContainer_RESERVED_97                           ApplicationIdContainer = 0x97
+	ApplicationIdContainer_RESERVED_98                           ApplicationIdContainer = 0x98
+	ApplicationIdContainer_RESERVED_99                           ApplicationIdContainer = 0x99
+	ApplicationIdContainer_RESERVED_9A                           ApplicationIdContainer = 0x9A
+	ApplicationIdContainer_RESERVED_9B                           ApplicationIdContainer = 0x9B
+	ApplicationIdContainer_RESERVED_9C                           ApplicationIdContainer = 0x9C
+	ApplicationIdContainer_RESERVED_9D                           ApplicationIdContainer = 0x9D
+	ApplicationIdContainer_RESERVED_9E                           ApplicationIdContainer = 0x9E
+	ApplicationIdContainer_RESERVED_9F                           ApplicationIdContainer = 0x9F
+	ApplicationIdContainer_RESERVED_A0                           ApplicationIdContainer = 0xA0
+	ApplicationIdContainer_RESERVED_A1                           ApplicationIdContainer = 0xA1
+	ApplicationIdContainer_RESERVED_A2                           ApplicationIdContainer = 0xA2
+	ApplicationIdContainer_RESERVED_A3                           ApplicationIdContainer = 0xA3
+	ApplicationIdContainer_RESERVED_A4                           ApplicationIdContainer = 0xA4
+	ApplicationIdContainer_RESERVED_A5                           ApplicationIdContainer = 0xA5
+	ApplicationIdContainer_RESERVED_A6                           ApplicationIdContainer = 0xA6
+	ApplicationIdContainer_RESERVED_A7                           ApplicationIdContainer = 0xA7
+	ApplicationIdContainer_RESERVED_A8                           ApplicationIdContainer = 0xA8
+	ApplicationIdContainer_RESERVED_A9                           ApplicationIdContainer = 0xA9
+	ApplicationIdContainer_RESERVED_AA                           ApplicationIdContainer = 0xAA
+	ApplicationIdContainer_RESERVED_AB                           ApplicationIdContainer = 0xAB
+	ApplicationIdContainer_AIR_CONDITIONING_AC                   ApplicationIdContainer = 0xAC
+	ApplicationIdContainer_INFO_MESSAGES                         ApplicationIdContainer = 0xAD
+	ApplicationIdContainer_RESERVED_AE                           ApplicationIdContainer = 0xAE
+	ApplicationIdContainer_RESERVED_AF                           ApplicationIdContainer = 0xAF
+	ApplicationIdContainer_RESERVED_B0                           ApplicationIdContainer = 0xB0
+	ApplicationIdContainer_RESERVED_B1                           ApplicationIdContainer = 0xB1
+	ApplicationIdContainer_RESERVED_B2                           ApplicationIdContainer = 0xB2
+	ApplicationIdContainer_RESERVED_B3                           ApplicationIdContainer = 0xB3
+	ApplicationIdContainer_RESERVED_B4                           ApplicationIdContainer = 0xB4
+	ApplicationIdContainer_RESERVED_B5                           ApplicationIdContainer = 0xB5
+	ApplicationIdContainer_RESERVED_B6                           ApplicationIdContainer = 0xB6
+	ApplicationIdContainer_RESERVED_B7                           ApplicationIdContainer = 0xB7
+	ApplicationIdContainer_RESERVED_B8                           ApplicationIdContainer = 0xB8
+	ApplicationIdContainer_RESERVED_B9                           ApplicationIdContainer = 0xB9
+	ApplicationIdContainer_RESERVED_BA                           ApplicationIdContainer = 0xBA
+	ApplicationIdContainer_RESERVED_BB                           ApplicationIdContainer = 0xBB
+	ApplicationIdContainer_RESERVED_BC                           ApplicationIdContainer = 0xBC
+	ApplicationIdContainer_RESERVED_BD                           ApplicationIdContainer = 0xBD
+	ApplicationIdContainer_RESERVED_BE                           ApplicationIdContainer = 0xBE
+	ApplicationIdContainer_RESERVED_BF                           ApplicationIdContainer = 0xBF
+	ApplicationIdContainer_MEDIA_TRANSPORT_CONTROL_C0            ApplicationIdContainer = 0xC0
+	ApplicationIdContainer_RESERVED_C1                           ApplicationIdContainer = 0xC1
+	ApplicationIdContainer_RESERVED_C2                           ApplicationIdContainer = 0xC2
+	ApplicationIdContainer_RESERVED_C3                           ApplicationIdContainer = 0xC3
+	ApplicationIdContainer_RESERVED_C4                           ApplicationIdContainer = 0xC4
+	ApplicationIdContainer_RESERVED_C5                           ApplicationIdContainer = 0xC5
+	ApplicationIdContainer_RESERVED_C6                           ApplicationIdContainer = 0xC6
+	ApplicationIdContainer_RESERVED_C7                           ApplicationIdContainer = 0xC7
+	ApplicationIdContainer_RESERVED_C8                           ApplicationIdContainer = 0xC8
+	ApplicationIdContainer_RESERVED_C9                           ApplicationIdContainer = 0xC9
+	ApplicationIdContainer_TRIGGER_CONTROL_CA                    ApplicationIdContainer = 0xCA
+	ApplicationIdContainer_ENABLE_CONTROL_CB                     ApplicationIdContainer = 0xCB
+	ApplicationIdContainer_I_HAVE_NO_IDEA_CC                     ApplicationIdContainer = 0xCC
+	ApplicationIdContainer_AUDIO_AND_VIDEO_CD                    ApplicationIdContainer = 0xCD
+	ApplicationIdContainer_ERROR_REPORTING_CE                    ApplicationIdContainer = 0xCE
+	ApplicationIdContainer_RESERVED_CF                           ApplicationIdContainer = 0xCF
+	ApplicationIdContainer_SECURITY_D0                           ApplicationIdContainer = 0xD0
+	ApplicationIdContainer_METERING_D1                           ApplicationIdContainer = 0xD1
+	ApplicationIdContainer_RESERVED_D2                           ApplicationIdContainer = 0xD2
+	ApplicationIdContainer_RESERVED_D3                           ApplicationIdContainer = 0xD3
+	ApplicationIdContainer_RESERVED_D4                           ApplicationIdContainer = 0xD4
+	ApplicationIdContainer_ACCESS_CONTROL_D5                     ApplicationIdContainer = 0xD5
+	ApplicationIdContainer_RESERVED_D6                           ApplicationIdContainer = 0xD6
+	ApplicationIdContainer_RESERVED_D7                           ApplicationIdContainer = 0xD7
+	ApplicationIdContainer_RESERVED_D8                           ApplicationIdContainer = 0xD8
+	ApplicationIdContainer_RESERVED_D9                           ApplicationIdContainer = 0xD9
+	ApplicationIdContainer_RESERVED_DA                           ApplicationIdContainer = 0xDA
+	ApplicationIdContainer_RESERVED_DB                           ApplicationIdContainer = 0xDB
+	ApplicationIdContainer_RESERVED_DC                           ApplicationIdContainer = 0xDC
+	ApplicationIdContainer_RESERVED_DD                           ApplicationIdContainer = 0xDD
+	ApplicationIdContainer_RESERVED_DE                           ApplicationIdContainer = 0xDE
+	ApplicationIdContainer_CLOCK_AND_TIMEKEEPING_DF              ApplicationIdContainer = 0xDF
+	ApplicationIdContainer_TELEPHONY_STATUS_AND_CONTROL_E0       ApplicationIdContainer = 0xE0
+	ApplicationIdContainer_RESERVED_E1                           ApplicationIdContainer = 0xE1
+	ApplicationIdContainer_RESERVED_E2                           ApplicationIdContainer = 0xE2
+	ApplicationIdContainer_RESERVED_E3                           ApplicationIdContainer = 0xE3
+	ApplicationIdContainer_MEASUREMENT_E4                        ApplicationIdContainer = 0xE4
+	ApplicationIdContainer_RESERVED_E5                           ApplicationIdContainer = 0xE5
+	ApplicationIdContainer_RESERVED_E6                           ApplicationIdContainer = 0xE6
+	ApplicationIdContainer_RESERVED_E7                           ApplicationIdContainer = 0xE7
+	ApplicationIdContainer_RESERVED_E8                           ApplicationIdContainer = 0xE8
+	ApplicationIdContainer_RESERVED_E9                           ApplicationIdContainer = 0xE9
+	ApplicationIdContainer_RESERVED_EA                           ApplicationIdContainer = 0xEA
+	ApplicationIdContainer_RESERVED_EB                           ApplicationIdContainer = 0xEB
+	ApplicationIdContainer_RESERVED_EC                           ApplicationIdContainer = 0xEC
+	ApplicationIdContainer_RESERVED_ED                           ApplicationIdContainer = 0xED
+	ApplicationIdContainer_RESERVED_EE                           ApplicationIdContainer = 0xEE
+	ApplicationIdContainer_RESERVED_EF                           ApplicationIdContainer = 0xEF
+	ApplicationIdContainer_RESERVED_F0                           ApplicationIdContainer = 0xF0
+	ApplicationIdContainer_RESERVED_F1                           ApplicationIdContainer = 0xF1
+	ApplicationIdContainer_RESERVED_F2                           ApplicationIdContainer = 0xF2
+	ApplicationIdContainer_RESERVED_F3                           ApplicationIdContainer = 0xF3
+	ApplicationIdContainer_RESERVED_F4                           ApplicationIdContainer = 0xF4
+	ApplicationIdContainer_RESERVED_F5                           ApplicationIdContainer = 0xF5
+	ApplicationIdContainer_RESERVED_F6                           ApplicationIdContainer = 0xF6
+	ApplicationIdContainer_RESERVED_F7                           ApplicationIdContainer = 0xF7
+	ApplicationIdContainer_RESERVED_F8                           ApplicationIdContainer = 0xF8
+	ApplicationIdContainer_RESERVED_F9                           ApplicationIdContainer = 0xF9
+	ApplicationIdContainer_TESTING_FA                            ApplicationIdContainer = 0xFA
+	ApplicationIdContainer_RESERVED_FB                           ApplicationIdContainer = 0xFB
+	ApplicationIdContainer_RESERVED_FC                           ApplicationIdContainer = 0xFC
+	ApplicationIdContainer_RESERVED_FD                           ApplicationIdContainer = 0xFD
+	ApplicationIdContainer_RESERVED_FE                           ApplicationIdContainer = 0xFE
+	ApplicationIdContainer_NETWORK_CONTROL                       ApplicationIdContainer = 0xFF
 )
 
 var ApplicationIdContainerValues []ApplicationIdContainer
 
 func init() {
 	_ = errors.New
-	ApplicationIdContainerValues = []ApplicationIdContainer {
+	ApplicationIdContainerValues = []ApplicationIdContainer{
 		ApplicationIdContainer_RESERVED_00,
 		ApplicationIdContainer_FREE_USAGE_01,
 		ApplicationIdContainer_FREE_USAGE_02,
@@ -559,778 +559,1034 @@ func init() {
 	}
 }
 
-
 func (e ApplicationIdContainer) LightingCompatible() LightingCompatible {
-	switch e  {
-		case 0x00: { /* '0x00' */
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
 			return LightingCompatible_NA
 		}
-		case 0x01: { /* '0x01' */
+	case 0x01:
+		{ /* '0x01' */
 			return LightingCompatible_NA
 		}
-		case 0x02: { /* '0x02' */
+	case 0x02:
+		{ /* '0x02' */
 			return LightingCompatible_NA
 		}
-		case 0x03: { /* '0x03' */
+	case 0x03:
+		{ /* '0x03' */
 			return LightingCompatible_NA
 		}
-		case 0x04: { /* '0x04' */
+	case 0x04:
+		{ /* '0x04' */
 			return LightingCompatible_NA
 		}
-		case 0x05: { /* '0x05' */
+	case 0x05:
+		{ /* '0x05' */
 			return LightingCompatible_NA
 		}
-		case 0x06: { /* '0x06' */
+	case 0x06:
+		{ /* '0x06' */
 			return LightingCompatible_NA
 		}
-		case 0x07: { /* '0x07' */
+	case 0x07:
+		{ /* '0x07' */
 			return LightingCompatible_NA
 		}
-		case 0x08: { /* '0x08' */
+	case 0x08:
+		{ /* '0x08' */
 			return LightingCompatible_NA
 		}
-		case 0x09: { /* '0x09' */
+	case 0x09:
+		{ /* '0x09' */
 			return LightingCompatible_NA
 		}
-		case 0x0A: { /* '0x0A' */
+	case 0x0A:
+		{ /* '0x0A' */
 			return LightingCompatible_NA
 		}
-		case 0x0B: { /* '0x0B' */
+	case 0x0B:
+		{ /* '0x0B' */
 			return LightingCompatible_NA
 		}
-		case 0x0C: { /* '0x0C' */
+	case 0x0C:
+		{ /* '0x0C' */
 			return LightingCompatible_NA
 		}
-		case 0x0D: { /* '0x0D' */
+	case 0x0D:
+		{ /* '0x0D' */
 			return LightingCompatible_NA
 		}
-		case 0x0E: { /* '0x0E' */
+	case 0x0E:
+		{ /* '0x0E' */
 			return LightingCompatible_NA
 		}
-		case 0x0F: { /* '0x0F' */
+	case 0x0F:
+		{ /* '0x0F' */
 			return LightingCompatible_NA
 		}
-		case 0x10: { /* '0x10' */
+	case 0x10:
+		{ /* '0x10' */
 			return LightingCompatible_NA
 		}
-		case 0x11: { /* '0x11' */
+	case 0x11:
+		{ /* '0x11' */
 			return LightingCompatible_NA
 		}
-		case 0x12: { /* '0x12' */
+	case 0x12:
+		{ /* '0x12' */
 			return LightingCompatible_NA
 		}
-		case 0x13: { /* '0x13' */
+	case 0x13:
+		{ /* '0x13' */
 			return LightingCompatible_NA
 		}
-		case 0x14: { /* '0x14' */
+	case 0x14:
+		{ /* '0x14' */
 			return LightingCompatible_NA
 		}
-		case 0x15: { /* '0x15' */
+	case 0x15:
+		{ /* '0x15' */
 			return LightingCompatible_NA
 		}
-		case 0x16: { /* '0x16' */
+	case 0x16:
+		{ /* '0x16' */
 			return LightingCompatible_NA
 		}
-		case 0x17: { /* '0x17' */
+	case 0x17:
+		{ /* '0x17' */
 			return LightingCompatible_NA
 		}
-		case 0x18: { /* '0x18' */
+	case 0x18:
+		{ /* '0x18' */
 			return LightingCompatible_NA
 		}
-		case 0x19: { /* '0x19' */
+	case 0x19:
+		{ /* '0x19' */
 			return LightingCompatible_NO
 		}
-		case 0x1A: { /* '0x1A' */
+	case 0x1A:
+		{ /* '0x1A' */
 			return LightingCompatible_NA
 		}
-		case 0x1B: { /* '0x1B' */
+	case 0x1B:
+		{ /* '0x1B' */
 			return LightingCompatible_NA
 		}
-		case 0x1C: { /* '0x1C' */
+	case 0x1C:
+		{ /* '0x1C' */
 			return LightingCompatible_NA
 		}
-		case 0x1D: { /* '0x1D' */
+	case 0x1D:
+		{ /* '0x1D' */
 			return LightingCompatible_NA
 		}
-		case 0x1E: { /* '0x1E' */
+	case 0x1E:
+		{ /* '0x1E' */
 			return LightingCompatible_NA
 		}
-		case 0x1F: { /* '0x1F' */
+	case 0x1F:
+		{ /* '0x1F' */
 			return LightingCompatible_NA
 		}
-		case 0x20: { /* '0x20' */
+	case 0x20:
+		{ /* '0x20' */
 			return LightingCompatible_NA
 		}
-		case 0x21: { /* '0x21' */
+	case 0x21:
+		{ /* '0x21' */
 			return LightingCompatible_NA
 		}
-		case 0x22: { /* '0x22' */
+	case 0x22:
+		{ /* '0x22' */
 			return LightingCompatible_NA
 		}
-		case 0x23: { /* '0x23' */
+	case 0x23:
+		{ /* '0x23' */
 			return LightingCompatible_NA
 		}
-		case 0x24: { /* '0x24' */
+	case 0x24:
+		{ /* '0x24' */
 			return LightingCompatible_NA
 		}
-		case 0x25: { /* '0x25' */
+	case 0x25:
+		{ /* '0x25' */
 			return LightingCompatible_NA
 		}
-		case 0x26: { /* '0x26' */
+	case 0x26:
+		{ /* '0x26' */
 			return LightingCompatible_YES
 		}
-		case 0x27: { /* '0x27' */
+	case 0x27:
+		{ /* '0x27' */
 			return LightingCompatible_NA
 		}
-		case 0x28: { /* '0x28' */
+	case 0x28:
+		{ /* '0x28' */
 			return LightingCompatible_NA
 		}
-		case 0x29: { /* '0x29' */
+	case 0x29:
+		{ /* '0x29' */
 			return LightingCompatible_NA
 		}
-		case 0x2A: { /* '0x2A' */
+	case 0x2A:
+		{ /* '0x2A' */
 			return LightingCompatible_NA
 		}
-		case 0x2B: { /* '0x2B' */
+	case 0x2B:
+		{ /* '0x2B' */
 			return LightingCompatible_NA
 		}
-		case 0x2C: { /* '0x2C' */
+	case 0x2C:
+		{ /* '0x2C' */
 			return LightingCompatible_NA
 		}
-		case 0x2D: { /* '0x2D' */
+	case 0x2D:
+		{ /* '0x2D' */
 			return LightingCompatible_NA
 		}
-		case 0x2E: { /* '0x2E' */
+	case 0x2E:
+		{ /* '0x2E' */
 			return LightingCompatible_NA
 		}
-		case 0x2F: { /* '0x2F' */
+	case 0x2F:
+		{ /* '0x2F' */
 			return LightingCompatible_NA
 		}
-		case 0x30: { /* '0x30' */
+	case 0x30:
+		{ /* '0x30' */
 			return LightingCompatible_YES
 		}
-		case 0x31: { /* '0x31' */
+	case 0x31:
+		{ /* '0x31' */
 			return LightingCompatible_YES
 		}
-		case 0x32: { /* '0x32' */
+	case 0x32:
+		{ /* '0x32' */
 			return LightingCompatible_YES
 		}
-		case 0x33: { /* '0x33' */
+	case 0x33:
+		{ /* '0x33' */
 			return LightingCompatible_YES
 		}
-		case 0x34: { /* '0x34' */
+	case 0x34:
+		{ /* '0x34' */
 			return LightingCompatible_YES
 		}
-		case 0x35: { /* '0x35' */
+	case 0x35:
+		{ /* '0x35' */
 			return LightingCompatible_YES
 		}
-		case 0x36: { /* '0x36' */
+	case 0x36:
+		{ /* '0x36' */
 			return LightingCompatible_YES
 		}
-		case 0x37: { /* '0x37' */
+	case 0x37:
+		{ /* '0x37' */
 			return LightingCompatible_YES
 		}
-		case 0x38: { /* '0x38' */
+	case 0x38:
+		{ /* '0x38' */
 			return LightingCompatible_YES
 		}
-		case 0x39: { /* '0x39' */
+	case 0x39:
+		{ /* '0x39' */
 			return LightingCompatible_YES
 		}
-		case 0x3A: { /* '0x3A' */
+	case 0x3A:
+		{ /* '0x3A' */
 			return LightingCompatible_YES
 		}
-		case 0x3B: { /* '0x3B' */
+	case 0x3B:
+		{ /* '0x3B' */
 			return LightingCompatible_YES
 		}
-		case 0x3C: { /* '0x3C' */
+	case 0x3C:
+		{ /* '0x3C' */
 			return LightingCompatible_YES
 		}
-		case 0x3D: { /* '0x3D' */
+	case 0x3D:
+		{ /* '0x3D' */
 			return LightingCompatible_YES
 		}
-		case 0x3E: { /* '0x3E' */
+	case 0x3E:
+		{ /* '0x3E' */
 			return LightingCompatible_YES
 		}
-		case 0x3F: { /* '0x3F' */
+	case 0x3F:
+		{ /* '0x3F' */
 			return LightingCompatible_YES
 		}
-		case 0x40: { /* '0x40' */
+	case 0x40:
+		{ /* '0x40' */
 			return LightingCompatible_YES
 		}
-		case 0x41: { /* '0x41' */
+	case 0x41:
+		{ /* '0x41' */
 			return LightingCompatible_YES
 		}
-		case 0x42: { /* '0x42' */
+	case 0x42:
+		{ /* '0x42' */
 			return LightingCompatible_YES
 		}
-		case 0x43: { /* '0x43' */
+	case 0x43:
+		{ /* '0x43' */
 			return LightingCompatible_YES
 		}
-		case 0x44: { /* '0x44' */
+	case 0x44:
+		{ /* '0x44' */
 			return LightingCompatible_YES
 		}
-		case 0x45: { /* '0x45' */
+	case 0x45:
+		{ /* '0x45' */
 			return LightingCompatible_YES
 		}
-		case 0x46: { /* '0x46' */
+	case 0x46:
+		{ /* '0x46' */
 			return LightingCompatible_YES
 		}
-		case 0x47: { /* '0x47' */
+	case 0x47:
+		{ /* '0x47' */
 			return LightingCompatible_YES
 		}
-		case 0x48: { /* '0x48' */
+	case 0x48:
+		{ /* '0x48' */
 			return LightingCompatible_YES
 		}
-		case 0x49: { /* '0x49' */
+	case 0x49:
+		{ /* '0x49' */
 			return LightingCompatible_YES
 		}
-		case 0x4A: { /* '0x4A' */
+	case 0x4A:
+		{ /* '0x4A' */
 			return LightingCompatible_YES
 		}
-		case 0x4B: { /* '0x4B' */
+	case 0x4B:
+		{ /* '0x4B' */
 			return LightingCompatible_YES
 		}
-		case 0x4C: { /* '0x4C' */
+	case 0x4C:
+		{ /* '0x4C' */
 			return LightingCompatible_YES
 		}
-		case 0x4D: { /* '0x4D' */
+	case 0x4D:
+		{ /* '0x4D' */
 			return LightingCompatible_YES
 		}
-		case 0x4E: { /* '0x4E' */
+	case 0x4E:
+		{ /* '0x4E' */
 			return LightingCompatible_YES
 		}
-		case 0x4F: { /* '0x4F' */
+	case 0x4F:
+		{ /* '0x4F' */
 			return LightingCompatible_YES
 		}
-		case 0x50: { /* '0x50' */
+	case 0x50:
+		{ /* '0x50' */
 			return LightingCompatible_YES
 		}
-		case 0x51: { /* '0x51' */
+	case 0x51:
+		{ /* '0x51' */
 			return LightingCompatible_YES
 		}
-		case 0x52: { /* '0x52' */
+	case 0x52:
+		{ /* '0x52' */
 			return LightingCompatible_YES
 		}
-		case 0x53: { /* '0x53' */
+	case 0x53:
+		{ /* '0x53' */
 			return LightingCompatible_YES
 		}
-		case 0x54: { /* '0x54' */
+	case 0x54:
+		{ /* '0x54' */
 			return LightingCompatible_YES
 		}
-		case 0x55: { /* '0x55' */
+	case 0x55:
+		{ /* '0x55' */
 			return LightingCompatible_YES
 		}
-		case 0x56: { /* '0x56' */
+	case 0x56:
+		{ /* '0x56' */
 			return LightingCompatible_YES
 		}
-		case 0x57: { /* '0x57' */
+	case 0x57:
+		{ /* '0x57' */
 			return LightingCompatible_YES
 		}
-		case 0x58: { /* '0x58' */
+	case 0x58:
+		{ /* '0x58' */
 			return LightingCompatible_YES
 		}
-		case 0x59: { /* '0x59' */
+	case 0x59:
+		{ /* '0x59' */
 			return LightingCompatible_YES
 		}
-		case 0x5A: { /* '0x5A' */
+	case 0x5A:
+		{ /* '0x5A' */
 			return LightingCompatible_YES
 		}
-		case 0x5B: { /* '0x5B' */
+	case 0x5B:
+		{ /* '0x5B' */
 			return LightingCompatible_YES
 		}
-		case 0x5C: { /* '0x5C' */
+	case 0x5C:
+		{ /* '0x5C' */
 			return LightingCompatible_YES
 		}
-		case 0x5D: { /* '0x5D' */
+	case 0x5D:
+		{ /* '0x5D' */
 			return LightingCompatible_YES
 		}
-		case 0x5E: { /* '0x5E' */
+	case 0x5E:
+		{ /* '0x5E' */
 			return LightingCompatible_YES
 		}
-		case 0x5F: { /* '0x5F' */
+	case 0x5F:
+		{ /* '0x5F' */
 			return LightingCompatible_YES
 		}
-		case 0x60: { /* '0x60' */
+	case 0x60:
+		{ /* '0x60' */
 			return LightingCompatible_NA
 		}
-		case 0x61: { /* '0x61' */
+	case 0x61:
+		{ /* '0x61' */
 			return LightingCompatible_NA
 		}
-		case 0x62: { /* '0x62' */
+	case 0x62:
+		{ /* '0x62' */
 			return LightingCompatible_NA
 		}
-		case 0x63: { /* '0x63' */
+	case 0x63:
+		{ /* '0x63' */
 			return LightingCompatible_NA
 		}
-		case 0x64: { /* '0x64' */
+	case 0x64:
+		{ /* '0x64' */
 			return LightingCompatible_NA
 		}
-		case 0x65: { /* '0x65' */
+	case 0x65:
+		{ /* '0x65' */
 			return LightingCompatible_NA
 		}
-		case 0x66: { /* '0x66' */
+	case 0x66:
+		{ /* '0x66' */
 			return LightingCompatible_NA
 		}
-		case 0x67: { /* '0x67' */
+	case 0x67:
+		{ /* '0x67' */
 			return LightingCompatible_NA
 		}
-		case 0x68: { /* '0x68' */
+	case 0x68:
+		{ /* '0x68' */
 			return LightingCompatible_NA
 		}
-		case 0x69: { /* '0x69' */
+	case 0x69:
+		{ /* '0x69' */
 			return LightingCompatible_NA
 		}
-		case 0x6A: { /* '0x6A' */
+	case 0x6A:
+		{ /* '0x6A' */
 			return LightingCompatible_NA
 		}
-		case 0x6B: { /* '0x6B' */
+	case 0x6B:
+		{ /* '0x6B' */
 			return LightingCompatible_NA
 		}
-		case 0x6C: { /* '0x6C' */
+	case 0x6C:
+		{ /* '0x6C' */
 			return LightingCompatible_NA
 		}
-		case 0x6D: { /* '0x6D' */
+	case 0x6D:
+		{ /* '0x6D' */
 			return LightingCompatible_NA
 		}
-		case 0x6E: { /* '0x6E' */
+	case 0x6E:
+		{ /* '0x6E' */
 			return LightingCompatible_NA
 		}
-		case 0x6F: { /* '0x6F' */
+	case 0x6F:
+		{ /* '0x6F' */
 			return LightingCompatible_NA
 		}
-		case 0x70: { /* '0x70' */
+	case 0x70:
+		{ /* '0x70' */
 			return LightingCompatible_YES
 		}
-		case 0x71: { /* '0x71' */
+	case 0x71:
+		{ /* '0x71' */
 			return LightingCompatible_YES
 		}
-		case 0x72: { /* '0x72' */
+	case 0x72:
+		{ /* '0x72' */
 			return LightingCompatible_YES
 		}
-		case 0x73: { /* '0x73' */
+	case 0x73:
+		{ /* '0x73' */
 			return LightingCompatible_NA
 		}
-		case 0x74: { /* '0x74' */
+	case 0x74:
+		{ /* '0x74' */
 			return LightingCompatible_NA
 		}
-		case 0x75: { /* '0x75' */
+	case 0x75:
+		{ /* '0x75' */
 			return LightingCompatible_NA
 		}
-		case 0x76: { /* '0x76' */
+	case 0x76:
+		{ /* '0x76' */
 			return LightingCompatible_NA
 		}
-		case 0x77: { /* '0x77' */
+	case 0x77:
+		{ /* '0x77' */
 			return LightingCompatible_NA
 		}
-		case 0x78: { /* '0x78' */
+	case 0x78:
+		{ /* '0x78' */
 			return LightingCompatible_NA
 		}
-		case 0x79: { /* '0x79' */
+	case 0x79:
+		{ /* '0x79' */
 			return LightingCompatible_NA
 		}
-		case 0x7A: { /* '0x7A' */
+	case 0x7A:
+		{ /* '0x7A' */
 			return LightingCompatible_NA
 		}
-		case 0x7B: { /* '0x7B' */
+	case 0x7B:
+		{ /* '0x7B' */
 			return LightingCompatible_NA
 		}
-		case 0x7C: { /* '0x7C' */
+	case 0x7C:
+		{ /* '0x7C' */
 			return LightingCompatible_NA
 		}
-		case 0x7D: { /* '0x7D' */
+	case 0x7D:
+		{ /* '0x7D' */
 			return LightingCompatible_NA
 		}
-		case 0x7E: { /* '0x7E' */
+	case 0x7E:
+		{ /* '0x7E' */
 			return LightingCompatible_NA
 		}
-		case 0x7F: { /* '0x7F' */
+	case 0x7F:
+		{ /* '0x7F' */
 			return LightingCompatible_NA
 		}
-		case 0x80: { /* '0x80' */
+	case 0x80:
+		{ /* '0x80' */
 			return LightingCompatible_NA
 		}
-		case 0x81: { /* '0x81' */
+	case 0x81:
+		{ /* '0x81' */
 			return LightingCompatible_NA
 		}
-		case 0x82: { /* '0x82' */
+	case 0x82:
+		{ /* '0x82' */
 			return LightingCompatible_NA
 		}
-		case 0x83: { /* '0x83' */
+	case 0x83:
+		{ /* '0x83' */
 			return LightingCompatible_NA
 		}
-		case 0x84: { /* '0x84' */
+	case 0x84:
+		{ /* '0x84' */
 			return LightingCompatible_NA
 		}
-		case 0x85: { /* '0x85' */
+	case 0x85:
+		{ /* '0x85' */
 			return LightingCompatible_NA
 		}
-		case 0x86: { /* '0x86' */
+	case 0x86:
+		{ /* '0x86' */
 			return LightingCompatible_NA
 		}
-		case 0x87: { /* '0x87' */
+	case 0x87:
+		{ /* '0x87' */
 			return LightingCompatible_NA
 		}
-		case 0x88: { /* '0x88' */
+	case 0x88:
+		{ /* '0x88' */
 			return LightingCompatible_YES
 		}
-		case 0x89: { /* '0x89' */
+	case 0x89:
+		{ /* '0x89' */
 			return LightingCompatible_NA
 		}
-		case 0x8A: { /* '0x8A' */
+	case 0x8A:
+		{ /* '0x8A' */
 			return LightingCompatible_NA
 		}
-		case 0x8B: { /* '0x8B' */
+	case 0x8B:
+		{ /* '0x8B' */
 			return LightingCompatible_NA
 		}
-		case 0x8C: { /* '0x8C' */
+	case 0x8C:
+		{ /* '0x8C' */
 			return LightingCompatible_NA
 		}
-		case 0x8D: { /* '0x8D' */
+	case 0x8D:
+		{ /* '0x8D' */
 			return LightingCompatible_NA
 		}
-		case 0x8E: { /* '0x8E' */
+	case 0x8E:
+		{ /* '0x8E' */
 			return LightingCompatible_NA
 		}
-		case 0x8F: { /* '0x8F' */
+	case 0x8F:
+		{ /* '0x8F' */
 			return LightingCompatible_NA
 		}
-		case 0x90: { /* '0x90' */
+	case 0x90:
+		{ /* '0x90' */
 			return LightingCompatible_NA
 		}
-		case 0x91: { /* '0x91' */
+	case 0x91:
+		{ /* '0x91' */
 			return LightingCompatible_NA
 		}
-		case 0x92: { /* '0x92' */
+	case 0x92:
+		{ /* '0x92' */
 			return LightingCompatible_NA
 		}
-		case 0x93: { /* '0x93' */
+	case 0x93:
+		{ /* '0x93' */
 			return LightingCompatible_NA
 		}
-		case 0x94: { /* '0x94' */
+	case 0x94:
+		{ /* '0x94' */
 			return LightingCompatible_NA
 		}
-		case 0x95: { /* '0x95' */
+	case 0x95:
+		{ /* '0x95' */
 			return LightingCompatible_NA
 		}
-		case 0x96: { /* '0x96' */
+	case 0x96:
+		{ /* '0x96' */
 			return LightingCompatible_NA
 		}
-		case 0x97: { /* '0x97' */
+	case 0x97:
+		{ /* '0x97' */
 			return LightingCompatible_NA
 		}
-		case 0x98: { /* '0x98' */
+	case 0x98:
+		{ /* '0x98' */
 			return LightingCompatible_NA
 		}
-		case 0x99: { /* '0x99' */
+	case 0x99:
+		{ /* '0x99' */
 			return LightingCompatible_NA
 		}
-		case 0x9A: { /* '0x9A' */
+	case 0x9A:
+		{ /* '0x9A' */
 			return LightingCompatible_NA
 		}
-		case 0x9B: { /* '0x9B' */
+	case 0x9B:
+		{ /* '0x9B' */
 			return LightingCompatible_NA
 		}
-		case 0x9C: { /* '0x9C' */
+	case 0x9C:
+		{ /* '0x9C' */
 			return LightingCompatible_NA
 		}
-		case 0x9D: { /* '0x9D' */
+	case 0x9D:
+		{ /* '0x9D' */
 			return LightingCompatible_NA
 		}
-		case 0x9E: { /* '0x9E' */
+	case 0x9E:
+		{ /* '0x9E' */
 			return LightingCompatible_NA
 		}
-		case 0x9F: { /* '0x9F' */
+	case 0x9F:
+		{ /* '0x9F' */
 			return LightingCompatible_NA
 		}
-		case 0xA0: { /* '0xA0' */
+	case 0xA0:
+		{ /* '0xA0' */
 			return LightingCompatible_NA
 		}
-		case 0xA1: { /* '0xA1' */
+	case 0xA1:
+		{ /* '0xA1' */
 			return LightingCompatible_NA
 		}
-		case 0xA2: { /* '0xA2' */
+	case 0xA2:
+		{ /* '0xA2' */
 			return LightingCompatible_NA
 		}
-		case 0xA3: { /* '0xA3' */
+	case 0xA3:
+		{ /* '0xA3' */
 			return LightingCompatible_NA
 		}
-		case 0xA4: { /* '0xA4' */
+	case 0xA4:
+		{ /* '0xA4' */
 			return LightingCompatible_NA
 		}
-		case 0xA5: { /* '0xA5' */
+	case 0xA5:
+		{ /* '0xA5' */
 			return LightingCompatible_NA
 		}
-		case 0xA6: { /* '0xA6' */
+	case 0xA6:
+		{ /* '0xA6' */
 			return LightingCompatible_NA
 		}
-		case 0xA7: { /* '0xA7' */
+	case 0xA7:
+		{ /* '0xA7' */
 			return LightingCompatible_NA
 		}
-		case 0xA8: { /* '0xA8' */
+	case 0xA8:
+		{ /* '0xA8' */
 			return LightingCompatible_NA
 		}
-		case 0xA9: { /* '0xA9' */
+	case 0xA9:
+		{ /* '0xA9' */
 			return LightingCompatible_NA
 		}
-		case 0xAA: { /* '0xAA' */
+	case 0xAA:
+		{ /* '0xAA' */
 			return LightingCompatible_NA
 		}
-		case 0xAB: { /* '0xAB' */
+	case 0xAB:
+		{ /* '0xAB' */
 			return LightingCompatible_NA
 		}
-		case 0xAC: { /* '0xAC' */
+	case 0xAC:
+		{ /* '0xAC' */
 			return LightingCompatible_NO
 		}
-		case 0xAD: { /* '0xAD' */
+	case 0xAD:
+		{ /* '0xAD' */
 			return LightingCompatible_NA
 		}
-		case 0xAE: { /* '0xAE' */
+	case 0xAE:
+		{ /* '0xAE' */
 			return LightingCompatible_NA
 		}
-		case 0xAF: { /* '0xAF' */
+	case 0xAF:
+		{ /* '0xAF' */
 			return LightingCompatible_NA
 		}
-		case 0xB0: { /* '0xB0' */
+	case 0xB0:
+		{ /* '0xB0' */
 			return LightingCompatible_NA
 		}
-		case 0xB1: { /* '0xB1' */
+	case 0xB1:
+		{ /* '0xB1' */
 			return LightingCompatible_NA
 		}
-		case 0xB2: { /* '0xB2' */
+	case 0xB2:
+		{ /* '0xB2' */
 			return LightingCompatible_NA
 		}
-		case 0xB3: { /* '0xB3' */
+	case 0xB3:
+		{ /* '0xB3' */
 			return LightingCompatible_NA
 		}
-		case 0xB4: { /* '0xB4' */
+	case 0xB4:
+		{ /* '0xB4' */
 			return LightingCompatible_NA
 		}
-		case 0xB5: { /* '0xB5' */
+	case 0xB5:
+		{ /* '0xB5' */
 			return LightingCompatible_NA
 		}
-		case 0xB6: { /* '0xB6' */
+	case 0xB6:
+		{ /* '0xB6' */
 			return LightingCompatible_NA
 		}
-		case 0xB7: { /* '0xB7' */
+	case 0xB7:
+		{ /* '0xB7' */
 			return LightingCompatible_NA
 		}
-		case 0xB8: { /* '0xB8' */
+	case 0xB8:
+		{ /* '0xB8' */
 			return LightingCompatible_NA
 		}
-		case 0xB9: { /* '0xB9' */
+	case 0xB9:
+		{ /* '0xB9' */
 			return LightingCompatible_NA
 		}
-		case 0xBA: { /* '0xBA' */
+	case 0xBA:
+		{ /* '0xBA' */
 			return LightingCompatible_NA
 		}
-		case 0xBB: { /* '0xBB' */
+	case 0xBB:
+		{ /* '0xBB' */
 			return LightingCompatible_NA
 		}
-		case 0xBC: { /* '0xBC' */
+	case 0xBC:
+		{ /* '0xBC' */
 			return LightingCompatible_NA
 		}
-		case 0xBD: { /* '0xBD' */
+	case 0xBD:
+		{ /* '0xBD' */
 			return LightingCompatible_NA
 		}
-		case 0xBE: { /* '0xBE' */
+	case 0xBE:
+		{ /* '0xBE' */
 			return LightingCompatible_NA
 		}
-		case 0xBF: { /* '0xBF' */
+	case 0xBF:
+		{ /* '0xBF' */
 			return LightingCompatible_NA
 		}
-		case 0xC0: { /* '0xC0' */
+	case 0xC0:
+		{ /* '0xC0' */
 			return LightingCompatible_NA
 		}
-		case 0xC1: { /* '0xC1' */
+	case 0xC1:
+		{ /* '0xC1' */
 			return LightingCompatible_NA
 		}
-		case 0xC2: { /* '0xC2' */
+	case 0xC2:
+		{ /* '0xC2' */
 			return LightingCompatible_NA
 		}
-		case 0xC3: { /* '0xC3' */
+	case 0xC3:
+		{ /* '0xC3' */
 			return LightingCompatible_NA
 		}
-		case 0xC4: { /* '0xC4' */
+	case 0xC4:
+		{ /* '0xC4' */
 			return LightingCompatible_NA
 		}
-		case 0xC5: { /* '0xC5' */
+	case 0xC5:
+		{ /* '0xC5' */
 			return LightingCompatible_NA
 		}
-		case 0xC6: { /* '0xC6' */
+	case 0xC6:
+		{ /* '0xC6' */
 			return LightingCompatible_NA
 		}
-		case 0xC7: { /* '0xC7' */
+	case 0xC7:
+		{ /* '0xC7' */
 			return LightingCompatible_NA
 		}
-		case 0xC8: { /* '0xC8' */
+	case 0xC8:
+		{ /* '0xC8' */
 			return LightingCompatible_NA
 		}
-		case 0xC9: { /* '0xC9' */
+	case 0xC9:
+		{ /* '0xC9' */
 			return LightingCompatible_NA
 		}
-		case 0xCA: { /* '0xCA' */
+	case 0xCA:
+		{ /* '0xCA' */
 			return LightingCompatible_YES_BUT_RESTRICTIONS
 		}
-		case 0xCB: { /* '0xCB' */
+	case 0xCB:
+		{ /* '0xCB' */
 			return LightingCompatible_YES_BUT_RESTRICTIONS
 		}
-		case 0xCC: { /* '0xCC' */
+	case 0xCC:
+		{ /* '0xCC' */
 			return LightingCompatible_NA
 		}
-		case 0xCD: { /* '0xCD' */
+	case 0xCD:
+		{ /* '0xCD' */
 			return LightingCompatible_YES_BUT_RESTRICTIONS
 		}
-		case 0xCE: { /* '0xCE' */
+	case 0xCE:
+		{ /* '0xCE' */
 			return LightingCompatible_NA
 		}
-		case 0xCF: { /* '0xCF' */
+	case 0xCF:
+		{ /* '0xCF' */
 			return LightingCompatible_NA
 		}
-		case 0xD0: { /* '0xD0' */
+	case 0xD0:
+		{ /* '0xD0' */
 			return LightingCompatible_NO
 		}
-		case 0xD1: { /* '0xD1' */
+	case 0xD1:
+		{ /* '0xD1' */
 			return LightingCompatible_NO
 		}
-		case 0xD2: { /* '0xD2' */
+	case 0xD2:
+		{ /* '0xD2' */
 			return LightingCompatible_NA
 		}
-		case 0xD3: { /* '0xD3' */
+	case 0xD3:
+		{ /* '0xD3' */
 			return LightingCompatible_NA
 		}
-		case 0xD4: { /* '0xD4' */
+	case 0xD4:
+		{ /* '0xD4' */
 			return LightingCompatible_NA
 		}
-		case 0xD5: { /* '0xD5' */
+	case 0xD5:
+		{ /* '0xD5' */
 			return LightingCompatible_NO
 		}
-		case 0xD6: { /* '0xD6' */
+	case 0xD6:
+		{ /* '0xD6' */
 			return LightingCompatible_NA
 		}
-		case 0xD7: { /* '0xD7' */
+	case 0xD7:
+		{ /* '0xD7' */
 			return LightingCompatible_NA
 		}
-		case 0xD8: { /* '0xD8' */
+	case 0xD8:
+		{ /* '0xD8' */
 			return LightingCompatible_NA
 		}
-		case 0xD9: { /* '0xD9' */
+	case 0xD9:
+		{ /* '0xD9' */
 			return LightingCompatible_NA
 		}
-		case 0xDA: { /* '0xDA' */
+	case 0xDA:
+		{ /* '0xDA' */
 			return LightingCompatible_NA
 		}
-		case 0xDB: { /* '0xDB' */
+	case 0xDB:
+		{ /* '0xDB' */
 			return LightingCompatible_NA
 		}
-		case 0xDC: { /* '0xDC' */
+	case 0xDC:
+		{ /* '0xDC' */
 			return LightingCompatible_NA
 		}
-		case 0xDD: { /* '0xDD' */
+	case 0xDD:
+		{ /* '0xDD' */
 			return LightingCompatible_NA
 		}
-		case 0xDE: { /* '0xDE' */
+	case 0xDE:
+		{ /* '0xDE' */
 			return LightingCompatible_NA
 		}
-		case 0xDF: { /* '0xDF' */
+	case 0xDF:
+		{ /* '0xDF' */
 			return LightingCompatible_NO
 		}
-		case 0xE0: { /* '0xE0' */
+	case 0xE0:
+		{ /* '0xE0' */
 			return LightingCompatible_NO
 		}
-		case 0xE1: { /* '0xE1' */
+	case 0xE1:
+		{ /* '0xE1' */
 			return LightingCompatible_NA
 		}
-		case 0xE2: { /* '0xE2' */
+	case 0xE2:
+		{ /* '0xE2' */
 			return LightingCompatible_NA
 		}
-		case 0xE3: { /* '0xE3' */
+	case 0xE3:
+		{ /* '0xE3' */
 			return LightingCompatible_NA
 		}
-		case 0xE4: { /* '0xE4' */
+	case 0xE4:
+		{ /* '0xE4' */
 			return LightingCompatible_NO
 		}
-		case 0xE5: { /* '0xE5' */
+	case 0xE5:
+		{ /* '0xE5' */
 			return LightingCompatible_NA
 		}
-		case 0xE6: { /* '0xE6' */
+	case 0xE6:
+		{ /* '0xE6' */
 			return LightingCompatible_NA
 		}
-		case 0xE7: { /* '0xE7' */
+	case 0xE7:
+		{ /* '0xE7' */
 			return LightingCompatible_NA
 		}
-		case 0xE8: { /* '0xE8' */
+	case 0xE8:
+		{ /* '0xE8' */
 			return LightingCompatible_NA
 		}
-		case 0xE9: { /* '0xE9' */
+	case 0xE9:
+		{ /* '0xE9' */
 			return LightingCompatible_NA
 		}
-		case 0xEA: { /* '0xEA' */
+	case 0xEA:
+		{ /* '0xEA' */
 			return LightingCompatible_NA
 		}
-		case 0xEB: { /* '0xEB' */
+	case 0xEB:
+		{ /* '0xEB' */
 			return LightingCompatible_NA
 		}
-		case 0xEC: { /* '0xEC' */
+	case 0xEC:
+		{ /* '0xEC' */
 			return LightingCompatible_NA
 		}
-		case 0xED: { /* '0xED' */
+	case 0xED:
+		{ /* '0xED' */
 			return LightingCompatible_NA
 		}
-		case 0xEE: { /* '0xEE' */
+	case 0xEE:
+		{ /* '0xEE' */
 			return LightingCompatible_NA
 		}
-		case 0xEF: { /* '0xEF' */
+	case 0xEF:
+		{ /* '0xEF' */
 			return LightingCompatible_NA
 		}
-		case 0xF0: { /* '0xF0' */
+	case 0xF0:
+		{ /* '0xF0' */
 			return LightingCompatible_NA
 		}
-		case 0xF1: { /* '0xF1' */
+	case 0xF1:
+		{ /* '0xF1' */
 			return LightingCompatible_NA
 		}
-		case 0xF2: { /* '0xF2' */
+	case 0xF2:
+		{ /* '0xF2' */
 			return LightingCompatible_NA
 		}
-		case 0xF3: { /* '0xF3' */
+	case 0xF3:
+		{ /* '0xF3' */
 			return LightingCompatible_NA
 		}
-		case 0xF4: { /* '0xF4' */
+	case 0xF4:
+		{ /* '0xF4' */
 			return LightingCompatible_NA
 		}
-		case 0xF5: { /* '0xF5' */
+	case 0xF5:
+		{ /* '0xF5' */
 			return LightingCompatible_NA
 		}
-		case 0xF6: { /* '0xF6' */
+	case 0xF6:
+		{ /* '0xF6' */
 			return LightingCompatible_NA
 		}
-		case 0xF7: { /* '0xF7' */
+	case 0xF7:
+		{ /* '0xF7' */
 			return LightingCompatible_NA
 		}
-		case 0xF8: { /* '0xF8' */
+	case 0xF8:
+		{ /* '0xF8' */
 			return LightingCompatible_NA
 		}
-		case 0xF9: { /* '0xF9' */
+	case 0xF9:
+		{ /* '0xF9' */
 			return LightingCompatible_NA
 		}
-		case 0xFA: { /* '0xFA' */
+	case 0xFA:
+		{ /* '0xFA' */
 			return LightingCompatible_NA
 		}
-		case 0xFB: { /* '0xFB' */
+	case 0xFB:
+		{ /* '0xFB' */
 			return LightingCompatible_NO
 		}
-		case 0xFC: { /* '0xFC' */
+	case 0xFC:
+		{ /* '0xFC' */
 			return LightingCompatible_NO
 		}
-		case 0xFD: { /* '0xFD' */
+	case 0xFD:
+		{ /* '0xFD' */
 			return LightingCompatible_NO
 		}
-		case 0xFE: { /* '0xFE' */
+	case 0xFE:
+		{ /* '0xFE' */
 			return LightingCompatible_NO
 		}
-		case 0xFF: { /* '0xFF' */
+	case 0xFF:
+		{ /* '0xFF' */
 			return LightingCompatible_NO
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -1346,776 +1602,1033 @@ func ApplicationIdContainerFirstEnumForFieldLightingCompatible(value LightingCom
 }
 
 func (e ApplicationIdContainer) ApplicationId() ApplicationId {
-	switch e  {
-		case 0x00: { /* '0x00' */
+	switch e {
+	case 0x00:
+		{ /* '0x00' */
 			return ApplicationId_RESERVED
 		}
-		case 0x01: { /* '0x01' */
+	case 0x01:
+		{ /* '0x01' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x02: { /* '0x02' */
+	case 0x02:
+		{ /* '0x02' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x03: { /* '0x03' */
+	case 0x03:
+		{ /* '0x03' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x04: { /* '0x04' */
+	case 0x04:
+		{ /* '0x04' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x05: { /* '0x05' */
+	case 0x05:
+		{ /* '0x05' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x06: { /* '0x06' */
+	case 0x06:
+		{ /* '0x06' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x07: { /* '0x07' */
+	case 0x07:
+		{ /* '0x07' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x08: { /* '0x08' */
+	case 0x08:
+		{ /* '0x08' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x09: { /* '0x09' */
+	case 0x09:
+		{ /* '0x09' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x0A: { /* '0x0A' */
+	case 0x0A:
+		{ /* '0x0A' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x0B: { /* '0x0B' */
+	case 0x0B:
+		{ /* '0x0B' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x0C: { /* '0x0C' */
+	case 0x0C:
+		{ /* '0x0C' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x0D: { /* '0x0D' */
+	case 0x0D:
+		{ /* '0x0D' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x0E: { /* '0x0E' */
+	case 0x0E:
+		{ /* '0x0E' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x0F: { /* '0x0F' */
+	case 0x0F:
+		{ /* '0x0F' */
 			return ApplicationId_FREE_USAGE
 		}
-		case 0x10: { /* '0x10' */
+	case 0x10:
+		{ /* '0x10' */
 			return ApplicationId_RESERVED
 		}
-		case 0x11: { /* '0x11' */
+	case 0x11:
+		{ /* '0x11' */
 			return ApplicationId_RESERVED
 		}
-		case 0x12: { /* '0x12' */
+	case 0x12:
+		{ /* '0x12' */
 			return ApplicationId_RESERVED
 		}
-		case 0x13: { /* '0x13' */
+	case 0x13:
+		{ /* '0x13' */
 			return ApplicationId_RESERVED
 		}
-		case 0x14: { /* '0x14' */
+	case 0x14:
+		{ /* '0x14' */
 			return ApplicationId_RESERVED
 		}
-		case 0x15: { /* '0x15' */
+	case 0x15:
+		{ /* '0x15' */
 			return ApplicationId_RESERVED
 		}
-		case 0x16: { /* '0x16' */
+	case 0x16:
+		{ /* '0x16' */
 			return ApplicationId_RESERVED
 		}
-		case 0x17: { /* '0x17' */
+	case 0x17:
+		{ /* '0x17' */
 			return ApplicationId_RESERVED
 		}
-		case 0x18: { /* '0x18' */
+	case 0x18:
+		{ /* '0x18' */
 			return ApplicationId_RESERVED
 		}
-		case 0x19: { /* '0x19' */
+	case 0x19:
+		{ /* '0x19' */
 			return ApplicationId_TEMPERATURE_BROADCAST
 		}
-		case 0x1A: { /* '0x1A' */
+	case 0x1A:
+		{ /* '0x1A' */
 			return ApplicationId_RESERVED
 		}
-		case 0x1B: { /* '0x1B' */
+	case 0x1B:
+		{ /* '0x1B' */
 			return ApplicationId_RESERVED
 		}
-		case 0x1C: { /* '0x1C' */
+	case 0x1C:
+		{ /* '0x1C' */
 			return ApplicationId_RESERVED
 		}
-		case 0x1D: { /* '0x1D' */
+	case 0x1D:
+		{ /* '0x1D' */
 			return ApplicationId_RESERVED
 		}
-		case 0x1E: { /* '0x1E' */
+	case 0x1E:
+		{ /* '0x1E' */
 			return ApplicationId_RESERVED
 		}
-		case 0x1F: { /* '0x1F' */
+	case 0x1F:
+		{ /* '0x1F' */
 			return ApplicationId_RESERVED
 		}
-		case 0x20: { /* '0x20' */
+	case 0x20:
+		{ /* '0x20' */
 			return ApplicationId_RESERVED
 		}
-		case 0x21: { /* '0x21' */
+	case 0x21:
+		{ /* '0x21' */
 			return ApplicationId_RESERVED
 		}
-		case 0x22: { /* '0x22' */
+	case 0x22:
+		{ /* '0x22' */
 			return ApplicationId_RESERVED
 		}
-		case 0x23: { /* '0x23' */
+	case 0x23:
+		{ /* '0x23' */
 			return ApplicationId_RESERVED
 		}
-		case 0x24: { /* '0x24' */
+	case 0x24:
+		{ /* '0x24' */
 			return ApplicationId_RESERVED
 		}
-		case 0x25: { /* '0x25' */
+	case 0x25:
+		{ /* '0x25' */
 			return ApplicationId_RESERVED
 		}
-		case 0x26: { /* '0x26' */
+	case 0x26:
+		{ /* '0x26' */
 			return ApplicationId_ROOM_CONTROL_SYSTEM
 		}
-		case 0x27: { /* '0x27' */
+	case 0x27:
+		{ /* '0x27' */
 			return ApplicationId_RESERVED
 		}
-		case 0x28: { /* '0x28' */
+	case 0x28:
+		{ /* '0x28' */
 			return ApplicationId_RESERVED
 		}
-		case 0x29: { /* '0x29' */
+	case 0x29:
+		{ /* '0x29' */
 			return ApplicationId_RESERVED
 		}
-		case 0x2A: { /* '0x2A' */
+	case 0x2A:
+		{ /* '0x2A' */
 			return ApplicationId_RESERVED
 		}
-		case 0x2B: { /* '0x2B' */
+	case 0x2B:
+		{ /* '0x2B' */
 			return ApplicationId_RESERVED
 		}
-		case 0x2C: { /* '0x2C' */
+	case 0x2C:
+		{ /* '0x2C' */
 			return ApplicationId_RESERVED
 		}
-		case 0x2D: { /* '0x2D' */
+	case 0x2D:
+		{ /* '0x2D' */
 			return ApplicationId_RESERVED
 		}
-		case 0x2E: { /* '0x2E' */
+	case 0x2E:
+		{ /* '0x2E' */
 			return ApplicationId_RESERVED
 		}
-		case 0x2F: { /* '0x2F' */
+	case 0x2F:
+		{ /* '0x2F' */
 			return ApplicationId_RESERVED
 		}
-		case 0x30: { /* '0x30' */
+	case 0x30:
+		{ /* '0x30' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x31: { /* '0x31' */
+	case 0x31:
+		{ /* '0x31' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x32: { /* '0x32' */
+	case 0x32:
+		{ /* '0x32' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x33: { /* '0x33' */
+	case 0x33:
+		{ /* '0x33' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x34: { /* '0x34' */
+	case 0x34:
+		{ /* '0x34' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x35: { /* '0x35' */
+	case 0x35:
+		{ /* '0x35' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x36: { /* '0x36' */
+	case 0x36:
+		{ /* '0x36' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x37: { /* '0x37' */
+	case 0x37:
+		{ /* '0x37' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x38: { /* '0x38' */
+	case 0x38:
+		{ /* '0x38' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x39: { /* '0x39' */
+	case 0x39:
+		{ /* '0x39' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x3A: { /* '0x3A' */
+	case 0x3A:
+		{ /* '0x3A' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x3B: { /* '0x3B' */
+	case 0x3B:
+		{ /* '0x3B' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x3C: { /* '0x3C' */
+	case 0x3C:
+		{ /* '0x3C' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x3D: { /* '0x3D' */
+	case 0x3D:
+		{ /* '0x3D' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x3E: { /* '0x3E' */
+	case 0x3E:
+		{ /* '0x3E' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x3F: { /* '0x3F' */
+	case 0x3F:
+		{ /* '0x3F' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x40: { /* '0x40' */
+	case 0x40:
+		{ /* '0x40' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x41: { /* '0x41' */
+	case 0x41:
+		{ /* '0x41' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x42: { /* '0x42' */
+	case 0x42:
+		{ /* '0x42' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x43: { /* '0x43' */
+	case 0x43:
+		{ /* '0x43' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x44: { /* '0x44' */
+	case 0x44:
+		{ /* '0x44' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x45: { /* '0x45' */
+	case 0x45:
+		{ /* '0x45' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x46: { /* '0x46' */
+	case 0x46:
+		{ /* '0x46' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x47: { /* '0x47' */
+	case 0x47:
+		{ /* '0x47' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x48: { /* '0x48' */
+	case 0x48:
+		{ /* '0x48' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x49: { /* '0x49' */
+	case 0x49:
+		{ /* '0x49' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x4A: { /* '0x4A' */
+	case 0x4A:
+		{ /* '0x4A' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x4B: { /* '0x4B' */
+	case 0x4B:
+		{ /* '0x4B' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x4C: { /* '0x4C' */
+	case 0x4C:
+		{ /* '0x4C' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x4D: { /* '0x4D' */
+	case 0x4D:
+		{ /* '0x4D' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x4E: { /* '0x4E' */
+	case 0x4E:
+		{ /* '0x4E' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x4F: { /* '0x4F' */
+	case 0x4F:
+		{ /* '0x4F' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x50: { /* '0x50' */
+	case 0x50:
+		{ /* '0x50' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x51: { /* '0x51' */
+	case 0x51:
+		{ /* '0x51' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x52: { /* '0x52' */
+	case 0x52:
+		{ /* '0x52' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x53: { /* '0x53' */
+	case 0x53:
+		{ /* '0x53' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x54: { /* '0x54' */
+	case 0x54:
+		{ /* '0x54' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x55: { /* '0x55' */
+	case 0x55:
+		{ /* '0x55' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x56: { /* '0x56' */
+	case 0x56:
+		{ /* '0x56' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x57: { /* '0x57' */
+	case 0x57:
+		{ /* '0x57' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x58: { /* '0x58' */
+	case 0x58:
+		{ /* '0x58' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x59: { /* '0x59' */
+	case 0x59:
+		{ /* '0x59' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x5A: { /* '0x5A' */
+	case 0x5A:
+		{ /* '0x5A' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x5B: { /* '0x5B' */
+	case 0x5B:
+		{ /* '0x5B' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x5C: { /* '0x5C' */
+	case 0x5C:
+		{ /* '0x5C' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x5D: { /* '0x5D' */
+	case 0x5D:
+		{ /* '0x5D' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x5E: { /* '0x5E' */
+	case 0x5E:
+		{ /* '0x5E' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x5F: { /* '0x5F' */
+	case 0x5F:
+		{ /* '0x5F' */
 			return ApplicationId_LIGHTING
 		}
-		case 0x60: { /* '0x60' */
+	case 0x60:
+		{ /* '0x60' */
 			return ApplicationId_RESERVED
 		}
-		case 0x61: { /* '0x61' */
+	case 0x61:
+		{ /* '0x61' */
 			return ApplicationId_RESERVED
 		}
-		case 0x62: { /* '0x62' */
+	case 0x62:
+		{ /* '0x62' */
 			return ApplicationId_RESERVED
 		}
-		case 0x63: { /* '0x63' */
+	case 0x63:
+		{ /* '0x63' */
 			return ApplicationId_RESERVED
 		}
-		case 0x64: { /* '0x64' */
+	case 0x64:
+		{ /* '0x64' */
 			return ApplicationId_RESERVED
 		}
-		case 0x65: { /* '0x65' */
+	case 0x65:
+		{ /* '0x65' */
 			return ApplicationId_RESERVED
 		}
-		case 0x66: { /* '0x66' */
+	case 0x66:
+		{ /* '0x66' */
 			return ApplicationId_RESERVED
 		}
-		case 0x67: { /* '0x67' */
+	case 0x67:
+		{ /* '0x67' */
 			return ApplicationId_RESERVED
 		}
-		case 0x68: { /* '0x68' */
+	case 0x68:
+		{ /* '0x68' */
 			return ApplicationId_RESERVED
 		}
-		case 0x69: { /* '0x69' */
+	case 0x69:
+		{ /* '0x69' */
 			return ApplicationId_RESERVED
 		}
-		case 0x6A: { /* '0x6A' */
+	case 0x6A:
+		{ /* '0x6A' */
 			return ApplicationId_RESERVED
 		}
-		case 0x6B: { /* '0x6B' */
+	case 0x6B:
+		{ /* '0x6B' */
 			return ApplicationId_RESERVED
 		}
-		case 0x6C: { /* '0x6C' */
+	case 0x6C:
+		{ /* '0x6C' */
 			return ApplicationId_RESERVED
 		}
-		case 0x6D: { /* '0x6D' */
+	case 0x6D:
+		{ /* '0x6D' */
 			return ApplicationId_RESERVED
 		}
-		case 0x6E: { /* '0x6E' */
+	case 0x6E:
+		{ /* '0x6E' */
 			return ApplicationId_RESERVED
 		}
-		case 0x6F: { /* '0x6F' */
+	case 0x6F:
+		{ /* '0x6F' */
 			return ApplicationId_RESERVED
 		}
-		case 0x70: { /* '0x70' */
+	case 0x70:
+		{ /* '0x70' */
 			return ApplicationId_VENTILATION
 		}
-		case 0x71: { /* '0x71' */
+	case 0x71:
+		{ /* '0x71' */
 			return ApplicationId_IRRIGATION_CONTROL
 		}
-		case 0x72: { /* '0x72' */
+	case 0x72:
+		{ /* '0x72' */
 			return ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL
 		}
-		case 0x73: { /* '0x73' */
+	case 0x73:
+		{ /* '0x73' */
 			return ApplicationId_HVAC_ACTUATOR
 		}
-		case 0x74: { /* '0x74' */
+	case 0x74:
+		{ /* '0x74' */
 			return ApplicationId_HVAC_ACTUATOR
 		}
-		case 0x75: { /* '0x75' */
+	case 0x75:
+		{ /* '0x75' */
 			return ApplicationId_RESERVED
 		}
-		case 0x76: { /* '0x76' */
+	case 0x76:
+		{ /* '0x76' */
 			return ApplicationId_RESERVED
 		}
-		case 0x77: { /* '0x77' */
+	case 0x77:
+		{ /* '0x77' */
 			return ApplicationId_RESERVED
 		}
-		case 0x78: { /* '0x78' */
+	case 0x78:
+		{ /* '0x78' */
 			return ApplicationId_RESERVED
 		}
-		case 0x79: { /* '0x79' */
+	case 0x79:
+		{ /* '0x79' */
 			return ApplicationId_RESERVED
 		}
-		case 0x7A: { /* '0x7A' */
+	case 0x7A:
+		{ /* '0x7A' */
 			return ApplicationId_RESERVED
 		}
-		case 0x7B: { /* '0x7B' */
+	case 0x7B:
+		{ /* '0x7B' */
 			return ApplicationId_RESERVED
 		}
-		case 0x7C: { /* '0x7C' */
+	case 0x7C:
+		{ /* '0x7C' */
 			return ApplicationId_RESERVED
 		}
-		case 0x7D: { /* '0x7D' */
+	case 0x7D:
+		{ /* '0x7D' */
 			return ApplicationId_RESERVED
 		}
-		case 0x7E: { /* '0x7E' */
+	case 0x7E:
+		{ /* '0x7E' */
 			return ApplicationId_RESERVED
 		}
-		case 0x7F: { /* '0x7F' */
+	case 0x7F:
+		{ /* '0x7F' */
 			return ApplicationId_RESERVED
 		}
-		case 0x80: { /* '0x80' */
+	case 0x80:
+		{ /* '0x80' */
 			return ApplicationId_RESERVED
 		}
-		case 0x81: { /* '0x81' */
+	case 0x81:
+		{ /* '0x81' */
 			return ApplicationId_RESERVED
 		}
-		case 0x82: { /* '0x82' */
+	case 0x82:
+		{ /* '0x82' */
 			return ApplicationId_RESERVED
 		}
-		case 0x83: { /* '0x83' */
+	case 0x83:
+		{ /* '0x83' */
 			return ApplicationId_RESERVED
 		}
-		case 0x84: { /* '0x84' */
+	case 0x84:
+		{ /* '0x84' */
 			return ApplicationId_RESERVED
 		}
-		case 0x85: { /* '0x85' */
+	case 0x85:
+		{ /* '0x85' */
 			return ApplicationId_RESERVED
 		}
-		case 0x86: { /* '0x86' */
+	case 0x86:
+		{ /* '0x86' */
 			return ApplicationId_RESERVED
 		}
-		case 0x87: { /* '0x87' */
+	case 0x87:
+		{ /* '0x87' */
 			return ApplicationId_RESERVED
 		}
-		case 0x88: { /* '0x88' */
+	case 0x88:
+		{ /* '0x88' */
 			return ApplicationId_HEATING
 		}
-		case 0x89: { /* '0x89' */
+	case 0x89:
+		{ /* '0x89' */
 			return ApplicationId_RESERVED
 		}
-		case 0x8A: { /* '0x8A' */
+	case 0x8A:
+		{ /* '0x8A' */
 			return ApplicationId_RESERVED
 		}
-		case 0x8B: { /* '0x8B' */
+	case 0x8B:
+		{ /* '0x8B' */
 			return ApplicationId_RESERVED
 		}
-		case 0x8C: { /* '0x8C' */
+	case 0x8C:
+		{ /* '0x8C' */
 			return ApplicationId_RESERVED
 		}
-		case 0x8D: { /* '0x8D' */
+	case 0x8D:
+		{ /* '0x8D' */
 			return ApplicationId_RESERVED
 		}
-		case 0x8E: { /* '0x8E' */
+	case 0x8E:
+		{ /* '0x8E' */
 			return ApplicationId_RESERVED
 		}
-		case 0x8F: { /* '0x8F' */
+	case 0x8F:
+		{ /* '0x8F' */
 			return ApplicationId_RESERVED
 		}
-		case 0x90: { /* '0x90' */
+	case 0x90:
+		{ /* '0x90' */
 			return ApplicationId_RESERVED
 		}
-		case 0x91: { /* '0x91' */
+	case 0x91:
+		{ /* '0x91' */
 			return ApplicationId_RESERVED
 		}
-		case 0x92: { /* '0x92' */
+	case 0x92:
+		{ /* '0x92' */
 			return ApplicationId_RESERVED
 		}
-		case 0x93: { /* '0x93' */
+	case 0x93:
+		{ /* '0x93' */
 			return ApplicationId_RESERVED
 		}
-		case 0x94: { /* '0x94' */
+	case 0x94:
+		{ /* '0x94' */
 			return ApplicationId_RESERVED
 		}
-		case 0x95: { /* '0x95' */
+	case 0x95:
+		{ /* '0x95' */
 			return ApplicationId_RESERVED
 		}
-		case 0x96: { /* '0x96' */
+	case 0x96:
+		{ /* '0x96' */
 			return ApplicationId_RESERVED
 		}
-		case 0x97: { /* '0x97' */
+	case 0x97:
+		{ /* '0x97' */
 			return ApplicationId_RESERVED
 		}
-		case 0x98: { /* '0x98' */
+	case 0x98:
+		{ /* '0x98' */
 			return ApplicationId_RESERVED
 		}
-		case 0x99: { /* '0x99' */
+	case 0x99:
+		{ /* '0x99' */
 			return ApplicationId_RESERVED
 		}
-		case 0x9A: { /* '0x9A' */
+	case 0x9A:
+		{ /* '0x9A' */
 			return ApplicationId_RESERVED
 		}
-		case 0x9B: { /* '0x9B' */
+	case 0x9B:
+		{ /* '0x9B' */
 			return ApplicationId_RESERVED
 		}
-		case 0x9C: { /* '0x9C' */
+	case 0x9C:
+		{ /* '0x9C' */
 			return ApplicationId_RESERVED
 		}
-		case 0x9D: { /* '0x9D' */
+	case 0x9D:
+		{ /* '0x9D' */
 			return ApplicationId_RESERVED
 		}
-		case 0x9E: { /* '0x9E' */
+	case 0x9E:
+		{ /* '0x9E' */
 			return ApplicationId_RESERVED
 		}
-		case 0x9F: { /* '0x9F' */
+	case 0x9F:
+		{ /* '0x9F' */
 			return ApplicationId_RESERVED
 		}
-		case 0xA0: { /* '0xA0' */
+	case 0xA0:
+		{ /* '0xA0' */
 			return ApplicationId_RESERVED
 		}
-		case 0xA1: { /* '0xA1' */
+	case 0xA1:
+		{ /* '0xA1' */
 			return ApplicationId_RESERVED
 		}
-		case 0xA2: { /* '0xA2' */
+	case 0xA2:
+		{ /* '0xA2' */
 			return ApplicationId_RESERVED
 		}
-		case 0xA3: { /* '0xA3' */
+	case 0xA3:
+		{ /* '0xA3' */
 			return ApplicationId_RESERVED
 		}
-		case 0xA4: { /* '0xA4' */
+	case 0xA4:
+		{ /* '0xA4' */
 			return ApplicationId_RESERVED
 		}
-		case 0xA5: { /* '0xA5' */
+	case 0xA5:
+		{ /* '0xA5' */
 			return ApplicationId_RESERVED
 		}
-		case 0xA6: { /* '0xA6' */
+	case 0xA6:
+		{ /* '0xA6' */
 			return ApplicationId_RESERVED
 		}
-		case 0xA7: { /* '0xA7' */
+	case 0xA7:
+		{ /* '0xA7' */
 			return ApplicationId_RESERVED
 		}
-		case 0xA8: { /* '0xA8' */
+	case 0xA8:
+		{ /* '0xA8' */
 			return ApplicationId_RESERVED
 		}
-		case 0xA9: { /* '0xA9' */
+	case 0xA9:
+		{ /* '0xA9' */
 			return ApplicationId_RESERVED
 		}
-		case 0xAA: { /* '0xAA' */
+	case 0xAA:
+		{ /* '0xAA' */
 			return ApplicationId_RESERVED
 		}
-		case 0xAB: { /* '0xAB' */
+	case 0xAB:
+		{ /* '0xAB' */
 			return ApplicationId_RESERVED
 		}
-		case 0xAC: { /* '0xAC' */
+	case 0xAC:
+		{ /* '0xAC' */
 			return ApplicationId_AIR_CONDITIONING
 		}
-		case 0xAD: { /* '0xAD' */
+	case 0xAD:
+		{ /* '0xAD' */
 			return ApplicationId_INFO_MESSAGES
 		}
-		case 0xAE: { /* '0xAE' */
+	case 0xAE:
+		{ /* '0xAE' */
 			return ApplicationId_RESERVED
 		}
-		case 0xAF: { /* '0xAF' */
+	case 0xAF:
+		{ /* '0xAF' */
 			return ApplicationId_RESERVED
 		}
-		case 0xB0: { /* '0xB0' */
+	case 0xB0:
+		{ /* '0xB0' */
 			return ApplicationId_RESERVED
 		}
-		case 0xB1: { /* '0xB1' */
+	case 0xB1:
+		{ /* '0xB1' */
 			return ApplicationId_RESERVED
 		}
-		case 0xB2: { /* '0xB2' */
+	case 0xB2:
+		{ /* '0xB2' */
 			return ApplicationId_RESERVED
 		}
-		case 0xB3: { /* '0xB3' */
+	case 0xB3:
+		{ /* '0xB3' */
 			return ApplicationId_RESERVED
 		}
-		case 0xB4: { /* '0xB4' */
+	case 0xB4:
+		{ /* '0xB4' */
 			return ApplicationId_RESERVED
 		}
-		case 0xB5: { /* '0xB5' */
+	case 0xB5:
+		{ /* '0xB5' */
 			return ApplicationId_RESERVED
 		}
-		case 0xB6: { /* '0xB6' */
+	case 0xB6:
+		{ /* '0xB6' */
 			return ApplicationId_RESERVED
 		}
-		case 0xB7: { /* '0xB7' */
+	case 0xB7:
+		{ /* '0xB7' */
 			return ApplicationId_RESERVED
 		}
-		case 0xB8: { /* '0xB8' */
+	case 0xB8:
+		{ /* '0xB8' */
 			return ApplicationId_RESERVED
 		}
-		case 0xB9: { /* '0xB9' */
+	case 0xB9:
+		{ /* '0xB9' */
 			return ApplicationId_RESERVED
 		}
-		case 0xBA: { /* '0xBA' */
+	case 0xBA:
+		{ /* '0xBA' */
 			return ApplicationId_RESERVED
 		}
-		case 0xBB: { /* '0xBB' */
+	case 0xBB:
+		{ /* '0xBB' */
 			return ApplicationId_RESERVED
 		}
-		case 0xBC: { /* '0xBC' */
+	case 0xBC:
+		{ /* '0xBC' */
 			return ApplicationId_RESERVED
 		}
-		case 0xBD: { /* '0xBD' */
+	case 0xBD:
+		{ /* '0xBD' */
 			return ApplicationId_RESERVED
 		}
-		case 0xBE: { /* '0xBE' */
+	case 0xBE:
+		{ /* '0xBE' */
 			return ApplicationId_RESERVED
 		}
-		case 0xBF: { /* '0xBF' */
+	case 0xBF:
+		{ /* '0xBF' */
 			return ApplicationId_RESERVED
 		}
-		case 0xC0: { /* '0xC0' */
+	case 0xC0:
+		{ /* '0xC0' */
 			return ApplicationId_MEDIA_TRANSPORT_CONTROL
 		}
-		case 0xC1: { /* '0xC1' */
+	case 0xC1:
+		{ /* '0xC1' */
 			return ApplicationId_RESERVED
 		}
-		case 0xC2: { /* '0xC2' */
+	case 0xC2:
+		{ /* '0xC2' */
 			return ApplicationId_RESERVED
 		}
-		case 0xC3: { /* '0xC3' */
+	case 0xC3:
+		{ /* '0xC3' */
 			return ApplicationId_RESERVED
 		}
-		case 0xC4: { /* '0xC4' */
+	case 0xC4:
+		{ /* '0xC4' */
 			return ApplicationId_RESERVED
 		}
-		case 0xC5: { /* '0xC5' */
+	case 0xC5:
+		{ /* '0xC5' */
 			return ApplicationId_RESERVED
 		}
-		case 0xC6: { /* '0xC6' */
+	case 0xC6:
+		{ /* '0xC6' */
 			return ApplicationId_RESERVED
 		}
-		case 0xC7: { /* '0xC7' */
+	case 0xC7:
+		{ /* '0xC7' */
 			return ApplicationId_RESERVED
 		}
-		case 0xC8: { /* '0xC8' */
+	case 0xC8:
+		{ /* '0xC8' */
 			return ApplicationId_RESERVED
 		}
-		case 0xC9: { /* '0xC9' */
+	case 0xC9:
+		{ /* '0xC9' */
 			return ApplicationId_RESERVED
 		}
-		case 0xCA: { /* '0xCA' */
+	case 0xCA:
+		{ /* '0xCA' */
 			return ApplicationId_TRIGGER_CONTROL
 		}
-		case 0xCB: { /* '0xCB' */
+	case 0xCB:
+		{ /* '0xCB' */
 			return ApplicationId_ENABLE_CONTROL
 		}
-		case 0xCC: { /* '0xCC' */
+	case 0xCC:
+		{ /* '0xCC' */
 			return ApplicationId_RESERVED
 		}
-		case 0xCD: { /* '0xCD' */
+	case 0xCD:
+		{ /* '0xCD' */
 			return ApplicationId_AUDIO_AND_VIDEO
 		}
-		case 0xCE: { /* '0xCE' */
+	case 0xCE:
+		{ /* '0xCE' */
 			return ApplicationId_ERROR_REPORTING
 		}
-		case 0xCF: { /* '0xCF' */
+	case 0xCF:
+		{ /* '0xCF' */
 			return ApplicationId_RESERVED
 		}
-		case 0xD0: { /* '0xD0' */
+	case 0xD0:
+		{ /* '0xD0' */
 			return ApplicationId_SECURITY
 		}
-		case 0xD1: { /* '0xD1' */
+	case 0xD1:
+		{ /* '0xD1' */
 			return ApplicationId_METERING
 		}
-		case 0xD2: { /* '0xD2' */
+	case 0xD2:
+		{ /* '0xD2' */
 			return ApplicationId_RESERVED
 		}
-		case 0xD3: { /* '0xD3' */
+	case 0xD3:
+		{ /* '0xD3' */
 			return ApplicationId_RESERVED
 		}
-		case 0xD4: { /* '0xD4' */
+	case 0xD4:
+		{ /* '0xD4' */
 			return ApplicationId_RESERVED
 		}
-		case 0xD5: { /* '0xD5' */
+	case 0xD5:
+		{ /* '0xD5' */
 			return ApplicationId_ACCESS_CONTROL
 		}
-		case 0xD6: { /* '0xD6' */
+	case 0xD6:
+		{ /* '0xD6' */
 			return ApplicationId_RESERVED
 		}
-		case 0xD7: { /* '0xD7' */
+	case 0xD7:
+		{ /* '0xD7' */
 			return ApplicationId_RESERVED
 		}
-		case 0xD8: { /* '0xD8' */
+	case 0xD8:
+		{ /* '0xD8' */
 			return ApplicationId_RESERVED
 		}
-		case 0xD9: { /* '0xD9' */
+	case 0xD9:
+		{ /* '0xD9' */
 			return ApplicationId_RESERVED
 		}
-		case 0xDA: { /* '0xDA' */
+	case 0xDA:
+		{ /* '0xDA' */
 			return ApplicationId_RESERVED
 		}
-		case 0xDB: { /* '0xDB' */
+	case 0xDB:
+		{ /* '0xDB' */
 			return ApplicationId_RESERVED
 		}
-		case 0xDC: { /* '0xDC' */
+	case 0xDC:
+		{ /* '0xDC' */
 			return ApplicationId_RESERVED
 		}
-		case 0xDD: { /* '0xDD' */
+	case 0xDD:
+		{ /* '0xDD' */
 			return ApplicationId_RESERVED
 		}
-		case 0xDE: { /* '0xDE' */
+	case 0xDE:
+		{ /* '0xDE' */
 			return ApplicationId_RESERVED
 		}
-		case 0xDF: { /* '0xDF' */
+	case 0xDF:
+		{ /* '0xDF' */
 			return ApplicationId_CLOCK_AND_TIMEKEEPING
 		}
-		case 0xE0: { /* '0xE0' */
+	case 0xE0:
+		{ /* '0xE0' */
 			return ApplicationId_TELEPHONY_STATUS_AND_CONTROL
 		}
-		case 0xE1: { /* '0xE1' */
+	case 0xE1:
+		{ /* '0xE1' */
 			return ApplicationId_RESERVED
 		}
-		case 0xE2: { /* '0xE2' */
+	case 0xE2:
+		{ /* '0xE2' */
 			return ApplicationId_RESERVED
 		}
-		case 0xE3: { /* '0xE3' */
+	case 0xE3:
+		{ /* '0xE3' */
 			return ApplicationId_RESERVED
 		}
-		case 0xE4: { /* '0xE4' */
+	case 0xE4:
+		{ /* '0xE4' */
 			return ApplicationId_MEASUREMENT
 		}
-		case 0xE5: { /* '0xE5' */
+	case 0xE5:
+		{ /* '0xE5' */
 			return ApplicationId_RESERVED
 		}
-		case 0xE6: { /* '0xE6' */
+	case 0xE6:
+		{ /* '0xE6' */
 			return ApplicationId_RESERVED
 		}
-		case 0xE7: { /* '0xE7' */
+	case 0xE7:
+		{ /* '0xE7' */
 			return ApplicationId_RESERVED
 		}
-		case 0xE8: { /* '0xE8' */
+	case 0xE8:
+		{ /* '0xE8' */
 			return ApplicationId_RESERVED
 		}
-		case 0xE9: { /* '0xE9' */
+	case 0xE9:
+		{ /* '0xE9' */
 			return ApplicationId_RESERVED
 		}
-		case 0xEA: { /* '0xEA' */
+	case 0xEA:
+		{ /* '0xEA' */
 			return ApplicationId_RESERVED
 		}
-		case 0xEB: { /* '0xEB' */
+	case 0xEB:
+		{ /* '0xEB' */
 			return ApplicationId_RESERVED
 		}
-		case 0xEC: { /* '0xEC' */
+	case 0xEC:
+		{ /* '0xEC' */
 			return ApplicationId_RESERVED
 		}
-		case 0xED: { /* '0xED' */
+	case 0xED:
+		{ /* '0xED' */
 			return ApplicationId_RESERVED
 		}
-		case 0xEE: { /* '0xEE' */
+	case 0xEE:
+		{ /* '0xEE' */
 			return ApplicationId_RESERVED
 		}
-		case 0xEF: { /* '0xEF' */
+	case 0xEF:
+		{ /* '0xEF' */
 			return ApplicationId_RESERVED
 		}
-		case 0xF0: { /* '0xF0' */
+	case 0xF0:
+		{ /* '0xF0' */
 			return ApplicationId_RESERVED
 		}
-		case 0xF1: { /* '0xF1' */
+	case 0xF1:
+		{ /* '0xF1' */
 			return ApplicationId_RESERVED
 		}
-		case 0xF2: { /* '0xF2' */
+	case 0xF2:
+		{ /* '0xF2' */
 			return ApplicationId_RESERVED
 		}
-		case 0xF3: { /* '0xF3' */
+	case 0xF3:
+		{ /* '0xF3' */
 			return ApplicationId_RESERVED
 		}
-		case 0xF4: { /* '0xF4' */
+	case 0xF4:
+		{ /* '0xF4' */
 			return ApplicationId_RESERVED
 		}
-		case 0xF5: { /* '0xF5' */
+	case 0xF5:
+		{ /* '0xF5' */
 			return ApplicationId_RESERVED
 		}
-		case 0xF6: { /* '0xF6' */
+	case 0xF6:
+		{ /* '0xF6' */
 			return ApplicationId_RESERVED
 		}
-		case 0xF7: { /* '0xF7' */
+	case 0xF7:
+		{ /* '0xF7' */
 			return ApplicationId_RESERVED
 		}
-		case 0xF8: { /* '0xF8' */
+	case 0xF8:
+		{ /* '0xF8' */
 			return ApplicationId_RESERVED
 		}
-		case 0xF9: { /* '0xF9' */
+	case 0xF9:
+		{ /* '0xF9' */
 			return ApplicationId_RESERVED
 		}
-		case 0xFA: { /* '0xFA' */
+	case 0xFA:
+		{ /* '0xFA' */
 			return ApplicationId_TESTING
 		}
-		case 0xFB: { /* '0xFB' */
+	case 0xFB:
+		{ /* '0xFB' */
 			return ApplicationId_RESERVED
 		}
-		case 0xFC: { /* '0xFC' */
+	case 0xFC:
+		{ /* '0xFC' */
 			return ApplicationId_RESERVED
 		}
-		case 0xFD: { /* '0xFD' */
+	case 0xFD:
+		{ /* '0xFD' */
 			return ApplicationId_RESERVED
 		}
-		case 0xFE: { /* '0xFE' */
+	case 0xFE:
+		{ /* '0xFE' */
 			return ApplicationId_RESERVED
 		}
-		case 0xFF: { /* '0xFF' */
+	case 0xFF:
+		{ /* '0xFF' */
 			return ApplicationId_NETWORK_CONTROL
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -2131,518 +2644,518 @@ func ApplicationIdContainerFirstEnumForFieldApplicationId(value ApplicationId) (
 }
 func ApplicationIdContainerByValue(value uint8) (enum ApplicationIdContainer, ok bool) {
 	switch value {
-		case 0x00:
-			return ApplicationIdContainer_RESERVED_00, true
-		case 0x01:
-			return ApplicationIdContainer_FREE_USAGE_01, true
-		case 0x02:
-			return ApplicationIdContainer_FREE_USAGE_02, true
-		case 0x03:
-			return ApplicationIdContainer_FREE_USAGE_03, true
-		case 0x04:
-			return ApplicationIdContainer_FREE_USAGE_04, true
-		case 0x05:
-			return ApplicationIdContainer_FREE_USAGE_05, true
-		case 0x06:
-			return ApplicationIdContainer_FREE_USAGE_06, true
-		case 0x07:
-			return ApplicationIdContainer_FREE_USAGE_07, true
-		case 0x08:
-			return ApplicationIdContainer_FREE_USAGE_08, true
-		case 0x09:
-			return ApplicationIdContainer_FREE_USAGE_09, true
-		case 0x0A:
-			return ApplicationIdContainer_FREE_USAGE_0A, true
-		case 0x0B:
-			return ApplicationIdContainer_FREE_USAGE_0B, true
-		case 0x0C:
-			return ApplicationIdContainer_FREE_USAGE_0C, true
-		case 0x0D:
-			return ApplicationIdContainer_FREE_USAGE_0D, true
-		case 0x0E:
-			return ApplicationIdContainer_FREE_USAGE_0E, true
-		case 0x0F:
-			return ApplicationIdContainer_FREE_USAGE_0F, true
-		case 0x10:
-			return ApplicationIdContainer_RESERVED_10, true
-		case 0x11:
-			return ApplicationIdContainer_RESERVED_11, true
-		case 0x12:
-			return ApplicationIdContainer_RESERVED_12, true
-		case 0x13:
-			return ApplicationIdContainer_RESERVED_13, true
-		case 0x14:
-			return ApplicationIdContainer_RESERVED_14, true
-		case 0x15:
-			return ApplicationIdContainer_RESERVED_15, true
-		case 0x16:
-			return ApplicationIdContainer_RESERVED_16, true
-		case 0x17:
-			return ApplicationIdContainer_RESERVED_17, true
-		case 0x18:
-			return ApplicationIdContainer_RESERVED_18, true
-		case 0x19:
-			return ApplicationIdContainer_TEMPERATURE_BROADCAST_19, true
-		case 0x1A:
-			return ApplicationIdContainer_RESERVED_1A, true
-		case 0x1B:
-			return ApplicationIdContainer_RESERVED_1B, true
-		case 0x1C:
-			return ApplicationIdContainer_RESERVED_1C, true
-		case 0x1D:
-			return ApplicationIdContainer_RESERVED_1D, true
-		case 0x1E:
-			return ApplicationIdContainer_RESERVED_1E, true
-		case 0x1F:
-			return ApplicationIdContainer_RESERVED_1F, true
-		case 0x20:
-			return ApplicationIdContainer_RESERVED_20, true
-		case 0x21:
-			return ApplicationIdContainer_RESERVED_21, true
-		case 0x22:
-			return ApplicationIdContainer_RESERVED_22, true
-		case 0x23:
-			return ApplicationIdContainer_RESERVED_23, true
-		case 0x24:
-			return ApplicationIdContainer_RESERVED_24, true
-		case 0x25:
-			return ApplicationIdContainer_RESERVED_25, true
-		case 0x26:
-			return ApplicationIdContainer_ROOM_CONTROL_SYSTEM_26, true
-		case 0x27:
-			return ApplicationIdContainer_RESERVED_27, true
-		case 0x28:
-			return ApplicationIdContainer_RESERVED_28, true
-		case 0x29:
-			return ApplicationIdContainer_RESERVED_29, true
-		case 0x2A:
-			return ApplicationIdContainer_RESERVED_2A, true
-		case 0x2B:
-			return ApplicationIdContainer_RESERVED_2B, true
-		case 0x2C:
-			return ApplicationIdContainer_RESERVED_2C, true
-		case 0x2D:
-			return ApplicationIdContainer_RESERVED_2D, true
-		case 0x2E:
-			return ApplicationIdContainer_RESERVED_2E, true
-		case 0x2F:
-			return ApplicationIdContainer_RESERVED_2F, true
-		case 0x30:
-			return ApplicationIdContainer_LIGHTING_30, true
-		case 0x31:
-			return ApplicationIdContainer_LIGHTING_31, true
-		case 0x32:
-			return ApplicationIdContainer_LIGHTING_32, true
-		case 0x33:
-			return ApplicationIdContainer_LIGHTING_33, true
-		case 0x34:
-			return ApplicationIdContainer_LIGHTING_34, true
-		case 0x35:
-			return ApplicationIdContainer_LIGHTING_35, true
-		case 0x36:
-			return ApplicationIdContainer_LIGHTING_36, true
-		case 0x37:
-			return ApplicationIdContainer_LIGHTING_37, true
-		case 0x38:
-			return ApplicationIdContainer_LIGHTING_38, true
-		case 0x39:
-			return ApplicationIdContainer_LIGHTING_39, true
-		case 0x3A:
-			return ApplicationIdContainer_LIGHTING_3A, true
-		case 0x3B:
-			return ApplicationIdContainer_LIGHTING_3B, true
-		case 0x3C:
-			return ApplicationIdContainer_LIGHTING_3C, true
-		case 0x3D:
-			return ApplicationIdContainer_LIGHTING_3D, true
-		case 0x3E:
-			return ApplicationIdContainer_LIGHTING_3E, true
-		case 0x3F:
-			return ApplicationIdContainer_LIGHTING_3F, true
-		case 0x40:
-			return ApplicationIdContainer_LIGHTING_40, true
-		case 0x41:
-			return ApplicationIdContainer_LIGHTING_41, true
-		case 0x42:
-			return ApplicationIdContainer_LIGHTING_42, true
-		case 0x43:
-			return ApplicationIdContainer_LIGHTING_43, true
-		case 0x44:
-			return ApplicationIdContainer_LIGHTING_44, true
-		case 0x45:
-			return ApplicationIdContainer_LIGHTING_45, true
-		case 0x46:
-			return ApplicationIdContainer_LIGHTING_46, true
-		case 0x47:
-			return ApplicationIdContainer_LIGHTING_47, true
-		case 0x48:
-			return ApplicationIdContainer_LIGHTING_48, true
-		case 0x49:
-			return ApplicationIdContainer_LIGHTING_49, true
-		case 0x4A:
-			return ApplicationIdContainer_LIGHTING_4A, true
-		case 0x4B:
-			return ApplicationIdContainer_LIGHTING_4B, true
-		case 0x4C:
-			return ApplicationIdContainer_LIGHTING_4C, true
-		case 0x4D:
-			return ApplicationIdContainer_LIGHTING_4D, true
-		case 0x4E:
-			return ApplicationIdContainer_LIGHTING_4E, true
-		case 0x4F:
-			return ApplicationIdContainer_LIGHTING_4F, true
-		case 0x50:
-			return ApplicationIdContainer_LIGHTING_50, true
-		case 0x51:
-			return ApplicationIdContainer_LIGHTING_51, true
-		case 0x52:
-			return ApplicationIdContainer_LIGHTING_52, true
-		case 0x53:
-			return ApplicationIdContainer_LIGHTING_53, true
-		case 0x54:
-			return ApplicationIdContainer_LIGHTING_54, true
-		case 0x55:
-			return ApplicationIdContainer_LIGHTING_55, true
-		case 0x56:
-			return ApplicationIdContainer_LIGHTING_56, true
-		case 0x57:
-			return ApplicationIdContainer_LIGHTING_57, true
-		case 0x58:
-			return ApplicationIdContainer_LIGHTING_58, true
-		case 0x59:
-			return ApplicationIdContainer_LIGHTING_59, true
-		case 0x5A:
-			return ApplicationIdContainer_LIGHTING_5A, true
-		case 0x5B:
-			return ApplicationIdContainer_LIGHTING_5B, true
-		case 0x5C:
-			return ApplicationIdContainer_LIGHTING_5C, true
-		case 0x5D:
-			return ApplicationIdContainer_LIGHTING_5D, true
-		case 0x5E:
-			return ApplicationIdContainer_LIGHTING_5E, true
-		case 0x5F:
-			return ApplicationIdContainer_LIGHTING_5F, true
-		case 0x60:
-			return ApplicationIdContainer_RESERVED_60, true
-		case 0x61:
-			return ApplicationIdContainer_RESERVED_61, true
-		case 0x62:
-			return ApplicationIdContainer_RESERVED_62, true
-		case 0x63:
-			return ApplicationIdContainer_RESERVED_63, true
-		case 0x64:
-			return ApplicationIdContainer_RESERVED_64, true
-		case 0x65:
-			return ApplicationIdContainer_RESERVED_65, true
-		case 0x66:
-			return ApplicationIdContainer_RESERVED_66, true
-		case 0x67:
-			return ApplicationIdContainer_RESERVED_67, true
-		case 0x68:
-			return ApplicationIdContainer_RESERVED_68, true
-		case 0x69:
-			return ApplicationIdContainer_RESERVED_69, true
-		case 0x6A:
-			return ApplicationIdContainer_RESERVED_6A, true
-		case 0x6B:
-			return ApplicationIdContainer_RESERVED_6B, true
-		case 0x6C:
-			return ApplicationIdContainer_RESERVED_6C, true
-		case 0x6D:
-			return ApplicationIdContainer_RESERVED_6D, true
-		case 0x6E:
-			return ApplicationIdContainer_RESERVED_6E, true
-		case 0x6F:
-			return ApplicationIdContainer_RESERVED_6F, true
-		case 0x70:
-			return ApplicationIdContainer_VENTILATION_70, true
-		case 0x71:
-			return ApplicationIdContainer_IRRIGATION_CONTROL_71, true
-		case 0x72:
-			return ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72, true
-		case 0x73:
-			return ApplicationIdContainer_HVAC_ACTUATOR_73, true
-		case 0x74:
-			return ApplicationIdContainer_HVAC_ACTUATOR_74, true
-		case 0x75:
-			return ApplicationIdContainer_RESERVED_75, true
-		case 0x76:
-			return ApplicationIdContainer_RESERVED_76, true
-		case 0x77:
-			return ApplicationIdContainer_RESERVED_77, true
-		case 0x78:
-			return ApplicationIdContainer_RESERVED_78, true
-		case 0x79:
-			return ApplicationIdContainer_RESERVED_79, true
-		case 0x7A:
-			return ApplicationIdContainer_RESERVED_7A, true
-		case 0x7B:
-			return ApplicationIdContainer_RESERVED_7B, true
-		case 0x7C:
-			return ApplicationIdContainer_RESERVED_7C, true
-		case 0x7D:
-			return ApplicationIdContainer_RESERVED_7D, true
-		case 0x7E:
-			return ApplicationIdContainer_RESERVED_7E, true
-		case 0x7F:
-			return ApplicationIdContainer_RESERVED_7F, true
-		case 0x80:
-			return ApplicationIdContainer_RESERVED_80, true
-		case 0x81:
-			return ApplicationIdContainer_RESERVED_81, true
-		case 0x82:
-			return ApplicationIdContainer_RESERVED_82, true
-		case 0x83:
-			return ApplicationIdContainer_RESERVED_83, true
-		case 0x84:
-			return ApplicationIdContainer_RESERVED_84, true
-		case 0x85:
-			return ApplicationIdContainer_RESERVED_85, true
-		case 0x86:
-			return ApplicationIdContainer_RESERVED_86, true
-		case 0x87:
-			return ApplicationIdContainer_RESERVED_87, true
-		case 0x88:
-			return ApplicationIdContainer_HEATING_88, true
-		case 0x89:
-			return ApplicationIdContainer_RESERVED_89, true
-		case 0x8A:
-			return ApplicationIdContainer_RESERVED_8A, true
-		case 0x8B:
-			return ApplicationIdContainer_RESERVED_8B, true
-		case 0x8C:
-			return ApplicationIdContainer_RESERVED_8C, true
-		case 0x8D:
-			return ApplicationIdContainer_RESERVED_8D, true
-		case 0x8E:
-			return ApplicationIdContainer_RESERVED_8E, true
-		case 0x8F:
-			return ApplicationIdContainer_RESERVED_8F, true
-		case 0x90:
-			return ApplicationIdContainer_RESERVED_90, true
-		case 0x91:
-			return ApplicationIdContainer_RESERVED_91, true
-		case 0x92:
-			return ApplicationIdContainer_RESERVED_92, true
-		case 0x93:
-			return ApplicationIdContainer_RESERVED_93, true
-		case 0x94:
-			return ApplicationIdContainer_RESERVED_94, true
-		case 0x95:
-			return ApplicationIdContainer_RESERVED_95, true
-		case 0x96:
-			return ApplicationIdContainer_RESERVED_96, true
-		case 0x97:
-			return ApplicationIdContainer_RESERVED_97, true
-		case 0x98:
-			return ApplicationIdContainer_RESERVED_98, true
-		case 0x99:
-			return ApplicationIdContainer_RESERVED_99, true
-		case 0x9A:
-			return ApplicationIdContainer_RESERVED_9A, true
-		case 0x9B:
-			return ApplicationIdContainer_RESERVED_9B, true
-		case 0x9C:
-			return ApplicationIdContainer_RESERVED_9C, true
-		case 0x9D:
-			return ApplicationIdContainer_RESERVED_9D, true
-		case 0x9E:
-			return ApplicationIdContainer_RESERVED_9E, true
-		case 0x9F:
-			return ApplicationIdContainer_RESERVED_9F, true
-		case 0xA0:
-			return ApplicationIdContainer_RESERVED_A0, true
-		case 0xA1:
-			return ApplicationIdContainer_RESERVED_A1, true
-		case 0xA2:
-			return ApplicationIdContainer_RESERVED_A2, true
-		case 0xA3:
-			return ApplicationIdContainer_RESERVED_A3, true
-		case 0xA4:
-			return ApplicationIdContainer_RESERVED_A4, true
-		case 0xA5:
-			return ApplicationIdContainer_RESERVED_A5, true
-		case 0xA6:
-			return ApplicationIdContainer_RESERVED_A6, true
-		case 0xA7:
-			return ApplicationIdContainer_RESERVED_A7, true
-		case 0xA8:
-			return ApplicationIdContainer_RESERVED_A8, true
-		case 0xA9:
-			return ApplicationIdContainer_RESERVED_A9, true
-		case 0xAA:
-			return ApplicationIdContainer_RESERVED_AA, true
-		case 0xAB:
-			return ApplicationIdContainer_RESERVED_AB, true
-		case 0xAC:
-			return ApplicationIdContainer_AIR_CONDITIONING_AC, true
-		case 0xAD:
-			return ApplicationIdContainer_INFO_MESSAGES, true
-		case 0xAE:
-			return ApplicationIdContainer_RESERVED_AE, true
-		case 0xAF:
-			return ApplicationIdContainer_RESERVED_AF, true
-		case 0xB0:
-			return ApplicationIdContainer_RESERVED_B0, true
-		case 0xB1:
-			return ApplicationIdContainer_RESERVED_B1, true
-		case 0xB2:
-			return ApplicationIdContainer_RESERVED_B2, true
-		case 0xB3:
-			return ApplicationIdContainer_RESERVED_B3, true
-		case 0xB4:
-			return ApplicationIdContainer_RESERVED_B4, true
-		case 0xB5:
-			return ApplicationIdContainer_RESERVED_B5, true
-		case 0xB6:
-			return ApplicationIdContainer_RESERVED_B6, true
-		case 0xB7:
-			return ApplicationIdContainer_RESERVED_B7, true
-		case 0xB8:
-			return ApplicationIdContainer_RESERVED_B8, true
-		case 0xB9:
-			return ApplicationIdContainer_RESERVED_B9, true
-		case 0xBA:
-			return ApplicationIdContainer_RESERVED_BA, true
-		case 0xBB:
-			return ApplicationIdContainer_RESERVED_BB, true
-		case 0xBC:
-			return ApplicationIdContainer_RESERVED_BC, true
-		case 0xBD:
-			return ApplicationIdContainer_RESERVED_BD, true
-		case 0xBE:
-			return ApplicationIdContainer_RESERVED_BE, true
-		case 0xBF:
-			return ApplicationIdContainer_RESERVED_BF, true
-		case 0xC0:
-			return ApplicationIdContainer_MEDIA_TRANSPORT_CONTROL_C0, true
-		case 0xC1:
-			return ApplicationIdContainer_RESERVED_C1, true
-		case 0xC2:
-			return ApplicationIdContainer_RESERVED_C2, true
-		case 0xC3:
-			return ApplicationIdContainer_RESERVED_C3, true
-		case 0xC4:
-			return ApplicationIdContainer_RESERVED_C4, true
-		case 0xC5:
-			return ApplicationIdContainer_RESERVED_C5, true
-		case 0xC6:
-			return ApplicationIdContainer_RESERVED_C6, true
-		case 0xC7:
-			return ApplicationIdContainer_RESERVED_C7, true
-		case 0xC8:
-			return ApplicationIdContainer_RESERVED_C8, true
-		case 0xC9:
-			return ApplicationIdContainer_RESERVED_C9, true
-		case 0xCA:
-			return ApplicationIdContainer_TRIGGER_CONTROL_CA, true
-		case 0xCB:
-			return ApplicationIdContainer_ENABLE_CONTROL_CB, true
-		case 0xCC:
-			return ApplicationIdContainer_I_HAVE_NO_IDEA_CC, true
-		case 0xCD:
-			return ApplicationIdContainer_AUDIO_AND_VIDEO_CD, true
-		case 0xCE:
-			return ApplicationIdContainer_ERROR_REPORTING_CE, true
-		case 0xCF:
-			return ApplicationIdContainer_RESERVED_CF, true
-		case 0xD0:
-			return ApplicationIdContainer_SECURITY_D0, true
-		case 0xD1:
-			return ApplicationIdContainer_METERING_D1, true
-		case 0xD2:
-			return ApplicationIdContainer_RESERVED_D2, true
-		case 0xD3:
-			return ApplicationIdContainer_RESERVED_D3, true
-		case 0xD4:
-			return ApplicationIdContainer_RESERVED_D4, true
-		case 0xD5:
-			return ApplicationIdContainer_ACCESS_CONTROL_D5, true
-		case 0xD6:
-			return ApplicationIdContainer_RESERVED_D6, true
-		case 0xD7:
-			return ApplicationIdContainer_RESERVED_D7, true
-		case 0xD8:
-			return ApplicationIdContainer_RESERVED_D8, true
-		case 0xD9:
-			return ApplicationIdContainer_RESERVED_D9, true
-		case 0xDA:
-			return ApplicationIdContainer_RESERVED_DA, true
-		case 0xDB:
-			return ApplicationIdContainer_RESERVED_DB, true
-		case 0xDC:
-			return ApplicationIdContainer_RESERVED_DC, true
-		case 0xDD:
-			return ApplicationIdContainer_RESERVED_DD, true
-		case 0xDE:
-			return ApplicationIdContainer_RESERVED_DE, true
-		case 0xDF:
-			return ApplicationIdContainer_CLOCK_AND_TIMEKEEPING_DF, true
-		case 0xE0:
-			return ApplicationIdContainer_TELEPHONY_STATUS_AND_CONTROL_E0, true
-		case 0xE1:
-			return ApplicationIdContainer_RESERVED_E1, true
-		case 0xE2:
-			return ApplicationIdContainer_RESERVED_E2, true
-		case 0xE3:
-			return ApplicationIdContainer_RESERVED_E3, true
-		case 0xE4:
-			return ApplicationIdContainer_MEASUREMENT_E4, true
-		case 0xE5:
-			return ApplicationIdContainer_RESERVED_E5, true
-		case 0xE6:
-			return ApplicationIdContainer_RESERVED_E6, true
-		case 0xE7:
-			return ApplicationIdContainer_RESERVED_E7, true
-		case 0xE8:
-			return ApplicationIdContainer_RESERVED_E8, true
-		case 0xE9:
-			return ApplicationIdContainer_RESERVED_E9, true
-		case 0xEA:
-			return ApplicationIdContainer_RESERVED_EA, true
-		case 0xEB:
-			return ApplicationIdContainer_RESERVED_EB, true
-		case 0xEC:
-			return ApplicationIdContainer_RESERVED_EC, true
-		case 0xED:
-			return ApplicationIdContainer_RESERVED_ED, true
-		case 0xEE:
-			return ApplicationIdContainer_RESERVED_EE, true
-		case 0xEF:
-			return ApplicationIdContainer_RESERVED_EF, true
-		case 0xF0:
-			return ApplicationIdContainer_RESERVED_F0, true
-		case 0xF1:
-			return ApplicationIdContainer_RESERVED_F1, true
-		case 0xF2:
-			return ApplicationIdContainer_RESERVED_F2, true
-		case 0xF3:
-			return ApplicationIdContainer_RESERVED_F3, true
-		case 0xF4:
-			return ApplicationIdContainer_RESERVED_F4, true
-		case 0xF5:
-			return ApplicationIdContainer_RESERVED_F5, true
-		case 0xF6:
-			return ApplicationIdContainer_RESERVED_F6, true
-		case 0xF7:
-			return ApplicationIdContainer_RESERVED_F7, true
-		case 0xF8:
-			return ApplicationIdContainer_RESERVED_F8, true
-		case 0xF9:
-			return ApplicationIdContainer_RESERVED_F9, true
-		case 0xFA:
-			return ApplicationIdContainer_TESTING_FA, true
-		case 0xFB:
-			return ApplicationIdContainer_RESERVED_FB, true
-		case 0xFC:
-			return ApplicationIdContainer_RESERVED_FC, true
-		case 0xFD:
-			return ApplicationIdContainer_RESERVED_FD, true
-		case 0xFE:
-			return ApplicationIdContainer_RESERVED_FE, true
-		case 0xFF:
-			return ApplicationIdContainer_NETWORK_CONTROL, true
+	case 0x00:
+		return ApplicationIdContainer_RESERVED_00, true
+	case 0x01:
+		return ApplicationIdContainer_FREE_USAGE_01, true
+	case 0x02:
+		return ApplicationIdContainer_FREE_USAGE_02, true
+	case 0x03:
+		return ApplicationIdContainer_FREE_USAGE_03, true
+	case 0x04:
+		return ApplicationIdContainer_FREE_USAGE_04, true
+	case 0x05:
+		return ApplicationIdContainer_FREE_USAGE_05, true
+	case 0x06:
+		return ApplicationIdContainer_FREE_USAGE_06, true
+	case 0x07:
+		return ApplicationIdContainer_FREE_USAGE_07, true
+	case 0x08:
+		return ApplicationIdContainer_FREE_USAGE_08, true
+	case 0x09:
+		return ApplicationIdContainer_FREE_USAGE_09, true
+	case 0x0A:
+		return ApplicationIdContainer_FREE_USAGE_0A, true
+	case 0x0B:
+		return ApplicationIdContainer_FREE_USAGE_0B, true
+	case 0x0C:
+		return ApplicationIdContainer_FREE_USAGE_0C, true
+	case 0x0D:
+		return ApplicationIdContainer_FREE_USAGE_0D, true
+	case 0x0E:
+		return ApplicationIdContainer_FREE_USAGE_0E, true
+	case 0x0F:
+		return ApplicationIdContainer_FREE_USAGE_0F, true
+	case 0x10:
+		return ApplicationIdContainer_RESERVED_10, true
+	case 0x11:
+		return ApplicationIdContainer_RESERVED_11, true
+	case 0x12:
+		return ApplicationIdContainer_RESERVED_12, true
+	case 0x13:
+		return ApplicationIdContainer_RESERVED_13, true
+	case 0x14:
+		return ApplicationIdContainer_RESERVED_14, true
+	case 0x15:
+		return ApplicationIdContainer_RESERVED_15, true
+	case 0x16:
+		return ApplicationIdContainer_RESERVED_16, true
+	case 0x17:
+		return ApplicationIdContainer_RESERVED_17, true
+	case 0x18:
+		return ApplicationIdContainer_RESERVED_18, true
+	case 0x19:
+		return ApplicationIdContainer_TEMPERATURE_BROADCAST_19, true
+	case 0x1A:
+		return ApplicationIdContainer_RESERVED_1A, true
+	case 0x1B:
+		return ApplicationIdContainer_RESERVED_1B, true
+	case 0x1C:
+		return ApplicationIdContainer_RESERVED_1C, true
+	case 0x1D:
+		return ApplicationIdContainer_RESERVED_1D, true
+	case 0x1E:
+		return ApplicationIdContainer_RESERVED_1E, true
+	case 0x1F:
+		return ApplicationIdContainer_RESERVED_1F, true
+	case 0x20:
+		return ApplicationIdContainer_RESERVED_20, true
+	case 0x21:
+		return ApplicationIdContainer_RESERVED_21, true
+	case 0x22:
+		return ApplicationIdContainer_RESERVED_22, true
+	case 0x23:
+		return ApplicationIdContainer_RESERVED_23, true
+	case 0x24:
+		return ApplicationIdContainer_RESERVED_24, true
+	case 0x25:
+		return ApplicationIdContainer_RESERVED_25, true
+	case 0x26:
+		return ApplicationIdContainer_ROOM_CONTROL_SYSTEM_26, true
+	case 0x27:
+		return ApplicationIdContainer_RESERVED_27, true
+	case 0x28:
+		return ApplicationIdContainer_RESERVED_28, true
+	case 0x29:
+		return ApplicationIdContainer_RESERVED_29, true
+	case 0x2A:
+		return ApplicationIdContainer_RESERVED_2A, true
+	case 0x2B:
+		return ApplicationIdContainer_RESERVED_2B, true
+	case 0x2C:
+		return ApplicationIdContainer_RESERVED_2C, true
+	case 0x2D:
+		return ApplicationIdContainer_RESERVED_2D, true
+	case 0x2E:
+		return ApplicationIdContainer_RESERVED_2E, true
+	case 0x2F:
+		return ApplicationIdContainer_RESERVED_2F, true
+	case 0x30:
+		return ApplicationIdContainer_LIGHTING_30, true
+	case 0x31:
+		return ApplicationIdContainer_LIGHTING_31, true
+	case 0x32:
+		return ApplicationIdContainer_LIGHTING_32, true
+	case 0x33:
+		return ApplicationIdContainer_LIGHTING_33, true
+	case 0x34:
+		return ApplicationIdContainer_LIGHTING_34, true
+	case 0x35:
+		return ApplicationIdContainer_LIGHTING_35, true
+	case 0x36:
+		return ApplicationIdContainer_LIGHTING_36, true
+	case 0x37:
+		return ApplicationIdContainer_LIGHTING_37, true
+	case 0x38:
+		return ApplicationIdContainer_LIGHTING_38, true
+	case 0x39:
+		return ApplicationIdContainer_LIGHTING_39, true
+	case 0x3A:
+		return ApplicationIdContainer_LIGHTING_3A, true
+	case 0x3B:
+		return ApplicationIdContainer_LIGHTING_3B, true
+	case 0x3C:
+		return ApplicationIdContainer_LIGHTING_3C, true
+	case 0x3D:
+		return ApplicationIdContainer_LIGHTING_3D, true
+	case 0x3E:
+		return ApplicationIdContainer_LIGHTING_3E, true
+	case 0x3F:
+		return ApplicationIdContainer_LIGHTING_3F, true
+	case 0x40:
+		return ApplicationIdContainer_LIGHTING_40, true
+	case 0x41:
+		return ApplicationIdContainer_LIGHTING_41, true
+	case 0x42:
+		return ApplicationIdContainer_LIGHTING_42, true
+	case 0x43:
+		return ApplicationIdContainer_LIGHTING_43, true
+	case 0x44:
+		return ApplicationIdContainer_LIGHTING_44, true
+	case 0x45:
+		return ApplicationIdContainer_LIGHTING_45, true
+	case 0x46:
+		return ApplicationIdContainer_LIGHTING_46, true
+	case 0x47:
+		return ApplicationIdContainer_LIGHTING_47, true
+	case 0x48:
+		return ApplicationIdContainer_LIGHTING_48, true
+	case 0x49:
+		return ApplicationIdContainer_LIGHTING_49, true
+	case 0x4A:
+		return ApplicationIdContainer_LIGHTING_4A, true
+	case 0x4B:
+		return ApplicationIdContainer_LIGHTING_4B, true
+	case 0x4C:
+		return ApplicationIdContainer_LIGHTING_4C, true
+	case 0x4D:
+		return ApplicationIdContainer_LIGHTING_4D, true
+	case 0x4E:
+		return ApplicationIdContainer_LIGHTING_4E, true
+	case 0x4F:
+		return ApplicationIdContainer_LIGHTING_4F, true
+	case 0x50:
+		return ApplicationIdContainer_LIGHTING_50, true
+	case 0x51:
+		return ApplicationIdContainer_LIGHTING_51, true
+	case 0x52:
+		return ApplicationIdContainer_LIGHTING_52, true
+	case 0x53:
+		return ApplicationIdContainer_LIGHTING_53, true
+	case 0x54:
+		return ApplicationIdContainer_LIGHTING_54, true
+	case 0x55:
+		return ApplicationIdContainer_LIGHTING_55, true
+	case 0x56:
+		return ApplicationIdContainer_LIGHTING_56, true
+	case 0x57:
+		return ApplicationIdContainer_LIGHTING_57, true
+	case 0x58:
+		return ApplicationIdContainer_LIGHTING_58, true
+	case 0x59:
+		return ApplicationIdContainer_LIGHTING_59, true
+	case 0x5A:
+		return ApplicationIdContainer_LIGHTING_5A, true
+	case 0x5B:
+		return ApplicationIdContainer_LIGHTING_5B, true
+	case 0x5C:
+		return ApplicationIdContainer_LIGHTING_5C, true
+	case 0x5D:
+		return ApplicationIdContainer_LIGHTING_5D, true
+	case 0x5E:
+		return ApplicationIdContainer_LIGHTING_5E, true
+	case 0x5F:
+		return ApplicationIdContainer_LIGHTING_5F, true
+	case 0x60:
+		return ApplicationIdContainer_RESERVED_60, true
+	case 0x61:
+		return ApplicationIdContainer_RESERVED_61, true
+	case 0x62:
+		return ApplicationIdContainer_RESERVED_62, true
+	case 0x63:
+		return ApplicationIdContainer_RESERVED_63, true
+	case 0x64:
+		return ApplicationIdContainer_RESERVED_64, true
+	case 0x65:
+		return ApplicationIdContainer_RESERVED_65, true
+	case 0x66:
+		return ApplicationIdContainer_RESERVED_66, true
+	case 0x67:
+		return ApplicationIdContainer_RESERVED_67, true
+	case 0x68:
+		return ApplicationIdContainer_RESERVED_68, true
+	case 0x69:
+		return ApplicationIdContainer_RESERVED_69, true
+	case 0x6A:
+		return ApplicationIdContainer_RESERVED_6A, true
+	case 0x6B:
+		return ApplicationIdContainer_RESERVED_6B, true
+	case 0x6C:
+		return ApplicationIdContainer_RESERVED_6C, true
+	case 0x6D:
+		return ApplicationIdContainer_RESERVED_6D, true
+	case 0x6E:
+		return ApplicationIdContainer_RESERVED_6E, true
+	case 0x6F:
+		return ApplicationIdContainer_RESERVED_6F, true
+	case 0x70:
+		return ApplicationIdContainer_VENTILATION_70, true
+	case 0x71:
+		return ApplicationIdContainer_IRRIGATION_CONTROL_71, true
+	case 0x72:
+		return ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72, true
+	case 0x73:
+		return ApplicationIdContainer_HVAC_ACTUATOR_73, true
+	case 0x74:
+		return ApplicationIdContainer_HVAC_ACTUATOR_74, true
+	case 0x75:
+		return ApplicationIdContainer_RESERVED_75, true
+	case 0x76:
+		return ApplicationIdContainer_RESERVED_76, true
+	case 0x77:
+		return ApplicationIdContainer_RESERVED_77, true
+	case 0x78:
+		return ApplicationIdContainer_RESERVED_78, true
+	case 0x79:
+		return ApplicationIdContainer_RESERVED_79, true
+	case 0x7A:
+		return ApplicationIdContainer_RESERVED_7A, true
+	case 0x7B:
+		return ApplicationIdContainer_RESERVED_7B, true
+	case 0x7C:
+		return ApplicationIdContainer_RESERVED_7C, true
+	case 0x7D:
+		return ApplicationIdContainer_RESERVED_7D, true
+	case 0x7E:
+		return ApplicationIdContainer_RESERVED_7E, true
+	case 0x7F:
+		return ApplicationIdContainer_RESERVED_7F, true
+	case 0x80:
+		return ApplicationIdContainer_RESERVED_80, true
+	case 0x81:
+		return ApplicationIdContainer_RESERVED_81, true
+	case 0x82:
+		return ApplicationIdContainer_RESERVED_82, true
+	case 0x83:
+		return ApplicationIdContainer_RESERVED_83, true
+	case 0x84:
+		return ApplicationIdContainer_RESERVED_84, true
+	case 0x85:
+		return ApplicationIdContainer_RESERVED_85, true
+	case 0x86:
+		return ApplicationIdContainer_RESERVED_86, true
+	case 0x87:
+		return ApplicationIdContainer_RESERVED_87, true
+	case 0x88:
+		return ApplicationIdContainer_HEATING_88, true
+	case 0x89:
+		return ApplicationIdContainer_RESERVED_89, true
+	case 0x8A:
+		return ApplicationIdContainer_RESERVED_8A, true
+	case 0x8B:
+		return ApplicationIdContainer_RESERVED_8B, true
+	case 0x8C:
+		return ApplicationIdContainer_RESERVED_8C, true
+	case 0x8D:
+		return ApplicationIdContainer_RESERVED_8D, true
+	case 0x8E:
+		return ApplicationIdContainer_RESERVED_8E, true
+	case 0x8F:
+		return ApplicationIdContainer_RESERVED_8F, true
+	case 0x90:
+		return ApplicationIdContainer_RESERVED_90, true
+	case 0x91:
+		return ApplicationIdContainer_RESERVED_91, true
+	case 0x92:
+		return ApplicationIdContainer_RESERVED_92, true
+	case 0x93:
+		return ApplicationIdContainer_RESERVED_93, true
+	case 0x94:
+		return ApplicationIdContainer_RESERVED_94, true
+	case 0x95:
+		return ApplicationIdContainer_RESERVED_95, true
+	case 0x96:
+		return ApplicationIdContainer_RESERVED_96, true
+	case 0x97:
+		return ApplicationIdContainer_RESERVED_97, true
+	case 0x98:
+		return ApplicationIdContainer_RESERVED_98, true
+	case 0x99:
+		return ApplicationIdContainer_RESERVED_99, true
+	case 0x9A:
+		return ApplicationIdContainer_RESERVED_9A, true
+	case 0x9B:
+		return ApplicationIdContainer_RESERVED_9B, true
+	case 0x9C:
+		return ApplicationIdContainer_RESERVED_9C, true
+	case 0x9D:
+		return ApplicationIdContainer_RESERVED_9D, true
+	case 0x9E:
+		return ApplicationIdContainer_RESERVED_9E, true
+	case 0x9F:
+		return ApplicationIdContainer_RESERVED_9F, true
+	case 0xA0:
+		return ApplicationIdContainer_RESERVED_A0, true
+	case 0xA1:
+		return ApplicationIdContainer_RESERVED_A1, true
+	case 0xA2:
+		return ApplicationIdContainer_RESERVED_A2, true
+	case 0xA3:
+		return ApplicationIdContainer_RESERVED_A3, true
+	case 0xA4:
+		return ApplicationIdContainer_RESERVED_A4, true
+	case 0xA5:
+		return ApplicationIdContainer_RESERVED_A5, true
+	case 0xA6:
+		return ApplicationIdContainer_RESERVED_A6, true
+	case 0xA7:
+		return ApplicationIdContainer_RESERVED_A7, true
+	case 0xA8:
+		return ApplicationIdContainer_RESERVED_A8, true
+	case 0xA9:
+		return ApplicationIdContainer_RESERVED_A9, true
+	case 0xAA:
+		return ApplicationIdContainer_RESERVED_AA, true
+	case 0xAB:
+		return ApplicationIdContainer_RESERVED_AB, true
+	case 0xAC:
+		return ApplicationIdContainer_AIR_CONDITIONING_AC, true
+	case 0xAD:
+		return ApplicationIdContainer_INFO_MESSAGES, true
+	case 0xAE:
+		return ApplicationIdContainer_RESERVED_AE, true
+	case 0xAF:
+		return ApplicationIdContainer_RESERVED_AF, true
+	case 0xB0:
+		return ApplicationIdContainer_RESERVED_B0, true
+	case 0xB1:
+		return ApplicationIdContainer_RESERVED_B1, true
+	case 0xB2:
+		return ApplicationIdContainer_RESERVED_B2, true
+	case 0xB3:
+		return ApplicationIdContainer_RESERVED_B3, true
+	case 0xB4:
+		return ApplicationIdContainer_RESERVED_B4, true
+	case 0xB5:
+		return ApplicationIdContainer_RESERVED_B5, true
+	case 0xB6:
+		return ApplicationIdContainer_RESERVED_B6, true
+	case 0xB7:
+		return ApplicationIdContainer_RESERVED_B7, true
+	case 0xB8:
+		return ApplicationIdContainer_RESERVED_B8, true
+	case 0xB9:
+		return ApplicationIdContainer_RESERVED_B9, true
+	case 0xBA:
+		return ApplicationIdContainer_RESERVED_BA, true
+	case 0xBB:
+		return ApplicationIdContainer_RESERVED_BB, true
+	case 0xBC:
+		return ApplicationIdContainer_RESERVED_BC, true
+	case 0xBD:
+		return ApplicationIdContainer_RESERVED_BD, true
+	case 0xBE:
+		return ApplicationIdContainer_RESERVED_BE, true
+	case 0xBF:
+		return ApplicationIdContainer_RESERVED_BF, true
+	case 0xC0:
+		return ApplicationIdContainer_MEDIA_TRANSPORT_CONTROL_C0, true
+	case 0xC1:
+		return ApplicationIdContainer_RESERVED_C1, true
+	case 0xC2:
+		return ApplicationIdContainer_RESERVED_C2, true
+	case 0xC3:
+		return ApplicationIdContainer_RESERVED_C3, true
+	case 0xC4:
+		return ApplicationIdContainer_RESERVED_C4, true
+	case 0xC5:
+		return ApplicationIdContainer_RESERVED_C5, true
+	case 0xC6:
+		return ApplicationIdContainer_RESERVED_C6, true
+	case 0xC7:
+		return ApplicationIdContainer_RESERVED_C7, true
+	case 0xC8:
+		return ApplicationIdContainer_RESERVED_C8, true
+	case 0xC9:
+		return ApplicationIdContainer_RESERVED_C9, true
+	case 0xCA:
+		return ApplicationIdContainer_TRIGGER_CONTROL_CA, true
+	case 0xCB:
+		return ApplicationIdContainer_ENABLE_CONTROL_CB, true
+	case 0xCC:
+		return ApplicationIdContainer_I_HAVE_NO_IDEA_CC, true
+	case 0xCD:
+		return ApplicationIdContainer_AUDIO_AND_VIDEO_CD, true
+	case 0xCE:
+		return ApplicationIdContainer_ERROR_REPORTING_CE, true
+	case 0xCF:
+		return ApplicationIdContainer_RESERVED_CF, true
+	case 0xD0:
+		return ApplicationIdContainer_SECURITY_D0, true
+	case 0xD1:
+		return ApplicationIdContainer_METERING_D1, true
+	case 0xD2:
+		return ApplicationIdContainer_RESERVED_D2, true
+	case 0xD3:
+		return ApplicationIdContainer_RESERVED_D3, true
+	case 0xD4:
+		return ApplicationIdContainer_RESERVED_D4, true
+	case 0xD5:
+		return ApplicationIdContainer_ACCESS_CONTROL_D5, true
+	case 0xD6:
+		return ApplicationIdContainer_RESERVED_D6, true
+	case 0xD7:
+		return ApplicationIdContainer_RESERVED_D7, true
+	case 0xD8:
+		return ApplicationIdContainer_RESERVED_D8, true
+	case 0xD9:
+		return ApplicationIdContainer_RESERVED_D9, true
+	case 0xDA:
+		return ApplicationIdContainer_RESERVED_DA, true
+	case 0xDB:
+		return ApplicationIdContainer_RESERVED_DB, true
+	case 0xDC:
+		return ApplicationIdContainer_RESERVED_DC, true
+	case 0xDD:
+		return ApplicationIdContainer_RESERVED_DD, true
+	case 0xDE:
+		return ApplicationIdContainer_RESERVED_DE, true
+	case 0xDF:
+		return ApplicationIdContainer_CLOCK_AND_TIMEKEEPING_DF, true
+	case 0xE0:
+		return ApplicationIdContainer_TELEPHONY_STATUS_AND_CONTROL_E0, true
+	case 0xE1:
+		return ApplicationIdContainer_RESERVED_E1, true
+	case 0xE2:
+		return ApplicationIdContainer_RESERVED_E2, true
+	case 0xE3:
+		return ApplicationIdContainer_RESERVED_E3, true
+	case 0xE4:
+		return ApplicationIdContainer_MEASUREMENT_E4, true
+	case 0xE5:
+		return ApplicationIdContainer_RESERVED_E5, true
+	case 0xE6:
+		return ApplicationIdContainer_RESERVED_E6, true
+	case 0xE7:
+		return ApplicationIdContainer_RESERVED_E7, true
+	case 0xE8:
+		return ApplicationIdContainer_RESERVED_E8, true
+	case 0xE9:
+		return ApplicationIdContainer_RESERVED_E9, true
+	case 0xEA:
+		return ApplicationIdContainer_RESERVED_EA, true
+	case 0xEB:
+		return ApplicationIdContainer_RESERVED_EB, true
+	case 0xEC:
+		return ApplicationIdContainer_RESERVED_EC, true
+	case 0xED:
+		return ApplicationIdContainer_RESERVED_ED, true
+	case 0xEE:
+		return ApplicationIdContainer_RESERVED_EE, true
+	case 0xEF:
+		return ApplicationIdContainer_RESERVED_EF, true
+	case 0xF0:
+		return ApplicationIdContainer_RESERVED_F0, true
+	case 0xF1:
+		return ApplicationIdContainer_RESERVED_F1, true
+	case 0xF2:
+		return ApplicationIdContainer_RESERVED_F2, true
+	case 0xF3:
+		return ApplicationIdContainer_RESERVED_F3, true
+	case 0xF4:
+		return ApplicationIdContainer_RESERVED_F4, true
+	case 0xF5:
+		return ApplicationIdContainer_RESERVED_F5, true
+	case 0xF6:
+		return ApplicationIdContainer_RESERVED_F6, true
+	case 0xF7:
+		return ApplicationIdContainer_RESERVED_F7, true
+	case 0xF8:
+		return ApplicationIdContainer_RESERVED_F8, true
+	case 0xF9:
+		return ApplicationIdContainer_RESERVED_F9, true
+	case 0xFA:
+		return ApplicationIdContainer_TESTING_FA, true
+	case 0xFB:
+		return ApplicationIdContainer_RESERVED_FB, true
+	case 0xFC:
+		return ApplicationIdContainer_RESERVED_FC, true
+	case 0xFD:
+		return ApplicationIdContainer_RESERVED_FD, true
+	case 0xFE:
+		return ApplicationIdContainer_RESERVED_FE, true
+	case 0xFF:
+		return ApplicationIdContainer_NETWORK_CONTROL, true
 	}
 	return 0, false
 }
@@ -3165,13 +3678,13 @@ func ApplicationIdContainerByName(value string) (enum ApplicationIdContainer, ok
 	return 0, false
 }
 
-func ApplicationIdContainerKnows(value uint8)  bool {
+func ApplicationIdContainerKnows(value uint8) bool {
 	for _, typeValue := range ApplicationIdContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastApplicationIdContainer(structType interface{}) ApplicationIdContainer {
@@ -3743,4 +4256,3 @@ func (e ApplicationIdContainer) PLC4XEnumName() string {
 func (e ApplicationIdContainer) String() string {
 	return e.PLC4XEnumName()
 }
-

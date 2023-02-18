@@ -36,65 +36,65 @@ type ITriggerControlCommandTypeContainer interface {
 	CommandType() TriggerControlCommandType
 }
 
-const(
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerMin_1Bytes TriggerControlCommandTypeContainer = 0x01
-	TriggerControlCommandTypeContainer_TriggerControlCommandIndicatorKill_1Bytes TriggerControlCommandTypeContainer = 0x09
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerMax_1Bytes TriggerControlCommandTypeContainer = 0x79
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent0_2Bytes TriggerControlCommandTypeContainer = 0x02
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent1_2Bytes TriggerControlCommandTypeContainer = 0x0A
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent2_2Bytes TriggerControlCommandTypeContainer = 0x12
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent3_2Bytes TriggerControlCommandTypeContainer = 0x1A
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent4_2Bytes TriggerControlCommandTypeContainer = 0x22
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent5_2Bytes TriggerControlCommandTypeContainer = 0x2A
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent6_2Bytes TriggerControlCommandTypeContainer = 0x32
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent7_2Bytes TriggerControlCommandTypeContainer = 0x3A
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent8_2Bytes TriggerControlCommandTypeContainer = 0x42
-	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent9_2Bytes TriggerControlCommandTypeContainer = 0x4A
+const (
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerMin_1Bytes     TriggerControlCommandTypeContainer = 0x01
+	TriggerControlCommandTypeContainer_TriggerControlCommandIndicatorKill_1Bytes  TriggerControlCommandTypeContainer = 0x09
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerMax_1Bytes     TriggerControlCommandTypeContainer = 0x79
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent0_2Bytes  TriggerControlCommandTypeContainer = 0x02
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent1_2Bytes  TriggerControlCommandTypeContainer = 0x0A
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent2_2Bytes  TriggerControlCommandTypeContainer = 0x12
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent3_2Bytes  TriggerControlCommandTypeContainer = 0x1A
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent4_2Bytes  TriggerControlCommandTypeContainer = 0x22
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent5_2Bytes  TriggerControlCommandTypeContainer = 0x2A
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent6_2Bytes  TriggerControlCommandTypeContainer = 0x32
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent7_2Bytes  TriggerControlCommandTypeContainer = 0x3A
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent8_2Bytes  TriggerControlCommandTypeContainer = 0x42
+	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent9_2Bytes  TriggerControlCommandTypeContainer = 0x4A
 	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent10_2Bytes TriggerControlCommandTypeContainer = 0x52
 	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent11_2Bytes TriggerControlCommandTypeContainer = 0x5A
 	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent12_2Bytes TriggerControlCommandTypeContainer = 0x62
 	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent13_2Bytes TriggerControlCommandTypeContainer = 0x6A
 	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent14_2Bytes TriggerControlCommandTypeContainer = 0x72
 	TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent15_2Bytes TriggerControlCommandTypeContainer = 0x7A
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_0Bytes TriggerControlCommandTypeContainer = 0xA0
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_1Bytes TriggerControlCommandTypeContainer = 0xA1
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_2Bytes TriggerControlCommandTypeContainer = 0xA2
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_3Bytes TriggerControlCommandTypeContainer = 0xA3
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_4Bytes TriggerControlCommandTypeContainer = 0xA4
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_5Bytes TriggerControlCommandTypeContainer = 0xA5
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_6Bytes TriggerControlCommandTypeContainer = 0xA6
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_7Bytes TriggerControlCommandTypeContainer = 0xA7
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_8Bytes TriggerControlCommandTypeContainer = 0xA8
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_9Bytes TriggerControlCommandTypeContainer = 0xA9
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_10Bytes TriggerControlCommandTypeContainer = 0xAA
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_11Bytes TriggerControlCommandTypeContainer = 0xAB
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_12Bytes TriggerControlCommandTypeContainer = 0xAC
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_13Bytes TriggerControlCommandTypeContainer = 0xAD
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_14Bytes TriggerControlCommandTypeContainer = 0xAE
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_15Bytes TriggerControlCommandTypeContainer = 0xAF
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_16Bytes TriggerControlCommandTypeContainer = 0xB0
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_17Bytes TriggerControlCommandTypeContainer = 0xB1
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_18Bytes TriggerControlCommandTypeContainer = 0xB2
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_19Bytes TriggerControlCommandTypeContainer = 0xB3
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_20Bytes TriggerControlCommandTypeContainer = 0xB4
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_21Bytes TriggerControlCommandTypeContainer = 0xB5
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_22Bytes TriggerControlCommandTypeContainer = 0xB6
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_23Bytes TriggerControlCommandTypeContainer = 0xB7
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_24Bytes TriggerControlCommandTypeContainer = 0xB8
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_25Bytes TriggerControlCommandTypeContainer = 0xB9
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_26Bytes TriggerControlCommandTypeContainer = 0xBA
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_27Bytes TriggerControlCommandTypeContainer = 0xBB
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_28Bytes TriggerControlCommandTypeContainer = 0xBC
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_29Bytes TriggerControlCommandTypeContainer = 0xBD
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_30Bytes TriggerControlCommandTypeContainer = 0xBE
-	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_31Bytes TriggerControlCommandTypeContainer = 0xBF
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_0Bytes          TriggerControlCommandTypeContainer = 0xA0
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_1Bytes          TriggerControlCommandTypeContainer = 0xA1
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_2Bytes          TriggerControlCommandTypeContainer = 0xA2
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_3Bytes          TriggerControlCommandTypeContainer = 0xA3
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_4Bytes          TriggerControlCommandTypeContainer = 0xA4
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_5Bytes          TriggerControlCommandTypeContainer = 0xA5
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_6Bytes          TriggerControlCommandTypeContainer = 0xA6
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_7Bytes          TriggerControlCommandTypeContainer = 0xA7
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_8Bytes          TriggerControlCommandTypeContainer = 0xA8
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_9Bytes          TriggerControlCommandTypeContainer = 0xA9
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_10Bytes         TriggerControlCommandTypeContainer = 0xAA
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_11Bytes         TriggerControlCommandTypeContainer = 0xAB
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_12Bytes         TriggerControlCommandTypeContainer = 0xAC
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_13Bytes         TriggerControlCommandTypeContainer = 0xAD
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_14Bytes         TriggerControlCommandTypeContainer = 0xAE
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_15Bytes         TriggerControlCommandTypeContainer = 0xAF
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_16Bytes         TriggerControlCommandTypeContainer = 0xB0
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_17Bytes         TriggerControlCommandTypeContainer = 0xB1
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_18Bytes         TriggerControlCommandTypeContainer = 0xB2
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_19Bytes         TriggerControlCommandTypeContainer = 0xB3
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_20Bytes         TriggerControlCommandTypeContainer = 0xB4
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_21Bytes         TriggerControlCommandTypeContainer = 0xB5
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_22Bytes         TriggerControlCommandTypeContainer = 0xB6
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_23Bytes         TriggerControlCommandTypeContainer = 0xB7
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_24Bytes         TriggerControlCommandTypeContainer = 0xB8
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_25Bytes         TriggerControlCommandTypeContainer = 0xB9
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_26Bytes         TriggerControlCommandTypeContainer = 0xBA
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_27Bytes         TriggerControlCommandTypeContainer = 0xBB
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_28Bytes         TriggerControlCommandTypeContainer = 0xBC
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_29Bytes         TriggerControlCommandTypeContainer = 0xBD
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_30Bytes         TriggerControlCommandTypeContainer = 0xBE
+	TriggerControlCommandTypeContainer_TriggerControlCommandLabel_31Bytes         TriggerControlCommandTypeContainer = 0xBF
 )
 
 var TriggerControlCommandTypeContainerValues []TriggerControlCommandTypeContainer
 
 func init() {
 	_ = errors.New
-	TriggerControlCommandTypeContainerValues = []TriggerControlCommandTypeContainer {
+	TriggerControlCommandTypeContainerValues = []TriggerControlCommandTypeContainer{
 		TriggerControlCommandTypeContainer_TriggerControlCommandTriggerMin_1Bytes,
 		TriggerControlCommandTypeContainer_TriggerControlCommandIndicatorKill_1Bytes,
 		TriggerControlCommandTypeContainer_TriggerControlCommandTriggerMax_1Bytes,
@@ -149,163 +149,214 @@ func init() {
 	}
 }
 
-
 func (e TriggerControlCommandTypeContainer) NumBytes() uint8 {
-	switch e  {
-		case 0x01: { /* '0x01' */
-            return 1
+	switch e {
+	case 0x01:
+		{ /* '0x01' */
+			return 1
 		}
-		case 0x02: { /* '0x02' */
-            return 2
+	case 0x02:
+		{ /* '0x02' */
+			return 2
 		}
-		case 0x09: { /* '0x09' */
-            return 1
+	case 0x09:
+		{ /* '0x09' */
+			return 1
 		}
-		case 0x0A: { /* '0x0A' */
-            return 2
+	case 0x0A:
+		{ /* '0x0A' */
+			return 2
 		}
-		case 0x12: { /* '0x12' */
-            return 2
+	case 0x12:
+		{ /* '0x12' */
+			return 2
 		}
-		case 0x1A: { /* '0x1A' */
-            return 2
+	case 0x1A:
+		{ /* '0x1A' */
+			return 2
 		}
-		case 0x22: { /* '0x22' */
-            return 2
+	case 0x22:
+		{ /* '0x22' */
+			return 2
 		}
-		case 0x2A: { /* '0x2A' */
-            return 2
+	case 0x2A:
+		{ /* '0x2A' */
+			return 2
 		}
-		case 0x32: { /* '0x32' */
-            return 2
+	case 0x32:
+		{ /* '0x32' */
+			return 2
 		}
-		case 0x3A: { /* '0x3A' */
-            return 2
+	case 0x3A:
+		{ /* '0x3A' */
+			return 2
 		}
-		case 0x42: { /* '0x42' */
-            return 2
+	case 0x42:
+		{ /* '0x42' */
+			return 2
 		}
-		case 0x4A: { /* '0x4A' */
-            return 2
+	case 0x4A:
+		{ /* '0x4A' */
+			return 2
 		}
-		case 0x52: { /* '0x52' */
-            return 2
+	case 0x52:
+		{ /* '0x52' */
+			return 2
 		}
-		case 0x5A: { /* '0x5A' */
-            return 2
+	case 0x5A:
+		{ /* '0x5A' */
+			return 2
 		}
-		case 0x62: { /* '0x62' */
-            return 2
+	case 0x62:
+		{ /* '0x62' */
+			return 2
 		}
-		case 0x6A: { /* '0x6A' */
-            return 2
+	case 0x6A:
+		{ /* '0x6A' */
+			return 2
 		}
-		case 0x72: { /* '0x72' */
-            return 2
+	case 0x72:
+		{ /* '0x72' */
+			return 2
 		}
-		case 0x79: { /* '0x79' */
-            return 1
+	case 0x79:
+		{ /* '0x79' */
+			return 1
 		}
-		case 0x7A: { /* '0x7A' */
-            return 2
+	case 0x7A:
+		{ /* '0x7A' */
+			return 2
 		}
-		case 0xA0: { /* '0xA0' */
-            return 0
+	case 0xA0:
+		{ /* '0xA0' */
+			return 0
 		}
-		case 0xA1: { /* '0xA1' */
-            return 1
+	case 0xA1:
+		{ /* '0xA1' */
+			return 1
 		}
-		case 0xA2: { /* '0xA2' */
-            return 2
+	case 0xA2:
+		{ /* '0xA2' */
+			return 2
 		}
-		case 0xA3: { /* '0xA3' */
-            return 3
+	case 0xA3:
+		{ /* '0xA3' */
+			return 3
 		}
-		case 0xA4: { /* '0xA4' */
-            return 4
+	case 0xA4:
+		{ /* '0xA4' */
+			return 4
 		}
-		case 0xA5: { /* '0xA5' */
-            return 5
+	case 0xA5:
+		{ /* '0xA5' */
+			return 5
 		}
-		case 0xA6: { /* '0xA6' */
-            return 6
+	case 0xA6:
+		{ /* '0xA6' */
+			return 6
 		}
-		case 0xA7: { /* '0xA7' */
-            return 7
+	case 0xA7:
+		{ /* '0xA7' */
+			return 7
 		}
-		case 0xA8: { /* '0xA8' */
-            return 8
+	case 0xA8:
+		{ /* '0xA8' */
+			return 8
 		}
-		case 0xA9: { /* '0xA9' */
-            return 9
+	case 0xA9:
+		{ /* '0xA9' */
+			return 9
 		}
-		case 0xAA: { /* '0xAA' */
-            return 10
+	case 0xAA:
+		{ /* '0xAA' */
+			return 10
 		}
-		case 0xAB: { /* '0xAB' */
-            return 11
+	case 0xAB:
+		{ /* '0xAB' */
+			return 11
 		}
-		case 0xAC: { /* '0xAC' */
-            return 12
+	case 0xAC:
+		{ /* '0xAC' */
+			return 12
 		}
-		case 0xAD: { /* '0xAD' */
-            return 13
+	case 0xAD:
+		{ /* '0xAD' */
+			return 13
 		}
-		case 0xAE: { /* '0xAE' */
-            return 14
+	case 0xAE:
+		{ /* '0xAE' */
+			return 14
 		}
-		case 0xAF: { /* '0xAF' */
-            return 15
+	case 0xAF:
+		{ /* '0xAF' */
+			return 15
 		}
-		case 0xB0: { /* '0xB0' */
-            return 16
+	case 0xB0:
+		{ /* '0xB0' */
+			return 16
 		}
-		case 0xB1: { /* '0xB1' */
-            return 17
+	case 0xB1:
+		{ /* '0xB1' */
+			return 17
 		}
-		case 0xB2: { /* '0xB2' */
-            return 18
+	case 0xB2:
+		{ /* '0xB2' */
+			return 18
 		}
-		case 0xB3: { /* '0xB3' */
-            return 19
+	case 0xB3:
+		{ /* '0xB3' */
+			return 19
 		}
-		case 0xB4: { /* '0xB4' */
-            return 20
+	case 0xB4:
+		{ /* '0xB4' */
+			return 20
 		}
-		case 0xB5: { /* '0xB5' */
-            return 21
+	case 0xB5:
+		{ /* '0xB5' */
+			return 21
 		}
-		case 0xB6: { /* '0xB6' */
-            return 22
+	case 0xB6:
+		{ /* '0xB6' */
+			return 22
 		}
-		case 0xB7: { /* '0xB7' */
-            return 23
+	case 0xB7:
+		{ /* '0xB7' */
+			return 23
 		}
-		case 0xB8: { /* '0xB8' */
-            return 24
+	case 0xB8:
+		{ /* '0xB8' */
+			return 24
 		}
-		case 0xB9: { /* '0xB9' */
-            return 25
+	case 0xB9:
+		{ /* '0xB9' */
+			return 25
 		}
-		case 0xBA: { /* '0xBA' */
-            return 26
+	case 0xBA:
+		{ /* '0xBA' */
+			return 26
 		}
-		case 0xBB: { /* '0xBB' */
-            return 27
+	case 0xBB:
+		{ /* '0xBB' */
+			return 27
 		}
-		case 0xBC: { /* '0xBC' */
-            return 28
+	case 0xBC:
+		{ /* '0xBC' */
+			return 28
 		}
-		case 0xBD: { /* '0xBD' */
-            return 29
+	case 0xBD:
+		{ /* '0xBD' */
+			return 29
 		}
-		case 0xBE: { /* '0xBE' */
-            return 30
+	case 0xBE:
+		{ /* '0xBE' */
+			return 30
 		}
-		case 0xBF: { /* '0xBF' */
-            return 31
+	case 0xBF:
+		{ /* '0xBF' */
+			return 31
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -321,161 +372,213 @@ func TriggerControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (T
 }
 
 func (e TriggerControlCommandTypeContainer) CommandType() TriggerControlCommandType {
-	switch e  {
-		case 0x01: { /* '0x01' */
+	switch e {
+	case 0x01:
+		{ /* '0x01' */
 			return TriggerControlCommandType_TRIGGER_MIN
 		}
-		case 0x02: { /* '0x02' */
+	case 0x02:
+		{ /* '0x02' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x09: { /* '0x09' */
+	case 0x09:
+		{ /* '0x09' */
 			return TriggerControlCommandType_INDICATOR_KILL
 		}
-		case 0x0A: { /* '0x0A' */
+	case 0x0A:
+		{ /* '0x0A' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x12: { /* '0x12' */
+	case 0x12:
+		{ /* '0x12' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x1A: { /* '0x1A' */
+	case 0x1A:
+		{ /* '0x1A' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x22: { /* '0x22' */
+	case 0x22:
+		{ /* '0x22' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x2A: { /* '0x2A' */
+	case 0x2A:
+		{ /* '0x2A' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x32: { /* '0x32' */
+	case 0x32:
+		{ /* '0x32' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x3A: { /* '0x3A' */
+	case 0x3A:
+		{ /* '0x3A' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x42: { /* '0x42' */
+	case 0x42:
+		{ /* '0x42' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x4A: { /* '0x4A' */
+	case 0x4A:
+		{ /* '0x4A' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x52: { /* '0x52' */
+	case 0x52:
+		{ /* '0x52' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x5A: { /* '0x5A' */
+	case 0x5A:
+		{ /* '0x5A' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x62: { /* '0x62' */
+	case 0x62:
+		{ /* '0x62' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x6A: { /* '0x6A' */
+	case 0x6A:
+		{ /* '0x6A' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x72: { /* '0x72' */
+	case 0x72:
+		{ /* '0x72' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0x79: { /* '0x79' */
+	case 0x79:
+		{ /* '0x79' */
 			return TriggerControlCommandType_TRIGGER_MAX
 		}
-		case 0x7A: { /* '0x7A' */
+	case 0x7A:
+		{ /* '0x7A' */
 			return TriggerControlCommandType_TRIGGER_EVENT
 		}
-		case 0xA0: { /* '0xA0' */
+	case 0xA0:
+		{ /* '0xA0' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xA1: { /* '0xA1' */
+	case 0xA1:
+		{ /* '0xA1' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xA2: { /* '0xA2' */
+	case 0xA2:
+		{ /* '0xA2' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xA3: { /* '0xA3' */
+	case 0xA3:
+		{ /* '0xA3' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xA4: { /* '0xA4' */
+	case 0xA4:
+		{ /* '0xA4' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xA5: { /* '0xA5' */
+	case 0xA5:
+		{ /* '0xA5' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xA6: { /* '0xA6' */
+	case 0xA6:
+		{ /* '0xA6' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xA7: { /* '0xA7' */
+	case 0xA7:
+		{ /* '0xA7' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xA8: { /* '0xA8' */
+	case 0xA8:
+		{ /* '0xA8' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xA9: { /* '0xA9' */
+	case 0xA9:
+		{ /* '0xA9' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xAA: { /* '0xAA' */
+	case 0xAA:
+		{ /* '0xAA' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xAB: { /* '0xAB' */
+	case 0xAB:
+		{ /* '0xAB' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xAC: { /* '0xAC' */
+	case 0xAC:
+		{ /* '0xAC' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xAD: { /* '0xAD' */
+	case 0xAD:
+		{ /* '0xAD' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xAE: { /* '0xAE' */
+	case 0xAE:
+		{ /* '0xAE' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xAF: { /* '0xAF' */
+	case 0xAF:
+		{ /* '0xAF' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xB0: { /* '0xB0' */
+	case 0xB0:
+		{ /* '0xB0' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xB1: { /* '0xB1' */
+	case 0xB1:
+		{ /* '0xB1' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xB2: { /* '0xB2' */
+	case 0xB2:
+		{ /* '0xB2' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xB3: { /* '0xB3' */
+	case 0xB3:
+		{ /* '0xB3' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xB4: { /* '0xB4' */
+	case 0xB4:
+		{ /* '0xB4' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xB5: { /* '0xB5' */
+	case 0xB5:
+		{ /* '0xB5' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xB6: { /* '0xB6' */
+	case 0xB6:
+		{ /* '0xB6' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xB7: { /* '0xB7' */
+	case 0xB7:
+		{ /* '0xB7' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xB8: { /* '0xB8' */
+	case 0xB8:
+		{ /* '0xB8' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xB9: { /* '0xB9' */
+	case 0xB9:
+		{ /* '0xB9' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xBA: { /* '0xBA' */
+	case 0xBA:
+		{ /* '0xBA' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xBB: { /* '0xBB' */
+	case 0xBB:
+		{ /* '0xBB' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xBC: { /* '0xBC' */
+	case 0xBC:
+		{ /* '0xBC' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xBD: { /* '0xBD' */
+	case 0xBD:
+		{ /* '0xBD' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xBE: { /* '0xBE' */
+	case 0xBE:
+		{ /* '0xBE' */
 			return TriggerControlCommandType_LABEL
 		}
-		case 0xBF: { /* '0xBF' */
+	case 0xBF:
+		{ /* '0xBF' */
 			return TriggerControlCommandType_LABEL
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -491,108 +594,108 @@ func TriggerControlCommandTypeContainerFirstEnumForFieldCommandType(value Trigge
 }
 func TriggerControlCommandTypeContainerByValue(value uint8) (enum TriggerControlCommandTypeContainer, ok bool) {
 	switch value {
-		case 0x01:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerMin_1Bytes, true
-		case 0x02:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent0_2Bytes, true
-		case 0x09:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandIndicatorKill_1Bytes, true
-		case 0x0A:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent1_2Bytes, true
-		case 0x12:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent2_2Bytes, true
-		case 0x1A:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent3_2Bytes, true
-		case 0x22:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent4_2Bytes, true
-		case 0x2A:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent5_2Bytes, true
-		case 0x32:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent6_2Bytes, true
-		case 0x3A:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent7_2Bytes, true
-		case 0x42:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent8_2Bytes, true
-		case 0x4A:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent9_2Bytes, true
-		case 0x52:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent10_2Bytes, true
-		case 0x5A:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent11_2Bytes, true
-		case 0x62:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent12_2Bytes, true
-		case 0x6A:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent13_2Bytes, true
-		case 0x72:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent14_2Bytes, true
-		case 0x79:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerMax_1Bytes, true
-		case 0x7A:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent15_2Bytes, true
-		case 0xA0:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_0Bytes, true
-		case 0xA1:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_1Bytes, true
-		case 0xA2:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_2Bytes, true
-		case 0xA3:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_3Bytes, true
-		case 0xA4:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_4Bytes, true
-		case 0xA5:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_5Bytes, true
-		case 0xA6:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_6Bytes, true
-		case 0xA7:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_7Bytes, true
-		case 0xA8:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_8Bytes, true
-		case 0xA9:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_9Bytes, true
-		case 0xAA:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_10Bytes, true
-		case 0xAB:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_11Bytes, true
-		case 0xAC:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_12Bytes, true
-		case 0xAD:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_13Bytes, true
-		case 0xAE:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_14Bytes, true
-		case 0xAF:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_15Bytes, true
-		case 0xB0:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_16Bytes, true
-		case 0xB1:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_17Bytes, true
-		case 0xB2:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_18Bytes, true
-		case 0xB3:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_19Bytes, true
-		case 0xB4:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_20Bytes, true
-		case 0xB5:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_21Bytes, true
-		case 0xB6:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_22Bytes, true
-		case 0xB7:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_23Bytes, true
-		case 0xB8:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_24Bytes, true
-		case 0xB9:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_25Bytes, true
-		case 0xBA:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_26Bytes, true
-		case 0xBB:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_27Bytes, true
-		case 0xBC:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_28Bytes, true
-		case 0xBD:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_29Bytes, true
-		case 0xBE:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_30Bytes, true
-		case 0xBF:
-			return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_31Bytes, true
+	case 0x01:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerMin_1Bytes, true
+	case 0x02:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent0_2Bytes, true
+	case 0x09:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandIndicatorKill_1Bytes, true
+	case 0x0A:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent1_2Bytes, true
+	case 0x12:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent2_2Bytes, true
+	case 0x1A:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent3_2Bytes, true
+	case 0x22:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent4_2Bytes, true
+	case 0x2A:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent5_2Bytes, true
+	case 0x32:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent6_2Bytes, true
+	case 0x3A:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent7_2Bytes, true
+	case 0x42:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent8_2Bytes, true
+	case 0x4A:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent9_2Bytes, true
+	case 0x52:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent10_2Bytes, true
+	case 0x5A:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent11_2Bytes, true
+	case 0x62:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent12_2Bytes, true
+	case 0x6A:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent13_2Bytes, true
+	case 0x72:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent14_2Bytes, true
+	case 0x79:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerMax_1Bytes, true
+	case 0x7A:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandTriggerEvent15_2Bytes, true
+	case 0xA0:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_0Bytes, true
+	case 0xA1:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_1Bytes, true
+	case 0xA2:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_2Bytes, true
+	case 0xA3:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_3Bytes, true
+	case 0xA4:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_4Bytes, true
+	case 0xA5:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_5Bytes, true
+	case 0xA6:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_6Bytes, true
+	case 0xA7:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_7Bytes, true
+	case 0xA8:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_8Bytes, true
+	case 0xA9:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_9Bytes, true
+	case 0xAA:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_10Bytes, true
+	case 0xAB:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_11Bytes, true
+	case 0xAC:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_12Bytes, true
+	case 0xAD:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_13Bytes, true
+	case 0xAE:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_14Bytes, true
+	case 0xAF:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_15Bytes, true
+	case 0xB0:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_16Bytes, true
+	case 0xB1:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_17Bytes, true
+	case 0xB2:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_18Bytes, true
+	case 0xB3:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_19Bytes, true
+	case 0xB4:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_20Bytes, true
+	case 0xB5:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_21Bytes, true
+	case 0xB6:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_22Bytes, true
+	case 0xB7:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_23Bytes, true
+	case 0xB8:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_24Bytes, true
+	case 0xB9:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_25Bytes, true
+	case 0xBA:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_26Bytes, true
+	case 0xBB:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_27Bytes, true
+	case 0xBC:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_28Bytes, true
+	case 0xBD:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_29Bytes, true
+	case 0xBE:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_30Bytes, true
+	case 0xBF:
+		return TriggerControlCommandTypeContainer_TriggerControlCommandLabel_31Bytes, true
 	}
 	return 0, false
 }
@@ -705,13 +808,13 @@ func TriggerControlCommandTypeContainerByName(value string) (enum TriggerControl
 	return 0, false
 }
 
-func TriggerControlCommandTypeContainerKnows(value uint8)  bool {
+func TriggerControlCommandTypeContainerKnows(value uint8) bool {
 	for _, typeValue := range TriggerControlCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTriggerControlCommandTypeContainer(structType interface{}) TriggerControlCommandTypeContainer {
@@ -873,4 +976,3 @@ func (e TriggerControlCommandTypeContainer) PLC4XEnumName() string {
 func (e TriggerControlCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
-

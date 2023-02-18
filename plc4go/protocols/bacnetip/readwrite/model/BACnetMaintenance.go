@@ -34,19 +34,19 @@ type IBACnetMaintenance interface {
 	utils.Serializable
 }
 
-const(
-	BACnetMaintenance_NONE BACnetMaintenance = 0
-	BACnetMaintenance_PERIODIC_TEST BACnetMaintenance = 1
+const (
+	BACnetMaintenance_NONE                     BACnetMaintenance = 0
+	BACnetMaintenance_PERIODIC_TEST            BACnetMaintenance = 1
 	BACnetMaintenance_NEED_SERVICE_OPERATIONAL BACnetMaintenance = 2
 	BACnetMaintenance_NEED_SERVICE_INOPERATIVE BACnetMaintenance = 3
-	BACnetMaintenance_VENDOR_PROPRIETARY_VALUE BACnetMaintenance = 0XFF
+	BACnetMaintenance_VENDOR_PROPRIETARY_VALUE BACnetMaintenance = 0xFF
 )
 
 var BACnetMaintenanceValues []BACnetMaintenance
 
 func init() {
 	_ = errors.New
-	BACnetMaintenanceValues = []BACnetMaintenance {
+	BACnetMaintenanceValues = []BACnetMaintenance{
 		BACnetMaintenance_NONE,
 		BACnetMaintenance_PERIODIC_TEST,
 		BACnetMaintenance_NEED_SERVICE_OPERATIONAL,
@@ -57,16 +57,16 @@ func init() {
 
 func BACnetMaintenanceByValue(value uint8) (enum BACnetMaintenance, ok bool) {
 	switch value {
-		case 0:
-			return BACnetMaintenance_NONE, true
-		case 0XFF:
-			return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetMaintenance_PERIODIC_TEST, true
-		case 2:
-			return BACnetMaintenance_NEED_SERVICE_OPERATIONAL, true
-		case 3:
-			return BACnetMaintenance_NEED_SERVICE_INOPERATIVE, true
+	case 0:
+		return BACnetMaintenance_NONE, true
+	case 0xFF:
+		return BACnetMaintenance_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetMaintenance_PERIODIC_TEST, true
+	case 2:
+		return BACnetMaintenance_NEED_SERVICE_OPERATIONAL, true
+	case 3:
+		return BACnetMaintenance_NEED_SERVICE_INOPERATIVE, true
 	}
 	return 0, false
 }
@@ -87,13 +87,13 @@ func BACnetMaintenanceByName(value string) (enum BACnetMaintenance, ok bool) {
 	return 0, false
 }
 
-func BACnetMaintenanceKnows(value uint8)  bool {
+func BACnetMaintenanceKnows(value uint8) bool {
 	for _, typeValue := range BACnetMaintenanceValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetMaintenance(structType interface{}) BACnetMaintenance {
@@ -163,4 +163,3 @@ func (e BACnetMaintenance) PLC4XEnumName() string {
 func (e BACnetMaintenance) String() string {
 	return e.PLC4XEnumName()
 }
-

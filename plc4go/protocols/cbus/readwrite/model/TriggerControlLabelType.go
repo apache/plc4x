@@ -34,10 +34,10 @@ type ITriggerControlLabelType interface {
 	utils.Serializable
 }
 
-const(
-	TriggerControlLabelType_TEXT_LABEL TriggerControlLabelType = 0
-	TriggerControlLabelType_PREDEFINED_ICON TriggerControlLabelType = 1
-	TriggerControlLabelType_LOAD_DYNAMIC_ICON TriggerControlLabelType = 2
+const (
+	TriggerControlLabelType_TEXT_LABEL             TriggerControlLabelType = 0
+	TriggerControlLabelType_PREDEFINED_ICON        TriggerControlLabelType = 1
+	TriggerControlLabelType_LOAD_DYNAMIC_ICON      TriggerControlLabelType = 2
 	TriggerControlLabelType_SET_PREFERRED_LANGUAGE TriggerControlLabelType = 3
 )
 
@@ -45,7 +45,7 @@ var TriggerControlLabelTypeValues []TriggerControlLabelType
 
 func init() {
 	_ = errors.New
-	TriggerControlLabelTypeValues = []TriggerControlLabelType {
+	TriggerControlLabelTypeValues = []TriggerControlLabelType{
 		TriggerControlLabelType_TEXT_LABEL,
 		TriggerControlLabelType_PREDEFINED_ICON,
 		TriggerControlLabelType_LOAD_DYNAMIC_ICON,
@@ -55,14 +55,14 @@ func init() {
 
 func TriggerControlLabelTypeByValue(value uint8) (enum TriggerControlLabelType, ok bool) {
 	switch value {
-		case 0:
-			return TriggerControlLabelType_TEXT_LABEL, true
-		case 1:
-			return TriggerControlLabelType_PREDEFINED_ICON, true
-		case 2:
-			return TriggerControlLabelType_LOAD_DYNAMIC_ICON, true
-		case 3:
-			return TriggerControlLabelType_SET_PREFERRED_LANGUAGE, true
+	case 0:
+		return TriggerControlLabelType_TEXT_LABEL, true
+	case 1:
+		return TriggerControlLabelType_PREDEFINED_ICON, true
+	case 2:
+		return TriggerControlLabelType_LOAD_DYNAMIC_ICON, true
+	case 3:
+		return TriggerControlLabelType_SET_PREFERRED_LANGUAGE, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func TriggerControlLabelTypeByName(value string) (enum TriggerControlLabelType, 
 	return 0, false
 }
 
-func TriggerControlLabelTypeKnows(value uint8)  bool {
+func TriggerControlLabelTypeKnows(value uint8) bool {
 	for _, typeValue := range TriggerControlLabelTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastTriggerControlLabelType(structType interface{}) TriggerControlLabelType {
@@ -155,4 +155,3 @@ func (e TriggerControlLabelType) PLC4XEnumName() string {
 func (e TriggerControlLabelType) String() string {
 	return e.PLC4XEnumName()
 }
-

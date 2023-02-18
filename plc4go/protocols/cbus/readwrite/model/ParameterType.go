@@ -34,25 +34,25 @@ type IParameterType interface {
 	utils.Serializable
 }
 
-const(
-	ParameterType_UNKNOWN ParameterType = 0
-	ParameterType_APPLICATION_ADDRESS_1 ParameterType = 1
-	ParameterType_APPLICATION_ADDRESS_2 ParameterType = 2
-	ParameterType_INTERFACE_OPTIONS_1 ParameterType = 3
-	ParameterType_INTERFACE_OPTIONS_2 ParameterType = 4
-	ParameterType_INTERFACE_OPTIONS_3 ParameterType = 5
-	ParameterType_BAUD_RATE_SELECTOR ParameterType = 6
+const (
+	ParameterType_UNKNOWN                               ParameterType = 0
+	ParameterType_APPLICATION_ADDRESS_1                 ParameterType = 1
+	ParameterType_APPLICATION_ADDRESS_2                 ParameterType = 2
+	ParameterType_INTERFACE_OPTIONS_1                   ParameterType = 3
+	ParameterType_INTERFACE_OPTIONS_2                   ParameterType = 4
+	ParameterType_INTERFACE_OPTIONS_3                   ParameterType = 5
+	ParameterType_BAUD_RATE_SELECTOR                    ParameterType = 6
 	ParameterType_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS ParameterType = 7
-	ParameterType_CUSTOM_MANUFACTURER ParameterType = 8
-	ParameterType_SERIAL_NUMBER ParameterType = 9
-	ParameterType_CUSTOM_TYPE ParameterType = 10
+	ParameterType_CUSTOM_MANUFACTURER                   ParameterType = 8
+	ParameterType_SERIAL_NUMBER                         ParameterType = 9
+	ParameterType_CUSTOM_TYPE                           ParameterType = 10
 )
 
 var ParameterTypeValues []ParameterType
 
 func init() {
 	_ = errors.New
-	ParameterTypeValues = []ParameterType {
+	ParameterTypeValues = []ParameterType{
 		ParameterType_UNKNOWN,
 		ParameterType_APPLICATION_ADDRESS_1,
 		ParameterType_APPLICATION_ADDRESS_2,
@@ -69,28 +69,28 @@ func init() {
 
 func ParameterTypeByValue(value uint8) (enum ParameterType, ok bool) {
 	switch value {
-		case 0:
-			return ParameterType_UNKNOWN, true
-		case 1:
-			return ParameterType_APPLICATION_ADDRESS_1, true
-		case 10:
-			return ParameterType_CUSTOM_TYPE, true
-		case 2:
-			return ParameterType_APPLICATION_ADDRESS_2, true
-		case 3:
-			return ParameterType_INTERFACE_OPTIONS_1, true
-		case 4:
-			return ParameterType_INTERFACE_OPTIONS_2, true
-		case 5:
-			return ParameterType_INTERFACE_OPTIONS_3, true
-		case 6:
-			return ParameterType_BAUD_RATE_SELECTOR, true
-		case 7:
-			return ParameterType_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, true
-		case 8:
-			return ParameterType_CUSTOM_MANUFACTURER, true
-		case 9:
-			return ParameterType_SERIAL_NUMBER, true
+	case 0:
+		return ParameterType_UNKNOWN, true
+	case 1:
+		return ParameterType_APPLICATION_ADDRESS_1, true
+	case 10:
+		return ParameterType_CUSTOM_TYPE, true
+	case 2:
+		return ParameterType_APPLICATION_ADDRESS_2, true
+	case 3:
+		return ParameterType_INTERFACE_OPTIONS_1, true
+	case 4:
+		return ParameterType_INTERFACE_OPTIONS_2, true
+	case 5:
+		return ParameterType_INTERFACE_OPTIONS_3, true
+	case 6:
+		return ParameterType_BAUD_RATE_SELECTOR, true
+	case 7:
+		return ParameterType_INTERFACE_OPTIONS_1_POWER_UP_SETTINGS, true
+	case 8:
+		return ParameterType_CUSTOM_MANUFACTURER, true
+	case 9:
+		return ParameterType_SERIAL_NUMBER, true
 	}
 	return 0, false
 }
@@ -123,13 +123,13 @@ func ParameterTypeByName(value string) (enum ParameterType, ok bool) {
 	return 0, false
 }
 
-func ParameterTypeKnows(value uint8)  bool {
+func ParameterTypeKnows(value uint8) bool {
 	for _, typeValue := range ParameterTypeValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastParameterType(structType interface{}) ParameterType {
@@ -211,4 +211,3 @@ func (e ParameterType) PLC4XEnumName() string {
 func (e ParameterType) String() string {
 	return e.PLC4XEnumName()
 }
-

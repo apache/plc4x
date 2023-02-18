@@ -34,67 +34,67 @@ type IBACnetObjectType interface {
 	utils.Serializable
 }
 
-const(
-	BACnetObjectType_ACCESS_CREDENTIAL BACnetObjectType = 32
-	BACnetObjectType_ACCESS_DOOR BACnetObjectType = 30
-	BACnetObjectType_ACCESS_POINT BACnetObjectType = 33
-	BACnetObjectType_ACCESS_RIGHTS BACnetObjectType = 34
-	BACnetObjectType_ACCESS_USER BACnetObjectType = 35
-	BACnetObjectType_ACCESS_ZONE BACnetObjectType = 36
-	BACnetObjectType_ACCUMULATOR BACnetObjectType = 23
-	BACnetObjectType_ALERT_ENROLLMENT BACnetObjectType = 52
-	BACnetObjectType_ANALOG_INPUT BACnetObjectType = 0
-	BACnetObjectType_ANALOG_OUTPUT BACnetObjectType = 1
-	BACnetObjectType_ANALOG_VALUE BACnetObjectType = 2
-	BACnetObjectType_AVERAGING BACnetObjectType = 18
-	BACnetObjectType_BINARY_INPUT BACnetObjectType = 3
-	BACnetObjectType_BINARY_LIGHTING_OUTPUT BACnetObjectType = 55
-	BACnetObjectType_BINARY_OUTPUT BACnetObjectType = 4
-	BACnetObjectType_BINARY_VALUE BACnetObjectType = 5
-	BACnetObjectType_BITSTRING_VALUE BACnetObjectType = 39
-	BACnetObjectType_CALENDAR BACnetObjectType = 6
-	BACnetObjectType_CHANNEL BACnetObjectType = 53
-	BACnetObjectType_CHARACTERSTRING_VALUE BACnetObjectType = 40
-	BACnetObjectType_COMMAND BACnetObjectType = 7
-	BACnetObjectType_CREDENTIAL_DATA_INPUT BACnetObjectType = 37
-	BACnetObjectType_DATEPATTERN_VALUE BACnetObjectType = 41
-	BACnetObjectType_DATE_VALUE BACnetObjectType = 42
-	BACnetObjectType_DATETIMEPATTERN_VALUE BACnetObjectType = 43
-	BACnetObjectType_DATETIME_VALUE BACnetObjectType = 44
-	BACnetObjectType_DEVICE BACnetObjectType = 8
-	BACnetObjectType_ELEVATOR_GROUP BACnetObjectType = 57
-	BACnetObjectType_ESCALATOR BACnetObjectType = 58
-	BACnetObjectType_EVENT_ENROLLMENT BACnetObjectType = 9
-	BACnetObjectType_EVENT_LOG BACnetObjectType = 25
-	BACnetObjectType_FILE BACnetObjectType = 10
-	BACnetObjectType_GLOBAL_GROUP BACnetObjectType = 26
-	BACnetObjectType_GROUP BACnetObjectType = 11
-	BACnetObjectType_INTEGER_VALUE BACnetObjectType = 45
-	BACnetObjectType_LARGE_ANALOG_VALUE BACnetObjectType = 46
-	BACnetObjectType_LIFE_SAFETY_POINT BACnetObjectType = 21
-	BACnetObjectType_LIFE_SAFETY_ZONE BACnetObjectType = 22
-	BACnetObjectType_LIFT BACnetObjectType = 59
-	BACnetObjectType_LIGHTING_OUTPUT BACnetObjectType = 54
-	BACnetObjectType_LOAD_CONTROL BACnetObjectType = 28
-	BACnetObjectType_LOOP BACnetObjectType = 12
-	BACnetObjectType_MULTI_STATE_INPUT BACnetObjectType = 13
-	BACnetObjectType_MULTI_STATE_OUTPUT BACnetObjectType = 14
-	BACnetObjectType_MULTI_STATE_VALUE BACnetObjectType = 19
-	BACnetObjectType_NETWORK_PORT BACnetObjectType = 56
-	BACnetObjectType_NETWORK_SECURITY BACnetObjectType = 38
-	BACnetObjectType_NOTIFICATION_CLASS BACnetObjectType = 15
-	BACnetObjectType_NOTIFICATION_FORWARDER BACnetObjectType = 51
-	BACnetObjectType_OCTETSTRING_VALUE BACnetObjectType = 47
-	BACnetObjectType_POSITIVE_INTEGER_VALUE BACnetObjectType = 48
-	BACnetObjectType_PROGRAM BACnetObjectType = 16
-	BACnetObjectType_PULSE_CONVERTER BACnetObjectType = 24
-	BACnetObjectType_SCHEDULE BACnetObjectType = 17
-	BACnetObjectType_STRUCTURED_VIEW BACnetObjectType = 29
-	BACnetObjectType_TIMEPATTERN_VALUE BACnetObjectType = 49
-	BACnetObjectType_TIME_VALUE BACnetObjectType = 50
-	BACnetObjectType_TIMER BACnetObjectType = 31
-	BACnetObjectType_TREND_LOG BACnetObjectType = 20
-	BACnetObjectType_TREND_LOG_MULTIPLE BACnetObjectType = 27
+const (
+	BACnetObjectType_ACCESS_CREDENTIAL        BACnetObjectType = 32
+	BACnetObjectType_ACCESS_DOOR              BACnetObjectType = 30
+	BACnetObjectType_ACCESS_POINT             BACnetObjectType = 33
+	BACnetObjectType_ACCESS_RIGHTS            BACnetObjectType = 34
+	BACnetObjectType_ACCESS_USER              BACnetObjectType = 35
+	BACnetObjectType_ACCESS_ZONE              BACnetObjectType = 36
+	BACnetObjectType_ACCUMULATOR              BACnetObjectType = 23
+	BACnetObjectType_ALERT_ENROLLMENT         BACnetObjectType = 52
+	BACnetObjectType_ANALOG_INPUT             BACnetObjectType = 0
+	BACnetObjectType_ANALOG_OUTPUT            BACnetObjectType = 1
+	BACnetObjectType_ANALOG_VALUE             BACnetObjectType = 2
+	BACnetObjectType_AVERAGING                BACnetObjectType = 18
+	BACnetObjectType_BINARY_INPUT             BACnetObjectType = 3
+	BACnetObjectType_BINARY_LIGHTING_OUTPUT   BACnetObjectType = 55
+	BACnetObjectType_BINARY_OUTPUT            BACnetObjectType = 4
+	BACnetObjectType_BINARY_VALUE             BACnetObjectType = 5
+	BACnetObjectType_BITSTRING_VALUE          BACnetObjectType = 39
+	BACnetObjectType_CALENDAR                 BACnetObjectType = 6
+	BACnetObjectType_CHANNEL                  BACnetObjectType = 53
+	BACnetObjectType_CHARACTERSTRING_VALUE    BACnetObjectType = 40
+	BACnetObjectType_COMMAND                  BACnetObjectType = 7
+	BACnetObjectType_CREDENTIAL_DATA_INPUT    BACnetObjectType = 37
+	BACnetObjectType_DATEPATTERN_VALUE        BACnetObjectType = 41
+	BACnetObjectType_DATE_VALUE               BACnetObjectType = 42
+	BACnetObjectType_DATETIMEPATTERN_VALUE    BACnetObjectType = 43
+	BACnetObjectType_DATETIME_VALUE           BACnetObjectType = 44
+	BACnetObjectType_DEVICE                   BACnetObjectType = 8
+	BACnetObjectType_ELEVATOR_GROUP           BACnetObjectType = 57
+	BACnetObjectType_ESCALATOR                BACnetObjectType = 58
+	BACnetObjectType_EVENT_ENROLLMENT         BACnetObjectType = 9
+	BACnetObjectType_EVENT_LOG                BACnetObjectType = 25
+	BACnetObjectType_FILE                     BACnetObjectType = 10
+	BACnetObjectType_GLOBAL_GROUP             BACnetObjectType = 26
+	BACnetObjectType_GROUP                    BACnetObjectType = 11
+	BACnetObjectType_INTEGER_VALUE            BACnetObjectType = 45
+	BACnetObjectType_LARGE_ANALOG_VALUE       BACnetObjectType = 46
+	BACnetObjectType_LIFE_SAFETY_POINT        BACnetObjectType = 21
+	BACnetObjectType_LIFE_SAFETY_ZONE         BACnetObjectType = 22
+	BACnetObjectType_LIFT                     BACnetObjectType = 59
+	BACnetObjectType_LIGHTING_OUTPUT          BACnetObjectType = 54
+	BACnetObjectType_LOAD_CONTROL             BACnetObjectType = 28
+	BACnetObjectType_LOOP                     BACnetObjectType = 12
+	BACnetObjectType_MULTI_STATE_INPUT        BACnetObjectType = 13
+	BACnetObjectType_MULTI_STATE_OUTPUT       BACnetObjectType = 14
+	BACnetObjectType_MULTI_STATE_VALUE        BACnetObjectType = 19
+	BACnetObjectType_NETWORK_PORT             BACnetObjectType = 56
+	BACnetObjectType_NETWORK_SECURITY         BACnetObjectType = 38
+	BACnetObjectType_NOTIFICATION_CLASS       BACnetObjectType = 15
+	BACnetObjectType_NOTIFICATION_FORWARDER   BACnetObjectType = 51
+	BACnetObjectType_OCTETSTRING_VALUE        BACnetObjectType = 47
+	BACnetObjectType_POSITIVE_INTEGER_VALUE   BACnetObjectType = 48
+	BACnetObjectType_PROGRAM                  BACnetObjectType = 16
+	BACnetObjectType_PULSE_CONVERTER          BACnetObjectType = 24
+	BACnetObjectType_SCHEDULE                 BACnetObjectType = 17
+	BACnetObjectType_STRUCTURED_VIEW          BACnetObjectType = 29
+	BACnetObjectType_TIMEPATTERN_VALUE        BACnetObjectType = 49
+	BACnetObjectType_TIME_VALUE               BACnetObjectType = 50
+	BACnetObjectType_TIMER                    BACnetObjectType = 31
+	BACnetObjectType_TREND_LOG                BACnetObjectType = 20
+	BACnetObjectType_TREND_LOG_MULTIPLE       BACnetObjectType = 27
 	BACnetObjectType_VENDOR_PROPRIETARY_VALUE BACnetObjectType = 0x3FF
 )
 
@@ -102,7 +102,7 @@ var BACnetObjectTypeValues []BACnetObjectType
 
 func init() {
 	_ = errors.New
-	BACnetObjectTypeValues = []BACnetObjectType {
+	BACnetObjectTypeValues = []BACnetObjectType{
 		BACnetObjectType_ACCESS_CREDENTIAL,
 		BACnetObjectType_ACCESS_DOOR,
 		BACnetObjectType_ACCESS_POINT,
@@ -169,128 +169,128 @@ func init() {
 
 func BACnetObjectTypeByValue(value uint16) (enum BACnetObjectType, ok bool) {
 	switch value {
-		case 0:
-			return BACnetObjectType_ANALOG_INPUT, true
-		case 0x3FF:
-			return BACnetObjectType_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetObjectType_ANALOG_OUTPUT, true
-		case 10:
-			return BACnetObjectType_FILE, true
-		case 11:
-			return BACnetObjectType_GROUP, true
-		case 12:
-			return BACnetObjectType_LOOP, true
-		case 13:
-			return BACnetObjectType_MULTI_STATE_INPUT, true
-		case 14:
-			return BACnetObjectType_MULTI_STATE_OUTPUT, true
-		case 15:
-			return BACnetObjectType_NOTIFICATION_CLASS, true
-		case 16:
-			return BACnetObjectType_PROGRAM, true
-		case 17:
-			return BACnetObjectType_SCHEDULE, true
-		case 18:
-			return BACnetObjectType_AVERAGING, true
-		case 19:
-			return BACnetObjectType_MULTI_STATE_VALUE, true
-		case 2:
-			return BACnetObjectType_ANALOG_VALUE, true
-		case 20:
-			return BACnetObjectType_TREND_LOG, true
-		case 21:
-			return BACnetObjectType_LIFE_SAFETY_POINT, true
-		case 22:
-			return BACnetObjectType_LIFE_SAFETY_ZONE, true
-		case 23:
-			return BACnetObjectType_ACCUMULATOR, true
-		case 24:
-			return BACnetObjectType_PULSE_CONVERTER, true
-		case 25:
-			return BACnetObjectType_EVENT_LOG, true
-		case 26:
-			return BACnetObjectType_GLOBAL_GROUP, true
-		case 27:
-			return BACnetObjectType_TREND_LOG_MULTIPLE, true
-		case 28:
-			return BACnetObjectType_LOAD_CONTROL, true
-		case 29:
-			return BACnetObjectType_STRUCTURED_VIEW, true
-		case 3:
-			return BACnetObjectType_BINARY_INPUT, true
-		case 30:
-			return BACnetObjectType_ACCESS_DOOR, true
-		case 31:
-			return BACnetObjectType_TIMER, true
-		case 32:
-			return BACnetObjectType_ACCESS_CREDENTIAL, true
-		case 33:
-			return BACnetObjectType_ACCESS_POINT, true
-		case 34:
-			return BACnetObjectType_ACCESS_RIGHTS, true
-		case 35:
-			return BACnetObjectType_ACCESS_USER, true
-		case 36:
-			return BACnetObjectType_ACCESS_ZONE, true
-		case 37:
-			return BACnetObjectType_CREDENTIAL_DATA_INPUT, true
-		case 38:
-			return BACnetObjectType_NETWORK_SECURITY, true
-		case 39:
-			return BACnetObjectType_BITSTRING_VALUE, true
-		case 4:
-			return BACnetObjectType_BINARY_OUTPUT, true
-		case 40:
-			return BACnetObjectType_CHARACTERSTRING_VALUE, true
-		case 41:
-			return BACnetObjectType_DATEPATTERN_VALUE, true
-		case 42:
-			return BACnetObjectType_DATE_VALUE, true
-		case 43:
-			return BACnetObjectType_DATETIMEPATTERN_VALUE, true
-		case 44:
-			return BACnetObjectType_DATETIME_VALUE, true
-		case 45:
-			return BACnetObjectType_INTEGER_VALUE, true
-		case 46:
-			return BACnetObjectType_LARGE_ANALOG_VALUE, true
-		case 47:
-			return BACnetObjectType_OCTETSTRING_VALUE, true
-		case 48:
-			return BACnetObjectType_POSITIVE_INTEGER_VALUE, true
-		case 49:
-			return BACnetObjectType_TIMEPATTERN_VALUE, true
-		case 5:
-			return BACnetObjectType_BINARY_VALUE, true
-		case 50:
-			return BACnetObjectType_TIME_VALUE, true
-		case 51:
-			return BACnetObjectType_NOTIFICATION_FORWARDER, true
-		case 52:
-			return BACnetObjectType_ALERT_ENROLLMENT, true
-		case 53:
-			return BACnetObjectType_CHANNEL, true
-		case 54:
-			return BACnetObjectType_LIGHTING_OUTPUT, true
-		case 55:
-			return BACnetObjectType_BINARY_LIGHTING_OUTPUT, true
-		case 56:
-			return BACnetObjectType_NETWORK_PORT, true
-		case 57:
-			return BACnetObjectType_ELEVATOR_GROUP, true
-		case 58:
-			return BACnetObjectType_ESCALATOR, true
-		case 59:
-			return BACnetObjectType_LIFT, true
-		case 6:
-			return BACnetObjectType_CALENDAR, true
-		case 7:
-			return BACnetObjectType_COMMAND, true
-		case 8:
-			return BACnetObjectType_DEVICE, true
-		case 9:
-			return BACnetObjectType_EVENT_ENROLLMENT, true
+	case 0:
+		return BACnetObjectType_ANALOG_INPUT, true
+	case 0x3FF:
+		return BACnetObjectType_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetObjectType_ANALOG_OUTPUT, true
+	case 10:
+		return BACnetObjectType_FILE, true
+	case 11:
+		return BACnetObjectType_GROUP, true
+	case 12:
+		return BACnetObjectType_LOOP, true
+	case 13:
+		return BACnetObjectType_MULTI_STATE_INPUT, true
+	case 14:
+		return BACnetObjectType_MULTI_STATE_OUTPUT, true
+	case 15:
+		return BACnetObjectType_NOTIFICATION_CLASS, true
+	case 16:
+		return BACnetObjectType_PROGRAM, true
+	case 17:
+		return BACnetObjectType_SCHEDULE, true
+	case 18:
+		return BACnetObjectType_AVERAGING, true
+	case 19:
+		return BACnetObjectType_MULTI_STATE_VALUE, true
+	case 2:
+		return BACnetObjectType_ANALOG_VALUE, true
+	case 20:
+		return BACnetObjectType_TREND_LOG, true
+	case 21:
+		return BACnetObjectType_LIFE_SAFETY_POINT, true
+	case 22:
+		return BACnetObjectType_LIFE_SAFETY_ZONE, true
+	case 23:
+		return BACnetObjectType_ACCUMULATOR, true
+	case 24:
+		return BACnetObjectType_PULSE_CONVERTER, true
+	case 25:
+		return BACnetObjectType_EVENT_LOG, true
+	case 26:
+		return BACnetObjectType_GLOBAL_GROUP, true
+	case 27:
+		return BACnetObjectType_TREND_LOG_MULTIPLE, true
+	case 28:
+		return BACnetObjectType_LOAD_CONTROL, true
+	case 29:
+		return BACnetObjectType_STRUCTURED_VIEW, true
+	case 3:
+		return BACnetObjectType_BINARY_INPUT, true
+	case 30:
+		return BACnetObjectType_ACCESS_DOOR, true
+	case 31:
+		return BACnetObjectType_TIMER, true
+	case 32:
+		return BACnetObjectType_ACCESS_CREDENTIAL, true
+	case 33:
+		return BACnetObjectType_ACCESS_POINT, true
+	case 34:
+		return BACnetObjectType_ACCESS_RIGHTS, true
+	case 35:
+		return BACnetObjectType_ACCESS_USER, true
+	case 36:
+		return BACnetObjectType_ACCESS_ZONE, true
+	case 37:
+		return BACnetObjectType_CREDENTIAL_DATA_INPUT, true
+	case 38:
+		return BACnetObjectType_NETWORK_SECURITY, true
+	case 39:
+		return BACnetObjectType_BITSTRING_VALUE, true
+	case 4:
+		return BACnetObjectType_BINARY_OUTPUT, true
+	case 40:
+		return BACnetObjectType_CHARACTERSTRING_VALUE, true
+	case 41:
+		return BACnetObjectType_DATEPATTERN_VALUE, true
+	case 42:
+		return BACnetObjectType_DATE_VALUE, true
+	case 43:
+		return BACnetObjectType_DATETIMEPATTERN_VALUE, true
+	case 44:
+		return BACnetObjectType_DATETIME_VALUE, true
+	case 45:
+		return BACnetObjectType_INTEGER_VALUE, true
+	case 46:
+		return BACnetObjectType_LARGE_ANALOG_VALUE, true
+	case 47:
+		return BACnetObjectType_OCTETSTRING_VALUE, true
+	case 48:
+		return BACnetObjectType_POSITIVE_INTEGER_VALUE, true
+	case 49:
+		return BACnetObjectType_TIMEPATTERN_VALUE, true
+	case 5:
+		return BACnetObjectType_BINARY_VALUE, true
+	case 50:
+		return BACnetObjectType_TIME_VALUE, true
+	case 51:
+		return BACnetObjectType_NOTIFICATION_FORWARDER, true
+	case 52:
+		return BACnetObjectType_ALERT_ENROLLMENT, true
+	case 53:
+		return BACnetObjectType_CHANNEL, true
+	case 54:
+		return BACnetObjectType_LIGHTING_OUTPUT, true
+	case 55:
+		return BACnetObjectType_BINARY_LIGHTING_OUTPUT, true
+	case 56:
+		return BACnetObjectType_NETWORK_PORT, true
+	case 57:
+		return BACnetObjectType_ELEVATOR_GROUP, true
+	case 58:
+		return BACnetObjectType_ESCALATOR, true
+	case 59:
+		return BACnetObjectType_LIFT, true
+	case 6:
+		return BACnetObjectType_CALENDAR, true
+	case 7:
+		return BACnetObjectType_COMMAND, true
+	case 8:
+		return BACnetObjectType_DEVICE, true
+	case 9:
+		return BACnetObjectType_EVENT_ENROLLMENT, true
 	}
 	return 0, false
 }
@@ -423,13 +423,13 @@ func BACnetObjectTypeByName(value string) (enum BACnetObjectType, ok bool) {
 	return 0, false
 }
 
-func BACnetObjectTypeKnows(value uint16)  bool {
+func BACnetObjectTypeKnows(value uint16) bool {
 	for _, typeValue := range BACnetObjectTypeValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetObjectType(structType interface{}) BACnetObjectType {
@@ -611,4 +611,3 @@ func (e BACnetObjectType) PLC4XEnumName() string {
 func (e BACnetObjectType) String() string {
 	return e.PLC4XEnumName()
 }
-

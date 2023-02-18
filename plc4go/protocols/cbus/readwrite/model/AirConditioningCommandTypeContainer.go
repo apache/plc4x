@@ -36,33 +36,33 @@ type IAirConditioningCommandTypeContainer interface {
 	CommandType() AirConditioningCommandType
 }
 
-const(
-	AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOff AirConditioningCommandTypeContainer = 0x01
-	AirConditioningCommandTypeContainer_AirConditioningCommandZoneHvacPlantStatus AirConditioningCommandTypeContainer = 0x05
-	AirConditioningCommandTypeContainer_AirConditioningCommandZoneHumidityPlantStatus AirConditioningCommandTypeContainer = 0x0D
-	AirConditioningCommandTypeContainer_AirConditioningCommandZoneTemperature AirConditioningCommandTypeContainer = 0x15
-	AirConditioningCommandTypeContainer_AirConditioningCommandZoneHumidity AirConditioningCommandTypeContainer = 0x1D
-	AirConditioningCommandTypeContainer_AirConditioningCommandRefresh AirConditioningCommandTypeContainer = 0x21
-	AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHvacMode AirConditioningCommandTypeContainer = 0x2F
-	AirConditioningCommandTypeContainer_AirConditioningCommandSetPlantHvacLevel AirConditioningCommandTypeContainer = 0x36
-	AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHumidityMode AirConditioningCommandTypeContainer = 0x47
-	AirConditioningCommandTypeContainer_AirConditioningCommandSetPlantHumidityLevel AirConditioningCommandTypeContainer = 0x4E
-	AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacUpperGuardLimit AirConditioningCommandTypeContainer = 0x55
-	AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacLowerGuardLimit AirConditioningCommandTypeContainer = 0x5D
-	AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacSetbackLimit AirConditioningCommandTypeContainer = 0x65
+const (
+	AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOff            AirConditioningCommandTypeContainer = 0x01
+	AirConditioningCommandTypeContainer_AirConditioningCommandZoneHvacPlantStatus        AirConditioningCommandTypeContainer = 0x05
+	AirConditioningCommandTypeContainer_AirConditioningCommandZoneHumidityPlantStatus    AirConditioningCommandTypeContainer = 0x0D
+	AirConditioningCommandTypeContainer_AirConditioningCommandZoneTemperature            AirConditioningCommandTypeContainer = 0x15
+	AirConditioningCommandTypeContainer_AirConditioningCommandZoneHumidity               AirConditioningCommandTypeContainer = 0x1D
+	AirConditioningCommandTypeContainer_AirConditioningCommandRefresh                    AirConditioningCommandTypeContainer = 0x21
+	AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHvacMode            AirConditioningCommandTypeContainer = 0x2F
+	AirConditioningCommandTypeContainer_AirConditioningCommandSetPlantHvacLevel          AirConditioningCommandTypeContainer = 0x36
+	AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHumidityMode        AirConditioningCommandTypeContainer = 0x47
+	AirConditioningCommandTypeContainer_AirConditioningCommandSetPlantHumidityLevel      AirConditioningCommandTypeContainer = 0x4E
+	AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacUpperGuardLimit     AirConditioningCommandTypeContainer = 0x55
+	AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacLowerGuardLimit     AirConditioningCommandTypeContainer = 0x5D
+	AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacSetbackLimit        AirConditioningCommandTypeContainer = 0x65
 	AirConditioningCommandTypeContainer_AirConditioningCommandSetHumidityUpperGuardLimit AirConditioningCommandTypeContainer = 0x6D
 	AirConditioningCommandTypeContainer_AirConditioningCommandSetHumidityLowerGuardLimit AirConditioningCommandTypeContainer = 0x75
-	AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOn AirConditioningCommandTypeContainer = 0x79
-	AirConditioningCommandTypeContainer_AirConditioningCommandSetHumiditySetbackLimit AirConditioningCommandTypeContainer = 0x7D
-	AirConditioningCommandTypeContainer_AirConditioningCommandHvacScheduleEntry AirConditioningCommandTypeContainer = 0x89
-	AirConditioningCommandTypeContainer_AirConditioningCommandHumidityScheduleEntry AirConditioningCommandTypeContainer = 0xA9
+	AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOn             AirConditioningCommandTypeContainer = 0x79
+	AirConditioningCommandTypeContainer_AirConditioningCommandSetHumiditySetbackLimit    AirConditioningCommandTypeContainer = 0x7D
+	AirConditioningCommandTypeContainer_AirConditioningCommandHvacScheduleEntry          AirConditioningCommandTypeContainer = 0x89
+	AirConditioningCommandTypeContainer_AirConditioningCommandHumidityScheduleEntry      AirConditioningCommandTypeContainer = 0xA9
 )
 
 var AirConditioningCommandTypeContainerValues []AirConditioningCommandTypeContainer
 
 func init() {
 	_ = errors.New
-	AirConditioningCommandTypeContainerValues = []AirConditioningCommandTypeContainer {
+	AirConditioningCommandTypeContainerValues = []AirConditioningCommandTypeContainer{
 		AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOff,
 		AirConditioningCommandTypeContainer_AirConditioningCommandZoneHvacPlantStatus,
 		AirConditioningCommandTypeContainer_AirConditioningCommandZoneHumidityPlantStatus,
@@ -85,67 +85,86 @@ func init() {
 	}
 }
 
-
 func (e AirConditioningCommandTypeContainer) NumBytes() uint8 {
-	switch e  {
-		case 0x01: { /* '0x01' */
-            return 1
+	switch e {
+	case 0x01:
+		{ /* '0x01' */
+			return 1
 		}
-		case 0x05: { /* '0x05' */
-            return 5
+	case 0x05:
+		{ /* '0x05' */
+			return 5
 		}
-		case 0x0D: { /* '0x0D' */
-            return 5
+	case 0x0D:
+		{ /* '0x0D' */
+			return 5
 		}
-		case 0x15: { /* '0x15' */
-            return 5
+	case 0x15:
+		{ /* '0x15' */
+			return 5
 		}
-		case 0x1D: { /* '0x1D' */
-            return 5
+	case 0x1D:
+		{ /* '0x1D' */
+			return 5
 		}
-		case 0x21: { /* '0x21' */
-            return 1
+	case 0x21:
+		{ /* '0x21' */
+			return 1
 		}
-		case 0x2F: { /* '0x2F' */
-            return 7
+	case 0x2F:
+		{ /* '0x2F' */
+			return 7
 		}
-		case 0x36: { /* '0x36' */
-            return 6
+	case 0x36:
+		{ /* '0x36' */
+			return 6
 		}
-		case 0x47: { /* '0x47' */
-            return 7
+	case 0x47:
+		{ /* '0x47' */
+			return 7
 		}
-		case 0x4E: { /* '0x4E' */
-            return 6
+	case 0x4E:
+		{ /* '0x4E' */
+			return 6
 		}
-		case 0x55: { /* '0x55' */
-            return 5
+	case 0x55:
+		{ /* '0x55' */
+			return 5
 		}
-		case 0x5D: { /* '0x5D' */
-            return 5
+	case 0x5D:
+		{ /* '0x5D' */
+			return 5
 		}
-		case 0x65: { /* '0x65' */
-            return 5
+	case 0x65:
+		{ /* '0x65' */
+			return 5
 		}
-		case 0x6D: { /* '0x6D' */
-            return 5
+	case 0x6D:
+		{ /* '0x6D' */
+			return 5
 		}
-		case 0x75: { /* '0x75' */
-            return 5
+	case 0x75:
+		{ /* '0x75' */
+			return 5
 		}
-		case 0x79: { /* '0x79' */
-            return 1
+	case 0x79:
+		{ /* '0x79' */
+			return 1
 		}
-		case 0x7D: { /* '0x7D' */
-            return 5
+	case 0x7D:
+		{ /* '0x7D' */
+			return 5
 		}
-		case 0x89: { /* '0x89' */
-            return 9
+	case 0x89:
+		{ /* '0x89' */
+			return 9
 		}
-		case 0xA9: { /* '0xA9' */
-            return 9
+	case 0xA9:
+		{ /* '0xA9' */
+			return 9
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -161,65 +180,85 @@ func AirConditioningCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (
 }
 
 func (e AirConditioningCommandTypeContainer) CommandType() AirConditioningCommandType {
-	switch e  {
-		case 0x01: { /* '0x01' */
+	switch e {
+	case 0x01:
+		{ /* '0x01' */
 			return AirConditioningCommandType_SET_ZONE_GROUP_OFF
 		}
-		case 0x05: { /* '0x05' */
+	case 0x05:
+		{ /* '0x05' */
 			return AirConditioningCommandType_ZONE_HVAC_PLANT_STATUS
 		}
-		case 0x0D: { /* '0x0D' */
+	case 0x0D:
+		{ /* '0x0D' */
 			return AirConditioningCommandType_ZONE_HUMIDITY_PLANT_STATUS
 		}
-		case 0x15: { /* '0x15' */
+	case 0x15:
+		{ /* '0x15' */
 			return AirConditioningCommandType_ZONE_TEMPERATURE
 		}
-		case 0x1D: { /* '0x1D' */
+	case 0x1D:
+		{ /* '0x1D' */
 			return AirConditioningCommandType_ZONE_HUMIDITY
 		}
-		case 0x21: { /* '0x21' */
+	case 0x21:
+		{ /* '0x21' */
 			return AirConditioningCommandType_REFRESH
 		}
-		case 0x2F: { /* '0x2F' */
+	case 0x2F:
+		{ /* '0x2F' */
 			return AirConditioningCommandType_SET_ZONE_HVAC_MODE
 		}
-		case 0x36: { /* '0x36' */
+	case 0x36:
+		{ /* '0x36' */
 			return AirConditioningCommandType_SET_PLANT_HVAC_LEVEL
 		}
-		case 0x47: { /* '0x47' */
+	case 0x47:
+		{ /* '0x47' */
 			return AirConditioningCommandType_SET_ZONE_HUMIDITY_MODE
 		}
-		case 0x4E: { /* '0x4E' */
+	case 0x4E:
+		{ /* '0x4E' */
 			return AirConditioningCommandType_SET_PLANT_HUMIDITY_LEVEL
 		}
-		case 0x55: { /* '0x55' */
+	case 0x55:
+		{ /* '0x55' */
 			return AirConditioningCommandType_SET_HVAC_UPPER_GUARD_LIMIT
 		}
-		case 0x5D: { /* '0x5D' */
+	case 0x5D:
+		{ /* '0x5D' */
 			return AirConditioningCommandType_SET_HVAC_LOWER_GUARD_LIMIT
 		}
-		case 0x65: { /* '0x65' */
+	case 0x65:
+		{ /* '0x65' */
 			return AirConditioningCommandType_SET_HVAC_SETBACK_LIMIT
 		}
-		case 0x6D: { /* '0x6D' */
+	case 0x6D:
+		{ /* '0x6D' */
 			return AirConditioningCommandType_SET_HUMIDITY_UPPER_GUARD_LIMIT
 		}
-		case 0x75: { /* '0x75' */
+	case 0x75:
+		{ /* '0x75' */
 			return AirConditioningCommandType_SET_HUMIDITY_LOWER_GUARD_LIMIT
 		}
-		case 0x79: { /* '0x79' */
+	case 0x79:
+		{ /* '0x79' */
 			return AirConditioningCommandType_SET_ZONE_GROUP_ON
 		}
-		case 0x7D: { /* '0x7D' */
+	case 0x7D:
+		{ /* '0x7D' */
 			return AirConditioningCommandType_SET_HUMIDITY_SETBACK_LIMIT
 		}
-		case 0x89: { /* '0x89' */
+	case 0x89:
+		{ /* '0x89' */
 			return AirConditioningCommandType_HVAC_SCHEDULE_ENTRY
 		}
-		case 0xA9: { /* '0xA9' */
+	case 0xA9:
+		{ /* '0xA9' */
 			return AirConditioningCommandType_HUMIDITY_SCHEDULE_ENTRY
 		}
-		default: {
+	default:
+		{
 			return 0
 		}
 	}
@@ -235,44 +274,44 @@ func AirConditioningCommandTypeContainerFirstEnumForFieldCommandType(value AirCo
 }
 func AirConditioningCommandTypeContainerByValue(value uint8) (enum AirConditioningCommandTypeContainer, ok bool) {
 	switch value {
-		case 0x01:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOff, true
-		case 0x05:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandZoneHvacPlantStatus, true
-		case 0x0D:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandZoneHumidityPlantStatus, true
-		case 0x15:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandZoneTemperature, true
-		case 0x1D:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandZoneHumidity, true
-		case 0x21:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandRefresh, true
-		case 0x2F:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHvacMode, true
-		case 0x36:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetPlantHvacLevel, true
-		case 0x47:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHumidityMode, true
-		case 0x4E:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetPlantHumidityLevel, true
-		case 0x55:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacUpperGuardLimit, true
-		case 0x5D:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacLowerGuardLimit, true
-		case 0x65:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacSetbackLimit, true
-		case 0x6D:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetHumidityUpperGuardLimit, true
-		case 0x75:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetHumidityLowerGuardLimit, true
-		case 0x79:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOn, true
-		case 0x7D:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandSetHumiditySetbackLimit, true
-		case 0x89:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandHvacScheduleEntry, true
-		case 0xA9:
-			return AirConditioningCommandTypeContainer_AirConditioningCommandHumidityScheduleEntry, true
+	case 0x01:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOff, true
+	case 0x05:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandZoneHvacPlantStatus, true
+	case 0x0D:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandZoneHumidityPlantStatus, true
+	case 0x15:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandZoneTemperature, true
+	case 0x1D:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandZoneHumidity, true
+	case 0x21:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandRefresh, true
+	case 0x2F:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHvacMode, true
+	case 0x36:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetPlantHvacLevel, true
+	case 0x47:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneHumidityMode, true
+	case 0x4E:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetPlantHumidityLevel, true
+	case 0x55:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacUpperGuardLimit, true
+	case 0x5D:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacLowerGuardLimit, true
+	case 0x65:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetHvacSetbackLimit, true
+	case 0x6D:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetHumidityUpperGuardLimit, true
+	case 0x75:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetHumidityLowerGuardLimit, true
+	case 0x79:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetZoneGroupOn, true
+	case 0x7D:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandSetHumiditySetbackLimit, true
+	case 0x89:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandHvacScheduleEntry, true
+	case 0xA9:
+		return AirConditioningCommandTypeContainer_AirConditioningCommandHumidityScheduleEntry, true
 	}
 	return 0, false
 }
@@ -321,13 +360,13 @@ func AirConditioningCommandTypeContainerByName(value string) (enum AirConditioni
 	return 0, false
 }
 
-func AirConditioningCommandTypeContainerKnows(value uint8)  bool {
+func AirConditioningCommandTypeContainerKnows(value uint8) bool {
 	for _, typeValue := range AirConditioningCommandTypeContainerValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastAirConditioningCommandTypeContainer(structType interface{}) AirConditioningCommandTypeContainer {
@@ -425,4 +464,3 @@ func (e AirConditioningCommandTypeContainer) PLC4XEnumName() string {
 func (e AirConditioningCommandTypeContainer) String() string {
 	return e.PLC4XEnumName()
 }
-

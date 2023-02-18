@@ -74,7 +74,7 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
 
     // Implicit Field (dataSize) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
-    short dataSize = (short) (getSymbol().length());
+    short dataSize = (short) (STR_LEN(getSymbol()));
     writeImplicitField(
         "dataSize",
         dataSize,
@@ -99,7 +99,7 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
         "pad",
         pad,
         writeUnsignedShort(writeBuffer, 8),
-        ((getSymbol().length()) % (2)) != (0),
+        ((STR_LEN(getSymbol())) % (2)) != (0),
         WithOption.WithByteOrder(
             (((order) == (IntegerEncoding.BIG_ENDIAN))
                 ? ByteOrder.BIG_ENDIAN
@@ -123,7 +123,7 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
     lengthInBits += 8;
 
     // Simple field (symbol)
-    lengthInBits += (getSymbol().length()) * (8);
+    lengthInBits += (STR_LEN(getSymbol())) * (8);
 
     // Optional Field (pad)
     if (pad != null) {
@@ -163,7 +163,7 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
         readOptionalField(
             "pad",
             readUnsignedShort(readBuffer, 8),
-            ((symbol.length()) % (2)) != (0),
+            ((STR_LEN(symbol)) % (2)) != (0),
             WithOption.WithByteOrder(
                 (((order) == (IntegerEncoding.BIG_ENDIAN))
                     ? ByteOrder.BIG_ENDIAN

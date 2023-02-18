@@ -34,74 +34,74 @@ type IBACnetObjectTypesSupported interface {
 	utils.Serializable
 }
 
-const(
-	BACnetObjectTypesSupported_ANALOG_INPUT BACnetObjectTypesSupported = 0
-	BACnetObjectTypesSupported_ANALOG_OUTPUT BACnetObjectTypesSupported = 1
-	BACnetObjectTypesSupported_ANALOG_VALUE BACnetObjectTypesSupported = 2
-	BACnetObjectTypesSupported_BINARY_INPUT BACnetObjectTypesSupported = 3
-	BACnetObjectTypesSupported_BINARY_OUTPUT BACnetObjectTypesSupported = 4
-	BACnetObjectTypesSupported_BINARY_VALUE BACnetObjectTypesSupported = 5
-	BACnetObjectTypesSupported_CALENDAR BACnetObjectTypesSupported = 6
-	BACnetObjectTypesSupported_COMMAND BACnetObjectTypesSupported = 7
-	BACnetObjectTypesSupported_DEVICE BACnetObjectTypesSupported = 8
-	BACnetObjectTypesSupported_EVENT_ENROLLMENT BACnetObjectTypesSupported = 9
-	BACnetObjectTypesSupported_FILE BACnetObjectTypesSupported = 10
-	BACnetObjectTypesSupported_GROUP BACnetObjectTypesSupported = 11
-	BACnetObjectTypesSupported_LOOP BACnetObjectTypesSupported = 12
-	BACnetObjectTypesSupported_MULTI_STATE_INPUT BACnetObjectTypesSupported = 13
-	BACnetObjectTypesSupported_MULTI_STATE_OUTPUT BACnetObjectTypesSupported = 14
-	BACnetObjectTypesSupported_NOTIFICATION_CLASS BACnetObjectTypesSupported = 15
-	BACnetObjectTypesSupported_PROGRAM BACnetObjectTypesSupported = 16
-	BACnetObjectTypesSupported_SCHEDULE BACnetObjectTypesSupported = 17
-	BACnetObjectTypesSupported_AVERAGING BACnetObjectTypesSupported = 18
-	BACnetObjectTypesSupported_MULTI_STATE_VALUE BACnetObjectTypesSupported = 19
-	BACnetObjectTypesSupported_TREND_LOG BACnetObjectTypesSupported = 20
-	BACnetObjectTypesSupported_LIFE_SAFETY_POINT BACnetObjectTypesSupported = 21
-	BACnetObjectTypesSupported_LIFE_SAFETY_ZONE BACnetObjectTypesSupported = 22
-	BACnetObjectTypesSupported_ACCUMULATOR BACnetObjectTypesSupported = 23
-	BACnetObjectTypesSupported_PULSE_CONVERTER BACnetObjectTypesSupported = 24
-	BACnetObjectTypesSupported_EVENT_LOG BACnetObjectTypesSupported = 25
-	BACnetObjectTypesSupported_GLOBAL_GROUP BACnetObjectTypesSupported = 26
-	BACnetObjectTypesSupported_TREND_LOG_MULTIPLE BACnetObjectTypesSupported = 27
-	BACnetObjectTypesSupported_LOAD_CONTROL BACnetObjectTypesSupported = 28
-	BACnetObjectTypesSupported_STRUCTURED_VIEW BACnetObjectTypesSupported = 29
-	BACnetObjectTypesSupported_ACCESS_DOOR BACnetObjectTypesSupported = 30
-	BACnetObjectTypesSupported_TIMER BACnetObjectTypesSupported = 31
-	BACnetObjectTypesSupported_ACCESS_CREDENTIAL BACnetObjectTypesSupported = 32
-	BACnetObjectTypesSupported_ACCESS_POINT BACnetObjectTypesSupported = 33
-	BACnetObjectTypesSupported_ACCESS_RIGHTS BACnetObjectTypesSupported = 34
-	BACnetObjectTypesSupported_ACCESS_USER BACnetObjectTypesSupported = 35
-	BACnetObjectTypesSupported_ACCESS_ZONE BACnetObjectTypesSupported = 36
-	BACnetObjectTypesSupported_CREDENTIAL_DATA_INPUT BACnetObjectTypesSupported = 37
-	BACnetObjectTypesSupported_NETWORK_SECURITY BACnetObjectTypesSupported = 38
-	BACnetObjectTypesSupported_BITSTRING_VALUE BACnetObjectTypesSupported = 39
-	BACnetObjectTypesSupported_CHARACTERSTRING_VALUE BACnetObjectTypesSupported = 40
-	BACnetObjectTypesSupported_DATEPATTERN_VALUE BACnetObjectTypesSupported = 41
-	BACnetObjectTypesSupported_DATE_VALUE BACnetObjectTypesSupported = 42
-	BACnetObjectTypesSupported_DATETIMEPATTERN_VALUE BACnetObjectTypesSupported = 43
-	BACnetObjectTypesSupported_DATETIME_VALUE BACnetObjectTypesSupported = 44
-	BACnetObjectTypesSupported_INTEGER_VALUE BACnetObjectTypesSupported = 45
-	BACnetObjectTypesSupported_LARGE_ANALOG_VALUE BACnetObjectTypesSupported = 46
-	BACnetObjectTypesSupported_OCTETSTRING_VALUE BACnetObjectTypesSupported = 47
+const (
+	BACnetObjectTypesSupported_ANALOG_INPUT           BACnetObjectTypesSupported = 0
+	BACnetObjectTypesSupported_ANALOG_OUTPUT          BACnetObjectTypesSupported = 1
+	BACnetObjectTypesSupported_ANALOG_VALUE           BACnetObjectTypesSupported = 2
+	BACnetObjectTypesSupported_BINARY_INPUT           BACnetObjectTypesSupported = 3
+	BACnetObjectTypesSupported_BINARY_OUTPUT          BACnetObjectTypesSupported = 4
+	BACnetObjectTypesSupported_BINARY_VALUE           BACnetObjectTypesSupported = 5
+	BACnetObjectTypesSupported_CALENDAR               BACnetObjectTypesSupported = 6
+	BACnetObjectTypesSupported_COMMAND                BACnetObjectTypesSupported = 7
+	BACnetObjectTypesSupported_DEVICE                 BACnetObjectTypesSupported = 8
+	BACnetObjectTypesSupported_EVENT_ENROLLMENT       BACnetObjectTypesSupported = 9
+	BACnetObjectTypesSupported_FILE                   BACnetObjectTypesSupported = 10
+	BACnetObjectTypesSupported_GROUP                  BACnetObjectTypesSupported = 11
+	BACnetObjectTypesSupported_LOOP                   BACnetObjectTypesSupported = 12
+	BACnetObjectTypesSupported_MULTI_STATE_INPUT      BACnetObjectTypesSupported = 13
+	BACnetObjectTypesSupported_MULTI_STATE_OUTPUT     BACnetObjectTypesSupported = 14
+	BACnetObjectTypesSupported_NOTIFICATION_CLASS     BACnetObjectTypesSupported = 15
+	BACnetObjectTypesSupported_PROGRAM                BACnetObjectTypesSupported = 16
+	BACnetObjectTypesSupported_SCHEDULE               BACnetObjectTypesSupported = 17
+	BACnetObjectTypesSupported_AVERAGING              BACnetObjectTypesSupported = 18
+	BACnetObjectTypesSupported_MULTI_STATE_VALUE      BACnetObjectTypesSupported = 19
+	BACnetObjectTypesSupported_TREND_LOG              BACnetObjectTypesSupported = 20
+	BACnetObjectTypesSupported_LIFE_SAFETY_POINT      BACnetObjectTypesSupported = 21
+	BACnetObjectTypesSupported_LIFE_SAFETY_ZONE       BACnetObjectTypesSupported = 22
+	BACnetObjectTypesSupported_ACCUMULATOR            BACnetObjectTypesSupported = 23
+	BACnetObjectTypesSupported_PULSE_CONVERTER        BACnetObjectTypesSupported = 24
+	BACnetObjectTypesSupported_EVENT_LOG              BACnetObjectTypesSupported = 25
+	BACnetObjectTypesSupported_GLOBAL_GROUP           BACnetObjectTypesSupported = 26
+	BACnetObjectTypesSupported_TREND_LOG_MULTIPLE     BACnetObjectTypesSupported = 27
+	BACnetObjectTypesSupported_LOAD_CONTROL           BACnetObjectTypesSupported = 28
+	BACnetObjectTypesSupported_STRUCTURED_VIEW        BACnetObjectTypesSupported = 29
+	BACnetObjectTypesSupported_ACCESS_DOOR            BACnetObjectTypesSupported = 30
+	BACnetObjectTypesSupported_TIMER                  BACnetObjectTypesSupported = 31
+	BACnetObjectTypesSupported_ACCESS_CREDENTIAL      BACnetObjectTypesSupported = 32
+	BACnetObjectTypesSupported_ACCESS_POINT           BACnetObjectTypesSupported = 33
+	BACnetObjectTypesSupported_ACCESS_RIGHTS          BACnetObjectTypesSupported = 34
+	BACnetObjectTypesSupported_ACCESS_USER            BACnetObjectTypesSupported = 35
+	BACnetObjectTypesSupported_ACCESS_ZONE            BACnetObjectTypesSupported = 36
+	BACnetObjectTypesSupported_CREDENTIAL_DATA_INPUT  BACnetObjectTypesSupported = 37
+	BACnetObjectTypesSupported_NETWORK_SECURITY       BACnetObjectTypesSupported = 38
+	BACnetObjectTypesSupported_BITSTRING_VALUE        BACnetObjectTypesSupported = 39
+	BACnetObjectTypesSupported_CHARACTERSTRING_VALUE  BACnetObjectTypesSupported = 40
+	BACnetObjectTypesSupported_DATEPATTERN_VALUE      BACnetObjectTypesSupported = 41
+	BACnetObjectTypesSupported_DATE_VALUE             BACnetObjectTypesSupported = 42
+	BACnetObjectTypesSupported_DATETIMEPATTERN_VALUE  BACnetObjectTypesSupported = 43
+	BACnetObjectTypesSupported_DATETIME_VALUE         BACnetObjectTypesSupported = 44
+	BACnetObjectTypesSupported_INTEGER_VALUE          BACnetObjectTypesSupported = 45
+	BACnetObjectTypesSupported_LARGE_ANALOG_VALUE     BACnetObjectTypesSupported = 46
+	BACnetObjectTypesSupported_OCTETSTRING_VALUE      BACnetObjectTypesSupported = 47
 	BACnetObjectTypesSupported_POSITIVE_INTEGER_VALUE BACnetObjectTypesSupported = 48
-	BACnetObjectTypesSupported_TIMEPATTERN_VALUE BACnetObjectTypesSupported = 49
-	BACnetObjectTypesSupported_TIME_VALUE BACnetObjectTypesSupported = 50
+	BACnetObjectTypesSupported_TIMEPATTERN_VALUE      BACnetObjectTypesSupported = 49
+	BACnetObjectTypesSupported_TIME_VALUE             BACnetObjectTypesSupported = 50
 	BACnetObjectTypesSupported_NOTIFICATION_FORWARDER BACnetObjectTypesSupported = 51
-	BACnetObjectTypesSupported_ALERT_ENROLLMENT BACnetObjectTypesSupported = 52
-	BACnetObjectTypesSupported_CHANNEL BACnetObjectTypesSupported = 53
-	BACnetObjectTypesSupported_LIGHTING_OUTPUT BACnetObjectTypesSupported = 54
+	BACnetObjectTypesSupported_ALERT_ENROLLMENT       BACnetObjectTypesSupported = 52
+	BACnetObjectTypesSupported_CHANNEL                BACnetObjectTypesSupported = 53
+	BACnetObjectTypesSupported_LIGHTING_OUTPUT        BACnetObjectTypesSupported = 54
 	BACnetObjectTypesSupported_BINARY_LIGHTING_OUTPUT BACnetObjectTypesSupported = 55
-	BACnetObjectTypesSupported_NETWORK_PORT BACnetObjectTypesSupported = 56
-	BACnetObjectTypesSupported_ELEVATOR_GROUP BACnetObjectTypesSupported = 57
-	BACnetObjectTypesSupported_ESCALATOR BACnetObjectTypesSupported = 58
-	BACnetObjectTypesSupported_LIFT BACnetObjectTypesSupported = 59
+	BACnetObjectTypesSupported_NETWORK_PORT           BACnetObjectTypesSupported = 56
+	BACnetObjectTypesSupported_ELEVATOR_GROUP         BACnetObjectTypesSupported = 57
+	BACnetObjectTypesSupported_ESCALATOR              BACnetObjectTypesSupported = 58
+	BACnetObjectTypesSupported_LIFT                   BACnetObjectTypesSupported = 59
 )
 
 var BACnetObjectTypesSupportedValues []BACnetObjectTypesSupported
 
 func init() {
 	_ = errors.New
-	BACnetObjectTypesSupportedValues = []BACnetObjectTypesSupported {
+	BACnetObjectTypesSupportedValues = []BACnetObjectTypesSupported{
 		BACnetObjectTypesSupported_ANALOG_INPUT,
 		BACnetObjectTypesSupported_ANALOG_OUTPUT,
 		BACnetObjectTypesSupported_ANALOG_VALUE,
@@ -167,126 +167,126 @@ func init() {
 
 func BACnetObjectTypesSupportedByValue(value uint8) (enum BACnetObjectTypesSupported, ok bool) {
 	switch value {
-		case 0:
-			return BACnetObjectTypesSupported_ANALOG_INPUT, true
-		case 1:
-			return BACnetObjectTypesSupported_ANALOG_OUTPUT, true
-		case 10:
-			return BACnetObjectTypesSupported_FILE, true
-		case 11:
-			return BACnetObjectTypesSupported_GROUP, true
-		case 12:
-			return BACnetObjectTypesSupported_LOOP, true
-		case 13:
-			return BACnetObjectTypesSupported_MULTI_STATE_INPUT, true
-		case 14:
-			return BACnetObjectTypesSupported_MULTI_STATE_OUTPUT, true
-		case 15:
-			return BACnetObjectTypesSupported_NOTIFICATION_CLASS, true
-		case 16:
-			return BACnetObjectTypesSupported_PROGRAM, true
-		case 17:
-			return BACnetObjectTypesSupported_SCHEDULE, true
-		case 18:
-			return BACnetObjectTypesSupported_AVERAGING, true
-		case 19:
-			return BACnetObjectTypesSupported_MULTI_STATE_VALUE, true
-		case 2:
-			return BACnetObjectTypesSupported_ANALOG_VALUE, true
-		case 20:
-			return BACnetObjectTypesSupported_TREND_LOG, true
-		case 21:
-			return BACnetObjectTypesSupported_LIFE_SAFETY_POINT, true
-		case 22:
-			return BACnetObjectTypesSupported_LIFE_SAFETY_ZONE, true
-		case 23:
-			return BACnetObjectTypesSupported_ACCUMULATOR, true
-		case 24:
-			return BACnetObjectTypesSupported_PULSE_CONVERTER, true
-		case 25:
-			return BACnetObjectTypesSupported_EVENT_LOG, true
-		case 26:
-			return BACnetObjectTypesSupported_GLOBAL_GROUP, true
-		case 27:
-			return BACnetObjectTypesSupported_TREND_LOG_MULTIPLE, true
-		case 28:
-			return BACnetObjectTypesSupported_LOAD_CONTROL, true
-		case 29:
-			return BACnetObjectTypesSupported_STRUCTURED_VIEW, true
-		case 3:
-			return BACnetObjectTypesSupported_BINARY_INPUT, true
-		case 30:
-			return BACnetObjectTypesSupported_ACCESS_DOOR, true
-		case 31:
-			return BACnetObjectTypesSupported_TIMER, true
-		case 32:
-			return BACnetObjectTypesSupported_ACCESS_CREDENTIAL, true
-		case 33:
-			return BACnetObjectTypesSupported_ACCESS_POINT, true
-		case 34:
-			return BACnetObjectTypesSupported_ACCESS_RIGHTS, true
-		case 35:
-			return BACnetObjectTypesSupported_ACCESS_USER, true
-		case 36:
-			return BACnetObjectTypesSupported_ACCESS_ZONE, true
-		case 37:
-			return BACnetObjectTypesSupported_CREDENTIAL_DATA_INPUT, true
-		case 38:
-			return BACnetObjectTypesSupported_NETWORK_SECURITY, true
-		case 39:
-			return BACnetObjectTypesSupported_BITSTRING_VALUE, true
-		case 4:
-			return BACnetObjectTypesSupported_BINARY_OUTPUT, true
-		case 40:
-			return BACnetObjectTypesSupported_CHARACTERSTRING_VALUE, true
-		case 41:
-			return BACnetObjectTypesSupported_DATEPATTERN_VALUE, true
-		case 42:
-			return BACnetObjectTypesSupported_DATE_VALUE, true
-		case 43:
-			return BACnetObjectTypesSupported_DATETIMEPATTERN_VALUE, true
-		case 44:
-			return BACnetObjectTypesSupported_DATETIME_VALUE, true
-		case 45:
-			return BACnetObjectTypesSupported_INTEGER_VALUE, true
-		case 46:
-			return BACnetObjectTypesSupported_LARGE_ANALOG_VALUE, true
-		case 47:
-			return BACnetObjectTypesSupported_OCTETSTRING_VALUE, true
-		case 48:
-			return BACnetObjectTypesSupported_POSITIVE_INTEGER_VALUE, true
-		case 49:
-			return BACnetObjectTypesSupported_TIMEPATTERN_VALUE, true
-		case 5:
-			return BACnetObjectTypesSupported_BINARY_VALUE, true
-		case 50:
-			return BACnetObjectTypesSupported_TIME_VALUE, true
-		case 51:
-			return BACnetObjectTypesSupported_NOTIFICATION_FORWARDER, true
-		case 52:
-			return BACnetObjectTypesSupported_ALERT_ENROLLMENT, true
-		case 53:
-			return BACnetObjectTypesSupported_CHANNEL, true
-		case 54:
-			return BACnetObjectTypesSupported_LIGHTING_OUTPUT, true
-		case 55:
-			return BACnetObjectTypesSupported_BINARY_LIGHTING_OUTPUT, true
-		case 56:
-			return BACnetObjectTypesSupported_NETWORK_PORT, true
-		case 57:
-			return BACnetObjectTypesSupported_ELEVATOR_GROUP, true
-		case 58:
-			return BACnetObjectTypesSupported_ESCALATOR, true
-		case 59:
-			return BACnetObjectTypesSupported_LIFT, true
-		case 6:
-			return BACnetObjectTypesSupported_CALENDAR, true
-		case 7:
-			return BACnetObjectTypesSupported_COMMAND, true
-		case 8:
-			return BACnetObjectTypesSupported_DEVICE, true
-		case 9:
-			return BACnetObjectTypesSupported_EVENT_ENROLLMENT, true
+	case 0:
+		return BACnetObjectTypesSupported_ANALOG_INPUT, true
+	case 1:
+		return BACnetObjectTypesSupported_ANALOG_OUTPUT, true
+	case 10:
+		return BACnetObjectTypesSupported_FILE, true
+	case 11:
+		return BACnetObjectTypesSupported_GROUP, true
+	case 12:
+		return BACnetObjectTypesSupported_LOOP, true
+	case 13:
+		return BACnetObjectTypesSupported_MULTI_STATE_INPUT, true
+	case 14:
+		return BACnetObjectTypesSupported_MULTI_STATE_OUTPUT, true
+	case 15:
+		return BACnetObjectTypesSupported_NOTIFICATION_CLASS, true
+	case 16:
+		return BACnetObjectTypesSupported_PROGRAM, true
+	case 17:
+		return BACnetObjectTypesSupported_SCHEDULE, true
+	case 18:
+		return BACnetObjectTypesSupported_AVERAGING, true
+	case 19:
+		return BACnetObjectTypesSupported_MULTI_STATE_VALUE, true
+	case 2:
+		return BACnetObjectTypesSupported_ANALOG_VALUE, true
+	case 20:
+		return BACnetObjectTypesSupported_TREND_LOG, true
+	case 21:
+		return BACnetObjectTypesSupported_LIFE_SAFETY_POINT, true
+	case 22:
+		return BACnetObjectTypesSupported_LIFE_SAFETY_ZONE, true
+	case 23:
+		return BACnetObjectTypesSupported_ACCUMULATOR, true
+	case 24:
+		return BACnetObjectTypesSupported_PULSE_CONVERTER, true
+	case 25:
+		return BACnetObjectTypesSupported_EVENT_LOG, true
+	case 26:
+		return BACnetObjectTypesSupported_GLOBAL_GROUP, true
+	case 27:
+		return BACnetObjectTypesSupported_TREND_LOG_MULTIPLE, true
+	case 28:
+		return BACnetObjectTypesSupported_LOAD_CONTROL, true
+	case 29:
+		return BACnetObjectTypesSupported_STRUCTURED_VIEW, true
+	case 3:
+		return BACnetObjectTypesSupported_BINARY_INPUT, true
+	case 30:
+		return BACnetObjectTypesSupported_ACCESS_DOOR, true
+	case 31:
+		return BACnetObjectTypesSupported_TIMER, true
+	case 32:
+		return BACnetObjectTypesSupported_ACCESS_CREDENTIAL, true
+	case 33:
+		return BACnetObjectTypesSupported_ACCESS_POINT, true
+	case 34:
+		return BACnetObjectTypesSupported_ACCESS_RIGHTS, true
+	case 35:
+		return BACnetObjectTypesSupported_ACCESS_USER, true
+	case 36:
+		return BACnetObjectTypesSupported_ACCESS_ZONE, true
+	case 37:
+		return BACnetObjectTypesSupported_CREDENTIAL_DATA_INPUT, true
+	case 38:
+		return BACnetObjectTypesSupported_NETWORK_SECURITY, true
+	case 39:
+		return BACnetObjectTypesSupported_BITSTRING_VALUE, true
+	case 4:
+		return BACnetObjectTypesSupported_BINARY_OUTPUT, true
+	case 40:
+		return BACnetObjectTypesSupported_CHARACTERSTRING_VALUE, true
+	case 41:
+		return BACnetObjectTypesSupported_DATEPATTERN_VALUE, true
+	case 42:
+		return BACnetObjectTypesSupported_DATE_VALUE, true
+	case 43:
+		return BACnetObjectTypesSupported_DATETIMEPATTERN_VALUE, true
+	case 44:
+		return BACnetObjectTypesSupported_DATETIME_VALUE, true
+	case 45:
+		return BACnetObjectTypesSupported_INTEGER_VALUE, true
+	case 46:
+		return BACnetObjectTypesSupported_LARGE_ANALOG_VALUE, true
+	case 47:
+		return BACnetObjectTypesSupported_OCTETSTRING_VALUE, true
+	case 48:
+		return BACnetObjectTypesSupported_POSITIVE_INTEGER_VALUE, true
+	case 49:
+		return BACnetObjectTypesSupported_TIMEPATTERN_VALUE, true
+	case 5:
+		return BACnetObjectTypesSupported_BINARY_VALUE, true
+	case 50:
+		return BACnetObjectTypesSupported_TIME_VALUE, true
+	case 51:
+		return BACnetObjectTypesSupported_NOTIFICATION_FORWARDER, true
+	case 52:
+		return BACnetObjectTypesSupported_ALERT_ENROLLMENT, true
+	case 53:
+		return BACnetObjectTypesSupported_CHANNEL, true
+	case 54:
+		return BACnetObjectTypesSupported_LIGHTING_OUTPUT, true
+	case 55:
+		return BACnetObjectTypesSupported_BINARY_LIGHTING_OUTPUT, true
+	case 56:
+		return BACnetObjectTypesSupported_NETWORK_PORT, true
+	case 57:
+		return BACnetObjectTypesSupported_ELEVATOR_GROUP, true
+	case 58:
+		return BACnetObjectTypesSupported_ESCALATOR, true
+	case 59:
+		return BACnetObjectTypesSupported_LIFT, true
+	case 6:
+		return BACnetObjectTypesSupported_CALENDAR, true
+	case 7:
+		return BACnetObjectTypesSupported_COMMAND, true
+	case 8:
+		return BACnetObjectTypesSupported_DEVICE, true
+	case 9:
+		return BACnetObjectTypesSupported_EVENT_ENROLLMENT, true
 	}
 	return 0, false
 }
@@ -417,13 +417,13 @@ func BACnetObjectTypesSupportedByName(value string) (enum BACnetObjectTypesSuppo
 	return 0, false
 }
 
-func BACnetObjectTypesSupportedKnows(value uint8)  bool {
+func BACnetObjectTypesSupportedKnows(value uint8) bool {
 	for _, typeValue := range BACnetObjectTypesSupportedValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetObjectTypesSupported(structType interface{}) BACnetObjectTypesSupported {
@@ -603,4 +603,3 @@ func (e BACnetObjectTypesSupported) PLC4XEnumName() string {
 func (e BACnetObjectTypesSupported) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -34,18 +34,18 @@ type IBACnetLightingTransition interface {
 	utils.Serializable
 }
 
-const(
-	BACnetLightingTransition_NONE BACnetLightingTransition = 0
-	BACnetLightingTransition_FADE BACnetLightingTransition = 1
-	BACnetLightingTransition_RAMP BACnetLightingTransition = 2
-	BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE BACnetLightingTransition = 0XFF
+const (
+	BACnetLightingTransition_NONE                     BACnetLightingTransition = 0
+	BACnetLightingTransition_FADE                     BACnetLightingTransition = 1
+	BACnetLightingTransition_RAMP                     BACnetLightingTransition = 2
+	BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE BACnetLightingTransition = 0xFF
 )
 
 var BACnetLightingTransitionValues []BACnetLightingTransition
 
 func init() {
 	_ = errors.New
-	BACnetLightingTransitionValues = []BACnetLightingTransition {
+	BACnetLightingTransitionValues = []BACnetLightingTransition{
 		BACnetLightingTransition_NONE,
 		BACnetLightingTransition_FADE,
 		BACnetLightingTransition_RAMP,
@@ -55,14 +55,14 @@ func init() {
 
 func BACnetLightingTransitionByValue(value uint8) (enum BACnetLightingTransition, ok bool) {
 	switch value {
-		case 0:
-			return BACnetLightingTransition_NONE, true
-		case 0XFF:
-			return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE, true
-		case 1:
-			return BACnetLightingTransition_FADE, true
-		case 2:
-			return BACnetLightingTransition_RAMP, true
+	case 0:
+		return BACnetLightingTransition_NONE, true
+	case 0xFF:
+		return BACnetLightingTransition_VENDOR_PROPRIETARY_VALUE, true
+	case 1:
+		return BACnetLightingTransition_FADE, true
+	case 2:
+		return BACnetLightingTransition_RAMP, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func BACnetLightingTransitionByName(value string) (enum BACnetLightingTransition
 	return 0, false
 }
 
-func BACnetLightingTransitionKnows(value uint8)  bool {
+func BACnetLightingTransitionKnows(value uint8) bool {
 	for _, typeValue := range BACnetLightingTransitionValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetLightingTransition(structType interface{}) BACnetLightingTransition {
@@ -155,4 +155,3 @@ func (e BACnetLightingTransition) PLC4XEnumName() string {
 func (e BACnetLightingTransition) String() string {
 	return e.PLC4XEnumName()
 }
-

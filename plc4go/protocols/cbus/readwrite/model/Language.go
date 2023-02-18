@@ -34,83 +34,83 @@ type ILanguage interface {
 	utils.Serializable
 }
 
-const(
-	Language_NO_LANGUAGE Language = 0x00
-	Language_ENGLISH Language = 0x01
-	Language_ENGLISH_AUSTRALIA Language = 0x02
-	Language_ENGLISH_BELIZE Language = 0x03
-	Language_ENGLISH_CANADA Language = 0x04
-	Language_ENGLISH_CARRIBEAN Language = 0x05
-	Language_ENGLISH_IRELAND Language = 0x06
-	Language_ENGLISH_JAMAICA Language = 0x07
-	Language_ENGLISH_NEW_ZEALAND Language = 0x08
-	Language_ENGLISH_PHILIPPINES Language = 0x09
-	Language_ENGLISH_SOUTH_AFRICA Language = 0x0A
-	Language_ENGLISH_TRINIDAD Language = 0x0B
-	Language_ENGLISH_UK Language = 0x0C
-	Language_ENGLISH_USA Language = 0x0D
-	Language_ENGLISH_ZIMBABWE Language = 0x0E
-	Language_AFRIKAANS Language = 0x40
-	Language_BASQUE Language = 0x41
-	Language_CATALAN Language = 0x42
-	Language_DANISH Language = 0x43
-	Language_DUTCH_BELGIUM Language = 0x44
-	Language_DUTCH_NETHERLANDS Language = 0x45
-	Language_FAEROESE Language = 0x46
-	Language_FINNISH Language = 0x47
-	Language_FRENCH_BELGIUM Language = 0x48
-	Language_FRENCH_CANADA Language = 0x49
-	Language_FRENCH Language = 0x4A
-	Language_FRENCH_LUXEMBOURG Language = 0x4B
-	Language_FRENCH_MONACO Language = 0x4C
-	Language_FRENCH_SWITZERLAND Language = 0x4D
-	Language_GALICIAN Language = 0x4E
-	Language_GERMAN_AUSTRIA Language = 0x4F
-	Language_GERMAN Language = 0x50
-	Language_GERMAN_LIECHTENSTEIN Language = 0x51
-	Language_GERMAN_LUXEMBOURG Language = 0x52
-	Language_GERMAN_SWITZERLAND Language = 0x53
-	Language_ICELANDIC Language = 0x54
-	Language_INDONESIAN Language = 0x55
-	Language_ITALIAN Language = 0x56
-	Language_ITALIAN_SWITZERLAND Language = 0x57
-	Language_MALAY_BRUNEI Language = 0x58
-	Language_MALAY Language = 0x59
-	Language_NORWEGIAN Language = 0x5A
-	Language_NORWEGIAN_NYNORSK Language = 0x5B
-	Language_PORTUGUESE_BRAZIL Language = 0x5C
-	Language_PORTUGUESE Language = 0x5D
-	Language_SPANISH_ARGENTINE Language = 0x5E
-	Language_SPANISH_BOLIVIA Language = 0x5F
-	Language_SPANISH_CHILE Language = 0x60
-	Language_SPANISH_COLOMBIA Language = 0x61
-	Language_SPANISH_COSTA_RICA Language = 0x62
+const (
+	Language_NO_LANGUAGE                Language = 0x00
+	Language_ENGLISH                    Language = 0x01
+	Language_ENGLISH_AUSTRALIA          Language = 0x02
+	Language_ENGLISH_BELIZE             Language = 0x03
+	Language_ENGLISH_CANADA             Language = 0x04
+	Language_ENGLISH_CARRIBEAN          Language = 0x05
+	Language_ENGLISH_IRELAND            Language = 0x06
+	Language_ENGLISH_JAMAICA            Language = 0x07
+	Language_ENGLISH_NEW_ZEALAND        Language = 0x08
+	Language_ENGLISH_PHILIPPINES        Language = 0x09
+	Language_ENGLISH_SOUTH_AFRICA       Language = 0x0A
+	Language_ENGLISH_TRINIDAD           Language = 0x0B
+	Language_ENGLISH_UK                 Language = 0x0C
+	Language_ENGLISH_USA                Language = 0x0D
+	Language_ENGLISH_ZIMBABWE           Language = 0x0E
+	Language_AFRIKAANS                  Language = 0x40
+	Language_BASQUE                     Language = 0x41
+	Language_CATALAN                    Language = 0x42
+	Language_DANISH                     Language = 0x43
+	Language_DUTCH_BELGIUM              Language = 0x44
+	Language_DUTCH_NETHERLANDS          Language = 0x45
+	Language_FAEROESE                   Language = 0x46
+	Language_FINNISH                    Language = 0x47
+	Language_FRENCH_BELGIUM             Language = 0x48
+	Language_FRENCH_CANADA              Language = 0x49
+	Language_FRENCH                     Language = 0x4A
+	Language_FRENCH_LUXEMBOURG          Language = 0x4B
+	Language_FRENCH_MONACO              Language = 0x4C
+	Language_FRENCH_SWITZERLAND         Language = 0x4D
+	Language_GALICIAN                   Language = 0x4E
+	Language_GERMAN_AUSTRIA             Language = 0x4F
+	Language_GERMAN                     Language = 0x50
+	Language_GERMAN_LIECHTENSTEIN       Language = 0x51
+	Language_GERMAN_LUXEMBOURG          Language = 0x52
+	Language_GERMAN_SWITZERLAND         Language = 0x53
+	Language_ICELANDIC                  Language = 0x54
+	Language_INDONESIAN                 Language = 0x55
+	Language_ITALIAN                    Language = 0x56
+	Language_ITALIAN_SWITZERLAND        Language = 0x57
+	Language_MALAY_BRUNEI               Language = 0x58
+	Language_MALAY                      Language = 0x59
+	Language_NORWEGIAN                  Language = 0x5A
+	Language_NORWEGIAN_NYNORSK          Language = 0x5B
+	Language_PORTUGUESE_BRAZIL          Language = 0x5C
+	Language_PORTUGUESE                 Language = 0x5D
+	Language_SPANISH_ARGENTINE          Language = 0x5E
+	Language_SPANISH_BOLIVIA            Language = 0x5F
+	Language_SPANISH_CHILE              Language = 0x60
+	Language_SPANISH_COLOMBIA           Language = 0x61
+	Language_SPANISH_COSTA_RICA         Language = 0x62
 	Language_SPANISH_DOMINICAN_REPUBLIC Language = 0x63
-	Language_SPANISH_ECUADOR Language = 0x64
-	Language_SPANISH_EL_SALVADOR Language = 0x65
-	Language_SPANISH_GUATEMALA Language = 0x66
-	Language_SPANISH_HONDURAS Language = 0x67
-	Language_SPANISH Language = 0x68
-	Language_SPANISH_MEXICO Language = 0x69
-	Language_SPANISH_NICARAGUA Language = 0x6A
-	Language_SPANISH_PANAMA Language = 0x6B
-	Language_SPANISH_PARAGUAY Language = 0x6C
-	Language_SPANISH_PERU Language = 0x6D
-	Language_SPANISH_PERTO_RICO Language = 0x6E
-	Language_SPANISH_TRADITIONAL Language = 0x6F
-	Language_SPANISH_URUGUAY Language = 0x70
-	Language_SPANISH_VENEZUELA Language = 0x71
-	Language_SWAHILI Language = 0x72
-	Language_SWEDISH Language = 0x73
-	Language_SWEDISH_FINLAND Language = 0x74
-	Language_CHINESE_CP936 Language = 0xCA
+	Language_SPANISH_ECUADOR            Language = 0x64
+	Language_SPANISH_EL_SALVADOR        Language = 0x65
+	Language_SPANISH_GUATEMALA          Language = 0x66
+	Language_SPANISH_HONDURAS           Language = 0x67
+	Language_SPANISH                    Language = 0x68
+	Language_SPANISH_MEXICO             Language = 0x69
+	Language_SPANISH_NICARAGUA          Language = 0x6A
+	Language_SPANISH_PANAMA             Language = 0x6B
+	Language_SPANISH_PARAGUAY           Language = 0x6C
+	Language_SPANISH_PERU               Language = 0x6D
+	Language_SPANISH_PERTO_RICO         Language = 0x6E
+	Language_SPANISH_TRADITIONAL        Language = 0x6F
+	Language_SPANISH_URUGUAY            Language = 0x70
+	Language_SPANISH_VENEZUELA          Language = 0x71
+	Language_SWAHILI                    Language = 0x72
+	Language_SWEDISH                    Language = 0x73
+	Language_SWEDISH_FINLAND            Language = 0x74
+	Language_CHINESE_CP936              Language = 0xCA
 )
 
 var LanguageValues []Language
 
 func init() {
 	_ = errors.New
-	LanguageValues = []Language {
+	LanguageValues = []Language{
 		Language_NO_LANGUAGE,
 		Language_ENGLISH,
 		Language_ENGLISH_AUSTRALIA,
@@ -185,144 +185,144 @@ func init() {
 
 func LanguageByValue(value uint8) (enum Language, ok bool) {
 	switch value {
-		case 0x00:
-			return Language_NO_LANGUAGE, true
-		case 0x01:
-			return Language_ENGLISH, true
-		case 0x02:
-			return Language_ENGLISH_AUSTRALIA, true
-		case 0x03:
-			return Language_ENGLISH_BELIZE, true
-		case 0x04:
-			return Language_ENGLISH_CANADA, true
-		case 0x05:
-			return Language_ENGLISH_CARRIBEAN, true
-		case 0x06:
-			return Language_ENGLISH_IRELAND, true
-		case 0x07:
-			return Language_ENGLISH_JAMAICA, true
-		case 0x08:
-			return Language_ENGLISH_NEW_ZEALAND, true
-		case 0x09:
-			return Language_ENGLISH_PHILIPPINES, true
-		case 0x0A:
-			return Language_ENGLISH_SOUTH_AFRICA, true
-		case 0x0B:
-			return Language_ENGLISH_TRINIDAD, true
-		case 0x0C:
-			return Language_ENGLISH_UK, true
-		case 0x0D:
-			return Language_ENGLISH_USA, true
-		case 0x0E:
-			return Language_ENGLISH_ZIMBABWE, true
-		case 0x40:
-			return Language_AFRIKAANS, true
-		case 0x41:
-			return Language_BASQUE, true
-		case 0x42:
-			return Language_CATALAN, true
-		case 0x43:
-			return Language_DANISH, true
-		case 0x44:
-			return Language_DUTCH_BELGIUM, true
-		case 0x45:
-			return Language_DUTCH_NETHERLANDS, true
-		case 0x46:
-			return Language_FAEROESE, true
-		case 0x47:
-			return Language_FINNISH, true
-		case 0x48:
-			return Language_FRENCH_BELGIUM, true
-		case 0x49:
-			return Language_FRENCH_CANADA, true
-		case 0x4A:
-			return Language_FRENCH, true
-		case 0x4B:
-			return Language_FRENCH_LUXEMBOURG, true
-		case 0x4C:
-			return Language_FRENCH_MONACO, true
-		case 0x4D:
-			return Language_FRENCH_SWITZERLAND, true
-		case 0x4E:
-			return Language_GALICIAN, true
-		case 0x4F:
-			return Language_GERMAN_AUSTRIA, true
-		case 0x50:
-			return Language_GERMAN, true
-		case 0x51:
-			return Language_GERMAN_LIECHTENSTEIN, true
-		case 0x52:
-			return Language_GERMAN_LUXEMBOURG, true
-		case 0x53:
-			return Language_GERMAN_SWITZERLAND, true
-		case 0x54:
-			return Language_ICELANDIC, true
-		case 0x55:
-			return Language_INDONESIAN, true
-		case 0x56:
-			return Language_ITALIAN, true
-		case 0x57:
-			return Language_ITALIAN_SWITZERLAND, true
-		case 0x58:
-			return Language_MALAY_BRUNEI, true
-		case 0x59:
-			return Language_MALAY, true
-		case 0x5A:
-			return Language_NORWEGIAN, true
-		case 0x5B:
-			return Language_NORWEGIAN_NYNORSK, true
-		case 0x5C:
-			return Language_PORTUGUESE_BRAZIL, true
-		case 0x5D:
-			return Language_PORTUGUESE, true
-		case 0x5E:
-			return Language_SPANISH_ARGENTINE, true
-		case 0x5F:
-			return Language_SPANISH_BOLIVIA, true
-		case 0x60:
-			return Language_SPANISH_CHILE, true
-		case 0x61:
-			return Language_SPANISH_COLOMBIA, true
-		case 0x62:
-			return Language_SPANISH_COSTA_RICA, true
-		case 0x63:
-			return Language_SPANISH_DOMINICAN_REPUBLIC, true
-		case 0x64:
-			return Language_SPANISH_ECUADOR, true
-		case 0x65:
-			return Language_SPANISH_EL_SALVADOR, true
-		case 0x66:
-			return Language_SPANISH_GUATEMALA, true
-		case 0x67:
-			return Language_SPANISH_HONDURAS, true
-		case 0x68:
-			return Language_SPANISH, true
-		case 0x69:
-			return Language_SPANISH_MEXICO, true
-		case 0x6A:
-			return Language_SPANISH_NICARAGUA, true
-		case 0x6B:
-			return Language_SPANISH_PANAMA, true
-		case 0x6C:
-			return Language_SPANISH_PARAGUAY, true
-		case 0x6D:
-			return Language_SPANISH_PERU, true
-		case 0x6E:
-			return Language_SPANISH_PERTO_RICO, true
-		case 0x6F:
-			return Language_SPANISH_TRADITIONAL, true
-		case 0x70:
-			return Language_SPANISH_URUGUAY, true
-		case 0x71:
-			return Language_SPANISH_VENEZUELA, true
-		case 0x72:
-			return Language_SWAHILI, true
-		case 0x73:
-			return Language_SWEDISH, true
-		case 0x74:
-			return Language_SWEDISH_FINLAND, true
-		case 0xCA:
-			return Language_CHINESE_CP936, true
+	case 0x00:
+		return Language_NO_LANGUAGE, true
+	case 0x01:
+		return Language_ENGLISH, true
+	case 0x02:
+		return Language_ENGLISH_AUSTRALIA, true
+	case 0x03:
+		return Language_ENGLISH_BELIZE, true
+	case 0x04:
+		return Language_ENGLISH_CANADA, true
+	case 0x05:
+		return Language_ENGLISH_CARRIBEAN, true
+	case 0x06:
+		return Language_ENGLISH_IRELAND, true
+	case 0x07:
+		return Language_ENGLISH_JAMAICA, true
+	case 0x08:
+		return Language_ENGLISH_NEW_ZEALAND, true
+	case 0x09:
+		return Language_ENGLISH_PHILIPPINES, true
+	case 0x0A:
+		return Language_ENGLISH_SOUTH_AFRICA, true
+	case 0x0B:
+		return Language_ENGLISH_TRINIDAD, true
+	case 0x0C:
+		return Language_ENGLISH_UK, true
+	case 0x0D:
+		return Language_ENGLISH_USA, true
+	case 0x0E:
+		return Language_ENGLISH_ZIMBABWE, true
+	case 0x40:
+		return Language_AFRIKAANS, true
+	case 0x41:
+		return Language_BASQUE, true
+	case 0x42:
+		return Language_CATALAN, true
+	case 0x43:
+		return Language_DANISH, true
+	case 0x44:
+		return Language_DUTCH_BELGIUM, true
+	case 0x45:
+		return Language_DUTCH_NETHERLANDS, true
+	case 0x46:
+		return Language_FAEROESE, true
+	case 0x47:
+		return Language_FINNISH, true
+	case 0x48:
+		return Language_FRENCH_BELGIUM, true
+	case 0x49:
+		return Language_FRENCH_CANADA, true
+	case 0x4A:
+		return Language_FRENCH, true
+	case 0x4B:
+		return Language_FRENCH_LUXEMBOURG, true
+	case 0x4C:
+		return Language_FRENCH_MONACO, true
+	case 0x4D:
+		return Language_FRENCH_SWITZERLAND, true
+	case 0x4E:
+		return Language_GALICIAN, true
+	case 0x4F:
+		return Language_GERMAN_AUSTRIA, true
+	case 0x50:
+		return Language_GERMAN, true
+	case 0x51:
+		return Language_GERMAN_LIECHTENSTEIN, true
+	case 0x52:
+		return Language_GERMAN_LUXEMBOURG, true
+	case 0x53:
+		return Language_GERMAN_SWITZERLAND, true
+	case 0x54:
+		return Language_ICELANDIC, true
+	case 0x55:
+		return Language_INDONESIAN, true
+	case 0x56:
+		return Language_ITALIAN, true
+	case 0x57:
+		return Language_ITALIAN_SWITZERLAND, true
+	case 0x58:
+		return Language_MALAY_BRUNEI, true
+	case 0x59:
+		return Language_MALAY, true
+	case 0x5A:
+		return Language_NORWEGIAN, true
+	case 0x5B:
+		return Language_NORWEGIAN_NYNORSK, true
+	case 0x5C:
+		return Language_PORTUGUESE_BRAZIL, true
+	case 0x5D:
+		return Language_PORTUGUESE, true
+	case 0x5E:
+		return Language_SPANISH_ARGENTINE, true
+	case 0x5F:
+		return Language_SPANISH_BOLIVIA, true
+	case 0x60:
+		return Language_SPANISH_CHILE, true
+	case 0x61:
+		return Language_SPANISH_COLOMBIA, true
+	case 0x62:
+		return Language_SPANISH_COSTA_RICA, true
+	case 0x63:
+		return Language_SPANISH_DOMINICAN_REPUBLIC, true
+	case 0x64:
+		return Language_SPANISH_ECUADOR, true
+	case 0x65:
+		return Language_SPANISH_EL_SALVADOR, true
+	case 0x66:
+		return Language_SPANISH_GUATEMALA, true
+	case 0x67:
+		return Language_SPANISH_HONDURAS, true
+	case 0x68:
+		return Language_SPANISH, true
+	case 0x69:
+		return Language_SPANISH_MEXICO, true
+	case 0x6A:
+		return Language_SPANISH_NICARAGUA, true
+	case 0x6B:
+		return Language_SPANISH_PANAMA, true
+	case 0x6C:
+		return Language_SPANISH_PARAGUAY, true
+	case 0x6D:
+		return Language_SPANISH_PERU, true
+	case 0x6E:
+		return Language_SPANISH_PERTO_RICO, true
+	case 0x6F:
+		return Language_SPANISH_TRADITIONAL, true
+	case 0x70:
+		return Language_SPANISH_URUGUAY, true
+	case 0x71:
+		return Language_SPANISH_VENEZUELA, true
+	case 0x72:
+		return Language_SWAHILI, true
+	case 0x73:
+		return Language_SWEDISH, true
+	case 0x74:
+		return Language_SWEDISH_FINLAND, true
+	case 0xCA:
+		return Language_CHINESE_CP936, true
 	}
 	return 0, false
 }
@@ -471,13 +471,13 @@ func LanguageByName(value string) (enum Language, ok bool) {
 	return 0, false
 }
 
-func LanguageKnows(value uint8)  bool {
+func LanguageKnows(value uint8) bool {
 	for _, typeValue := range LanguageValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastLanguage(structType interface{}) Language {
@@ -675,4 +675,3 @@ func (e Language) PLC4XEnumName() string {
 func (e Language) String() string {
 	return e.PLC4XEnumName()
 }
-

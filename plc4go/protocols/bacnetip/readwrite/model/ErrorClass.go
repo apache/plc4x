@@ -34,23 +34,23 @@ type IErrorClass interface {
 	utils.Serializable
 }
 
-const(
-	ErrorClass_DEVICE ErrorClass = 0x0000
-	ErrorClass_OBJECT ErrorClass = 0x0001
-	ErrorClass_PROPERTY ErrorClass = 0x0002
-	ErrorClass_RESOURCES ErrorClass = 0x0003
-	ErrorClass_SECURITY ErrorClass = 0x0004
-	ErrorClass_SERVICES ErrorClass = 0x0005
-	ErrorClass_VT ErrorClass = 0x0006
-	ErrorClass_COMMUNICATION ErrorClass = 0x0007
-	ErrorClass_VENDOR_PROPRIETARY_VALUE ErrorClass = 0XFFFF
+const (
+	ErrorClass_DEVICE                   ErrorClass = 0x0000
+	ErrorClass_OBJECT                   ErrorClass = 0x0001
+	ErrorClass_PROPERTY                 ErrorClass = 0x0002
+	ErrorClass_RESOURCES                ErrorClass = 0x0003
+	ErrorClass_SECURITY                 ErrorClass = 0x0004
+	ErrorClass_SERVICES                 ErrorClass = 0x0005
+	ErrorClass_VT                       ErrorClass = 0x0006
+	ErrorClass_COMMUNICATION            ErrorClass = 0x0007
+	ErrorClass_VENDOR_PROPRIETARY_VALUE ErrorClass = 0xFFFF
 )
 
 var ErrorClassValues []ErrorClass
 
 func init() {
 	_ = errors.New
-	ErrorClassValues = []ErrorClass {
+	ErrorClassValues = []ErrorClass{
 		ErrorClass_DEVICE,
 		ErrorClass_OBJECT,
 		ErrorClass_PROPERTY,
@@ -65,24 +65,24 @@ func init() {
 
 func ErrorClassByValue(value uint16) (enum ErrorClass, ok bool) {
 	switch value {
-		case 0XFFFF:
-			return ErrorClass_VENDOR_PROPRIETARY_VALUE, true
-		case 0x0000:
-			return ErrorClass_DEVICE, true
-		case 0x0001:
-			return ErrorClass_OBJECT, true
-		case 0x0002:
-			return ErrorClass_PROPERTY, true
-		case 0x0003:
-			return ErrorClass_RESOURCES, true
-		case 0x0004:
-			return ErrorClass_SECURITY, true
-		case 0x0005:
-			return ErrorClass_SERVICES, true
-		case 0x0006:
-			return ErrorClass_VT, true
-		case 0x0007:
-			return ErrorClass_COMMUNICATION, true
+	case 0xFFFF:
+		return ErrorClass_VENDOR_PROPRIETARY_VALUE, true
+	case 0x0000:
+		return ErrorClass_DEVICE, true
+	case 0x0001:
+		return ErrorClass_OBJECT, true
+	case 0x0002:
+		return ErrorClass_PROPERTY, true
+	case 0x0003:
+		return ErrorClass_RESOURCES, true
+	case 0x0004:
+		return ErrorClass_SECURITY, true
+	case 0x0005:
+		return ErrorClass_SERVICES, true
+	case 0x0006:
+		return ErrorClass_VT, true
+	case 0x0007:
+		return ErrorClass_COMMUNICATION, true
 	}
 	return 0, false
 }
@@ -111,13 +111,13 @@ func ErrorClassByName(value string) (enum ErrorClass, ok bool) {
 	return 0, false
 }
 
-func ErrorClassKnows(value uint16)  bool {
+func ErrorClassKnows(value uint16) bool {
 	for _, typeValue := range ErrorClassValues {
 		if uint16(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastErrorClass(structType interface{}) ErrorClass {
@@ -195,4 +195,3 @@ func (e ErrorClass) PLC4XEnumName() string {
 func (e ErrorClass) String() string {
 	return e.PLC4XEnumName()
 }
-

@@ -34,18 +34,18 @@ type IBACnetShedState interface {
 	utils.Serializable
 }
 
-const(
-	BACnetShedState_SHED_INACTIVE BACnetShedState = 0
+const (
+	BACnetShedState_SHED_INACTIVE        BACnetShedState = 0
 	BACnetShedState_SHED_REQUEST_PENDING BACnetShedState = 1
-	BACnetShedState_SHED_COMPLIANT BACnetShedState = 2
-	BACnetShedState_SHED_NON_COMPLIANT BACnetShedState = 3
+	BACnetShedState_SHED_COMPLIANT       BACnetShedState = 2
+	BACnetShedState_SHED_NON_COMPLIANT   BACnetShedState = 3
 )
 
 var BACnetShedStateValues []BACnetShedState
 
 func init() {
 	_ = errors.New
-	BACnetShedStateValues = []BACnetShedState {
+	BACnetShedStateValues = []BACnetShedState{
 		BACnetShedState_SHED_INACTIVE,
 		BACnetShedState_SHED_REQUEST_PENDING,
 		BACnetShedState_SHED_COMPLIANT,
@@ -55,14 +55,14 @@ func init() {
 
 func BACnetShedStateByValue(value uint8) (enum BACnetShedState, ok bool) {
 	switch value {
-		case 0:
-			return BACnetShedState_SHED_INACTIVE, true
-		case 1:
-			return BACnetShedState_SHED_REQUEST_PENDING, true
-		case 2:
-			return BACnetShedState_SHED_COMPLIANT, true
-		case 3:
-			return BACnetShedState_SHED_NON_COMPLIANT, true
+	case 0:
+		return BACnetShedState_SHED_INACTIVE, true
+	case 1:
+		return BACnetShedState_SHED_REQUEST_PENDING, true
+	case 2:
+		return BACnetShedState_SHED_COMPLIANT, true
+	case 3:
+		return BACnetShedState_SHED_NON_COMPLIANT, true
 	}
 	return 0, false
 }
@@ -81,13 +81,13 @@ func BACnetShedStateByName(value string) (enum BACnetShedState, ok bool) {
 	return 0, false
 }
 
-func BACnetShedStateKnows(value uint8)  bool {
+func BACnetShedStateKnows(value uint8) bool {
 	for _, typeValue := range BACnetShedStateValues {
 		if uint8(typeValue) == value {
 			return true
 		}
 	}
-	return false;
+	return false
 }
 
 func CastBACnetShedState(structType interface{}) BACnetShedState {
@@ -155,4 +155,3 @@ func (e BACnetShedState) PLC4XEnumName() string {
 func (e BACnetShedState) String() string {
 	return e.PLC4XEnumName()
 }
-
