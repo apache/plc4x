@@ -24,7 +24,6 @@ import org.apache.commons.text.CaseUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultStringLiteral;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultTernaryTerm;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.Tracer;
@@ -1602,11 +1601,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         Optional<Term> byteOrder = thisType.getAttribute("byteOrder");
         if (byteOrder.isPresent()) {
             emitRequiredImport("encoding/binary");
-
-            String functionName = read ? "WithByteOrderForReadBufferByteBased" : "WithByteOrderForByteBasedBuffer";
-
-            String expression = toParseExpression(null, new DefaultByteOrderTypeReference(), byteOrder.orElseThrow(), parserArguments);
-            return (separatorPrefix ? ", " : "") + "utils." + functionName + "(" + expression + ")";
+            if(read) {
+                return (separatorPrefix ? ", " : "") + "utils.WithByteOrderForReadBufferByteBased(" +
+                    toParseExpression(null, new DefaultByteOrderTypeReference(), byteOrder.orElseThrow(), parserArguments) +
+                    ")";
+            } else {
+                return (separatorPrefix ? ", " : "") + "utils.WithByteOrderForByteBasedBuffer(" +
+                    toSerializationExpression(null, new DefaultByteOrderTypeReference(), byteOrder.orElseThrow(), parserArguments) +
+                    ")";
+            }
         }
         return "";
     }

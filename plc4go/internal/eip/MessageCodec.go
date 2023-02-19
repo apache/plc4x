@@ -87,7 +87,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			return nil, nil
 		}
 		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		eipPacket, err := model.EipPacketParseWithBuffer(context.Background(), rb)
+		eipPacket, err := model.EipPacketParseWithBuffer(context.Background(), rb, model.IntegerEncoding_BIG_ENDIAN, true)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

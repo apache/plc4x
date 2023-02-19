@@ -22,6 +22,7 @@ package eip
 import (
 	"context"
 	"fmt"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
@@ -117,7 +118,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 	result := make(chan plc4go.PlcConnectionCloseResult)
 	go func() {
 		log.Debug().Msg("Sending UnregisterSession EIP Packet")
-		_ = m.messageCodec.SendRequest(ctx, readWriteModel.NewEipDisconnectRequest(m.sessionHandle, 0, make([]byte, 8), 0), func(message spi.Message) bool {
+		_ = m.messageCodec.SendRequest(ctx, readWriteModel.NewEipDisconnectRequest(m.sessionHandle, 0, make([]byte, 8), 0, readWriteModel.IntegerEncoding_BIG_ENDIAN), func(message spi.Message) bool {
 			return true
 		}, func(message spi.Message) error {
 			return nil
@@ -131,7 +132,7 @@ func (m *Connection) Close() <-chan plc4go.PlcConnectionCloseResult {
 
 func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
 	log.Debug().Msg("Sending EIP Connection Request")
-	if err := m.messageCodec.SendRequest(ctx, readWriteModel.NewEipConnectionRequest(0, 0, make([]byte, 8), 0), func(message spi.Message) bool {
+	if err := m.messageCodec.SendRequest(ctx, readWriteModel.NewEipConnectionRequest(0, 0, make([]byte, 8), 0, readWriteModel.IntegerEncoding_BIG_ENDIAN), func(message spi.Message) bool {
 		eipPacket := message.(readWriteModel.EipPacket)
 		if eipPacket == nil {
 			return false

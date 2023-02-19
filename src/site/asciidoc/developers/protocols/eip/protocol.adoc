@@ -1,0 +1,132 @@
+//
+//  Licensed to the Apache Software Foundation (ASF) under one or more
+//  contributor license agreements.  See the NOTICE file distributed with
+//  this work for additional information regarding copyright ownership.
+//  The ASF licenses this file to You under the Apache License, Version 2.0
+//  (the "License"); you may not use this file except in compliance with
+//  the License.  You may obtain a copy of the License at
+//
+//      https://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+== EIP Protocol
+
+// https://plantuml.com/de/activity-diagram-legacy
+// https://deepu.js.org/svg-seq-diagram/Reference_Guide.pdf
+
+[plantuml,eip-statemachine,svg,opts="inline",svg-type="inline"]
+----
+@startuml
+
+(*) --> Connect
+
+partition "Connected" #EEEEEE {
+    ===Connected=== -->[API Browse Request] Browse
+    ===Connected=== -->[API Read Request] Read
+    ===Connected=== -->[API Write Request] Write
+    ===Connected=== -->[API Subscription Request] Subscribe
+    ===Connected=== -->[API Unsubscription Request] Unsubscribe
+    ===Connected=== -->[API Disconnect Request] Disconnect
+}
+
+partition Connect #EEEECC {
+    (*) --> "initializing"
+    "initializing" --> "Send ListServices request"
+    "Send ListServices request" ..> "Receive ListServices response"
+    "Receive ListServices response" -->[If successfull, extract 'CIP encapsulation support' setting] "Send EipConnectionRequest request"
+    "Send EipConnectionRequest request" ..> "Receive EipConnectionRequest response"
+    if "Response is an EipConnectionResponse"?
+        -->[true] "Send GetAllAttributes request"
+    else
+        -->[false] "Send OpenConnectionManager request"
+    endif
+    "Send GetAllAttributes request" ..> "Receive GetAllAttributes response"
+    if "Extract setting for 'useMessageRouter' and 'useConnectionManager'. If useConnectionManager"
+        -->[true] "Send OpenConnectionManager request"
+    else
+        -->[false] ===Connected===
+    endif
+    "Send OpenConnectionManager request" ..> "Receive OpenConnectionManager response"
+    "Receive OpenConnectionManager response" --> ===Connected===
+}
+
+partition Disconnect #EECCCC {
+    "Disconnect" --> ===DisconnectStart===
+    if "connectionId != 0"
+        -->[true] "Send ConnectionManagerClose request"
+    else
+        -->[false] "Send Disconnect request"
+    endif
+    "Send ConnectionManagerClose request" ..> "Receive ConnectionManagerClose response"
+    "Receive ConnectionManagerClose response" --> "Send Disconnect request"
+    "Send Disconnect request" ..> "Receive Disconnect response"
+    "Receive Disconnect response" --> ===Disconnected===
+}
+
+partition Browse #CCCCEE {
+    "Browse" --> ===BrowseStart===
+    ===BrowseStart=== --> ===Connected===
+}
+
+partition Read #CCEECC {
+    "Read" --> ===ReadStart===
+    if "useMessageRouter"
+        if "useConnectionManager"
+            -->[true] "readWithConnectionManager"
+        else
+            -->[false] "readWithoutConnectionManager"
+        endif
+    else
+        -->[false] "readWithoutMessageRouter"
+    endif
+    "readWithConnectionManager" --> "Send SendUnitData request"
+    "Send SendUnitData request" ..> "Receive SendUnitData response"
+    "Receive SendUnitData response" --> ===Connected===
+    "readWithoutConnectionManager" --> "Send CipRRData request"
+    "Send CipRRData request" ..> "Receive CipRRData response"
+    "Receive CipRRData response" --> ===Connected===
+    "readWithoutMessageRouter" --> "Send unconnected CipReadRequest request for each tag"
+    "Send unconnected CipReadRequest request for each tag" ..> "Receive unconnected CipReadRequest response"
+    "Receive unconnected CipReadRequest response" --> ===Connected===
+}
+
+partition Write #EECCCC {
+    "Write" --> ===WriteStart===
+    if "useMessageRouter"
+        if "useConnectionManager"
+            -->[true] "writeWithConnectionManager"
+        else
+            -->[false] "writeWithoutConnectionManager"
+        endif
+    else
+        -->[false] "writeWithoutMessageRouter"
+    endif
+    "writeWithConnectionManager" --> "Send SendUnitData request"
+    "Send SendUnitData request" ..> "Receive SendUnitData response"
+    "Receive SendUnitData response" --> ===Connected===
+    "writeWithoutConnectionManager" --> "Send CipRRData request"
+    "Send CipRRData request" ..> "Receive CipRRData response"
+    "Receive CipRRData response" --> ===Connected===
+    "writeWithoutMessageRouter" --> "Send unconnected CipWriteRequest request for each tag"
+    "Send unconnected CipWriteRequest request for each tag" ..> "Receive unconnected CipWriteRequest response"
+    "Receive unconnected CipWriteRequest response" --> ===Connected===
+}
+
+partition Subscribe #EECCEE {
+    "Subscribe" --> ===SubscribeStart===
+    ===SubscribeStart=== --> ===Connected===
+}
+
+partition Unsubscribe #LightSkyBlue {
+    "Unsubscribe" --> ===UnsubscribeStart===
+    ===UnsubscribeStart=== --> ===Connected===
+}
+
+@enduml
+----
