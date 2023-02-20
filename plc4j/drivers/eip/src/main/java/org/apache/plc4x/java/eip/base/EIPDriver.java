@@ -25,7 +25,6 @@ import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
 import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
-import org.apache.plc4x.java.eip.logix.LogixDriver;
 import org.apache.plc4x.java.eip.readwrite.EipPacket;
 import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
@@ -106,7 +105,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
                 .withProtocol(EipProtocolLogic.class)
                 .withPacketSizeEstimator(ByteLengthEstimator.class)
                 .withParserArgs(IntegerEncoding.BIG_ENDIAN, true)
-                .withCorruptPacketRemover(LogixDriver.CorruptPackageCleaner.class)
+                .withCorruptPacketRemover(CorruptPackageCleaner.class)
                 .bigEndian()
                 .build();
         } else {
@@ -114,7 +113,7 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
                 .withProtocol(EipProtocolLogic.class)
                 .withPacketSizeEstimator(ByteLengthEstimator.class)
                 .withParserArgs(IntegerEncoding.LITTLE_ENDIAN, true)
-                .withCorruptPacketRemover(LogixDriver.CorruptPackageCleaner.class)
+                .withCorruptPacketRemover(CorruptPackageCleaner.class)
                 .littleEndian()
                 .build();
         }
@@ -209,13 +208,16 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     /** Estimate the Length of a Packet */
-    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
+    public class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
                 //Second byte for the size and then add the header size 24
-                int size = byteBuf.getUnsignedShort(byteBuf.readerIndex()+2)+24;
-                return size;
+                if (configuration.getByteOrder() == IntegerEncoding.BIG_ENDIAN) {
+                    return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 2) + 24;
+                } else {
+                    return byteBuf.getUnsignedShortLE(byteBuf.readerIndex() + 2) + 24;
+                }
             }
             return -1;
         }
