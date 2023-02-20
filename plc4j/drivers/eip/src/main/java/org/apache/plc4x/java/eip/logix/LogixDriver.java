@@ -19,30 +19,19 @@
 package org.apache.plc4x.java.eip.logix;
 
 import io.netty.buffer.ByteBuf;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
 import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
 import org.apache.plc4x.java.eip.logix.configuration.LogixConfiguration;
 import org.apache.plc4x.java.eip.readwrite.EipPacket;
-import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
 import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
 import org.apache.plc4x.java.spi.configuration.Configuration;
-import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.apache.plc4x.java.spi.connection.*;
-import org.apache.plc4x.java.spi.transport.Transport;
 
-import java.util.ServiceLoader;
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.apache.plc4x.java.spi.configuration.ConfigurationFactory.configure;
 
 public class LogixDriver extends GeneratedDriverBase<EipPacket> {
-    public static final int PORT = 44818;
 
     @Override
     public String getProtocolCode() {
@@ -94,7 +83,7 @@ public class LogixDriver extends GeneratedDriverBase<EipPacket> {
         return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacket::staticParse)
             .withProtocol(EipProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
-            .withParserArgs(IntegerEncoding.LITTLE_ENDIAN, true)
+            .withParserArgs(true)
             .withCorruptPacketRemover(CorruptPackageCleaner.class)
             .littleEndian()
             .build();

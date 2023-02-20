@@ -48,21 +48,16 @@ public class ServicesResponse extends TypeId implements Message {
   protected final boolean supportsUDP;
   protected final byte[] data;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
   public ServicesResponse(
       int encapsulationProtocol,
       boolean supportsCIPEncapsulation,
       boolean supportsUDP,
-      byte[] data,
-      IntegerEncoding order) {
-    super(order);
+      byte[] data) {
+    super();
     this.encapsulationProtocol = encapsulationProtocol;
     this.supportsCIPEncapsulation = supportsCIPEncapsulation;
     this.supportsUDP = supportsUDP;
     this.data = data;
-    this.order = order;
   }
 
   public int getEncapsulationProtocol() {
@@ -91,74 +86,27 @@ public class ServicesResponse extends TypeId implements Message {
     // Implicit Field (serviceLen) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int serviceLen = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField(
-        "serviceLen",
-        serviceLen,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeImplicitField("serviceLen", serviceLen, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (encapsulationProtocol)
     writeSimpleField(
-        "encapsulationProtocol",
-        encapsulationProtocol,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "encapsulationProtocol", encapsulationProtocol, writeUnsignedInt(writeBuffer, 16));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (byte) 0x00,
-        writeUnsignedByte(writeBuffer, 2),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 2));
 
     // Simple Field (supportsCIPEncapsulation)
     writeSimpleField(
-        "supportsCIPEncapsulation",
-        supportsCIPEncapsulation,
-        writeBoolean(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "supportsCIPEncapsulation", supportsCIPEncapsulation, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (int) 0x00,
-        writeUnsignedInt(writeBuffer, 12),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (int) 0x00, writeUnsignedInt(writeBuffer, 12));
 
     // Simple Field (supportsUDP)
-    writeSimpleField(
-        "supportsUDP",
-        supportsUDP,
-        writeBoolean(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("supportsUDP", supportsUDP, writeBoolean(writeBuffer));
 
     // Array Field (data)
-    writeByteArrayField(
-        "data",
-        data,
-        writeByteArray(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
 
     writeBuffer.popContext("ServicesResponse");
   }
@@ -200,7 +148,7 @@ public class ServicesResponse extends TypeId implements Message {
     return lengthInBits;
   }
 
-  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer, IntegerEncoding order)
+  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ServicesResponse");
     PositionAware positionAware = readBuffer;
@@ -208,75 +156,28 @@ public class ServicesResponse extends TypeId implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int serviceLen =
-        readImplicitField(
-            "serviceLen",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int serviceLen = readImplicitField("serviceLen", readUnsignedInt(readBuffer, 16));
 
     int encapsulationProtocol =
-        readSimpleField(
-            "encapsulationProtocol",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("encapsulationProtocol", readUnsignedInt(readBuffer, 16));
 
     Byte reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedByte(readBuffer, 2),
-            (byte) 0x00,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedByte(readBuffer, 2), (byte) 0x00);
 
     boolean supportsCIPEncapsulation =
-        readSimpleField(
-            "supportsCIPEncapsulation",
-            readBoolean(readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("supportsCIPEncapsulation", readBoolean(readBuffer));
 
     Integer reservedField1 =
-        readReservedField(
-            "reserved",
-            readUnsignedInt(readBuffer, 12),
-            (int) 0x00,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedInt(readBuffer, 12), (int) 0x00);
 
-    boolean supportsUDP =
-        readSimpleField(
-            "supportsUDP",
-            readBoolean(readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    boolean supportsUDP = readSimpleField("supportsUDP", readBoolean(readBuffer));
 
-    byte[] data =
-        readBuffer.readByteArray(
-            "data",
-            Math.toIntExact((serviceLen) - (4)),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte[] data = readBuffer.readByteArray("data", Math.toIntExact((serviceLen) - (4)));
 
     readBuffer.closeContext("ServicesResponse");
     // Create the instance
     return new ServicesResponseBuilderImpl(
-        encapsulationProtocol, supportsCIPEncapsulation, supportsUDP, data, order);
+        encapsulationProtocol, supportsCIPEncapsulation, supportsUDP, data);
   }
 
   public static class ServicesResponseBuilderImpl implements TypeId.TypeIdBuilder {
@@ -284,26 +185,21 @@ public class ServicesResponse extends TypeId implements Message {
     private final boolean supportsCIPEncapsulation;
     private final boolean supportsUDP;
     private final byte[] data;
-    private final IntegerEncoding order;
 
     public ServicesResponseBuilderImpl(
         int encapsulationProtocol,
         boolean supportsCIPEncapsulation,
         boolean supportsUDP,
-        byte[] data,
-        IntegerEncoding order) {
+        byte[] data) {
       this.encapsulationProtocol = encapsulationProtocol;
       this.supportsCIPEncapsulation = supportsCIPEncapsulation;
       this.supportsUDP = supportsUDP;
       this.data = data;
-      this.order = order;
     }
 
-    public ServicesResponse build(IntegerEncoding order) {
-
+    public ServicesResponse build() {
       ServicesResponse servicesResponse =
-          new ServicesResponse(
-              encapsulationProtocol, supportsCIPEncapsulation, supportsUDP, data, order);
+          new ServicesResponse(encapsulationProtocol, supportsCIPEncapsulation, supportsUDP, data);
       return servicesResponse;
     }
   }

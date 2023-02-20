@@ -45,23 +45,17 @@ func init() {
 func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
 	switch typeName {
 	case "PathSegment":
-		order, _ := model.IntegerEncodingByName(parserArguments[0])
-		return model.PathSegmentParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), order)
+		return model.PathSegmentParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TransportType":
-		order, _ := model.IntegerEncodingByName(parserArguments[0])
-		return model.TransportTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), order)
+		return model.TransportTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "PortSegmentType":
-		order, _ := model.IntegerEncodingByName(parserArguments[0])
-		return model.PortSegmentTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), order)
+		return model.PortSegmentTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "NetworkConnectionParameters":
-		order, _ := model.IntegerEncodingByName(parserArguments[0])
-		return model.NetworkConnectionParametersParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), order)
+		return model.NetworkConnectionParametersParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "TypeId":
-		order, _ := model.IntegerEncodingByName(parserArguments[0])
-		return model.TypeIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), order)
+		return model.TypeIdParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "InstanceSegment":
-		order, _ := model.IntegerEncodingByName(parserArguments[0])
-		return model.InstanceSegmentParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), order)
+		return model.InstanceSegmentParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "CIPData":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
@@ -70,12 +64,10 @@ func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 		packetLength := uint16(parsedUint0)
 		return model.CIPDataParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), packetLength)
 	case "ClassSegment":
-		order, _ := model.IntegerEncodingByName(parserArguments[0])
-		return model.ClassSegmentParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), order)
+		return model.ClassSegmentParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "EipPacket":
-		order, _ := model.IntegerEncodingByName(parserArguments[0])
-		response := parserArguments[1] == "true"
-		return model.EipPacketParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), order, response)
+		response := parserArguments[0] == "true"
+		return model.EipPacketParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), response)
 	case "CIPAttributes":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
@@ -90,29 +82,20 @@ func (m EipXmlParserHelper) Parse(typeName string, xmlString string, parserArgum
 			return nil, err
 		}
 		serviceLen := uint16(parsedUint1)
-		order, _ := model.IntegerEncodingByName(parserArguments[2])
-		return model.CipServiceParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), connected, serviceLen, order)
+		return model.CipServiceParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), connected, serviceLen)
 	case "Services":
 		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
 		if err != nil {
 			return nil, err
 		}
 		servicesLen := uint16(parsedUint0)
-		order, _ := model.IntegerEncodingByName(parserArguments[1])
-		return model.ServicesParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), servicesLen, order)
+		return model.ServicesParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), servicesLen)
 	case "LogicalSegmentType":
-		order, _ := model.IntegerEncodingByName(parserArguments[0])
-		return model.LogicalSegmentTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), order)
-	case "CIPDataConnected":
-		parsedUint0, err := strconv.ParseUint(parserArguments[0], 10, 16)
-		if err != nil {
-			return nil, err
-		}
-		packetLength := uint16(parsedUint0)
-		return model.CIPDataConnectedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), packetLength)
+		return model.LogicalSegmentTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	case "DataSegmentType":
-		order, _ := model.IntegerEncodingByName(parserArguments[0])
-		return model.DataSegmentTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)), order)
+		return model.DataSegmentTypeParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
+	case "CIPDataConnected":
+		return model.CIPDataConnectedParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

@@ -51,28 +51,22 @@ public class MultipleServiceRequest extends CipService implements Message {
   }
 
   // Constant values.
-  public static final Byte REQUESTPATHSIZE = 0x02;
+  public static final Short REQUESTPATHSIZE = 0x02;
   public static final Long REQUESTPATH = 0x01240220L;
 
   // Properties.
   protected final Services data;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
-  public MultipleServiceRequest(Services data, Integer serviceLen, IntegerEncoding order) {
-    super(serviceLen, order);
+  public MultipleServiceRequest(Services data) {
+    super();
     this.data = data;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
   public Services getData() {
     return data;
   }
 
-  public byte getRequestPathSize() {
+  public short getRequestPathSize() {
     return REQUESTPATHSIZE;
   }
 
@@ -88,34 +82,13 @@ public class MultipleServiceRequest extends CipService implements Message {
     writeBuffer.pushContext("MultipleServiceRequest");
 
     // Const Field (requestPathSize)
-    writeConstField(
-        "requestPathSize",
-        REQUESTPATHSIZE,
-        writeSignedByte(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeConstField("requestPathSize", REQUESTPATHSIZE, writeUnsignedShort(writeBuffer, 8));
 
     // Const Field (requestPath)
-    writeConstField(
-        "requestPath",
-        REQUESTPATH,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeConstField("requestPath", REQUESTPATH, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (data)
-    writeSimpleField(
-        "data",
-        data,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("data", data, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("MultipleServiceRequest");
   }
@@ -144,68 +117,43 @@ public class MultipleServiceRequest extends CipService implements Message {
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("MultipleServiceRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte requestPathSize =
+    short requestPathSize =
         readConstField(
             "requestPathSize",
-            readSignedByte(readBuffer, 8),
-            MultipleServiceRequest.REQUESTPATHSIZE,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            readUnsignedShort(readBuffer, 8),
+            MultipleServiceRequest.REQUESTPATHSIZE);
 
     long requestPath =
         readConstField(
-            "requestPath",
-            readUnsignedLong(readBuffer, 32),
-            MultipleServiceRequest.REQUESTPATH,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            "requestPath", readUnsignedLong(readBuffer, 32), MultipleServiceRequest.REQUESTPATH);
 
     Services data =
         readSimpleField(
             "data",
             new DataReaderComplexDefault<>(
-                () ->
-                    Services.staticParse(
-                        readBuffer, (int) ((serviceLen) - (6)), (IntegerEncoding) (order)),
-                readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                () -> Services.staticParse(readBuffer, (int) ((serviceLen) - (6))), readBuffer));
 
     readBuffer.closeContext("MultipleServiceRequest");
     // Create the instance
-    return new MultipleServiceRequestBuilderImpl(data, serviceLen, order);
+    return new MultipleServiceRequestBuilderImpl(data);
   }
 
   public static class MultipleServiceRequestBuilderImpl implements CipService.CipServiceBuilder {
     private final Services data;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
-    public MultipleServiceRequestBuilderImpl(
-        Services data, Integer serviceLen, IntegerEncoding order) {
+    public MultipleServiceRequestBuilderImpl(Services data) {
       this.data = data;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public MultipleServiceRequest build(Integer serviceLen, IntegerEncoding order) {
-
-      MultipleServiceRequest multipleServiceRequest =
-          new MultipleServiceRequest(data, serviceLen, order);
+    public MultipleServiceRequest build() {
+      MultipleServiceRequest multipleServiceRequest = new MultipleServiceRequest(data);
       return multipleServiceRequest;
     }
   }

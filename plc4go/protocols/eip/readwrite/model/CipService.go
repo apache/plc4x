@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -53,7 +52,6 @@ type _CipService struct {
 
 	// Arguments.
 	ServiceLen uint16
-	Order      IntegerEncoding
 }
 
 type _CipServiceChildRequirements interface {
@@ -79,8 +77,8 @@ type CipServiceChild interface {
 }
 
 // NewCipService factory function for _CipService
-func NewCipService(serviceLen uint16, order IntegerEncoding) *_CipService {
-	return &_CipService{ServiceLen: serviceLen, Order: order}
+func NewCipService(serviceLen uint16) *_CipService {
+	return &_CipService{ServiceLen: serviceLen}
 }
 
 // Deprecated: use the interface for direct cast
@@ -112,11 +110,11 @@ func (m *_CipService) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipServiceParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (CipService, error) {
-	return CipServiceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
+func CipServiceParse(theBytes []byte, connected bool, serviceLen uint16) (CipService, error) {
+	return CipServiceParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (CipService, error) {
+func CipServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipService, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipService"); pullErr != nil {
@@ -148,35 +146,35 @@ func CipServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	var typeSwitchError error
 	switch {
 	case service == 0x01 && response == bool(false): // GetAttributeAllRequest
-		_childTemp, typeSwitchError = GetAttributeAllRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = GetAttributeAllRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x01 && response == bool(true): // GetAttributeAllResponse
-		_childTemp, typeSwitchError = GetAttributeAllResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = GetAttributeAllResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x4C && response == bool(false): // CipReadRequest
-		_childTemp, typeSwitchError = CipReadRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = CipReadRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x4C && response == bool(true): // CipReadResponse
-		_childTemp, typeSwitchError = CipReadResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = CipReadResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x4D && response == bool(false): // CipWriteRequest
-		_childTemp, typeSwitchError = CipWriteRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = CipWriteRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x4D && response == bool(true): // CipWriteResponse
-		_childTemp, typeSwitchError = CipWriteResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = CipWriteResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x4E && response == bool(false): // CipConnectionManagerCloseRequest
-		_childTemp, typeSwitchError = CipConnectionManagerCloseRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = CipConnectionManagerCloseRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x4E && response == bool(true): // CipConnectionManagerCloseResponse
-		_childTemp, typeSwitchError = CipConnectionManagerCloseResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = CipConnectionManagerCloseResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x0A && response == bool(false): // MultipleServiceRequest
-		_childTemp, typeSwitchError = MultipleServiceRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = MultipleServiceRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x0A && response == bool(true): // MultipleServiceResponse
-		_childTemp, typeSwitchError = MultipleServiceResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = MultipleServiceResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x52 && response == bool(false) && connected == bool(false): // CipUnconnectedRequest
-		_childTemp, typeSwitchError = CipUnconnectedRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = CipUnconnectedRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x52 && response == bool(false) && connected == bool(true): // CipConnectedRequest
-		_childTemp, typeSwitchError = CipConnectedRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = CipConnectedRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x52 && response == bool(true): // CipConnectedResponse
-		_childTemp, typeSwitchError = CipConnectedResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = CipConnectedResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x5B && response == bool(false): // CipConnectionManagerRequest
-		_childTemp, typeSwitchError = CipConnectionManagerRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = CipConnectionManagerRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x5B && response == bool(true): // CipConnectionManagerResponse
-		_childTemp, typeSwitchError = CipConnectionManagerResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen, order)
+		_childTemp, typeSwitchError = CipConnectionManagerResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [service=%v, response=%v, connected=%v]", service, response, connected)
 	}
@@ -236,9 +234,6 @@ func (pm *_CipService) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 func (m *_CipService) GetServiceLen() uint16 {
 	return m.ServiceLen
-}
-func (m *_CipService) GetOrder() IntegerEncoding {
-	return m.Order
 }
 
 //

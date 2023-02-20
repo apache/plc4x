@@ -20,23 +20,12 @@ package org.apache.plc4x.java.eip.logix.configuration;
 
 import org.apache.plc4x.java.eip.base.EIPDriver;
 import org.apache.plc4x.java.eip.base.configuration.EIPConfiguration;
-import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
-import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
-import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class LogixConfiguration extends EIPConfiguration {
 
     @ConfigurationParameter
     private String communicationPath;
-
-    private IntegerEncoding byteOrder = IntegerEncoding.LITTLE_ENDIAN;
-
-    @Override
-    public IntegerEncoding getByteOrder() { return this.byteOrder; }
-
-    @Override
-    public void setByteOrder(IntegerEncoding byteOrder) { this.byteOrder = byteOrder; }
 
     @Override
     public int getDefaultPort(){return EIPDriver.PORT;}

@@ -46,14 +46,10 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
   protected final String symbol;
   protected final Short pad;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public AnsiExtendedSymbolSegment(String symbol, Short pad, IntegerEncoding order) {
-    super(order);
+  public AnsiExtendedSymbolSegment(String symbol, Short pad) {
+    super();
     this.symbol = symbol;
     this.pad = pad;
-    this.order = order;
   }
 
   public String getSymbol() {
@@ -75,35 +71,13 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
     // Implicit Field (dataSize) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     short dataSize = (short) (STR_LEN(getSymbol()));
-    writeImplicitField(
-        "dataSize",
-        dataSize,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeImplicitField("dataSize", dataSize, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (symbol)
-    writeSimpleField(
-        "symbol",
-        symbol,
-        writeString(writeBuffer, (dataSize) * (8)),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("symbol", symbol, writeString(writeBuffer, (dataSize) * (8)));
 
     // Optional Field (pad) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "pad",
-        pad,
-        writeUnsignedShort(writeBuffer, 8),
-        ((STR_LEN(getSymbol())) % (2)) != (0),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeOptionalField("pad", pad, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("AnsiExtendedSymbolSegment");
   }
@@ -133,63 +107,40 @@ public class AnsiExtendedSymbolSegment extends DataSegmentType implements Messag
     return lengthInBits;
   }
 
-  public static DataSegmentTypeBuilder staticParseDataSegmentTypeBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
+  public static DataSegmentTypeBuilder staticParseDataSegmentTypeBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("AnsiExtendedSymbolSegment");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    short dataSize =
-        readImplicitField(
-            "dataSize",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short dataSize = readImplicitField("dataSize", readUnsignedShort(readBuffer, 8));
 
-    String symbol =
-        readSimpleField(
-            "symbol",
-            readString(readBuffer, (dataSize) * (8)),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    String symbol = readSimpleField("symbol", readString(readBuffer, (dataSize) * (8)));
 
     Short pad =
         readOptionalField(
-            "pad",
-            readUnsignedShort(readBuffer, 8),
-            ((STR_LEN(symbol)) % (2)) != (0),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            "pad", readUnsignedShort(readBuffer, 8), ((STR_LEN(symbol)) % (2)) != (0));
 
     readBuffer.closeContext("AnsiExtendedSymbolSegment");
     // Create the instance
-    return new AnsiExtendedSymbolSegmentBuilderImpl(symbol, pad, order);
+    return new AnsiExtendedSymbolSegmentBuilderImpl(symbol, pad);
   }
 
   public static class AnsiExtendedSymbolSegmentBuilderImpl
       implements DataSegmentType.DataSegmentTypeBuilder {
     private final String symbol;
     private final Short pad;
-    private final IntegerEncoding order;
 
-    public AnsiExtendedSymbolSegmentBuilderImpl(String symbol, Short pad, IntegerEncoding order) {
+    public AnsiExtendedSymbolSegmentBuilderImpl(String symbol, Short pad) {
       this.symbol = symbol;
       this.pad = pad;
-      this.order = order;
     }
 
-    public AnsiExtendedSymbolSegment build(IntegerEncoding order) {
-
+    public AnsiExtendedSymbolSegment build() {
       AnsiExtendedSymbolSegment ansiExtendedSymbolSegment =
-          new AnsiExtendedSymbolSegment(symbol, pad, order);
+          new AnsiExtendedSymbolSegment(symbol, pad);
       return ansiExtendedSymbolSegment;
     }
   }

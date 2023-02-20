@@ -55,22 +55,11 @@ public class CipConnectedResponse extends CipService implements Message {
   protected final short additionalStatusWords;
   protected final CIPDataConnected data;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
-  public CipConnectedResponse(
-      short status,
-      short additionalStatusWords,
-      CIPDataConnected data,
-      Integer serviceLen,
-      IntegerEncoding order) {
-    super(serviceLen, order);
+  public CipConnectedResponse(short status, short additionalStatusWords, CIPDataConnected data) {
+    super();
     this.status = status;
     this.additionalStatusWords = additionalStatusWords;
     this.data = data;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
   public short getStatus() {
@@ -93,45 +82,17 @@ public class CipConnectedResponse extends CipService implements Message {
     writeBuffer.pushContext("CipConnectedResponse");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (status)
-    writeSimpleField(
-        "status",
-        status,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("status", status, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (additionalStatusWords)
     writeSimpleField(
-        "additionalStatusWords",
-        additionalStatusWords,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "additionalStatusWords", additionalStatusWords, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (data) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "data",
-        data,
-        new DataWriterComplexDefault<>(writeBuffer),
-        (((serviceLen) - (4))) > (0),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeOptionalField("data", data, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("CipConnectedResponse");
   }
@@ -165,8 +126,7 @@ public class CipConnectedResponse extends CipService implements Message {
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("CipConnectedResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -174,74 +134,40 @@ public class CipConnectedResponse extends CipService implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedShort(readBuffer, 8),
-            (short) 0x00,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-    short status =
-        readSimpleField(
-            "status",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short status = readSimpleField("status", readUnsignedShort(readBuffer, 8));
 
     short additionalStatusWords =
-        readSimpleField(
-            "additionalStatusWords",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("additionalStatusWords", readUnsignedShort(readBuffer, 8));
 
     CIPDataConnected data =
         readOptionalField(
             "data",
             new DataReaderComplexDefault<>(
-                () -> CIPDataConnected.staticParse(readBuffer, (int) (serviceLen)), readBuffer),
-            (((serviceLen) - (4))) > (0),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                () -> CIPDataConnected.staticParse(readBuffer), readBuffer),
+            (((serviceLen) - (4))) > (0));
 
     readBuffer.closeContext("CipConnectedResponse");
     // Create the instance
-    return new CipConnectedResponseBuilderImpl(
-        status, additionalStatusWords, data, serviceLen, order);
+    return new CipConnectedResponseBuilderImpl(status, additionalStatusWords, data);
   }
 
   public static class CipConnectedResponseBuilderImpl implements CipService.CipServiceBuilder {
     private final short status;
     private final short additionalStatusWords;
     private final CIPDataConnected data;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
     public CipConnectedResponseBuilderImpl(
-        short status,
-        short additionalStatusWords,
-        CIPDataConnected data,
-        Integer serviceLen,
-        IntegerEncoding order) {
+        short status, short additionalStatusWords, CIPDataConnected data) {
       this.status = status;
       this.additionalStatusWords = additionalStatusWords;
       this.data = data;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public CipConnectedResponse build(Integer serviceLen, IntegerEncoding order) {
-
+    public CipConnectedResponse build() {
       CipConnectedResponse cipConnectedResponse =
-          new CipConnectedResponse(status, additionalStatusWords, data, serviceLen, order);
+          new CipConnectedResponse(status, additionalStatusWords, data);
       return cipConnectedResponse;
     }
   }

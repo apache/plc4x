@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -100,11 +99,11 @@ func (m *_CipReadRequest) GetElementNb() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewCipReadRequest factory function for _CipReadRequest
-func NewCipReadRequest(tag []byte, elementNb uint16, serviceLen uint16, order IntegerEncoding) *_CipReadRequest {
+func NewCipReadRequest(tag []byte, elementNb uint16, serviceLen uint16) *_CipReadRequest {
 	_result := &_CipReadRequest{
 		Tag:         tag,
 		ElementNb:   elementNb,
-		_CipService: NewCipService(serviceLen, order),
+		_CipService: NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -146,11 +145,11 @@ func (m *_CipReadRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipReadRequestParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (CipReadRequest, error) {
-	return CipReadRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
+func CipReadRequestParse(theBytes []byte, connected bool, serviceLen uint16) (CipReadRequest, error) {
+	return CipReadRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (CipReadRequest, error) {
+func CipReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipReadRequest"); pullErr != nil {
@@ -160,7 +159,7 @@ func CipReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)
+	requestPathSize, _requestPathSizeErr := readBuffer.ReadUint8("requestPathSize", 8)
 	_ = requestPathSize
 	if _requestPathSizeErr != nil {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipReadRequest")
@@ -187,7 +186,6 @@ func CipReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_child := &_CipReadRequest{
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
-			Order:      order,
 		},
 		Tag:       tag,
 		ElementNb: elementNb,
@@ -197,7 +195,7 @@ func CipReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 }
 
 func (m *_CipReadRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -213,8 +211,8 @@ func (m *_CipReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 
 		// Implicit Field (requestPathSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		requestPathSize := int8(int8(int8(len(m.GetTag()))) / int8(int8(2)))
-		_requestPathSizeErr := writeBuffer.WriteInt8("requestPathSize", 8, (requestPathSize))
+		requestPathSize := uint8(uint8(uint8(len(m.GetTag()))) / uint8(uint8(2)))
+		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, (requestPathSize))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}

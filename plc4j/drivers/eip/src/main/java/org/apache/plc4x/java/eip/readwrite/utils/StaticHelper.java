@@ -18,14 +18,8 @@
  */
 package org.apache.plc4x.java.eip.readwrite.utils;
 
-import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
 import org.apache.plc4x.java.eip.readwrite.PathSegment;
-import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 
 public class StaticHelper {
@@ -33,13 +27,13 @@ public class StaticHelper {
     /**
      * Tries to parse another PathSegment, if this works it returns false, if it doesn't it returns ture.
      * @param io readBuffer
-     * @param order byte order
      * @return false if there's another PathSegment, true if not.
      */
-    public static boolean noMorePathSegments(ReadBuffer io, IntegerEncoding order) {
+    public static boolean noMorePathSegments(ReadBuffer io) {
         int initialPosition = io.getPos();
         try {
-            PathSegment ps = PathSegment.staticParse(io, order);
+            // Simply try to parse the PathSegment, if it succeeds, we're not at the end.
+            PathSegment.staticParse(io);
             return false;
         } catch (Exception e) {
             return true;

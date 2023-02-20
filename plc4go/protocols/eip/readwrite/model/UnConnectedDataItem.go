@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -85,10 +84,10 @@ func (m *_UnConnectedDataItem) GetService() CipService {
 ///////////////////////////////////////////////////////////
 
 // NewUnConnectedDataItem factory function for _UnConnectedDataItem
-func NewUnConnectedDataItem(service CipService, order IntegerEncoding) *_UnConnectedDataItem {
+func NewUnConnectedDataItem(service CipService) *_UnConnectedDataItem {
 	_result := &_UnConnectedDataItem{
 		Service: service,
-		_TypeId: NewTypeId(order),
+		_TypeId: NewTypeId(),
 	}
 	_result._TypeId._TypeIdChildRequirements = _result
 	return _result
@@ -125,11 +124,11 @@ func (m *_UnConnectedDataItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func UnConnectedDataItemParse(theBytes []byte, order IntegerEncoding) (UnConnectedDataItem, error) {
-	return UnConnectedDataItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func UnConnectedDataItemParse(theBytes []byte) (UnConnectedDataItem, error) {
+	return UnConnectedDataItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (UnConnectedDataItem, error) {
+func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (UnConnectedDataItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("UnConnectedDataItem"); pullErr != nil {
@@ -149,7 +148,7 @@ func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if pullErr := readBuffer.PullContext("service"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for service")
 	}
-	_service, _serviceErr := CipServiceParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint16(packetSize), IntegerEncoding(order))
+	_service, _serviceErr := CipServiceParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint16(packetSize))
 	if _serviceErr != nil {
 		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field of UnConnectedDataItem")
 	}
@@ -164,9 +163,7 @@ func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_UnConnectedDataItem{
-		_TypeId: &_TypeId{
-			Order: order,
-		},
+		_TypeId: &_TypeId{},
 		Service: service,
 	}
 	_child._TypeId._TypeIdChildRequirements = _child
@@ -174,7 +171,7 @@ func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.Re
 }
 
 func (m *_UnConnectedDataItem) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

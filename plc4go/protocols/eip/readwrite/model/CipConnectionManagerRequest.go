@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -215,7 +214,7 @@ func (m *_CipConnectionManagerRequest) GetConnectionPaths() []PathSegment {
 ///////////////////////////////////////////////////////////
 
 // NewCipConnectionManagerRequest factory function for _CipConnectionManagerRequest
-func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, timeoutMultiplier uint8, otRpi uint32, otConnectionParameters NetworkConnectionParameters, toRpi uint32, toConnectionParameters NetworkConnectionParameters, transportType TransportType, connectionPathSize uint8, connectionPaths []PathSegment, serviceLen uint16, order IntegerEncoding) *_CipConnectionManagerRequest {
+func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, timeoutMultiplier uint8, otRpi uint32, otConnectionParameters NetworkConnectionParameters, toRpi uint32, toConnectionParameters NetworkConnectionParameters, transportType TransportType, connectionPathSize uint8, connectionPaths []PathSegment, serviceLen uint16) *_CipConnectionManagerRequest {
 	_result := &_CipConnectionManagerRequest{
 		ClassSegment:           classSegment,
 		InstanceSegment:        instanceSegment,
@@ -235,7 +234,7 @@ func NewCipConnectionManagerRequest(classSegment PathSegment, instanceSegment Pa
 		TransportType:          transportType,
 		ConnectionPathSize:     connectionPathSize,
 		ConnectionPaths:        connectionPaths,
-		_CipService:            NewCipService(serviceLen, order),
+		_CipService:            NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -330,11 +329,11 @@ func (m *_CipConnectionManagerRequest) GetLengthInBytes(ctx context.Context) uin
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipConnectionManagerRequestParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (CipConnectionManagerRequest, error) {
-	return CipConnectionManagerRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
+func CipConnectionManagerRequestParse(theBytes []byte, connected bool, serviceLen uint16) (CipConnectionManagerRequest, error) {
+	return CipConnectionManagerRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (CipConnectionManagerRequest, error) {
+func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectionManagerRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipConnectionManagerRequest"); pullErr != nil {
@@ -344,7 +343,7 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 	_ = currentPos
 
 	// Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)
+	requestPathSize, _requestPathSizeErr := readBuffer.ReadUint8("requestPathSize", 8)
 	_ = requestPathSize
 	if _requestPathSizeErr != nil {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipConnectionManagerRequest")
@@ -354,7 +353,7 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 	if pullErr := readBuffer.PullContext("classSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for classSegment")
 	}
-	_classSegment, _classSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer, IntegerEncoding(order))
+	_classSegment, _classSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
 	if _classSegmentErr != nil {
 		return nil, errors.Wrap(_classSegmentErr, "Error parsing 'classSegment' field of CipConnectionManagerRequest")
 	}
@@ -367,7 +366,7 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 	if pullErr := readBuffer.PullContext("instanceSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for instanceSegment")
 	}
-	_instanceSegment, _instanceSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer, IntegerEncoding(order))
+	_instanceSegment, _instanceSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
 	if _instanceSegmentErr != nil {
 		return nil, errors.Wrap(_instanceSegmentErr, "Error parsing 'instanceSegment' field of CipConnectionManagerRequest")
 	}
@@ -467,7 +466,7 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 	if pullErr := readBuffer.PullContext("otConnectionParameters"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for otConnectionParameters")
 	}
-	_otConnectionParameters, _otConnectionParametersErr := NetworkConnectionParametersParseWithBuffer(ctx, readBuffer, IntegerEncoding(order))
+	_otConnectionParameters, _otConnectionParametersErr := NetworkConnectionParametersParseWithBuffer(ctx, readBuffer)
 	if _otConnectionParametersErr != nil {
 		return nil, errors.Wrap(_otConnectionParametersErr, "Error parsing 'otConnectionParameters' field of CipConnectionManagerRequest")
 	}
@@ -487,7 +486,7 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 	if pullErr := readBuffer.PullContext("toConnectionParameters"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for toConnectionParameters")
 	}
-	_toConnectionParameters, _toConnectionParametersErr := NetworkConnectionParametersParseWithBuffer(ctx, readBuffer, IntegerEncoding(order))
+	_toConnectionParameters, _toConnectionParametersErr := NetworkConnectionParametersParseWithBuffer(ctx, readBuffer)
 	if _toConnectionParametersErr != nil {
 		return nil, errors.Wrap(_toConnectionParametersErr, "Error parsing 'toConnectionParameters' field of CipConnectionManagerRequest")
 	}
@@ -500,7 +499,7 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 	if pullErr := readBuffer.PullContext("transportType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for transportType")
 	}
-	_transportType, _transportTypeErr := TransportTypeParseWithBuffer(ctx, readBuffer, IntegerEncoding(order))
+	_transportType, _transportTypeErr := TransportTypeParseWithBuffer(ctx, readBuffer)
 	if _transportTypeErr != nil {
 		return nil, errors.Wrap(_transportTypeErr, "Error parsing 'transportType' field of CipConnectionManagerRequest")
 	}
@@ -523,8 +522,8 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 	// Terminated array
 	var connectionPaths []PathSegment
 	{
-		for !bool(NoMorePathSegments(readBuffer, order)) {
-			_item, _err := PathSegmentParseWithBuffer(ctx, readBuffer, order)
+		for !bool(NoMorePathSegments(readBuffer)) {
+			_item, _err := PathSegmentParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'connectionPaths' field of CipConnectionManagerRequest")
 			}
@@ -543,7 +542,6 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 	_child := &_CipConnectionManagerRequest{
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
-			Order:      order,
 		},
 		ClassSegment:           classSegment,
 		InstanceSegment:        instanceSegment,
@@ -570,7 +568,7 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 }
 
 func (m *_CipConnectionManagerRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -586,8 +584,8 @@ func (m *_CipConnectionManagerRequest) SerializeWithWriteBuffer(ctx context.Cont
 		}
 
 		// Implicit Field (requestPathSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		requestPathSize := int8(int8((int8(m.GetClassSegment().GetLengthInBytes(ctx)) + int8(m.GetInstanceSegment().GetLengthInBytes(ctx)))) / int8(int8(2)))
-		_requestPathSizeErr := writeBuffer.WriteInt8("requestPathSize", 8, (requestPathSize))
+		requestPathSize := uint8(uint8((uint8(m.GetClassSegment().GetLengthInBytes(ctx)) + uint8(m.GetInstanceSegment().GetLengthInBytes(ctx)))) / uint8(uint8(2)))
+		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, (requestPathSize))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}

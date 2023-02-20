@@ -41,14 +41,10 @@ public class CIPDataConnected implements Message {
   protected final long value;
   protected final int tagStatus;
 
-  // Arguments.
-  protected final Integer packetLength;
-
-  public CIPDataConnected(long value, int tagStatus, Integer packetLength) {
+  public CIPDataConnected(long value, int tagStatus) {
     super();
     this.value = value;
     this.tagStatus = tagStatus;
-    this.packetLength = packetLength;
   }
 
   public long getValue() {
@@ -97,25 +93,10 @@ public class CIPDataConnected implements Message {
   public static CIPDataConnected staticParse(ReadBuffer readBuffer, Object... args)
       throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Integer packetLength;
-    if (args[0] instanceof Integer) {
-      packetLength = (Integer) args[0];
-    } else if (args[0] instanceof String) {
-      packetLength = Integer.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Integer or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, packetLength);
+    return staticParse(readBuffer);
   }
 
-  public static CIPDataConnected staticParse(ReadBuffer readBuffer, Integer packetLength)
-      throws ParseException {
+  public static CIPDataConnected staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CIPDataConnected");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -129,7 +110,7 @@ public class CIPDataConnected implements Message {
     readBuffer.closeContext("CIPDataConnected");
     // Create the instance
     CIPDataConnected _cIPDataConnected;
-    _cIPDataConnected = new CIPDataConnected(value, tagStatus, packetLength);
+    _cIPDataConnected = new CIPDataConnected(value, tagStatus);
     return _cIPDataConnected;
   }
 

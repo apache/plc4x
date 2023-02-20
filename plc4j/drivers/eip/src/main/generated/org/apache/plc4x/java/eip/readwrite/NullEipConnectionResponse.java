@@ -50,13 +50,9 @@ public class NullEipConnectionResponse extends EipPacket implements Message {
     return (int) 0;
   }
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
   public NullEipConnectionResponse(
-      long sessionHandle, long status, byte[] senderContext, long options, IntegerEncoding order) {
-    super(sessionHandle, status, senderContext, options, order);
-    this.order = order;
+      long sessionHandle, long status, byte[] senderContext, long options) {
+    super(sessionHandle, status, senderContext, options);
   }
 
   @Override
@@ -84,7 +80,7 @@ public class NullEipConnectionResponse extends EipPacket implements Message {
   }
 
   public static EipPacketBuilder staticParseEipPacketBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("NullEipConnectionResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -93,24 +89,17 @@ public class NullEipConnectionResponse extends EipPacket implements Message {
 
     readBuffer.closeContext("NullEipConnectionResponse");
     // Create the instance
-    return new NullEipConnectionResponseBuilderImpl(order);
+    return new NullEipConnectionResponseBuilderImpl();
   }
 
   public static class NullEipConnectionResponseBuilderImpl implements EipPacket.EipPacketBuilder {
-    private final IntegerEncoding order;
 
-    public NullEipConnectionResponseBuilderImpl(IntegerEncoding order) {
-      this.order = order;
-    }
+    public NullEipConnectionResponseBuilderImpl() {}
 
     public NullEipConnectionResponse build(
-        long sessionHandle,
-        long status,
-        byte[] senderContext,
-        long options,
-        IntegerEncoding order) {
+        long sessionHandle, long status, byte[] senderContext, long options) {
       NullEipConnectionResponse nullEipConnectionResponse =
-          new NullEipConnectionResponse(sessionHandle, status, senderContext, options, order);
+          new NullEipConnectionResponse(sessionHandle, status, senderContext, options);
       return nullEipConnectionResponse;
     }
   }

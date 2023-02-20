@@ -56,24 +56,12 @@ public class CipWriteRequest extends CipService implements Message {
   protected final int elementNb;
   protected final byte[] data;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
-  public CipWriteRequest(
-      byte[] tag,
-      CIPDataTypeCode dataType,
-      int elementNb,
-      byte[] data,
-      Integer serviceLen,
-      IntegerEncoding order) {
-    super(serviceLen, order);
+  public CipWriteRequest(byte[] tag, CIPDataTypeCode dataType, int elementNb, byte[] data) {
+    super();
     this.tag = tag;
     this.dataType = dataType;
     this.elementNb = elementNb;
     this.data = data;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
   public byte[] getTag() {
@@ -101,25 +89,11 @@ public class CipWriteRequest extends CipService implements Message {
 
     // Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    byte requestPathSize = (byte) ((COUNT(getTag())) / (2));
-    writeImplicitField(
-        "requestPathSize",
-        requestPathSize,
-        writeSignedByte(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    short requestPathSize = (short) ((COUNT(getTag())) / (2));
+    writeImplicitField("requestPathSize", requestPathSize, writeUnsignedShort(writeBuffer, 8));
 
     // Array Field (tag)
-    writeByteArrayField(
-        "tag",
-        tag,
-        writeByteArray(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeByteArrayField("tag", tag, writeByteArray(writeBuffer, 8));
 
     // Simple Field (dataType)
     writeSimpleEnumField(
@@ -127,31 +101,13 @@ public class CipWriteRequest extends CipService implements Message {
         "CIPDataTypeCode",
         dataType,
         new DataWriterEnumDefault<>(
-            CIPDataTypeCode::getValue, CIPDataTypeCode::name, writeUnsignedInt(writeBuffer, 16)),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+            CIPDataTypeCode::getValue, CIPDataTypeCode::name, writeUnsignedInt(writeBuffer, 16)));
 
     // Simple Field (elementNb)
-    writeSimpleField(
-        "elementNb",
-        elementNb,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("elementNb", elementNb, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (data)
-    writeByteArrayField(
-        "data",
-        data,
-        writeByteArray(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
 
     writeBuffer.popContext("CipWriteRequest");
   }
@@ -190,64 +146,32 @@ public class CipWriteRequest extends CipService implements Message {
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("CipWriteRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte requestPathSize =
-        readImplicitField(
-            "requestPathSize",
-            readSignedByte(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short requestPathSize = readImplicitField("requestPathSize", readUnsignedShort(readBuffer, 8));
 
-    byte[] tag =
-        readBuffer.readByteArray(
-            "tag",
-            Math.toIntExact((requestPathSize) * (2)),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte[] tag = readBuffer.readByteArray("tag", Math.toIntExact((requestPathSize) * (2)));
 
     CIPDataTypeCode dataType =
         readEnumField(
             "dataType",
             "CIPDataTypeCode",
             new DataReaderEnumDefault<>(
-                CIPDataTypeCode::enumForValue, readUnsignedInt(readBuffer, 16)),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                CIPDataTypeCode::enumForValue, readUnsignedInt(readBuffer, 16)));
 
-    int elementNb =
-        readSimpleField(
-            "elementNb",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int elementNb = readSimpleField("elementNb", readUnsignedInt(readBuffer, 16));
 
     byte[] data =
-        readBuffer.readByteArray(
-            "data",
-            Math.toIntExact((dataType.getSize()) * (elementNb)),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readBuffer.readByteArray("data", Math.toIntExact((dataType.getSize()) * (elementNb)));
 
     readBuffer.closeContext("CipWriteRequest");
     // Create the instance
-    return new CipWriteRequestBuilderImpl(tag, dataType, elementNb, data, serviceLen, order);
+    return new CipWriteRequestBuilderImpl(tag, dataType, elementNb, data);
   }
 
   public static class CipWriteRequestBuilderImpl implements CipService.CipServiceBuilder {
@@ -255,28 +179,17 @@ public class CipWriteRequest extends CipService implements Message {
     private final CIPDataTypeCode dataType;
     private final int elementNb;
     private final byte[] data;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
     public CipWriteRequestBuilderImpl(
-        byte[] tag,
-        CIPDataTypeCode dataType,
-        int elementNb,
-        byte[] data,
-        Integer serviceLen,
-        IntegerEncoding order) {
+        byte[] tag, CIPDataTypeCode dataType, int elementNb, byte[] data) {
       this.tag = tag;
       this.dataType = dataType;
       this.elementNb = elementNb;
       this.data = data;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public CipWriteRequest build(Integer serviceLen, IntegerEncoding order) {
-
-      CipWriteRequest cipWriteRequest =
-          new CipWriteRequest(tag, dataType, elementNb, data, serviceLen, order);
+    public CipWriteRequest build() {
+      CipWriteRequest cipWriteRequest = new CipWriteRequest(tag, dataType, elementNb, data);
       return cipWriteRequest;
     }
   }

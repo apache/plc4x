@@ -40,12 +40,8 @@ public abstract class TypeId implements Message {
   // Abstract accessors for discriminator values.
   public abstract Integer getId();
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public TypeId(IntegerEncoding order) {
+  public TypeId() {
     super();
-    this.order = order;
   }
 
   protected abstract void serializeTypeIdChild(WriteBuffer writeBuffer)
@@ -58,14 +54,7 @@ public abstract class TypeId implements Message {
     writeBuffer.pushContext("TypeId");
 
     // Discriminator Field (id) (Used as input to a switch field)
-    writeDiscriminatorField(
-        "id",
-        getId(),
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeDiscriminatorField("id", getId(), writeUnsignedInt(writeBuffer, 16));
 
     // Switch field (Serialize the sub-type)
     serializeTypeIdChild(writeBuffer);
@@ -94,53 +83,30 @@ public abstract class TypeId implements Message {
 
   public static TypeId staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    IntegerEncoding order;
-    if (args[0] instanceof IntegerEncoding) {
-      order = (IntegerEncoding) args[0];
-    } else if (args[0] instanceof String) {
-      order = IntegerEncoding.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type IntegerEncoding or a string which is parseable but was"
-              + " "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, order);
+    return staticParse(readBuffer);
   }
 
-  public static TypeId staticParse(ReadBuffer readBuffer, IntegerEncoding order)
-      throws ParseException {
+  public static TypeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TypeId");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int id =
-        readDiscriminatorField(
-            "id",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int id = readDiscriminatorField("id", readUnsignedInt(readBuffer, 16));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     TypeIdBuilder builder = null;
     if (EvaluationHelper.equals(id, (int) 0x0000)) {
-      builder = NullAddressItem.staticParseTypeIdBuilder(readBuffer, order);
+      builder = NullAddressItem.staticParseTypeIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(id, (int) 0x0100)) {
-      builder = ServicesResponse.staticParseTypeIdBuilder(readBuffer, order);
+      builder = ServicesResponse.staticParseTypeIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(id, (int) 0x00A1)) {
-      builder = ConnectedAddressItem.staticParseTypeIdBuilder(readBuffer, order);
+      builder = ConnectedAddressItem.staticParseTypeIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(id, (int) 0x00B1)) {
-      builder = ConnectedDataItem.staticParseTypeIdBuilder(readBuffer, order);
+      builder = ConnectedDataItem.staticParseTypeIdBuilder(readBuffer);
     } else if (EvaluationHelper.equals(id, (int) 0x00B2)) {
-      builder = UnConnectedDataItem.staticParseTypeIdBuilder(readBuffer, order);
+      builder = UnConnectedDataItem.staticParseTypeIdBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -149,13 +115,12 @@ public abstract class TypeId implements Message {
 
     readBuffer.closeContext("TypeId");
     // Create the instance
-    TypeId _typeId = builder.build(order);
-
+    TypeId _typeId = builder.build();
     return _typeId;
   }
 
   public interface TypeIdBuilder {
-    TypeId build(IntegerEncoding order);
+    TypeId build();
   }
 
   @Override

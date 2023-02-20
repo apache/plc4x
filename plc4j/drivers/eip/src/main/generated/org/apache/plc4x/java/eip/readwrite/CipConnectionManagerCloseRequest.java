@@ -51,7 +51,7 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
   }
 
   // Properties.
-  protected final byte requestPathSize;
+  protected final short requestPathSize;
   protected final PathSegment classSegment;
   protected final PathSegment instanceSegment;
   protected final byte priority;
@@ -63,12 +63,8 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
   protected final short connectionPathSize;
   protected final List<PathSegment> connectionPaths;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
   public CipConnectionManagerCloseRequest(
-      byte requestPathSize,
+      short requestPathSize,
       PathSegment classSegment,
       PathSegment instanceSegment,
       byte priority,
@@ -78,10 +74,8 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
       int originatorVendorId,
       long originatorSerialNumber,
       short connectionPathSize,
-      List<PathSegment> connectionPaths,
-      Integer serviceLen,
-      IntegerEncoding order) {
-    super(serviceLen, order);
+      List<PathSegment> connectionPaths) {
+    super();
     this.requestPathSize = requestPathSize;
     this.classSegment = classSegment;
     this.instanceSegment = instanceSegment;
@@ -93,11 +87,9 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
     this.originatorSerialNumber = originatorSerialNumber;
     this.connectionPathSize = connectionPathSize;
     this.connectionPaths = connectionPaths;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
-  public byte getRequestPathSize() {
+  public short getRequestPathSize() {
     return requestPathSize;
   }
 
@@ -149,124 +141,43 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
     writeBuffer.pushContext("CipConnectionManagerCloseRequest");
 
     // Simple Field (requestPathSize)
-    writeSimpleField(
-        "requestPathSize",
-        requestPathSize,
-        writeSignedByte(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("requestPathSize", requestPathSize, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (classSegment)
-    writeSimpleField(
-        "classSegment",
-        classSegment,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("classSegment", classSegment, new DataWriterComplexDefault<>(writeBuffer));
 
     // Simple Field (instanceSegment)
     writeSimpleField(
-        "instanceSegment",
-        instanceSegment,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "instanceSegment", instanceSegment, new DataWriterComplexDefault<>(writeBuffer));
 
     // Simple Field (priority)
-    writeSimpleField(
-        "priority",
-        priority,
-        writeUnsignedByte(writeBuffer, 4),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("priority", priority, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (tickTime)
-    writeSimpleField(
-        "tickTime",
-        tickTime,
-        writeUnsignedByte(writeBuffer, 4),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("tickTime", tickTime, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (timeoutTicks)
-    writeSimpleField(
-        "timeoutTicks",
-        timeoutTicks,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("timeoutTicks", timeoutTicks, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (connectionSerialNumber)
     writeSimpleField(
-        "connectionSerialNumber",
-        connectionSerialNumber,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "connectionSerialNumber", connectionSerialNumber, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (originatorVendorId)
-    writeSimpleField(
-        "originatorVendorId",
-        originatorVendorId,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("originatorVendorId", originatorVendorId, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (originatorSerialNumber)
     writeSimpleField(
-        "originatorSerialNumber",
-        originatorSerialNumber,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "originatorSerialNumber", originatorSerialNumber, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (connectionPathSize)
-    writeSimpleField(
-        "connectionPathSize",
-        connectionPathSize,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("connectionPathSize", connectionPathSize, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (byte) 0x00,
-        writeByte(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (byte) 0x00, writeByte(writeBuffer, 8));
 
     // Array Field (connectionPaths)
-    writeComplexTypeArrayField(
-        "connectionPaths",
-        connectionPaths,
-        writeBuffer,
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeComplexTypeArrayField("connectionPaths", connectionPaths, writeBuffer);
 
     writeBuffer.popContext("CipConnectionManagerCloseRequest");
   }
@@ -326,129 +237,52 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("CipConnectionManagerCloseRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte requestPathSize =
-        readSimpleField(
-            "requestPathSize",
-            readSignedByte(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short requestPathSize = readSimpleField("requestPathSize", readUnsignedShort(readBuffer, 8));
 
     PathSegment classSegment =
         readSimpleField(
             "classSegment",
-            new DataReaderComplexDefault<>(
-                () -> PathSegment.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     PathSegment instanceSegment =
         readSimpleField(
             "instanceSegment",
-            new DataReaderComplexDefault<>(
-                () -> PathSegment.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
-    byte priority =
-        readSimpleField(
-            "priority",
-            readUnsignedByte(readBuffer, 4),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte priority = readSimpleField("priority", readUnsignedByte(readBuffer, 4));
 
-    byte tickTime =
-        readSimpleField(
-            "tickTime",
-            readUnsignedByte(readBuffer, 4),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte tickTime = readSimpleField("tickTime", readUnsignedByte(readBuffer, 4));
 
-    short timeoutTicks =
-        readSimpleField(
-            "timeoutTicks",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short timeoutTicks = readSimpleField("timeoutTicks", readUnsignedShort(readBuffer, 8));
 
     int connectionSerialNumber =
-        readSimpleField(
-            "connectionSerialNumber",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("connectionSerialNumber", readUnsignedInt(readBuffer, 16));
 
-    int originatorVendorId =
-        readSimpleField(
-            "originatorVendorId",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int originatorVendorId = readSimpleField("originatorVendorId", readUnsignedInt(readBuffer, 16));
 
     long originatorSerialNumber =
-        readSimpleField(
-            "originatorSerialNumber",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("originatorSerialNumber", readUnsignedLong(readBuffer, 32));
 
     short connectionPathSize =
-        readSimpleField(
-            "connectionPathSize",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("connectionPathSize", readUnsignedShort(readBuffer, 8));
 
-    Byte reservedField0 =
-        readReservedField(
-            "reserved",
-            readByte(readBuffer, 8),
-            (byte) 0x00,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x00);
 
     List<PathSegment> connectionPaths =
         readTerminatedArrayField(
             "connectionPaths",
-            new DataReaderComplexDefault<>(
-                () -> PathSegment.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
+            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.eip.readwrite.utils.StaticHelper.noMorePathSegments(
-                        readBuffer, order))),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                        readBuffer))));
 
     readBuffer.closeContext("CipConnectionManagerCloseRequest");
     // Create the instance
@@ -463,14 +297,12 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
         originatorVendorId,
         originatorSerialNumber,
         connectionPathSize,
-        connectionPaths,
-        serviceLen,
-        order);
+        connectionPaths);
   }
 
   public static class CipConnectionManagerCloseRequestBuilderImpl
       implements CipService.CipServiceBuilder {
-    private final byte requestPathSize;
+    private final short requestPathSize;
     private final PathSegment classSegment;
     private final PathSegment instanceSegment;
     private final byte priority;
@@ -481,11 +313,9 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
     private final long originatorSerialNumber;
     private final short connectionPathSize;
     private final List<PathSegment> connectionPaths;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
     public CipConnectionManagerCloseRequestBuilderImpl(
-        byte requestPathSize,
+        short requestPathSize,
         PathSegment classSegment,
         PathSegment instanceSegment,
         byte priority,
@@ -495,9 +325,7 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
         int originatorVendorId,
         long originatorSerialNumber,
         short connectionPathSize,
-        List<PathSegment> connectionPaths,
-        Integer serviceLen,
-        IntegerEncoding order) {
+        List<PathSegment> connectionPaths) {
       this.requestPathSize = requestPathSize;
       this.classSegment = classSegment;
       this.instanceSegment = instanceSegment;
@@ -509,12 +337,9 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
       this.originatorSerialNumber = originatorSerialNumber;
       this.connectionPathSize = connectionPathSize;
       this.connectionPaths = connectionPaths;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public CipConnectionManagerCloseRequest build(Integer serviceLen, IntegerEncoding order) {
-
+    public CipConnectionManagerCloseRequest build() {
       CipConnectionManagerCloseRequest cipConnectionManagerCloseRequest =
           new CipConnectionManagerCloseRequest(
               requestPathSize,
@@ -527,9 +352,7 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
               originatorVendorId,
               originatorSerialNumber,
               connectionPathSize,
-              connectionPaths,
-              serviceLen,
-              order);
+              connectionPaths);
       return cipConnectionManagerCloseRequest;
     }
   }

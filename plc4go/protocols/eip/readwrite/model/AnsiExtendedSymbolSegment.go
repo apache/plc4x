@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -92,11 +91,11 @@ func (m *_AnsiExtendedSymbolSegment) GetPad() *uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewAnsiExtendedSymbolSegment factory function for _AnsiExtendedSymbolSegment
-func NewAnsiExtendedSymbolSegment(symbol string, pad *uint8, order IntegerEncoding) *_AnsiExtendedSymbolSegment {
+func NewAnsiExtendedSymbolSegment(symbol string, pad *uint8) *_AnsiExtendedSymbolSegment {
 	_result := &_AnsiExtendedSymbolSegment{
 		Symbol:           symbol,
 		Pad:              pad,
-		_DataSegmentType: NewDataSegmentType(order),
+		_DataSegmentType: NewDataSegmentType(),
 	}
 	_result._DataSegmentType._DataSegmentTypeChildRequirements = _result
 	return _result
@@ -138,11 +137,11 @@ func (m *_AnsiExtendedSymbolSegment) GetLengthInBytes(ctx context.Context) uint1
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func AnsiExtendedSymbolSegmentParse(theBytes []byte, order IntegerEncoding) (AnsiExtendedSymbolSegment, error) {
-	return AnsiExtendedSymbolSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func AnsiExtendedSymbolSegmentParse(theBytes []byte) (AnsiExtendedSymbolSegment, error) {
+	return AnsiExtendedSymbolSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (AnsiExtendedSymbolSegment, error) {
+func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AnsiExtendedSymbolSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("AnsiExtendedSymbolSegment"); pullErr != nil {
@@ -181,18 +180,16 @@ func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer ut
 
 	// Create a partially initialized instance
 	_child := &_AnsiExtendedSymbolSegment{
-		_DataSegmentType: &_DataSegmentType{
-			Order: order,
-		},
-		Symbol: symbol,
-		Pad:    pad,
+		_DataSegmentType: &_DataSegmentType{},
+		Symbol:           symbol,
+		Pad:              pad,
 	}
 	_child._DataSegmentType._DataSegmentTypeChildRequirements = _child
 	return _child, nil
 }
 
 func (m *_AnsiExtendedSymbolSegment) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

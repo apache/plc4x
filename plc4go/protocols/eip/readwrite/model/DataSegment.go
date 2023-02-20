@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -85,10 +84,10 @@ func (m *_DataSegment) GetSegmentType() DataSegmentType {
 ///////////////////////////////////////////////////////////
 
 // NewDataSegment factory function for _DataSegment
-func NewDataSegment(segmentType DataSegmentType, order IntegerEncoding) *_DataSegment {
+func NewDataSegment(segmentType DataSegmentType) *_DataSegment {
 	_result := &_DataSegment{
 		SegmentType:  segmentType,
-		_PathSegment: NewPathSegment(order),
+		_PathSegment: NewPathSegment(),
 	}
 	_result._PathSegment._PathSegmentChildRequirements = _result
 	return _result
@@ -122,11 +121,11 @@ func (m *_DataSegment) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DataSegmentParse(theBytes []byte, order IntegerEncoding) (DataSegment, error) {
-	return DataSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func DataSegmentParse(theBytes []byte) (DataSegment, error) {
+	return DataSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func DataSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (DataSegment, error) {
+func DataSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DataSegment"); pullErr != nil {
@@ -139,7 +138,7 @@ func DataSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if pullErr := readBuffer.PullContext("segmentType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for segmentType")
 	}
-	_segmentType, _segmentTypeErr := DataSegmentTypeParseWithBuffer(ctx, readBuffer, IntegerEncoding(order))
+	_segmentType, _segmentTypeErr := DataSegmentTypeParseWithBuffer(ctx, readBuffer)
 	if _segmentTypeErr != nil {
 		return nil, errors.Wrap(_segmentTypeErr, "Error parsing 'segmentType' field of DataSegment")
 	}
@@ -154,17 +153,15 @@ func DataSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 
 	// Create a partially initialized instance
 	_child := &_DataSegment{
-		_PathSegment: &_PathSegment{
-			Order: order,
-		},
-		SegmentType: segmentType,
+		_PathSegment: &_PathSegment{},
+		SegmentType:  segmentType,
 	}
 	_child._PathSegment._PathSegmentChildRequirements = _child
 	return _child, nil
 }
 
 func (m *_DataSegment) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

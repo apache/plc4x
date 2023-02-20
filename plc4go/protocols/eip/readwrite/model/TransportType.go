@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -52,9 +51,6 @@ type _TransportType struct {
 	Direction      bool
 	Trigger        uint8
 	ClassTransport uint8
-
-	// Arguments.
-	Order IntegerEncoding
 }
 
 ///////////////////////////////////////////////////////////
@@ -80,8 +76,8 @@ func (m *_TransportType) GetClassTransport() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewTransportType factory function for _TransportType
-func NewTransportType(direction bool, trigger uint8, classTransport uint8, order IntegerEncoding) *_TransportType {
-	return &_TransportType{Direction: direction, Trigger: trigger, ClassTransport: classTransport, Order: order}
+func NewTransportType(direction bool, trigger uint8, classTransport uint8) *_TransportType {
+	return &_TransportType{Direction: direction, Trigger: trigger, ClassTransport: classTransport}
 }
 
 // Deprecated: use the interface for direct cast
@@ -118,11 +114,11 @@ func (m *_TransportType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TransportTypeParse(theBytes []byte, order IntegerEncoding) (TransportType, error) {
-	return TransportTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func TransportTypeParse(theBytes []byte) (TransportType, error) {
+	return TransportTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (TransportType, error) {
+func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TransportType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TransportType"); pullErr != nil {
@@ -158,7 +154,6 @@ func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 
 	// Create the instance
 	return &_TransportType{
-		Order:          order,
 		Direction:      direction,
 		Trigger:        trigger,
 		ClassTransport: classTransport,
@@ -166,7 +161,7 @@ func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 }
 
 func (m *_TransportType) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -206,16 +201,6 @@ func (m *_TransportType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_TransportType) GetOrder() IntegerEncoding {
-	return m.Order
-}
-
-//
-////
 
 func (m *_TransportType) isTransportType() bool {
 	return true

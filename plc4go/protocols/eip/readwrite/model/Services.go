@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -53,7 +52,6 @@ type _Services struct {
 
 	// Arguments.
 	ServicesLen uint16
-	Order       IntegerEncoding
 }
 
 ///////////////////////////////////////////////////////////
@@ -75,8 +73,8 @@ func (m *_Services) GetServices() []CipService {
 ///////////////////////////////////////////////////////////
 
 // NewServices factory function for _Services
-func NewServices(offsets []uint16, services []CipService, servicesLen uint16, order IntegerEncoding) *_Services {
-	return &_Services{Offsets: offsets, Services: services, ServicesLen: servicesLen, Order: order}
+func NewServices(offsets []uint16, services []CipService, servicesLen uint16) *_Services {
+	return &_Services{Offsets: offsets, Services: services, ServicesLen: servicesLen}
 }
 
 // Deprecated: use the interface for direct cast
@@ -122,11 +120,11 @@ func (m *_Services) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ServicesParse(theBytes []byte, servicesLen uint16, order IntegerEncoding) (Services, error) {
-	return ServicesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), servicesLen, order)
+func ServicesParse(theBytes []byte, servicesLen uint16) (Services, error) {
+	return ServicesParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), servicesLen)
 }
 
-func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, servicesLen uint16, order IntegerEncoding) (Services, error) {
+func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, servicesLen uint16) (Services, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Services"); pullErr != nil {
@@ -185,7 +183,7 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := CipServiceParseWithBuffer(arrayCtx, readBuffer, bool(false), uint16(servicesLen)/uint16(serviceNb), order)
+			_item, _err := CipServiceParseWithBuffer(arrayCtx, readBuffer, bool(false), uint16(servicesLen)/uint16(serviceNb))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'services' field of Services")
 			}
@@ -203,14 +201,13 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	// Create the instance
 	return &_Services{
 		ServicesLen: servicesLen,
-		Order:       order,
 		Offsets:     offsets,
 		Services:    services,
 	}, nil
 }
 
 func (m *_Services) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -274,9 +271,6 @@ func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 func (m *_Services) GetServicesLen() uint16 {
 	return m.ServicesLen
-}
-func (m *_Services) GetOrder() IntegerEncoding {
-	return m.Order
 }
 
 //

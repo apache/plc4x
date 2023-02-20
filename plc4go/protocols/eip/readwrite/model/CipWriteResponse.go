@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -102,11 +101,11 @@ func (m *_CipWriteResponse) GetExtStatus() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCipWriteResponse factory function for _CipWriteResponse
-func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16, order IntegerEncoding) *_CipWriteResponse {
+func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *_CipWriteResponse {
 	_result := &_CipWriteResponse{
 		Status:      status,
 		ExtStatus:   extStatus,
-		_CipService: NewCipService(serviceLen, order),
+		_CipService: NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -146,11 +145,11 @@ func (m *_CipWriteResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipWriteResponseParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (CipWriteResponse, error) {
-	return CipWriteResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
+func CipWriteResponseParse(theBytes []byte, connected bool, serviceLen uint16) (CipWriteResponse, error) {
+	return CipWriteResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipWriteResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (CipWriteResponse, error) {
+func CipWriteResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipWriteResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipWriteResponse"); pullErr != nil {
@@ -198,7 +197,6 @@ func CipWriteResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	_child := &_CipWriteResponse{
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
-			Order:      order,
 		},
 		Status:         status,
 		ExtStatus:      extStatus,
@@ -209,7 +207,7 @@ func CipWriteResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 }
 
 func (m *_CipWriteResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

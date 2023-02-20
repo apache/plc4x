@@ -81,7 +81,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     @Override
     public void setConfiguration(EIPConfiguration configuration) {
         this.configuration = configuration;
-        this.nullAddressItem = new NullAddressItem(this.configuration.getByteOrder());
+        this.nullAddressItem = new NullAddressItem();
 
         if (configuration instanceof LogixConfiguration) {
             // Use a connection path instead of the backplane and slot if it is available
@@ -94,7 +94,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                             case "1":
                                 int backplanePortId = Integer.parseInt(splitConnectionPath[i]);
                                 int slot = Integer.parseInt(splitConnectionPath[i + 1]);
-                                routingAddress.add(new PortSegment(new PortSegmentNormal((byte) backplanePortId, (short)  slot, this.configuration.getByteOrder()),this.configuration.getByteOrder()));
+                                routingAddress.add(new PortSegment(new PortSegmentNormal((byte) backplanePortId, (short) slot)));
                                 break;
                             case "2":
                                 int ethernetPortId = Integer.parseInt(splitConnectionPath[i]);
@@ -105,7 +105,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                                     ipAddress += "\0";
                                 }
 
-                                routingAddress.add(new PortSegment(new PortSegmentExtended((byte) ethernetPortId, (short) lengthString, ipAddress, this.configuration.getByteOrder()), this.configuration.getByteOrder()));
+                                routingAddress.add(new PortSegment(new PortSegmentExtended((byte) ethernetPortId, (short) lengthString, ipAddress)));
                                 break;
                             default:
                                 logger.error("Only backplane or Ethernet module routing is supported");
@@ -114,14 +114,14 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     }
                 }
             } else {
-                routingAddress.add(new PortSegment(new PortSegmentNormal((byte) 1, (short)  this.configuration.getSlot(), this.configuration.getByteOrder()), this.configuration.getByteOrder()));
+                routingAddress.add(new PortSegment(new PortSegmentNormal((byte) 1, (short) this.configuration.getSlot())));
             }
         } else {
-            routingAddress.add(new PortSegment(new PortSegmentNormal((byte) 1, (short)  this.configuration.getSlot(), this.configuration.getByteOrder()), this.configuration.getByteOrder()));
+            routingAddress.add(new PortSegment(new PortSegmentNormal((byte) 1, (short)  this.configuration.getSlot())));
         }
 
-        routingAddress.add(new LogicalSegment(new ClassID((byte) 0, (short) 2, this.configuration.getByteOrder()), this.configuration.getByteOrder()));
-        routingAddress.add(new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder()));
+        routingAddress.add(new LogicalSegment(new ClassID((byte) 0, (short) 2)));
+        routingAddress.add(new LogicalSegment(new InstanceID((byte) 0, (short) 1)));
 
         for (PathSegment segment : this.routingAddress) {
             this.connectionPathSize += segment.getLengthInBytes();
@@ -145,8 +145,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             EMPTY_SESSION_HANDLE,
             CIPStatus.Success.getValue(),
             DEFAULT_SENDER_CONTEXT,
-            0L,
-            this.configuration.getByteOrder());
+            0L);
 
         transaction.submit(() -> context.sendRequest(listServicesRequest)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT).unwrap(p -> p)
@@ -169,8 +168,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             EMPTY_SESSION_HANDLE,
             CIPStatus.Success.getValue(),
             DEFAULT_SENDER_CONTEXT,
-            0L,
-            this.configuration.getByteOrder());
+            0L);
 
         context.sendRequest(listServicesRequest)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
@@ -192,17 +190,13 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     private void getAllAttributes(ConversationContext<EipPacket> context) {
         logger.debug("Requesting list of supported attributes");
 
-        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 2, this.configuration.getByteOrder()), this.configuration.getByteOrder());
-        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
+        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 2));
+        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
 
         UnConnectedDataItem exchange = new UnConnectedDataItem(
             new GetAttributeAllRequest(
                 classSegment,
-                instanceSegment,
-                0,
-                this.configuration.getByteOrder()
-            ),
-            this.configuration.getByteOrder()
+                instanceSegment)
         );
 
         List<TypeId> typeIds = new ArrayList<TypeId>() {
@@ -220,8 +214,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             EMPTY_INTERFACE_HANDLE,
             0,
             2,
-            typeIds,
-            this.configuration.getByteOrder()
+            typeIds
         );
 
         context.sendRequest(eipWrapper)
@@ -270,8 +263,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 EMPTY_SESSION_HANDLE,
                 CIPStatus.Success.getValue(),
                 DEFAULT_SENDER_CONTEXT,
-                0L,
-                this.configuration.getByteOrder());
+                0L);
 
         context.sendRequest(connectionRequest)
             .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
@@ -294,8 +286,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     public void onConnectOpenConnectionManager(ConversationContext<EipPacket> context) {
         logger.debug("Sending Open Connection Manager EIP Package");
 
-        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6, this.configuration.getByteOrder()), this.configuration.getByteOrder());
-        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
+        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
+        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
 
         UnConnectedDataItem exchange = new UnConnectedDataItem(
             new CipConnectionManagerRequest(
@@ -316,25 +308,17 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     false,
                     (byte) 2,
                     (byte) 0,
-                    true,
-                    this.configuration.getByteOrder()
-                ),
+                    true),
                 2113537L,
                 new NetworkConnectionParameters(
                     4002,
                     false,
                     (byte) 2,
                     (byte) 0,
-                    true,
-                    this.configuration.getByteOrder()
-                ),
-                new TransportType(true, (byte) 2, (byte) 3, this.configuration.getByteOrder()),
+                    true),
+                new TransportType(true, (byte) 2, (byte) 3),
                 this.connectionPathSize,
-                this.routingAddress,
-                0,
-                this.configuration.getByteOrder()
-            ),
-            this.configuration.getByteOrder()
+                this.routingAddress)
         );
 
         List<TypeId> typeIds = new ArrayList<TypeId>() {
@@ -352,8 +336,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             EMPTY_INTERFACE_HANDLE,
             0,
             2,
-            typeIds,
-            this.configuration.getByteOrder()
+            typeIds
         );
 
         context.sendRequest(eipWrapper)
@@ -380,8 +363,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     public void onDisconnect(ConversationContext<EipPacket> context) {
         if (this.connectionId != 0L) {
             logger.debug("Sending Connection Manager Close Event");
-            PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6, this.configuration.getByteOrder()), this.configuration.getByteOrder());
-            PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
+            PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
+            PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
 
             UnConnectedDataItem exchange = new UnConnectedDataItem(
                 new CipConnectionManagerCloseRequest(
@@ -395,12 +378,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     4919,
                     42L,
                     this.connectionPathSize,
-                    this.routingAddress,
-                    0,
-                    this.configuration.getByteOrder()
-                ),
-                this.configuration.getByteOrder()
-            );
+                    this.routingAddress));
 
             List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
@@ -417,9 +395,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 EMPTY_INTERFACE_HANDLE,
                 0,
                 2,
-                typeIds,
-                this.configuration.getByteOrder()
-            );
+                typeIds);
 
 
             context.sendRequest(eipWrapper)
@@ -443,8 +419,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0L,
                 sessionHandle,
                 DEFAULT_SENDER_CONTEXT,
-                0L,
-                this.configuration.getByteOrder());
+                0L);
         context.sendRequest(connectionRequest)
             .expectResponse(EipPacket.class, Duration.ofMillis(1))
             .onError((p,e) -> context.fireDisconnected())
@@ -458,8 +433,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
         Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
 
-        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6, this.configuration.getByteOrder()), this.configuration.getByteOrder());
-        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
+        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
+        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
 
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
         for (String tagName : request.getTagNames()) {
@@ -470,25 +445,20 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
             try {
                 CipReadRequest req = new CipReadRequest(
-                    toAnsi(tag, this.configuration.getByteOrder()),
-                    1,
-                    -1,
-                    this.configuration.getByteOrder());
+                    toAnsi(tag),
+                    1);
 
                 CipUnconnectedRequest requestItem = new CipUnconnectedRequest(
                     classSegment,
                     instanceSegment,
                     req,
                     (byte) this.configuration.getBackplane(),
-                    (byte) this.configuration.getSlot(),
-                    -1,
-                    this.configuration.getByteOrder()
-                );
+                    (byte) this.configuration.getSlot());
 
                 List<TypeId> typeIds = new ArrayList<>(2);
 
                 typeIds.add(nullAddressItem);
-                typeIds.add(new UnConnectedDataItem(requestItem, this.configuration.getByteOrder()));
+                typeIds.add(new UnConnectedDataItem(requestItem));
 
                 CipRRData pkt = new CipRRData(
                     sessionHandle,
@@ -498,9 +468,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     0L,
                     0,
                     2,
-                    typeIds,
-                    this.configuration.getByteOrder()
-                );
+                    typeIds);
 
                 transaction.submit(() -> context.sendRequest(pkt)
                     .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
@@ -535,8 +503,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         CompletableFuture<PlcReadResponse> future = new CompletableFuture<>();
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
 
-        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6, this.configuration.getByteOrder()), this.configuration.getByteOrder());
-        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
+        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
+        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
 
         DefaultPlcReadRequest request = (DefaultPlcReadRequest) readRequest;
         List<CipService> requests = new ArrayList<>(request.getNumberOfTags());
@@ -546,20 +514,15 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
             try {
                 CipReadRequest req = new CipReadRequest(
-                    toAnsi(tag, this.configuration.getByteOrder()),
-                    1,
-                    -1,
-                    this.configuration.getByteOrder());
+                    toAnsi(tag),
+                    1);
 
                 CipUnconnectedRequest unreq = new CipUnconnectedRequest(
                     classSegment,
                     instanceSegment,
                     req,
                     (byte) this.configuration.getBackplane(),
-                    (byte) this.configuration.getSlot(),
-                    -1,
-                    this.configuration.getByteOrder()
-                );
+                    (byte) this.configuration.getSlot());
                 requests.add(unreq);
             } catch (SerializationException e) {
                 e.printStackTrace();
@@ -570,7 +533,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
         typeIds.add(nullAddressItem);
         if (requests.size() == 1) {
-            typeIds.add(new UnConnectedDataItem(requests.get(0), this.configuration.getByteOrder()));
+            typeIds.add(new UnConnectedDataItem(requests.get(0)));
         } else {
             List<Integer> offsets = new ArrayList<>(requests.size());
             offsets.add(8);
@@ -580,8 +543,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 }
 
             }
-            MultipleServiceRequest serviceRequest = new MultipleServiceRequest(new Services(offsets, requests, 0, this.configuration.getByteOrder()), 0, this.configuration.getByteOrder());
-            typeIds.add(new UnConnectedDataItem(serviceRequest, this.configuration.getByteOrder()));
+            MultipleServiceRequest serviceRequest = new MultipleServiceRequest(new Services(offsets, requests));
+            typeIds.add(new UnConnectedDataItem(serviceRequest));
         }
 
         CipRRData pkt = new CipRRData(
@@ -592,8 +555,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             0L,
             0,
             2,
-            typeIds,
-            this.configuration.getByteOrder()
+            typeIds
         );
 
         transaction.submit(() -> context.sendRequest(pkt)
@@ -628,10 +590,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
             try {
                 CipReadRequest req = new CipReadRequest(
-                    toAnsi(tag, this.configuration.getByteOrder()),
-                    1,
-                    -1,
-                    this.configuration.getByteOrder());
+                    toAnsi(tag),
+                    1);
 
                 requests.add(req);
             } catch (SerializationException e) {
@@ -639,13 +599,13 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             }
         }
 
-        ConnectedAddressItem addressItem = new ConnectedAddressItem(this.connectionId, this.configuration.getByteOrder());
+        ConnectedAddressItem addressItem = new ConnectedAddressItem(this.connectionId);
 
         List<TypeId> typeIds =new ArrayList<>(2);
         typeIds.add(addressItem);
 
         if (requests.size() == 1) {
-            typeIds.add(new ConnectedDataItem(this.sequenceCount, requests.get(0), this.configuration.getByteOrder()));
+            typeIds.add(new ConnectedDataItem(this.sequenceCount, requests.get(0)));
         } else {
             List<Integer> offsets = new ArrayList<>(requests.size());
             offsets.add(2 + 2 * request.getNumberOfTags());
@@ -655,9 +615,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 }
 
             }
-            Services services = new Services(offsets, requests, -1, this.configuration.getByteOrder());
-            MultipleServiceRequest serviceRequest = new MultipleServiceRequest(services, services.getLengthInBytes(), this.configuration.getByteOrder());
-            typeIds.add(new ConnectedDataItem(this.sequenceCount, serviceRequest, this.configuration.getByteOrder()));
+            Services services = new Services(offsets, requests);
+            MultipleServiceRequest serviceRequest = new MultipleServiceRequest(services);
+            typeIds.add(new ConnectedDataItem(this.sequenceCount, serviceRequest));
         }
 
         SendUnitData pkt = new SendUnitData(
@@ -667,8 +627,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             0L,
             0,
             2,
-            typeIds,
-            this.configuration.getByteOrder()
+            typeIds
         );
 
         this.sequenceCount += 1;
@@ -708,7 +667,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
     /*
         Takes a Tag name e.g. ZZZ_ZZZ.XXX and returns a buffer containing an array of ANSI Extended Symbol Seqments
      */
-    public static byte[] toAnsi(String tag, IntegerEncoding order) throws SerializationException {
+    public static byte[] toAnsi(String tag) throws SerializationException {
         final Pattern RESOURCE_ADDRESS_PATTERN = Pattern.compile("([.\\[\\]])*([A-Za-z_0-9]+){1}");
         Matcher matcher = RESOURCE_ADDRESS_PATTERN.matcher(tag);
         List<PathSegment> segments = new LinkedList<>();
@@ -721,15 +680,16 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             if (qualifier != null) {
                 switch (qualifier) {
                     case "[":
-                        newSegment = new LogicalSegment(new MemberID((byte) 0x00, (short) Short.parseShort(identifier), order), order);
+                        newSegment = new LogicalSegment(new MemberID((byte) 0x00, Short.parseShort(identifier)));
                         segments.add(newSegment);
                         break;
                     default:
-                        newSegment = new DataSegment(new AnsiExtendedSymbolSegment(identifier, (short) 0, order), order);
+                        newSegment = new DataSegment(new AnsiExtendedSymbolSegment(identifier, (short) 0));
                         segments.add(newSegment);
                 }
             } else {
-                newSegment = new DataSegment(new AnsiExtendedSymbolSegment(identifier, (short) 0, order), order);
+                newSegment = new DataSegment(new AnsiExtendedSymbolSegment(identifier,
+                    (identifier.length() % 2 == 0) ? null : (short) 0));
                 segments.add(newSegment);
             }
 
@@ -777,13 +737,13 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 }
                 CipService service;
                 try {
-                    service = CipService.staticParse(read, false, length, this.configuration.getByteOrder());
+                    service = CipService.staticParse(read, false, length);
                     arr.add(service);
                 } catch (ParseException e) {
                     throw new PlcRuntimeException(e);
                 }
             }
-            Services services = new Services(responses.getOffsets(), arr, -1, this.configuration.getByteOrder());
+            Services services = new Services(responses.getOffsets(), arr);
             Iterator<String> it = readRequest.getTagNames().iterator();
             for (int i = 0; i < nb && it.hasNext(); i++) {
                 String fieldName = it.next();
@@ -926,8 +886,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         CompletableFuture<PlcWriteResponse> future = new CompletableFuture<>();
         DefaultPlcWriteRequest request = (DefaultPlcWriteRequest) writeRequest;
         List<CipWriteRequest> items = new ArrayList<>(writeRequest.getNumberOfTags());
-        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6, this.configuration.getByteOrder()), this.configuration.getByteOrder());
-        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
+        PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
+        PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
         Map<String, PlcResponseCode> values = new HashMap<>();
 
         for (String fieldName : writeRequest.getTagNames()) {
@@ -939,7 +899,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             byte[] data = encodeValue(value, field.getType(), (short) elements);
             CipWriteRequest writeReq = null;
             try {
-                writeReq = new CipWriteRequest(toAnsi(tag, this.configuration.getByteOrder()), field.getType(), elements, data, -1, this.configuration.getByteOrder());
+                writeReq = new CipWriteRequest(toAnsi(tag), field.getType(), elements, data);
             } catch (SerializationException e) {
                 e.printStackTrace();
             }
@@ -954,12 +914,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     instanceSegment,
                     writeReq,
                     (byte) configuration.getBackplane(),
-                    (byte) configuration.getSlot(),
-                    -1,
-                    this.configuration.getByteOrder()
-                ),
-                this.configuration.getByteOrder()
-            );
+                    (byte) configuration.getSlot()));
 
             List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
@@ -976,9 +931,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 EMPTY_INTERFACE_HANDLE,
                 0,
                 2,
-                typeIds,
-                this.configuration.getByteOrder()
-            );
+                typeIds);
 
             transaction.submit(() -> context.sendRequest(rrdata)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
@@ -1021,7 +974,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
             byte[] data = encodeValue(value, field.getType(), (short) elements);
             try {
-                CipWriteRequest writeReq = new CipWriteRequest(toAnsi(tag, this.configuration.getByteOrder()), field.getType(), elements, data, -1, this.configuration.getByteOrder());
+                CipWriteRequest writeReq = new CipWriteRequest(toAnsi(tag), field.getType(), elements, data);
                 items.add(writeReq);
             } catch (SerializationException e) {
                 e.printStackTrace();
@@ -1033,8 +986,8 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
         if (items.size() == 1) {
             tm.startRequest();
 
-            PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6, this.configuration.getByteOrder()), this.configuration.getByteOrder());
-            PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
+            PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
+            PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
 
             UnConnectedDataItem exchange = new UnConnectedDataItem(
                 new CipUnconnectedRequest(
@@ -1042,13 +995,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     instanceSegment,
                     items.get(0),
                     (byte) configuration.getBackplane(),
-                    (byte) configuration.getSlot(),
-                    -1,
-                    this.configuration.getByteOrder()
-
-                ),
-                this.configuration.getByteOrder()
-            );
+                    (byte) configuration.getSlot()));
 
             List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
@@ -1065,9 +1012,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 EMPTY_INTERFACE_HANDLE,
                 0,
                 2,
-                typeIds,
-                this.configuration.getByteOrder()
-            );
+                typeIds);
 
             transaction.submit(() -> context.sendRequest(rrdata)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
@@ -1097,24 +1042,19 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             for (int i = 0; i < nb; i++) {
                 serviceArr.add(items.get(i));
             }
-            Services data = new Services(offsets, serviceArr, -1, this.configuration.getByteOrder());
+            Services data = new Services(offsets, serviceArr);
             //Encapsulate the data
 
-            PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6, this.configuration.getByteOrder()), this.configuration.getByteOrder());
-            PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1, this.configuration.getByteOrder()), this.configuration.getByteOrder());
+            PathSegment classSegment = new LogicalSegment(new ClassID((byte) 0, (short) 6));
+            PathSegment instanceSegment = new LogicalSegment(new InstanceID((byte) 0, (short) 1));
 
             UnConnectedDataItem exchange = new UnConnectedDataItem(
                 new CipUnconnectedRequest(
                     classSegment,
                     instanceSegment,
-                    new MultipleServiceRequest(data, -1, this.configuration.getByteOrder()),
+                    new MultipleServiceRequest(data),
                     (byte) configuration.getBackplane(),
-                    (byte) configuration.getSlot(),
-                    (Integer) 0,
-                    this.configuration.getByteOrder()
-                ),
-                this.configuration.getByteOrder()
-            );
+                    (byte) configuration.getSlot()));
 
             List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
@@ -1131,9 +1071,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 EMPTY_INTERFACE_HANDLE,
                 0,
                 2,
-                typeIds,
-                this.configuration.getByteOrder()
-            );
+                typeIds);
 
             transaction.submit(() -> context.sendRequest(pkt)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
@@ -1167,7 +1105,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
             byte[] data = encodeValue(value, field.getType(), (short) elements);
             try {
-                CipWriteRequest writeReq = new CipWriteRequest(toAnsi(tag, this.configuration.getByteOrder()), field.getType(), elements, data, -1, this.configuration.getByteOrder());
+                CipWriteRequest writeReq = new CipWriteRequest(toAnsi(tag), field.getType(), elements, data);
                 items.add(writeReq);
             } catch (SerializationException e) {
                 e.printStackTrace();
@@ -1181,11 +1119,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
 
             ConnectedDataItem exchange = new ConnectedDataItem(
                 this.sequenceCount,
-                items.get(0),
-                this.configuration.getByteOrder()
-            );
+                items.get(0));
 
-            ConnectedAddressItem addressItem = new ConnectedAddressItem(this.connectionId, this.configuration.getByteOrder());
+            ConnectedAddressItem addressItem = new ConnectedAddressItem(this.connectionId);
 
             List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
@@ -1201,9 +1137,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0L,
                 0,
                 2,
-                typeIds,
-                this.configuration.getByteOrder()
-            );
+                typeIds);
 
             transaction.submit(() -> context.sendRequest(rrdata)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
@@ -1232,14 +1166,12 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
             for (int i = 0; i < nb; i++) {
                 serviceArr.add(items.get(i));
             }
-            Services data = new Services(offsets, serviceArr, -1, this.configuration.getByteOrder());
+            Services data = new Services(offsets, serviceArr);
             //Encapsulate the data
 
             ConnectedDataItem exchange = new ConnectedDataItem(
                 this.sequenceCount,
-                new MultipleServiceRequest(data, -1, this.configuration.getByteOrder()),
-                this.configuration.getByteOrder()
-            );
+                new MultipleServiceRequest(data));
 
             List<TypeId> typeIds = new ArrayList<TypeId>() {
                 {
@@ -1255,9 +1187,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 0L,
                 0,
                 2,
-                typeIds,
-                this.configuration.getByteOrder()
-            );
+                typeIds);
 
             transaction.submit(() -> context.sendRequest(pkt)
                 .expectResponse(EipPacket.class, REQUEST_TIMEOUT)
@@ -1322,13 +1252,13 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 }
                 CipService service;
                 try {
-                    service = CipService.staticParse(read, false, length, this.configuration.getByteOrder());
+                    service = CipService.staticParse(read, false, length);
                     arr.add(service);
                 } catch (ParseException e) {
                     throw new PlcRuntimeException(e);
                 }
             }
-            Services services = new Services(resp.getOffsets(), arr, -1, this.configuration.getByteOrder());
+            Services services = new Services(resp.getOffsets(), arr);
             Iterator<String> it = writeRequest.getTagNames().iterator();
             for (int i = 0; i < nb && it.hasNext(); i++) {
                 String fieldName = it.next();

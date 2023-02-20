@@ -41,20 +41,10 @@ public class Services implements Message {
   protected final List<Integer> offsets;
   protected final List<CipService> services;
 
-  // Arguments.
-  protected final Integer servicesLen;
-  protected final IntegerEncoding order;
-
-  public Services(
-      List<Integer> offsets,
-      List<CipService> services,
-      Integer servicesLen,
-      IntegerEncoding order) {
+  public Services(List<Integer> offsets, List<CipService> services) {
     super();
     this.offsets = offsets;
     this.services = services;
-    this.servicesLen = servicesLen;
-    this.order = order;
   }
 
   public List<Integer> getOffsets() {
@@ -74,34 +64,13 @@ public class Services implements Message {
     // Implicit Field (serviceNb) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int serviceNb = (int) (COUNT(getOffsets()));
-    writeImplicitField(
-        "serviceNb",
-        serviceNb,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeImplicitField("serviceNb", serviceNb, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (offsets)
-    writeSimpleTypeArrayField(
-        "offsets",
-        offsets,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleTypeArrayField("offsets", offsets, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (services)
-    writeComplexTypeArrayField(
-        "services",
-        services,
-        writeBuffer,
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeComplexTypeArrayField("services", services, writeBuffer);
 
     writeBuffer.popContext("Services");
   }
@@ -139,9 +108,9 @@ public class Services implements Message {
 
   public static Services staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 2)) {
+    if ((args == null) || (args.length != 1)) {
       throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 2, but got " + args.length);
+          "Wrong number of arguments, expected 1, but got " + args.length);
     }
     Integer servicesLen;
     if (args[0] instanceof Integer) {
@@ -153,46 +122,21 @@ public class Services implements Message {
           "Argument 0 expected to be of type Integer or a string which is parseable but was "
               + args[0].getClass().getName());
     }
-    IntegerEncoding order;
-    if (args[1] instanceof IntegerEncoding) {
-      order = (IntegerEncoding) args[1];
-    } else if (args[1] instanceof String) {
-      order = IntegerEncoding.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type IntegerEncoding or a string which is parseable but was"
-              + " "
-              + args[1].getClass().getName());
-    }
-    return staticParse(readBuffer, servicesLen, order);
+    return staticParse(readBuffer, servicesLen);
   }
 
-  public static Services staticParse(
-      ReadBuffer readBuffer, Integer servicesLen, IntegerEncoding order) throws ParseException {
+  public static Services staticParse(ReadBuffer readBuffer, Integer servicesLen)
+      throws ParseException {
     readBuffer.pullContext("Services");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int serviceNb =
-        readImplicitField(
-            "serviceNb",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int serviceNb = readImplicitField("serviceNb", readUnsignedInt(readBuffer, 16));
 
     List<Integer> offsets =
-        readCountArrayField(
-            "offsets",
-            readUnsignedInt(readBuffer, 16),
-            serviceNb,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readCountArrayField("offsets", readUnsignedInt(readBuffer, 16), serviceNb);
 
     List<CipService> services =
         readCountArrayField(
@@ -200,21 +144,14 @@ public class Services implements Message {
             new DataReaderComplexDefault<>(
                 () ->
                     CipService.staticParse(
-                        readBuffer,
-                        (boolean) (false),
-                        (int) ((servicesLen) / (serviceNb)),
-                        (IntegerEncoding) (order)),
+                        readBuffer, (boolean) (false), (int) ((servicesLen) / (serviceNb))),
                 readBuffer),
-            serviceNb,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            serviceNb);
 
     readBuffer.closeContext("Services");
     // Create the instance
     Services _services;
-    _services = new Services(offsets, services, servicesLen, order);
+    _services = new Services(offsets, services);
     return _services;
   }
 

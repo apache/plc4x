@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -110,12 +109,12 @@ func (m *_CipConnectedResponse) GetData() CIPDataConnected {
 ///////////////////////////////////////////////////////////
 
 // NewCipConnectedResponse factory function for _CipConnectedResponse
-func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIPDataConnected, serviceLen uint16, order IntegerEncoding) *_CipConnectedResponse {
+func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIPDataConnected, serviceLen uint16) *_CipConnectedResponse {
 	_result := &_CipConnectedResponse{
 		Status:                status,
 		AdditionalStatusWords: additionalStatusWords,
 		Data:                  data,
-		_CipService:           NewCipService(serviceLen, order),
+		_CipService:           NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -160,11 +159,11 @@ func (m *_CipConnectedResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipConnectedResponseParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (CipConnectedResponse, error) {
-	return CipConnectedResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
+func CipConnectedResponseParse(theBytes []byte, connected bool, serviceLen uint16) (CipConnectedResponse, error) {
+	return CipConnectedResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipConnectedResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (CipConnectedResponse, error) {
+func CipConnectedResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectedResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipConnectedResponse"); pullErr != nil {
@@ -211,7 +210,7 @@ func CipConnectedResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 		if pullErr := readBuffer.PullContext("data"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for data")
 		}
-		_val, _err := CIPDataConnectedParseWithBuffer(ctx, readBuffer, serviceLen)
+		_val, _err := CIPDataConnectedParseWithBuffer(ctx, readBuffer)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -234,7 +233,6 @@ func CipConnectedResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_child := &_CipConnectedResponse{
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
-			Order:      order,
 		},
 		Status:                status,
 		AdditionalStatusWords: additionalStatusWords,
@@ -246,7 +244,7 @@ func CipConnectedResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 }
 
 func (m *_CipConnectedResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

@@ -59,10 +59,6 @@ public class CipConnectionManagerResponse extends CipService implements Message 
   protected final long otApi;
   protected final long toApi;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
   public CipConnectionManagerResponse(
       long otConnectionId,
       long toConnectionId,
@@ -70,10 +66,8 @@ public class CipConnectionManagerResponse extends CipService implements Message 
       int originatorVendorId,
       long originatorSerialNumber,
       long otApi,
-      long toApi,
-      Integer serviceLen,
-      IntegerEncoding order) {
-    super(serviceLen, order);
+      long toApi) {
+    super();
     this.otConnectionId = otConnectionId;
     this.toConnectionId = toConnectionId;
     this.connectionSerialNumber = connectionSerialNumber;
@@ -81,8 +75,6 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     this.originatorSerialNumber = originatorSerialNumber;
     this.otApi = otApi;
     this.toApi = toApi;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
   public long getOtConnectionId() {
@@ -121,106 +113,38 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     writeBuffer.pushContext("CipConnectionManagerResponse");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (long) 0x000000,
-        writeUnsignedLong(writeBuffer, 24),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (long) 0x000000, writeUnsignedLong(writeBuffer, 24));
 
     // Simple Field (otConnectionId)
-    writeSimpleField(
-        "otConnectionId",
-        otConnectionId,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("otConnectionId", otConnectionId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (toConnectionId)
-    writeSimpleField(
-        "toConnectionId",
-        toConnectionId,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("toConnectionId", toConnectionId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (connectionSerialNumber)
     writeSimpleField(
-        "connectionSerialNumber",
-        connectionSerialNumber,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "connectionSerialNumber", connectionSerialNumber, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (originatorVendorId)
-    writeSimpleField(
-        "originatorVendorId",
-        originatorVendorId,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("originatorVendorId", originatorVendorId, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (originatorSerialNumber)
     writeSimpleField(
-        "originatorSerialNumber",
-        originatorSerialNumber,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "originatorSerialNumber", originatorSerialNumber, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (otApi)
-    writeSimpleField(
-        "otApi",
-        otApi,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("otApi", otApi, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (toApi)
-    writeSimpleField(
-        "toApi",
-        toApi,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("toApi", toApi, writeUnsignedLong(writeBuffer, 32));
 
     // Implicit Field (replySize) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
-    short replySize = (short) ((serviceLen) - (30));
-    writeImplicitField(
-        "replySize",
-        replySize,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    short replySize = (short) ((getLengthInBytes()) - (30));
+    writeImplicitField("replySize", replySize, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("CipConnectionManagerResponse");
   }
@@ -270,8 +194,7 @@ public class CipConnectionManagerResponse extends CipService implements Message 
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("CipConnectionManagerResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -279,96 +202,28 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Long reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedLong(readBuffer, 24),
-            (long) 0x000000,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedLong(readBuffer, 24), (long) 0x000000);
 
-    long otConnectionId =
-        readSimpleField(
-            "otConnectionId",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    long otConnectionId = readSimpleField("otConnectionId", readUnsignedLong(readBuffer, 32));
 
-    long toConnectionId =
-        readSimpleField(
-            "toConnectionId",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    long toConnectionId = readSimpleField("toConnectionId", readUnsignedLong(readBuffer, 32));
 
     int connectionSerialNumber =
-        readSimpleField(
-            "connectionSerialNumber",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("connectionSerialNumber", readUnsignedInt(readBuffer, 16));
 
-    int originatorVendorId =
-        readSimpleField(
-            "originatorVendorId",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int originatorVendorId = readSimpleField("originatorVendorId", readUnsignedInt(readBuffer, 16));
 
     long originatorSerialNumber =
-        readSimpleField(
-            "originatorSerialNumber",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("originatorSerialNumber", readUnsignedLong(readBuffer, 32));
 
-    long otApi =
-        readSimpleField(
-            "otApi",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    long otApi = readSimpleField("otApi", readUnsignedLong(readBuffer, 32));
 
-    long toApi =
-        readSimpleField(
-            "toApi",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    long toApi = readSimpleField("toApi", readUnsignedLong(readBuffer, 32));
 
-    short replySize =
-        readImplicitField(
-            "replySize",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short replySize = readImplicitField("replySize", readUnsignedShort(readBuffer, 8));
 
     Short reservedField1 =
-        readReservedField(
-            "reserved",
-            readUnsignedShort(readBuffer, 8),
-            (short) 0x00,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
     readBuffer.closeContext("CipConnectionManagerResponse");
     // Create the instance
@@ -379,9 +234,7 @@ public class CipConnectionManagerResponse extends CipService implements Message 
         originatorVendorId,
         originatorSerialNumber,
         otApi,
-        toApi,
-        serviceLen,
-        order);
+        toApi);
   }
 
   public static class CipConnectionManagerResponseBuilderImpl
@@ -393,8 +246,6 @@ public class CipConnectionManagerResponse extends CipService implements Message 
     private final long originatorSerialNumber;
     private final long otApi;
     private final long toApi;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
     public CipConnectionManagerResponseBuilderImpl(
         long otConnectionId,
@@ -403,9 +254,7 @@ public class CipConnectionManagerResponse extends CipService implements Message 
         int originatorVendorId,
         long originatorSerialNumber,
         long otApi,
-        long toApi,
-        Integer serviceLen,
-        IntegerEncoding order) {
+        long toApi) {
       this.otConnectionId = otConnectionId;
       this.toConnectionId = toConnectionId;
       this.connectionSerialNumber = connectionSerialNumber;
@@ -413,12 +262,9 @@ public class CipConnectionManagerResponse extends CipService implements Message 
       this.originatorSerialNumber = originatorSerialNumber;
       this.otApi = otApi;
       this.toApi = toApi;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public CipConnectionManagerResponse build(Integer serviceLen, IntegerEncoding order) {
-
+    public CipConnectionManagerResponse build() {
       CipConnectionManagerResponse cipConnectionManagerResponse =
           new CipConnectionManagerResponse(
               otConnectionId,
@@ -427,9 +273,7 @@ public class CipConnectionManagerResponse extends CipService implements Message 
               originatorVendorId,
               originatorSerialNumber,
               otApi,
-              toApi,
-              serviceLen,
-              order);
+              toApi);
       return cipConnectionManagerResponse;
     }
   }

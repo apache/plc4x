@@ -58,9 +58,6 @@ public class SendUnitData extends EipPacket implements Message {
   protected final int itemCount;
   protected final List<TypeId> typeId;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
   public SendUnitData(
       long sessionHandle,
       long status,
@@ -68,13 +65,11 @@ public class SendUnitData extends EipPacket implements Message {
       long options,
       int timeout,
       int itemCount,
-      List<TypeId> typeId,
-      IntegerEncoding order) {
-    super(sessionHandle, status, senderContext, options, order);
+      List<TypeId> typeId) {
+    super(sessionHandle, status, senderContext, options);
     this.timeout = timeout;
     this.itemCount = itemCount;
     this.typeId = typeId;
-    this.order = order;
   }
 
   public int getTimeout() {
@@ -101,44 +96,16 @@ public class SendUnitData extends EipPacket implements Message {
     writeBuffer.pushContext("SendUnitData");
 
     // Const Field (interfaceHandle)
-    writeConstField(
-        "interfaceHandle",
-        INTERFACEHANDLE,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeConstField("interfaceHandle", INTERFACEHANDLE, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (timeout)
-    writeSimpleField(
-        "timeout",
-        timeout,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("timeout", timeout, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (itemCount)
-    writeSimpleField(
-        "itemCount",
-        itemCount,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("itemCount", itemCount, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (typeId)
-    writeComplexTypeArrayField(
-        "typeId",
-        typeId,
-        writeBuffer,
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeComplexTypeArrayField("typeId", typeId, writeBuffer);
 
     writeBuffer.popContext("SendUnitData");
   }
@@ -176,7 +143,7 @@ public class SendUnitData extends EipPacket implements Message {
   }
 
   public static EipPacketBuilder staticParseEipPacketBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("SendUnitData");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -185,71 +152,38 @@ public class SendUnitData extends EipPacket implements Message {
 
     long interfaceHandle =
         readConstField(
-            "interfaceHandle",
-            readUnsignedLong(readBuffer, 32),
-            SendUnitData.INTERFACEHANDLE,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            "interfaceHandle", readUnsignedLong(readBuffer, 32), SendUnitData.INTERFACEHANDLE);
 
-    int timeout =
-        readSimpleField(
-            "timeout",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int timeout = readSimpleField("timeout", readUnsignedInt(readBuffer, 16));
 
-    int itemCount =
-        readSimpleField(
-            "itemCount",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int itemCount = readSimpleField("itemCount", readUnsignedInt(readBuffer, 16));
 
     List<TypeId> typeId =
         readCountArrayField(
             "typeId",
-            new DataReaderComplexDefault<>(
-                () -> TypeId.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
-            itemCount,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            new DataReaderComplexDefault<>(() -> TypeId.staticParse(readBuffer), readBuffer),
+            itemCount);
 
     readBuffer.closeContext("SendUnitData");
     // Create the instance
-    return new SendUnitDataBuilderImpl(timeout, itemCount, typeId, order);
+    return new SendUnitDataBuilderImpl(timeout, itemCount, typeId);
   }
 
   public static class SendUnitDataBuilderImpl implements EipPacket.EipPacketBuilder {
     private final int timeout;
     private final int itemCount;
     private final List<TypeId> typeId;
-    private final IntegerEncoding order;
 
-    public SendUnitDataBuilderImpl(
-        int timeout, int itemCount, List<TypeId> typeId, IntegerEncoding order) {
+    public SendUnitDataBuilderImpl(int timeout, int itemCount, List<TypeId> typeId) {
       this.timeout = timeout;
       this.itemCount = itemCount;
       this.typeId = typeId;
-      this.order = order;
     }
 
-    public SendUnitData build(
-        long sessionHandle,
-        long status,
-        byte[] senderContext,
-        long options,
-        IntegerEncoding order) {
+    public SendUnitData build(long sessionHandle, long status, byte[] senderContext, long options) {
       SendUnitData sendUnitData =
           new SendUnitData(
-              sessionHandle, status, senderContext, options, timeout, itemCount, typeId, order);
+              sessionHandle, status, senderContext, options, timeout, itemCount, typeId);
       return sendUnitData;
     }
   }

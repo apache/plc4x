@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -35,7 +34,7 @@ type CipConnectionManagerCloseRequest interface {
 	utils.Serializable
 	CipService
 	// GetRequestPathSize returns RequestPathSize (property field)
-	GetRequestPathSize() int8
+	GetRequestPathSize() uint8
 	// GetClassSegment returns ClassSegment (property field)
 	GetClassSegment() PathSegment
 	// GetInstanceSegment returns InstanceSegment (property field)
@@ -68,7 +67,7 @@ type CipConnectionManagerCloseRequestExactly interface {
 // _CipConnectionManagerCloseRequest is the data-structure of this message
 type _CipConnectionManagerCloseRequest struct {
 	*_CipService
-	RequestPathSize        int8
+	RequestPathSize        uint8
 	ClassSegment           PathSegment
 	InstanceSegment        PathSegment
 	Priority               uint8
@@ -116,7 +115,7 @@ func (m *_CipConnectionManagerCloseRequest) GetParent() CipService {
 /////////////////////// Accessors for property fields.
 ///////////////////////
 
-func (m *_CipConnectionManagerCloseRequest) GetRequestPathSize() int8 {
+func (m *_CipConnectionManagerCloseRequest) GetRequestPathSize() uint8 {
 	return m.RequestPathSize
 }
 
@@ -166,7 +165,7 @@ func (m *_CipConnectionManagerCloseRequest) GetConnectionPaths() []PathSegment {
 ///////////////////////////////////////////////////////////
 
 // NewCipConnectionManagerCloseRequest factory function for _CipConnectionManagerCloseRequest
-func NewCipConnectionManagerCloseRequest(requestPathSize int8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment, serviceLen uint16, order IntegerEncoding) *_CipConnectionManagerCloseRequest {
+func NewCipConnectionManagerCloseRequest(requestPathSize uint8, classSegment PathSegment, instanceSegment PathSegment, priority uint8, tickTime uint8, timeoutTicks uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, connectionPathSize uint8, connectionPaths []PathSegment, serviceLen uint16) *_CipConnectionManagerCloseRequest {
 	_result := &_CipConnectionManagerCloseRequest{
 		RequestPathSize:        requestPathSize,
 		ClassSegment:           classSegment,
@@ -179,7 +178,7 @@ func NewCipConnectionManagerCloseRequest(requestPathSize int8, classSegment Path
 		OriginatorSerialNumber: originatorSerialNumber,
 		ConnectionPathSize:     connectionPathSize,
 		ConnectionPaths:        connectionPaths,
-		_CipService:            NewCipService(serviceLen, order),
+		_CipService:            NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -250,11 +249,11 @@ func (m *_CipConnectionManagerCloseRequest) GetLengthInBytes(ctx context.Context
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipConnectionManagerCloseRequestParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (CipConnectionManagerCloseRequest, error) {
-	return CipConnectionManagerCloseRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
+func CipConnectionManagerCloseRequestParse(theBytes []byte, connected bool, serviceLen uint16) (CipConnectionManagerCloseRequest, error) {
+	return CipConnectionManagerCloseRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (CipConnectionManagerCloseRequest, error) {
+func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectionManagerCloseRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipConnectionManagerCloseRequest"); pullErr != nil {
@@ -264,7 +263,7 @@ func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBu
 	_ = currentPos
 
 	// Simple Field (requestPathSize)
-	_requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)
+	_requestPathSize, _requestPathSizeErr := readBuffer.ReadUint8("requestPathSize", 8)
 	if _requestPathSizeErr != nil {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipConnectionManagerCloseRequest")
 	}
@@ -274,7 +273,7 @@ func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBu
 	if pullErr := readBuffer.PullContext("classSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for classSegment")
 	}
-	_classSegment, _classSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer, IntegerEncoding(order))
+	_classSegment, _classSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
 	if _classSegmentErr != nil {
 		return nil, errors.Wrap(_classSegmentErr, "Error parsing 'classSegment' field of CipConnectionManagerCloseRequest")
 	}
@@ -287,7 +286,7 @@ func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBu
 	if pullErr := readBuffer.PullContext("instanceSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for instanceSegment")
 	}
-	_instanceSegment, _instanceSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer, IntegerEncoding(order))
+	_instanceSegment, _instanceSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
 	if _instanceSegmentErr != nil {
 		return nil, errors.Wrap(_instanceSegmentErr, "Error parsing 'instanceSegment' field of CipConnectionManagerCloseRequest")
 	}
@@ -369,8 +368,8 @@ func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBu
 	// Terminated array
 	var connectionPaths []PathSegment
 	{
-		for !bool(NoMorePathSegments(readBuffer, order)) {
-			_item, _err := PathSegmentParseWithBuffer(ctx, readBuffer, order)
+		for !bool(NoMorePathSegments(readBuffer)) {
+			_item, _err := PathSegmentParseWithBuffer(ctx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'connectionPaths' field of CipConnectionManagerCloseRequest")
 			}
@@ -389,7 +388,6 @@ func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBu
 	_child := &_CipConnectionManagerCloseRequest{
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
-			Order:      order,
 		},
 		RequestPathSize:        requestPathSize,
 		ClassSegment:           classSegment,
@@ -409,7 +407,7 @@ func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBu
 }
 
 func (m *_CipConnectionManagerCloseRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -425,8 +423,8 @@ func (m *_CipConnectionManagerCloseRequest) SerializeWithWriteBuffer(ctx context
 		}
 
 		// Simple Field (requestPathSize)
-		requestPathSize := int8(m.GetRequestPathSize())
-		_requestPathSizeErr := writeBuffer.WriteInt8("requestPathSize", 8, (requestPathSize))
+		requestPathSize := uint8(m.GetRequestPathSize())
+		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, (requestPathSize))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}

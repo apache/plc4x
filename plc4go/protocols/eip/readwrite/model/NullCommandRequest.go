@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -81,9 +80,9 @@ func (m *_NullCommandRequest) GetParent() EipPacket {
 }
 
 // NewNullCommandRequest factory function for _NullCommandRequest
-func NewNullCommandRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32, order IntegerEncoding) *_NullCommandRequest {
+func NewNullCommandRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_NullCommandRequest {
 	_result := &_NullCommandRequest{
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options, order),
+		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
 	_result._EipPacket._EipPacketChildRequirements = _result
 	return _result
@@ -114,11 +113,11 @@ func (m *_NullCommandRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NullCommandRequestParse(theBytes []byte, order IntegerEncoding, response bool) (NullCommandRequest, error) {
-	return NullCommandRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order, response)
+func NullCommandRequestParse(theBytes []byte, response bool) (NullCommandRequest, error) {
+	return NullCommandRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func NullCommandRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding, response bool) (NullCommandRequest, error) {
+func NullCommandRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullCommandRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NullCommandRequest"); pullErr != nil {
@@ -133,16 +132,14 @@ func NullCommandRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 
 	// Create a partially initialized instance
 	_child := &_NullCommandRequest{
-		_EipPacket: &_EipPacket{
-			Order: order,
-		},
+		_EipPacket: &_EipPacket{},
 	}
 	_child._EipPacket._EipPacketChildRequirements = _child
 	return _child, nil
 }
 
 func (m *_NullCommandRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

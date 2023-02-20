@@ -115,12 +115,12 @@ func (m *_PortSegmentExtended) GetPaddingByte() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewPortSegmentExtended factory function for _PortSegmentExtended
-func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string, order IntegerEncoding) *_PortSegmentExtended {
+func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string) *_PortSegmentExtended {
 	_result := &_PortSegmentExtended{
 		Port:             port,
 		LinkAddressSize:  linkAddressSize,
 		Address:          address,
-		_PortSegmentType: NewPortSegmentType(order),
+		_PortSegmentType: NewPortSegmentType(),
 	}
 	_result._PortSegmentType._PortSegmentTypeChildRequirements = _result
 	return _result
@@ -162,11 +162,11 @@ func (m *_PortSegmentExtended) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PortSegmentExtendedParse(theBytes []byte, order IntegerEncoding) (PortSegmentExtended, error) {
-	return PortSegmentExtendedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), order)
+func PortSegmentExtendedParse(theBytes []byte) (PortSegmentExtended, error) {
+	return PortSegmentExtendedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func PortSegmentExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (PortSegmentExtended, error) {
+func PortSegmentExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentExtended, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PortSegmentExtended"); pullErr != nil {
@@ -207,12 +207,10 @@ func PortSegmentExtendedParseWithBuffer(ctx context.Context, readBuffer utils.Re
 
 	// Create a partially initialized instance
 	_child := &_PortSegmentExtended{
-		_PortSegmentType: &_PortSegmentType{
-			Order: order,
-		},
-		Port:            port,
-		LinkAddressSize: linkAddressSize,
-		Address:         address,
+		_PortSegmentType: &_PortSegmentType{},
+		Port:             port,
+		LinkAddressSize:  linkAddressSize,
+		Address:          address,
 	}
 	_child._PortSegmentType._PortSegmentTypeChildRequirements = _child
 	return _child, nil

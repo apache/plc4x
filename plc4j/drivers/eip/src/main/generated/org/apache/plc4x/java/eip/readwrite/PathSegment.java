@@ -40,12 +40,8 @@ public abstract class PathSegment implements Message {
   // Abstract accessors for discriminator values.
   public abstract Byte getPathSegment();
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public PathSegment(IntegerEncoding order) {
+  public PathSegment() {
     super();
-    this.order = order;
   }
 
   protected abstract void serializePathSegmentChild(WriteBuffer writeBuffer)
@@ -58,14 +54,7 @@ public abstract class PathSegment implements Message {
     writeBuffer.pushContext("PathSegment");
 
     // Discriminator Field (pathSegment) (Used as input to a switch field)
-    writeDiscriminatorField(
-        "pathSegment",
-        getPathSegment(),
-        writeUnsignedByte(writeBuffer, 3),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeDiscriminatorField("pathSegment", getPathSegment(), writeUnsignedByte(writeBuffer, 3));
 
     // Switch field (Serialize the sub-type)
     serializePathSegmentChild(writeBuffer);
@@ -95,49 +84,26 @@ public abstract class PathSegment implements Message {
   public static PathSegment staticParse(ReadBuffer readBuffer, Object... args)
       throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    IntegerEncoding order;
-    if (args[0] instanceof IntegerEncoding) {
-      order = (IntegerEncoding) args[0];
-    } else if (args[0] instanceof String) {
-      order = IntegerEncoding.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type IntegerEncoding or a string which is parseable but was"
-              + " "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, order);
+    return staticParse(readBuffer);
   }
 
-  public static PathSegment staticParse(ReadBuffer readBuffer, IntegerEncoding order)
-      throws ParseException {
+  public static PathSegment staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PathSegment");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte pathSegment =
-        readDiscriminatorField(
-            "pathSegment",
-            readUnsignedByte(readBuffer, 3),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte pathSegment = readDiscriminatorField("pathSegment", readUnsignedByte(readBuffer, 3));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PathSegmentBuilder builder = null;
     if (EvaluationHelper.equals(pathSegment, (byte) 0x00)) {
-      builder = PortSegment.staticParsePathSegmentBuilder(readBuffer, order);
+      builder = PortSegment.staticParsePathSegmentBuilder(readBuffer);
     } else if (EvaluationHelper.equals(pathSegment, (byte) 0x01)) {
-      builder = LogicalSegment.staticParsePathSegmentBuilder(readBuffer, order);
+      builder = LogicalSegment.staticParsePathSegmentBuilder(readBuffer);
     } else if (EvaluationHelper.equals(pathSegment, (byte) 0x04)) {
-      builder = DataSegment.staticParsePathSegmentBuilder(readBuffer, order);
+      builder = DataSegment.staticParsePathSegmentBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -150,13 +116,12 @@ public abstract class PathSegment implements Message {
 
     readBuffer.closeContext("PathSegment");
     // Create the instance
-    PathSegment _pathSegment = builder.build(order);
-
+    PathSegment _pathSegment = builder.build();
     return _pathSegment;
   }
 
   public interface PathSegmentBuilder {
-    PathSegment build(IntegerEncoding order);
+    PathSegment build();
   }
 
   @Override

@@ -57,26 +57,14 @@ public class MultipleServiceResponse extends CipService implements Message {
   protected final List<Integer> offsets;
   protected final byte[] servicesData;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
   public MultipleServiceResponse(
-      short status,
-      short extStatus,
-      int serviceNb,
-      List<Integer> offsets,
-      byte[] servicesData,
-      Integer serviceLen,
-      IntegerEncoding order) {
-    super(serviceLen, order);
+      short status, short extStatus, int serviceNb, List<Integer> offsets, byte[] servicesData) {
+    super();
     this.status = status;
     this.extStatus = extStatus;
     this.serviceNb = serviceNb;
     this.offsets = offsets;
     this.servicesData = servicesData;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
   public short getStatus() {
@@ -107,64 +95,22 @@ public class MultipleServiceResponse extends CipService implements Message {
     writeBuffer.pushContext("MultipleServiceResponse");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (short) 0x0,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (short) 0x0, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (status)
-    writeSimpleField(
-        "status",
-        status,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("status", status, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (extStatus)
-    writeSimpleField(
-        "extStatus",
-        extStatus,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("extStatus", extStatus, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (serviceNb)
-    writeSimpleField(
-        "serviceNb",
-        serviceNb,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("serviceNb", serviceNb, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (offsets)
-    writeSimpleTypeArrayField(
-        "offsets",
-        offsets,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleTypeArrayField("offsets", offsets, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (servicesData)
-    writeByteArrayField(
-        "servicesData",
-        servicesData,
-        writeByteArray(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeByteArrayField("servicesData", servicesData, writeByteArray(writeBuffer, 8));
 
     writeBuffer.popContext("MultipleServiceResponse");
   }
@@ -206,8 +152,7 @@ public class MultipleServiceResponse extends CipService implements Message {
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("MultipleServiceResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -215,65 +160,25 @@ public class MultipleServiceResponse extends CipService implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedShort(readBuffer, 8),
-            (short) 0x0,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x0);
 
-    short status =
-        readSimpleField(
-            "status",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short status = readSimpleField("status", readUnsignedShort(readBuffer, 8));
 
-    short extStatus =
-        readSimpleField(
-            "extStatus",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short extStatus = readSimpleField("extStatus", readUnsignedShort(readBuffer, 8));
 
-    int serviceNb =
-        readSimpleField(
-            "serviceNb",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int serviceNb = readSimpleField("serviceNb", readUnsignedInt(readBuffer, 16));
 
     List<Integer> offsets =
-        readCountArrayField(
-            "offsets",
-            readUnsignedInt(readBuffer, 16),
-            serviceNb,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readCountArrayField("offsets", readUnsignedInt(readBuffer, 16), serviceNb);
 
     byte[] servicesData =
         readBuffer.readByteArray(
-            "servicesData",
-            Math.toIntExact(((serviceLen) - (6)) - (((2) * (serviceNb)))),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            "servicesData", Math.toIntExact(((serviceLen) - (6)) - (((2) * (serviceNb)))));
 
     readBuffer.closeContext("MultipleServiceResponse");
     // Create the instance
     return new MultipleServiceResponseBuilderImpl(
-        status, extStatus, serviceNb, offsets, servicesData, serviceLen, order);
+        status, extStatus, serviceNb, offsets, servicesData);
   }
 
   public static class MultipleServiceResponseBuilderImpl implements CipService.CipServiceBuilder {
@@ -282,31 +187,19 @@ public class MultipleServiceResponse extends CipService implements Message {
     private final int serviceNb;
     private final List<Integer> offsets;
     private final byte[] servicesData;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
     public MultipleServiceResponseBuilderImpl(
-        short status,
-        short extStatus,
-        int serviceNb,
-        List<Integer> offsets,
-        byte[] servicesData,
-        Integer serviceLen,
-        IntegerEncoding order) {
+        short status, short extStatus, int serviceNb, List<Integer> offsets, byte[] servicesData) {
       this.status = status;
       this.extStatus = extStatus;
       this.serviceNb = serviceNb;
       this.offsets = offsets;
       this.servicesData = servicesData;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public MultipleServiceResponse build(Integer serviceLen, IntegerEncoding order) {
-
+    public MultipleServiceResponse build() {
       MultipleServiceResponse multipleServiceResponse =
-          new MultipleServiceResponse(
-              status, extStatus, serviceNb, offsets, servicesData, serviceLen, order);
+          new MultipleServiceResponse(status, extStatus, serviceNb, offsets, servicesData);
       return multipleServiceResponse;
     }
   }

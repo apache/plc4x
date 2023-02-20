@@ -50,13 +50,8 @@ public class NullCommandRequest extends EipPacket implements Message {
     return 0;
   }
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public NullCommandRequest(
-      long sessionHandle, long status, byte[] senderContext, long options, IntegerEncoding order) {
-    super(sessionHandle, status, senderContext, options, order);
-    this.order = order;
+  public NullCommandRequest(long sessionHandle, long status, byte[] senderContext, long options) {
+    super(sessionHandle, status, senderContext, options);
   }
 
   @Override
@@ -84,7 +79,7 @@ public class NullCommandRequest extends EipPacket implements Message {
   }
 
   public static EipPacketBuilder staticParseEipPacketBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("NullCommandRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -93,24 +88,17 @@ public class NullCommandRequest extends EipPacket implements Message {
 
     readBuffer.closeContext("NullCommandRequest");
     // Create the instance
-    return new NullCommandRequestBuilderImpl(order);
+    return new NullCommandRequestBuilderImpl();
   }
 
   public static class NullCommandRequestBuilderImpl implements EipPacket.EipPacketBuilder {
-    private final IntegerEncoding order;
 
-    public NullCommandRequestBuilderImpl(IntegerEncoding order) {
-      this.order = order;
-    }
+    public NullCommandRequestBuilderImpl() {}
 
     public NullCommandRequest build(
-        long sessionHandle,
-        long status,
-        byte[] senderContext,
-        long options,
-        IntegerEncoding order) {
+        long sessionHandle, long status, byte[] senderContext, long options) {
       NullCommandRequest nullCommandRequest =
-          new NullCommandRequest(sessionHandle, status, senderContext, options, order);
+          new NullCommandRequest(sessionHandle, status, senderContext, options);
       return nullCommandRequest;
     }
   }

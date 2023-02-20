@@ -45,13 +45,9 @@ public class DataSegment extends PathSegment implements Message {
   // Properties.
   protected final DataSegmentType segmentType;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public DataSegment(DataSegmentType segmentType, IntegerEncoding order) {
-    super(order);
+  public DataSegment(DataSegmentType segmentType) {
+    super();
     this.segmentType = segmentType;
-    this.order = order;
   }
 
   public DataSegmentType getSegmentType() {
@@ -66,14 +62,7 @@ public class DataSegment extends PathSegment implements Message {
     writeBuffer.pushContext("DataSegment");
 
     // Simple Field (segmentType)
-    writeSimpleField(
-        "segmentType",
-        segmentType,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("segmentType", segmentType, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("DataSegment");
   }
@@ -95,8 +84,8 @@ public class DataSegment extends PathSegment implements Message {
     return lengthInBits;
   }
 
-  public static PathSegmentBuilder staticParsePathSegmentBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
+  public static PathSegmentBuilder staticParsePathSegmentBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("DataSegment");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -107,30 +96,22 @@ public class DataSegment extends PathSegment implements Message {
         readSimpleField(
             "segmentType",
             new DataReaderComplexDefault<>(
-                () -> DataSegmentType.staticParse(readBuffer, (IntegerEncoding) (order)),
-                readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                () -> DataSegmentType.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("DataSegment");
     // Create the instance
-    return new DataSegmentBuilderImpl(segmentType, order);
+    return new DataSegmentBuilderImpl(segmentType);
   }
 
   public static class DataSegmentBuilderImpl implements PathSegment.PathSegmentBuilder {
     private final DataSegmentType segmentType;
-    private final IntegerEncoding order;
 
-    public DataSegmentBuilderImpl(DataSegmentType segmentType, IntegerEncoding order) {
+    public DataSegmentBuilderImpl(DataSegmentType segmentType) {
       this.segmentType = segmentType;
-      this.order = order;
     }
 
-    public DataSegment build(IntegerEncoding order) {
-
-      DataSegment dataSegment = new DataSegment(segmentType, order);
+    public DataSegment build() {
+      DataSegment dataSegment = new DataSegment(segmentType);
       return dataSegment;
     }
   }

@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -110,12 +109,12 @@ func (m *_GetAttributeAllResponse) GetAttributes() CIPAttributes {
 ///////////////////////////////////////////////////////////
 
 // NewGetAttributeAllResponse factory function for _GetAttributeAllResponse
-func NewGetAttributeAllResponse(status uint8, extStatus uint8, attributes CIPAttributes, serviceLen uint16, order IntegerEncoding) *_GetAttributeAllResponse {
+func NewGetAttributeAllResponse(status uint8, extStatus uint8, attributes CIPAttributes, serviceLen uint16) *_GetAttributeAllResponse {
 	_result := &_GetAttributeAllResponse{
 		Status:      status,
 		ExtStatus:   extStatus,
 		Attributes:  attributes,
-		_CipService: NewCipService(serviceLen, order),
+		_CipService: NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -160,11 +159,11 @@ func (m *_GetAttributeAllResponse) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func GetAttributeAllResponseParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (GetAttributeAllResponse, error) {
-	return GetAttributeAllResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
+func GetAttributeAllResponseParse(theBytes []byte, connected bool, serviceLen uint16) (GetAttributeAllResponse, error) {
+	return GetAttributeAllResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func GetAttributeAllResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (GetAttributeAllResponse, error) {
+func GetAttributeAllResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (GetAttributeAllResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("GetAttributeAllResponse"); pullErr != nil {
@@ -234,7 +233,6 @@ func GetAttributeAllResponseParseWithBuffer(ctx context.Context, readBuffer util
 	_child := &_GetAttributeAllResponse{
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
-			Order:      order,
 		},
 		Status:         status,
 		ExtStatus:      extStatus,
@@ -246,7 +244,7 @@ func GetAttributeAllResponseParseWithBuffer(ctx context.Context, readBuffer util
 }
 
 func (m *_GetAttributeAllResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

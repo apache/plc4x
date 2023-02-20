@@ -42,12 +42,8 @@ public class NullAddressItem extends TypeId implements Message {
     return (int) 0x0000;
   }
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public NullAddressItem(IntegerEncoding order) {
-    super(order);
-    this.order = order;
+  public NullAddressItem() {
+    super();
   }
 
   @Override
@@ -58,14 +54,7 @@ public class NullAddressItem extends TypeId implements Message {
     writeBuffer.pushContext("NullAddressItem");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (int) 0x0000,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (int) 0x0000, writeUnsignedInt(writeBuffer, 16));
 
     writeBuffer.popContext("NullAddressItem");
   }
@@ -87,7 +76,7 @@ public class NullAddressItem extends TypeId implements Message {
     return lengthInBits;
   }
 
-  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer, IntegerEncoding order)
+  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("NullAddressItem");
     PositionAware positionAware = readBuffer;
@@ -96,31 +85,19 @@ public class NullAddressItem extends TypeId implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedInt(readBuffer, 16),
-            (int) 0x0000,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0000);
 
     readBuffer.closeContext("NullAddressItem");
     // Create the instance
-    return new NullAddressItemBuilderImpl(order);
+    return new NullAddressItemBuilderImpl();
   }
 
   public static class NullAddressItemBuilderImpl implements TypeId.TypeIdBuilder {
-    private final IntegerEncoding order;
 
-    public NullAddressItemBuilderImpl(IntegerEncoding order) {
-      this.order = order;
-    }
+    public NullAddressItemBuilderImpl() {}
 
-    public NullAddressItem build(IntegerEncoding order) {
-
-      NullAddressItem nullAddressItem = new NullAddressItem(order);
-
+    public NullAddressItem build() {
+      NullAddressItem nullAddressItem = new NullAddressItem();
       return nullAddressItem;
     }
   }

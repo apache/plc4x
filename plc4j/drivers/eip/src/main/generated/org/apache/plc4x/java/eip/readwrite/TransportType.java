@@ -42,16 +42,11 @@ public class TransportType implements Message {
   protected final byte trigger;
   protected final byte classTransport;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public TransportType(
-      boolean direction, byte trigger, byte classTransport, IntegerEncoding order) {
+  public TransportType(boolean direction, byte trigger, byte classTransport) {
     super();
     this.direction = direction;
     this.trigger = trigger;
     this.classTransport = classTransport;
-    this.order = order;
   }
 
   public boolean getDirection() {
@@ -73,34 +68,13 @@ public class TransportType implements Message {
     writeBuffer.pushContext("TransportType");
 
     // Simple Field (direction)
-    writeSimpleField(
-        "direction",
-        direction,
-        writeBoolean(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("direction", direction, writeBoolean(writeBuffer));
 
     // Simple Field (trigger)
-    writeSimpleField(
-        "trigger",
-        trigger,
-        writeUnsignedByte(writeBuffer, 3),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("trigger", trigger, writeUnsignedByte(writeBuffer, 3));
 
     // Simple Field (classTransport)
-    writeSimpleField(
-        "classTransport",
-        classTransport,
-        writeUnsignedByte(writeBuffer, 4),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("classTransport", classTransport, writeUnsignedByte(writeBuffer, 4));
 
     writeBuffer.popContext("TransportType");
   }
@@ -131,63 +105,26 @@ public class TransportType implements Message {
   public static TransportType staticParse(ReadBuffer readBuffer, Object... args)
       throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    IntegerEncoding order;
-    if (args[0] instanceof IntegerEncoding) {
-      order = (IntegerEncoding) args[0];
-    } else if (args[0] instanceof String) {
-      order = IntegerEncoding.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type IntegerEncoding or a string which is parseable but was"
-              + " "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, order);
+    return staticParse(readBuffer);
   }
 
-  public static TransportType staticParse(ReadBuffer readBuffer, IntegerEncoding order)
-      throws ParseException {
+  public static TransportType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TransportType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    boolean direction =
-        readSimpleField(
-            "direction",
-            readBoolean(readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    boolean direction = readSimpleField("direction", readBoolean(readBuffer));
 
-    byte trigger =
-        readSimpleField(
-            "trigger",
-            readUnsignedByte(readBuffer, 3),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte trigger = readSimpleField("trigger", readUnsignedByte(readBuffer, 3));
 
-    byte classTransport =
-        readSimpleField(
-            "classTransport",
-            readUnsignedByte(readBuffer, 4),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte classTransport = readSimpleField("classTransport", readUnsignedByte(readBuffer, 4));
 
     readBuffer.closeContext("TransportType");
     // Create the instance
     TransportType _transportType;
-    _transportType = new TransportType(direction, trigger, classTransport, order);
+    _transportType = new TransportType(direction, trigger, classTransport);
     return _transportType;
   }
 

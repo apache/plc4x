@@ -45,13 +45,9 @@ public class ConnectedAddressItem extends TypeId implements Message {
   // Properties.
   protected final long connectionId;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public ConnectedAddressItem(long connectionId, IntegerEncoding order) {
-    super(order);
+  public ConnectedAddressItem(long connectionId) {
+    super();
     this.connectionId = connectionId;
-    this.order = order;
   }
 
   public long getConnectionId() {
@@ -66,24 +62,10 @@ public class ConnectedAddressItem extends TypeId implements Message {
     writeBuffer.pushContext("ConnectedAddressItem");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (int) 0x0004,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (int) 0x0004, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (connectionId)
-    writeSimpleField(
-        "connectionId",
-        connectionId,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("connectionId", connectionId, writeUnsignedLong(writeBuffer, 32));
 
     writeBuffer.popContext("ConnectedAddressItem");
   }
@@ -108,7 +90,7 @@ public class ConnectedAddressItem extends TypeId implements Message {
     return lengthInBits;
   }
 
-  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer, IntegerEncoding order)
+  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ConnectedAddressItem");
     PositionAware positionAware = readBuffer;
@@ -117,41 +99,24 @@ public class ConnectedAddressItem extends TypeId implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Integer reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedInt(readBuffer, 16),
-            (int) 0x0004,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x0004);
 
-    long connectionId =
-        readSimpleField(
-            "connectionId",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    long connectionId = readSimpleField("connectionId", readUnsignedLong(readBuffer, 32));
 
     readBuffer.closeContext("ConnectedAddressItem");
     // Create the instance
-    return new ConnectedAddressItemBuilderImpl(connectionId, order);
+    return new ConnectedAddressItemBuilderImpl(connectionId);
   }
 
   public static class ConnectedAddressItemBuilderImpl implements TypeId.TypeIdBuilder {
     private final long connectionId;
-    private final IntegerEncoding order;
 
-    public ConnectedAddressItemBuilderImpl(long connectionId, IntegerEncoding order) {
+    public ConnectedAddressItemBuilderImpl(long connectionId) {
       this.connectionId = connectionId;
-      this.order = order;
     }
 
-    public ConnectedAddressItem build(IntegerEncoding order) {
-
-      ConnectedAddressItem connectedAddressItem = new ConnectedAddressItem(connectionId, order);
+    public ConnectedAddressItem build() {
+      ConnectedAddressItem connectedAddressItem = new ConnectedAddressItem(connectionId);
       return connectedAddressItem;
     }
   }

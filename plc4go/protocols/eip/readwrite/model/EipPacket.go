@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -62,9 +61,6 @@ type _EipPacket struct {
 	Status        uint32
 	SenderContext []byte
 	Options       uint32
-
-	// Arguments.
-	Order IntegerEncoding
 }
 
 type _EipPacketChildRequirements interface {
@@ -116,8 +112,8 @@ func (m *_EipPacket) GetOptions() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewEipPacket factory function for _EipPacket
-func NewEipPacket(sessionHandle uint32, status uint32, senderContext []byte, options uint32, order IntegerEncoding) *_EipPacket {
-	return &_EipPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options, Order: order}
+func NewEipPacket(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipPacket {
+	return &_EipPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
 }
 
 // Deprecated: use the interface for direct cast
@@ -164,11 +160,11 @@ func (m *_EipPacket) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipPacketParse(theBytes []byte, order IntegerEncoding, response bool) (EipPacket, error) {
-	return EipPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order, response)
+func EipPacketParse(theBytes []byte, response bool) (EipPacket, error) {
+	return EipPacketParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding, response bool) (EipPacket, error) {
+func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipPacket"); pullErr != nil {
@@ -228,27 +224,27 @@ func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	var typeSwitchError error
 	switch {
 	case command == 0x0001 && response == bool(false): // NullCommandRequest
-		_childTemp, typeSwitchError = NullCommandRequestParseWithBuffer(ctx, readBuffer, order, response)
+		_childTemp, typeSwitchError = NullCommandRequestParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0001 && response == bool(true): // NullCommandResponse
-		_childTemp, typeSwitchError = NullCommandResponseParseWithBuffer(ctx, readBuffer, order, response)
+		_childTemp, typeSwitchError = NullCommandResponseParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0004 && response == bool(false): // ListServicesRequest
-		_childTemp, typeSwitchError = ListServicesRequestParseWithBuffer(ctx, readBuffer, order, response)
+		_childTemp, typeSwitchError = ListServicesRequestParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0004 && response == bool(true) && packetLength == uint16(0): // NullListServicesResponse
-		_childTemp, typeSwitchError = NullListServicesResponseParseWithBuffer(ctx, readBuffer, order, response)
+		_childTemp, typeSwitchError = NullListServicesResponseParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0004 && response == bool(true): // ListServicesResponse
-		_childTemp, typeSwitchError = ListServicesResponseParseWithBuffer(ctx, readBuffer, order, response)
+		_childTemp, typeSwitchError = ListServicesResponseParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0065 && response == bool(false): // EipConnectionRequest
-		_childTemp, typeSwitchError = EipConnectionRequestParseWithBuffer(ctx, readBuffer, order, response)
+		_childTemp, typeSwitchError = EipConnectionRequestParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0065 && response == bool(true) && packetLength == uint16(0): // NullEipConnectionResponse
-		_childTemp, typeSwitchError = NullEipConnectionResponseParseWithBuffer(ctx, readBuffer, order, response)
+		_childTemp, typeSwitchError = NullEipConnectionResponseParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0065 && response == bool(true): // EipConnectionResponse
-		_childTemp, typeSwitchError = EipConnectionResponseParseWithBuffer(ctx, readBuffer, order, response)
+		_childTemp, typeSwitchError = EipConnectionResponseParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0066: // EipDisconnectRequest
-		_childTemp, typeSwitchError = EipDisconnectRequestParseWithBuffer(ctx, readBuffer, order, response)
+		_childTemp, typeSwitchError = EipDisconnectRequestParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x006F: // CipRRData
-		_childTemp, typeSwitchError = CipRRDataParseWithBuffer(ctx, readBuffer, order, response)
+		_childTemp, typeSwitchError = CipRRDataParseWithBuffer(ctx, readBuffer, response)
 	case command == 0x0070: // SendUnitData
-		_childTemp, typeSwitchError = SendUnitDataParseWithBuffer(ctx, readBuffer, order, response)
+		_childTemp, typeSwitchError = SendUnitDataParseWithBuffer(ctx, readBuffer, response)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [command=%v, response=%v, packetLength=%v]", command, response, packetLength)
 	}
@@ -328,16 +324,6 @@ func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_EipPacket) GetOrder() IntegerEncoding {
-	return m.Order
-}
-
-//
-////
 
 func (m *_EipPacket) isEipPacket() bool {
 	return true

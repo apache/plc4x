@@ -47,16 +47,11 @@ public class PortSegmentExtended extends PortSegmentType implements Message {
   protected final short linkAddressSize;
   protected final String address;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public PortSegmentExtended(
-      byte port, short linkAddressSize, String address, IntegerEncoding order) {
-    super(order);
+  public PortSegmentExtended(byte port, short linkAddressSize, String address) {
+    super();
     this.port = port;
     this.linkAddressSize = linkAddressSize;
     this.address = address;
-    this.order = order;
   }
 
   public byte getPort() {
@@ -127,8 +122,8 @@ public class PortSegmentExtended extends PortSegmentType implements Message {
     return lengthInBits;
   }
 
-  public static PortSegmentTypeBuilder staticParsePortSegmentTypeBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
+  public static PortSegmentTypeBuilder staticParsePortSegmentTypeBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PortSegmentExtended");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -147,7 +142,7 @@ public class PortSegmentExtended extends PortSegmentType implements Message {
 
     readBuffer.closeContext("PortSegmentExtended");
     // Create the instance
-    return new PortSegmentExtendedBuilderImpl(port, linkAddressSize, address, order);
+    return new PortSegmentExtendedBuilderImpl(port, linkAddressSize, address);
   }
 
   public static class PortSegmentExtendedBuilderImpl
@@ -155,20 +150,16 @@ public class PortSegmentExtended extends PortSegmentType implements Message {
     private final byte port;
     private final short linkAddressSize;
     private final String address;
-    private final IntegerEncoding order;
 
-    public PortSegmentExtendedBuilderImpl(
-        byte port, short linkAddressSize, String address, IntegerEncoding order) {
+    public PortSegmentExtendedBuilderImpl(byte port, short linkAddressSize, String address) {
       this.port = port;
       this.linkAddressSize = linkAddressSize;
       this.address = address;
-      this.order = order;
     }
 
-    public PortSegmentExtended build(IntegerEncoding order) {
-
+    public PortSegmentExtended build() {
       PortSegmentExtended portSegmentExtended =
-          new PortSegmentExtended(port, linkAddressSize, address, order);
+          new PortSegmentExtended(port, linkAddressSize, address);
       return portSegmentExtended;
     }
   }

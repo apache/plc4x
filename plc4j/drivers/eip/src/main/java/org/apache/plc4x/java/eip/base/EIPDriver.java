@@ -26,9 +26,10 @@ import org.apache.plc4x.java.eip.base.tag.EipTag;
 import org.apache.plc4x.java.eip.base.protocol.EipProtocolLogic;
 import org.apache.plc4x.java.eip.base.tag.EipTagHandler;
 import org.apache.plc4x.java.eip.readwrite.EipPacket;
-import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
+import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.connection.*;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.spi.transport.Transport;
 
 import org.apache.plc4x.java.api.value.PlcValueHandler;
@@ -100,24 +101,13 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
 
     @Override
     protected ProtocolStackConfigurer<EipPacket> getStackConfigurer() {
-        if (this.configuration.getByteOrder() == IntegerEncoding.BIG_ENDIAN) {
-            return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacket::staticParse)
-                .withProtocol(EipProtocolLogic.class)
-                .withPacketSizeEstimator(ByteLengthEstimator.class)
-                .withParserArgs(IntegerEncoding.BIG_ENDIAN, true)
-                .withCorruptPacketRemover(CorruptPackageCleaner.class)
-                .bigEndian()
-                .build();
-        } else {
-            return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacket::staticParse)
-                .withProtocol(EipProtocolLogic.class)
-                .withPacketSizeEstimator(ByteLengthEstimator.class)
-                .withParserArgs(IntegerEncoding.LITTLE_ENDIAN, true)
-                .withCorruptPacketRemover(CorruptPackageCleaner.class)
-                .littleEndian()
-                .build();
-        }
-
+        return SingleProtocolStackConfigurer.builder(EipPacket.class, EipPacket::staticParse)
+            .withProtocol(EipProtocolLogic.class)
+            .withPacketSizeEstimator(ByteLengthEstimator.class)
+            .withParserArgs(true)
+            .withCorruptPacketRemover(CorruptPackageCleaner.class)
+            .byteOrder(this.configuration.getByteOrder())
+            .build();
     }
 
     @Override
@@ -208,12 +198,19 @@ public class EIPDriver extends GeneratedDriverBase<EipPacket> {
     }
 
     /** Estimate the Length of a Packet */
-    public class ByteLengthEstimator implements ToIntFunction<ByteBuf> {
+    public static class ByteLengthEstimator implements ToIntFunction<ByteBuf>, HasConfiguration<EIPConfiguration> {
+        private EIPConfiguration configuration;
+
+        @Override
+        public void setConfiguration(EIPConfiguration configuration) {
+            this.configuration = configuration;
+        }
+
         @Override
         public int applyAsInt(ByteBuf byteBuf) {
             if (byteBuf.readableBytes() >= 4) {
                 //Second byte for the size and then add the header size 24
-                if (configuration.getByteOrder() == IntegerEncoding.BIG_ENDIAN) {
+                if (configuration.getByteOrder() == ByteOrder.BIG_ENDIAN) {
                     return byteBuf.getUnsignedShort(byteBuf.readerIndex() + 2) + 24;
                 } else {
                     return byteBuf.getUnsignedShortLE(byteBuf.readerIndex() + 2) + 24;

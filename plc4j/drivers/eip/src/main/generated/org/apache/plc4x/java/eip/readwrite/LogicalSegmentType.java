@@ -40,12 +40,8 @@ public abstract class LogicalSegmentType implements Message {
   // Abstract accessors for discriminator values.
   public abstract Byte getLogicalSegmentType();
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public LogicalSegmentType(IntegerEncoding order) {
+  public LogicalSegmentType() {
     super();
-    this.order = order;
   }
 
   protected abstract void serializeLogicalSegmentTypeChild(WriteBuffer writeBuffer)
@@ -59,13 +55,7 @@ public abstract class LogicalSegmentType implements Message {
 
     // Discriminator Field (logicalSegmentType) (Used as input to a switch field)
     writeDiscriminatorField(
-        "logicalSegmentType",
-        getLogicalSegmentType(),
-        writeUnsignedByte(writeBuffer, 3),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "logicalSegmentType", getLogicalSegmentType(), writeUnsignedByte(writeBuffer, 3));
 
     // Switch field (Serialize the sub-type)
     serializeLogicalSegmentTypeChild(writeBuffer);
@@ -95,26 +85,10 @@ public abstract class LogicalSegmentType implements Message {
   public static LogicalSegmentType staticParse(ReadBuffer readBuffer, Object... args)
       throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    IntegerEncoding order;
-    if (args[0] instanceof IntegerEncoding) {
-      order = (IntegerEncoding) args[0];
-    } else if (args[0] instanceof String) {
-      order = IntegerEncoding.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type IntegerEncoding or a string which is parseable but was"
-              + " "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, order);
+    return staticParse(readBuffer);
   }
 
-  public static LogicalSegmentType staticParse(ReadBuffer readBuffer, IntegerEncoding order)
-      throws ParseException {
+  public static LogicalSegmentType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LogicalSegmentType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -122,22 +96,16 @@ public abstract class LogicalSegmentType implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     byte logicalSegmentType =
-        readDiscriminatorField(
-            "logicalSegmentType",
-            readUnsignedByte(readBuffer, 3),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readDiscriminatorField("logicalSegmentType", readUnsignedByte(readBuffer, 3));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     LogicalSegmentTypeBuilder builder = null;
     if (EvaluationHelper.equals(logicalSegmentType, (byte) 0x00)) {
-      builder = ClassID.staticParseLogicalSegmentTypeBuilder(readBuffer, order);
+      builder = ClassID.staticParseLogicalSegmentTypeBuilder(readBuffer);
     } else if (EvaluationHelper.equals(logicalSegmentType, (byte) 0x01)) {
-      builder = InstanceID.staticParseLogicalSegmentTypeBuilder(readBuffer, order);
+      builder = InstanceID.staticParseLogicalSegmentTypeBuilder(readBuffer);
     } else if (EvaluationHelper.equals(logicalSegmentType, (byte) 0x02)) {
-      builder = MemberID.staticParseLogicalSegmentTypeBuilder(readBuffer, order);
+      builder = MemberID.staticParseLogicalSegmentTypeBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -150,13 +118,12 @@ public abstract class LogicalSegmentType implements Message {
 
     readBuffer.closeContext("LogicalSegmentType");
     // Create the instance
-    LogicalSegmentType _logicalSegmentType = builder.build(order);
-
+    LogicalSegmentType _logicalSegmentType = builder.build();
     return _logicalSegmentType;
   }
 
   public interface LogicalSegmentTypeBuilder {
-    LogicalSegmentType build(IntegerEncoding order);
+    LogicalSegmentType build();
   }
 
   @Override

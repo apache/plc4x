@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -109,13 +108,13 @@ func (m *_ServicesResponse) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewServicesResponse factory function for _ServicesResponse
-func NewServicesResponse(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte, order IntegerEncoding) *_ServicesResponse {
+func NewServicesResponse(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) *_ServicesResponse {
 	_result := &_ServicesResponse{
 		EncapsulationProtocol:    encapsulationProtocol,
 		SupportsCIPEncapsulation: supportsCIPEncapsulation,
 		SupportsUDP:              supportsUDP,
 		Data:                     data,
-		_TypeId:                  NewTypeId(order),
+		_TypeId:                  NewTypeId(),
 	}
 	_result._TypeId._TypeIdChildRequirements = _result
 	return _result
@@ -169,11 +168,11 @@ func (m *_ServicesResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ServicesResponseParse(theBytes []byte, order IntegerEncoding) (ServicesResponse, error) {
-	return ServicesResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func ServicesResponseParse(theBytes []byte) (ServicesResponse, error) {
+	return ServicesResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (ServicesResponse, error) {
+func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ServicesResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ServicesResponse"); pullErr != nil {
@@ -256,9 +255,7 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 
 	// Create a partially initialized instance
 	_child := &_ServicesResponse{
-		_TypeId: &_TypeId{
-			Order: order,
-		},
+		_TypeId:                  &_TypeId{},
 		EncapsulationProtocol:    encapsulationProtocol,
 		SupportsCIPEncapsulation: supportsCIPEncapsulation,
 		SupportsUDP:              supportsUDP,
@@ -271,7 +268,7 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 }
 
 func (m *_ServicesResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

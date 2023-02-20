@@ -46,14 +46,10 @@ public class InstanceID extends LogicalSegmentType implements Message {
   protected final byte format;
   protected final short instance;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public InstanceID(byte format, short instance, IntegerEncoding order) {
-    super(order);
+  public InstanceID(byte format, short instance) {
+    super();
     this.format = format;
     this.instance = instance;
-    this.order = order;
   }
 
   public byte getFormat() {
@@ -73,24 +69,10 @@ public class InstanceID extends LogicalSegmentType implements Message {
     writeBuffer.pushContext("InstanceID");
 
     // Simple Field (format)
-    writeSimpleField(
-        "format",
-        format,
-        writeUnsignedByte(writeBuffer, 2),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("format", format, writeUnsignedByte(writeBuffer, 2));
 
     // Simple Field (instance)
-    writeSimpleField(
-        "instance",
-        instance,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("instance", instance, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("InstanceID");
   }
@@ -116,51 +98,34 @@ public class InstanceID extends LogicalSegmentType implements Message {
   }
 
   public static LogicalSegmentTypeBuilder staticParseLogicalSegmentTypeBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
+      ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("InstanceID");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte format =
-        readSimpleField(
-            "format",
-            readUnsignedByte(readBuffer, 2),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte format = readSimpleField("format", readUnsignedByte(readBuffer, 2));
 
-    short instance =
-        readSimpleField(
-            "instance",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short instance = readSimpleField("instance", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("InstanceID");
     // Create the instance
-    return new InstanceIDBuilderImpl(format, instance, order);
+    return new InstanceIDBuilderImpl(format, instance);
   }
 
   public static class InstanceIDBuilderImpl
       implements LogicalSegmentType.LogicalSegmentTypeBuilder {
     private final byte format;
     private final short instance;
-    private final IntegerEncoding order;
 
-    public InstanceIDBuilderImpl(byte format, short instance, IntegerEncoding order) {
+    public InstanceIDBuilderImpl(byte format, short instance) {
       this.format = format;
       this.instance = instance;
-      this.order = order;
     }
 
-    public InstanceID build(IntegerEncoding order) {
-
-      InstanceID instanceID = new InstanceID(format, instance, order);
+    public InstanceID build() {
+      InstanceID instanceID = new InstanceID(format, instance);
       return instanceID;
     }
   }

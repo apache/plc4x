@@ -40,12 +40,8 @@ public abstract class DataSegmentType implements Message {
   // Abstract accessors for discriminator values.
   public abstract Short getDataSegmentType();
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public DataSegmentType(IntegerEncoding order) {
+  public DataSegmentType() {
     super();
-    this.order = order;
   }
 
   protected abstract void serializeDataSegmentTypeChild(WriteBuffer writeBuffer)
@@ -59,13 +55,7 @@ public abstract class DataSegmentType implements Message {
 
     // Discriminator Field (dataSegmentType) (Used as input to a switch field)
     writeDiscriminatorField(
-        "dataSegmentType",
-        getDataSegmentType(),
-        writeUnsignedShort(writeBuffer, 5),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "dataSegmentType", getDataSegmentType(), writeUnsignedShort(writeBuffer, 5));
 
     // Switch field (Serialize the sub-type)
     serializeDataSegmentTypeChild(writeBuffer);
@@ -95,26 +85,10 @@ public abstract class DataSegmentType implements Message {
   public static DataSegmentType staticParse(ReadBuffer readBuffer, Object... args)
       throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    IntegerEncoding order;
-    if (args[0] instanceof IntegerEncoding) {
-      order = (IntegerEncoding) args[0];
-    } else if (args[0] instanceof String) {
-      order = IntegerEncoding.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type IntegerEncoding or a string which is parseable but was"
-              + " "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, order);
+    return staticParse(readBuffer);
   }
 
-  public static DataSegmentType staticParse(ReadBuffer readBuffer, IntegerEncoding order)
-      throws ParseException {
+  public static DataSegmentType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DataSegmentType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -122,18 +96,12 @@ public abstract class DataSegmentType implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     short dataSegmentType =
-        readDiscriminatorField(
-            "dataSegmentType",
-            readUnsignedShort(readBuffer, 5),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readDiscriminatorField("dataSegmentType", readUnsignedShort(readBuffer, 5));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     DataSegmentTypeBuilder builder = null;
     if (EvaluationHelper.equals(dataSegmentType, (short) 0x11)) {
-      builder = AnsiExtendedSymbolSegment.staticParseDataSegmentTypeBuilder(readBuffer, order);
+      builder = AnsiExtendedSymbolSegment.staticParseDataSegmentTypeBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -146,13 +114,12 @@ public abstract class DataSegmentType implements Message {
 
     readBuffer.closeContext("DataSegmentType");
     // Create the instance
-    DataSegmentType _dataSegmentType = builder.build(order);
-
+    DataSegmentType _dataSegmentType = builder.build();
     return _dataSegmentType;
   }
 
   public interface DataSegmentTypeBuilder {
-    DataSegmentType build(IntegerEncoding order);
+    DataSegmentType build();
   }
 
   @Override

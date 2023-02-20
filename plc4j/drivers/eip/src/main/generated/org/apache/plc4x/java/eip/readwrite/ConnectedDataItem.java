@@ -46,14 +46,10 @@ public class ConnectedDataItem extends TypeId implements Message {
   protected final int sequenceCount;
   protected final CipService service;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public ConnectedDataItem(int sequenceCount, CipService service, IntegerEncoding order) {
-    super(order);
+  public ConnectedDataItem(int sequenceCount, CipService service) {
+    super();
     this.sequenceCount = sequenceCount;
     this.service = service;
-    this.order = order;
   }
 
   public int getSequenceCount() {
@@ -74,34 +70,13 @@ public class ConnectedDataItem extends TypeId implements Message {
     // Implicit Field (packetSize) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int packetSize = (int) ((getService().getLengthInBytes()) + (2));
-    writeImplicitField(
-        "packetSize",
-        packetSize,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeImplicitField("packetSize", packetSize, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (sequenceCount)
-    writeSimpleField(
-        "sequenceCount",
-        sequenceCount,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("sequenceCount", sequenceCount, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (service)
-    writeSimpleField(
-        "service",
-        service,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("service", service, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("ConnectedDataItem");
   }
@@ -129,7 +104,7 @@ public class ConnectedDataItem extends TypeId implements Message {
     return lengthInBits;
   }
 
-  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer, IntegerEncoding order)
+  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("ConnectedDataItem");
     PositionAware positionAware = readBuffer;
@@ -137,23 +112,9 @@ public class ConnectedDataItem extends TypeId implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int packetSize =
-        readImplicitField(
-            "packetSize",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int packetSize = readImplicitField("packetSize", readUnsignedInt(readBuffer, 16));
 
-    int sequenceCount =
-        readSimpleField(
-            "sequenceCount",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int sequenceCount = readSimpleField("sequenceCount", readUnsignedInt(readBuffer, 16));
 
     CipService service =
         readSimpleField(
@@ -161,36 +122,25 @@ public class ConnectedDataItem extends TypeId implements Message {
             new DataReaderComplexDefault<>(
                 () ->
                     CipService.staticParse(
-                        readBuffer,
-                        (boolean) (true),
-                        (int) ((packetSize) - (2)),
-                        (IntegerEncoding) (order)),
-                readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                        readBuffer, (boolean) (true), (int) ((packetSize) - (2))),
+                readBuffer));
 
     readBuffer.closeContext("ConnectedDataItem");
     // Create the instance
-    return new ConnectedDataItemBuilderImpl(sequenceCount, service, order);
+    return new ConnectedDataItemBuilderImpl(sequenceCount, service);
   }
 
   public static class ConnectedDataItemBuilderImpl implements TypeId.TypeIdBuilder {
     private final int sequenceCount;
     private final CipService service;
-    private final IntegerEncoding order;
 
-    public ConnectedDataItemBuilderImpl(
-        int sequenceCount, CipService service, IntegerEncoding order) {
+    public ConnectedDataItemBuilderImpl(int sequenceCount, CipService service) {
       this.sequenceCount = sequenceCount;
       this.service = service;
-      this.order = order;
     }
 
-    public ConnectedDataItem build(IntegerEncoding order) {
-
-      ConnectedDataItem connectedDataItem = new ConnectedDataItem(sequenceCount, service, order);
+    public ConnectedDataItem build() {
+      ConnectedDataItem connectedDataItem = new ConnectedDataItem(sequenceCount, service);
       return connectedDataItem;
     }
   }

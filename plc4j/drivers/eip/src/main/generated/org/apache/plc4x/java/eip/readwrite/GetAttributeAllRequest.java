@@ -54,20 +54,10 @@ public class GetAttributeAllRequest extends CipService implements Message {
   protected final PathSegment classSegment;
   protected final PathSegment instanceSegment;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
-  public GetAttributeAllRequest(
-      PathSegment classSegment,
-      PathSegment instanceSegment,
-      Integer serviceLen,
-      IntegerEncoding order) {
-    super(serviceLen, order);
+  public GetAttributeAllRequest(PathSegment classSegment, PathSegment instanceSegment) {
+    super();
     this.classSegment = classSegment;
     this.instanceSegment = instanceSegment;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
   public PathSegment getClassSegment() {
@@ -87,38 +77,18 @@ public class GetAttributeAllRequest extends CipService implements Message {
 
     // Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    byte requestPathSize =
-        (byte)
+    short requestPathSize =
+        (short)
             ((((getClassSegment().getLengthInBytes()) + (getInstanceSegment().getLengthInBytes())))
                 / (2));
-    writeImplicitField(
-        "requestPathSize",
-        requestPathSize,
-        writeSignedByte(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeImplicitField("requestPathSize", requestPathSize, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (classSegment)
-    writeSimpleField(
-        "classSegment",
-        classSegment,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("classSegment", classSegment, new DataWriterComplexDefault<>(writeBuffer));
 
     // Simple Field (instanceSegment)
     writeSimpleField(
-        "instanceSegment",
-        instanceSegment,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "instanceSegment", instanceSegment, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("GetAttributeAllRequest");
   }
@@ -147,69 +117,43 @@ public class GetAttributeAllRequest extends CipService implements Message {
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("GetAttributeAllRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte requestPathSize =
-        readImplicitField(
-            "requestPathSize",
-            readSignedByte(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short requestPathSize = readImplicitField("requestPathSize", readUnsignedShort(readBuffer, 8));
 
     PathSegment classSegment =
         readSimpleField(
             "classSegment",
-            new DataReaderComplexDefault<>(
-                () -> PathSegment.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     PathSegment instanceSegment =
         readSimpleField(
             "instanceSegment",
-            new DataReaderComplexDefault<>(
-                () -> PathSegment.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("GetAttributeAllRequest");
     // Create the instance
-    return new GetAttributeAllRequestBuilderImpl(classSegment, instanceSegment, serviceLen, order);
+    return new GetAttributeAllRequestBuilderImpl(classSegment, instanceSegment);
   }
 
   public static class GetAttributeAllRequestBuilderImpl implements CipService.CipServiceBuilder {
     private final PathSegment classSegment;
     private final PathSegment instanceSegment;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
     public GetAttributeAllRequestBuilderImpl(
-        PathSegment classSegment,
-        PathSegment instanceSegment,
-        Integer serviceLen,
-        IntegerEncoding order) {
+        PathSegment classSegment, PathSegment instanceSegment) {
       this.classSegment = classSegment;
       this.instanceSegment = instanceSegment;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public GetAttributeAllRequest build(Integer serviceLen, IntegerEncoding order) {
-
+    public GetAttributeAllRequest build() {
       GetAttributeAllRequest getAttributeAllRequest =
-          new GetAttributeAllRequest(classSegment, instanceSegment, serviceLen, order);
+          new GetAttributeAllRequest(classSegment, instanceSegment);
       return getAttributeAllRequest;
     }
   }

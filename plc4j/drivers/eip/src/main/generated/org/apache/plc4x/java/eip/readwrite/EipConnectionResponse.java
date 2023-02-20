@@ -54,13 +54,9 @@ public class EipConnectionResponse extends EipPacket implements Message {
   public static final Integer PROTOCOLVERSION = 0x01;
   public static final Integer FLAGS = 0x00;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
   public EipConnectionResponse(
-      long sessionHandle, long status, byte[] senderContext, long options, IntegerEncoding order) {
-    super(sessionHandle, status, senderContext, options, order);
-    this.order = order;
+      long sessionHandle, long status, byte[] senderContext, long options) {
+    super(sessionHandle, status, senderContext, options);
   }
 
   public int getProtocolVersion() {
@@ -79,24 +75,10 @@ public class EipConnectionResponse extends EipPacket implements Message {
     writeBuffer.pushContext("EipConnectionResponse");
 
     // Const Field (protocolVersion)
-    writeConstField(
-        "protocolVersion",
-        PROTOCOLVERSION,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeConstField("protocolVersion", PROTOCOLVERSION, writeUnsignedInt(writeBuffer, 16));
 
     // Const Field (flags)
-    writeConstField(
-        "flags",
-        FLAGS,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeConstField("flags", FLAGS, writeUnsignedInt(writeBuffer, 16));
 
     writeBuffer.popContext("EipConnectionResponse");
   }
@@ -122,7 +104,7 @@ public class EipConnectionResponse extends EipPacket implements Message {
   }
 
   public static EipPacketBuilder staticParseEipPacketBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("EipConnectionResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -133,42 +115,24 @@ public class EipConnectionResponse extends EipPacket implements Message {
         readConstField(
             "protocolVersion",
             readUnsignedInt(readBuffer, 16),
-            EipConnectionResponse.PROTOCOLVERSION,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            EipConnectionResponse.PROTOCOLVERSION);
 
     int flags =
-        readConstField(
-            "flags",
-            readUnsignedInt(readBuffer, 16),
-            EipConnectionResponse.FLAGS,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readConstField("flags", readUnsignedInt(readBuffer, 16), EipConnectionResponse.FLAGS);
 
     readBuffer.closeContext("EipConnectionResponse");
     // Create the instance
-    return new EipConnectionResponseBuilderImpl(order);
+    return new EipConnectionResponseBuilderImpl();
   }
 
   public static class EipConnectionResponseBuilderImpl implements EipPacket.EipPacketBuilder {
-    private final IntegerEncoding order;
 
-    public EipConnectionResponseBuilderImpl(IntegerEncoding order) {
-      this.order = order;
-    }
+    public EipConnectionResponseBuilderImpl() {}
 
     public EipConnectionResponse build(
-        long sessionHandle,
-        long status,
-        byte[] senderContext,
-        long options,
-        IntegerEncoding order) {
+        long sessionHandle, long status, byte[] senderContext, long options) {
       EipConnectionResponse eipConnectionResponse =
-          new EipConnectionResponse(sessionHandle, status, senderContext, options, order);
+          new EipConnectionResponse(sessionHandle, status, senderContext, options);
       return eipConnectionResponse;
     }
   }

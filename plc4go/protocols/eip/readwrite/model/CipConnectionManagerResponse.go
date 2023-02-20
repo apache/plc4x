@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -138,7 +137,7 @@ func (m *_CipConnectionManagerResponse) GetToApi() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewCipConnectionManagerResponse factory function for _CipConnectionManagerResponse
-func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, serviceLen uint16, order IntegerEncoding) *_CipConnectionManagerResponse {
+func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, serviceLen uint16) *_CipConnectionManagerResponse {
 	_result := &_CipConnectionManagerResponse{
 		OtConnectionId:         otConnectionId,
 		ToConnectionId:         toConnectionId,
@@ -147,7 +146,7 @@ func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint3
 		OriginatorSerialNumber: originatorSerialNumber,
 		OtApi:                  otApi,
 		ToApi:                  toApi,
-		_CipService:            NewCipService(serviceLen, order),
+		_CipService:            NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -208,11 +207,11 @@ func (m *_CipConnectionManagerResponse) GetLengthInBytes(ctx context.Context) ui
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipConnectionManagerResponseParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (CipConnectionManagerResponse, error) {
-	return CipConnectionManagerResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
+func CipConnectionManagerResponseParse(theBytes []byte, connected bool, serviceLen uint16) (CipConnectionManagerResponse, error) {
+	return CipConnectionManagerResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipConnectionManagerResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (CipConnectionManagerResponse, error) {
+func CipConnectionManagerResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectionManagerResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipConnectionManagerResponse"); pullErr != nil {
@@ -319,7 +318,6 @@ func CipConnectionManagerResponseParseWithBuffer(ctx context.Context, readBuffer
 	_child := &_CipConnectionManagerResponse{
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
-			Order:      order,
 		},
 		OtConnectionId:         otConnectionId,
 		ToConnectionId:         toConnectionId,
@@ -336,7 +334,7 @@ func CipConnectionManagerResponseParseWithBuffer(ctx context.Context, readBuffer
 }
 
 func (m *_CipConnectionManagerResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -417,7 +415,7 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 		}
 
 		// Implicit Field (replySize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		replySize := uint8(uint8(m.ServiceLen) - uint8(uint8(30)))
+		replySize := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(30)))
 		_replySizeErr := writeBuffer.WriteUint8("replySize", 8, (replySize))
 		if _replySizeErr != nil {
 			return errors.Wrap(_replySizeErr, "Error serializing 'replySize' field")

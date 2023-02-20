@@ -54,21 +54,16 @@ public class ListServicesResponse extends EipPacket implements Message {
   protected final int itemCount;
   protected final List<TypeId> typeId;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
   public ListServicesResponse(
       long sessionHandle,
       long status,
       byte[] senderContext,
       long options,
       int itemCount,
-      List<TypeId> typeId,
-      IntegerEncoding order) {
-    super(sessionHandle, status, senderContext, options, order);
+      List<TypeId> typeId) {
+    super(sessionHandle, status, senderContext, options);
     this.itemCount = itemCount;
     this.typeId = typeId;
-    this.order = order;
   }
 
   public int getItemCount() {
@@ -87,24 +82,10 @@ public class ListServicesResponse extends EipPacket implements Message {
     writeBuffer.pushContext("ListServicesResponse");
 
     // Simple Field (itemCount)
-    writeSimpleField(
-        "itemCount",
-        itemCount,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("itemCount", itemCount, writeUnsignedInt(writeBuffer, 16));
 
     // Array Field (typeId)
-    writeComplexTypeArrayField(
-        "typeId",
-        typeId,
-        writeBuffer,
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeComplexTypeArrayField("typeId", typeId, writeBuffer);
 
     writeBuffer.popContext("ListServicesResponse");
   }
@@ -136,59 +117,40 @@ public class ListServicesResponse extends EipPacket implements Message {
   }
 
   public static EipPacketBuilder staticParseEipPacketBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ListServicesResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int itemCount =
-        readSimpleField(
-            "itemCount",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int itemCount = readSimpleField("itemCount", readUnsignedInt(readBuffer, 16));
 
     List<TypeId> typeId =
         readCountArrayField(
             "typeId",
-            new DataReaderComplexDefault<>(
-                () -> TypeId.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
-            itemCount,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            new DataReaderComplexDefault<>(() -> TypeId.staticParse(readBuffer), readBuffer),
+            itemCount);
 
     readBuffer.closeContext("ListServicesResponse");
     // Create the instance
-    return new ListServicesResponseBuilderImpl(itemCount, typeId, order);
+    return new ListServicesResponseBuilderImpl(itemCount, typeId);
   }
 
   public static class ListServicesResponseBuilderImpl implements EipPacket.EipPacketBuilder {
     private final int itemCount;
     private final List<TypeId> typeId;
-    private final IntegerEncoding order;
 
-    public ListServicesResponseBuilderImpl(
-        int itemCount, List<TypeId> typeId, IntegerEncoding order) {
+    public ListServicesResponseBuilderImpl(int itemCount, List<TypeId> typeId) {
       this.itemCount = itemCount;
       this.typeId = typeId;
-      this.order = order;
     }
 
     public ListServicesResponse build(
-        long sessionHandle,
-        long status,
-        byte[] senderContext,
-        long options,
-        IntegerEncoding order) {
+        long sessionHandle, long status, byte[] senderContext, long options) {
       ListServicesResponse listServicesResponse =
           new ListServicesResponse(
-              sessionHandle, status, senderContext, options, itemCount, typeId, order);
+              sessionHandle, status, senderContext, options, itemCount, typeId);
       return listServicesResponse;
     }
   }

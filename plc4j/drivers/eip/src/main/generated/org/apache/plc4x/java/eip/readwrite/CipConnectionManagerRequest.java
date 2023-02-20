@@ -70,10 +70,6 @@ public class CipConnectionManagerRequest extends CipService implements Message {
   protected final short connectionPathSize;
   protected final List<PathSegment> connectionPaths;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
   public CipConnectionManagerRequest(
       PathSegment classSegment,
       PathSegment instanceSegment,
@@ -92,10 +88,8 @@ public class CipConnectionManagerRequest extends CipService implements Message {
       NetworkConnectionParameters toConnectionParameters,
       TransportType transportType,
       short connectionPathSize,
-      List<PathSegment> connectionPaths,
-      Integer serviceLen,
-      IntegerEncoding order) {
-    super(serviceLen, order);
+      List<PathSegment> connectionPaths) {
+    super();
     this.classSegment = classSegment;
     this.instanceSegment = instanceSegment;
     this.priority = priority;
@@ -114,8 +108,6 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     this.transportType = transportType;
     this.connectionPathSize = connectionPathSize;
     this.connectionPaths = connectionPaths;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
   public PathSegment getClassSegment() {
@@ -199,208 +191,77 @@ public class CipConnectionManagerRequest extends CipService implements Message {
 
     // Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    byte requestPathSize =
-        (byte)
+    short requestPathSize =
+        (short)
             ((((getClassSegment().getLengthInBytes()) + (getInstanceSegment().getLengthInBytes())))
                 / (2));
-    writeImplicitField(
-        "requestPathSize",
-        requestPathSize,
-        writeSignedByte(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeImplicitField("requestPathSize", requestPathSize, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (classSegment)
-    writeSimpleField(
-        "classSegment",
-        classSegment,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("classSegment", classSegment, new DataWriterComplexDefault<>(writeBuffer));
 
     // Simple Field (instanceSegment)
     writeSimpleField(
-        "instanceSegment",
-        instanceSegment,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "instanceSegment", instanceSegment, new DataWriterComplexDefault<>(writeBuffer));
 
     // Simple Field (priority)
-    writeSimpleField(
-        "priority",
-        priority,
-        writeUnsignedByte(writeBuffer, 4),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("priority", priority, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (tickTime)
-    writeSimpleField(
-        "tickTime",
-        tickTime,
-        writeUnsignedByte(writeBuffer, 4),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("tickTime", tickTime, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (timeoutTicks)
-    writeSimpleField(
-        "timeoutTicks",
-        timeoutTicks,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("timeoutTicks", timeoutTicks, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (otConnectionId)
-    writeSimpleField(
-        "otConnectionId",
-        otConnectionId,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("otConnectionId", otConnectionId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (toConnectionId)
-    writeSimpleField(
-        "toConnectionId",
-        toConnectionId,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("toConnectionId", toConnectionId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (connectionSerialNumber)
     writeSimpleField(
-        "connectionSerialNumber",
-        connectionSerialNumber,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "connectionSerialNumber", connectionSerialNumber, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (originatorVendorId)
-    writeSimpleField(
-        "originatorVendorId",
-        originatorVendorId,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("originatorVendorId", originatorVendorId, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (originatorSerialNumber)
     writeSimpleField(
-        "originatorSerialNumber",
-        originatorSerialNumber,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "originatorSerialNumber", originatorSerialNumber, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (timeoutMultiplier)
-    writeSimpleField(
-        "timeoutMultiplier",
-        timeoutMultiplier,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("timeoutMultiplier", timeoutMultiplier, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (long) 0x000000,
-        writeUnsignedLong(writeBuffer, 24),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (long) 0x000000, writeUnsignedLong(writeBuffer, 24));
 
     // Simple Field (otRpi)
-    writeSimpleField(
-        "otRpi",
-        otRpi,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("otRpi", otRpi, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (otConnectionParameters)
     writeSimpleField(
         "otConnectionParameters",
         otConnectionParameters,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        new DataWriterComplexDefault<>(writeBuffer));
 
     // Simple Field (toRpi)
-    writeSimpleField(
-        "toRpi",
-        toRpi,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("toRpi", toRpi, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (toConnectionParameters)
     writeSimpleField(
         "toConnectionParameters",
         toConnectionParameters,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        new DataWriterComplexDefault<>(writeBuffer));
 
     // Simple Field (transportType)
-    writeSimpleField(
-        "transportType",
-        transportType,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("transportType", transportType, new DataWriterComplexDefault<>(writeBuffer));
 
     // Simple Field (connectionPathSize)
-    writeSimpleField(
-        "connectionPathSize",
-        connectionPathSize,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("connectionPathSize", connectionPathSize, writeUnsignedShort(writeBuffer, 8));
 
     // Array Field (connectionPaths)
-    writeComplexTypeArrayField(
-        "connectionPaths",
-        connectionPaths,
-        writeBuffer,
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeComplexTypeArrayField("connectionPaths", connectionPaths, writeBuffer);
 
     writeBuffer.popContext("CipConnectionManagerRequest");
   }
@@ -484,208 +345,82 @@ public class CipConnectionManagerRequest extends CipService implements Message {
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("CipConnectionManagerRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte requestPathSize =
-        readImplicitField(
-            "requestPathSize",
-            readSignedByte(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short requestPathSize = readImplicitField("requestPathSize", readUnsignedShort(readBuffer, 8));
 
     PathSegment classSegment =
         readSimpleField(
             "classSegment",
-            new DataReaderComplexDefault<>(
-                () -> PathSegment.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     PathSegment instanceSegment =
         readSimpleField(
             "instanceSegment",
-            new DataReaderComplexDefault<>(
-                () -> PathSegment.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
-    byte priority =
-        readSimpleField(
-            "priority",
-            readUnsignedByte(readBuffer, 4),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte priority = readSimpleField("priority", readUnsignedByte(readBuffer, 4));
 
-    byte tickTime =
-        readSimpleField(
-            "tickTime",
-            readUnsignedByte(readBuffer, 4),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte tickTime = readSimpleField("tickTime", readUnsignedByte(readBuffer, 4));
 
-    short timeoutTicks =
-        readSimpleField(
-            "timeoutTicks",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short timeoutTicks = readSimpleField("timeoutTicks", readUnsignedShort(readBuffer, 8));
 
-    long otConnectionId =
-        readSimpleField(
-            "otConnectionId",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    long otConnectionId = readSimpleField("otConnectionId", readUnsignedLong(readBuffer, 32));
 
-    long toConnectionId =
-        readSimpleField(
-            "toConnectionId",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    long toConnectionId = readSimpleField("toConnectionId", readUnsignedLong(readBuffer, 32));
 
     int connectionSerialNumber =
-        readSimpleField(
-            "connectionSerialNumber",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("connectionSerialNumber", readUnsignedInt(readBuffer, 16));
 
-    int originatorVendorId =
-        readSimpleField(
-            "originatorVendorId",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int originatorVendorId = readSimpleField("originatorVendorId", readUnsignedInt(readBuffer, 16));
 
     long originatorSerialNumber =
-        readSimpleField(
-            "originatorSerialNumber",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("originatorSerialNumber", readUnsignedLong(readBuffer, 32));
 
     short timeoutMultiplier =
-        readSimpleField(
-            "timeoutMultiplier",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("timeoutMultiplier", readUnsignedShort(readBuffer, 8));
 
     Long reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedLong(readBuffer, 24),
-            (long) 0x000000,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedLong(readBuffer, 24), (long) 0x000000);
 
-    long otRpi =
-        readSimpleField(
-            "otRpi",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    long otRpi = readSimpleField("otRpi", readUnsignedLong(readBuffer, 32));
 
     NetworkConnectionParameters otConnectionParameters =
         readSimpleField(
             "otConnectionParameters",
             new DataReaderComplexDefault<>(
-                () ->
-                    NetworkConnectionParameters.staticParse(readBuffer, (IntegerEncoding) (order)),
-                readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                () -> NetworkConnectionParameters.staticParse(readBuffer), readBuffer));
 
-    long toRpi =
-        readSimpleField(
-            "toRpi",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    long toRpi = readSimpleField("toRpi", readUnsignedLong(readBuffer, 32));
 
     NetworkConnectionParameters toConnectionParameters =
         readSimpleField(
             "toConnectionParameters",
             new DataReaderComplexDefault<>(
-                () ->
-                    NetworkConnectionParameters.staticParse(readBuffer, (IntegerEncoding) (order)),
-                readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                () -> NetworkConnectionParameters.staticParse(readBuffer), readBuffer));
 
     TransportType transportType =
         readSimpleField(
             "transportType",
             new DataReaderComplexDefault<>(
-                () -> TransportType.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                () -> TransportType.staticParse(readBuffer), readBuffer));
 
     short connectionPathSize =
-        readSimpleField(
-            "connectionPathSize",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("connectionPathSize", readUnsignedShort(readBuffer, 8));
 
     List<PathSegment> connectionPaths =
         readTerminatedArrayField(
             "connectionPaths",
-            new DataReaderComplexDefault<>(
-                () -> PathSegment.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
+            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.eip.readwrite.utils.StaticHelper.noMorePathSegments(
-                        readBuffer, order))),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                        readBuffer))));
 
     readBuffer.closeContext("CipConnectionManagerRequest");
     // Create the instance
@@ -707,9 +442,7 @@ public class CipConnectionManagerRequest extends CipService implements Message {
         toConnectionParameters,
         transportType,
         connectionPathSize,
-        connectionPaths,
-        serviceLen,
-        order);
+        connectionPaths);
   }
 
   public static class CipConnectionManagerRequestBuilderImpl
@@ -732,8 +465,6 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     private final TransportType transportType;
     private final short connectionPathSize;
     private final List<PathSegment> connectionPaths;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
     public CipConnectionManagerRequestBuilderImpl(
         PathSegment classSegment,
@@ -753,9 +484,7 @@ public class CipConnectionManagerRequest extends CipService implements Message {
         NetworkConnectionParameters toConnectionParameters,
         TransportType transportType,
         short connectionPathSize,
-        List<PathSegment> connectionPaths,
-        Integer serviceLen,
-        IntegerEncoding order) {
+        List<PathSegment> connectionPaths) {
       this.classSegment = classSegment;
       this.instanceSegment = instanceSegment;
       this.priority = priority;
@@ -774,12 +503,9 @@ public class CipConnectionManagerRequest extends CipService implements Message {
       this.transportType = transportType;
       this.connectionPathSize = connectionPathSize;
       this.connectionPaths = connectionPaths;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public CipConnectionManagerRequest build(Integer serviceLen, IntegerEncoding order) {
-
+    public CipConnectionManagerRequest build() {
       CipConnectionManagerRequest cipConnectionManagerRequest =
           new CipConnectionManagerRequest(
               classSegment,
@@ -799,9 +525,7 @@ public class CipConnectionManagerRequest extends CipService implements Message {
               toConnectionParameters,
               transportType,
               connectionPathSize,
-              connectionPaths,
-              serviceLen,
-              order);
+              connectionPaths);
       return cipConnectionManagerRequest;
     }
   }

@@ -50,13 +50,9 @@ public class NullListServicesResponse extends EipPacket implements Message {
     return (int) 0;
   }
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
   public NullListServicesResponse(
-      long sessionHandle, long status, byte[] senderContext, long options, IntegerEncoding order) {
-    super(sessionHandle, status, senderContext, options, order);
-    this.order = order;
+      long sessionHandle, long status, byte[] senderContext, long options) {
+    super(sessionHandle, status, senderContext, options);
   }
 
   @Override
@@ -84,7 +80,7 @@ public class NullListServicesResponse extends EipPacket implements Message {
   }
 
   public static EipPacketBuilder staticParseEipPacketBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("NullListServicesResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -93,24 +89,17 @@ public class NullListServicesResponse extends EipPacket implements Message {
 
     readBuffer.closeContext("NullListServicesResponse");
     // Create the instance
-    return new NullListServicesResponseBuilderImpl(order);
+    return new NullListServicesResponseBuilderImpl();
   }
 
   public static class NullListServicesResponseBuilderImpl implements EipPacket.EipPacketBuilder {
-    private final IntegerEncoding order;
 
-    public NullListServicesResponseBuilderImpl(IntegerEncoding order) {
-      this.order = order;
-    }
+    public NullListServicesResponseBuilderImpl() {}
 
     public NullListServicesResponse build(
-        long sessionHandle,
-        long status,
-        byte[] senderContext,
-        long options,
-        IntegerEncoding order) {
+        long sessionHandle, long status, byte[] senderContext, long options) {
       NullListServicesResponse nullListServicesResponse =
-          new NullListServicesResponse(sessionHandle, status, senderContext, options, order);
+          new NullListServicesResponse(sessionHandle, status, senderContext, options);
       return nullListServicesResponse;
     }
   }

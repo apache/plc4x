@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -104,9 +103,9 @@ func (m *_EipConnectionRequest) GetFlags() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewEipConnectionRequest factory function for _EipConnectionRequest
-func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32, order IntegerEncoding) *_EipConnectionRequest {
+func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipConnectionRequest {
 	_result := &_EipConnectionRequest{
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options, order),
+		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
 	_result._EipPacket._EipPacketChildRequirements = _result
 	return _result
@@ -143,11 +142,11 @@ func (m *_EipConnectionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipConnectionRequestParse(theBytes []byte, order IntegerEncoding, response bool) (EipConnectionRequest, error) {
-	return EipConnectionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order, response)
+func EipConnectionRequestParse(theBytes []byte, response bool) (EipConnectionRequest, error) {
+	return EipConnectionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func EipConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding, response bool) (EipConnectionRequest, error) {
+func EipConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipConnectionRequest"); pullErr != nil {
@@ -180,16 +179,14 @@ func EipConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 
 	// Create a partially initialized instance
 	_child := &_EipConnectionRequest{
-		_EipPacket: &_EipPacket{
-			Order: order,
-		},
+		_EipPacket: &_EipPacket{},
 	}
 	_child._EipPacket._EipPacketChildRequirements = _child
 	return _child, nil
 }
 
 func (m *_EipConnectionRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

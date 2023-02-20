@@ -40,12 +40,8 @@ public abstract class PortSegmentType implements Message {
   // Abstract accessors for discriminator values.
   public abstract Boolean getExtendedLinkAddress();
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public PortSegmentType(IntegerEncoding order) {
+  public PortSegmentType() {
     super();
-    this.order = order;
   }
 
   protected abstract void serializePortSegmentTypeChild(WriteBuffer writeBuffer)
@@ -89,26 +85,10 @@ public abstract class PortSegmentType implements Message {
   public static PortSegmentType staticParse(ReadBuffer readBuffer, Object... args)
       throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    IntegerEncoding order;
-    if (args[0] instanceof IntegerEncoding) {
-      order = (IntegerEncoding) args[0];
-    } else if (args[0] instanceof String) {
-      order = IntegerEncoding.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type IntegerEncoding or a string which is parseable but was"
-              + " "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, order);
+    return staticParse(readBuffer);
   }
 
-  public static PortSegmentType staticParse(ReadBuffer readBuffer, IntegerEncoding order)
-      throws ParseException {
+  public static PortSegmentType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PortSegmentType");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -121,9 +101,9 @@ public abstract class PortSegmentType implements Message {
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PortSegmentTypeBuilder builder = null;
     if (EvaluationHelper.equals(extendedLinkAddress, (boolean) false)) {
-      builder = PortSegmentNormal.staticParsePortSegmentTypeBuilder(readBuffer, order);
+      builder = PortSegmentNormal.staticParsePortSegmentTypeBuilder(readBuffer);
     } else if (EvaluationHelper.equals(extendedLinkAddress, (boolean) true)) {
-      builder = PortSegmentExtended.staticParsePortSegmentTypeBuilder(readBuffer, order);
+      builder = PortSegmentExtended.staticParsePortSegmentTypeBuilder(readBuffer);
     }
     if (builder == null) {
       throw new ParseException(
@@ -136,13 +116,12 @@ public abstract class PortSegmentType implements Message {
 
     readBuffer.closeContext("PortSegmentType");
     // Create the instance
-    PortSegmentType _portSegmentType = builder.build(order);
-
+    PortSegmentType _portSegmentType = builder.build();
     return _portSegmentType;
   }
 
   public interface PortSegmentTypeBuilder {
-    PortSegmentType build(IntegerEncoding order);
+    PortSegmentType build();
   }
 
   @Override

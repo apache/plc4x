@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -140,14 +139,14 @@ func (m *_CipUnconnectedRequest) GetRoute() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewCipUnconnectedRequest factory function for _CipUnconnectedRequest
-func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8, serviceLen uint16, order IntegerEncoding) *_CipUnconnectedRequest {
+func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8, serviceLen uint16) *_CipUnconnectedRequest {
 	_result := &_CipUnconnectedRequest{
 		ClassSegment:       classSegment,
 		InstanceSegment:    instanceSegment,
 		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
-		_CipService:        NewCipService(serviceLen, order),
+		_CipService:        NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -205,11 +204,11 @@ func (m *_CipUnconnectedRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipUnconnectedRequestParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (CipUnconnectedRequest, error) {
-	return CipUnconnectedRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
+func CipUnconnectedRequestParse(theBytes []byte, connected bool, serviceLen uint16) (CipUnconnectedRequest, error) {
+	return CipUnconnectedRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (CipUnconnectedRequest, error) {
+func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipUnconnectedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipUnconnectedRequest"); pullErr != nil {
@@ -219,7 +218,7 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)
+	requestPathSize, _requestPathSizeErr := readBuffer.ReadUint8("requestPathSize", 8)
 	_ = requestPathSize
 	if _requestPathSizeErr != nil {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipUnconnectedRequest")
@@ -229,7 +228,7 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 	if pullErr := readBuffer.PullContext("classSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for classSegment")
 	}
-	_classSegment, _classSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer, IntegerEncoding(order))
+	_classSegment, _classSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
 	if _classSegmentErr != nil {
 		return nil, errors.Wrap(_classSegmentErr, "Error parsing 'classSegment' field of CipUnconnectedRequest")
 	}
@@ -242,7 +241,7 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 	if pullErr := readBuffer.PullContext("instanceSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for instanceSegment")
 	}
-	_instanceSegment, _instanceSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer, IntegerEncoding(order))
+	_instanceSegment, _instanceSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
 	if _instanceSegmentErr != nil {
 		return nil, errors.Wrap(_instanceSegmentErr, "Error parsing 'instanceSegment' field of CipUnconnectedRequest")
 	}
@@ -279,7 +278,7 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 	if pullErr := readBuffer.PullContext("unconnectedService"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unconnectedService")
 	}
-	_unconnectedService, _unconnectedServiceErr := CipServiceParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint16(messageSize), IntegerEncoding(order))
+	_unconnectedService, _unconnectedServiceErr := CipServiceParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint16(messageSize))
 	if _unconnectedServiceErr != nil {
 		return nil, errors.Wrap(_unconnectedServiceErr, "Error parsing 'unconnectedService' field of CipUnconnectedRequest")
 	}
@@ -319,7 +318,6 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 	_child := &_CipUnconnectedRequest{
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
-			Order:      order,
 		},
 		ClassSegment:       classSegment,
 		InstanceSegment:    instanceSegment,
@@ -333,7 +331,7 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 }
 
 func (m *_CipUnconnectedRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -349,8 +347,8 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 
 		// Implicit Field (requestPathSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		requestPathSize := int8(int8((int8(m.GetClassSegment().GetLengthInBytes(ctx)) + int8(m.GetInstanceSegment().GetLengthInBytes(ctx)))) / int8(int8(2)))
-		_requestPathSizeErr := writeBuffer.WriteInt8("requestPathSize", 8, (requestPathSize))
+		requestPathSize := uint8(uint8((uint8(m.GetClassSegment().GetLengthInBytes(ctx)) + uint8(m.GetInstanceSegment().GetLengthInBytes(ctx)))) / uint8(uint8(2)))
+		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, (requestPathSize))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}

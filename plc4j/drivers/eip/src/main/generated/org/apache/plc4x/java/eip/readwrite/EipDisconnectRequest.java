@@ -50,13 +50,8 @@ public class EipDisconnectRequest extends EipPacket implements Message {
     return 0;
   }
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public EipDisconnectRequest(
-      long sessionHandle, long status, byte[] senderContext, long options, IntegerEncoding order) {
-    super(sessionHandle, status, senderContext, options, order);
-    this.order = order;
+  public EipDisconnectRequest(long sessionHandle, long status, byte[] senderContext, long options) {
+    super(sessionHandle, status, senderContext, options);
   }
 
   @Override
@@ -84,7 +79,7 @@ public class EipDisconnectRequest extends EipPacket implements Message {
   }
 
   public static EipPacketBuilder staticParseEipPacketBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("EipDisconnectRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -93,24 +88,17 @@ public class EipDisconnectRequest extends EipPacket implements Message {
 
     readBuffer.closeContext("EipDisconnectRequest");
     // Create the instance
-    return new EipDisconnectRequestBuilderImpl(order);
+    return new EipDisconnectRequestBuilderImpl();
   }
 
   public static class EipDisconnectRequestBuilderImpl implements EipPacket.EipPacketBuilder {
-    private final IntegerEncoding order;
 
-    public EipDisconnectRequestBuilderImpl(IntegerEncoding order) {
-      this.order = order;
-    }
+    public EipDisconnectRequestBuilderImpl() {}
 
     public EipDisconnectRequest build(
-        long sessionHandle,
-        long status,
-        byte[] senderContext,
-        long options,
-        IntegerEncoding order) {
+        long sessionHandle, long status, byte[] senderContext, long options) {
       EipDisconnectRequest eipDisconnectRequest =
-          new EipDisconnectRequest(sessionHandle, status, senderContext, options, order);
+          new EipDisconnectRequest(sessionHandle, status, senderContext, options);
       return eipDisconnectRequest;
     }
   }

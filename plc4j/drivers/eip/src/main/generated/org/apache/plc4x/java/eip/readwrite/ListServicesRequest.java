@@ -50,13 +50,8 @@ public class ListServicesRequest extends EipPacket implements Message {
     return 0;
   }
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public ListServicesRequest(
-      long sessionHandle, long status, byte[] senderContext, long options, IntegerEncoding order) {
-    super(sessionHandle, status, senderContext, options, order);
-    this.order = order;
+  public ListServicesRequest(long sessionHandle, long status, byte[] senderContext, long options) {
+    super(sessionHandle, status, senderContext, options);
   }
 
   @Override
@@ -84,7 +79,7 @@ public class ListServicesRequest extends EipPacket implements Message {
   }
 
   public static EipPacketBuilder staticParseEipPacketBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("ListServicesRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -93,24 +88,17 @@ public class ListServicesRequest extends EipPacket implements Message {
 
     readBuffer.closeContext("ListServicesRequest");
     // Create the instance
-    return new ListServicesRequestBuilderImpl(order);
+    return new ListServicesRequestBuilderImpl();
   }
 
   public static class ListServicesRequestBuilderImpl implements EipPacket.EipPacketBuilder {
-    private final IntegerEncoding order;
 
-    public ListServicesRequestBuilderImpl(IntegerEncoding order) {
-      this.order = order;
-    }
+    public ListServicesRequestBuilderImpl() {}
 
     public ListServicesRequest build(
-        long sessionHandle,
-        long status,
-        byte[] senderContext,
-        long options,
-        IntegerEncoding order) {
+        long sessionHandle, long status, byte[] senderContext, long options) {
       ListServicesRequest listServicesRequest =
-          new ListServicesRequest(sessionHandle, status, senderContext, options, order);
+          new ListServicesRequest(sessionHandle, status, senderContext, options);
       return listServicesRequest;
     }
   }

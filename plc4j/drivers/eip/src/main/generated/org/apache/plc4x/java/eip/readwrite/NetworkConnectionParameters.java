@@ -44,23 +44,18 @@ public class NetworkConnectionParameters implements Message {
   protected final byte priority;
   protected final boolean connectionSizeType;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
   public NetworkConnectionParameters(
       int connectionSize,
       boolean owner,
       byte connectionType,
       byte priority,
-      boolean connectionSizeType,
-      IntegerEncoding order) {
+      boolean connectionSizeType) {
     super();
     this.connectionSize = connectionSize;
     this.owner = owner;
     this.connectionType = connectionType;
     this.priority = priority;
     this.connectionSizeType = connectionSizeType;
-    this.order = order;
   }
 
   public int getConnectionSize() {
@@ -90,84 +85,28 @@ public class NetworkConnectionParameters implements Message {
     writeBuffer.pushContext("NetworkConnectionParameters");
 
     // Simple Field (connectionSize)
-    writeSimpleField(
-        "connectionSize",
-        connectionSize,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("connectionSize", connectionSize, writeUnsignedInt(writeBuffer, 16));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (owner)
-    writeSimpleField(
-        "owner",
-        owner,
-        writeBoolean(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("owner", owner, writeBoolean(writeBuffer));
 
     // Simple Field (connectionType)
-    writeSimpleField(
-        "connectionType",
-        connectionType,
-        writeUnsignedByte(writeBuffer, 2),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("connectionType", connectionType, writeUnsignedByte(writeBuffer, 2));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (boolean) false,
-        writeBoolean(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (boolean) false, writeBoolean(writeBuffer));
 
     // Simple Field (priority)
-    writeSimpleField(
-        "priority",
-        priority,
-        writeUnsignedByte(writeBuffer, 2),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("priority", priority, writeUnsignedByte(writeBuffer, 2));
 
     // Simple Field (connectionSizeType)
-    writeSimpleField(
-        "connectionSizeType",
-        connectionSizeType,
-        writeBoolean(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("connectionSizeType", connectionSizeType, writeBoolean(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (boolean) false,
-        writeBoolean(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (boolean) false, writeBoolean(writeBuffer));
 
     writeBuffer.popContext("NetworkConnectionParameters");
   }
@@ -213,113 +152,42 @@ public class NetworkConnectionParameters implements Message {
   public static NetworkConnectionParameters staticParse(ReadBuffer readBuffer, Object... args)
       throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    IntegerEncoding order;
-    if (args[0] instanceof IntegerEncoding) {
-      order = (IntegerEncoding) args[0];
-    } else if (args[0] instanceof String) {
-      order = IntegerEncoding.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type IntegerEncoding or a string which is parseable but was"
-              + " "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, order);
+    return staticParse(readBuffer);
   }
 
-  public static NetworkConnectionParameters staticParse(
-      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
+  public static NetworkConnectionParameters staticParse(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("NetworkConnectionParameters");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int connectionSize =
-        readSimpleField(
-            "connectionSize",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int connectionSize = readSimpleField("connectionSize", readUnsignedInt(readBuffer, 16));
 
     Short reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedShort(readBuffer, 8),
-            (short) 0x00,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-    boolean owner =
-        readSimpleField(
-            "owner",
-            readBoolean(readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    boolean owner = readSimpleField("owner", readBoolean(readBuffer));
 
-    byte connectionType =
-        readSimpleField(
-            "connectionType",
-            readUnsignedByte(readBuffer, 2),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte connectionType = readSimpleField("connectionType", readUnsignedByte(readBuffer, 2));
 
     Boolean reservedField1 =
-        readReservedField(
-            "reserved",
-            readBoolean(readBuffer),
-            (boolean) false,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readBoolean(readBuffer), (boolean) false);
 
-    byte priority =
-        readSimpleField(
-            "priority",
-            readUnsignedByte(readBuffer, 2),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte priority = readSimpleField("priority", readUnsignedByte(readBuffer, 2));
 
-    boolean connectionSizeType =
-        readSimpleField(
-            "connectionSizeType",
-            readBoolean(readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    boolean connectionSizeType = readSimpleField("connectionSizeType", readBoolean(readBuffer));
 
     Boolean reservedField2 =
-        readReservedField(
-            "reserved",
-            readBoolean(readBuffer),
-            (boolean) false,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readBoolean(readBuffer), (boolean) false);
 
     readBuffer.closeContext("NetworkConnectionParameters");
     // Create the instance
     NetworkConnectionParameters _networkConnectionParameters;
     _networkConnectionParameters =
         new NetworkConnectionParameters(
-            connectionSize, owner, connectionType, priority, connectionSizeType, order);
+            connectionSize, owner, connectionType, priority, connectionSizeType);
     return _networkConnectionParameters;
   }
 

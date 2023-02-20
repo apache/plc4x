@@ -43,21 +43,16 @@ public class ClassSegment implements Message {
   protected final byte logicalSegmentFormat;
   protected final short classSegment;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
   public ClassSegment(
       byte pathSegmentType,
       byte logicalSegmentType,
       byte logicalSegmentFormat,
-      short classSegment,
-      IntegerEncoding order) {
+      short classSegment) {
     super();
     this.pathSegmentType = pathSegmentType;
     this.logicalSegmentType = logicalSegmentType;
     this.logicalSegmentFormat = logicalSegmentFormat;
     this.classSegment = classSegment;
-    this.order = order;
   }
 
   public byte getPathSegmentType() {
@@ -83,44 +78,17 @@ public class ClassSegment implements Message {
     writeBuffer.pushContext("ClassSegment");
 
     // Simple Field (pathSegmentType)
-    writeSimpleField(
-        "pathSegmentType",
-        pathSegmentType,
-        writeUnsignedByte(writeBuffer, 3),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("pathSegmentType", pathSegmentType, writeUnsignedByte(writeBuffer, 3));
 
     // Simple Field (logicalSegmentType)
-    writeSimpleField(
-        "logicalSegmentType",
-        logicalSegmentType,
-        writeUnsignedByte(writeBuffer, 3),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("logicalSegmentType", logicalSegmentType, writeUnsignedByte(writeBuffer, 3));
 
     // Simple Field (logicalSegmentFormat)
     writeSimpleField(
-        "logicalSegmentFormat",
-        logicalSegmentFormat,
-        writeUnsignedByte(writeBuffer, 2),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "logicalSegmentFormat", logicalSegmentFormat, writeUnsignedByte(writeBuffer, 2));
 
     // Simple Field (classSegment)
-    writeSimpleField(
-        "classSegment",
-        classSegment,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("classSegment", classSegment, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("ClassSegment");
   }
@@ -154,74 +122,31 @@ public class ClassSegment implements Message {
   public static ClassSegment staticParse(ReadBuffer readBuffer, Object... args)
       throws ParseException {
     PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    IntegerEncoding order;
-    if (args[0] instanceof IntegerEncoding) {
-      order = (IntegerEncoding) args[0];
-    } else if (args[0] instanceof String) {
-      order = IntegerEncoding.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type IntegerEncoding or a string which is parseable but was"
-              + " "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, order);
+    return staticParse(readBuffer);
   }
 
-  public static ClassSegment staticParse(ReadBuffer readBuffer, IntegerEncoding order)
-      throws ParseException {
+  public static ClassSegment staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ClassSegment");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte pathSegmentType =
-        readSimpleField(
-            "pathSegmentType",
-            readUnsignedByte(readBuffer, 3),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte pathSegmentType = readSimpleField("pathSegmentType", readUnsignedByte(readBuffer, 3));
 
     byte logicalSegmentType =
-        readSimpleField(
-            "logicalSegmentType",
-            readUnsignedByte(readBuffer, 3),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("logicalSegmentType", readUnsignedByte(readBuffer, 3));
 
     byte logicalSegmentFormat =
-        readSimpleField(
-            "logicalSegmentFormat",
-            readUnsignedByte(readBuffer, 2),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("logicalSegmentFormat", readUnsignedByte(readBuffer, 2));
 
-    short classSegment =
-        readSimpleField(
-            "classSegment",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short classSegment = readSimpleField("classSegment", readUnsignedShort(readBuffer, 8));
 
     readBuffer.closeContext("ClassSegment");
     // Create the instance
     ClassSegment _classSegment;
     _classSegment =
-        new ClassSegment(
-            pathSegmentType, logicalSegmentType, logicalSegmentFormat, classSegment, order);
+        new ClassSegment(pathSegmentType, logicalSegmentType, logicalSegmentFormat, classSegment);
     return _classSegment;
   }
 

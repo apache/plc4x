@@ -48,9 +48,6 @@ type CIPDataConnectedExactly interface {
 type _CIPDataConnected struct {
 	Value     uint32
 	TagStatus uint16
-
-	// Arguments.
-	PacketLength uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -72,8 +69,8 @@ func (m *_CIPDataConnected) GetTagStatus() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewCIPDataConnected factory function for _CIPDataConnected
-func NewCIPDataConnected(value uint32, tagStatus uint16, packetLength uint16) *_CIPDataConnected {
-	return &_CIPDataConnected{Value: value, TagStatus: tagStatus, PacketLength: packetLength}
+func NewCIPDataConnected(value uint32, tagStatus uint16) *_CIPDataConnected {
+	return &_CIPDataConnected{Value: value, TagStatus: tagStatus}
 }
 
 // Deprecated: use the interface for direct cast
@@ -107,11 +104,11 @@ func (m *_CIPDataConnected) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CIPDataConnectedParse(theBytes []byte, packetLength uint16) (CIPDataConnected, error) {
-	return CIPDataConnectedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), packetLength)
+func CIPDataConnectedParse(theBytes []byte) (CIPDataConnected, error) {
+	return CIPDataConnectedParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func CIPDataConnectedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CIPDataConnected, error) {
+func CIPDataConnectedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPDataConnected, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CIPDataConnected"); pullErr != nil {
@@ -140,9 +137,8 @@ func CIPDataConnectedParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 
 	// Create the instance
 	return &_CIPDataConnected{
-		PacketLength: packetLength,
-		Value:        value,
-		TagStatus:    tagStatus,
+		Value:     value,
+		TagStatus: tagStatus,
 	}, nil
 }
 
@@ -180,16 +176,6 @@ func (m *_CIPDataConnected) SerializeWithWriteBuffer(ctx context.Context, writeB
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_CIPDataConnected) GetPacketLength() uint16 {
-	return m.PacketLength
-}
-
-//
-////
 
 func (m *_CIPDataConnected) isCIPDataConnected() bool {
 	return true

@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -46,9 +45,6 @@ type PathSegmentExactly interface {
 // _PathSegment is the data-structure of this message
 type _PathSegment struct {
 	_PathSegmentChildRequirements
-
-	// Arguments.
-	Order IntegerEncoding
 }
 
 type _PathSegmentChildRequirements interface {
@@ -72,8 +68,8 @@ type PathSegmentChild interface {
 }
 
 // NewPathSegment factory function for _PathSegment
-func NewPathSegment(order IntegerEncoding) *_PathSegment {
-	return &_PathSegment{Order: order}
+func NewPathSegment() *_PathSegment {
+	return &_PathSegment{}
 }
 
 // Deprecated: use the interface for direct cast
@@ -103,11 +99,11 @@ func (m *_PathSegment) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PathSegmentParse(theBytes []byte, order IntegerEncoding) (PathSegment, error) {
-	return PathSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func PathSegmentParse(theBytes []byte) (PathSegment, error) {
+	return PathSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func PathSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (PathSegment, error) {
+func PathSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PathSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PathSegment"); pullErr != nil {
@@ -133,11 +129,11 @@ func PathSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	var typeSwitchError error
 	switch {
 	case pathSegment == 0x00: // PortSegment
-		_childTemp, typeSwitchError = PortSegmentParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = PortSegmentParseWithBuffer(ctx, readBuffer)
 	case pathSegment == 0x01: // LogicalSegment
-		_childTemp, typeSwitchError = LogicalSegmentParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = LogicalSegmentParseWithBuffer(ctx, readBuffer)
 	case pathSegment == 0x04: // DataSegment
-		_childTemp, typeSwitchError = DataSegmentParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = DataSegmentParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [pathSegment=%v]", pathSegment)
 	}
@@ -183,16 +179,6 @@ func (pm *_PathSegment) SerializeParent(ctx context.Context, writeBuffer utils.W
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_PathSegment) GetOrder() IntegerEncoding {
-	return m.Order
-}
-
-//
-////
 
 func (m *_PathSegment) isPathSegment() bool {
 	return true

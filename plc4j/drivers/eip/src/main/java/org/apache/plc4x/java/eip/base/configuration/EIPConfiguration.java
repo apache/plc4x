@@ -19,9 +19,9 @@
 package org.apache.plc4x.java.eip.base.configuration;
 
 import org.apache.plc4x.java.eip.base.EIPDriver;
-import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.annotations.ConfigurationParameter;
+import org.apache.plc4x.java.spi.generation.ByteOrder;
 import org.apache.plc4x.java.transport.tcp.TcpTransportConfiguration;
 
 public class EIPConfiguration implements Configuration, TcpTransportConfiguration {
@@ -51,12 +51,12 @@ public class EIPConfiguration implements Configuration, TcpTransportConfiguratio
         this.slot = slot;
     }
 
-    public IntegerEncoding getByteOrder() {
-        return this.bigEndian ? IntegerEncoding.BIG_ENDIAN : IntegerEncoding.LITTLE_ENDIAN;
+    public ByteOrder getByteOrder() {
+        return this.bigEndian ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
     }
 
-    public void setByteOrder(IntegerEncoding byteOrder) {
-        this.bigEndian = byteOrder == IntegerEncoding.BIG_ENDIAN;
+    public void setByteOrder(ByteOrder byteOrder) {
+        this.bigEndian = byteOrder == ByteOrder.BIG_ENDIAN;
     }
 
     @Override

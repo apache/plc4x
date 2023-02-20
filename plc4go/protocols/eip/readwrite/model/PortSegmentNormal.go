@@ -91,11 +91,11 @@ func (m *_PortSegmentNormal) GetLinkAddress() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewPortSegmentNormal factory function for _PortSegmentNormal
-func NewPortSegmentNormal(port uint8, linkAddress uint8, order IntegerEncoding) *_PortSegmentNormal {
+func NewPortSegmentNormal(port uint8, linkAddress uint8) *_PortSegmentNormal {
 	_result := &_PortSegmentNormal{
 		Port:             port,
 		LinkAddress:      linkAddress,
-		_PortSegmentType: NewPortSegmentType(order),
+		_PortSegmentType: NewPortSegmentType(),
 	}
 	_result._PortSegmentType._PortSegmentTypeChildRequirements = _result
 	return _result
@@ -132,11 +132,11 @@ func (m *_PortSegmentNormal) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PortSegmentNormalParse(theBytes []byte, order IntegerEncoding) (PortSegmentNormal, error) {
-	return PortSegmentNormalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), order)
+func PortSegmentNormalParse(theBytes []byte) (PortSegmentNormal, error) {
+	return PortSegmentNormalParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func PortSegmentNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (PortSegmentNormal, error) {
+func PortSegmentNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PortSegmentNormal"); pullErr != nil {
@@ -165,11 +165,9 @@ func PortSegmentNormalParseWithBuffer(ctx context.Context, readBuffer utils.Read
 
 	// Create a partially initialized instance
 	_child := &_PortSegmentNormal{
-		_PortSegmentType: &_PortSegmentType{
-			Order: order,
-		},
-		Port:        port,
-		LinkAddress: linkAddress,
+		_PortSegmentType: &_PortSegmentType{},
+		Port:             port,
+		LinkAddress:      linkAddress,
 	}
 	_child._PortSegmentType._PortSegmentTypeChildRequirements = _child
 	return _child, nil

@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -55,9 +54,6 @@ type _InstanceSegment struct {
 	LogicalSegmentType   uint8
 	LogicalSegmentFormat uint8
 	Instance             uint8
-
-	// Arguments.
-	Order IntegerEncoding
 }
 
 ///////////////////////////////////////////////////////////
@@ -87,8 +83,8 @@ func (m *_InstanceSegment) GetInstance() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewInstanceSegment factory function for _InstanceSegment
-func NewInstanceSegment(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, instance uint8, order IntegerEncoding) *_InstanceSegment {
-	return &_InstanceSegment{PathSegmentType: pathSegmentType, LogicalSegmentType: logicalSegmentType, LogicalSegmentFormat: logicalSegmentFormat, Instance: instance, Order: order}
+func NewInstanceSegment(pathSegmentType uint8, logicalSegmentType uint8, logicalSegmentFormat uint8, instance uint8) *_InstanceSegment {
+	return &_InstanceSegment{PathSegmentType: pathSegmentType, LogicalSegmentType: logicalSegmentType, LogicalSegmentFormat: logicalSegmentFormat, Instance: instance}
 }
 
 // Deprecated: use the interface for direct cast
@@ -128,11 +124,11 @@ func (m *_InstanceSegment) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func InstanceSegmentParse(theBytes []byte, order IntegerEncoding) (InstanceSegment, error) {
-	return InstanceSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func InstanceSegmentParse(theBytes []byte) (InstanceSegment, error) {
+	return InstanceSegmentParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func InstanceSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (InstanceSegment, error) {
+func InstanceSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InstanceSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("InstanceSegment"); pullErr != nil {
@@ -175,7 +171,6 @@ func InstanceSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 
 	// Create the instance
 	return &_InstanceSegment{
-		Order:                order,
 		PathSegmentType:      pathSegmentType,
 		LogicalSegmentType:   logicalSegmentType,
 		LogicalSegmentFormat: logicalSegmentFormat,
@@ -184,7 +179,7 @@ func InstanceSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 }
 
 func (m *_InstanceSegment) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
@@ -231,16 +226,6 @@ func (m *_InstanceSegment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_InstanceSegment) GetOrder() IntegerEncoding {
-	return m.Order
-}
-
-//
-////
 
 func (m *_InstanceSegment) isInstanceSegment() bool {
 	return true

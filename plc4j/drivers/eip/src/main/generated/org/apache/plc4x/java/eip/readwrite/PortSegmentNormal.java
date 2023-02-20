@@ -46,14 +46,10 @@ public class PortSegmentNormal extends PortSegmentType implements Message {
   protected final byte port;
   protected final short linkAddress;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public PortSegmentNormal(byte port, short linkAddress, IntegerEncoding order) {
-    super(order);
+  public PortSegmentNormal(byte port, short linkAddress) {
+    super();
     this.port = port;
     this.linkAddress = linkAddress;
-    this.order = order;
   }
 
   public byte getPort() {
@@ -101,8 +97,8 @@ public class PortSegmentNormal extends PortSegmentType implements Message {
     return lengthInBits;
   }
 
-  public static PortSegmentTypeBuilder staticParsePortSegmentTypeBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order) throws ParseException {
+  public static PortSegmentTypeBuilder staticParsePortSegmentTypeBuilder(ReadBuffer readBuffer)
+      throws ParseException {
     readBuffer.pullContext("PortSegmentNormal");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -115,24 +111,21 @@ public class PortSegmentNormal extends PortSegmentType implements Message {
 
     readBuffer.closeContext("PortSegmentNormal");
     // Create the instance
-    return new PortSegmentNormalBuilderImpl(port, linkAddress, order);
+    return new PortSegmentNormalBuilderImpl(port, linkAddress);
   }
 
   public static class PortSegmentNormalBuilderImpl
       implements PortSegmentType.PortSegmentTypeBuilder {
     private final byte port;
     private final short linkAddress;
-    private final IntegerEncoding order;
 
-    public PortSegmentNormalBuilderImpl(byte port, short linkAddress, IntegerEncoding order) {
+    public PortSegmentNormalBuilderImpl(byte port, short linkAddress) {
       this.port = port;
       this.linkAddress = linkAddress;
-      this.order = order;
     }
 
-    public PortSegmentNormal build(IntegerEncoding order) {
-
-      PortSegmentNormal portSegmentNormal = new PortSegmentNormal(port, linkAddress, order);
+    public PortSegmentNormal build() {
+      PortSegmentNormal portSegmentNormal = new PortSegmentNormal(port, linkAddress);
       return portSegmentNormal;
     }
   }

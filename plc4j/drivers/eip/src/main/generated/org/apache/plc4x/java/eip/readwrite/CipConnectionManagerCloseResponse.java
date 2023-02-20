@@ -58,28 +58,20 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
   protected final long originatorSerialNumber;
   protected final short applicationReplySize;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
   public CipConnectionManagerCloseResponse(
       short status,
       short additionalStatusWords,
       int connectionSerialNumber,
       int originatorVendorId,
       long originatorSerialNumber,
-      short applicationReplySize,
-      Integer serviceLen,
-      IntegerEncoding order) {
-    super(serviceLen, order);
+      short applicationReplySize) {
+    super();
     this.status = status;
     this.additionalStatusWords = additionalStatusWords;
     this.connectionSerialNumber = connectionSerialNumber;
     this.originatorVendorId = originatorVendorId;
     this.originatorSerialNumber = originatorSerialNumber;
     this.applicationReplySize = applicationReplySize;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
   public short getStatus() {
@@ -114,84 +106,32 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
     writeBuffer.pushContext("CipConnectionManagerCloseResponse");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (status)
-    writeSimpleField(
-        "status",
-        status,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("status", status, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (additionalStatusWords)
     writeSimpleField(
-        "additionalStatusWords",
-        additionalStatusWords,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "additionalStatusWords", additionalStatusWords, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (connectionSerialNumber)
     writeSimpleField(
-        "connectionSerialNumber",
-        connectionSerialNumber,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "connectionSerialNumber", connectionSerialNumber, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (originatorVendorId)
-    writeSimpleField(
-        "originatorVendorId",
-        originatorVendorId,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("originatorVendorId", originatorVendorId, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (originatorSerialNumber)
     writeSimpleField(
-        "originatorSerialNumber",
-        originatorSerialNumber,
-        writeUnsignedLong(writeBuffer, 32),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "originatorSerialNumber", originatorSerialNumber, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (applicationReplySize)
     writeSimpleField(
-        "applicationReplySize",
-        applicationReplySize,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "applicationReplySize", applicationReplySize, writeUnsignedShort(writeBuffer, 8));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     writeBuffer.popContext("CipConnectionManagerCloseResponse");
   }
@@ -235,8 +175,7 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("CipConnectionManagerCloseResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -244,78 +183,26 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedShort(readBuffer, 8),
-            (short) 0x00,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-    short status =
-        readSimpleField(
-            "status",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short status = readSimpleField("status", readUnsignedShort(readBuffer, 8));
 
     short additionalStatusWords =
-        readSimpleField(
-            "additionalStatusWords",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("additionalStatusWords", readUnsignedShort(readBuffer, 8));
 
     int connectionSerialNumber =
-        readSimpleField(
-            "connectionSerialNumber",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("connectionSerialNumber", readUnsignedInt(readBuffer, 16));
 
-    int originatorVendorId =
-        readSimpleField(
-            "originatorVendorId",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int originatorVendorId = readSimpleField("originatorVendorId", readUnsignedInt(readBuffer, 16));
 
     long originatorSerialNumber =
-        readSimpleField(
-            "originatorSerialNumber",
-            readUnsignedLong(readBuffer, 32),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("originatorSerialNumber", readUnsignedLong(readBuffer, 32));
 
     short applicationReplySize =
-        readSimpleField(
-            "applicationReplySize",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readSimpleField("applicationReplySize", readUnsignedShort(readBuffer, 8));
 
     Short reservedField1 =
-        readReservedField(
-            "reserved",
-            readUnsignedShort(readBuffer, 8),
-            (short) 0x00,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
     readBuffer.closeContext("CipConnectionManagerCloseResponse");
     // Create the instance
@@ -325,9 +212,7 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
         connectionSerialNumber,
         originatorVendorId,
         originatorSerialNumber,
-        applicationReplySize,
-        serviceLen,
-        order);
+        applicationReplySize);
   }
 
   public static class CipConnectionManagerCloseResponseBuilderImpl
@@ -338,8 +223,6 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
     private final int originatorVendorId;
     private final long originatorSerialNumber;
     private final short applicationReplySize;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
     public CipConnectionManagerCloseResponseBuilderImpl(
         short status,
@@ -347,21 +230,16 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
         int connectionSerialNumber,
         int originatorVendorId,
         long originatorSerialNumber,
-        short applicationReplySize,
-        Integer serviceLen,
-        IntegerEncoding order) {
+        short applicationReplySize) {
       this.status = status;
       this.additionalStatusWords = additionalStatusWords;
       this.connectionSerialNumber = connectionSerialNumber;
       this.originatorVendorId = originatorVendorId;
       this.originatorSerialNumber = originatorSerialNumber;
       this.applicationReplySize = applicationReplySize;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public CipConnectionManagerCloseResponse build(Integer serviceLen, IntegerEncoding order) {
-
+    public CipConnectionManagerCloseResponse build() {
       CipConnectionManagerCloseResponse cipConnectionManagerCloseResponse =
           new CipConnectionManagerCloseResponse(
               status,
@@ -369,9 +247,7 @@ public class CipConnectionManagerCloseResponse extends CipService implements Mes
               connectionSerialNumber,
               originatorVendorId,
               originatorSerialNumber,
-              applicationReplySize,
-              serviceLen,
-              order);
+              applicationReplySize);
       return cipConnectionManagerCloseResponse;
     }
   }

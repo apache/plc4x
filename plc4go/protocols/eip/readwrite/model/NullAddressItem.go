@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -70,9 +69,9 @@ func (m *_NullAddressItem) GetParent() TypeId {
 }
 
 // NewNullAddressItem factory function for _NullAddressItem
-func NewNullAddressItem(order IntegerEncoding) *_NullAddressItem {
+func NewNullAddressItem() *_NullAddressItem {
 	_result := &_NullAddressItem{
-		_TypeId: NewTypeId(order),
+		_TypeId: NewTypeId(),
 	}
 	_result._TypeId._TypeIdChildRequirements = _result
 	return _result
@@ -106,11 +105,11 @@ func (m *_NullAddressItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NullAddressItemParse(theBytes []byte, order IntegerEncoding) (NullAddressItem, error) {
-	return NullAddressItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func NullAddressItemParse(theBytes []byte) (NullAddressItem, error) {
+	return NullAddressItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func NullAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (NullAddressItem, error) {
+func NullAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NullAddressItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NullAddressItem"); pullErr != nil {
@@ -142,9 +141,7 @@ func NullAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 
 	// Create a partially initialized instance
 	_child := &_NullAddressItem{
-		_TypeId: &_TypeId{
-			Order: order,
-		},
+		_TypeId:        &_TypeId{},
 		reservedField0: reservedField0,
 	}
 	_child._TypeId._TypeIdChildRequirements = _child
@@ -152,7 +149,7 @@ func NullAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 }
 
 func (m *_NullAddressItem) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

@@ -43,21 +43,12 @@ public class CIPAttributes implements Message {
   protected final int numberActive;
   protected final byte[] data;
 
-  // Arguments.
-  protected final Integer packetLength;
-
-  public CIPAttributes(
-      List<Integer> classId,
-      int numberAvailable,
-      int numberActive,
-      byte[] data,
-      Integer packetLength) {
+  public CIPAttributes(List<Integer> classId, int numberAvailable, int numberActive, byte[] data) {
     super();
     this.classId = classId;
     this.numberAvailable = numberAvailable;
     this.numberActive = numberActive;
     this.data = data;
-    this.packetLength = packetLength;
   }
 
   public List<Integer> getClassId() {
@@ -179,7 +170,7 @@ public class CIPAttributes implements Message {
     readBuffer.closeContext("CIPAttributes");
     // Create the instance
     CIPAttributes _cIPAttributes;
-    _cIPAttributes = new CIPAttributes(classId, numberAvailable, numberActive, data, packetLength);
+    _cIPAttributes = new CIPAttributes(classId, numberAvailable, numberActive, data);
     return _cIPAttributes;
   }
 

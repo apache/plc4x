@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -46,9 +45,6 @@ type LogicalSegmentTypeExactly interface {
 // _LogicalSegmentType is the data-structure of this message
 type _LogicalSegmentType struct {
 	_LogicalSegmentTypeChildRequirements
-
-	// Arguments.
-	Order IntegerEncoding
 }
 
 type _LogicalSegmentTypeChildRequirements interface {
@@ -72,8 +68,8 @@ type LogicalSegmentTypeChild interface {
 }
 
 // NewLogicalSegmentType factory function for _LogicalSegmentType
-func NewLogicalSegmentType(order IntegerEncoding) *_LogicalSegmentType {
-	return &_LogicalSegmentType{Order: order}
+func NewLogicalSegmentType() *_LogicalSegmentType {
+	return &_LogicalSegmentType{}
 }
 
 // Deprecated: use the interface for direct cast
@@ -103,11 +99,11 @@ func (m *_LogicalSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func LogicalSegmentTypeParse(theBytes []byte, order IntegerEncoding) (LogicalSegmentType, error) {
-	return LogicalSegmentTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func LogicalSegmentTypeParse(theBytes []byte) (LogicalSegmentType, error) {
+	return LogicalSegmentTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func LogicalSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (LogicalSegmentType, error) {
+func LogicalSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LogicalSegmentType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("LogicalSegmentType"); pullErr != nil {
@@ -133,11 +129,11 @@ func LogicalSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var typeSwitchError error
 	switch {
 	case logicalSegmentType == 0x00: // ClassID
-		_childTemp, typeSwitchError = ClassIDParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = ClassIDParseWithBuffer(ctx, readBuffer)
 	case logicalSegmentType == 0x01: // InstanceID
-		_childTemp, typeSwitchError = InstanceIDParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = InstanceIDParseWithBuffer(ctx, readBuffer)
 	case logicalSegmentType == 0x02: // MemberID
-		_childTemp, typeSwitchError = MemberIDParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = MemberIDParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [logicalSegmentType=%v]", logicalSegmentType)
 	}
@@ -183,16 +179,6 @@ func (pm *_LogicalSegmentType) SerializeParent(ctx context.Context, writeBuffer 
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_LogicalSegmentType) GetOrder() IntegerEncoding {
-	return m.Order
-}
-
-//
-////
 
 func (m *_LogicalSegmentType) isLogicalSegmentType() bool {
 	return true

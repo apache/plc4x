@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -46,9 +45,6 @@ type DataSegmentTypeExactly interface {
 // _DataSegmentType is the data-structure of this message
 type _DataSegmentType struct {
 	_DataSegmentTypeChildRequirements
-
-	// Arguments.
-	Order IntegerEncoding
 }
 
 type _DataSegmentTypeChildRequirements interface {
@@ -72,8 +68,8 @@ type DataSegmentTypeChild interface {
 }
 
 // NewDataSegmentType factory function for _DataSegmentType
-func NewDataSegmentType(order IntegerEncoding) *_DataSegmentType {
-	return &_DataSegmentType{Order: order}
+func NewDataSegmentType() *_DataSegmentType {
+	return &_DataSegmentType{}
 }
 
 // Deprecated: use the interface for direct cast
@@ -103,11 +99,11 @@ func (m *_DataSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func DataSegmentTypeParse(theBytes []byte, order IntegerEncoding) (DataSegmentType, error) {
-	return DataSegmentTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func DataSegmentTypeParse(theBytes []byte) (DataSegmentType, error) {
+	return DataSegmentTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func DataSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (DataSegmentType, error) {
+func DataSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataSegmentType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("DataSegmentType"); pullErr != nil {
@@ -133,7 +129,7 @@ func DataSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var typeSwitchError error
 	switch {
 	case dataSegmentType == 0x11: // AnsiExtendedSymbolSegment
-		_childTemp, typeSwitchError = AnsiExtendedSymbolSegmentParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = AnsiExtendedSymbolSegmentParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [dataSegmentType=%v]", dataSegmentType)
 	}
@@ -179,16 +175,6 @@ func (pm *_DataSegmentType) SerializeParent(ctx context.Context, writeBuffer uti
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_DataSegmentType) GetOrder() IntegerEncoding {
-	return m.Order
-}
-
-//
-////
 
 func (m *_DataSegmentType) isDataSegmentType() bool {
 	return true

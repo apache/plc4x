@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -131,7 +130,7 @@ func (m *_CipConnectionManagerCloseResponse) GetApplicationReplySize() uint8 {
 ///////////////////////////////////////////////////////////
 
 // NewCipConnectionManagerCloseResponse factory function for _CipConnectionManagerCloseResponse
-func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8, serviceLen uint16, order IntegerEncoding) *_CipConnectionManagerCloseResponse {
+func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords uint8, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, applicationReplySize uint8, serviceLen uint16) *_CipConnectionManagerCloseResponse {
 	_result := &_CipConnectionManagerCloseResponse{
 		Status:                 status,
 		AdditionalStatusWords:  additionalStatusWords,
@@ -139,7 +138,7 @@ func NewCipConnectionManagerCloseResponse(status uint8, additionalStatusWords ui
 		OriginatorVendorId:     originatorVendorId,
 		OriginatorSerialNumber: originatorSerialNumber,
 		ApplicationReplySize:   applicationReplySize,
-		_CipService:            NewCipService(serviceLen, order),
+		_CipService:            NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -194,11 +193,11 @@ func (m *_CipConnectionManagerCloseResponse) GetLengthInBytes(ctx context.Contex
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipConnectionManagerCloseResponseParse(theBytes []byte, connected bool, serviceLen uint16, order IntegerEncoding) (CipConnectionManagerCloseResponse, error) {
-	return CipConnectionManagerCloseResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), connected, serviceLen, order)
+func CipConnectionManagerCloseResponseParse(theBytes []byte, connected bool, serviceLen uint16) (CipConnectionManagerCloseResponse, error) {
+	return CipConnectionManagerCloseResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipConnectionManagerCloseResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16, order IntegerEncoding) (CipConnectionManagerCloseResponse, error) {
+func CipConnectionManagerCloseResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectionManagerCloseResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipConnectionManagerCloseResponse"); pullErr != nil {
@@ -291,7 +290,6 @@ func CipConnectionManagerCloseResponseParseWithBuffer(ctx context.Context, readB
 	_child := &_CipConnectionManagerCloseResponse{
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
-			Order:      order,
 		},
 		Status:                 status,
 		AdditionalStatusWords:  additionalStatusWords,
@@ -307,7 +305,7 @@ func CipConnectionManagerCloseResponseParseWithBuffer(ctx context.Context, readB
 }
 
 func (m *_CipConnectionManagerCloseResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

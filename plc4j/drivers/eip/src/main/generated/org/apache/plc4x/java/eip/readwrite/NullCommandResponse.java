@@ -50,13 +50,8 @@ public class NullCommandResponse extends EipPacket implements Message {
     return 0;
   }
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public NullCommandResponse(
-      long sessionHandle, long status, byte[] senderContext, long options, IntegerEncoding order) {
-    super(sessionHandle, status, senderContext, options, order);
-    this.order = order;
+  public NullCommandResponse(long sessionHandle, long status, byte[] senderContext, long options) {
+    super(sessionHandle, status, senderContext, options);
   }
 
   @Override
@@ -84,7 +79,7 @@ public class NullCommandResponse extends EipPacket implements Message {
   }
 
   public static EipPacketBuilder staticParseEipPacketBuilder(
-      ReadBuffer readBuffer, IntegerEncoding order, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Boolean response) throws ParseException {
     readBuffer.pullContext("NullCommandResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -93,24 +88,17 @@ public class NullCommandResponse extends EipPacket implements Message {
 
     readBuffer.closeContext("NullCommandResponse");
     // Create the instance
-    return new NullCommandResponseBuilderImpl(order);
+    return new NullCommandResponseBuilderImpl();
   }
 
   public static class NullCommandResponseBuilderImpl implements EipPacket.EipPacketBuilder {
-    private final IntegerEncoding order;
 
-    public NullCommandResponseBuilderImpl(IntegerEncoding order) {
-      this.order = order;
-    }
+    public NullCommandResponseBuilderImpl() {}
 
     public NullCommandResponse build(
-        long sessionHandle,
-        long status,
-        byte[] senderContext,
-        long options,
-        IntegerEncoding order) {
+        long sessionHandle, long status, byte[] senderContext, long options) {
       NullCommandResponse nullCommandResponse =
-          new NullCommandResponse(sessionHandle, status, senderContext, options, order);
+          new NullCommandResponse(sessionHandle, status, senderContext, options);
       return nullCommandResponse;
     }
   }

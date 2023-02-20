@@ -41,14 +41,10 @@ public class CIPData implements Message {
   protected final CIPDataTypeCode dataType;
   protected final byte[] data;
 
-  // Arguments.
-  protected final Integer packetLength;
-
-  public CIPData(CIPDataTypeCode dataType, byte[] data, Integer packetLength) {
+  public CIPData(CIPDataTypeCode dataType, byte[] data) {
     super();
     this.dataType = dataType;
     this.data = data;
-    this.packetLength = packetLength;
   }
 
   public CIPDataTypeCode getDataType() {
@@ -140,7 +136,7 @@ public class CIPData implements Message {
     readBuffer.closeContext("CIPData");
     // Create the instance
     CIPData _cIPData;
-    _cIPData = new CIPData(dataType, data, packetLength);
+    _cIPData = new CIPData(dataType, data);
     return _cIPData;
   }
 

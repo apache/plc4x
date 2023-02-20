@@ -55,22 +55,11 @@ public class GetAttributeAllResponse extends CipService implements Message {
   protected final short extStatus;
   protected final CIPAttributes attributes;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
-  public GetAttributeAllResponse(
-      short status,
-      short extStatus,
-      CIPAttributes attributes,
-      Integer serviceLen,
-      IntegerEncoding order) {
-    super(serviceLen, order);
+  public GetAttributeAllResponse(short status, short extStatus, CIPAttributes attributes) {
+    super();
     this.status = status;
     this.extStatus = extStatus;
     this.attributes = attributes;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
   public short getStatus() {
@@ -93,45 +82,16 @@ public class GetAttributeAllResponse extends CipService implements Message {
     writeBuffer.pushContext("GetAttributeAllResponse");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (status)
-    writeSimpleField(
-        "status",
-        status,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("status", status, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (extStatus)
-    writeSimpleField(
-        "extStatus",
-        extStatus,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("extStatus", extStatus, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (attributes) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "attributes",
-        attributes,
-        new DataWriterComplexDefault<>(writeBuffer),
-        (((serviceLen) - (4))) > (0),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeOptionalField("attributes", attributes, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("GetAttributeAllResponse");
   }
@@ -165,8 +125,7 @@ public class GetAttributeAllResponse extends CipService implements Message {
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("GetAttributeAllResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -174,32 +133,11 @@ public class GetAttributeAllResponse extends CipService implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedShort(readBuffer, 8),
-            (short) 0x00,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-    short status =
-        readSimpleField(
-            "status",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short status = readSimpleField("status", readUnsignedShort(readBuffer, 8));
 
-    short extStatus =
-        readSimpleField(
-            "extStatus",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short extStatus = readSimpleField("extStatus", readUnsignedShort(readBuffer, 8));
 
     CIPAttributes attributes =
         readOptionalField(
@@ -207,41 +145,28 @@ public class GetAttributeAllResponse extends CipService implements Message {
             new DataReaderComplexDefault<>(
                 () -> CIPAttributes.staticParse(readBuffer, (int) ((serviceLen) - (4))),
                 readBuffer),
-            (((serviceLen) - (4))) > (0),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            (((serviceLen) - (4))) > (0));
 
     readBuffer.closeContext("GetAttributeAllResponse");
     // Create the instance
-    return new GetAttributeAllResponseBuilderImpl(status, extStatus, attributes, serviceLen, order);
+    return new GetAttributeAllResponseBuilderImpl(status, extStatus, attributes);
   }
 
   public static class GetAttributeAllResponseBuilderImpl implements CipService.CipServiceBuilder {
     private final short status;
     private final short extStatus;
     private final CIPAttributes attributes;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
     public GetAttributeAllResponseBuilderImpl(
-        short status,
-        short extStatus,
-        CIPAttributes attributes,
-        Integer serviceLen,
-        IntegerEncoding order) {
+        short status, short extStatus, CIPAttributes attributes) {
       this.status = status;
       this.extStatus = extStatus;
       this.attributes = attributes;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public GetAttributeAllResponse build(Integer serviceLen, IntegerEncoding order) {
-
+    public GetAttributeAllResponse build() {
       GetAttributeAllResponse getAttributeAllResponse =
-          new GetAttributeAllResponse(status, extStatus, attributes, serviceLen, order);
+          new GetAttributeAllResponse(status, extStatus, attributes);
       return getAttributeAllResponse;
     }
   }

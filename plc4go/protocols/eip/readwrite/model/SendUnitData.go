@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"fmt"
 	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -130,12 +129,12 @@ func (m *_SendUnitData) GetInterfaceHandle() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewSendUnitData factory function for _SendUnitData
-func NewSendUnitData(timeout uint16, itemCount uint16, typeId []TypeId, sessionHandle uint32, status uint32, senderContext []byte, options uint32, order IntegerEncoding) *_SendUnitData {
+func NewSendUnitData(timeout uint16, itemCount uint16, typeId []TypeId, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_SendUnitData {
 	_result := &_SendUnitData{
 		Timeout:    timeout,
 		ItemCount:  itemCount,
 		TypeId:     typeId,
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options, order),
+		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
 	_result._EipPacket._EipPacketChildRequirements = _result
 	return _result
@@ -185,11 +184,11 @@ func (m *_SendUnitData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func SendUnitDataParse(theBytes []byte, order IntegerEncoding, response bool) (SendUnitData, error) {
-	return SendUnitDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order, response)
+func SendUnitDataParse(theBytes []byte, response bool) (SendUnitData, error) {
+	return SendUnitDataParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func SendUnitDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding, response bool) (SendUnitData, error) {
+func SendUnitDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SendUnitData, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("SendUnitData"); pullErr != nil {
@@ -237,7 +236,7 @@ func SendUnitDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := TypeIdParseWithBuffer(arrayCtx, readBuffer, order)
+			_item, _err := TypeIdParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'typeId' field of SendUnitData")
 			}
@@ -254,19 +253,17 @@ func SendUnitDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 	// Create a partially initialized instance
 	_child := &_SendUnitData{
-		_EipPacket: &_EipPacket{
-			Order: order,
-		},
-		Timeout:   timeout,
-		ItemCount: itemCount,
-		TypeId:    typeId,
+		_EipPacket: &_EipPacket{},
+		Timeout:    timeout,
+		ItemCount:  itemCount,
+		TypeId:     typeId,
 	}
 	_child._EipPacket._EipPacketChildRequirements = _child
 	return _child, nil
 }
 
 func (m *_SendUnitData) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

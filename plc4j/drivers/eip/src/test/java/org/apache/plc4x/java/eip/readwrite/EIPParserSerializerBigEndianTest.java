@@ -20,10 +20,10 @@ package org.apache.plc4x.java.eip.readwrite;
 
 import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 
-public class EIPParserSerializerTest extends ParserSerializerTestsuiteRunner {
+public class EIPParserSerializerBigEndianTest extends ParserSerializerTestsuiteRunner {
 
-    public EIPParserSerializerTest() {
-        super("/protocols/eip/ParserSerializerTestsuite.xml");
+    public EIPParserSerializerBigEndianTest() {
+        super("/protocols/eip/ParserSerializerTestsuiteBigEndian.xml");
     }
 
 }

@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,10 +86,10 @@ func (m *_ConnectedAddressItem) GetConnectionId() uint32 {
 ///////////////////////////////////////////////////////////
 
 // NewConnectedAddressItem factory function for _ConnectedAddressItem
-func NewConnectedAddressItem(connectionId uint32, order IntegerEncoding) *_ConnectedAddressItem {
+func NewConnectedAddressItem(connectionId uint32) *_ConnectedAddressItem {
 	_result := &_ConnectedAddressItem{
 		ConnectionId: connectionId,
-		_TypeId:      NewTypeId(order),
+		_TypeId:      NewTypeId(),
 	}
 	_result._TypeId._TypeIdChildRequirements = _result
 	return _result
@@ -127,11 +126,11 @@ func (m *_ConnectedAddressItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func ConnectedAddressItemParse(theBytes []byte, order IntegerEncoding) (ConnectedAddressItem, error) {
-	return ConnectedAddressItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func ConnectedAddressItemParse(theBytes []byte) (ConnectedAddressItem, error) {
+	return ConnectedAddressItemParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (ConnectedAddressItem, error) {
+func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedAddressItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("ConnectedAddressItem"); pullErr != nil {
@@ -170,9 +169,7 @@ func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 
 	// Create a partially initialized instance
 	_child := &_ConnectedAddressItem{
-		_TypeId: &_TypeId{
-			Order: order,
-		},
+		_TypeId:        &_TypeId{},
 		ConnectionId:   connectionId,
 		reservedField0: reservedField0,
 	}
@@ -181,7 +178,7 @@ func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 }
 
 func (m *_ConnectedAddressItem) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

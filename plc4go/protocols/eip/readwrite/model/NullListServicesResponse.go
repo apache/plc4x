@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -81,9 +80,9 @@ func (m *_NullListServicesResponse) GetParent() EipPacket {
 }
 
 // NewNullListServicesResponse factory function for _NullListServicesResponse
-func NewNullListServicesResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32, order IntegerEncoding) *_NullListServicesResponse {
+func NewNullListServicesResponse(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_NullListServicesResponse {
 	_result := &_NullListServicesResponse{
-		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options, order),
+		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
 	_result._EipPacket._EipPacketChildRequirements = _result
 	return _result
@@ -114,11 +113,11 @@ func (m *_NullListServicesResponse) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func NullListServicesResponseParse(theBytes []byte, order IntegerEncoding, response bool) (NullListServicesResponse, error) {
-	return NullListServicesResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order, response)
+func NullListServicesResponseParse(theBytes []byte, response bool) (NullListServicesResponse, error) {
+	return NullListServicesResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func NullListServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding, response bool) (NullListServicesResponse, error) {
+func NullListServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullListServicesResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("NullListServicesResponse"); pullErr != nil {
@@ -133,16 +132,14 @@ func NullListServicesResponseParseWithBuffer(ctx context.Context, readBuffer uti
 
 	// Create a partially initialized instance
 	_child := &_NullListServicesResponse{
-		_EipPacket: &_EipPacket{
-			Order: order,
-		},
+		_EipPacket: &_EipPacket{},
 	}
 	_child._EipPacket._EipPacketChildRequirements = _child
 	return _child, nil
 }
 
 func (m *_NullListServicesResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer((utils.InlineIf(bool((m.Order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder)))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

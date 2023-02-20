@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -46,9 +45,6 @@ type TypeIdExactly interface {
 // _TypeId is the data-structure of this message
 type _TypeId struct {
 	_TypeIdChildRequirements
-
-	// Arguments.
-	Order IntegerEncoding
 }
 
 type _TypeIdChildRequirements interface {
@@ -72,8 +68,8 @@ type TypeIdChild interface {
 }
 
 // NewTypeId factory function for _TypeId
-func NewTypeId(order IntegerEncoding) *_TypeId {
-	return &_TypeId{Order: order}
+func NewTypeId() *_TypeId {
+	return &_TypeId{}
 }
 
 // Deprecated: use the interface for direct cast
@@ -103,11 +99,11 @@ func (m *_TypeId) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func TypeIdParse(theBytes []byte, order IntegerEncoding) (TypeId, error) {
-	return TypeIdParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased((utils.InlineIf(bool((order) == (IntegerEncoding_BIG_ENDIAN)), func() interface{} { return binary.ByteOrder(binary.BigEndian) }, func() interface{} { return binary.ByteOrder(binary.LittleEndian) })).(binary.ByteOrder))), order)
+func TypeIdParse(theBytes []byte) (TypeId, error) {
+	return TypeIdParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func TypeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (TypeId, error) {
+func TypeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TypeId, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("TypeId"); pullErr != nil {
@@ -133,15 +129,15 @@ func TypeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, ord
 	var typeSwitchError error
 	switch {
 	case id == 0x0000: // NullAddressItem
-		_childTemp, typeSwitchError = NullAddressItemParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = NullAddressItemParseWithBuffer(ctx, readBuffer)
 	case id == 0x0100: // ServicesResponse
-		_childTemp, typeSwitchError = ServicesResponseParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = ServicesResponseParseWithBuffer(ctx, readBuffer)
 	case id == 0x00A1: // ConnectedAddressItem
-		_childTemp, typeSwitchError = ConnectedAddressItemParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = ConnectedAddressItemParseWithBuffer(ctx, readBuffer)
 	case id == 0x00B1: // ConnectedDataItem
-		_childTemp, typeSwitchError = ConnectedDataItemParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = ConnectedDataItemParseWithBuffer(ctx, readBuffer)
 	case id == 0x00B2: // UnConnectedDataItem
-		_childTemp, typeSwitchError = UnConnectedDataItemParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = UnConnectedDataItemParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [id=%v]", id)
 	}
@@ -187,16 +183,6 @@ func (pm *_TypeId) SerializeParent(ctx context.Context, writeBuffer utils.WriteB
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_TypeId) GetOrder() IntegerEncoding {
-	return m.Order
-}
-
-//
-////
 
 func (m *_TypeId) isTypeId() bool {
 	return true

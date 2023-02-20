@@ -60,26 +60,18 @@ public class CipUnconnectedRequest extends CipService implements Message {
   protected final byte backPlane;
   protected final byte slot;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
   public CipUnconnectedRequest(
       PathSegment classSegment,
       PathSegment instanceSegment,
       CipService unconnectedService,
       byte backPlane,
-      byte slot,
-      Integer serviceLen,
-      IntegerEncoding order) {
-    super(serviceLen, order);
+      byte slot) {
+    super();
     this.classSegment = classSegment;
     this.instanceSegment = instanceSegment;
     this.unconnectedService = unconnectedService;
     this.backPlane = backPlane;
     this.slot = slot;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
   public PathSegment getClassSegment() {
@@ -115,100 +107,39 @@ public class CipUnconnectedRequest extends CipService implements Message {
 
     // Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    byte requestPathSize =
-        (byte)
+    short requestPathSize =
+        (short)
             ((((getClassSegment().getLengthInBytes()) + (getInstanceSegment().getLengthInBytes())))
                 / (2));
-    writeImplicitField(
-        "requestPathSize",
-        requestPathSize,
-        writeSignedByte(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeImplicitField("requestPathSize", requestPathSize, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (classSegment)
-    writeSimpleField(
-        "classSegment",
-        classSegment,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("classSegment", classSegment, new DataWriterComplexDefault<>(writeBuffer));
 
     // Simple Field (instanceSegment)
     writeSimpleField(
-        "instanceSegment",
-        instanceSegment,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "instanceSegment", instanceSegment, new DataWriterComplexDefault<>(writeBuffer));
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (int) 0x9D05,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (int) 0x9D05, writeUnsignedInt(writeBuffer, 16));
 
     // Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int messageSize = (int) (((getLengthInBytes()) - (10)) - (4));
-    writeImplicitField(
-        "messageSize",
-        messageSize,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeImplicitField("messageSize", messageSize, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (unconnectedService)
     writeSimpleField(
-        "unconnectedService",
-        unconnectedService,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+        "unconnectedService", unconnectedService, new DataWriterComplexDefault<>(writeBuffer));
 
     // Const Field (route)
-    writeConstField(
-        "route",
-        ROUTE,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeConstField("route", ROUTE, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (backPlane)
-    writeSimpleField(
-        "backPlane",
-        backPlane,
-        writeSignedByte(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("backPlane", backPlane, writeSignedByte(writeBuffer, 8));
 
     // Simple Field (slot)
-    writeSimpleField(
-        "slot",
-        slot,
-        writeSignedByte(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("slot", slot, writeSignedByte(writeBuffer, 8));
 
     writeBuffer.popContext("CipUnconnectedRequest");
   }
@@ -255,110 +186,48 @@ public class CipUnconnectedRequest extends CipService implements Message {
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("CipUnconnectedRequest");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    byte requestPathSize =
-        readImplicitField(
-            "requestPathSize",
-            readSignedByte(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short requestPathSize = readImplicitField("requestPathSize", readUnsignedShort(readBuffer, 8));
 
     PathSegment classSegment =
         readSimpleField(
             "classSegment",
-            new DataReaderComplexDefault<>(
-                () -> PathSegment.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     PathSegment instanceSegment =
         readSimpleField(
             "instanceSegment",
-            new DataReaderComplexDefault<>(
-                () -> PathSegment.staticParse(readBuffer, (IntegerEncoding) (order)), readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     Integer reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedInt(readBuffer, 16),
-            (int) 0x9D05,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x9D05);
 
-    int messageSize =
-        readImplicitField(
-            "messageSize",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int messageSize = readImplicitField("messageSize", readUnsignedInt(readBuffer, 16));
 
     CipService unconnectedService =
         readSimpleField(
             "unconnectedService",
             new DataReaderComplexDefault<>(
-                () ->
-                    CipService.staticParse(
-                        readBuffer,
-                        (boolean) (false),
-                        (int) (messageSize),
-                        (IntegerEncoding) (order)),
-                readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                () -> CipService.staticParse(readBuffer, (boolean) (false), (int) (messageSize)),
+                readBuffer));
 
     int route =
-        readConstField(
-            "route",
-            readUnsignedInt(readBuffer, 16),
-            CipUnconnectedRequest.ROUTE,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readConstField("route", readUnsignedInt(readBuffer, 16), CipUnconnectedRequest.ROUTE);
 
-    byte backPlane =
-        readSimpleField(
-            "backPlane",
-            readSignedByte(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte backPlane = readSimpleField("backPlane", readSignedByte(readBuffer, 8));
 
-    byte slot =
-        readSimpleField(
-            "slot",
-            readSignedByte(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    byte slot = readSimpleField("slot", readSignedByte(readBuffer, 8));
 
     readBuffer.closeContext("CipUnconnectedRequest");
     // Create the instance
     return new CipUnconnectedRequestBuilderImpl(
-        classSegment, instanceSegment, unconnectedService, backPlane, slot, serviceLen, order);
+        classSegment, instanceSegment, unconnectedService, backPlane, slot);
   }
 
   public static class CipUnconnectedRequestBuilderImpl implements CipService.CipServiceBuilder {
@@ -367,37 +236,24 @@ public class CipUnconnectedRequest extends CipService implements Message {
     private final CipService unconnectedService;
     private final byte backPlane;
     private final byte slot;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
     public CipUnconnectedRequestBuilderImpl(
         PathSegment classSegment,
         PathSegment instanceSegment,
         CipService unconnectedService,
         byte backPlane,
-        byte slot,
-        Integer serviceLen,
-        IntegerEncoding order) {
+        byte slot) {
       this.classSegment = classSegment;
       this.instanceSegment = instanceSegment;
       this.unconnectedService = unconnectedService;
       this.backPlane = backPlane;
       this.slot = slot;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public CipUnconnectedRequest build(Integer serviceLen, IntegerEncoding order) {
-
+    public CipUnconnectedRequest build() {
       CipUnconnectedRequest cipUnconnectedRequest =
           new CipUnconnectedRequest(
-              classSegment,
-              instanceSegment,
-              unconnectedService,
-              backPlane,
-              slot,
-              serviceLen,
-              order);
+              classSegment, instanceSegment, unconnectedService, backPlane, slot);
       return cipUnconnectedRequest;
     }
   }

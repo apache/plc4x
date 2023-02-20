@@ -55,18 +55,11 @@ public class CipReadResponse extends CipService implements Message {
   protected final short extStatus;
   protected final CIPData data;
 
-  // Arguments.
-  protected final Integer serviceLen;
-  protected final IntegerEncoding order;
-
-  public CipReadResponse(
-      short status, short extStatus, CIPData data, Integer serviceLen, IntegerEncoding order) {
-    super(serviceLen, order);
+  public CipReadResponse(short status, short extStatus, CIPData data) {
+    super();
     this.status = status;
     this.extStatus = extStatus;
     this.data = data;
-    this.serviceLen = serviceLen;
-    this.order = order;
   }
 
   public short getStatus() {
@@ -89,45 +82,16 @@ public class CipReadResponse extends CipService implements Message {
     writeBuffer.pushContext("CipReadResponse");
 
     // Reserved Field (reserved)
-    writeReservedField(
-        "reserved",
-        (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (status)
-    writeSimpleField(
-        "status",
-        status,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("status", status, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (extStatus)
-    writeSimpleField(
-        "extStatus",
-        extStatus,
-        writeUnsignedShort(writeBuffer, 8),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("extStatus", extStatus, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (data) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "data",
-        data,
-        new DataWriterComplexDefault<>(writeBuffer),
-        (((serviceLen) - (4))) > (0),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeOptionalField("data", data, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("CipReadResponse");
   }
@@ -161,8 +125,7 @@ public class CipReadResponse extends CipService implements Message {
   }
 
   public static CipServiceBuilder staticParseCipServiceBuilder(
-      ReadBuffer readBuffer, Boolean connected, Integer serviceLen, IntegerEncoding order)
-      throws ParseException {
+      ReadBuffer readBuffer, Boolean connected, Integer serviceLen) throws ParseException {
     readBuffer.pullContext("CipReadResponse");
     PositionAware positionAware = readBuffer;
     int startPos = positionAware.getPos();
@@ -170,69 +133,37 @@ public class CipReadResponse extends CipService implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
-        readReservedField(
-            "reserved",
-            readUnsignedShort(readBuffer, 8),
-            (short) 0x00,
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
 
-    short status =
-        readSimpleField(
-            "status",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short status = readSimpleField("status", readUnsignedShort(readBuffer, 8));
 
-    short extStatus =
-        readSimpleField(
-            "extStatus",
-            readUnsignedShort(readBuffer, 8),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    short extStatus = readSimpleField("extStatus", readUnsignedShort(readBuffer, 8));
 
     CIPData data =
         readOptionalField(
             "data",
             new DataReaderComplexDefault<>(
                 () -> CIPData.staticParse(readBuffer, (int) ((serviceLen) - (4))), readBuffer),
-            (((serviceLen) - (4))) > (0),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+            (((serviceLen) - (4))) > (0));
 
     readBuffer.closeContext("CipReadResponse");
     // Create the instance
-    return new CipReadResponseBuilderImpl(status, extStatus, data, serviceLen, order);
+    return new CipReadResponseBuilderImpl(status, extStatus, data);
   }
 
   public static class CipReadResponseBuilderImpl implements CipService.CipServiceBuilder {
     private final short status;
     private final short extStatus;
     private final CIPData data;
-    private final Integer serviceLen;
-    private final IntegerEncoding order;
 
-    public CipReadResponseBuilderImpl(
-        short status, short extStatus, CIPData data, Integer serviceLen, IntegerEncoding order) {
+    public CipReadResponseBuilderImpl(short status, short extStatus, CIPData data) {
       this.status = status;
       this.extStatus = extStatus;
       this.data = data;
-      this.serviceLen = serviceLen;
-      this.order = order;
     }
 
-    public CipReadResponse build(Integer serviceLen, IntegerEncoding order) {
-
-      CipReadResponse cipReadResponse =
-          new CipReadResponse(status, extStatus, data, serviceLen, order);
+    public CipReadResponse build() {
+      CipReadResponse cipReadResponse = new CipReadResponse(status, extStatus, data);
       return cipReadResponse;
     }
   }

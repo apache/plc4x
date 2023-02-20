@@ -45,9 +45,6 @@ type PortSegmentTypeExactly interface {
 // _PortSegmentType is the data-structure of this message
 type _PortSegmentType struct {
 	_PortSegmentTypeChildRequirements
-
-	// Arguments.
-	Order IntegerEncoding
 }
 
 type _PortSegmentTypeChildRequirements interface {
@@ -71,8 +68,8 @@ type PortSegmentTypeChild interface {
 }
 
 // NewPortSegmentType factory function for _PortSegmentType
-func NewPortSegmentType(order IntegerEncoding) *_PortSegmentType {
-	return &_PortSegmentType{Order: order}
+func NewPortSegmentType() *_PortSegmentType {
+	return &_PortSegmentType{}
 }
 
 // Deprecated: use the interface for direct cast
@@ -102,11 +99,11 @@ func (m *_PortSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func PortSegmentTypeParse(theBytes []byte, order IntegerEncoding) (PortSegmentType, error) {
-	return PortSegmentTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), order)
+func PortSegmentTypeParse(theBytes []byte) (PortSegmentType, error) {
+	return PortSegmentTypeParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes))
 }
 
-func PortSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, order IntegerEncoding) (PortSegmentType, error) {
+func PortSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentType, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("PortSegmentType"); pullErr != nil {
@@ -132,9 +129,9 @@ func PortSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var typeSwitchError error
 	switch {
 	case extendedLinkAddress == bool(false): // PortSegmentNormal
-		_childTemp, typeSwitchError = PortSegmentNormalParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = PortSegmentNormalParseWithBuffer(ctx, readBuffer)
 	case extendedLinkAddress == bool(true): // PortSegmentExtended
-		_childTemp, typeSwitchError = PortSegmentExtendedParseWithBuffer(ctx, readBuffer, order)
+		_childTemp, typeSwitchError = PortSegmentExtendedParseWithBuffer(ctx, readBuffer)
 	default:
 		typeSwitchError = errors.Errorf("Unmapped type for parameters [extendedLinkAddress=%v]", extendedLinkAddress)
 	}
@@ -180,16 +177,6 @@ func (pm *_PortSegmentType) SerializeParent(ctx context.Context, writeBuffer uti
 	}
 	return nil
 }
-
-////
-// Arguments Getter
-
-func (m *_PortSegmentType) GetOrder() IntegerEncoding {
-	return m.Order
-}
-
-//
-////
 
 func (m *_PortSegmentType) isPortSegmentType() bool {
 	return true

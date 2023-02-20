@@ -45,13 +45,9 @@ public class UnConnectedDataItem extends TypeId implements Message {
   // Properties.
   protected final CipService service;
 
-  // Arguments.
-  protected final IntegerEncoding order;
-
-  public UnConnectedDataItem(CipService service, IntegerEncoding order) {
-    super(order);
+  public UnConnectedDataItem(CipService service) {
+    super();
     this.service = service;
-    this.order = order;
   }
 
   public CipService getService() {
@@ -68,24 +64,10 @@ public class UnConnectedDataItem extends TypeId implements Message {
     // Implicit Field (packetSize) (Used for parsing, but its value is not stored as it's implicitly
     // given by the objects content)
     int packetSize = (int) (getService().getLengthInBytes());
-    writeImplicitField(
-        "packetSize",
-        packetSize,
-        writeUnsignedInt(writeBuffer, 16),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeImplicitField("packetSize", packetSize, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (service)
-    writeSimpleField(
-        "service",
-        service,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(
-            (((order) == (IntegerEncoding.BIG_ENDIAN))
-                ? ByteOrder.BIG_ENDIAN
-                : ByteOrder.LITTLE_ENDIAN)));
+    writeSimpleField("service", service, new DataWriterComplexDefault<>(writeBuffer));
 
     writeBuffer.popContext("UnConnectedDataItem");
   }
@@ -110,7 +92,7 @@ public class UnConnectedDataItem extends TypeId implements Message {
     return lengthInBits;
   }
 
-  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer, IntegerEncoding order)
+  public static TypeIdBuilder staticParseTypeIdBuilder(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("UnConnectedDataItem");
     PositionAware positionAware = readBuffer;
@@ -118,48 +100,29 @@ public class UnConnectedDataItem extends TypeId implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int packetSize =
-        readImplicitField(
-            "packetSize",
-            readUnsignedInt(readBuffer, 16),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+    int packetSize = readImplicitField("packetSize", readUnsignedInt(readBuffer, 16));
 
     CipService service =
         readSimpleField(
             "service",
             new DataReaderComplexDefault<>(
-                () ->
-                    CipService.staticParse(
-                        readBuffer,
-                        (boolean) (false),
-                        (int) (packetSize),
-                        (IntegerEncoding) (order)),
-                readBuffer),
-            WithOption.WithByteOrder(
-                (((order) == (IntegerEncoding.BIG_ENDIAN))
-                    ? ByteOrder.BIG_ENDIAN
-                    : ByteOrder.LITTLE_ENDIAN)));
+                () -> CipService.staticParse(readBuffer, (boolean) (false), (int) (packetSize)),
+                readBuffer));
 
     readBuffer.closeContext("UnConnectedDataItem");
     // Create the instance
-    return new UnConnectedDataItemBuilderImpl(service, order);
+    return new UnConnectedDataItemBuilderImpl(service);
   }
 
   public static class UnConnectedDataItemBuilderImpl implements TypeId.TypeIdBuilder {
     private final CipService service;
-    private final IntegerEncoding order;
 
-    public UnConnectedDataItemBuilderImpl(CipService service, IntegerEncoding order) {
+    public UnConnectedDataItemBuilderImpl(CipService service) {
       this.service = service;
-      this.order = order;
     }
 
-    public UnConnectedDataItem build(IntegerEncoding order) {
-
-      UnConnectedDataItem unConnectedDataItem = new UnConnectedDataItem(service, order);
+    public UnConnectedDataItem build() {
+      UnConnectedDataItem unConnectedDataItem = new UnConnectedDataItem(service);
       return unConnectedDataItem;
     }
   }
