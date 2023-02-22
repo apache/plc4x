@@ -23,18 +23,18 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.value.PlcValue;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class LeasedPlcConnection implements PlcConnection {
 
-    private final ConnectionContainer connectionContainer;
+    private ConnectionContainer connectionContainer;
     private PlcConnection connection;
 
     public LeasedPlcConnection(ConnectionContainer connectionContainer, PlcConnection connection, Duration maxUseTime) {
@@ -51,13 +51,23 @@ public class LeasedPlcConnection implements PlcConnection {
 
     @Override
     public synchronized void close() {
-        // Make the connection unusable.
-        connection = null;
-
+        if(connectionContainer == null) {
+            return;
+        }
         // Tell the connection container that the connection is free to be reused.
         connectionContainer.returnConnection(this);
+        // Make the connection unusable.
+        connection = null;
+        connectionContainer = null;
     }
-
+    public void destroy(){
+        try {
+            connection.close();
+        } catch (Exception e) {
+        }
+        close();
+        connectionContainer.close();
+    }
     @Override
     public void connect() throws PlcConnectionException {
         throw new PlcConnectionException("Error connecting leased connection");
@@ -66,7 +76,7 @@ public class LeasedPlcConnection implements PlcConnection {
     @Override
     public boolean isConnected() {
         if(connection == null) {
-            throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
+            return false;
         }
         return connection.isConnected();
     }
@@ -92,7 +102,65 @@ public class LeasedPlcConnection implements PlcConnection {
         if(connection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        return connection.readRequestBuilder();
+        final PlcReadRequest.Builder innerBuilder = connection.readRequestBuilder();
+        return new PlcReadRequest.Builder(){
+
+            @Override
+            public PlcReadRequest build() {
+                final PlcReadRequest innerPlcReadRequest = innerBuilder.build();
+                return new PlcReadRequest(){
+
+                    @Override
+                    public CompletableFuture<? extends PlcReadResponse> execute() {
+                        CompletableFuture<? extends PlcReadResponse> future = innerPlcReadRequest.execute();
+                        final CompletableFuture<PlcReadResponse> responseFuture = new CompletableFuture<>();
+                        future.handle((plcReadResponse, throwable) -> {
+                            if (plcReadResponse != null) {
+                                responseFuture.complete(plcReadResponse);
+                            } else {
+                                try {
+                                    destroy();
+                                } catch (Exception e) {
+                                }
+                                responseFuture.completeExceptionally(throwable);
+                            }
+                            return null;
+                        });
+                        return responseFuture;
+                    }
+
+                    @Override
+                    public int getNumberOfTags() {
+                        return innerPlcReadRequest.getNumberOfTags();
+                    }
+
+                    @Override
+                    public LinkedHashSet<String> getTagNames() {
+                        return innerPlcReadRequest.getTagNames();
+                    }
+
+                    @Override
+                    public PlcTag getTag(String name) {
+                        return innerPlcReadRequest.getTag(name);
+                    }
+
+                    @Override
+                    public List<PlcTag> getTags() {
+                        return innerPlcReadRequest.getTags();
+                    }
+                };
+            }
+
+            @Override
+            public PlcReadRequest.Builder addTagAddress(String name, String tagAddress) {
+                return innerBuilder.addTagAddress(name, tagAddress);
+            }
+
+            @Override
+            public PlcReadRequest.Builder addTag(String name, PlcTag tag) {
+                return innerBuilder.addTag(name,tag);
+            }
+        };
     }
 
     @Override
@@ -100,7 +168,73 @@ public class LeasedPlcConnection implements PlcConnection {
         if(connection == null) {
             throw new PlcRuntimeException("Error using leased connection after returning it to the cache.");
         }
-        return connection.writeRequestBuilder();
+        final PlcWriteRequest.Builder innerBuilder =  connection.writeRequestBuilder();
+        return new PlcWriteRequest.Builder() {
+            @Override
+            public PlcWriteRequest build() {
+                PlcWriteRequest innerPlcWriteRequest = innerBuilder.build();
+                return new PlcWriteRequest() {
+                    @Override
+                    public CompletableFuture<? extends PlcWriteResponse> execute() {
+                        CompletableFuture<? extends PlcWriteResponse> future = innerPlcWriteRequest.execute();
+                        final CompletableFuture<PlcWriteResponse> responseFuture = new CompletableFuture<>();
+                        future.handle((plcWriteResponse,throwable)->{
+                            if (plcWriteResponse != null) {
+                                responseFuture.complete(plcWriteResponse);
+                            } else {
+                                try {
+                                    destroy();
+                                } catch (Exception e) {
+                                }
+                                responseFuture.completeExceptionally(throwable);
+                            }
+                            return null;
+                        });
+                        return responseFuture;
+                    }
+
+                    @Override
+                    public int getNumberOfValues(String name) {
+                        return innerPlcWriteRequest.getNumberOfValues(name);
+                    }
+
+                    @Override
+                    public PlcValue getPlcValue(String name) {
+                        return innerPlcWriteRequest.getPlcValue(name);
+                    }
+
+                    @Override
+                    public int getNumberOfTags() {
+                        return innerPlcWriteRequest.getNumberOfTags();
+                    }
+
+                    @Override
+                    public LinkedHashSet<String> getTagNames() {
+                        return innerPlcWriteRequest.getTagNames();
+                    }
+
+                    @Override
+                    public PlcTag getTag(String name) {
+                        return innerPlcWriteRequest.getTag(name);
+                    }
+
+                    @Override
+                    public List<PlcTag> getTags() {
+                        return innerPlcWriteRequest.getTags();
+                    }
+                };
+            }
+
+            @Override
+            public PlcWriteRequest.Builder addTagAddress(String name, String tagAddress, Object... values) {
+                return innerBuilder.addTagAddress(name,tagAddress,values);
+            }
+
+            @Override
+            public PlcWriteRequest.Builder addTag(String name, PlcTag tag, Object... values) {
+                return innerBuilder.addTag(name,tag,values);
+            }
+        };
     }
 
     @Override

@@ -28,11 +28,19 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 class ConnectionContainer {
-    private final PlcConnection connection;
+    private PlcConnection connection;
+    private boolean closed = false;
     private final Duration maxLeaseTime;
     private final Queue<CompletableFuture<PlcConnection>> queue;
 
     private LeasedPlcConnection leasedConnection;
+
+    public boolean isClosed() {
+        return closed;
+    }
+    public PlcConnection getRawConnection() {
+        return connection;
+    }
 
     public ConnectionContainer(PlcConnection connection, Duration maxLeaseTime) {
         this.connection = connection;
@@ -54,8 +62,19 @@ class ConnectionContainer {
         }
         return connectionFuture;
     }
-
+    public synchronized void close(){
+        CompletableFuture<PlcConnection> leaseFuture;
+        while((leaseFuture = queue.poll())!=null){
+            leaseFuture.complete(null);
+        }
+        leasedConnection = null;
+        connection = null;
+        closed = true;
+    }
     public synchronized void returnConnection(LeasedPlcConnection returnedLeasedConnection) {
+        if(closed){
+            return;
+        }
         if(returnedLeasedConnection != leasedConnection) {
             throw new PlcRuntimeException("Error trying to return lease from invalid connection");
         }

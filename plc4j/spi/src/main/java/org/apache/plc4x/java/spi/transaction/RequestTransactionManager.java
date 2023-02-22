@@ -18,21 +18,16 @@
  */
 package org.apache.plc4x.java.spi.transaction;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 /**
  * This is a limited Queue of Requests, a Protocol can use.
@@ -49,25 +44,23 @@ public class RequestTransactionManager {
     private static final Logger logger = LoggerFactory.getLogger(RequestTransactionManager.class);
 
     /** Executor that performs all operations */
-    //static final ExecutorService executor = Executors.newScheduledThreadPool(4);
-
-    final ExecutorService executor = Executors.newFixedThreadPool(4, new BasicThreadFactory.Builder()
-                                                    .namingPattern("plc4x-tm-thread-%d")
-                                                    .daemon(true)
-                                                    .priority(Thread.MAX_PRIORITY)
-                                                    .build());    
-    
+    private final ExecutorService executor;
     private final Set<RequestTransaction> runningRequests;
     /** How many Transactions are allowed to run at the same time? */
     private int numberOfConcurrentRequests;
     /** Assigns each request a Unique Transaction Id, especially important for failure handling */
-    private AtomicInteger transactionId = new AtomicInteger(0);
+    private final AtomicInteger transactionId = new AtomicInteger(0);
     /** Important, this is a FIFO Queue for Fairness! */
-    private Queue<RequestTransaction> workLog = new ConcurrentLinkedQueue<>();
+    private final Queue<RequestTransaction> workLog = new ConcurrentLinkedQueue<>();
 
     public RequestTransactionManager(int numberOfConcurrentRequests) {
         this.numberOfConcurrentRequests = numberOfConcurrentRequests;
         // Immutable Map
+        executor = new ThreadPoolExecutor(0, numberOfConcurrentRequests,
+            0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<>(1024),
+            new BasicThreadFactory.Builder().namingPattern("RequestTransactionManager-pool-%d").daemon(true).build(),
+            new ThreadPoolExecutor.AbortPolicy());;
         runningRequests = ConcurrentHashMap.newKeySet();
     }
 
@@ -91,13 +84,13 @@ public class RequestTransactionManager {
         // As we might have increased the number, try to send some more requests.
         processWorklog();
     }
-    
+
     /*
     * It allows the sequential shutdown of the associated driver.
     */
     public void shutdown(){
         executor.shutdown();
-    }    
+    }
 
     public void submit(Consumer<RequestTransaction> context) {
         RequestTransaction transaction = startRequest();
@@ -114,7 +107,7 @@ public class RequestTransactionManager {
         processWorklog();
     }
 
-    private void processWorklog() {
+    private synchronized void processWorklog() {
         while (runningRequests.size() < getNumberOfConcurrentRequests() && !workLog.isEmpty()) {
             RequestTransaction next = workLog.poll();
             if (next != null) {

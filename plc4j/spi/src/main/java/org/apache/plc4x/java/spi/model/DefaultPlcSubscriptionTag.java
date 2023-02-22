@@ -59,7 +59,7 @@ public class DefaultPlcSubscriptionTag implements PlcSubscriptionTag {
     public List<ArrayInfo> getArrayInfo() {
         return plcTag.getArrayInfo();
     }
-
+    @Override
     public PlcSubscriptionType getPlcSubscriptionType() {
         return plcSubscriptionType;
     }
@@ -67,7 +67,7 @@ public class DefaultPlcSubscriptionTag implements PlcSubscriptionTag {
     public PlcTag getTag() {
         return plcTag;
     }
-
+    @Override
     public Optional<Duration> getDuration() {
         return Optional.ofNullable(duration);
     }

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RequestTransactionManagerTest {
@@ -124,11 +124,10 @@ public class RequestTransactionManagerTest {
     }
 
     @Test
-    @Disabled("This test is randomly failing on Jenkins")
+    //@Disabled("This test is randomly failing on Jenkins")
     public void abortTransactionFromExternally() throws ExecutionException, InterruptedException {
         CompletableFuture<Void> sendRequest = new CompletableFuture<>();
         CompletableFuture<Void> receiveResponse = new CompletableFuture<>();
-        CompletableFuture<Void> transactionIsFinished = new CompletableFuture<>();
 
         RequestTransactionManager tm = new RequestTransactionManager();
         RequestTransactionManager.RequestTransaction handle = tm.startRequest();
@@ -136,10 +135,16 @@ public class RequestTransactionManagerTest {
             // ...
             sendRequest.complete(null);
             // Receive
-            receiveResponse.thenAccept((n) -> {
-                handle.endRequest();
-                transactionIsFinished.complete(null);
+            receiveResponse.whenComplete((n,e) -> {
+                // never execute
+                fail();
             });
+            //Wait that the fail is handled internally surely and then interrupt this block execute
+            try {
+                receiveResponse.get();
+            } catch (Exception e) {
+                assertInstanceOf(InterruptedException.class,e);
+            }
         });
 
         // Assert that there is a request going on
@@ -149,13 +154,14 @@ public class RequestTransactionManagerTest {
         handle.failRequest(new RuntimeException());
 
         // Wait that the fail is handled internally surely
-        Thread.sleep(100);
+        //Thread.sleep(100);
 
         // Assert that no requests are active
         assertEquals(0, tm.getNumberOfActiveRequests());
 
         // Assert that its cancelled
         assertTrue(handle.getCompletionFuture().isCancelled());
+        assertFalse(receiveResponse.isDone());
     }
 
     private void sendRequest(RequestTransactionManager tm, CompletableFuture<Void> sendRequest, CompletableFuture<Void> endRequest, CompletableFuture<Void> requestIsEnded) {

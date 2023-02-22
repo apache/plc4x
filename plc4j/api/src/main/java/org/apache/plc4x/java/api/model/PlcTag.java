@@ -63,6 +63,10 @@ public interface PlcTag {
         return PlcValueType.NULL;
     }
 
+    @JsonIgnore
+    default void setPlcValueType(PlcValueType plcValueType){
+    }
+
     /**
      * Returns the number of elements to expect of the response one can expect from this field.
      *
