@@ -175,17 +175,6 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 					throw (e instanceof ProcessException) ? (ProcessException) e : new ProcessException(e);
 				}
 
-				if (tags == null && writeRequest != null){
-					if (debugEnabled)
-                    	logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
-					getSchemaCache().addSchema(
-						addressMap, 
-						writeRequest.getTagNames(),
-						writeRequest.getTags(),
-						null
-					);
-				}
-
 				// Response check if values were written
 				if (plcWriteResponse != null){
 					PlcResponseCode code = null;
@@ -198,6 +187,16 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 								+ " in addresss " + plcWriteResponse.getTag(tag).getAddressString());
 							throw new ProcessException("Writing response code for " + plcWriteResponse.getTag(tag).getAddressString() + "was " + code.name() + ", expected OK");
 						}
+					}
+					if (tags == null && writeRequest != null){
+						if (debugEnabled)
+							logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+						getSchemaCache().addSchema(
+							addressMap, 
+							writeRequest.getTagNames(),
+							writeRequest.getTags(),
+							null
+						);
 					}
 					nrOfRows.getAndAdd(nrOfRowsHere);
 				}

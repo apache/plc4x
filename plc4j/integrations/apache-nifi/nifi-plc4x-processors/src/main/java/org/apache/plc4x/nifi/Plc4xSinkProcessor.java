@@ -67,14 +67,21 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
 
             if (tags != null){
                 for (Map.Entry<String,PlcTag> tag : tags.entrySet()){
-                    builder.addTag(tag.getKey(), tag.getValue(), flowFile.getAttribute(tag.getKey()));
+                    if (flowFile.getAttributes().containsKey(tag.getKey())) {
+                        builder.addTag(tag.getKey(), tag.getValue(), flowFile.getAttribute(tag.getKey()));
+                    } else {
+                        if (debugEnabled)
+                            logger.debug("PlcTag " + tag + " is declared as address but was not found on input record.");
+                    }
                 }
             } else {
+                for (Map.Entry<String,String> entry: addressMap.entrySet()){
+                    if (flowFile.getAttributes().containsKey(entry.getKey())) {
+                        builder.addTagAddress(entry.getKey(), entry.getValue(), flowFile.getAttribute(entry.getKey()));
+                    }
+                }
                 if (debugEnabled)
                     logger.debug("PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
-                for (Map.Entry<String,String> entry: addressMap.entrySet()){
-                    builder.addTagAddress(entry.getKey(), entry.getValue(), flowFile.getAttribute(entry.getKey()));
-                }
             }
            
             PlcWriteRequest writeRequest = builder.build();
@@ -87,25 +94,29 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
                 for (String tag : plcWriteResponse.getTagNames()) {
                     code = plcWriteResponse.getResponseCode(tag);
                     if (!code.equals(PlcResponseCode.OK))
+                        logger.error("Not OK code when writing the data to PLC for tag " + tag 
+								+ " with value  " + flowFile.getAttribute(tag)
+								+ " in addresss " + plcWriteResponse.getTag(tag).getAddressString());
                         throw new Exception(code.toString());
                 }
                 session.transfer(flowFile, REL_SUCCESS);
+
+                if (tags == null){
+                    if (debugEnabled)
+                        logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
+                    getSchemaCache().addSchema(
+                        addressMap, 
+                        writeRequest.getTagNames(),
+                        writeRequest.getTags(),
+                        null
+                    );
+                }
                 
             } catch (Exception e) {
                 flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
                 session.transfer(flowFile, REL_FAILURE);
             }
 
-            if (tags == null){
-                if (debugEnabled)
-                    logger.debug("Adding PlcTypes resolution into cache with key: " + addressMap.toString());
-                getSchemaCache().addSchema(
-                    addressMap, 
-                    writeRequest.getTagNames(),
-                    writeRequest.getTags(),
-                    null
-                );
-            }
         } catch (ProcessException e) {
             throw e;
         } catch (Exception e) {
