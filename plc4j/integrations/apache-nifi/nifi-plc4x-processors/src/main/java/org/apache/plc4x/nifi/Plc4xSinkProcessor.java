@@ -93,11 +93,12 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
 
                 for (String tag : plcWriteResponse.getTagNames()) {
                     code = plcWriteResponse.getResponseCode(tag);
-                    if (!code.equals(PlcResponseCode.OK))
+                    if (!code.equals(PlcResponseCode.OK)) {
                         logger.error("Not OK code when writing the data to PLC for tag " + tag 
 								+ " with value  " + flowFile.getAttribute(tag)
 								+ " in addresss " + plcWriteResponse.getTag(tag).getAddressString());
                         throw new Exception(code.toString());
+                    }
                 }
                 session.transfer(flowFile, REL_SUCCESS);
 
