@@ -50,7 +50,7 @@ The following properties applies to all Plc4x Processors:
     If this JSON is in an attribute `plc4x.addresses` it can be accessed with *Address Text*=`${plc4x.addresses}`. 
 
 
-When reading from a PLC the response is converted into Avro. The mapping between PLC data types and Avro types is done as follows:
+When reading from a PLC the response is used to create a mapping between Plc types into Avro. The mapping is done as follows:
 
 Table of data mapping between plc data and Avro types (as specified in [Avro specification](https://avro.apache.org/docs/1.11.1/specification/#primitive-types)).
 
