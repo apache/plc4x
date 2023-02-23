@@ -60,11 +60,6 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
 
     @Override
     public PlcConnection getConnection(String url) throws PlcConnectionException {
-        return getConnection(url,null);
-    }
-
-    @Override
-    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
         ConnectionContainer connectionContainer;
         synchronized (connectionContainers) {
             connectionContainer = connectionContainers.get(url);
@@ -72,13 +67,10 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
                 LOG.debug("Creating new connection");
 
                 // Establish the real connection to the plc
-                PlcConnection connection;
-                if(authentication!=null) {
-                    connection = connectionManager.getConnection(url,authentication);
-                } else{
-                    connection = connectionManager.getConnection(url);
-                }
-                connectionContainer = new ConnectionContainer(connection,maxLeaseTime);
+                PlcConnection connection = connectionManager.getConnection(url);
+
+                // Crate a connection container to manage handling this connection
+                connectionContainer = new ConnectionContainer(connection, maxLeaseTime);
                 connectionContainers.put(url, connectionContainer);
             } else {
                 LOG.debug("Reusing exising connection");
@@ -97,6 +89,11 @@ public class CachedPlcConnectionManager implements PlcConnectionManager {
             connectionContainers.remove(url);
             throw new PlcConnectionException("Error acquiring lease for connection", e);
         }
+    }
+
+    @Override
+    public PlcConnection getConnection(String url, PlcAuthentication authentication) throws PlcConnectionException {
+        throw new PlcConnectionException("the cached driver manager currently doesn't support authentication");
     }
 
     public void destroy(){
