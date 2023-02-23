@@ -830,7 +830,6 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                     return new PlcREAL(swap(data.getFloat(0)));
                 case BOOL:
                     return new PlcBOOL(data.getBoolean(0));
-                case STRING36:
                 case STRING:
                 case STRUCTURED: {
                     short structuredType = Short.reverseBytes(data.getShort(0));
@@ -1244,12 +1243,9 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                 buffer.putLong(value.getLong());
                 break;
             case STRING:
-            case STRING36:
+            case STRUCTURED:
                 buffer.putInt(value.getString().length());
                 buffer.put(value.getString().getBytes(), 0, value.getString().length());
-                break;
-            case STRUCTURED:
-                // Need to handle
                 break;
             default:
                 break;

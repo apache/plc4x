@@ -356,11 +356,35 @@
     ['0X00C3'   INT             ['2']]
     ['0X00C4'   DINT            ['4']]
     ['0X00C5'   LINT            ['8']]
+    ['0X00C6'   USINT           ['1']]
+    ['0X00C7'   UINT            ['2']]
+    ['0X00C8'   UDINT           ['4']]
+    ['0X00C9'   ULINT           ['8']]
     ['0X00CA'   REAL            ['4']]
+    ['0X00CB'   LREAL           ['8']]
+    ['0X00CC'   STIME           ['4']] // Synchronous time information
+    ['0X00CD'   DATE            ['2']]
+    ['0X00CE'   TIME_OF_DAY     ['4']]
+    ['0X00CF'   DATE_AND_TIME   ['6']]
+    ['0X00D0'   STRING          ['0']] // Character string, 1-byte per character, 2-byte length
+    ['0X00D1'   BYTE            ['1']]
+    ['0X00D2'   WORD            ['2']]
     ['0X00D3'   DWORD           ['4']]
+    ['0X00D3'   LWORD           ['8']]
+    ['0X00D5'   STRING2         ['0']] // Character string, 2-bytes per character
+    ['0X00D6'   FTIME           ['4']] // Duration - high resolution
+    ['0X00D7'   LTIME           ['8']] // Duration - long
+    ['0X00D8'   ITIME           ['2']] // Duration - short
+    ['0X00D9'   STRINGN         ['0']] // Character string, n-bytes per character
+    ['0X00DA'   SHORT_STRING    ['0']] // Character string, 1-byte per character, 1-byte length
+    ['0X00DB'   TIME            ['4']] // Duration - milliseconds
+    ['0X00DC'   EPATH           ['0']] // CIP path segments
+    ['0X00DD'   ENGUNIT         ['0']] // Engineering units
+    ['0X00DD'   STRINGI         ['0']] // International character string
+    // ARRAY
     ['0X02A0'   STRUCTURED      ['88']]
-    ['0X02A0'   STRING          ['88']]
-    ['0X02A0'   STRING36        ['40']]
+    //['0X02A0'   STRING          ['88']]
+    //['0X02A0'   STRING36        ['40']]
     //TODO: -1 is not a valid value for uint
     //['-1'       UNKNOWN         ['-1']]
 

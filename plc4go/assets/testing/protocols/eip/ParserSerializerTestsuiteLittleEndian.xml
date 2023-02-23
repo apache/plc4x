@@ -907,7 +907,7 @@
                       <data>
                         <CIPData>
                           <dataType>
-                            <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="STRING36">672</CIPDataTypeCode>
+                            <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="STRUCTURED">672</CIPDataTypeCode>
                           </dataType>
                           <data dataType="byte" bitLength="720">0xce0f2b000000556d6d2c2049206e6f772073656520796f7520696e207468652077697265736861726b20636170747572650000000000000000000000000000000000000000000000000000000000000000000000000000000000</data>
                         </CIPData>
