@@ -51,27 +51,16 @@ public class ListServicesResponse extends EipPacket implements Message {
   }
 
   // Properties.
-  protected final int itemCount;
-  protected final List<TypeId> typeId;
+  protected final List<TypeId> typeIds;
 
   public ListServicesResponse(
-      long sessionHandle,
-      long status,
-      byte[] senderContext,
-      long options,
-      int itemCount,
-      List<TypeId> typeId) {
+      long sessionHandle, long status, byte[] senderContext, long options, List<TypeId> typeIds) {
     super(sessionHandle, status, senderContext, options);
-    this.itemCount = itemCount;
-    this.typeId = typeId;
+    this.typeIds = typeIds;
   }
 
-  public int getItemCount() {
-    return itemCount;
-  }
-
-  public List<TypeId> getTypeId() {
-    return typeId;
+  public List<TypeId> getTypeIds() {
+    return typeIds;
   }
 
   @Override
@@ -81,11 +70,13 @@ public class ListServicesResponse extends EipPacket implements Message {
     int startPos = positionAware.getPos();
     writeBuffer.pushContext("ListServicesResponse");
 
-    // Simple Field (itemCount)
-    writeSimpleField("itemCount", itemCount, writeUnsignedInt(writeBuffer, 16));
+    // Implicit Field (typeIdCount) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int typeIdCount = (int) (COUNT(getTypeIds()));
+    writeImplicitField("typeIdCount", typeIdCount, writeUnsignedInt(writeBuffer, 16));
 
-    // Array Field (typeId)
-    writeComplexTypeArrayField("typeId", typeId, writeBuffer);
+    // Array Field (typeIds)
+    writeComplexTypeArrayField("typeIds", typeIds, writeBuffer);
 
     writeBuffer.popContext("ListServicesResponse");
   }
@@ -101,14 +92,14 @@ public class ListServicesResponse extends EipPacket implements Message {
     ListServicesResponse _value = this;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    // Simple field (itemCount)
+    // Implicit Field (typeIdCount)
     lengthInBits += 16;
 
     // Array field
-    if (typeId != null) {
+    if (typeIds != null) {
       int i = 0;
-      for (TypeId element : typeId) {
-        ThreadLocalHelper.lastItemThreadLocal.set(++i >= typeId.size());
+      for (TypeId element : typeIds) {
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= typeIds.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -124,33 +115,30 @@ public class ListServicesResponse extends EipPacket implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int itemCount = readSimpleField("itemCount", readUnsignedInt(readBuffer, 16));
+    int typeIdCount = readImplicitField("typeIdCount", readUnsignedInt(readBuffer, 16));
 
-    List<TypeId> typeId =
+    List<TypeId> typeIds =
         readCountArrayField(
-            "typeId",
+            "typeIds",
             new DataReaderComplexDefault<>(() -> TypeId.staticParse(readBuffer), readBuffer),
-            itemCount);
+            typeIdCount);
 
     readBuffer.closeContext("ListServicesResponse");
     // Create the instance
-    return new ListServicesResponseBuilderImpl(itemCount, typeId);
+    return new ListServicesResponseBuilderImpl(typeIds);
   }
 
   public static class ListServicesResponseBuilderImpl implements EipPacket.EipPacketBuilder {
-    private final int itemCount;
-    private final List<TypeId> typeId;
+    private final List<TypeId> typeIds;
 
-    public ListServicesResponseBuilderImpl(int itemCount, List<TypeId> typeId) {
-      this.itemCount = itemCount;
-      this.typeId = typeId;
+    public ListServicesResponseBuilderImpl(List<TypeId> typeIds) {
+      this.typeIds = typeIds;
     }
 
     public ListServicesResponse build(
         long sessionHandle, long status, byte[] senderContext, long options) {
       ListServicesResponse listServicesResponse =
-          new ListServicesResponse(
-              sessionHandle, status, senderContext, options, itemCount, typeId);
+          new ListServicesResponse(sessionHandle, status, senderContext, options, typeIds);
       return listServicesResponse;
     }
   }
@@ -164,15 +152,12 @@ public class ListServicesResponse extends EipPacket implements Message {
       return false;
     }
     ListServicesResponse that = (ListServicesResponse) o;
-    return (getItemCount() == that.getItemCount())
-        && (getTypeId() == that.getTypeId())
-        && super.equals(that)
-        && true;
+    return (getTypeIds() == that.getTypeIds()) && super.equals(that) && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), getItemCount(), getTypeId());
+    return Objects.hash(super.hashCode(), getTypeIds());
   }
 
   @Override

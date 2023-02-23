@@ -53,8 +53,7 @@ public class CipRRData extends EipPacket implements Message {
   // Properties.
   protected final long interfaceHandle;
   protected final int timeout;
-  protected final int itemCount;
-  protected final List<TypeId> typeId;
+  protected final List<TypeId> typeIds;
 
   public CipRRData(
       long sessionHandle,
@@ -63,13 +62,11 @@ public class CipRRData extends EipPacket implements Message {
       long options,
       long interfaceHandle,
       int timeout,
-      int itemCount,
-      List<TypeId> typeId) {
+      List<TypeId> typeIds) {
     super(sessionHandle, status, senderContext, options);
     this.interfaceHandle = interfaceHandle;
     this.timeout = timeout;
-    this.itemCount = itemCount;
-    this.typeId = typeId;
+    this.typeIds = typeIds;
   }
 
   public long getInterfaceHandle() {
@@ -80,12 +77,8 @@ public class CipRRData extends EipPacket implements Message {
     return timeout;
   }
 
-  public int getItemCount() {
-    return itemCount;
-  }
-
-  public List<TypeId> getTypeId() {
-    return typeId;
+  public List<TypeId> getTypeIds() {
+    return typeIds;
   }
 
   @Override
@@ -101,11 +94,13 @@ public class CipRRData extends EipPacket implements Message {
     // Simple Field (timeout)
     writeSimpleField("timeout", timeout, writeUnsignedInt(writeBuffer, 16));
 
-    // Simple Field (itemCount)
-    writeSimpleField("itemCount", itemCount, writeUnsignedInt(writeBuffer, 16));
+    // Implicit Field (typeIdCount) (Used for parsing, but its value is not stored as it's
+    // implicitly given by the objects content)
+    int typeIdCount = (int) (COUNT(getTypeIds()));
+    writeImplicitField("typeIdCount", typeIdCount, writeUnsignedInt(writeBuffer, 16));
 
-    // Array Field (typeId)
-    writeComplexTypeArrayField("typeId", typeId, writeBuffer);
+    // Array Field (typeIds)
+    writeComplexTypeArrayField("typeIds", typeIds, writeBuffer);
 
     writeBuffer.popContext("CipRRData");
   }
@@ -127,14 +122,14 @@ public class CipRRData extends EipPacket implements Message {
     // Simple field (timeout)
     lengthInBits += 16;
 
-    // Simple field (itemCount)
+    // Implicit Field (typeIdCount)
     lengthInBits += 16;
 
     // Array field
-    if (typeId != null) {
+    if (typeIds != null) {
       int i = 0;
-      for (TypeId element : typeId) {
-        ThreadLocalHelper.lastItemThreadLocal.set(++i >= typeId.size());
+      for (TypeId element : typeIds) {
+        ThreadLocalHelper.lastItemThreadLocal.set(++i >= typeIds.size());
         lengthInBits += element.getLengthInBits();
       }
     }
@@ -154,44 +149,34 @@ public class CipRRData extends EipPacket implements Message {
 
     int timeout = readSimpleField("timeout", readUnsignedInt(readBuffer, 16));
 
-    int itemCount = readSimpleField("itemCount", readUnsignedInt(readBuffer, 16));
+    int typeIdCount = readImplicitField("typeIdCount", readUnsignedInt(readBuffer, 16));
 
-    List<TypeId> typeId =
+    List<TypeId> typeIds =
         readCountArrayField(
-            "typeId",
+            "typeIds",
             new DataReaderComplexDefault<>(() -> TypeId.staticParse(readBuffer), readBuffer),
-            itemCount);
+            typeIdCount);
 
     readBuffer.closeContext("CipRRData");
     // Create the instance
-    return new CipRRDataBuilderImpl(interfaceHandle, timeout, itemCount, typeId);
+    return new CipRRDataBuilderImpl(interfaceHandle, timeout, typeIds);
   }
 
   public static class CipRRDataBuilderImpl implements EipPacket.EipPacketBuilder {
     private final long interfaceHandle;
     private final int timeout;
-    private final int itemCount;
-    private final List<TypeId> typeId;
+    private final List<TypeId> typeIds;
 
-    public CipRRDataBuilderImpl(
-        long interfaceHandle, int timeout, int itemCount, List<TypeId> typeId) {
+    public CipRRDataBuilderImpl(long interfaceHandle, int timeout, List<TypeId> typeIds) {
       this.interfaceHandle = interfaceHandle;
       this.timeout = timeout;
-      this.itemCount = itemCount;
-      this.typeId = typeId;
+      this.typeIds = typeIds;
     }
 
     public CipRRData build(long sessionHandle, long status, byte[] senderContext, long options) {
       CipRRData cipRRData =
           new CipRRData(
-              sessionHandle,
-              status,
-              senderContext,
-              options,
-              interfaceHandle,
-              timeout,
-              itemCount,
-              typeId);
+              sessionHandle, status, senderContext, options, interfaceHandle, timeout, typeIds);
       return cipRRData;
     }
   }
@@ -207,16 +192,14 @@ public class CipRRData extends EipPacket implements Message {
     CipRRData that = (CipRRData) o;
     return (getInterfaceHandle() == that.getInterfaceHandle())
         && (getTimeout() == that.getTimeout())
-        && (getItemCount() == that.getItemCount())
-        && (getTypeId() == that.getTypeId())
+        && (getTypeIds() == that.getTypeIds())
         && super.equals(that)
         && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-        super.hashCode(), getInterfaceHandle(), getTimeout(), getItemCount(), getTypeId());
+    return Objects.hash(super.hashCode(), getInterfaceHandle(), getTimeout(), getTypeIds());
   }
 
   @Override

@@ -37,10 +37,8 @@ type CipRRData interface {
 	GetInterfaceHandle() uint32
 	// GetTimeout returns Timeout (property field)
 	GetTimeout() uint16
-	// GetItemCount returns ItemCount (property field)
-	GetItemCount() uint16
-	// GetTypeId returns TypeId (property field)
-	GetTypeId() []TypeId
+	// GetTypeIds returns TypeIds (property field)
+	GetTypeIds() []TypeId
 }
 
 // CipRRDataExactly can be used when we want exactly this type and not a type which fulfills CipRRData.
@@ -55,8 +53,7 @@ type _CipRRData struct {
 	*_EipPacket
 	InterfaceHandle uint32
 	Timeout         uint16
-	ItemCount       uint16
-	TypeId          []TypeId
+	TypeIds         []TypeId
 }
 
 ///////////////////////////////////////////////////////////
@@ -105,12 +102,8 @@ func (m *_CipRRData) GetTimeout() uint16 {
 	return m.Timeout
 }
 
-func (m *_CipRRData) GetItemCount() uint16 {
-	return m.ItemCount
-}
-
-func (m *_CipRRData) GetTypeId() []TypeId {
-	return m.TypeId
+func (m *_CipRRData) GetTypeIds() []TypeId {
+	return m.TypeIds
 }
 
 ///////////////////////
@@ -119,12 +112,11 @@ func (m *_CipRRData) GetTypeId() []TypeId {
 ///////////////////////////////////////////////////////////
 
 // NewCipRRData factory function for _CipRRData
-func NewCipRRData(interfaceHandle uint32, timeout uint16, itemCount uint16, typeId []TypeId, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_CipRRData {
+func NewCipRRData(interfaceHandle uint32, timeout uint16, typeIds []TypeId, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_CipRRData {
 	_result := &_CipRRData{
 		InterfaceHandle: interfaceHandle,
 		Timeout:         timeout,
-		ItemCount:       itemCount,
-		TypeId:          typeId,
+		TypeIds:         typeIds,
 		_EipPacket:      NewEipPacket(sessionHandle, status, senderContext, options),
 	}
 	_result._EipPacket._EipPacketChildRequirements = _result
@@ -155,13 +147,13 @@ func (m *_CipRRData) GetLengthInBits(ctx context.Context) uint16 {
 	// Simple field (timeout)
 	lengthInBits += 16
 
-	// Simple field (itemCount)
+	// Implicit Field (typeIdCount)
 	lengthInBits += 16
 
 	// Array field
-	if len(m.TypeId) > 0 {
-		for _curItem, element := range m.TypeId {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.TypeId), _curItem)
+	if len(m.TypeIds) > 0 {
+		for _curItem, element := range m.TypeIds {
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.TypeIds), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -202,38 +194,38 @@ func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	}
 	timeout := _timeout
 
-	// Simple Field (itemCount)
-	_itemCount, _itemCountErr := readBuffer.ReadUint16("itemCount", 16)
-	if _itemCountErr != nil {
-		return nil, errors.Wrap(_itemCountErr, "Error parsing 'itemCount' field of CipRRData")
+	// Implicit Field (typeIdCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+	typeIdCount, _typeIdCountErr := readBuffer.ReadUint16("typeIdCount", 16)
+	_ = typeIdCount
+	if _typeIdCountErr != nil {
+		return nil, errors.Wrap(_typeIdCountErr, "Error parsing 'typeIdCount' field of CipRRData")
 	}
-	itemCount := _itemCount
 
-	// Array field (typeId)
-	if pullErr := readBuffer.PullContext("typeId", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for typeId")
+	// Array field (typeIds)
+	if pullErr := readBuffer.PullContext("typeIds", utils.WithRenderAsList(true)); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for typeIds")
 	}
 	// Count array
-	typeId := make([]TypeId, itemCount)
+	typeIds := make([]TypeId, typeIdCount)
 	// This happens when the size is set conditional to 0
-	if len(typeId) == 0 {
-		typeId = nil
+	if len(typeIds) == 0 {
+		typeIds = nil
 	}
 	{
-		_numItems := uint16(itemCount)
+		_numItems := uint16(typeIdCount)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := TypeIdParseWithBuffer(arrayCtx, readBuffer)
 			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'typeId' field of CipRRData")
+				return nil, errors.Wrap(_err, "Error parsing 'typeIds' field of CipRRData")
 			}
-			typeId[_curItem] = _item.(TypeId)
+			typeIds[_curItem] = _item.(TypeId)
 		}
 	}
-	if closeErr := readBuffer.CloseContext("typeId", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for typeId")
+	if closeErr := readBuffer.CloseContext("typeIds", utils.WithRenderAsList(true)); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for typeIds")
 	}
 
 	if closeErr := readBuffer.CloseContext("CipRRData"); closeErr != nil {
@@ -245,8 +237,7 @@ func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		_EipPacket:      &_EipPacket{},
 		InterfaceHandle: interfaceHandle,
 		Timeout:         timeout,
-		ItemCount:       itemCount,
-		TypeId:          typeId,
+		TypeIds:         typeIds,
 	}
 	_child._EipPacket._EipPacketChildRequirements = _child
 	return _child, nil
@@ -282,28 +273,28 @@ func (m *_CipRRData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(_timeoutErr, "Error serializing 'timeout' field")
 		}
 
-		// Simple Field (itemCount)
-		itemCount := uint16(m.GetItemCount())
-		_itemCountErr := writeBuffer.WriteUint16("itemCount", 16, (itemCount))
-		if _itemCountErr != nil {
-			return errors.Wrap(_itemCountErr, "Error serializing 'itemCount' field")
+		// Implicit Field (typeIdCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		typeIdCount := uint16(uint16(len(m.GetTypeIds())))
+		_typeIdCountErr := writeBuffer.WriteUint16("typeIdCount", 16, (typeIdCount))
+		if _typeIdCountErr != nil {
+			return errors.Wrap(_typeIdCountErr, "Error serializing 'typeIdCount' field")
 		}
 
-		// Array Field (typeId)
-		if pushErr := writeBuffer.PushContext("typeId", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for typeId")
+		// Array Field (typeIds)
+		if pushErr := writeBuffer.PushContext("typeIds", utils.WithRenderAsList(true)); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for typeIds")
 		}
-		for _curItem, _element := range m.GetTypeId() {
+		for _curItem, _element := range m.GetTypeIds() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetTypeId()), _curItem)
+			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetTypeIds()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'typeId' field")
+				return errors.Wrap(_elementErr, "Error serializing 'typeIds' field")
 			}
 		}
-		if popErr := writeBuffer.PopContext("typeId", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for typeId")
+		if popErr := writeBuffer.PopContext("typeIds", utils.WithRenderAsList(true)); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for typeIds")
 		}
 
 		if popErr := writeBuffer.PopContext("CipRRData"); popErr != nil {

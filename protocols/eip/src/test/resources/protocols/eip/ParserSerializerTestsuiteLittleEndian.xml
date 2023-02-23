@@ -43,8 +43,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -71,7 +71,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -95,8 +95,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -238,7 +238,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -262,8 +262,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -294,7 +294,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -318,8 +318,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -346,7 +346,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -370,8 +370,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -403,7 +403,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -427,8 +427,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -458,7 +458,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -482,8 +482,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -513,7 +513,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -537,8 +537,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -644,7 +644,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -668,8 +668,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -698,7 +698,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -789,8 +789,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -860,7 +860,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -884,8 +884,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -917,7 +917,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -964,8 +964,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -999,7 +999,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -1042,8 +1042,8 @@
         <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
         <options dataType="uint" bitLength="32">0</options>
         <ListServicesResponse>
-          <itemCount dataType="uint" bitLength="16">1</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">1</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">256</id>
               <ServicesResponse>
@@ -1056,7 +1056,7 @@
                 <data dataType="byte" bitLength="120">0x436f6d6d756e69636174696f6e7300</data>
               </ServicesResponse>
             </TypeId>
-          </typeId>
+          </typeIds>
         </ListServicesResponse>
       </EipPacket>
     </xml>
@@ -1078,8 +1078,8 @@
         <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
         <options dataType="uint" bitLength="32">0</options>
         <ListServicesResponse>
-          <itemCount dataType="uint" bitLength="16">1</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">1</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">256</id>
               <ServicesResponse>
@@ -1092,7 +1092,7 @@
                 <data dataType="byte" bitLength="120">0x436f6d6d756e69636174696f6e7300</data>
               </ServicesResponse>
             </TypeId>
-          </typeId>
+          </typeIds>
         </ListServicesResponse>
       </EipPacket>
     </xml>
@@ -1116,8 +1116,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">32</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -1171,7 +1171,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -1195,8 +1195,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -1308,7 +1308,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -1332,8 +1332,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -1367,7 +1367,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -1392,8 +1392,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -1417,7 +1417,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -1441,8 +1441,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -1466,7 +1466,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>

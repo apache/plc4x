@@ -30,7 +30,6 @@
     <raw>70003800c9070440000000005765277265000000000000000000000000000200a10004005942feffb10024000100520d91124b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b910370707000010000000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>false</response>
     </parser-arguments>
     <xml>
@@ -44,8 +43,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -72,7 +71,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -83,7 +82,6 @@
     <raw>6f0044001d5e074000000000000000000000000000000000000000000000020000000000b20034005b02200624010a0e02000020b4a500002bcb37132a0000000300000034122000a20f004201402000a20f0042a303010020022401</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>false</response>
     </parser-arguments>
     <xml>
@@ -97,8 +95,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -114,7 +112,7 @@
                     <response dataType="bit" bitLength="1">false</response>
                     <service dataType="uint" bitLength="7">91</service>
                     <CipConnectionManagerRequest>
-                      <requestPathSize dataType="int" bitLength="8">2</requestPathSize>
+                      <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
                       <classSegment>
                         <PathSegment>
                           <pathSegment dataType="uint" bitLength="3">1</pathSegment>
@@ -240,7 +238,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -251,7 +249,6 @@
     <raw>6f002e001d5e074000000000000000000000000000000000000000000000020000000000b2001e00db0000005b6bfeffb4a500002bcb37132a00000034122000014020000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -265,8 +262,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -297,7 +294,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -308,7 +305,6 @@
     <raw>70002e001d5e0740000000005765277265000000000000000000000000000200a10004005b6bfeffb1001a0001005208910d5a5a5a5f5a5a5a5f415252415900010000000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>false</response>
     </parser-arguments>
     <xml>
@@ -322,8 +318,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -350,7 +346,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -361,7 +357,6 @@
     <raw>700020001d5e0740000000000000000000000000000000000000000000000200a1000400b4a50000b1000c000100d2000000c40000000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -375,8 +370,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -408,7 +403,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -419,7 +414,6 @@
     <raw>700032001d5e0740000000006e6f000000000000000000000000000000000200a10004005b6bfeffb1001e0002004d09910d5a5a5a5f5a5a5a5f4152524159002801c400010001000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>false</response>
     </parser-arguments>
     <xml>
@@ -433,8 +427,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -452,7 +446,7 @@
                     <response dataType="bit" bitLength="1">false</response>
                     <service dataType="uint" bitLength="7">77</service>
                     <CipWriteRequest>
-                      <requestPathSize dataType="int" bitLength="8">9</requestPathSize>
+                      <requestPathSize dataType="uint" bitLength="8">9</requestPathSize>
                       <tag dataType="byte" bitLength="144">0x910d5a5a5a5f5a5a5a5f4152524159002801</tag>
                       <dataType>
                         <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
@@ -464,7 +458,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -475,7 +469,6 @@
     <raw>700032001d5e0740000000006e6f000000000000000000000000000000000200a10004005b6bfeffb1001e0002004d09910d5a5a5a5f5a5a5a5f4152524159002801c400010001000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -489,8 +482,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -508,7 +501,7 @@
                     <response dataType="bit" bitLength="1">false</response>
                     <service dataType="uint" bitLength="7">77</service>
                     <CipWriteRequest>
-                      <requestPathSize dataType="int" bitLength="8">9</requestPathSize>
+                      <requestPathSize dataType="uint" bitLength="8">9</requestPathSize>
                       <tag dataType="byte" bitLength="144">0x910d5a5a5a5f5a5a5a5f4152524159002801</tag>
                       <dataType>
                         <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
@@ -520,7 +513,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -531,7 +524,6 @@
     <raw>6f0028001d5e074000000000000000000000000000000000000000000000020000000000b20018004e02200624010a0e2bcb37132a0000000300010020022401</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>false</response>
     </parser-arguments>
     <xml>
@@ -545,8 +537,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -562,7 +554,7 @@
                     <response dataType="bit" bitLength="1">false</response>
                     <service dataType="uint" bitLength="7">78</service>
                     <CipConnectionManagerCloseRequest>
-                      <requestPathSize dataType="int" bitLength="8">2</requestPathSize>
+                      <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
                       <classSegment>
                         <PathSegment>
                           <pathSegment dataType="uint" bitLength="3">1</pathSegment>
@@ -652,7 +644,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -663,7 +655,6 @@
     <raw>6f001e00c907044000000000000000000000000000000000000000000000020000000000b2000e00ce000000902137132a0000000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -677,8 +668,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -707,7 +698,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -718,7 +709,6 @@
     <raw>650004000000000000000000302e382e332020200000000001000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>false</response>
     </parser-arguments>
     <xml>
@@ -742,7 +732,6 @@
     <raw>650004001d5e074000000000302e382e332020200000000001000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -766,7 +755,6 @@
     <raw>660000001d5e074000000000000000000000000000000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>false</response>
     </parser-arguments>
     <xml>
@@ -788,7 +776,6 @@
     <raw>6f002c002a01004000000000000000000000000000000000000000000000020000000000b2001c00520220062401059d0e004c0591084d79537472696e67010001000100</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>false</response>
     </parser-arguments>
     <xml>
@@ -802,8 +789,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -819,7 +806,7 @@
                     <response dataType="bit" bitLength="1">false</response>
                     <service dataType="uint" bitLength="7">82</service>
                     <CipUnconnectedRequest>
-                      <requestPathSize dataType="int" bitLength="8">2</requestPathSize>
+                      <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
                       <classSegment>
                         <PathSegment>
                           <pathSegment dataType="uint" bitLength="3">1</pathSegment>
@@ -859,7 +846,7 @@
                           <response dataType="bit" bitLength="1">false</response>
                           <service dataType="uint" bitLength="7">76</service>
                           <CipReadRequest>
-                            <requestPathSize dataType="int" bitLength="8">5</requestPathSize>
+                            <requestPathSize dataType="uint" bitLength="8">5</requestPathSize>
                             <tag dataType="byte" bitLength="80">0x91084d79537472696e67</tag>
                             <elementNb dataType="uint" bitLength="16">1</elementNb>
                           </CipReadRequest>
@@ -873,7 +860,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -884,7 +871,6 @@
     <raw>6f0070002a01004000000000000000000000000000000000000000000000020000000000b2006000cc000000a002ce0f2b000000556d6d2c2049206e6f772073656520796f7520696e207468652077697265736861726b20636170747572650000000000000000000000000000000000000000000000000000000000000000000000000000000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -898,8 +884,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -931,7 +917,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -942,7 +928,6 @@
     <raw>6500040081926a3500000000504c4334582020200000000001000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -966,7 +951,6 @@
     <raw>700020005e5dccfd00000000504c433458202020000000000000000000000200a1000400c3a45cf2b1000c000100cc000000ca0000000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -980,8 +964,8 @@
         <SendUnitData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">161</id>
               <ConnectedAddressItem>
@@ -1015,7 +999,7 @@
                 </service>
               </ConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </SendUnitData>
       </EipPacket>
     </xml>
@@ -1026,7 +1010,6 @@
     <raw>04000000ec9a149000000000000000000000000000000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>false</response>
     </parser-arguments>
     <xml>
@@ -1048,7 +1031,6 @@
     <raw>04001900ec9a14900000000000000000000000000000000001000001130001002000436f6d6d756e69636174696f6e7300</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -1060,8 +1042,8 @@
         <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
         <options dataType="uint" bitLength="32">0</options>
         <ListServicesResponse>
-          <itemCount dataType="uint" bitLength="16">1</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">1</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">256</id>
               <ServicesResponse>
@@ -1074,7 +1056,7 @@
                 <data dataType="byte" bitLength="120">0x436f6d6d756e69636174696f6e7300</data>
               </ServicesResponse>
             </TypeId>
-          </typeId>
+          </typeIds>
         </ListServicesResponse>
       </EipPacket>
     </xml>
@@ -1085,7 +1067,6 @@
     <raw>040019000000000000000000504c4334582020200000000001000001130001002000436f6d6d756e69636174696f6e7300</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -1097,8 +1078,8 @@
         <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
         <options dataType="uint" bitLength="32">0</options>
         <ListServicesResponse>
-          <itemCount dataType="uint" bitLength="16">1</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">1</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">256</id>
               <ServicesResponse>
@@ -1111,7 +1092,7 @@
                 <data dataType="byte" bitLength="120">0x436f6d6d756e69636174696f6e7300</data>
               </ServicesResponse>
             </TypeId>
-          </typeId>
+          </typeIds>
         </ListServicesResponse>
       </EipPacket>
     </xml>
@@ -1122,7 +1103,6 @@
     <raw>6f00160045000040000000001400000030145b0300000000000000002000020000000000b2000600010220022401</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>false</response>
     </parser-arguments>
     <xml>
@@ -1136,8 +1116,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">32</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -1153,7 +1133,7 @@
                     <response dataType="bit" bitLength="1">false</response>
                     <service dataType="uint" bitLength="7">1</service>
                     <GetAttributeAllRequest>
-                      <requestPathSize dataType="int" bitLength="8">2</requestPathSize>
+                      <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
                       <classSegment>
                         <PathSegment>
                           <pathSegment dataType="uint" bitLength="3">1</pathSegment>
@@ -1191,7 +1171,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -1202,7 +1182,6 @@
     <raw>6f00b60045000040000000001400000030145b0300000000000000000000020000000000b200a600810000004e003a03770066004300f6003700f500ac035f005d005e000003ab033703a503040348004203a4038b002f031204b603b203b303b003b10330034f004e00aa03a803a703a6036e037003320331032d031703b20049033503710072007803ac00b0002b03b100730067006b0068007d038d008c006d006a0038031a0369004500f20074006e008e0070006c0002006a036400a100f4000100c100c000060000010500</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -1216,8 +1195,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -1329,7 +1308,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -1340,7 +1319,6 @@
     <raw>6f004c08b181852100000000504c43345820202000000000000000000000020000000000b2003c088100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -1354,8 +1332,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -1389,7 +1367,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -1401,7 +1379,6 @@
     <raw>6f0014000100000000000000504c43345820202000000000000000000000020000000000b200040081000800</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -1415,8 +1392,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -1440,7 +1417,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>
@@ -1451,7 +1428,6 @@
     <raw>6f0014000100000000000000504c43345820202000000000000000000000020000000000b2000400d2000800</raw>
     <root-type>EipPacket</root-type>
     <parser-arguments>
-      <byteOrder>LITTLE_ENDIAN</byteOrder>
       <response>true</response>
     </parser-arguments>
     <xml>
@@ -1465,8 +1441,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -1490,7 +1466,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </xml>

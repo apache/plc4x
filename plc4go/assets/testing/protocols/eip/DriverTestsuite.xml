@@ -66,8 +66,8 @@
         <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
         <options dataType="uint" bitLength="32">0</options>
         <ListServicesResponse>
-          <itemCount dataType="uint" bitLength="16">1</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">1</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">256</id>
               <ServicesResponse>
@@ -80,7 +80,7 @@
                 <data dataType="byte" bitLength="120">0x436f6d6d756e69636174696f6e7300</data>
               </ServicesResponse>
             </TypeId>
-          </typeId>
+          </typeIds>
         </ListServicesResponse>
       </EipPacket>
     </incoming-plc-message>
@@ -133,8 +133,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -188,7 +188,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </outgoing-plc-message>
@@ -206,8 +206,8 @@
         <CipRRData>
           <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
           <timeout dataType="uint" bitLength="16">0</timeout>
-          <itemCount dataType="uint" bitLength="16">2</itemCount>
-          <typeId isList="true">
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
             <TypeId>
               <id dataType="uint" bitLength="16">0</id>
               <NullAddressItem>
@@ -231,7 +231,7 @@
                 </service>
               </UnConnectedDataItem>
             </TypeId>
-          </typeId>
+          </typeIds>
         </CipRRData>
       </EipPacket>
     </incoming-plc-message>
@@ -264,8 +264,8 @@
           <CipRRData>
             <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
             <timeout dataType="uint" bitLength="16">0</timeout>
-            <itemCount dataType="uint" bitLength="16">2</itemCount>
-            <typeId isList="true">
+            <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+            <typeIds isList="true">
               <TypeId>
                 <id dataType="uint" bitLength="16">0</id>
                 <NullAddressItem>
@@ -335,7 +335,7 @@
                   </service>
                 </UnConnectedDataItem>
               </TypeId>
-            </typeId>
+            </typeIds>
           </CipRRData>
         </EipPacket>
       </outgoing-plc-message>
@@ -353,8 +353,8 @@
           <CipRRData>
             <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
             <timeout dataType="uint" bitLength="16">0</timeout>
-            <itemCount dataType="uint" bitLength="16">2</itemCount>
-            <typeId isList="true">
+            <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+            <typeIds isList="true">
               <TypeId>
                 <id dataType="uint" bitLength="16">0</id>
                 <NullAddressItem>
@@ -386,7 +386,7 @@
                   </service>
                 </UnConnectedDataItem>
               </TypeId>
-            </typeId>
+            </typeIds>
           </CipRRData>
         </EipPacket>
       </incoming-plc-message>

@@ -38,32 +38,32 @@
         ['0x0004','true','0' NullListServicesResponse
         ]
         ['0x0004','true' ListServicesResponse
-            [simple uint    16   itemCount                                                                             ]
-            [array  TypeId       typeId   count   'itemCount'                                                          ]
+            [implicit uint    16   typeIdCount  'COUNT(typeIds)'                                                       ]
+            [array    TypeId       typeIds   count   'typeIdCount'                                                     ]
         ]
         ['0x0065','false' EipConnectionRequest
-            [const  uint    16   protocolVersion   0x01                                                                ]
-            [const  uint    16   flags             0x00                                                                ]
+            [const    uint    16   protocolVersion   0x01                                                              ]
+            [const    uint    16   flags             0x00                                                              ]
         ]
         ['0x0065','true','0' NullEipConnectionResponse
         ]
         ['0x0065','true' EipConnectionResponse
-            [const  uint    16   protocolVersion   0x01                                                                ]
-            [const  uint    16   flags             0x00                                                                ]
+            [const    uint    16   protocolVersion   0x01                                                              ]
+            [const    uint    16   flags             0x00                                                              ]
         ]
         ['0x0066' EipDisconnectRequest
         ]
         ['0x006F' CipRRData
-            [simple uint    32   interfaceHandle                                                                       ]
-            [simple uint    16   timeout                                                                               ]
-            [simple uint    16   itemCount                                                                             ]
-            [array  TypeId       typeId   count   'itemCount'                                                          ]
+            [simple   uint    32   interfaceHandle                                                                     ]
+            [simple   uint    16   timeout                                                                             ]
+            [implicit uint    16   typeIdCount  'COUNT(typeIds)'                                                       ]
+            [array    TypeId       typeIds   count   'typeIdCount'                                                     ]
         ]
         ['0x0070' SendUnitData
-            [const  uint    32   interfaceHandle  0x00000000                                                           ]
-            [simple uint    16   timeout                                                                               ]
-            [simple uint    16   itemCount                                                                             ]
-            [array  TypeId       typeId   count   'itemCount'                                                          ]
+            [const    uint    32   interfaceHandle  0x00000000                                                         ]
+            [simple   uint    16   timeout                                                                             ]
+            [implicit uint    16   typeIdCount  'COUNT(typeIds)'                                                       ]
+            [array    TypeId       typeIds   count   'typeIdCount'                                                     ]
         ]
     ]
 ]
@@ -123,7 +123,7 @@
             [reserved   uint    8           '0x00'                                                                     ]
             [simple     uint    8           status                                                                     ]
             [simple     uint    8           extStatus                                                                  ]
-            [optional   CIPData('serviceLen - 4')   data    '(serviceLen -4) > 0'                                      ]
+            [optional   CIPData('serviceLen - 4')   data    '(serviceLen - 4) > 0'                                      ]
         ]
         ['0x4D','false' CipWriteRequest
             [implicit   uint    8           requestPathSize 'COUNT(tag) / 2'                                           ]
@@ -259,7 +259,7 @@
         ['true'     PortSegmentExtended
             [simple     uint    4   port]
             [simple   uint    8   linkAddressSize]
-            [virtual  uint 8    paddingByte 'linkAddressSize % 2'
+            [virtual  uint 8    paddingByte 'linkAddressSize % 2']
             [simple   vstring  '(linkAddressSize * 8) + (paddingByte * 8)'    address]
         ]
     ]
@@ -295,16 +295,16 @@
 ]
 
 [type   CIPAttributes(uint 16 packetLength)
-    [implicit    uint   16              numberOfClasses 'COUNT(classId)']
-    [array       uint   16              classId count   'numberOfClasses']
-    [simple      uint 16                numberAvailable]
-    [simple      uint 16                numberActive]
-    [array       byte                   data count 'packetLength - 2 - (COUNT(classId) * 2) - 4'
+    [implicit   uint    16              numberOfClasses 'COUNT(classId)']
+    [array      uint    16              classId count   'numberOfClasses']
+    [simple     uint    16              numberAvailable]
+    [simple     uint    16              numberActive]
+    [array      byte                    data count 'packetLength - 2 - (COUNT(classId) * 2) - 4']
 ]
 
 [type   CIPData(uint 16 packetLength)
     [simple     CIPDataTypeCode     dataType]
-    [array      byte   data  count  'packetLength - 2']
+    [array      byte                data  count  'packetLength - 2']
 ]
 
 [type   CIPDataConnected
@@ -313,10 +313,10 @@
 ]
 
 [type   InstanceSegment
-    [simple     uint    3   pathSegmentType]
-    [simple     uint    3   logicalSegmentType]
-    [simple     uint    2   logicalSegmentFormat]
-    [simple     uint    8   instance]
+    [simple     uint    3    pathSegmentType]
+    [simple     uint    3    logicalSegmentType]
+    [simple     uint    2    logicalSegmentFormat]
+    [simple     uint    8    instance]
 ]
 
 [type   ClassSegment
