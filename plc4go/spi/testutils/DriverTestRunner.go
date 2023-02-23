@@ -351,7 +351,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		log.Trace().Msg("Comparing bytes")
 		for i := range expectedRawInput {
 			if expectedRawInput[i] != rawInput[i] {
-				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X", rawInput, expectedRawInput)
+				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s", rawInput, expectedRawInput, utils.DiffHex(rawInput, expectedRawInput))
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging

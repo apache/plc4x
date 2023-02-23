@@ -21,7 +21,6 @@ package org.apache.plc4x.nifi.record;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,6 +43,7 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     private final PlcReadResponse readResponse;
     private final Set<String> rsColumnNames;
     private boolean moreRows;
+    private boolean debugEnabled = logger.isDebugEnabled();
 
    	private AtomicReference<RecordSchema> recordSchema = new AtomicReference<RecordSchema>(null);
 
@@ -51,7 +51,8 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         this.readResponse = readResponse;
         moreRows = true;
         
-        logger.debug("Creating record schema from PlcReadResponse");
+        if (debugEnabled)
+            logger.debug("Creating record schema from PlcReadResponse");
         Map<String, ? extends PlcValue> responseDataStructure = readResponse.getAsPlcValue().getStruct();
         rsColumnNames = responseDataStructure.keySet();
                
@@ -61,7 +62,8 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
         } else {
             this.recordSchema.set(recordSchema);
         }
-        logger.debug("Record schema from PlcReadResponse successfuly created.");
+        if (debugEnabled)
+            logger.debug("Record schema from PlcReadResponse successfuly created.");
 
     }
 
@@ -103,7 +105,8 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
     protected Record createRecord(final PlcReadResponse readResponse) throws IOException{
         final Map<String, Object> values = new HashMap<>(getSchema().getFieldCount());
 
-        logger.debug("creating record.");
+        if (debugEnabled)
+            logger.debug("creating record.");
 
         for (final RecordField tag : getSchema().getFields()) {
             final String tagName = tag.getFieldName();
@@ -122,7 +125,8 @@ public class Plc4xReadResponseRecordSet implements RecordSet, Closeable {
 
         //add timestamp tag to schema
         values.put(Plc4xCommon.PLC4X_RECORD_TIMESTAMP_FIELD_NAME, System.currentTimeMillis());
-        logger.debug("added timestamp tag to record.");
+        if (debugEnabled)
+            logger.debug("added timestamp tag to record.");
 
         	
         return new MapRecord(getSchema(), values);

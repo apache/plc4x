@@ -56,7 +56,7 @@ import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.nifi.record.Plc4xWriter;
 import org.apache.plc4x.nifi.record.RecordPlc4xWriter;
 
-@Tags({ "plc4x-source" })
+@Tags({"plc4x", "get", "input", "source", "record"})
 @InputRequirement(InputRequirement.Requirement.INPUT_ALLOWED)
 @CapabilityDescription("Processor able to read data from industrial PLCs using Apache PLC4X")
 @WritesAttributes({ @WritesAttribute(attribute = "value", description = "some value") })
@@ -80,7 +80,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		.description("Read timeout in miliseconds")
 		.defaultValue("10000")
 		.required(true)
-		.addValidator(StandardValidators.INTEGER_VALIDATOR)
+		.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
 		.build();
 
 	Integer readTimeout;
@@ -131,20 +131,19 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		final AtomicLong nrOfRows = new AtomicLong(0L);
 		final StopWatch executeTime = new StopWatch(true);
 
+		String inputFileUUID = fileToProcess == null ? null : fileToProcess.getAttribute(CoreAttributes.UUID.key());
+		Map<String, String> inputFileAttrMap = fileToProcess == null ? null : fileToProcess.getAttributes();
+		FlowFile resultSetFF;
+		if (fileToProcess == null) {
+			resultSetFF = session.create();
+		} else {
+			resultSetFF = session.create(fileToProcess);
+		}
+		if (inputFileAttrMap != null) {
+			resultSetFF = session.putAllAttributes(resultSetFF, inputFileAttrMap);
+		}
+
 		try (PlcConnection connection = getConnectionManager().getConnection(getConnectionString())) {
-
-			String inputFileUUID = fileToProcess == null ? null : fileToProcess.getAttribute(CoreAttributes.UUID.key());
-			Map<String, String> inputFileAttrMap = fileToProcess == null ? null : fileToProcess.getAttributes();
-			FlowFile resultSetFF;
-			if (fileToProcess == null) {
-				resultSetFF = session.create();
-			} else {
-				resultSetFF = session.create(fileToProcess);
-			}
-			if (inputFileAttrMap != null) {
-				resultSetFF = session.putAllAttributes(resultSetFF, inputFileAttrMap);
-			}
-
 			PlcReadRequest.Builder builder = connection.readRequestBuilder();
 			Map<String,String> addressMap = getPlcAddressMap(context, fileToProcess);
 			final RecordSchema recordSchema = getSchemaCache().retrieveSchema(addressMap);
@@ -155,7 +154,8 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 					builder.addTag(tag.getKey(), tag.getValue());
 				}
 			} else {
-				logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
+				if (debugEnabled)
+                    logger.debug("Plc-Avro schema and PlcTypes resolution not found in cache and will be added with key: " + addressMap.toString());
 				for (Map.Entry<String,String> entry: addressMap.entrySet()){
 					builder.addTagAddress(entry.getKey(), entry.getValue());
 				}
@@ -185,7 +185,8 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			});
 
 			if (recordSchema == null){
-				logger.debug("Adding Plc-Avro schema and PlcTypes resolution into cache with key: " + addressMap.toString());
+				if (debugEnabled)
+                    logger.debug("Adding Plc-Avro schema and PlcTypes resolution into cache with key: " + addressMap.toString());
 				getSchemaCache().addSchema(
 					addressMap, 
 					readRequest.getTagNames(),
@@ -228,5 +229,4 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			throw new ProcessException("Got an error while trying to get a connection", e);
 		}
 	}
-
 }
