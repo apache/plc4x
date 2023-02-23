@@ -27,6 +27,9 @@ import org.apache.plc4x.nifi.util.Plc4xCommonTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class Plc4xSourceRecordProcessorTest {
 	
     private TestRunner testRunner;
@@ -71,9 +74,9 @@ public class Plc4xSourceRecordProcessorTest {
 
 	// Test addressess text property access strategy
     @Test
-    public void testWithAddressText() throws InitializationException { 
+    public void testWithAddressText() throws InitializationException, JsonProcessingException { 
         testRunner.setProperty(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY, AddressesAccessUtils.ADDRESS_TEXT);
-        testRunner.setProperty(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY, Plc4xCommonTest.getAddressMap().toString());
+        testRunner.setProperty(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY, new ObjectMapper().writeValueAsString(Plc4xCommonTest.getAddressMap()).toString());
         testAvroRecordWriterProcessor();
     }
 }
