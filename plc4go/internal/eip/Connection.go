@@ -187,10 +187,10 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Connect Register Session
 
-		log.Debug().Msg("Sending ListServices Request")
+		log.Debug().Msg("Sending EipConnectionRequest")
 		connectionResponseChan := make(chan readWriteModel.EipConnectionResponse)
 		connectionResponseErrorChan := make(chan error)
-		if err := m.messageCodec.SendRequest(ctx, readWriteModel.NewListServicesRequest(EmptySessionHandle, uint32(readWriteModel.CIPStatus_Success), []byte(DefaultSenderContext), uint32(0)), func(message spi.Message) bool {
+		if err := m.messageCodec.SendRequest(ctx, readWriteModel.NewEipConnectionRequest(EmptySessionHandle, uint32(readWriteModel.CIPStatus_Success), []byte(DefaultSenderContext), uint32(0)), func(message spi.Message) bool {
 			eipPacket := message.(readWriteModel.EipPacket)
 			return eipPacket != nil
 		}, func(message spi.Message) error {

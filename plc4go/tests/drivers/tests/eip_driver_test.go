@@ -26,8 +26,10 @@ import (
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
+	"github.com/rs/zerolog"
 )
 
 func TestEIPDriver(t *testing.T) {
+	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	testutils.RunDriverTestsuite(t, eip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml", readwrite.EipXmlParserHelper{})
 }
