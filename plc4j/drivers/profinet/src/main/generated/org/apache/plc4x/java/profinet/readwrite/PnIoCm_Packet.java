@@ -108,8 +108,14 @@ public abstract class PnIoCm_Packet implements Message {
     PnIoCm_PacketBuilder builder = null;
     if (EvaluationHelper.equals(packetType, DceRpc_PacketType.REQUEST)) {
       builder = PnIoCm_Packet_Req.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
+    } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.PING)) {
+      builder = PnIoCm_Packet_Ping.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
     } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.RESPONSE)) {
       builder = PnIoCm_Packet_Res.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
+    } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.FAULT)) {
+      builder = PnIoCm_Packet_Fault.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
+    } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.NO_CALL)) {
+      builder = PnIoCm_Packet_NoCall.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
     } else if (EvaluationHelper.equals(packetType, DceRpc_PacketType.REJECT)) {
       builder = PnIoCm_Packet_Rej.staticParsePnIoCm_PacketBuilder(readBuffer, packetType);
     }

@@ -946,7 +946,7 @@
         ['I_AM'  *IAm
             [simple   BACnetApplicationTagObjectIdentifier                        deviceIdentifier                ]
             [simple   BACnetApplicationTagUnsignedInteger                         maximumApduLengthAcceptedLength ]
-            [simple   BACnetSegmentationTagged('0', 'TagClass.APPLICATION_TAGS')  segmentationSupported           ]
+            [simple   BACnetSegmentationTagged('9', 'TagClass.APPLICATION_TAGS')  segmentationSupported           ]
             [simple   BACnetVendorIdTagged('2', 'TagClass.APPLICATION_TAGS')      vendorId                        ]
         ]
         ['I_HAVE'  *IHave

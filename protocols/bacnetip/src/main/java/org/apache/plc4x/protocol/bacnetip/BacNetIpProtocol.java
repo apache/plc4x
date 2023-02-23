@@ -55,7 +55,6 @@ public class BacNetIpProtocol implements Protocol, ProtocolHelpers {
         LOGGER.info("Parsing: bacnetip.mspec");
         typeContext = new MessageFormatParser().parse(getMspecStream(), typeContext);
 
-        // TODO: those should work above bacnetip.mspec but somehow if we move them we get a concurrent modification exception... debug that.
         LOGGER.info("Parsing: bacnet-vendorids.mspec");
         typeContext = new MessageFormatParser().parse(getMspecStream("bacnet-vendorids"), typeContext);
 

@@ -103,7 +103,7 @@ public class ProfinetChannel {
                     } else if (ethernetPacket.getHeader().getType() == EtherType.IPV4 && ethernetPacket.getPayload().getPayload() instanceof UdpPacket) {
                         UdpPacket payload = (UdpPacket) ethernetPacket.getPayload().getPayload();
                         // Check if it's a PROFINET packet
-                        if (payload.getHeader().getDstPort().value() == -30572 || payload.getHeader().getDstPort().value() == -15536) {
+                        if (payload.getHeader().getDstPort().value() == -30572 || payload.getHeader().getDstPort().value() == -15536 || payload.getHeader().getDstPort().value() == -15535) {
                             isPnPacket = true;
                         }
                     }
@@ -139,7 +139,6 @@ public class ProfinetChannel {
                                         }
                                     }
                                 }
-
                             } else if (payload instanceof Ethernet_FramePayload_LLDP) {
                                 Lldp_Pdu pdu = ((Ethernet_FramePayload_LLDP) payload).getPdu();
                                 if (discoverer != null) {

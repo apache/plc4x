@@ -63,15 +63,24 @@ public abstract class PnDcp_Block implements Message {
         new DataWriterEnumDefault<>(
             PnDcp_BlockOptions::getValue,
             PnDcp_BlockOptions::name,
-            writeUnsignedShort(writeBuffer, 8)));
+            writeUnsignedShort(writeBuffer, 8)),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Discriminator Field (suboption) (Used as input to a switch field)
-    writeDiscriminatorField("suboption", getSuboption(), writeUnsignedShort(writeBuffer, 8));
+    writeDiscriminatorField(
+        "suboption",
+        getSuboption(),
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (blockLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
     int blockLength = (int) ((getLengthInBytes()) - (4));
-    writeImplicitField("blockLength", blockLength, writeUnsignedInt(writeBuffer, 16));
+    writeImplicitField(
+        "blockLength",
+        blockLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch field (Serialize the sub-type)
     serializePnDcp_BlockChild(writeBuffer);
@@ -121,11 +130,20 @@ public abstract class PnDcp_Block implements Message {
         readDiscriminatorField(
             "option",
             new DataReaderEnumDefault<>(
-                PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)));
+                PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short suboption = readDiscriminatorField("suboption", readUnsignedShort(readBuffer, 8));
+    short suboption =
+        readDiscriminatorField(
+            "suboption",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int blockLength = readImplicitField("blockLength", readUnsignedInt(readBuffer, 16));
+    int blockLength =
+        readImplicitField(
+            "blockLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PnDcp_BlockBuilder builder = null;

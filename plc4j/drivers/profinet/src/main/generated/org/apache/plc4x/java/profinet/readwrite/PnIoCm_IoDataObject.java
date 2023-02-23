@@ -68,14 +68,25 @@ public class PnIoCm_IoDataObject implements Message {
     writeBuffer.pushContext("PnIoCm_IoDataObject");
 
     // Simple Field (slotNumber)
-    writeSimpleField("slotNumber", slotNumber, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "slotNumber",
+        slotNumber,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (subSlotNumber)
-    writeSimpleField("subSlotNumber", subSlotNumber, writeUnsignedInt(writeBuffer, 16));
+    writeSimpleField(
+        "subSlotNumber",
+        subSlotNumber,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (ioDataObjectFrameOffset)
     writeSimpleField(
-        "ioDataObjectFrameOffset", ioDataObjectFrameOffset, writeUnsignedInt(writeBuffer, 16));
+        "ioDataObjectFrameOffset",
+        ioDataObjectFrameOffset,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_IoDataObject");
   }
@@ -116,12 +127,23 @@ public class PnIoCm_IoDataObject implements Message {
     int curPos;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
-    int slotNumber = readSimpleField("slotNumber", readUnsignedInt(readBuffer, 16));
+    int slotNumber =
+        readSimpleField(
+            "slotNumber",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    int subSlotNumber = readSimpleField("subSlotNumber", readUnsignedInt(readBuffer, 16));
+    int subSlotNumber =
+        readSimpleField(
+            "subSlotNumber",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int ioDataObjectFrameOffset =
-        readSimpleField("ioDataObjectFrameOffset", readUnsignedInt(readBuffer, 16));
+        readSimpleField(
+            "ioDataObjectFrameOffset",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_IoDataObject");
     // Create the instance

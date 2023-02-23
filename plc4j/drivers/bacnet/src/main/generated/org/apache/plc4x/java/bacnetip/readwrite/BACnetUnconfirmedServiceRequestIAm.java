@@ -171,7 +171,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
             new DataReaderComplexDefault<>(
                 () ->
                     BACnetSegmentationTagged.staticParse(
-                        readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),
+                        readBuffer, (short) (9), (TagClass) (TagClass.APPLICATION_TAGS)),
                 readBuffer));
 
     BACnetVendorIdTagged vendorId =

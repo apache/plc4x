@@ -36,6 +36,9 @@ type AsciiBox struct {
 // DebugAsciiBox set to true to get debug messages
 var DebugAsciiBox bool
 
+// ANSI_PATTERN source: https://github.com/chalk/ansi-regex/blob/main/index.js#L3
+var ANSI_PATTERN = regexp.MustCompile("[\u001b\u009b][\\[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]")
+
 // AsciiBoxer is used to render something in a box
 type AsciiBoxer interface {
 	// Box where int param is the proposed width
@@ -270,7 +273,7 @@ func (a *asciiBoxWriter) hasBorders(box AsciiBox) bool {
 }
 
 func countChars(s string) int {
-	return len([]rune(s))
+	return len([]rune(ANSI_PATTERN.ReplaceAllString(s, "")))
 }
 
 //

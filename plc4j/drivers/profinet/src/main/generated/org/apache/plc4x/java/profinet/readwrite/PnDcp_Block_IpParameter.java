@@ -109,31 +109,57 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
     writeReservedField(
         "reserved",
         reservedField0 != null ? reservedField0 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 8));
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (ipConflictDetected)
-    writeSimpleField("ipConflictDetected", ipConflictDetected, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "ipConflictDetected",
+        ipConflictDetected,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Reserved Field (reserved)
     writeReservedField(
         "reserved",
         reservedField1 != null ? reservedField1 : (short) 0x00,
-        writeUnsignedShort(writeBuffer, 5));
+        writeUnsignedShort(writeBuffer, 5),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (setViaDhcp)
-    writeSimpleField("setViaDhcp", setViaDhcp, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "setViaDhcp",
+        setViaDhcp,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (setManually)
-    writeSimpleField("setManually", setManually, writeBoolean(writeBuffer));
+    writeSimpleField(
+        "setManually",
+        setManually,
+        writeBoolean(writeBuffer),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (ipAddress)
-    writeByteArrayField("ipAddress", ipAddress, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "ipAddress",
+        ipAddress,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (subnetMask)
-    writeByteArrayField("subnetMask", subnetMask, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "subnetMask",
+        subnetMask,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Array Field (standardGateway)
-    writeByteArrayField("standardGateway", standardGateway, writeByteArray(writeBuffer, 8));
+    writeByteArrayField(
+        "standardGateway",
+        standardGateway,
+        writeByteArray(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnDcp_Block_IpParameter");
   }
@@ -191,22 +217,44 @@ public class PnDcp_Block_IpParameter extends PnDcp_Block implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Short reservedField0 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
+        readReservedField(
+            "reserved",
+            readUnsignedShort(readBuffer, 8),
+            (short) 0x00,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean ipConflictDetected = readSimpleField("ipConflictDetected", readBoolean(readBuffer));
+    boolean ipConflictDetected =
+        readSimpleField(
+            "ipConflictDetected",
+            readBoolean(readBuffer),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Short reservedField1 =
-        readReservedField("reserved", readUnsignedShort(readBuffer, 5), (short) 0x00);
+        readReservedField(
+            "reserved",
+            readUnsignedShort(readBuffer, 5),
+            (short) 0x00,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean setViaDhcp = readSimpleField("setViaDhcp", readBoolean(readBuffer));
+    boolean setViaDhcp =
+        readSimpleField(
+            "setViaDhcp", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    boolean setManually = readSimpleField("setManually", readBoolean(readBuffer));
+    boolean setManually =
+        readSimpleField(
+            "setManually", readBoolean(readBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    byte[] ipAddress = readBuffer.readByteArray("ipAddress", Math.toIntExact(4));
+    byte[] ipAddress =
+        readBuffer.readByteArray(
+            "ipAddress", Math.toIntExact(4), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    byte[] subnetMask = readBuffer.readByteArray("subnetMask", Math.toIntExact(4));
+    byte[] subnetMask =
+        readBuffer.readByteArray(
+            "subnetMask", Math.toIntExact(4), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    byte[] standardGateway = readBuffer.readByteArray("standardGateway", Math.toIntExact(4));
+    byte[] standardGateway =
+        readBuffer.readByteArray(
+            "standardGateway", Math.toIntExact(4), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Block_IpParameter");
     // Create the instance

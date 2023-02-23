@@ -124,31 +124,59 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
 
     // Const Field (inputDataDescription)
     writeConstField(
-        "inputDataDescription", INPUTDATADESCRIPTION, writeUnsignedInt(writeBuffer, 16));
+        "inputDataDescription",
+        INPUTDATADESCRIPTION,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (inputSubmoduleDataLength)
     writeSimpleField(
-        "inputSubmoduleDataLength", inputSubmoduleDataLength, writeUnsignedInt(writeBuffer, 16));
+        "inputSubmoduleDataLength",
+        inputSubmoduleDataLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (inputLengthIoCs)
-    writeSimpleField("inputLengthIoCs", inputLengthIoCs, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "inputLengthIoCs",
+        inputLengthIoCs,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (inputLengthIoPs)
-    writeSimpleField("inputLengthIoPs", inputLengthIoPs, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "inputLengthIoPs",
+        inputLengthIoPs,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (outputDataDescription)
     writeConstField(
-        "outputDataDescription", OUTPUTDATADESCRIPTION, writeUnsignedInt(writeBuffer, 16));
+        "outputDataDescription",
+        OUTPUTDATADESCRIPTION,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (outputSubmoduleDataLength)
     writeSimpleField(
-        "outputSubmoduleDataLength", outputSubmoduleDataLength, writeUnsignedInt(writeBuffer, 16));
+        "outputSubmoduleDataLength",
+        outputSubmoduleDataLength,
+        writeUnsignedInt(writeBuffer, 16),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (outputLengthIoCs)
-    writeSimpleField("outputLengthIoCs", outputLengthIoCs, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "outputLengthIoCs",
+        outputLengthIoCs,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (outputLengthIoPs)
-    writeSimpleField("outputLengthIoPs", outputLengthIoPs, writeUnsignedShort(writeBuffer, 8));
+    writeSimpleField(
+        "outputLengthIoPs",
+        outputLengthIoPs,
+        writeUnsignedShort(writeBuffer, 8),
+        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_Submodule_InputAndOutputData");
   }
@@ -203,27 +231,51 @@ public class PnIoCm_Submodule_InputAndOutputData extends PnIoCm_Submodule implem
         readConstField(
             "inputDataDescription",
             readUnsignedInt(readBuffer, 16),
-            PnIoCm_Submodule_InputAndOutputData.INPUTDATADESCRIPTION);
+            PnIoCm_Submodule_InputAndOutputData.INPUTDATADESCRIPTION,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int inputSubmoduleDataLength =
-        readSimpleField("inputSubmoduleDataLength", readUnsignedInt(readBuffer, 16));
+        readSimpleField(
+            "inputSubmoduleDataLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short inputLengthIoCs = readSimpleField("inputLengthIoCs", readUnsignedShort(readBuffer, 8));
+    short inputLengthIoCs =
+        readSimpleField(
+            "inputLengthIoCs",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short inputLengthIoPs = readSimpleField("inputLengthIoPs", readUnsignedShort(readBuffer, 8));
+    short inputLengthIoPs =
+        readSimpleField(
+            "inputLengthIoPs",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int outputDataDescription =
         readConstField(
             "outputDataDescription",
             readUnsignedInt(readBuffer, 16),
-            PnIoCm_Submodule_InputAndOutputData.OUTPUTDATADESCRIPTION);
+            PnIoCm_Submodule_InputAndOutputData.OUTPUTDATADESCRIPTION,
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int outputSubmoduleDataLength =
-        readSimpleField("outputSubmoduleDataLength", readUnsignedInt(readBuffer, 16));
+        readSimpleField(
+            "outputSubmoduleDataLength",
+            readUnsignedInt(readBuffer, 16),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short outputLengthIoCs = readSimpleField("outputLengthIoCs", readUnsignedShort(readBuffer, 8));
+    short outputLengthIoCs =
+        readSimpleField(
+            "outputLengthIoCs",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
-    short outputLengthIoPs = readSimpleField("outputLengthIoPs", readUnsignedShort(readBuffer, 8));
+    short outputLengthIoPs =
+        readSimpleField(
+            "outputLengthIoPs",
+            readUnsignedShort(readBuffer, 8),
+            WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnIoCm_Submodule_InputAndOutputData");
     // Create the instance

@@ -1615,8 +1615,6 @@ public enum BACnetVendorId {
   THING_WAREHOUSELLC((int) 1404, (int) 1404, (String) "Thing Warehouse LLC"),
   INNOFRIENDS_GMBH((int) 1405, (int) 1405, (String) "Innofriends GmbH"),
   METRONICAKP_SPJ((int) 1406, (int) 1406, (String) "Metronic AKP Sp. J."),
-  TECHKNAVE((int) 1407, (int) 1407, (String) "Techknave"),
-  ELSNER_ELEKTRONIK((int) 1408, (int) 1408, (String) "Elsner Elektronik"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
