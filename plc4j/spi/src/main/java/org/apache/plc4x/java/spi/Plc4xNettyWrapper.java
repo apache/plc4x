@@ -23,23 +23,26 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.MessageToMessageCodec;
 import io.vavr.control.Either;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.TimeoutManager.CompletionCallback;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.events.*;
+import org.apache.plc4x.java.spi.internal.DefaultConversationContext;
 import org.apache.plc4x.java.spi.internal.DefaultExpectRequestContext;
 import org.apache.plc4x.java.spi.internal.DefaultSendRequestContext;
 import org.apache.plc4x.java.spi.internal.HandlerRegistration;
+import org.apache.plc4x.java.spi.netty.NettyHashTimerTimeoutManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -55,8 +58,14 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
     private final Queue<HandlerRegistration> registeredHandlers;
     private final ChannelPipeline pipeline;
     private final boolean passive;
+    private final TimeoutManager timeoutManager;
 
     public Plc4xNettyWrapper(ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol,
+        PlcAuthentication authentication, Class<T> clazz) {
+        this(new NettyHashTimerTimeoutManager(), pipeline, passive, protocol, authentication, clazz);
+    }
+
+    public Plc4xNettyWrapper(TimeoutManager timeoutManager, ChannelPipeline pipeline, boolean passive, Plc4xProtocolBase<T> protocol,
                              PlcAuthentication authentication, Class<T> clazz) {
         super(clazz, Object.class);
         this.pipeline = pipeline;
@@ -64,7 +73,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         this.registeredHandlers = new ConcurrentLinkedQueue<>();
         this.protocolBase = protocol;
         this.authentication = authentication;
-        this.protocolBase.setContext(new ConversationContext<>() {
+        this.timeoutManager = timeoutManager;
+        this.protocolBase.setContext(new ConversationContext<T>() {
 
             @Override
             public PlcAuthentication getAuthentication() {
@@ -102,19 +112,15 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             }
 
             @Override
+            @SuppressWarnings({"unchecked", "rawtypes"})
             public SendRequestContext<T> sendRequest(T packet) {
-                return new DefaultSendRequestContext<>(handler -> {
-                    logger.trace("Adding Response Handler ...");
-                    registeredHandlers.add(handler);
-                }, packet, this);
+                return new DefaultSendRequestContext<>(Plc4xNettyWrapper.this::registerHandler, packet, this);
             }
 
             @Override
+            @SuppressWarnings({"unchecked", "rawtypes"})
             public ExpectRequestContext<T> expectRequest(Class<T> clazz, Duration timeout) {
-                return new DefaultExpectRequestContext<>(handler -> {
-                    logger.trace("Adding Request Handler ...");
-                    registeredHandlers.add(handler);
-                }, clazz, timeout, this);
+                return new DefaultExpectRequestContext<>(Plc4xNettyWrapper.this::registerHandler, clazz, timeout, this);
             }
 
         });
@@ -151,15 +157,6 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 continue;
             }
             // Timeout?
-            final Instant now = Instant.now();
-            if (registration.getTimeoutAt().isBefore(now)) {
-                logger.debug("Removing {} as its timed out (timeout of {} was set till {} and now is {})",
-                    registration, registration.getTimeout(), registration.getTimeoutAt(), now);
-                // pass timeout back to caller, so it can do ie transaction compensation
-                registration.getOnTimeoutConsumer().accept(new TimeoutException());
-                iter.remove();
-                continue;
-            }
             logger.trace("Checking handler {} for Object of type {}", registration, t.getClass().getSimpleName());
             if (registration.getExpectClazz().isInstance(t)) {
                 logger.trace("Handler {} has right expected type {}, checking condition", registration, registration.getExpectClazz().getSimpleName());
@@ -190,7 +187,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             }
         }
         logger.trace("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), t);
-        protocolBase.decode(new DefaultConversationContext<>(channelHandlerContext, authentication, passive), t);
+        protocolBase.decode(new DefaultConversationContext<>(this::registerHandler, channelHandlerContext, authentication, passive), t);
     }
 
     @Override
@@ -199,85 +196,60 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         // by sending a connection request to the plc.
         logger.debug("User Event triggered {}", evt);
         if (evt instanceof ConnectEvent) {
-            this.protocolBase.onConnect(new DefaultConversationContext<>(ctx, authentication, passive));
+            this.protocolBase.onConnect(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
         } else if (evt instanceof DisconnectEvent) {
-            this.protocolBase.onDisconnect(new DefaultConversationContext<>(ctx, authentication, passive));
+            this.protocolBase.onDisconnect(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
         } else if (evt instanceof DiscoverEvent) {
-            this.protocolBase.onDiscover(new DefaultConversationContext<>(ctx, authentication, passive));
+            this.protocolBase.onDiscover(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
         } else if (evt instanceof CloseConnectionEvent) {
-            this.protocolBase.close(new DefaultConversationContext<>(ctx, authentication, passive));
+            this.protocolBase.close(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
         } else {
             super.userEventTriggered(ctx, evt);
         }
     }
 
-    public class DefaultConversationContext<T1> implements ConversationContext<T1> {
-        private final ChannelHandlerContext channelHandlerContext;
+    /**
+     * Performs registration of packet handler and makes sure that its timeout will be handled properly.
+     *
+     * Since timeouts are controlled by {@link TimeoutManager} there is a need to decorate handler
+     * operations so both sides know what's going on.
+     *
+     * @param handler Handler to be registered.
+     */
+    private void registerHandler(HandlerRegistration handler) {
+        AtomicReference<HandlerRegistration> deferred = new AtomicReference<>();
+        CompletionCallback completionCallback = this.timeoutManager.register(new TimedOperation() {
+            @Override
+            public Consumer<TimeoutException> getOnTimeoutConsumer() {
+                return onTimeout(deferred, handler.getOnTimeoutConsumer());
+            }
 
-        private final PlcAuthentication authentication;
-        private final boolean passive;
+            @Override
+            public Duration getTimeout() {
+                return handler.getTimeout();
+            }
+        });
+        // wrap handler, so we can catch packet consumer call and inform completion callback.
+        HandlerRegistration registration = new HandlerRegistration(
+            handler.getCommands(),
+            handler.getExpectClazz(),
+            completionCallback.andThen(handler.getPacketConsumer()),
+            handler.getOnTimeoutConsumer(),
+            handler.getErrorConsumer(),
+            handler.getTimeout()
+        );
+        deferred.set(registration);
+        registeredHandlers.add(registration);
+    }
 
-        public DefaultConversationContext(ChannelHandlerContext channelHandlerContext,
-                                          PlcAuthentication authentication,
-                                          boolean passive) {
-            this.channelHandlerContext = channelHandlerContext;
-            this.authentication = authentication;
-            this.passive = passive;
-        }
-
-        @Override
-        public Channel getChannel() {
-            return channelHandlerContext.channel();
-        }
-
-        public PlcAuthentication getAuthentication() {
-            return authentication;
-        }
-
-        @Override
-        public boolean isPassive() {
-            return passive;
-        }
-
-        @Override
-        public void sendToWire(T1 msg) {
-            logger.trace("Sending to wire {}", msg);
-            channelHandlerContext.channel().writeAndFlush(msg);
-        }
-
-        @Override
-        public void fireConnected() {
-            logger.trace("Firing Connected!");
-            channelHandlerContext.pipeline().fireUserEventTriggered(new ConnectedEvent());
-        }
-
-        @Override
-        public void fireDisconnected() {
-            logger.trace("Firing Disconnected!");
-            channelHandlerContext.pipeline().fireUserEventTriggered(new DisconnectedEvent());
-        }
-
-        @Override
-        public void fireDiscovered(Configuration c) {
-            logger.trace("Firing Discovered!");
-            channelHandlerContext.pipeline().fireUserEventTriggered(new DiscoveredEvent(c));
-        }
-
-        @Override
-        public SendRequestContext<T1> sendRequest(T1 packet) {
-            return new DefaultSendRequestContext<>(handler -> {
-                logger.trace("Adding Response Handler ...");
-                registeredHandlers.add(handler);
-            }, packet, this);
-        }
-
-        @Override
-        public ExpectRequestContext<T1> expectRequest(Class<T1> clazz, Duration timeout) {
-            return new DefaultExpectRequestContext<>(handler -> {
-                logger.trace("Adding Request Handler ...");
-                registeredHandlers.add(handler);
-            }, clazz, timeout, this);
-        }
+    private Consumer<TimeoutException> onTimeout(AtomicReference<HandlerRegistration> reference, Consumer<TimeoutException> onTimeoutConsumer) {
+        return new Consumer<TimeoutException>() {
+            @Override
+            public void accept(TimeoutException e) {
+                registeredHandlers.remove(reference.get());
+                onTimeoutConsumer.accept(e);
+            }
+        };
     }
 
 }

@@ -16,15 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.configuration;
+package org.apache.plc4x.java.spi;
 
-import org.apache.plc4x.java.spi.netty.NettyHashTimerTimeoutManager;
-import org.apache.plc4x.java.spi.TimeoutManager;
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
-public interface Configuration {
+public interface TimedOperation {
 
-    default TimeoutManager getTimeoutManager() {
-        return new NettyHashTimerTimeoutManager();
-    }
+    Consumer<TimeoutException> getOnTimeoutConsumer();
+
+    Duration getTimeout();
+
 
 }

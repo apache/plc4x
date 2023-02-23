@@ -111,7 +111,7 @@ public class SingleProtocolStackConfigurer<BASE_PACKET_CLASS extends Message> im
         if (driverContextClass != null) {
             protocol.setDriverContext(configure(configuration, createInstance(driverContextClass)));
         }
-        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(pipeline, passive, protocol,
+        Plc4xNettyWrapper<BASE_PACKET_CLASS> context = new Plc4xNettyWrapper<>(configuration.getTimeoutManager(), pipeline, passive, protocol,
             authentication, basePacketClass);
         pipeline.addLast(context);
         return protocol;

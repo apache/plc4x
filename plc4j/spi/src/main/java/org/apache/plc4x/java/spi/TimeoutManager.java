@@ -16,15 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.plc4x.java.spi.configuration;
+package org.apache.plc4x.java.spi;
 
-import org.apache.plc4x.java.spi.netty.NettyHashTimerTimeoutManager;
-import org.apache.plc4x.java.spi.TimeoutManager;
+import java.util.function.Consumer;
 
-public interface Configuration {
+public interface TimeoutManager {
 
-    default TimeoutManager getTimeoutManager() {
-        return new NettyHashTimerTimeoutManager();
+    CompletionCallback register(TimedOperation operation);
+
+    void stop();
+
+    interface CompletionCallback<T> extends Consumer<T> {
+
+        void complete();
+
+        @Override
+        default void accept(T data) {
+            complete();
+        }
+
     }
 
 }
