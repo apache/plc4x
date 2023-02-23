@@ -41,18 +41,13 @@ public class S7VarPayloadDataItem implements Message {
   protected final DataTransportErrorCode returnCode;
   protected final DataTransportSize transportSize;
   protected final byte[] data;
-  protected final Boolean hasNext;
 
   public S7VarPayloadDataItem(
-      DataTransportErrorCode returnCode,
-      DataTransportSize transportSize,
-      byte[] data,
-      Boolean hasNext) {
+      DataTransportErrorCode returnCode, DataTransportSize transportSize, byte[] data) {
     super();
     this.returnCode = returnCode;
     this.transportSize = transportSize;
     this.data = data;
-    this.hasNext = hasNext;
   }
 
   public DataTransportErrorCode getReturnCode() {
@@ -65,10 +60,6 @@ public class S7VarPayloadDataItem implements Message {
 
   public byte[] getData() {
     return data;
-  }
-
-  public Boolean getHasNext() {
-    return hasNext;
   }
 
   public void serialize(WriteBuffer writeBuffer) throws SerializationException {
@@ -110,9 +101,6 @@ public class S7VarPayloadDataItem implements Message {
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));
 
-    // Optional Field (hasNext) (Can be skipped, if the value is null)
-    writeOptionalField("hasNext", hasNext, writeBoolean(writeBuffer));
-
     // Padding Field (padding)
     writePaddingField(
         "padding",
@@ -148,17 +136,8 @@ public class S7VarPayloadDataItem implements Message {
       lengthInBits += 8 * data.length;
     }
 
-    // Optional Field (hasNext)
-    if (hasNext != null) {
-      lengthInBits += 1;
-    }
-
     // Padding Field (padding)
-<<<<<<< HEAD
     int _timesPadding = (int) ((((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0));
-=======
-    int _timesPadding = (int) (((PADCOUNT(data, hasNext)) % (2)));
->>>>>>> fe65e60f40 (Test for S7VarPayloadItem.)
     while (_timesPadding-- > 0) {
       lengthInBits += 8;
     }
@@ -201,19 +180,13 @@ public class S7VarPayloadDataItem implements Message {
             Math.toIntExact(
                 ((transportSize.getSizeInBits()) ? CEIL((dataLength) / (8.0)) : dataLength)));
 
-<<<<<<< HEAD
     readPaddingField(
         readUnsignedShort(readBuffer, 8), (int) ((((!(_lastItem))) ? ((COUNT(data)) % (2)) : 0)));
-=======
-    Boolean hasNext = readOptionalField("hasNext", readBoolean(readBuffer), (dataLength) < (-(1)));
-
-    readPaddingField(readUnsignedShort(readBuffer, 8), (int) (((PADCOUNT(data, hasNext)) % (2))));
->>>>>>> fe65e60f40 (Test for S7VarPayloadItem.)
 
     readBuffer.closeContext("S7VarPayloadDataItem");
     // Create the instance
     S7VarPayloadDataItem _s7VarPayloadDataItem;
-    _s7VarPayloadDataItem = new S7VarPayloadDataItem(returnCode, transportSize, data, hasNext);
+    _s7VarPayloadDataItem = new S7VarPayloadDataItem(returnCode, transportSize, data);
     return _s7VarPayloadDataItem;
   }
 
@@ -229,13 +202,12 @@ public class S7VarPayloadDataItem implements Message {
     return (getReturnCode() == that.getReturnCode())
         && (getTransportSize() == that.getTransportSize())
         && (getData() == that.getData())
-        && (getHasNext() == that.getHasNext())
         && true;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getReturnCode(), getTransportSize(), getData(), getHasNext());
+    return Objects.hash(getReturnCode(), getTransportSize(), getData());
   }
 
   @Override
