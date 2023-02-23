@@ -331,7 +331,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 					actual, err := m.rootTypeParser(readBufferByteBased)
 					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectedSerializable, actual)
 				}
-				return errors.Errorf("actual output doesn't match expected output:\nactual:\n%s\nexpected:\n%s", utils.Dump(actualRawOutput), utils.Dump(expectedRawOutput))
+				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s", actualRawOutput, expectedRawOutput, utils.DiffHex(actualRawOutput, expectedRawOutput))
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging
