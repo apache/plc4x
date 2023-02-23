@@ -23,7 +23,6 @@ import (
 	"context"
 	"encoding/binary"
 	"strings"
-	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -97,182 +96,182 @@ func (m Writer) Write(ctx context.Context, writeRequest model.PlcWriteRequest) <
 				}
 				return
 			}
-			items[i] = readWriteModel.NewCipWriteRequest(requestPathSize, ansi, eipTag.GetType(), elements, data, 0)
+			items[i] = readWriteModel.NewCipWriteRequest(ansi, eipTag.GetType(), elements, data, uint16(requestPathSize))
 		}
 
-		if len(items) == 1 {
-			// Assemble the finished paket
-			log.Trace().Msg("Assemble paket")
-			pkt := readWriteModel.NewCipRRData(
-				readWriteModel.NewCipExchange(
-					readWriteModel.NewCipUnconnectedRequest(
-						items[0],
-						m.configuration.backplane,
-						m.configuration.slot,
+		/*		if len(items) == 1 {
+					// Assemble the finished paket
+					log.Trace().Msg("Assemble paket")
+					pkt := readWriteModel.NewCipRRData(
+						readWriteModel.NewCipExchange(
+							readWriteModel.NewCipUnconnectedRequest(
+								items[0],
+								m.configuration.backplane,
+								m.configuration.slot,
+								0,
+							),
+							0,
+						),
+						*m.sessionHandle,
 						0,
-					),
-					0,
-				),
-				*m.sessionHandle,
-				0,
-				*m.senderContext,
-				0,
-				0,
-			)
-			// Start a new request-transaction (Is ended in the response-handler)
-			transaction := m.tm.StartTransaction()
-			transaction.Submit(func() {
-				// Send the  over the wire
-				if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
-					eipPacket := message.(readWriteModel.EipPacket)
-					if eipPacket == nil {
-						return false
-					}
-					cipRRData := eipPacket.(readWriteModel.CipRRData)
-					if cipRRData == nil {
-						return false
-					}
-					if eipPacket.GetSessionHandle() != *m.sessionHandle {
-						return false
-					}
-					cipWriteResponse := cipRRData.GetExchange().GetService().(readWriteModel.CipWriteResponse)
-					if cipWriteResponse == nil {
-						return false
-					}
-					return true
-				}, func(message spi.Message) error {
-					// Convert the response into an
-					log.Trace().Msg("convert response to ")
-					eipPacket := message.(readWriteModel.EipPacket)
-					cipRRData := eipPacket.(readWriteModel.CipRRData)
-					cipWriteResponse := cipRRData.GetExchange().GetService().(readWriteModel.CipWriteResponse)
-					// Convert the eip response into a PLC4X response
-					log.Trace().Msg("convert response to PLC4X response")
-					readResponse, err := m.ToPlc4xWriteResponse(cipWriteResponse, writeRequest)
-
-					if err != nil {
-						result <- &plc4goModel.DefaultPlcWriteRequestResult{
-							Request: writeRequest,
-							Err:     errors.Wrap(err, "Error decoding response"),
-						}
-						return transaction.EndRequest()
-					}
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request:  writeRequest,
-						Response: readResponse,
-					}
-					return transaction.EndRequest()
-				}, func(err error) error {
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request: writeRequest,
-						Err:     errors.New("got timeout while waiting for response"),
-					}
-					return transaction.EndRequest()
-				}, time.Second*1); err != nil {
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request:  writeRequest,
-						Response: nil,
-						Err:      errors.Wrap(err, "error sending message"),
-					}
-					_ = transaction.EndRequest()
-				}
-			})
-		} else {
-			nb := uint16(len(items))
-			offsets := make([]uint16, nb)
-			offset := 2 + nb*2
-			for i := uint16(0); i < nb; i++ {
-				offsets[i] = offset
-				offset += items[i].GetLengthInBytes(context.Background())
-			}
-
-			serviceArr := make([]readWriteModel.CipService, nb)
-			for i := uint16(0); i < nb; i++ {
-				serviceArr[i] = items[i]
-			}
-
-			data := readWriteModel.NewServices(nb, offsets, serviceArr, 0)
-
-			// Assemble the finished paket
-			log.Trace().Msg("Assemble paket")
-			pkt := readWriteModel.NewCipRRData(
-				readWriteModel.NewCipExchange(
-					readWriteModel.NewCipUnconnectedRequest(
-						readWriteModel.NewMultipleServiceRequest(data, 0),
-						m.configuration.backplane,
-						m.configuration.slot,
+						*m.senderContext,
 						0,
-					),
-					0,
-				),
-				*m.sessionHandle,
-				0,
-				*m.senderContext,
-				0,
-				0,
-			)
-			// Start a new request-transaction (Is ended in the response-handler)
-			transaction := m.tm.StartTransaction()
-			transaction.Submit(func() {
-				// Send the  over the wire
-				if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
-					eipPacket := message.(readWriteModel.EipPacket)
-					if eipPacket == nil {
-						return false
-					}
-					cipRRData := eipPacket.(readWriteModel.CipRRData)
-					if cipRRData == nil {
-						return false
-					}
-					if eipPacket.GetSessionHandle() != *m.sessionHandle {
-						return false
-					}
-					multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
-					if multipleServiceResponse == nil {
-						return false
-					}
-					if multipleServiceResponse.GetServiceNb() != nb {
-						return false
-					}
-					return true
-				}, func(message spi.Message) error {
-					// Convert the response into an
-					log.Trace().Msg("convert response to ")
-					eipPacket := message.(readWriteModel.EipPacket)
-					cipRRData := eipPacket.(readWriteModel.CipRRData)
-					multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
-					// Convert the eip response into a PLC4X response
-					log.Trace().Msg("convert response to PLC4X response")
-					readResponse, err := m.ToPlc4xWriteResponse(multipleServiceResponse, writeRequest)
+						0,
+					)
+					// Start a new request-transaction (Is ended in the response-handler)
+					transaction := m.tm.StartTransaction()
+					transaction.Submit(func() {
+						// Send the  over the wire
+						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
+							eipPacket := message.(readWriteModel.EipPacket)
+							if eipPacket == nil {
+								return false
+							}
+							cipRRData := eipPacket.(readWriteModel.CipRRData)
+							if cipRRData == nil {
+								return false
+							}
+							if eipPacket.GetSessionHandle() != *m.sessionHandle {
+								return false
+							}
+							cipWriteResponse := cipRRData.GetExchange().GetService().(readWriteModel.CipWriteResponse)
+							if cipWriteResponse == nil {
+								return false
+							}
+							return true
+						}, func(message spi.Message) error {
+							// Convert the response into an
+							log.Trace().Msg("convert response to ")
+							eipPacket := message.(readWriteModel.EipPacket)
+							cipRRData := eipPacket.(readWriteModel.CipRRData)
+							cipWriteResponse := cipRRData.GetExchange().GetService().(readWriteModel.CipWriteResponse)
+							// Convert the eip response into a PLC4X response
+							log.Trace().Msg("convert response to PLC4X response")
+							readResponse, err := m.ToPlc4xWriteResponse(cipWriteResponse, writeRequest)
 
-					if err != nil {
-						result <- &plc4goModel.DefaultPlcWriteRequestResult{
-							Request: writeRequest,
-							Err:     errors.Wrap(err, "Error decoding response"),
+							if err != nil {
+								result <- &plc4goModel.DefaultPlcWriteRequestResult{
+									Request: writeRequest,
+									Err:     errors.Wrap(err, "Error decoding response"),
+								}
+								return transaction.EndRequest()
+							}
+							result <- &plc4goModel.DefaultPlcWriteRequestResult{
+								Request:  writeRequest,
+								Response: readResponse,
+							}
+							return transaction.EndRequest()
+						}, func(err error) error {
+							result <- &plc4goModel.DefaultPlcWriteRequestResult{
+								Request: writeRequest,
+								Err:     errors.New("got timeout while waiting for response"),
+							}
+							return transaction.EndRequest()
+						}, time.Second*1); err != nil {
+							result <- &plc4goModel.DefaultPlcWriteRequestResult{
+								Request:  writeRequest,
+								Response: nil,
+								Err:      errors.Wrap(err, "error sending message"),
+							}
+							_ = transaction.EndRequest()
 						}
-						return transaction.EndRequest()
+					})
+				} else {
+					nb := uint16(len(items))
+					offsets := make([]uint16, nb)
+					offset := 2 + nb*2
+					for i := uint16(0); i < nb; i++ {
+						offsets[i] = offset
+						offset += items[i].GetLengthInBytes(context.Background())
 					}
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request:  writeRequest,
-						Response: readResponse,
+
+					serviceArr := make([]readWriteModel.CipService, nb)
+					for i := uint16(0); i < nb; i++ {
+						serviceArr[i] = items[i]
 					}
-					return transaction.EndRequest()
-				}, func(err error) error {
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request: writeRequest,
-						Err:     errors.New("got timeout while waiting for response"),
-					}
-					return transaction.EndRequest()
-				}, time.Second*1); err != nil {
-					result <- &plc4goModel.DefaultPlcWriteRequestResult{
-						Request:  writeRequest,
-						Response: nil,
-						Err:      errors.Wrap(err, "error sending message"),
-					}
-					_ = transaction.EndRequest()
-				}
-			})
-		}
+
+					data := readWriteModel.NewServices(nb, offsets, serviceArr, 0)
+
+					// Assemble the finished paket
+					log.Trace().Msg("Assemble paket")
+					pkt := readWriteModel.NewCipRRData(
+						readWriteModel.NewCipExchange(
+							readWriteModel.NewCipUnconnectedRequest(
+								readWriteModel.NewMultipleServiceRequest(data, 0),
+								m.configuration.backplane,
+								m.configuration.slot,
+								0,
+							),
+							0,
+						),
+						*m.sessionHandle,
+						0,
+						*m.senderContext,
+						0,
+						0,
+					)
+					// Start a new request-transaction (Is ended in the response-handler)
+					transaction := m.tm.StartTransaction()
+					transaction.Submit(func() {
+						// Send the  over the wire
+						if err := m.messageCodec.SendRequest(ctx, pkt, func(message spi.Message) bool {
+							eipPacket := message.(readWriteModel.EipPacket)
+							if eipPacket == nil {
+								return false
+							}
+							cipRRData := eipPacket.(readWriteModel.CipRRData)
+							if cipRRData == nil {
+								return false
+							}
+							if eipPacket.GetSessionHandle() != *m.sessionHandle {
+								return false
+							}
+							multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
+							if multipleServiceResponse == nil {
+								return false
+							}
+							if multipleServiceResponse.GetServiceNb() != nb {
+								return false
+							}
+							return true
+						}, func(message spi.Message) error {
+							// Convert the response into an
+							log.Trace().Msg("convert response to ")
+							eipPacket := message.(readWriteModel.EipPacket)
+							cipRRData := eipPacket.(readWriteModel.CipRRData)
+							multipleServiceResponse := cipRRData.GetExchange().GetService().(readWriteModel.MultipleServiceResponse)
+							// Convert the eip response into a PLC4X response
+							log.Trace().Msg("convert response to PLC4X response")
+							readResponse, err := m.ToPlc4xWriteResponse(multipleServiceResponse, writeRequest)
+
+							if err != nil {
+								result <- &plc4goModel.DefaultPlcWriteRequestResult{
+									Request: writeRequest,
+									Err:     errors.Wrap(err, "Error decoding response"),
+								}
+								return transaction.EndRequest()
+							}
+							result <- &plc4goModel.DefaultPlcWriteRequestResult{
+								Request:  writeRequest,
+								Response: readResponse,
+							}
+							return transaction.EndRequest()
+						}, func(err error) error {
+							result <- &plc4goModel.DefaultPlcWriteRequestResult{
+								Request: writeRequest,
+								Err:     errors.New("got timeout while waiting for response"),
+							}
+							return transaction.EndRequest()
+						}, time.Second*1); err != nil {
+							result <- &plc4goModel.DefaultPlcWriteRequestResult{
+								Request:  writeRequest,
+								Response: nil,
+								Err:      errors.Wrap(err, "error sending message"),
+							}
+							_ = transaction.EndRequest()
+						}
+					})
+				}*/
 	}()
 	return result
 }
@@ -316,35 +315,35 @@ func (m Writer) ToPlc4xWriteResponse(response readWriteModel.CipService, writeRe
 		code := decodeResponseCode(cipReadResponse.GetStatus())
 		responseCodes[tagName] = code
 	case readWriteModel.MultipleServiceResponse: //Multiple response
-		multipleServiceResponse := response
-		nb := multipleServiceResponse.GetServiceNb()
-		arr := make([]readWriteModel.CipService, nb)
-		read := utils.NewReadBufferByteBased(multipleServiceResponse.GetServicesData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		total := read.GetTotalBytes()
-		for i := uint16(0); i < nb; i++ {
-			length := uint16(0)
-			offset := multipleServiceResponse.GetOffsets()[i] - multipleServiceResponse.GetOffsets()[0] //Substract first offset as we only have the service in the buffer (not servicesNb and offsets)
-			if i == nb-1 {
-				length = uint16(total) - offset //Get the rest if last
-			} else {
-				length = multipleServiceResponse.GetOffsets()[i+1] - offset - multipleServiceResponse.GetOffsets()[0] //Calculate length with offsets (substracting first offset)
-			}
-			serviceBuf := utils.NewReadBufferByteBased(read.GetBytes()[offset:offset+length], utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-			var err error
-			arr[i], err = readWriteModel.CipServiceParseWithBuffer(context.Background(), serviceBuf, length)
-			if err != nil {
-				return nil, err
-			}
-		}
-		services := readWriteModel.NewServices(nb, multipleServiceResponse.GetOffsets(), arr, 0)
-		for i, tagName := range writeRequest.GetTagNames() {
-			if writeResponse, ok := services.Services[i].(readWriteModel.CipWriteResponse); ok {
-				code := decodeResponseCode(writeResponse.GetStatus())
-				responseCodes[tagName] = code
-			} else {
-				responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
-			}
-		}
+		/*		multipleServiceResponse := response
+						nb := multipleServiceResponse.GetServiceNb()
+						arr := make([]readWriteModel.CipService, nb)
+						read := utils.NewReadBufferByteBased(multipleServiceResponse.GetServicesData(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+						total := read.GetTotalBytes()
+						for i := uint16(0); i < nb; i++ {
+							length := uint16(0)
+							offset := multipleServiceResponse.GetOffsets()[i] - multipleServiceResponse.GetOffsets()[0] //Substract first offset as we only have the service in the buffer (not servicesNb and offsets)
+							if i == nb-1 {
+								length = uint16(total) - offset //Get the rest if last
+							} else {
+								length = multipleServiceResponse.GetOffsets()[i+1] - offset - multipleServiceResponse.GetOffsets()[0] //Calculate length with offsets (substracting first offset)
+							}
+				 			serviceBuf := utils.NewReadBufferByteBased(read.GetBytes()[offset:offset+length], utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+							var err error
+							arr[i], err = readWriteModel.CipServiceParseWithBuffer(context.Background(), serviceBuf)
+							if err != nil {
+								return nil, err
+							}
+						}*/
+		/*		services := readWriteModel.NewServices(nb, multipleServiceResponse.GetOffsets(), arr)
+				for i, tagName := range writeRequest.GetTagNames() {
+					if writeResponse, ok := services.Services[i].(readWriteModel.CipWriteResponse); ok {
+						code := decodeResponseCode(writeResponse.GetStatus())
+						responseCodes[tagName] = code
+					} else {
+						responseCodes[tagName] = model.PlcResponseCode_INTERNAL_ERROR
+					}
+				}*/
 	default:
 		return nil, errors.Errorf("unsupported response type %T", response)
 	}
