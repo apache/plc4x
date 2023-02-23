@@ -65,7 +65,7 @@ class ConnectionContainer {
     public synchronized void close(){
         CompletableFuture<PlcConnection> leaseFuture;
         while((leaseFuture = queue.poll())!=null){
-            leaseFuture.complete(null);
+            leaseFuture.completeExceptionally(new PlcRuntimeException("connection Container is cloned"));
         }
         leasedConnection = null;
         connection = null;
