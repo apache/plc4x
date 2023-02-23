@@ -196,7 +196,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
                 PlcTag tag = tagValues.getLeft().get();
                 Object[] value = tagValues.getRight();
                 PlcValue plcValue = valueHandler.newPlcValue(tag, value);
-                if(tag.getPlcValueType()== PlcValueType.NULL){
+                if (tag.getPlcValueType() == PlcValueType.NULL && value!=null) {
                     tag.setPlcValueType(plcValue.getPlcValueType());
                 }
                 parsedTags.put(name, new TagValueItem(tag, plcValue));
