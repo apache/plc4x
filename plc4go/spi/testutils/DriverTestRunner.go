@@ -302,7 +302,10 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		log.Trace().Uint32("expectedRawOutputLength", expectedRawOutputLength).Msg("Reading bytes")
 		for testTransportInstance.GetNumDrainableBytes() < expectedRawOutputLength {
 			if time.Now().Sub(now) > 2*time.Second {
-				return errors.Errorf("error getting bytes from transport. Not enough data available: actual(%d)<expected(%d)", testTransportInstance.GetNumDrainableBytes(), expectedRawOutputLength)
+				drainableBytes := testTransportInstance.GetNumDrainableBytes()
+				actualRawOutput, _ := testTransportInstance.DrainWriteBuffer(drainableBytes)
+				return errors.Errorf("error getting bytes from transport. Not enough data available: actual(%d)<expected(%d), \nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s",
+					drainableBytes, expectedRawOutputLength, actualRawOutput, expectedRawOutput, utils.DiffHex(actualRawOutput, expectedRawOutput))
 			}
 			time.Sleep(10 * time.Millisecond)
 		}
