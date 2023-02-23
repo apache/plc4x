@@ -115,7 +115,7 @@ public class LeasedPlcConnection implements PlcConnection {
                         CompletableFuture<? extends PlcReadResponse> future = innerPlcReadRequest.execute();
                         final CompletableFuture<PlcReadResponse> responseFuture = new CompletableFuture<>();
                         future.handle((plcReadResponse, throwable) -> {
-                            if (plcReadResponse != null) {
+                            if (throwable == null) {
                                 responseFuture.complete(plcReadResponse);
                             } else {
                                 try {
@@ -179,7 +179,7 @@ public class LeasedPlcConnection implements PlcConnection {
                         CompletableFuture<? extends PlcWriteResponse> future = innerPlcWriteRequest.execute();
                         final CompletableFuture<PlcWriteResponse> responseFuture = new CompletableFuture<>();
                         future.handle((plcWriteResponse,throwable)->{
-                            if (plcWriteResponse != null) {
+                            if (throwable == null) {
                                 responseFuture.complete(plcWriteResponse);
                             } else {
                                 try {
