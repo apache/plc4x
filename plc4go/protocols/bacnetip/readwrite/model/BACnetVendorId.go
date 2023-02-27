@@ -1435,6 +1435,9 @@ const (
 	BACnetVendorId_THING_WAREHOUSELLC                                                           BACnetVendorId = 1404
 	BACnetVendorId_INNOFRIENDS_GMBH                                                             BACnetVendorId = 1405
 	BACnetVendorId_METRONICAKP_SPJ                                                              BACnetVendorId = 1406
+	BACnetVendorId_TECHKNAVE                                                                    BACnetVendorId = 1407
+	BACnetVendorId_ELSNER_ELEKTRONIK                                                            BACnetVendorId = 1408
+	BACnetVendorId_LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD                                             BACnetVendorId = 1409
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2841,6 +2844,9 @@ func init() {
 		BACnetVendorId_THING_WAREHOUSELLC,
 		BACnetVendorId_INNOFRIENDS_GMBH,
 		BACnetVendorId_METRONICAKP_SPJ,
+		BACnetVendorId_TECHKNAVE,
+		BACnetVendorId_ELSNER_ELEKTRONIK,
+		BACnetVendorId_LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4658,6 +4664,18 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1406:
 		{ /* '1406' */
 			return 1406
+		}
+	case 1407:
+		{ /* '1407' */
+			return 1407
+		}
+	case 1408:
+		{ /* '1408' */
+			return 1408
+		}
+	case 1409:
+		{ /* '1409' */
+			return 1409
 		}
 	case 141:
 		{ /* '141' */
@@ -10273,6 +10291,18 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1406' */
 			return "Metronic AKP Sp. J."
 		}
+	case 1407:
+		{ /* '1407' */
+			return "Techknave"
+		}
+	case 1408:
+		{ /* '1408' */
+			return "Elsner Elektronik"
+		}
+	case 1409:
+		{ /* '1409' */
+			return "LEFOO Industrial (Hangzhou) Co., Ltd."
+		}
 	case 141:
 		{ /* '141' */
 			return "Yaskawa America, Inc."
@@ -14980,6 +15010,12 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_INNOFRIENDS_GMBH, true
 	case 1406:
 		return BACnetVendorId_METRONICAKP_SPJ, true
+	case 1407:
+		return BACnetVendorId_TECHKNAVE, true
+	case 1408:
+		return BACnetVendorId_ELSNER_ELEKTRONIK, true
+	case 1409:
+		return BACnetVendorId_LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD, true
 	case 141:
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
 	case 142:
@@ -17784,6 +17820,12 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_INNOFRIENDS_GMBH, true
 	case "METRONICAKP_SPJ":
 		return BACnetVendorId_METRONICAKP_SPJ, true
+	case "TECHKNAVE":
+		return BACnetVendorId_TECHKNAVE, true
+	case "ELSNER_ELEKTRONIK":
+		return BACnetVendorId_ELSNER_ELEKTRONIK, true
+	case "LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD":
+		return BACnetVendorId_LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD, true
 	case "YASKAWA_AMERICA_INC":
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
 	case "DEO_SCONTROLSYSTEMS_GMBH":
@@ -20645,6 +20687,12 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "INNOFRIENDS_GMBH"
 	case BACnetVendorId_METRONICAKP_SPJ:
 		return "METRONICAKP_SPJ"
+	case BACnetVendorId_TECHKNAVE:
+		return "TECHKNAVE"
+	case BACnetVendorId_ELSNER_ELEKTRONIK:
+		return "ELSNER_ELEKTRONIK"
+	case BACnetVendorId_LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD:
+		return "LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD"
 	case BACnetVendorId_YASKAWA_AMERICA_INC:
 		return "YASKAWA_AMERICA_INC"
 	case BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH:
