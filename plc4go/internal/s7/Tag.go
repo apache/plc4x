@@ -136,6 +136,7 @@ func (m plcTag) GetBitOffset() uint8 {
 func (m plcTag) GetQuantity() uint16 {
 	return m.NumElements
 }
+
 func (m plcTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {

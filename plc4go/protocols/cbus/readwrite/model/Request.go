@@ -68,6 +68,7 @@ type _Request struct {
 type _RequestChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetActualPeek() RequestType
 }
 
 type RequestParent interface {

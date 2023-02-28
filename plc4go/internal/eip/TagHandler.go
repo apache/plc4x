@@ -22,12 +22,8 @@ package eip
 import (
 	"fmt"
 	"regexp"
-	"strconv"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
 type TagHandler struct {
@@ -36,7 +32,7 @@ type TagHandler struct {
 
 func NewTagHandler() TagHandler {
 	return TagHandler{
-		addressPattern: regexp.MustCompile(`^%(?P<tag>[a-zA-Z_.0-9]+\[?[0-9]*]?):?(?P<dataType>[A-Z]*):?(?P<elementNb>[0-9]*)`),
+		addressPattern: regexp.MustCompile(`^%(?P<tag>[%a-zA-Z_.0-9]+\[?[0-9]*]?):?(?P<dataType>[A-Z]*):?(?P<elementNb>[0-9]*)`),
 	}
 }
 
@@ -46,18 +42,9 @@ const (
 	ELEMENT_NB = "elementNb"
 )
 
-func (m TagHandler) ParseTag(query string) (model.PlcTag, error) {
-	if match := utils.GetSubgroupMatches(m.addressPattern, query); match != nil {
-		tag := match[TAG]
-		_type, ok := readWriteModel.CIPDataTypeCodeByName(match[DATA_TYPE])
-		if !ok {
-			return nil, errors.Errorf("Unknown type %s", match[DATA_TYPE])
-		}
-		parsedUint, _ := strconv.ParseUint(match[ELEMENT_NB], 10, 16)
-		elementNb := uint16(parsedUint)
-		return NewTag(tag, _type, elementNb), nil
-	}
-	return nil, errors.Errorf("Unable to parse %s", query)
+func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
+	// TODO: This isn't pretty ...
+	return NewTag(tagAddress, 0, uint16(1)), nil
 }
 
 func (m TagHandler) ParseQuery(query string) (model.PlcQuery, error) {

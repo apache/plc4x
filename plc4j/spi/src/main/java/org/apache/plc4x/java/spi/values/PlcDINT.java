@@ -251,7 +251,7 @@ public class PlcDINT extends PlcIECValue<Integer> {
 
     @Override
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
-        writeBuffer.writeInt(getClass().getSimpleName(), 64, value);
+        writeBuffer.writeInt(getClass().getSimpleName(), 32, value);
     }
 
 }

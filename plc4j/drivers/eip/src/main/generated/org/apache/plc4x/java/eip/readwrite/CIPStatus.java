@@ -39,7 +39,7 @@ public enum CIPStatus {
   ObjectStateConflict((long) 0x0000000CL),
   ObjectAlreadyExists((long) 0x0000000DL),
   AttributeNotSettable((long) 0x0000000EL),
-  PriviligeViolation((long) 0x0000000FL),
+  PrivilegeViolation((long) 0x0000000FL),
   DeviceStateConflict((long) 0x00000010L),
   ReplyDataTooLarge((long) 0x00000011L),
   FragmentationOfPrimitiveValue((long) 0x00000012L),

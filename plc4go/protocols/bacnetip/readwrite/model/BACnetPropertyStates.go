@@ -53,6 +53,7 @@ type _BACnetPropertyStates struct {
 type _BACnetPropertyStatesChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetPropertyStatesParent interface {

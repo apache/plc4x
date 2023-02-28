@@ -50,7 +50,7 @@ const (
 	CIPStatus_ObjectStateConflict           CIPStatus = 0x0000000C
 	CIPStatus_ObjectAlreadyExists           CIPStatus = 0x0000000D
 	CIPStatus_AttributeNotSettable          CIPStatus = 0x0000000E
-	CIPStatus_PriviligeViolation            CIPStatus = 0x0000000F
+	CIPStatus_PrivilegeViolation            CIPStatus = 0x0000000F
 	CIPStatus_DeviceStateConflict           CIPStatus = 0x00000010
 	CIPStatus_ReplyDataTooLarge             CIPStatus = 0x00000011
 	CIPStatus_FragmentationOfPrimitiveValue CIPStatus = 0x00000012
@@ -89,7 +89,7 @@ func init() {
 		CIPStatus_ObjectStateConflict,
 		CIPStatus_ObjectAlreadyExists,
 		CIPStatus_AttributeNotSettable,
-		CIPStatus_PriviligeViolation,
+		CIPStatus_PrivilegeViolation,
 		CIPStatus_DeviceStateConflict,
 		CIPStatus_ReplyDataTooLarge,
 		CIPStatus_FragmentationOfPrimitiveValue,
@@ -142,7 +142,7 @@ func CIPStatusByValue(value uint32) (enum CIPStatus, ok bool) {
 	case 0x0000000E:
 		return CIPStatus_AttributeNotSettable, true
 	case 0x0000000F:
-		return CIPStatus_PriviligeViolation, true
+		return CIPStatus_PrivilegeViolation, true
 	case 0x00000010:
 		return CIPStatus_DeviceStateConflict, true
 	case 0x00000011:
@@ -211,8 +211,8 @@ func CIPStatusByName(value string) (enum CIPStatus, ok bool) {
 		return CIPStatus_ObjectAlreadyExists, true
 	case "AttributeNotSettable":
 		return CIPStatus_AttributeNotSettable, true
-	case "PriviligeViolation":
-		return CIPStatus_PriviligeViolation, true
+	case "PrivilegeViolation":
+		return CIPStatus_PrivilegeViolation, true
 	case "DeviceStateConflict":
 		return CIPStatus_DeviceStateConflict, true
 	case "ReplyDataTooLarge":
@@ -338,8 +338,8 @@ func (e CIPStatus) PLC4XEnumName() string {
 		return "ObjectAlreadyExists"
 	case CIPStatus_AttributeNotSettable:
 		return "AttributeNotSettable"
-	case CIPStatus_PriviligeViolation:
-		return "PriviligeViolation"
+	case CIPStatus_PrivilegeViolation:
+		return "PrivilegeViolation"
 	case CIPStatus_DeviceStateConflict:
 		return "DeviceStateConflict"
 	case CIPStatus_ReplyDataTooLarge:

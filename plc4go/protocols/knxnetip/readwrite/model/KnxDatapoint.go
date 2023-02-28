@@ -1847,6 +1847,19 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		}
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcREAL(value), nil
+	case datapointType == KnxDatapointType_DPT_Coefficient: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Simple Field (value)
+		value, _valueErr := readBuffer.ReadFloat32("value", 16)
+		if _valueErr != nil {
+			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
+		}
+		readBuffer.CloseContext("KnxDatapoint")
+		return values.NewPlcREAL(value), nil
 	case datapointType == KnxDatapointType_DPT_TimeOfDay: // Struct
 		// Struct
 		_map := map[string]api.PlcValue{}
@@ -8928,6 +8941,16 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case datapointType == KnxDatapointType_DPT_Concentration_ygm3: // REAL
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Simple Field (value)
+		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+			return errors.Wrap(_err, "Error serializing 'value' field")
+		}
+	case datapointType == KnxDatapointType_DPT_Coefficient: // REAL
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")

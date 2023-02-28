@@ -468,8 +468,7 @@ public class EipProtocolLogic extends Plc4xProtocolBase<EipPacket> implements Ha
                         // Finish the request-transaction.
                         transaction.endRequest();
                     }));
-                internalFuture.get(REQUEST_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
-            } catch (SerializationException | TimeoutException | ExecutionException | InterruptedException e) {
+            } catch (SerializationException e) {
                 e.printStackTrace();
             }
         }

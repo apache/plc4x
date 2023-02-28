@@ -159,235 +159,236 @@ const (
 	KnxDatapointType_DPT_Value_Wsp_kmh                            KnxDatapointType = 118
 	KnxDatapointType_DPT_Value_Absolute_Humidity                  KnxDatapointType = 119
 	KnxDatapointType_DPT_Concentration_ygm3                       KnxDatapointType = 120
-	KnxDatapointType_DPT_TimeOfDay                                KnxDatapointType = 121
-	KnxDatapointType_DPT_Date                                     KnxDatapointType = 122
-	KnxDatapointType_DPT_Value_4_Ucount                           KnxDatapointType = 123
-	KnxDatapointType_DPT_LongTimePeriod_Sec                       KnxDatapointType = 124
-	KnxDatapointType_DPT_LongTimePeriod_Min                       KnxDatapointType = 125
-	KnxDatapointType_DPT_LongTimePeriod_Hrs                       KnxDatapointType = 126
-	KnxDatapointType_DPT_VolumeLiquid_Litre                       KnxDatapointType = 127
-	KnxDatapointType_DPT_Volume_m_3                               KnxDatapointType = 128
-	KnxDatapointType_DPT_Value_4_Count                            KnxDatapointType = 129
-	KnxDatapointType_DPT_FlowRate_m3h                             KnxDatapointType = 130
-	KnxDatapointType_DPT_ActiveEnergy                             KnxDatapointType = 131
-	KnxDatapointType_DPT_ApparantEnergy                           KnxDatapointType = 132
-	KnxDatapointType_DPT_ReactiveEnergy                           KnxDatapointType = 133
-	KnxDatapointType_DPT_ActiveEnergy_kWh                         KnxDatapointType = 134
-	KnxDatapointType_DPT_ApparantEnergy_kVAh                      KnxDatapointType = 135
-	KnxDatapointType_DPT_ReactiveEnergy_kVARh                     KnxDatapointType = 136
-	KnxDatapointType_DPT_ActiveEnergy_MWh                         KnxDatapointType = 137
-	KnxDatapointType_DPT_LongDeltaTimeSec                         KnxDatapointType = 138
-	KnxDatapointType_DPT_DeltaVolumeLiquid_Litre                  KnxDatapointType = 139
-	KnxDatapointType_DPT_DeltaVolume_m_3                          KnxDatapointType = 140
-	KnxDatapointType_DPT_Value_Acceleration                       KnxDatapointType = 141
-	KnxDatapointType_DPT_Value_Acceleration_Angular               KnxDatapointType = 142
-	KnxDatapointType_DPT_Value_Activation_Energy                  KnxDatapointType = 143
-	KnxDatapointType_DPT_Value_Activity                           KnxDatapointType = 144
-	KnxDatapointType_DPT_Value_Mol                                KnxDatapointType = 145
-	KnxDatapointType_DPT_Value_Amplitude                          KnxDatapointType = 146
-	KnxDatapointType_DPT_Value_AngleRad                           KnxDatapointType = 147
-	KnxDatapointType_DPT_Value_AngleDeg                           KnxDatapointType = 148
-	KnxDatapointType_DPT_Value_Angular_Momentum                   KnxDatapointType = 149
-	KnxDatapointType_DPT_Value_Angular_Velocity                   KnxDatapointType = 150
-	KnxDatapointType_DPT_Value_Area                               KnxDatapointType = 151
-	KnxDatapointType_DPT_Value_Capacitance                        KnxDatapointType = 152
-	KnxDatapointType_DPT_Value_Charge_DensitySurface              KnxDatapointType = 153
-	KnxDatapointType_DPT_Value_Charge_DensityVolume               KnxDatapointType = 154
-	KnxDatapointType_DPT_Value_Compressibility                    KnxDatapointType = 155
-	KnxDatapointType_DPT_Value_Conductance                        KnxDatapointType = 156
-	KnxDatapointType_DPT_Value_Electrical_Conductivity            KnxDatapointType = 157
-	KnxDatapointType_DPT_Value_Density                            KnxDatapointType = 158
-	KnxDatapointType_DPT_Value_Electric_Charge                    KnxDatapointType = 159
-	KnxDatapointType_DPT_Value_Electric_Current                   KnxDatapointType = 160
-	KnxDatapointType_DPT_Value_Electric_CurrentDensity            KnxDatapointType = 161
-	KnxDatapointType_DPT_Value_Electric_DipoleMoment              KnxDatapointType = 162
-	KnxDatapointType_DPT_Value_Electric_Displacement              KnxDatapointType = 163
-	KnxDatapointType_DPT_Value_Electric_FieldStrength             KnxDatapointType = 164
-	KnxDatapointType_DPT_Value_Electric_Flux                      KnxDatapointType = 165
-	KnxDatapointType_DPT_Value_Electric_FluxDensity               KnxDatapointType = 166
-	KnxDatapointType_DPT_Value_Electric_Polarization              KnxDatapointType = 167
-	KnxDatapointType_DPT_Value_Electric_Potential                 KnxDatapointType = 168
-	KnxDatapointType_DPT_Value_Electric_PotentialDifference       KnxDatapointType = 169
-	KnxDatapointType_DPT_Value_ElectromagneticMoment              KnxDatapointType = 170
-	KnxDatapointType_DPT_Value_Electromotive_Force                KnxDatapointType = 171
-	KnxDatapointType_DPT_Value_Energy                             KnxDatapointType = 172
-	KnxDatapointType_DPT_Value_Force                              KnxDatapointType = 173
-	KnxDatapointType_DPT_Value_Frequency                          KnxDatapointType = 174
-	KnxDatapointType_DPT_Value_Angular_Frequency                  KnxDatapointType = 175
-	KnxDatapointType_DPT_Value_Heat_Capacity                      KnxDatapointType = 176
-	KnxDatapointType_DPT_Value_Heat_FlowRate                      KnxDatapointType = 177
-	KnxDatapointType_DPT_Value_Heat_Quantity                      KnxDatapointType = 178
-	KnxDatapointType_DPT_Value_Impedance                          KnxDatapointType = 179
-	KnxDatapointType_DPT_Value_Length                             KnxDatapointType = 180
-	KnxDatapointType_DPT_Value_Light_Quantity                     KnxDatapointType = 181
-	KnxDatapointType_DPT_Value_Luminance                          KnxDatapointType = 182
-	KnxDatapointType_DPT_Value_Luminous_Flux                      KnxDatapointType = 183
-	KnxDatapointType_DPT_Value_Luminous_Intensity                 KnxDatapointType = 184
-	KnxDatapointType_DPT_Value_Magnetic_FieldStrength             KnxDatapointType = 185
-	KnxDatapointType_DPT_Value_Magnetic_Flux                      KnxDatapointType = 186
-	KnxDatapointType_DPT_Value_Magnetic_FluxDensity               KnxDatapointType = 187
-	KnxDatapointType_DPT_Value_Magnetic_Moment                    KnxDatapointType = 188
-	KnxDatapointType_DPT_Value_Magnetic_Polarization              KnxDatapointType = 189
-	KnxDatapointType_DPT_Value_Magnetization                      KnxDatapointType = 190
-	KnxDatapointType_DPT_Value_MagnetomotiveForce                 KnxDatapointType = 191
-	KnxDatapointType_DPT_Value_Mass                               KnxDatapointType = 192
-	KnxDatapointType_DPT_Value_MassFlux                           KnxDatapointType = 193
-	KnxDatapointType_DPT_Value_Momentum                           KnxDatapointType = 194
-	KnxDatapointType_DPT_Value_Phase_AngleRad                     KnxDatapointType = 195
-	KnxDatapointType_DPT_Value_Phase_AngleDeg                     KnxDatapointType = 196
-	KnxDatapointType_DPT_Value_Power                              KnxDatapointType = 197
-	KnxDatapointType_DPT_Value_Power_Factor                       KnxDatapointType = 198
-	KnxDatapointType_DPT_Value_Pressure                           KnxDatapointType = 199
-	KnxDatapointType_DPT_Value_Reactance                          KnxDatapointType = 200
-	KnxDatapointType_DPT_Value_Resistance                         KnxDatapointType = 201
-	KnxDatapointType_DPT_Value_Resistivity                        KnxDatapointType = 202
-	KnxDatapointType_DPT_Value_SelfInductance                     KnxDatapointType = 203
-	KnxDatapointType_DPT_Value_SolidAngle                         KnxDatapointType = 204
-	KnxDatapointType_DPT_Value_Sound_Intensity                    KnxDatapointType = 205
-	KnxDatapointType_DPT_Value_Speed                              KnxDatapointType = 206
-	KnxDatapointType_DPT_Value_Stress                             KnxDatapointType = 207
-	KnxDatapointType_DPT_Value_Surface_Tension                    KnxDatapointType = 208
-	KnxDatapointType_DPT_Value_Common_Temperature                 KnxDatapointType = 209
-	KnxDatapointType_DPT_Value_Absolute_Temperature               KnxDatapointType = 210
-	KnxDatapointType_DPT_Value_TemperatureDifference              KnxDatapointType = 211
-	KnxDatapointType_DPT_Value_Thermal_Capacity                   KnxDatapointType = 212
-	KnxDatapointType_DPT_Value_Thermal_Conductivity               KnxDatapointType = 213
-	KnxDatapointType_DPT_Value_ThermoelectricPower                KnxDatapointType = 214
-	KnxDatapointType_DPT_Value_Time                               KnxDatapointType = 215
-	KnxDatapointType_DPT_Value_Torque                             KnxDatapointType = 216
-	KnxDatapointType_DPT_Value_Volume                             KnxDatapointType = 217
-	KnxDatapointType_DPT_Value_Volume_Flux                        KnxDatapointType = 218
-	KnxDatapointType_DPT_Value_Weight                             KnxDatapointType = 219
-	KnxDatapointType_DPT_Value_Work                               KnxDatapointType = 220
-	KnxDatapointType_DPT_Value_ApparentPower                      KnxDatapointType = 221
-	KnxDatapointType_DPT_Volume_Flux_Meter                        KnxDatapointType = 222
-	KnxDatapointType_DPT_Volume_Flux_ls                           KnxDatapointType = 223
-	KnxDatapointType_DPT_Access_Data                              KnxDatapointType = 224
-	KnxDatapointType_DPT_String_ASCII                             KnxDatapointType = 225
-	KnxDatapointType_DPT_String_8859_1                            KnxDatapointType = 226
-	KnxDatapointType_DPT_SceneNumber                              KnxDatapointType = 227
-	KnxDatapointType_DPT_SceneControl                             KnxDatapointType = 228
-	KnxDatapointType_DPT_DateTime                                 KnxDatapointType = 229
-	KnxDatapointType_DPT_SCLOMode                                 KnxDatapointType = 230
-	KnxDatapointType_DPT_BuildingMode                             KnxDatapointType = 231
-	KnxDatapointType_DPT_OccMode                                  KnxDatapointType = 232
-	KnxDatapointType_DPT_Priority                                 KnxDatapointType = 233
-	KnxDatapointType_DPT_LightApplicationMode                     KnxDatapointType = 234
-	KnxDatapointType_DPT_ApplicationArea                          KnxDatapointType = 235
-	KnxDatapointType_DPT_AlarmClassType                           KnxDatapointType = 236
-	KnxDatapointType_DPT_PSUMode                                  KnxDatapointType = 237
-	KnxDatapointType_DPT_ErrorClass_System                        KnxDatapointType = 238
-	KnxDatapointType_DPT_ErrorClass_HVAC                          KnxDatapointType = 239
-	KnxDatapointType_DPT_Time_Delay                               KnxDatapointType = 240
-	KnxDatapointType_DPT_Beaufort_Wind_Force_Scale                KnxDatapointType = 241
-	KnxDatapointType_DPT_SensorSelect                             KnxDatapointType = 242
-	KnxDatapointType_DPT_ActuatorConnectType                      KnxDatapointType = 243
-	KnxDatapointType_DPT_Cloud_Cover                              KnxDatapointType = 244
-	KnxDatapointType_DPT_PowerReturnMode                          KnxDatapointType = 245
-	KnxDatapointType_DPT_FuelType                                 KnxDatapointType = 246
-	KnxDatapointType_DPT_BurnerType                               KnxDatapointType = 247
-	KnxDatapointType_DPT_HVACMode                                 KnxDatapointType = 248
-	KnxDatapointType_DPT_DHWMode                                  KnxDatapointType = 249
-	KnxDatapointType_DPT_LoadPriority                             KnxDatapointType = 250
-	KnxDatapointType_DPT_HVACContrMode                            KnxDatapointType = 251
-	KnxDatapointType_DPT_HVACEmergMode                            KnxDatapointType = 252
-	KnxDatapointType_DPT_ChangeoverMode                           KnxDatapointType = 253
-	KnxDatapointType_DPT_ValveMode                                KnxDatapointType = 254
-	KnxDatapointType_DPT_DamperMode                               KnxDatapointType = 255
-	KnxDatapointType_DPT_HeaterMode                               KnxDatapointType = 256
-	KnxDatapointType_DPT_FanMode                                  KnxDatapointType = 257
-	KnxDatapointType_DPT_MasterSlaveMode                          KnxDatapointType = 258
-	KnxDatapointType_DPT_StatusRoomSetp                           KnxDatapointType = 259
-	KnxDatapointType_DPT_Metering_DeviceType                      KnxDatapointType = 260
-	KnxDatapointType_DPT_HumDehumMode                             KnxDatapointType = 261
-	KnxDatapointType_DPT_EnableHCStage                            KnxDatapointType = 262
-	KnxDatapointType_DPT_ADAType                                  KnxDatapointType = 263
-	KnxDatapointType_DPT_BackupMode                               KnxDatapointType = 264
-	KnxDatapointType_DPT_StartSynchronization                     KnxDatapointType = 265
-	KnxDatapointType_DPT_Behaviour_Lock_Unlock                    KnxDatapointType = 266
-	KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down              KnxDatapointType = 267
-	KnxDatapointType_DPT_DALI_Fade_Time                           KnxDatapointType = 268
-	KnxDatapointType_DPT_BlinkingMode                             KnxDatapointType = 269
-	KnxDatapointType_DPT_LightControlMode                         KnxDatapointType = 270
-	KnxDatapointType_DPT_SwitchPBModel                            KnxDatapointType = 271
-	KnxDatapointType_DPT_PBAction                                 KnxDatapointType = 272
-	KnxDatapointType_DPT_DimmPBModel                              KnxDatapointType = 273
-	KnxDatapointType_DPT_SwitchOnMode                             KnxDatapointType = 274
-	KnxDatapointType_DPT_LoadTypeSet                              KnxDatapointType = 275
-	KnxDatapointType_DPT_LoadTypeDetected                         KnxDatapointType = 276
-	KnxDatapointType_DPT_Converter_Test_Control                   KnxDatapointType = 277
-	KnxDatapointType_DPT_SABExcept_Behaviour                      KnxDatapointType = 278
-	KnxDatapointType_DPT_SABBehaviour_Lock_Unlock                 KnxDatapointType = 279
-	KnxDatapointType_DPT_SSSBMode                                 KnxDatapointType = 280
-	KnxDatapointType_DPT_BlindsControlMode                        KnxDatapointType = 281
-	KnxDatapointType_DPT_CommMode                                 KnxDatapointType = 282
-	KnxDatapointType_DPT_AddInfoTypes                             KnxDatapointType = 283
-	KnxDatapointType_DPT_RF_ModeSelect                            KnxDatapointType = 284
-	KnxDatapointType_DPT_RF_FilterSelect                          KnxDatapointType = 285
-	KnxDatapointType_DPT_StatusGen                                KnxDatapointType = 286
-	KnxDatapointType_DPT_Device_Control                           KnxDatapointType = 287
-	KnxDatapointType_DPT_ForceSign                                KnxDatapointType = 288
-	KnxDatapointType_DPT_ForceSignCool                            KnxDatapointType = 289
-	KnxDatapointType_DPT_StatusRHC                                KnxDatapointType = 290
-	KnxDatapointType_DPT_StatusSDHWC                              KnxDatapointType = 291
-	KnxDatapointType_DPT_FuelTypeSet                              KnxDatapointType = 292
-	KnxDatapointType_DPT_StatusRCC                                KnxDatapointType = 293
-	KnxDatapointType_DPT_StatusAHU                                KnxDatapointType = 294
-	KnxDatapointType_DPT_CombinedStatus_RTSM                      KnxDatapointType = 295
-	KnxDatapointType_DPT_LightActuatorErrorInfo                   KnxDatapointType = 296
-	KnxDatapointType_DPT_RF_ModeInfo                              KnxDatapointType = 297
-	KnxDatapointType_DPT_RF_FilterInfo                            KnxDatapointType = 298
-	KnxDatapointType_DPT_Channel_Activation_8                     KnxDatapointType = 299
-	KnxDatapointType_DPT_StatusDHWC                               KnxDatapointType = 300
-	KnxDatapointType_DPT_StatusRHCC                               KnxDatapointType = 301
-	KnxDatapointType_DPT_CombinedStatus_HVA                       KnxDatapointType = 302
-	KnxDatapointType_DPT_CombinedStatus_RTC                       KnxDatapointType = 303
-	KnxDatapointType_DPT_Media                                    KnxDatapointType = 304
-	KnxDatapointType_DPT_Channel_Activation_16                    KnxDatapointType = 305
-	KnxDatapointType_DPT_OnOffAction                              KnxDatapointType = 306
-	KnxDatapointType_DPT_Alarm_Reaction                           KnxDatapointType = 307
-	KnxDatapointType_DPT_UpDown_Action                            KnxDatapointType = 308
-	KnxDatapointType_DPT_HVAC_PB_Action                           KnxDatapointType = 309
-	KnxDatapointType_DPT_DoubleNibble                             KnxDatapointType = 310
-	KnxDatapointType_DPT_SceneInfo                                KnxDatapointType = 311
-	KnxDatapointType_DPT_CombinedInfoOnOff                        KnxDatapointType = 312
-	KnxDatapointType_DPT_ActiveEnergy_V64                         KnxDatapointType = 313
-	KnxDatapointType_DPT_ApparantEnergy_V64                       KnxDatapointType = 314
-	KnxDatapointType_DPT_ReactiveEnergy_V64                       KnxDatapointType = 315
-	KnxDatapointType_DPT_Channel_Activation_24                    KnxDatapointType = 316
-	KnxDatapointType_DPT_HVACModeNext                             KnxDatapointType = 317
-	KnxDatapointType_DPT_DHWModeNext                              KnxDatapointType = 318
-	KnxDatapointType_DPT_OccModeNext                              KnxDatapointType = 319
-	KnxDatapointType_DPT_BuildingModeNext                         KnxDatapointType = 320
-	KnxDatapointType_DPT_StatusLightingActuator                   KnxDatapointType = 321
-	KnxDatapointType_DPT_Version                                  KnxDatapointType = 322
-	KnxDatapointType_DPT_AlarmInfo                                KnxDatapointType = 323
-	KnxDatapointType_DPT_TempRoomSetpSetF16_3                     KnxDatapointType = 324
-	KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3                KnxDatapointType = 325
-	KnxDatapointType_DPT_Scaling_Speed                            KnxDatapointType = 326
-	KnxDatapointType_DPT_Scaling_Step_Time                        KnxDatapointType = 327
-	KnxDatapointType_DPT_MeteringValue                            KnxDatapointType = 328
-	KnxDatapointType_DPT_MBus_Address                             KnxDatapointType = 329
-	KnxDatapointType_DPT_Colour_RGB                               KnxDatapointType = 330
-	KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII                 KnxDatapointType = 331
-	KnxDatapointType_DPT_Tariff_ActiveEnergy                      KnxDatapointType = 332
-	KnxDatapointType_DPT_Prioritised_Mode_Control                 KnxDatapointType = 333
-	KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic             KnxDatapointType = 334
-	KnxDatapointType_DPT_DALI_Diagnostics                         KnxDatapointType = 335
-	KnxDatapointType_DPT_CombinedPosition                         KnxDatapointType = 336
-	KnxDatapointType_DPT_StatusSAB                                KnxDatapointType = 337
-	KnxDatapointType_DPT_Colour_xyY                               KnxDatapointType = 338
-	KnxDatapointType_DPT_Converter_Status                         KnxDatapointType = 339
-	KnxDatapointType_DPT_Converter_Test_Result                    KnxDatapointType = 340
-	KnxDatapointType_DPT_Battery_Info                             KnxDatapointType = 341
-	KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition KnxDatapointType = 342
-	KnxDatapointType_DPT_Brightness_Colour_Temperature_Control    KnxDatapointType = 343
-	KnxDatapointType_DPT_Colour_RGBW                              KnxDatapointType = 344
-	KnxDatapointType_DPT_Relative_Control_RGBW                    KnxDatapointType = 345
-	KnxDatapointType_DPT_Relative_Control_RGB                     KnxDatapointType = 346
-	KnxDatapointType_DPT_GeographicalLocation                     KnxDatapointType = 347
-	KnxDatapointType_DPT_TempRoomSetpSetF16_4                     KnxDatapointType = 348
-	KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4                KnxDatapointType = 349
+	KnxDatapointType_DPT_Coefficient                              KnxDatapointType = 121
+	KnxDatapointType_DPT_TimeOfDay                                KnxDatapointType = 122
+	KnxDatapointType_DPT_Date                                     KnxDatapointType = 123
+	KnxDatapointType_DPT_Value_4_Ucount                           KnxDatapointType = 124
+	KnxDatapointType_DPT_LongTimePeriod_Sec                       KnxDatapointType = 125
+	KnxDatapointType_DPT_LongTimePeriod_Min                       KnxDatapointType = 126
+	KnxDatapointType_DPT_LongTimePeriod_Hrs                       KnxDatapointType = 127
+	KnxDatapointType_DPT_VolumeLiquid_Litre                       KnxDatapointType = 128
+	KnxDatapointType_DPT_Volume_m_3                               KnxDatapointType = 129
+	KnxDatapointType_DPT_Value_4_Count                            KnxDatapointType = 130
+	KnxDatapointType_DPT_FlowRate_m3h                             KnxDatapointType = 131
+	KnxDatapointType_DPT_ActiveEnergy                             KnxDatapointType = 132
+	KnxDatapointType_DPT_ApparantEnergy                           KnxDatapointType = 133
+	KnxDatapointType_DPT_ReactiveEnergy                           KnxDatapointType = 134
+	KnxDatapointType_DPT_ActiveEnergy_kWh                         KnxDatapointType = 135
+	KnxDatapointType_DPT_ApparantEnergy_kVAh                      KnxDatapointType = 136
+	KnxDatapointType_DPT_ReactiveEnergy_kVARh                     KnxDatapointType = 137
+	KnxDatapointType_DPT_ActiveEnergy_MWh                         KnxDatapointType = 138
+	KnxDatapointType_DPT_LongDeltaTimeSec                         KnxDatapointType = 139
+	KnxDatapointType_DPT_DeltaVolumeLiquid_Litre                  KnxDatapointType = 140
+	KnxDatapointType_DPT_DeltaVolume_m_3                          KnxDatapointType = 141
+	KnxDatapointType_DPT_Value_Acceleration                       KnxDatapointType = 142
+	KnxDatapointType_DPT_Value_Acceleration_Angular               KnxDatapointType = 143
+	KnxDatapointType_DPT_Value_Activation_Energy                  KnxDatapointType = 144
+	KnxDatapointType_DPT_Value_Activity                           KnxDatapointType = 145
+	KnxDatapointType_DPT_Value_Mol                                KnxDatapointType = 146
+	KnxDatapointType_DPT_Value_Amplitude                          KnxDatapointType = 147
+	KnxDatapointType_DPT_Value_AngleRad                           KnxDatapointType = 148
+	KnxDatapointType_DPT_Value_AngleDeg                           KnxDatapointType = 149
+	KnxDatapointType_DPT_Value_Angular_Momentum                   KnxDatapointType = 150
+	KnxDatapointType_DPT_Value_Angular_Velocity                   KnxDatapointType = 151
+	KnxDatapointType_DPT_Value_Area                               KnxDatapointType = 152
+	KnxDatapointType_DPT_Value_Capacitance                        KnxDatapointType = 153
+	KnxDatapointType_DPT_Value_Charge_DensitySurface              KnxDatapointType = 154
+	KnxDatapointType_DPT_Value_Charge_DensityVolume               KnxDatapointType = 155
+	KnxDatapointType_DPT_Value_Compressibility                    KnxDatapointType = 156
+	KnxDatapointType_DPT_Value_Conductance                        KnxDatapointType = 157
+	KnxDatapointType_DPT_Value_Electrical_Conductivity            KnxDatapointType = 158
+	KnxDatapointType_DPT_Value_Density                            KnxDatapointType = 159
+	KnxDatapointType_DPT_Value_Electric_Charge                    KnxDatapointType = 160
+	KnxDatapointType_DPT_Value_Electric_Current                   KnxDatapointType = 161
+	KnxDatapointType_DPT_Value_Electric_CurrentDensity            KnxDatapointType = 162
+	KnxDatapointType_DPT_Value_Electric_DipoleMoment              KnxDatapointType = 163
+	KnxDatapointType_DPT_Value_Electric_Displacement              KnxDatapointType = 164
+	KnxDatapointType_DPT_Value_Electric_FieldStrength             KnxDatapointType = 165
+	KnxDatapointType_DPT_Value_Electric_Flux                      KnxDatapointType = 166
+	KnxDatapointType_DPT_Value_Electric_FluxDensity               KnxDatapointType = 167
+	KnxDatapointType_DPT_Value_Electric_Polarization              KnxDatapointType = 168
+	KnxDatapointType_DPT_Value_Electric_Potential                 KnxDatapointType = 169
+	KnxDatapointType_DPT_Value_Electric_PotentialDifference       KnxDatapointType = 170
+	KnxDatapointType_DPT_Value_ElectromagneticMoment              KnxDatapointType = 171
+	KnxDatapointType_DPT_Value_Electromotive_Force                KnxDatapointType = 172
+	KnxDatapointType_DPT_Value_Energy                             KnxDatapointType = 173
+	KnxDatapointType_DPT_Value_Force                              KnxDatapointType = 174
+	KnxDatapointType_DPT_Value_Frequency                          KnxDatapointType = 175
+	KnxDatapointType_DPT_Value_Angular_Frequency                  KnxDatapointType = 176
+	KnxDatapointType_DPT_Value_Heat_Capacity                      KnxDatapointType = 177
+	KnxDatapointType_DPT_Value_Heat_FlowRate                      KnxDatapointType = 178
+	KnxDatapointType_DPT_Value_Heat_Quantity                      KnxDatapointType = 179
+	KnxDatapointType_DPT_Value_Impedance                          KnxDatapointType = 180
+	KnxDatapointType_DPT_Value_Length                             KnxDatapointType = 181
+	KnxDatapointType_DPT_Value_Light_Quantity                     KnxDatapointType = 182
+	KnxDatapointType_DPT_Value_Luminance                          KnxDatapointType = 183
+	KnxDatapointType_DPT_Value_Luminous_Flux                      KnxDatapointType = 184
+	KnxDatapointType_DPT_Value_Luminous_Intensity                 KnxDatapointType = 185
+	KnxDatapointType_DPT_Value_Magnetic_FieldStrength             KnxDatapointType = 186
+	KnxDatapointType_DPT_Value_Magnetic_Flux                      KnxDatapointType = 187
+	KnxDatapointType_DPT_Value_Magnetic_FluxDensity               KnxDatapointType = 188
+	KnxDatapointType_DPT_Value_Magnetic_Moment                    KnxDatapointType = 189
+	KnxDatapointType_DPT_Value_Magnetic_Polarization              KnxDatapointType = 190
+	KnxDatapointType_DPT_Value_Magnetization                      KnxDatapointType = 191
+	KnxDatapointType_DPT_Value_MagnetomotiveForce                 KnxDatapointType = 192
+	KnxDatapointType_DPT_Value_Mass                               KnxDatapointType = 193
+	KnxDatapointType_DPT_Value_MassFlux                           KnxDatapointType = 194
+	KnxDatapointType_DPT_Value_Momentum                           KnxDatapointType = 195
+	KnxDatapointType_DPT_Value_Phase_AngleRad                     KnxDatapointType = 196
+	KnxDatapointType_DPT_Value_Phase_AngleDeg                     KnxDatapointType = 197
+	KnxDatapointType_DPT_Value_Power                              KnxDatapointType = 198
+	KnxDatapointType_DPT_Value_Power_Factor                       KnxDatapointType = 199
+	KnxDatapointType_DPT_Value_Pressure                           KnxDatapointType = 200
+	KnxDatapointType_DPT_Value_Reactance                          KnxDatapointType = 201
+	KnxDatapointType_DPT_Value_Resistance                         KnxDatapointType = 202
+	KnxDatapointType_DPT_Value_Resistivity                        KnxDatapointType = 203
+	KnxDatapointType_DPT_Value_SelfInductance                     KnxDatapointType = 204
+	KnxDatapointType_DPT_Value_SolidAngle                         KnxDatapointType = 205
+	KnxDatapointType_DPT_Value_Sound_Intensity                    KnxDatapointType = 206
+	KnxDatapointType_DPT_Value_Speed                              KnxDatapointType = 207
+	KnxDatapointType_DPT_Value_Stress                             KnxDatapointType = 208
+	KnxDatapointType_DPT_Value_Surface_Tension                    KnxDatapointType = 209
+	KnxDatapointType_DPT_Value_Common_Temperature                 KnxDatapointType = 210
+	KnxDatapointType_DPT_Value_Absolute_Temperature               KnxDatapointType = 211
+	KnxDatapointType_DPT_Value_TemperatureDifference              KnxDatapointType = 212
+	KnxDatapointType_DPT_Value_Thermal_Capacity                   KnxDatapointType = 213
+	KnxDatapointType_DPT_Value_Thermal_Conductivity               KnxDatapointType = 214
+	KnxDatapointType_DPT_Value_ThermoelectricPower                KnxDatapointType = 215
+	KnxDatapointType_DPT_Value_Time                               KnxDatapointType = 216
+	KnxDatapointType_DPT_Value_Torque                             KnxDatapointType = 217
+	KnxDatapointType_DPT_Value_Volume                             KnxDatapointType = 218
+	KnxDatapointType_DPT_Value_Volume_Flux                        KnxDatapointType = 219
+	KnxDatapointType_DPT_Value_Weight                             KnxDatapointType = 220
+	KnxDatapointType_DPT_Value_Work                               KnxDatapointType = 221
+	KnxDatapointType_DPT_Value_ApparentPower                      KnxDatapointType = 222
+	KnxDatapointType_DPT_Volume_Flux_Meter                        KnxDatapointType = 223
+	KnxDatapointType_DPT_Volume_Flux_ls                           KnxDatapointType = 224
+	KnxDatapointType_DPT_Access_Data                              KnxDatapointType = 225
+	KnxDatapointType_DPT_String_ASCII                             KnxDatapointType = 226
+	KnxDatapointType_DPT_String_8859_1                            KnxDatapointType = 227
+	KnxDatapointType_DPT_SceneNumber                              KnxDatapointType = 228
+	KnxDatapointType_DPT_SceneControl                             KnxDatapointType = 229
+	KnxDatapointType_DPT_DateTime                                 KnxDatapointType = 230
+	KnxDatapointType_DPT_SCLOMode                                 KnxDatapointType = 231
+	KnxDatapointType_DPT_BuildingMode                             KnxDatapointType = 232
+	KnxDatapointType_DPT_OccMode                                  KnxDatapointType = 233
+	KnxDatapointType_DPT_Priority                                 KnxDatapointType = 234
+	KnxDatapointType_DPT_LightApplicationMode                     KnxDatapointType = 235
+	KnxDatapointType_DPT_ApplicationArea                          KnxDatapointType = 236
+	KnxDatapointType_DPT_AlarmClassType                           KnxDatapointType = 237
+	KnxDatapointType_DPT_PSUMode                                  KnxDatapointType = 238
+	KnxDatapointType_DPT_ErrorClass_System                        KnxDatapointType = 239
+	KnxDatapointType_DPT_ErrorClass_HVAC                          KnxDatapointType = 240
+	KnxDatapointType_DPT_Time_Delay                               KnxDatapointType = 241
+	KnxDatapointType_DPT_Beaufort_Wind_Force_Scale                KnxDatapointType = 242
+	KnxDatapointType_DPT_SensorSelect                             KnxDatapointType = 243
+	KnxDatapointType_DPT_ActuatorConnectType                      KnxDatapointType = 244
+	KnxDatapointType_DPT_Cloud_Cover                              KnxDatapointType = 245
+	KnxDatapointType_DPT_PowerReturnMode                          KnxDatapointType = 246
+	KnxDatapointType_DPT_FuelType                                 KnxDatapointType = 247
+	KnxDatapointType_DPT_BurnerType                               KnxDatapointType = 248
+	KnxDatapointType_DPT_HVACMode                                 KnxDatapointType = 249
+	KnxDatapointType_DPT_DHWMode                                  KnxDatapointType = 250
+	KnxDatapointType_DPT_LoadPriority                             KnxDatapointType = 251
+	KnxDatapointType_DPT_HVACContrMode                            KnxDatapointType = 252
+	KnxDatapointType_DPT_HVACEmergMode                            KnxDatapointType = 253
+	KnxDatapointType_DPT_ChangeoverMode                           KnxDatapointType = 254
+	KnxDatapointType_DPT_ValveMode                                KnxDatapointType = 255
+	KnxDatapointType_DPT_DamperMode                               KnxDatapointType = 256
+	KnxDatapointType_DPT_HeaterMode                               KnxDatapointType = 257
+	KnxDatapointType_DPT_FanMode                                  KnxDatapointType = 258
+	KnxDatapointType_DPT_MasterSlaveMode                          KnxDatapointType = 259
+	KnxDatapointType_DPT_StatusRoomSetp                           KnxDatapointType = 260
+	KnxDatapointType_DPT_Metering_DeviceType                      KnxDatapointType = 261
+	KnxDatapointType_DPT_HumDehumMode                             KnxDatapointType = 262
+	KnxDatapointType_DPT_EnableHCStage                            KnxDatapointType = 263
+	KnxDatapointType_DPT_ADAType                                  KnxDatapointType = 264
+	KnxDatapointType_DPT_BackupMode                               KnxDatapointType = 265
+	KnxDatapointType_DPT_StartSynchronization                     KnxDatapointType = 266
+	KnxDatapointType_DPT_Behaviour_Lock_Unlock                    KnxDatapointType = 267
+	KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down              KnxDatapointType = 268
+	KnxDatapointType_DPT_DALI_Fade_Time                           KnxDatapointType = 269
+	KnxDatapointType_DPT_BlinkingMode                             KnxDatapointType = 270
+	KnxDatapointType_DPT_LightControlMode                         KnxDatapointType = 271
+	KnxDatapointType_DPT_SwitchPBModel                            KnxDatapointType = 272
+	KnxDatapointType_DPT_PBAction                                 KnxDatapointType = 273
+	KnxDatapointType_DPT_DimmPBModel                              KnxDatapointType = 274
+	KnxDatapointType_DPT_SwitchOnMode                             KnxDatapointType = 275
+	KnxDatapointType_DPT_LoadTypeSet                              KnxDatapointType = 276
+	KnxDatapointType_DPT_LoadTypeDetected                         KnxDatapointType = 277
+	KnxDatapointType_DPT_Converter_Test_Control                   KnxDatapointType = 278
+	KnxDatapointType_DPT_SABExcept_Behaviour                      KnxDatapointType = 279
+	KnxDatapointType_DPT_SABBehaviour_Lock_Unlock                 KnxDatapointType = 280
+	KnxDatapointType_DPT_SSSBMode                                 KnxDatapointType = 281
+	KnxDatapointType_DPT_BlindsControlMode                        KnxDatapointType = 282
+	KnxDatapointType_DPT_CommMode                                 KnxDatapointType = 283
+	KnxDatapointType_DPT_AddInfoTypes                             KnxDatapointType = 284
+	KnxDatapointType_DPT_RF_ModeSelect                            KnxDatapointType = 285
+	KnxDatapointType_DPT_RF_FilterSelect                          KnxDatapointType = 286
+	KnxDatapointType_DPT_StatusGen                                KnxDatapointType = 287
+	KnxDatapointType_DPT_Device_Control                           KnxDatapointType = 288
+	KnxDatapointType_DPT_ForceSign                                KnxDatapointType = 289
+	KnxDatapointType_DPT_ForceSignCool                            KnxDatapointType = 290
+	KnxDatapointType_DPT_StatusRHC                                KnxDatapointType = 291
+	KnxDatapointType_DPT_StatusSDHWC                              KnxDatapointType = 292
+	KnxDatapointType_DPT_FuelTypeSet                              KnxDatapointType = 293
+	KnxDatapointType_DPT_StatusRCC                                KnxDatapointType = 294
+	KnxDatapointType_DPT_StatusAHU                                KnxDatapointType = 295
+	KnxDatapointType_DPT_CombinedStatus_RTSM                      KnxDatapointType = 296
+	KnxDatapointType_DPT_LightActuatorErrorInfo                   KnxDatapointType = 297
+	KnxDatapointType_DPT_RF_ModeInfo                              KnxDatapointType = 298
+	KnxDatapointType_DPT_RF_FilterInfo                            KnxDatapointType = 299
+	KnxDatapointType_DPT_Channel_Activation_8                     KnxDatapointType = 300
+	KnxDatapointType_DPT_StatusDHWC                               KnxDatapointType = 301
+	KnxDatapointType_DPT_StatusRHCC                               KnxDatapointType = 302
+	KnxDatapointType_DPT_CombinedStatus_HVA                       KnxDatapointType = 303
+	KnxDatapointType_DPT_CombinedStatus_RTC                       KnxDatapointType = 304
+	KnxDatapointType_DPT_Media                                    KnxDatapointType = 305
+	KnxDatapointType_DPT_Channel_Activation_16                    KnxDatapointType = 306
+	KnxDatapointType_DPT_OnOffAction                              KnxDatapointType = 307
+	KnxDatapointType_DPT_Alarm_Reaction                           KnxDatapointType = 308
+	KnxDatapointType_DPT_UpDown_Action                            KnxDatapointType = 309
+	KnxDatapointType_DPT_HVAC_PB_Action                           KnxDatapointType = 310
+	KnxDatapointType_DPT_DoubleNibble                             KnxDatapointType = 311
+	KnxDatapointType_DPT_SceneInfo                                KnxDatapointType = 312
+	KnxDatapointType_DPT_CombinedInfoOnOff                        KnxDatapointType = 313
+	KnxDatapointType_DPT_ActiveEnergy_V64                         KnxDatapointType = 314
+	KnxDatapointType_DPT_ApparantEnergy_V64                       KnxDatapointType = 315
+	KnxDatapointType_DPT_ReactiveEnergy_V64                       KnxDatapointType = 316
+	KnxDatapointType_DPT_Channel_Activation_24                    KnxDatapointType = 317
+	KnxDatapointType_DPT_HVACModeNext                             KnxDatapointType = 318
+	KnxDatapointType_DPT_DHWModeNext                              KnxDatapointType = 319
+	KnxDatapointType_DPT_OccModeNext                              KnxDatapointType = 320
+	KnxDatapointType_DPT_BuildingModeNext                         KnxDatapointType = 321
+	KnxDatapointType_DPT_StatusLightingActuator                   KnxDatapointType = 322
+	KnxDatapointType_DPT_Version                                  KnxDatapointType = 323
+	KnxDatapointType_DPT_AlarmInfo                                KnxDatapointType = 324
+	KnxDatapointType_DPT_TempRoomSetpSetF16_3                     KnxDatapointType = 325
+	KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3                KnxDatapointType = 326
+	KnxDatapointType_DPT_Scaling_Speed                            KnxDatapointType = 327
+	KnxDatapointType_DPT_Scaling_Step_Time                        KnxDatapointType = 328
+	KnxDatapointType_DPT_MeteringValue                            KnxDatapointType = 329
+	KnxDatapointType_DPT_MBus_Address                             KnxDatapointType = 330
+	KnxDatapointType_DPT_Colour_RGB                               KnxDatapointType = 331
+	KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII                 KnxDatapointType = 332
+	KnxDatapointType_DPT_Tariff_ActiveEnergy                      KnxDatapointType = 333
+	KnxDatapointType_DPT_Prioritised_Mode_Control                 KnxDatapointType = 334
+	KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic             KnxDatapointType = 335
+	KnxDatapointType_DPT_DALI_Diagnostics                         KnxDatapointType = 336
+	KnxDatapointType_DPT_CombinedPosition                         KnxDatapointType = 337
+	KnxDatapointType_DPT_StatusSAB                                KnxDatapointType = 338
+	KnxDatapointType_DPT_Colour_xyY                               KnxDatapointType = 339
+	KnxDatapointType_DPT_Converter_Status                         KnxDatapointType = 340
+	KnxDatapointType_DPT_Converter_Test_Result                    KnxDatapointType = 341
+	KnxDatapointType_DPT_Battery_Info                             KnxDatapointType = 342
+	KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition KnxDatapointType = 343
+	KnxDatapointType_DPT_Brightness_Colour_Temperature_Control    KnxDatapointType = 344
+	KnxDatapointType_DPT_Colour_RGBW                              KnxDatapointType = 345
+	KnxDatapointType_DPT_Relative_Control_RGBW                    KnxDatapointType = 346
+	KnxDatapointType_DPT_Relative_Control_RGB                     KnxDatapointType = 347
+	KnxDatapointType_DPT_GeographicalLocation                     KnxDatapointType = 348
+	KnxDatapointType_DPT_TempRoomSetpSetF16_4                     KnxDatapointType = 349
+	KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4                KnxDatapointType = 350
 )
 
 var KnxDatapointTypeValues []KnxDatapointType
@@ -516,6 +517,7 @@ func init() {
 		KnxDatapointType_DPT_Value_Wsp_kmh,
 		KnxDatapointType_DPT_Value_Absolute_Humidity,
 		KnxDatapointType_DPT_Concentration_ygm3,
+		KnxDatapointType_DPT_Coefficient,
 		KnxDatapointType_DPT_TimeOfDay,
 		KnxDatapointType_DPT_Date,
 		KnxDatapointType_DPT_Value_4_Ucount,
@@ -856,7 +858,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 121:
 		{ /* '121' */
-			return 1
+			return 31
 		}
 	case 122:
 		{ /* '122' */
@@ -868,27 +870,27 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 124:
 		{ /* '124' */
-			return 100
+			return 1
 		}
 	case 125:
 		{ /* '125' */
-			return 101
+			return 100
 		}
 	case 126:
 		{ /* '126' */
-			return 102
+			return 101
 		}
 	case 127:
 		{ /* '127' */
-			return 1200
+			return 102
 		}
 	case 128:
 		{ /* '128' */
-			return 1201
+			return 1200
 		}
 	case 129:
 		{ /* '129' */
-			return 1
+			return 1201
 		}
 	case 13:
 		{ /* '13' */
@@ -896,43 +898,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 130:
 		{ /* '130' */
-			return 2
+			return 1
 		}
 	case 131:
 		{ /* '131' */
-			return 10
+			return 2
 		}
 	case 132:
 		{ /* '132' */
-			return 11
+			return 10
 		}
 	case 133:
 		{ /* '133' */
-			return 12
+			return 11
 		}
 	case 134:
 		{ /* '134' */
-			return 13
+			return 12
 		}
 	case 135:
 		{ /* '135' */
-			return 14
+			return 13
 		}
 	case 136:
 		{ /* '136' */
-			return 15
+			return 14
 		}
 	case 137:
 		{ /* '137' */
-			return 16
+			return 15
 		}
 	case 138:
 		{ /* '138' */
-			return 100
+			return 16
 		}
 	case 139:
 		{ /* '139' */
-			return 1200
+			return 100
 		}
 	case 14:
 		{ /* '14' */
@@ -940,43 +942,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 140:
 		{ /* '140' */
-			return 1201
+			return 1200
 		}
 	case 141:
 		{ /* '141' */
-			return 0
+			return 1201
 		}
 	case 142:
 		{ /* '142' */
-			return 1
+			return 0
 		}
 	case 143:
 		{ /* '143' */
-			return 2
+			return 1
 		}
 	case 144:
 		{ /* '144' */
-			return 3
+			return 2
 		}
 	case 145:
 		{ /* '145' */
-			return 4
+			return 3
 		}
 	case 146:
 		{ /* '146' */
-			return 5
+			return 4
 		}
 	case 147:
 		{ /* '147' */
-			return 6
+			return 5
 		}
 	case 148:
 		{ /* '148' */
-			return 7
+			return 6
 		}
 	case 149:
 		{ /* '149' */
-			return 8
+			return 7
 		}
 	case 15:
 		{ /* '15' */
@@ -984,43 +986,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 150:
 		{ /* '150' */
-			return 9
+			return 8
 		}
 	case 151:
 		{ /* '151' */
-			return 10
+			return 9
 		}
 	case 152:
 		{ /* '152' */
-			return 11
+			return 10
 		}
 	case 153:
 		{ /* '153' */
-			return 12
+			return 11
 		}
 	case 154:
 		{ /* '154' */
-			return 13
+			return 12
 		}
 	case 155:
 		{ /* '155' */
-			return 14
+			return 13
 		}
 	case 156:
 		{ /* '156' */
-			return 15
+			return 14
 		}
 	case 157:
 		{ /* '157' */
-			return 16
+			return 15
 		}
 	case 158:
 		{ /* '158' */
-			return 17
+			return 16
 		}
 	case 159:
 		{ /* '159' */
-			return 18
+			return 17
 		}
 	case 16:
 		{ /* '16' */
@@ -1028,43 +1030,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 160:
 		{ /* '160' */
-			return 19
+			return 18
 		}
 	case 161:
 		{ /* '161' */
-			return 20
+			return 19
 		}
 	case 162:
 		{ /* '162' */
-			return 21
+			return 20
 		}
 	case 163:
 		{ /* '163' */
-			return 22
+			return 21
 		}
 	case 164:
 		{ /* '164' */
-			return 23
+			return 22
 		}
 	case 165:
 		{ /* '165' */
-			return 24
+			return 23
 		}
 	case 166:
 		{ /* '166' */
-			return 25
+			return 24
 		}
 	case 167:
 		{ /* '167' */
-			return 26
+			return 25
 		}
 	case 168:
 		{ /* '168' */
-			return 27
+			return 26
 		}
 	case 169:
 		{ /* '169' */
-			return 28
+			return 27
 		}
 	case 17:
 		{ /* '17' */
@@ -1072,43 +1074,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 170:
 		{ /* '170' */
-			return 29
+			return 28
 		}
 	case 171:
 		{ /* '171' */
-			return 30
+			return 29
 		}
 	case 172:
 		{ /* '172' */
-			return 31
+			return 30
 		}
 	case 173:
 		{ /* '173' */
-			return 32
+			return 31
 		}
 	case 174:
 		{ /* '174' */
-			return 33
+			return 32
 		}
 	case 175:
 		{ /* '175' */
-			return 34
+			return 33
 		}
 	case 176:
 		{ /* '176' */
-			return 35
+			return 34
 		}
 	case 177:
 		{ /* '177' */
-			return 36
+			return 35
 		}
 	case 178:
 		{ /* '178' */
-			return 37
+			return 36
 		}
 	case 179:
 		{ /* '179' */
-			return 38
+			return 37
 		}
 	case 18:
 		{ /* '18' */
@@ -1116,43 +1118,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 180:
 		{ /* '180' */
-			return 39
+			return 38
 		}
 	case 181:
 		{ /* '181' */
-			return 40
+			return 39
 		}
 	case 182:
 		{ /* '182' */
-			return 41
+			return 40
 		}
 	case 183:
 		{ /* '183' */
-			return 42
+			return 41
 		}
 	case 184:
 		{ /* '184' */
-			return 43
+			return 42
 		}
 	case 185:
 		{ /* '185' */
-			return 44
+			return 43
 		}
 	case 186:
 		{ /* '186' */
-			return 45
+			return 44
 		}
 	case 187:
 		{ /* '187' */
-			return 46
+			return 45
 		}
 	case 188:
 		{ /* '188' */
-			return 47
+			return 46
 		}
 	case 189:
 		{ /* '189' */
-			return 48
+			return 47
 		}
 	case 19:
 		{ /* '19' */
@@ -1160,43 +1162,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 190:
 		{ /* '190' */
-			return 49
+			return 48
 		}
 	case 191:
 		{ /* '191' */
-			return 50
+			return 49
 		}
 	case 192:
 		{ /* '192' */
-			return 51
+			return 50
 		}
 	case 193:
 		{ /* '193' */
-			return 52
+			return 51
 		}
 	case 194:
 		{ /* '194' */
-			return 53
+			return 52
 		}
 	case 195:
 		{ /* '195' */
-			return 54
+			return 53
 		}
 	case 196:
 		{ /* '196' */
-			return 55
+			return 54
 		}
 	case 197:
 		{ /* '197' */
-			return 56
+			return 55
 		}
 	case 198:
 		{ /* '198' */
-			return 57
+			return 56
 		}
 	case 199:
 		{ /* '199' */
-			return 58
+			return 57
 		}
 	case 2:
 		{ /* '2' */
@@ -1208,43 +1210,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 200:
 		{ /* '200' */
-			return 59
+			return 58
 		}
 	case 201:
 		{ /* '201' */
-			return 60
+			return 59
 		}
 	case 202:
 		{ /* '202' */
-			return 61
+			return 60
 		}
 	case 203:
 		{ /* '203' */
-			return 62
+			return 61
 		}
 	case 204:
 		{ /* '204' */
-			return 63
+			return 62
 		}
 	case 205:
 		{ /* '205' */
-			return 64
+			return 63
 		}
 	case 206:
 		{ /* '206' */
-			return 65
+			return 64
 		}
 	case 207:
 		{ /* '207' */
-			return 66
+			return 65
 		}
 	case 208:
 		{ /* '208' */
-			return 67
+			return 66
 		}
 	case 209:
 		{ /* '209' */
-			return 68
+			return 67
 		}
 	case 21:
 		{ /* '21' */
@@ -1252,43 +1254,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 210:
 		{ /* '210' */
-			return 69
+			return 68
 		}
 	case 211:
 		{ /* '211' */
-			return 70
+			return 69
 		}
 	case 212:
 		{ /* '212' */
-			return 71
+			return 70
 		}
 	case 213:
 		{ /* '213' */
-			return 72
+			return 71
 		}
 	case 214:
 		{ /* '214' */
-			return 73
+			return 72
 		}
 	case 215:
 		{ /* '215' */
-			return 74
+			return 73
 		}
 	case 216:
 		{ /* '216' */
-			return 75
+			return 74
 		}
 	case 217:
 		{ /* '217' */
-			return 76
+			return 75
 		}
 	case 218:
 		{ /* '218' */
-			return 77
+			return 76
 		}
 	case 219:
 		{ /* '219' */
-			return 78
+			return 77
 		}
 	case 22:
 		{ /* '22' */
@@ -1296,23 +1298,23 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 220:
 		{ /* '220' */
-			return 79
+			return 78
 		}
 	case 221:
 		{ /* '221' */
-			return 80
+			return 79
 		}
 	case 222:
 		{ /* '222' */
-			return 1200
+			return 80
 		}
 	case 223:
 		{ /* '223' */
-			return 1201
+			return 1200
 		}
 	case 224:
 		{ /* '224' */
-			return 0
+			return 1201
 		}
 	case 225:
 		{ /* '225' */
@@ -1320,7 +1322,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 226:
 		{ /* '226' */
-			return 1
+			return 0
 		}
 	case 227:
 		{ /* '227' */
@@ -1344,39 +1346,39 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 231:
 		{ /* '231' */
-			return 2
+			return 1
 		}
 	case 232:
 		{ /* '232' */
-			return 3
+			return 2
 		}
 	case 233:
 		{ /* '233' */
-			return 4
+			return 3
 		}
 	case 234:
 		{ /* '234' */
-			return 5
+			return 4
 		}
 	case 235:
 		{ /* '235' */
-			return 6
+			return 5
 		}
 	case 236:
 		{ /* '236' */
-			return 7
+			return 6
 		}
 	case 237:
 		{ /* '237' */
-			return 8
+			return 7
 		}
 	case 238:
 		{ /* '238' */
-			return 11
+			return 8
 		}
 	case 239:
 		{ /* '239' */
-			return 12
+			return 11
 		}
 	case 24:
 		{ /* '24' */
@@ -1384,43 +1386,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 240:
 		{ /* '240' */
-			return 13
+			return 12
 		}
 	case 241:
 		{ /* '241' */
-			return 14
+			return 13
 		}
 	case 242:
 		{ /* '242' */
-			return 17
+			return 14
 		}
 	case 243:
 		{ /* '243' */
-			return 20
+			return 17
 		}
 	case 244:
 		{ /* '244' */
-			return 21
+			return 20
 		}
 	case 245:
 		{ /* '245' */
-			return 22
+			return 21
 		}
 	case 246:
 		{ /* '246' */
-			return 100
+			return 22
 		}
 	case 247:
 		{ /* '247' */
-			return 101
+			return 100
 		}
 	case 248:
 		{ /* '248' */
-			return 102
+			return 101
 		}
 	case 249:
 		{ /* '249' */
-			return 103
+			return 102
 		}
 	case 25:
 		{ /* '25' */
@@ -1428,43 +1430,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 250:
 		{ /* '250' */
-			return 104
+			return 103
 		}
 	case 251:
 		{ /* '251' */
-			return 105
+			return 104
 		}
 	case 252:
 		{ /* '252' */
-			return 106
+			return 105
 		}
 	case 253:
 		{ /* '253' */
-			return 107
+			return 106
 		}
 	case 254:
 		{ /* '254' */
-			return 108
+			return 107
 		}
 	case 255:
 		{ /* '255' */
-			return 109
+			return 108
 		}
 	case 256:
 		{ /* '256' */
-			return 110
+			return 109
 		}
 	case 257:
 		{ /* '257' */
-			return 111
+			return 110
 		}
 	case 258:
 		{ /* '258' */
-			return 112
+			return 111
 		}
 	case 259:
 		{ /* '259' */
-			return 113
+			return 112
 		}
 	case 26:
 		{ /* '26' */
@@ -1472,43 +1474,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 260:
 		{ /* '260' */
-			return 114
+			return 113
 		}
 	case 261:
 		{ /* '261' */
-			return 115
+			return 114
 		}
 	case 262:
 		{ /* '262' */
-			return 116
+			return 115
 		}
 	case 263:
 		{ /* '263' */
-			return 120
+			return 116
 		}
 	case 264:
 		{ /* '264' */
-			return 121
+			return 120
 		}
 	case 265:
 		{ /* '265' */
-			return 122
+			return 121
 		}
 	case 266:
 		{ /* '266' */
-			return 600
+			return 122
 		}
 	case 267:
 		{ /* '267' */
-			return 601
+			return 600
 		}
 	case 268:
 		{ /* '268' */
-			return 602
+			return 601
 		}
 	case 269:
 		{ /* '269' */
-			return 603
+			return 602
 		}
 	case 27:
 		{ /* '27' */
@@ -1516,43 +1518,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 270:
 		{ /* '270' */
-			return 604
+			return 603
 		}
 	case 271:
 		{ /* '271' */
-			return 605
+			return 604
 		}
 	case 272:
 		{ /* '272' */
-			return 606
+			return 605
 		}
 	case 273:
 		{ /* '273' */
-			return 607
+			return 606
 		}
 	case 274:
 		{ /* '274' */
-			return 608
+			return 607
 		}
 	case 275:
 		{ /* '275' */
-			return 609
+			return 608
 		}
 	case 276:
 		{ /* '276' */
-			return 610
+			return 609
 		}
 	case 277:
 		{ /* '277' */
-			return 611
+			return 610
 		}
 	case 278:
 		{ /* '278' */
-			return 801
+			return 611
 		}
 	case 279:
 		{ /* '279' */
-			return 802
+			return 801
 		}
 	case 28:
 		{ /* '28' */
@@ -1560,43 +1562,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 280:
 		{ /* '280' */
-			return 803
+			return 802
 		}
 	case 281:
 		{ /* '281' */
-			return 804
+			return 803
 		}
 	case 282:
 		{ /* '282' */
-			return 1000
+			return 804
 		}
 	case 283:
 		{ /* '283' */
-			return 1001
+			return 1000
 		}
 	case 284:
 		{ /* '284' */
-			return 1002
+			return 1001
 		}
 	case 285:
 		{ /* '285' */
-			return 1003
+			return 1002
 		}
 	case 286:
 		{ /* '286' */
-			return 1
+			return 1003
 		}
 	case 287:
 		{ /* '287' */
-			return 2
+			return 1
 		}
 	case 288:
 		{ /* '288' */
-			return 100
+			return 2
 		}
 	case 289:
 		{ /* '289' */
-			return 101
+			return 100
 		}
 	case 29:
 		{ /* '29' */
@@ -1604,43 +1606,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 290:
 		{ /* '290' */
-			return 102
+			return 101
 		}
 	case 291:
 		{ /* '291' */
-			return 103
+			return 102
 		}
 	case 292:
 		{ /* '292' */
-			return 104
+			return 103
 		}
 	case 293:
 		{ /* '293' */
-			return 105
+			return 104
 		}
 	case 294:
 		{ /* '294' */
-			return 106
+			return 105
 		}
 	case 295:
 		{ /* '295' */
-			return 107
+			return 106
 		}
 	case 296:
 		{ /* '296' */
-			return 601
+			return 107
 		}
 	case 297:
 		{ /* '297' */
-			return 1000
+			return 601
 		}
 	case 298:
 		{ /* '298' */
-			return 1001
+			return 1000
 		}
 	case 299:
 		{ /* '299' */
-			return 1010
+			return 1001
 		}
 	case 3:
 		{ /* '3' */
@@ -1652,43 +1654,43 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 300:
 		{ /* '300' */
-			return 100
+			return 1010
 		}
 	case 301:
 		{ /* '301' */
-			return 101
+			return 100
 		}
 	case 302:
 		{ /* '302' */
-			return 102
+			return 101
 		}
 	case 303:
 		{ /* '303' */
-			return 103
+			return 102
 		}
 	case 304:
 		{ /* '304' */
-			return 1000
+			return 103
 		}
 	case 305:
 		{ /* '305' */
-			return 1010
+			return 1000
 		}
 	case 306:
 		{ /* '306' */
-			return 1
+			return 1010
 		}
 	case 307:
 		{ /* '307' */
-			return 2
+			return 1
 		}
 	case 308:
 		{ /* '308' */
-			return 3
+			return 2
 		}
 	case 309:
 		{ /* '309' */
-			return 102
+			return 3
 		}
 	case 31:
 		{ /* '31' */
@@ -1696,11 +1698,11 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 310:
 		{ /* '310' */
-			return 1000
+			return 102
 		}
 	case 311:
 		{ /* '311' */
-			return 1
+			return 1000
 		}
 	case 312:
 		{ /* '312' */
@@ -1708,31 +1710,31 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 313:
 		{ /* '313' */
-			return 10
+			return 1
 		}
 	case 314:
 		{ /* '314' */
-			return 11
+			return 10
 		}
 	case 315:
 		{ /* '315' */
-			return 12
+			return 11
 		}
 	case 316:
 		{ /* '316' */
-			return 1010
+			return 12
 		}
 	case 317:
 		{ /* '317' */
-			return 100
+			return 1010
 		}
 	case 318:
 		{ /* '318' */
-			return 102
+			return 100
 		}
 	case 319:
 		{ /* '319' */
-			return 104
+			return 102
 		}
 	case 32:
 		{ /* '32' */
@@ -1740,15 +1742,15 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 320:
 		{ /* '320' */
-			return 105
+			return 104
 		}
 	case 321:
 		{ /* '321' */
-			return 600
+			return 105
 		}
 	case 322:
 		{ /* '322' */
-			return 1
+			return 600
 		}
 	case 323:
 		{ /* '323' */
@@ -1756,27 +1758,27 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 324:
 		{ /* '324' */
-			return 100
+			return 1
 		}
 	case 325:
 		{ /* '325' */
-			return 101
+			return 100
 		}
 	case 326:
 		{ /* '326' */
-			return 1
+			return 101
 		}
 	case 327:
 		{ /* '327' */
-			return 2
+			return 1
 		}
 	case 328:
 		{ /* '328' */
-			return 1
+			return 2
 		}
 	case 329:
 		{ /* '329' */
-			return 1000
+			return 1
 		}
 	case 33:
 		{ /* '33' */
@@ -1784,11 +1786,11 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 330:
 		{ /* '330' */
-			return 600
+			return 1000
 		}
 	case 331:
 		{ /* '331' */
-			return 1
+			return 600
 		}
 	case 332:
 		{ /* '332' */
@@ -1800,7 +1802,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 334:
 		{ /* '334' */
-			return 600
+			return 1
 		}
 	case 335:
 		{ /* '335' */
@@ -1808,7 +1810,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 336:
 		{ /* '336' */
-			return 800
+			return 600
 		}
 	case 337:
 		{ /* '337' */
@@ -1816,7 +1818,7 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 338:
 		{ /* '338' */
-			return 600
+			return 800
 		}
 	case 339:
 		{ /* '339' */
@@ -1856,19 +1858,23 @@ func (e KnxDatapointType) Number() uint16 {
 		}
 	case 347:
 		{ /* '347' */
-			return 1
+			return 600
 		}
 	case 348:
 		{ /* '348' */
-			return 100
+			return 1
 		}
 	case 349:
 		{ /* '349' */
-			return 101
+			return 100
 		}
 	case 35:
 		{ /* '35' */
 			return 9
+		}
+	case 350:
+		{ /* '350' */
+			return 101
 		}
 	case 36:
 		{ /* '36' */
@@ -2274,39 +2280,39 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 121:
 		{ /* '121' */
-			return "time of day"
+			return "coefficient"
 		}
 	case 122:
 		{ /* '122' */
-			return "date"
+			return "time of day"
 		}
 	case 123:
 		{ /* '123' */
-			return "counter pulses (unsigned)"
+			return "date"
 		}
 	case 124:
 		{ /* '124' */
-			return "counter timesec (s)"
+			return "counter pulses (unsigned)"
 		}
 	case 125:
 		{ /* '125' */
-			return "counter timemin (min)"
+			return "counter timesec (s)"
 		}
 	case 126:
 		{ /* '126' */
-			return "counter timehrs (h)"
+			return "counter timemin (min)"
 		}
 	case 127:
 		{ /* '127' */
-			return "volume liquid (l)"
+			return "counter timehrs (h)"
 		}
 	case 128:
 		{ /* '128' */
-			return "volume (m³)"
+			return "volume liquid (l)"
 		}
 	case 129:
 		{ /* '129' */
-			return "counter pulses (signed)"
+			return "volume (m³)"
 		}
 	case 13:
 		{ /* '13' */
@@ -2314,43 +2320,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 130:
 		{ /* '130' */
-			return "flow rate (m³/h)"
+			return "counter pulses (signed)"
 		}
 	case 131:
 		{ /* '131' */
-			return "active energy (Wh)"
+			return "flow rate (m³/h)"
 		}
 	case 132:
 		{ /* '132' */
-			return "apparant energy (VAh)"
+			return "active energy (Wh)"
 		}
 	case 133:
 		{ /* '133' */
-			return "reactive energy (VARh)"
+			return "apparant energy (VAh)"
 		}
 	case 134:
 		{ /* '134' */
-			return "active energy (kWh)"
+			return "reactive energy (VARh)"
 		}
 	case 135:
 		{ /* '135' */
-			return "apparant energy (kVAh)"
+			return "active energy (kWh)"
 		}
 	case 136:
 		{ /* '136' */
-			return "reactive energy (kVARh)"
+			return "apparant energy (kVAh)"
 		}
 	case 137:
 		{ /* '137' */
-			return "active energy (MWh)"
+			return "reactive energy (kVARh)"
 		}
 	case 138:
 		{ /* '138' */
-			return "time lag (s)"
+			return "active energy (MWh)"
 		}
 	case 139:
 		{ /* '139' */
-			return "delta volume liquid (l)"
+			return "time lag (s)"
 		}
 	case 14:
 		{ /* '14' */
@@ -2358,43 +2364,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 140:
 		{ /* '140' */
-			return "delta volume (m³)"
+			return "delta volume liquid (l)"
 		}
 	case 141:
 		{ /* '141' */
-			return "acceleration (m/s²)"
+			return "delta volume (m³)"
 		}
 	case 142:
 		{ /* '142' */
-			return "angular acceleration (rad/s²)"
+			return "acceleration (m/s²)"
 		}
 	case 143:
 		{ /* '143' */
-			return "activation energy (J/mol)"
+			return "angular acceleration (rad/s²)"
 		}
 	case 144:
 		{ /* '144' */
-			return "radioactive activity (1/s)"
+			return "activation energy (J/mol)"
 		}
 	case 145:
 		{ /* '145' */
-			return "amount of substance (mol)"
+			return "radioactive activity (1/s)"
 		}
 	case 146:
 		{ /* '146' */
-			return "amplitude"
+			return "amount of substance (mol)"
 		}
 	case 147:
 		{ /* '147' */
-			return "angle (radiant)"
+			return "amplitude"
 		}
 	case 148:
 		{ /* '148' */
-			return "angle (degree)"
+			return "angle (radiant)"
 		}
 	case 149:
 		{ /* '149' */
-			return "angular momentum (Js)"
+			return "angle (degree)"
 		}
 	case 15:
 		{ /* '15' */
@@ -2402,43 +2408,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 150:
 		{ /* '150' */
-			return "angular velocity (rad/s)"
+			return "angular momentum (Js)"
 		}
 	case 151:
 		{ /* '151' */
-			return "area (m*m)"
+			return "angular velocity (rad/s)"
 		}
 	case 152:
 		{ /* '152' */
-			return "capacitance (F)"
+			return "area (m*m)"
 		}
 	case 153:
 		{ /* '153' */
-			return "flux density (C/m²)"
+			return "capacitance (F)"
 		}
 	case 154:
 		{ /* '154' */
-			return "charge density (C/m³)"
+			return "flux density (C/m²)"
 		}
 	case 155:
 		{ /* '155' */
-			return "compressibility (m²/N)"
+			return "charge density (C/m³)"
 		}
 	case 156:
 		{ /* '156' */
-			return "conductance (S)"
+			return "compressibility (m²/N)"
 		}
 	case 157:
 		{ /* '157' */
-			return "conductivity  (S/m)"
+			return "conductance (S)"
 		}
 	case 158:
 		{ /* '158' */
-			return "density (kg/m³)"
+			return "conductivity  (S/m)"
 		}
 	case 159:
 		{ /* '159' */
-			return "electric charge (C)"
+			return "density (kg/m³)"
 		}
 	case 16:
 		{ /* '16' */
@@ -2446,43 +2452,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 160:
 		{ /* '160' */
-			return "electric current (A)"
+			return "electric charge (C)"
 		}
 	case 161:
 		{ /* '161' */
-			return "electric current density (A/m²)"
+			return "electric current (A)"
 		}
 	case 162:
 		{ /* '162' */
-			return "electric dipole moment (Cm)"
+			return "electric current density (A/m²)"
 		}
 	case 163:
 		{ /* '163' */
-			return "electric displacement (C/m²)"
+			return "electric dipole moment (Cm)"
 		}
 	case 164:
 		{ /* '164' */
-			return "electric field strength (V/m)"
+			return "electric displacement (C/m²)"
 		}
 	case 165:
 		{ /* '165' */
-			return "electric flux (C)"
+			return "electric field strength (V/m)"
 		}
 	case 166:
 		{ /* '166' */
-			return "electric flux density (C/m²)"
+			return "electric flux (C)"
 		}
 	case 167:
 		{ /* '167' */
-			return "electric polarization (C/m²)"
+			return "electric flux density (C/m²)"
 		}
 	case 168:
 		{ /* '168' */
-			return "electric potential (V)"
+			return "electric polarization (C/m²)"
 		}
 	case 169:
 		{ /* '169' */
-			return "electric potential difference (V)"
+			return "electric potential (V)"
 		}
 	case 17:
 		{ /* '17' */
@@ -2490,43 +2496,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 170:
 		{ /* '170' */
-			return "electromagnetic moment (Am²)"
+			return "electric potential difference (V)"
 		}
 	case 171:
 		{ /* '171' */
-			return "electromotive force (V)"
+			return "electromagnetic moment (Am²)"
 		}
 	case 172:
 		{ /* '172' */
-			return "energy (J)"
+			return "electromotive force (V)"
 		}
 	case 173:
 		{ /* '173' */
-			return "force (N)"
+			return "energy (J)"
 		}
 	case 174:
 		{ /* '174' */
-			return "frequency (Hz)"
+			return "force (N)"
 		}
 	case 175:
 		{ /* '175' */
-			return "angular frequency (rad/s)"
+			return "frequency (Hz)"
 		}
 	case 176:
 		{ /* '176' */
-			return "heat capacity (J/K)"
+			return "angular frequency (rad/s)"
 		}
 	case 177:
 		{ /* '177' */
-			return "heat flow rate (W)"
+			return "heat capacity (J/K)"
 		}
 	case 178:
 		{ /* '178' */
-			return "heat quantity"
+			return "heat flow rate (W)"
 		}
 	case 179:
 		{ /* '179' */
-			return "impedance (Ω)"
+			return "heat quantity"
 		}
 	case 18:
 		{ /* '18' */
@@ -2534,43 +2540,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 180:
 		{ /* '180' */
-			return "length (m)"
+			return "impedance (Ω)"
 		}
 	case 181:
 		{ /* '181' */
-			return "light quantity (J)"
+			return "length (m)"
 		}
 	case 182:
 		{ /* '182' */
-			return "luminance (cd/m²)"
+			return "light quantity (J)"
 		}
 	case 183:
 		{ /* '183' */
-			return "luminous flux (lm)"
+			return "luminance (cd/m²)"
 		}
 	case 184:
 		{ /* '184' */
-			return "luminous intensity (cd)"
+			return "luminous flux (lm)"
 		}
 	case 185:
 		{ /* '185' */
-			return "magnetic field strength (A/m)"
+			return "luminous intensity (cd)"
 		}
 	case 186:
 		{ /* '186' */
-			return "magnetic flux (Wb)"
+			return "magnetic field strength (A/m)"
 		}
 	case 187:
 		{ /* '187' */
-			return "magnetic flux density (T)"
+			return "magnetic flux (Wb)"
 		}
 	case 188:
 		{ /* '188' */
-			return "magnetic moment (Am²)"
+			return "magnetic flux density (T)"
 		}
 	case 189:
 		{ /* '189' */
-			return "magnetic polarization (T)"
+			return "magnetic moment (Am²)"
 		}
 	case 19:
 		{ /* '19' */
@@ -2578,43 +2584,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 190:
 		{ /* '190' */
-			return "magnetization (A/m)"
+			return "magnetic polarization (T)"
 		}
 	case 191:
 		{ /* '191' */
-			return "magnetomotive force (A)"
+			return "magnetization (A/m)"
 		}
 	case 192:
 		{ /* '192' */
-			return "mass (kg)"
+			return "magnetomotive force (A)"
 		}
 	case 193:
 		{ /* '193' */
-			return "mass flux (kg/s)"
+			return "mass (kg)"
 		}
 	case 194:
 		{ /* '194' */
-			return "momentum (N/s)"
+			return "mass flux (kg/s)"
 		}
 	case 195:
 		{ /* '195' */
-			return "phase angle (rad)"
+			return "momentum (N/s)"
 		}
 	case 196:
 		{ /* '196' */
-			return "phase angle (°)"
+			return "phase angle (rad)"
 		}
 	case 197:
 		{ /* '197' */
-			return "power (W)"
+			return "phase angle (°)"
 		}
 	case 198:
 		{ /* '198' */
-			return "power factor (cos Φ)"
+			return "power (W)"
 		}
 	case 199:
 		{ /* '199' */
-			return "pressure (Pa)"
+			return "power factor (cos Φ)"
 		}
 	case 2:
 		{ /* '2' */
@@ -2626,43 +2632,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 200:
 		{ /* '200' */
-			return "reactance (Ω)"
+			return "pressure (Pa)"
 		}
 	case 201:
 		{ /* '201' */
-			return "resistance (Ω)"
+			return "reactance (Ω)"
 		}
 	case 202:
 		{ /* '202' */
-			return "resistivity (Ωm)"
+			return "resistance (Ω)"
 		}
 	case 203:
 		{ /* '203' */
-			return "self inductance (H)"
+			return "resistivity (Ωm)"
 		}
 	case 204:
 		{ /* '204' */
-			return "solid angle (sr)"
+			return "self inductance (H)"
 		}
 	case 205:
 		{ /* '205' */
-			return "sound intensity (W/m²)"
+			return "solid angle (sr)"
 		}
 	case 206:
 		{ /* '206' */
-			return "speed (m/s)"
+			return "sound intensity (W/m²)"
 		}
 	case 207:
 		{ /* '207' */
-			return "stress (Pa)"
+			return "speed (m/s)"
 		}
 	case 208:
 		{ /* '208' */
-			return "surface tension (N/m)"
+			return "stress (Pa)"
 		}
 	case 209:
 		{ /* '209' */
-			return "temperature (°C)"
+			return "surface tension (N/m)"
 		}
 	case 21:
 		{ /* '21' */
@@ -2670,43 +2676,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 210:
 		{ /* '210' */
-			return "temperature absolute (K)"
+			return "temperature (°C)"
 		}
 	case 211:
 		{ /* '211' */
-			return "temperature difference (K)"
+			return "temperature absolute (K)"
 		}
 	case 212:
 		{ /* '212' */
-			return "thermal capacity (J/K)"
+			return "temperature difference (K)"
 		}
 	case 213:
 		{ /* '213' */
-			return "thermal conductivity (W/mK)"
+			return "thermal capacity (J/K)"
 		}
 	case 214:
 		{ /* '214' */
-			return "thermoelectric power (V/K)"
+			return "thermal conductivity (W/mK)"
 		}
 	case 215:
 		{ /* '215' */
-			return "time (s)"
+			return "thermoelectric power (V/K)"
 		}
 	case 216:
 		{ /* '216' */
-			return "torque (Nm)"
+			return "time (s)"
 		}
 	case 217:
 		{ /* '217' */
-			return "volume (m³)"
+			return "torque (Nm)"
 		}
 	case 218:
 		{ /* '218' */
-			return "volume flux (m³/s)"
+			return "volume (m³)"
 		}
 	case 219:
 		{ /* '219' */
-			return "weight (N)"
+			return "volume flux (m³/s)"
 		}
 	case 22:
 		{ /* '22' */
@@ -2714,43 +2720,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 220:
 		{ /* '220' */
-			return "work (J)"
+			return "weight (N)"
 		}
 	case 221:
 		{ /* '221' */
-			return "apparent power (VA)"
+			return "work (J)"
 		}
 	case 222:
 		{ /* '222' */
-			return "volume flux for meters (m³/h)"
+			return "apparent power (VA)"
 		}
 	case 223:
 		{ /* '223' */
-			return "volume flux for meters (1/ls)"
+			return "volume flux for meters (m³/h)"
 		}
 	case 224:
 		{ /* '224' */
-			return "entrance access"
+			return "volume flux for meters (1/ls)"
 		}
 	case 225:
 		{ /* '225' */
-			return "Character String (ASCII)"
+			return "entrance access"
 		}
 	case 226:
 		{ /* '226' */
-			return "Character String (ISO 8859-1)"
+			return "Character String (ASCII)"
 		}
 	case 227:
 		{ /* '227' */
-			return "scene number"
+			return "Character String (ISO 8859-1)"
 		}
 	case 228:
 		{ /* '228' */
-			return "scene control"
+			return "scene number"
 		}
 	case 229:
 		{ /* '229' */
-			return "date time"
+			return "scene control"
 		}
 	case 23:
 		{ /* '23' */
@@ -2758,43 +2764,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 230:
 		{ /* '230' */
-			return "SCLO mode"
+			return "date time"
 		}
 	case 231:
 		{ /* '231' */
-			return "building mode"
+			return "SCLO mode"
 		}
 	case 232:
 		{ /* '232' */
-			return "occupied"
+			return "building mode"
 		}
 	case 233:
 		{ /* '233' */
-			return "priority"
+			return "occupied"
 		}
 	case 234:
 		{ /* '234' */
-			return "light application mode"
+			return "priority"
 		}
 	case 235:
 		{ /* '235' */
-			return "light application area"
+			return "light application mode"
 		}
 	case 236:
 		{ /* '236' */
-			return "alarm class"
+			return "light application area"
 		}
 	case 237:
 		{ /* '237' */
-			return "PSU mode"
+			return "alarm class"
 		}
 	case 238:
 		{ /* '238' */
-			return "system error class"
+			return "PSU mode"
 		}
 	case 239:
 		{ /* '239' */
-			return "HVAC error class"
+			return "system error class"
 		}
 	case 24:
 		{ /* '24' */
@@ -2802,43 +2808,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 240:
 		{ /* '240' */
-			return "time delay"
+			return "HVAC error class"
 		}
 	case 241:
 		{ /* '241' */
-			return "wind force scale (0..12)"
+			return "time delay"
 		}
 	case 242:
 		{ /* '242' */
-			return "sensor mode"
+			return "wind force scale (0..12)"
 		}
 	case 243:
 		{ /* '243' */
-			return "actuator connect type"
+			return "sensor mode"
 		}
 	case 244:
 		{ /* '244' */
-			return "cloud cover"
+			return "actuator connect type"
 		}
 	case 245:
 		{ /* '245' */
-			return "power return mode"
+			return "cloud cover"
 		}
 	case 246:
 		{ /* '246' */
-			return "fuel type"
+			return "power return mode"
 		}
 	case 247:
 		{ /* '247' */
-			return "burner type"
+			return "fuel type"
 		}
 	case 248:
 		{ /* '248' */
-			return "HVAC mode"
+			return "burner type"
 		}
 	case 249:
 		{ /* '249' */
-			return "DHW mode"
+			return "HVAC mode"
 		}
 	case 25:
 		{ /* '25' */
@@ -2846,43 +2852,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 250:
 		{ /* '250' */
-			return "load priority"
+			return "DHW mode"
 		}
 	case 251:
 		{ /* '251' */
-			return "HVAC control mode"
+			return "load priority"
 		}
 	case 252:
 		{ /* '252' */
-			return "HVAC emergency mode"
+			return "HVAC control mode"
 		}
 	case 253:
 		{ /* '253' */
-			return "changeover mode"
+			return "HVAC emergency mode"
 		}
 	case 254:
 		{ /* '254' */
-			return "valve mode"
+			return "changeover mode"
 		}
 	case 255:
 		{ /* '255' */
-			return "damper mode"
+			return "valve mode"
 		}
 	case 256:
 		{ /* '256' */
-			return "heater mode"
+			return "damper mode"
 		}
 	case 257:
 		{ /* '257' */
-			return "fan mode"
+			return "heater mode"
 		}
 	case 258:
 		{ /* '258' */
-			return "master/slave mode"
+			return "fan mode"
 		}
 	case 259:
 		{ /* '259' */
-			return "status room setpoint"
+			return "master/slave mode"
 		}
 	case 26:
 		{ /* '26' */
@@ -2890,43 +2896,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 260:
 		{ /* '260' */
-			return "metering device type"
+			return "status room setpoint"
 		}
 	case 261:
 		{ /* '261' */
-			return "hum dehum mode"
+			return "metering device type"
 		}
 	case 262:
 		{ /* '262' */
-			return "enable H/C stage"
+			return "hum dehum mode"
 		}
 	case 263:
 		{ /* '263' */
-			return "ADA type"
+			return "enable H/C stage"
 		}
 	case 264:
 		{ /* '264' */
-			return "backup mode"
+			return "ADA type"
 		}
 	case 265:
 		{ /* '265' */
-			return "start syncronization type"
+			return "backup mode"
 		}
 	case 266:
 		{ /* '266' */
-			return "behavior lock/unlock"
+			return "start syncronization type"
 		}
 	case 267:
 		{ /* '267' */
-			return "behavior bus power up/down"
+			return "behavior lock/unlock"
 		}
 	case 268:
 		{ /* '268' */
-			return "dali fade time"
+			return "behavior bus power up/down"
 		}
 	case 269:
 		{ /* '269' */
-			return "blink mode"
+			return "dali fade time"
 		}
 	case 27:
 		{ /* '27' */
@@ -2934,43 +2940,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 270:
 		{ /* '270' */
-			return "light control mode"
+			return "blink mode"
 		}
 	case 271:
 		{ /* '271' */
-			return "PB switch mode"
+			return "light control mode"
 		}
 	case 272:
 		{ /* '272' */
-			return "PB action mode"
+			return "PB switch mode"
 		}
 	case 273:
 		{ /* '273' */
-			return "PB dimm mode"
+			return "PB action mode"
 		}
 	case 274:
 		{ /* '274' */
-			return "switch on mode"
+			return "PB dimm mode"
 		}
 	case 275:
 		{ /* '275' */
-			return "load type"
+			return "switch on mode"
 		}
 	case 276:
 		{ /* '276' */
-			return "load type detection"
+			return "load type"
 		}
 	case 277:
 		{ /* '277' */
-			return "converter test control"
+			return "load type detection"
 		}
 	case 278:
 		{ /* '278' */
-			return "SAB except behavior"
+			return "converter test control"
 		}
 	case 279:
 		{ /* '279' */
-			return "SAB behavior on lock/unlock"
+			return "SAB except behavior"
 		}
 	case 28:
 		{ /* '28' */
@@ -2978,43 +2984,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 280:
 		{ /* '280' */
-			return "SSSB mode"
+			return "SAB behavior on lock/unlock"
 		}
 	case 281:
 		{ /* '281' */
-			return "blinds control mode"
+			return "SSSB mode"
 		}
 	case 282:
 		{ /* '282' */
-			return "communication mode"
+			return "blinds control mode"
 		}
 	case 283:
 		{ /* '283' */
-			return "additional information type"
+			return "communication mode"
 		}
 	case 284:
 		{ /* '284' */
-			return "RF mode selection"
+			return "additional information type"
 		}
 	case 285:
 		{ /* '285' */
-			return "RF filter mode selection"
+			return "RF mode selection"
 		}
 	case 286:
 		{ /* '286' */
-			return "general status"
+			return "RF filter mode selection"
 		}
 	case 287:
 		{ /* '287' */
-			return "device control"
+			return "general status"
 		}
 	case 288:
 		{ /* '288' */
-			return "forcing signal"
+			return "device control"
 		}
 	case 289:
 		{ /* '289' */
-			return "forcing signal cool"
+			return "forcing signal"
 		}
 	case 29:
 		{ /* '29' */
@@ -3022,43 +3028,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 290:
 		{ /* '290' */
-			return "room heating controller status"
+			return "forcing signal cool"
 		}
 	case 291:
 		{ /* '291' */
-			return "solar DHW controller status"
+			return "room heating controller status"
 		}
 	case 292:
 		{ /* '292' */
-			return "fuel type set"
+			return "solar DHW controller status"
 		}
 	case 293:
 		{ /* '293' */
-			return "room cooling controller status"
+			return "fuel type set"
 		}
 	case 294:
 		{ /* '294' */
-			return "ventilation controller status"
+			return "room cooling controller status"
 		}
 	case 295:
 		{ /* '295' */
-			return "combined status RTSM"
+			return "ventilation controller status"
 		}
 	case 296:
 		{ /* '296' */
-			return "lighting actuator error information"
+			return "combined status RTSM"
 		}
 	case 297:
 		{ /* '297' */
-			return "RF communication mode info"
+			return "lighting actuator error information"
 		}
 	case 298:
 		{ /* '298' */
-			return "cEMI server supported RF filtering modes"
+			return "RF communication mode info"
 		}
 	case 299:
 		{ /* '299' */
-			return "channel activation for 8 channels"
+			return "cEMI server supported RF filtering modes"
 		}
 	case 3:
 		{ /* '3' */
@@ -3070,43 +3076,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 300:
 		{ /* '300' */
-			return "DHW controller status"
+			return "channel activation for 8 channels"
 		}
 	case 301:
 		{ /* '301' */
-			return "RHCC status"
+			return "DHW controller status"
 		}
 	case 302:
 		{ /* '302' */
-			return "combined status HVA"
+			return "RHCC status"
 		}
 	case 303:
 		{ /* '303' */
-			return "combined status RTC"
+			return "combined status HVA"
 		}
 	case 304:
 		{ /* '304' */
-			return "media"
+			return "combined status RTC"
 		}
 	case 305:
 		{ /* '305' */
-			return "channel activation for 16 channels"
+			return "media"
 		}
 	case 306:
 		{ /* '306' */
-			return "on/off action"
+			return "channel activation for 16 channels"
 		}
 	case 307:
 		{ /* '307' */
-			return "alarm reaction"
+			return "on/off action"
 		}
 	case 308:
 		{ /* '308' */
-			return "up/down action"
+			return "alarm reaction"
 		}
 	case 309:
 		{ /* '309' */
-			return "HVAC push button action"
+			return "up/down action"
 		}
 	case 31:
 		{ /* '31' */
@@ -3114,43 +3120,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 310:
 		{ /* '310' */
-			return "busy/nak repetitions"
+			return "HVAC push button action"
 		}
 	case 311:
 		{ /* '311' */
-			return "scene information"
+			return "busy/nak repetitions"
 		}
 	case 312:
 		{ /* '312' */
-			return "bit-combined info on/off"
+			return "scene information"
 		}
 	case 313:
 		{ /* '313' */
-			return "active energy (Wh)"
+			return "bit-combined info on/off"
 		}
 	case 314:
 		{ /* '314' */
-			return "apparant energy (VAh)"
+			return "active energy (Wh)"
 		}
 	case 315:
 		{ /* '315' */
-			return "reactive energy (VARh)"
+			return "apparant energy (VAh)"
 		}
 	case 316:
 		{ /* '316' */
-			return "activation state 0..23"
+			return "reactive energy (VARh)"
 		}
 	case 317:
 		{ /* '317' */
-			return "time delay & HVAC mode"
+			return "activation state 0..23"
 		}
 	case 318:
 		{ /* '318' */
-			return "time delay & DHW mode"
+			return "time delay & HVAC mode"
 		}
 	case 319:
 		{ /* '319' */
-			return "time delay & occupancy mode"
+			return "time delay & DHW mode"
 		}
 	case 32:
 		{ /* '32' */
@@ -3158,43 +3164,43 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 320:
 		{ /* '320' */
-			return "time delay & building mode"
+			return "time delay & occupancy mode"
 		}
 	case 321:
 		{ /* '321' */
-			return "Status Lighting Actuator"
+			return "time delay & building mode"
 		}
 	case 322:
 		{ /* '322' */
-			return "DPT version"
+			return "Status Lighting Actuator"
 		}
 	case 323:
 		{ /* '323' */
-			return "alarm info"
+			return "DPT version"
 		}
 	case 324:
 		{ /* '324' */
-			return "room temperature setpoint"
+			return "alarm info"
 		}
 	case 325:
 		{ /* '325' */
-			return "room temperature setpoint shift"
+			return "room temperature setpoint"
 		}
 	case 326:
 		{ /* '326' */
-			return "scaling speed"
+			return "room temperature setpoint shift"
 		}
 	case 327:
 		{ /* '327' */
-			return "scaling step time"
+			return "scaling speed"
 		}
 	case 328:
 		{ /* '328' */
-			return "metering value (value,encoding,cmd)"
+			return "scaling step time"
 		}
 	case 329:
 		{ /* '329' */
-			return "MBus address"
+			return "metering value (value,encoding,cmd)"
 		}
 	case 33:
 		{ /* '33' */
@@ -3202,23 +3208,23 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 330:
 		{ /* '330' */
-			return "RGB value 3x(0..255)"
+			return "MBus address"
 		}
 	case 331:
 		{ /* '331' */
-			return "language code (ASCII)"
+			return "RGB value 3x(0..255)"
 		}
 	case 332:
 		{ /* '332' */
-			return "electrical energy with tariff"
+			return "language code (ASCII)"
 		}
 	case 333:
 		{ /* '333' */
-			return "priority control"
+			return "electrical energy with tariff"
 		}
 	case 334:
 		{ /* '334' */
-			return "diagnostic value"
+			return "priority control"
 		}
 	case 335:
 		{ /* '335' */
@@ -3226,19 +3232,19 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 336:
 		{ /* '336' */
-			return "combined position"
+			return "diagnostic value"
 		}
 	case 337:
 		{ /* '337' */
-			return "status sunblind & shutter actuator"
+			return "combined position"
 		}
 	case 338:
 		{ /* '338' */
-			return "colour xyY"
+			return "status sunblind & shutter actuator"
 		}
 	case 339:
 		{ /* '339' */
-			return "DALI converter status"
+			return "colour xyY"
 		}
 	case 34:
 		{ /* '34' */
@@ -3246,47 +3252,51 @@ func (e KnxDatapointType) Name() string {
 		}
 	case 340:
 		{ /* '340' */
-			return "DALI converter test result"
+			return "DALI converter status"
 		}
 	case 341:
 		{ /* '341' */
-			return "Battery Information"
+			return "DALI converter test result"
 		}
 	case 342:
 		{ /* '342' */
-			return "brightness colour temperature transition"
+			return "Battery Information"
 		}
 	case 343:
 		{ /* '343' */
-			return "brightness colour temperature control"
+			return "brightness colour temperature transition"
 		}
 	case 344:
 		{ /* '344' */
-			return "RGBW value 4x(0..100%)"
+			return "brightness colour temperature control"
 		}
 	case 345:
 		{ /* '345' */
-			return "RGBW relative control"
+			return "RGBW value 4x(0..100%)"
 		}
 	case 346:
 		{ /* '346' */
-			return "RGB relative control"
+			return "RGBW relative control"
 		}
 	case 347:
 		{ /* '347' */
-			return "geographical location (longitude and latitude) expressed in degrees"
+			return "RGB relative control"
 		}
 	case 348:
 		{ /* '348' */
-			return "Temperature setpoint setting for 4 HVAC Modes"
+			return "geographical location (longitude and latitude) expressed in degrees"
 		}
 	case 349:
 		{ /* '349' */
-			return "Temperature setpoint shift setting for 4 HVAC Modes"
+			return "Temperature setpoint setting for 4 HVAC Modes"
 		}
 	case 35:
 		{ /* '35' */
 			return "open/close"
+		}
+	case 350:
+		{ /* '350' */
+			return "Temperature setpoint shift setting for 4 HVAC Modes"
 		}
 	case 36:
 		{ /* '36' */
@@ -3692,15 +3702,15 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 121:
 		{ /* '121' */
-			return KnxDatapointMainType_DPT_TIME
+			return KnxDatapointMainType_DPT_2_BYTE_FLOAT_VALUE
 		}
 	case 122:
 		{ /* '122' */
-			return KnxDatapointMainType_DPT_DATE
+			return KnxDatapointMainType_DPT_TIME
 		}
 	case 123:
 		{ /* '123' */
-			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
+			return KnxDatapointMainType_DPT_DATE
 		}
 	case 124:
 		{ /* '124' */
@@ -3724,7 +3734,7 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 129:
 		{ /* '129' */
-			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
+			return KnxDatapointMainType_DPT_4_BYTE_UNSIGNED_VALUE
 		}
 	case 13:
 		{ /* '13' */
@@ -3780,7 +3790,7 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 141:
 		{ /* '141' */
-			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
+			return KnxDatapointMainType_DPT_4_BYTE_SIGNED_VALUE
 		}
 	case 142:
 		{ /* '142' */
@@ -4148,11 +4158,11 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 224:
 		{ /* '224' */
-			return KnxDatapointMainType_DPT_ENTRANCE_ACCESS
+			return KnxDatapointMainType_DPT_4_BYTE_FLOAT_VALUE
 		}
 	case 225:
 		{ /* '225' */
-			return KnxDatapointMainType_DPT_CHARACTER_STRING
+			return KnxDatapointMainType_DPT_ENTRANCE_ACCESS
 		}
 	case 226:
 		{ /* '226' */
@@ -4160,15 +4170,15 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 227:
 		{ /* '227' */
-			return KnxDatapointMainType_DPT_SCENE_NUMBER
+			return KnxDatapointMainType_DPT_CHARACTER_STRING
 		}
 	case 228:
 		{ /* '228' */
-			return KnxDatapointMainType_DPT_SCENE_CONTROL
+			return KnxDatapointMainType_DPT_SCENE_NUMBER
 		}
 	case 229:
 		{ /* '229' */
-			return KnxDatapointMainType_DPT_DATE_TIME
+			return KnxDatapointMainType_DPT_SCENE_CONTROL
 		}
 	case 23:
 		{ /* '23' */
@@ -4176,7 +4186,7 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 230:
 		{ /* '230' */
-			return KnxDatapointMainType_DPT_1_BYTE
+			return KnxDatapointMainType_DPT_DATE_TIME
 		}
 	case 231:
 		{ /* '231' */
@@ -4420,7 +4430,7 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 286:
 		{ /* '286' */
-			return KnxDatapointMainType_DPT_8_BIT_SET
+			return KnxDatapointMainType_DPT_1_BYTE
 		}
 	case 287:
 		{ /* '287' */
@@ -4488,7 +4498,7 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 300:
 		{ /* '300' */
-			return KnxDatapointMainType_DPT_16_BIT_SET
+			return KnxDatapointMainType_DPT_8_BIT_SET
 		}
 	case 301:
 		{ /* '301' */
@@ -4512,7 +4522,7 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 306:
 		{ /* '306' */
-			return KnxDatapointMainType_DPT_2_BIT_SET
+			return KnxDatapointMainType_DPT_16_BIT_SET
 		}
 	case 307:
 		{ /* '307' */
@@ -4532,19 +4542,19 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 310:
 		{ /* '310' */
-			return KnxDatapointMainType_DPT_2_NIBBLE_SET
+			return KnxDatapointMainType_DPT_2_BIT_SET
 		}
 	case 311:
 		{ /* '311' */
-			return KnxDatapointMainType_DPT_8_BIT_SET_2
+			return KnxDatapointMainType_DPT_2_NIBBLE_SET
 		}
 	case 312:
 		{ /* '312' */
-			return KnxDatapointMainType_DPT_32_BIT_SET
+			return KnxDatapointMainType_DPT_8_BIT_SET_2
 		}
 	case 313:
 		{ /* '313' */
-			return KnxDatapointMainType_DPT_ELECTRICAL_ENERGY
+			return KnxDatapointMainType_DPT_32_BIT_SET
 		}
 	case 314:
 		{ /* '314' */
@@ -4556,11 +4566,11 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 316:
 		{ /* '316' */
-			return KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION
+			return KnxDatapointMainType_DPT_ELECTRICAL_ENERGY
 		}
 	case 317:
 		{ /* '317' */
-			return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+			return KnxDatapointMainType_DPT_24_TIMES_CHANNEL_ACTIVATION
 		}
 	case 318:
 		{ /* '318' */
@@ -4580,19 +4590,19 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 321:
 		{ /* '321' */
-			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
+			return KnxDatapointMainType_DPT_16_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
 		}
 	case 322:
 		{ /* '322' */
-			return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION
+			return KnxDatapointMainType_DPT_8_BIT_UNSIGNED_VALUE_AND_8_BIT_ENUM
 		}
 	case 323:
 		{ /* '323' */
-			return KnxDatapointMainType_DPT_ALARM_INFO
+			return KnxDatapointMainType_DPT_DATAPOINT_TYPE_VERSION
 		}
 	case 324:
 		{ /* '324' */
-			return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE
+			return KnxDatapointMainType_DPT_ALARM_INFO
 		}
 	case 325:
 		{ /* '325' */
@@ -4600,7 +4610,7 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 326:
 		{ /* '326' */
-			return KnxDatapointMainType_DPT_SCALING_SPEED
+			return KnxDatapointMainType_DPT_3X_2_BYTE_FLOAT_VALUE
 		}
 	case 327:
 		{ /* '327' */
@@ -4608,11 +4618,11 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 328:
 		{ /* '328' */
-			return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
+			return KnxDatapointMainType_DPT_SCALING_SPEED
 		}
 	case 329:
 		{ /* '329' */
-			return KnxDatapointMainType_DPT_MBUS_ADDRESS
+			return KnxDatapointMainType_DPT_4_1_1_BYTE_COMBINED_INFORMATION
 		}
 	case 33:
 		{ /* '33' */
@@ -4620,43 +4630,43 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 330:
 		{ /* '330' */
-			return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB
+			return KnxDatapointMainType_DPT_MBUS_ADDRESS
 		}
 	case 331:
 		{ /* '331' */
-			return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1
+			return KnxDatapointMainType_DPT_3_BYTE_COLOUR_RGB
 		}
 	case 332:
 		{ /* '332' */
-			return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
+			return KnxDatapointMainType_DPT_LANGUAGE_CODE_ISO_639_1
 		}
 	case 333:
 		{ /* '333' */
-			return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL
+			return KnxDatapointMainType_DPT_SIGNED_VALUE_WITH_CLASSIFICATION_AND_VALIDITY
 		}
 	case 334:
 		{ /* '334' */
-			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
+			return KnxDatapointMainType_DPT_PRIORITISED_MODE_CONTROL
 		}
 	case 335:
 		{ /* '335' */
-			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
+			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_16_BIT
 		}
 	case 336:
 		{ /* '336' */
-			return KnxDatapointMainType_DPT_POSITIONS
+			return KnxDatapointMainType_DPT_CONFIGURATION_DIAGNOSTICS_8_BIT
 		}
 	case 337:
 		{ /* '337' */
-			return KnxDatapointMainType_DPT_STATUS_32_BIT
+			return KnxDatapointMainType_DPT_POSITIONS
 		}
 	case 338:
 		{ /* '338' */
-			return KnxDatapointMainType_DPT_STATUS_48_BIT
+			return KnxDatapointMainType_DPT_STATUS_32_BIT
 		}
 	case 339:
 		{ /* '339' */
-			return KnxDatapointMainType_DPT_CONVERTER_STATUS
+			return KnxDatapointMainType_DPT_STATUS_48_BIT
 		}
 	case 34:
 		{ /* '34' */
@@ -4664,39 +4674,39 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 		}
 	case 340:
 		{ /* '340' */
-			return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT
+			return KnxDatapointMainType_DPT_CONVERTER_STATUS
 		}
 	case 341:
 		{ /* '341' */
-			return KnxDatapointMainType_DPT_BATTERY_INFORMATION
+			return KnxDatapointMainType_DPT_CONVERTER_TEST_RESULT
 		}
 	case 342:
 		{ /* '342' */
-			return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
+			return KnxDatapointMainType_DPT_BATTERY_INFORMATION
 		}
 	case 343:
 		{ /* '343' */
-			return KnxDatapointMainType_DPT_STATUS_24_BIT
+			return KnxDatapointMainType_DPT_BRIGHTNESS_COLOUR_TEMPERATURE_TRANSITION
 		}
 	case 344:
 		{ /* '344' */
-			return KnxDatapointMainType_DPT_COLOUR_RGBW
+			return KnxDatapointMainType_DPT_STATUS_24_BIT
 		}
 	case 345:
 		{ /* '345' */
-			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW
+			return KnxDatapointMainType_DPT_COLOUR_RGBW
 		}
 	case 346:
 		{ /* '346' */
-			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
+			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGBW
 		}
 	case 347:
 		{ /* '347' */
-			return KnxDatapointMainType_DPT_F32F32
+			return KnxDatapointMainType_DPT_RELATIVE_CONTROL_RGB
 		}
 	case 348:
 		{ /* '348' */
-			return KnxDatapointMainType_DPT_F16F16F16F16
+			return KnxDatapointMainType_DPT_F32F32
 		}
 	case 349:
 		{ /* '349' */
@@ -4705,6 +4715,10 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 	case 35:
 		{ /* '35' */
 			return KnxDatapointMainType_DPT_1_BIT
+		}
+	case 350:
+		{ /* '350' */
+			return KnxDatapointMainType_DPT_F16F16F16F16
 		}
 	case 36:
 		{ /* '36' */
@@ -5056,513 +5070,515 @@ func KnxDatapointTypeByValue(value uint32) (enum KnxDatapointType, ok bool) {
 	case 120:
 		return KnxDatapointType_DPT_Concentration_ygm3, true
 	case 121:
-		return KnxDatapointType_DPT_TimeOfDay, true
+		return KnxDatapointType_DPT_Coefficient, true
 	case 122:
-		return KnxDatapointType_DPT_Date, true
+		return KnxDatapointType_DPT_TimeOfDay, true
 	case 123:
-		return KnxDatapointType_DPT_Value_4_Ucount, true
+		return KnxDatapointType_DPT_Date, true
 	case 124:
-		return KnxDatapointType_DPT_LongTimePeriod_Sec, true
+		return KnxDatapointType_DPT_Value_4_Ucount, true
 	case 125:
-		return KnxDatapointType_DPT_LongTimePeriod_Min, true
+		return KnxDatapointType_DPT_LongTimePeriod_Sec, true
 	case 126:
-		return KnxDatapointType_DPT_LongTimePeriod_Hrs, true
+		return KnxDatapointType_DPT_LongTimePeriod_Min, true
 	case 127:
-		return KnxDatapointType_DPT_VolumeLiquid_Litre, true
+		return KnxDatapointType_DPT_LongTimePeriod_Hrs, true
 	case 128:
-		return KnxDatapointType_DPT_Volume_m_3, true
+		return KnxDatapointType_DPT_VolumeLiquid_Litre, true
 	case 129:
-		return KnxDatapointType_DPT_Value_4_Count, true
+		return KnxDatapointType_DPT_Volume_m_3, true
 	case 13:
 		return KnxDatapointType_LINT, true
 	case 130:
-		return KnxDatapointType_DPT_FlowRate_m3h, true
+		return KnxDatapointType_DPT_Value_4_Count, true
 	case 131:
-		return KnxDatapointType_DPT_ActiveEnergy, true
+		return KnxDatapointType_DPT_FlowRate_m3h, true
 	case 132:
-		return KnxDatapointType_DPT_ApparantEnergy, true
+		return KnxDatapointType_DPT_ActiveEnergy, true
 	case 133:
-		return KnxDatapointType_DPT_ReactiveEnergy, true
+		return KnxDatapointType_DPT_ApparantEnergy, true
 	case 134:
-		return KnxDatapointType_DPT_ActiveEnergy_kWh, true
+		return KnxDatapointType_DPT_ReactiveEnergy, true
 	case 135:
-		return KnxDatapointType_DPT_ApparantEnergy_kVAh, true
+		return KnxDatapointType_DPT_ActiveEnergy_kWh, true
 	case 136:
-		return KnxDatapointType_DPT_ReactiveEnergy_kVARh, true
+		return KnxDatapointType_DPT_ApparantEnergy_kVAh, true
 	case 137:
-		return KnxDatapointType_DPT_ActiveEnergy_MWh, true
+		return KnxDatapointType_DPT_ReactiveEnergy_kVARh, true
 	case 138:
-		return KnxDatapointType_DPT_LongDeltaTimeSec, true
+		return KnxDatapointType_DPT_ActiveEnergy_MWh, true
 	case 139:
-		return KnxDatapointType_DPT_DeltaVolumeLiquid_Litre, true
+		return KnxDatapointType_DPT_LongDeltaTimeSec, true
 	case 14:
 		return KnxDatapointType_REAL, true
 	case 140:
-		return KnxDatapointType_DPT_DeltaVolume_m_3, true
+		return KnxDatapointType_DPT_DeltaVolumeLiquid_Litre, true
 	case 141:
-		return KnxDatapointType_DPT_Value_Acceleration, true
+		return KnxDatapointType_DPT_DeltaVolume_m_3, true
 	case 142:
-		return KnxDatapointType_DPT_Value_Acceleration_Angular, true
+		return KnxDatapointType_DPT_Value_Acceleration, true
 	case 143:
-		return KnxDatapointType_DPT_Value_Activation_Energy, true
+		return KnxDatapointType_DPT_Value_Acceleration_Angular, true
 	case 144:
-		return KnxDatapointType_DPT_Value_Activity, true
+		return KnxDatapointType_DPT_Value_Activation_Energy, true
 	case 145:
-		return KnxDatapointType_DPT_Value_Mol, true
+		return KnxDatapointType_DPT_Value_Activity, true
 	case 146:
-		return KnxDatapointType_DPT_Value_Amplitude, true
+		return KnxDatapointType_DPT_Value_Mol, true
 	case 147:
-		return KnxDatapointType_DPT_Value_AngleRad, true
+		return KnxDatapointType_DPT_Value_Amplitude, true
 	case 148:
-		return KnxDatapointType_DPT_Value_AngleDeg, true
+		return KnxDatapointType_DPT_Value_AngleRad, true
 	case 149:
-		return KnxDatapointType_DPT_Value_Angular_Momentum, true
+		return KnxDatapointType_DPT_Value_AngleDeg, true
 	case 15:
 		return KnxDatapointType_LREAL, true
 	case 150:
-		return KnxDatapointType_DPT_Value_Angular_Velocity, true
+		return KnxDatapointType_DPT_Value_Angular_Momentum, true
 	case 151:
-		return KnxDatapointType_DPT_Value_Area, true
+		return KnxDatapointType_DPT_Value_Angular_Velocity, true
 	case 152:
-		return KnxDatapointType_DPT_Value_Capacitance, true
+		return KnxDatapointType_DPT_Value_Area, true
 	case 153:
-		return KnxDatapointType_DPT_Value_Charge_DensitySurface, true
+		return KnxDatapointType_DPT_Value_Capacitance, true
 	case 154:
-		return KnxDatapointType_DPT_Value_Charge_DensityVolume, true
+		return KnxDatapointType_DPT_Value_Charge_DensitySurface, true
 	case 155:
-		return KnxDatapointType_DPT_Value_Compressibility, true
+		return KnxDatapointType_DPT_Value_Charge_DensityVolume, true
 	case 156:
-		return KnxDatapointType_DPT_Value_Conductance, true
+		return KnxDatapointType_DPT_Value_Compressibility, true
 	case 157:
-		return KnxDatapointType_DPT_Value_Electrical_Conductivity, true
+		return KnxDatapointType_DPT_Value_Conductance, true
 	case 158:
-		return KnxDatapointType_DPT_Value_Density, true
+		return KnxDatapointType_DPT_Value_Electrical_Conductivity, true
 	case 159:
-		return KnxDatapointType_DPT_Value_Electric_Charge, true
+		return KnxDatapointType_DPT_Value_Density, true
 	case 16:
 		return KnxDatapointType_CHAR, true
 	case 160:
-		return KnxDatapointType_DPT_Value_Electric_Current, true
+		return KnxDatapointType_DPT_Value_Electric_Charge, true
 	case 161:
-		return KnxDatapointType_DPT_Value_Electric_CurrentDensity, true
+		return KnxDatapointType_DPT_Value_Electric_Current, true
 	case 162:
-		return KnxDatapointType_DPT_Value_Electric_DipoleMoment, true
+		return KnxDatapointType_DPT_Value_Electric_CurrentDensity, true
 	case 163:
-		return KnxDatapointType_DPT_Value_Electric_Displacement, true
+		return KnxDatapointType_DPT_Value_Electric_DipoleMoment, true
 	case 164:
-		return KnxDatapointType_DPT_Value_Electric_FieldStrength, true
+		return KnxDatapointType_DPT_Value_Electric_Displacement, true
 	case 165:
-		return KnxDatapointType_DPT_Value_Electric_Flux, true
+		return KnxDatapointType_DPT_Value_Electric_FieldStrength, true
 	case 166:
-		return KnxDatapointType_DPT_Value_Electric_FluxDensity, true
+		return KnxDatapointType_DPT_Value_Electric_Flux, true
 	case 167:
-		return KnxDatapointType_DPT_Value_Electric_Polarization, true
+		return KnxDatapointType_DPT_Value_Electric_FluxDensity, true
 	case 168:
-		return KnxDatapointType_DPT_Value_Electric_Potential, true
+		return KnxDatapointType_DPT_Value_Electric_Polarization, true
 	case 169:
-		return KnxDatapointType_DPT_Value_Electric_PotentialDifference, true
+		return KnxDatapointType_DPT_Value_Electric_Potential, true
 	case 17:
 		return KnxDatapointType_WCHAR, true
 	case 170:
-		return KnxDatapointType_DPT_Value_ElectromagneticMoment, true
+		return KnxDatapointType_DPT_Value_Electric_PotentialDifference, true
 	case 171:
-		return KnxDatapointType_DPT_Value_Electromotive_Force, true
+		return KnxDatapointType_DPT_Value_ElectromagneticMoment, true
 	case 172:
-		return KnxDatapointType_DPT_Value_Energy, true
+		return KnxDatapointType_DPT_Value_Electromotive_Force, true
 	case 173:
-		return KnxDatapointType_DPT_Value_Force, true
+		return KnxDatapointType_DPT_Value_Energy, true
 	case 174:
-		return KnxDatapointType_DPT_Value_Frequency, true
+		return KnxDatapointType_DPT_Value_Force, true
 	case 175:
-		return KnxDatapointType_DPT_Value_Angular_Frequency, true
+		return KnxDatapointType_DPT_Value_Frequency, true
 	case 176:
-		return KnxDatapointType_DPT_Value_Heat_Capacity, true
+		return KnxDatapointType_DPT_Value_Angular_Frequency, true
 	case 177:
-		return KnxDatapointType_DPT_Value_Heat_FlowRate, true
+		return KnxDatapointType_DPT_Value_Heat_Capacity, true
 	case 178:
-		return KnxDatapointType_DPT_Value_Heat_Quantity, true
+		return KnxDatapointType_DPT_Value_Heat_FlowRate, true
 	case 179:
-		return KnxDatapointType_DPT_Value_Impedance, true
+		return KnxDatapointType_DPT_Value_Heat_Quantity, true
 	case 18:
 		return KnxDatapointType_STRING, true
 	case 180:
-		return KnxDatapointType_DPT_Value_Length, true
+		return KnxDatapointType_DPT_Value_Impedance, true
 	case 181:
-		return KnxDatapointType_DPT_Value_Light_Quantity, true
+		return KnxDatapointType_DPT_Value_Length, true
 	case 182:
-		return KnxDatapointType_DPT_Value_Luminance, true
+		return KnxDatapointType_DPT_Value_Light_Quantity, true
 	case 183:
-		return KnxDatapointType_DPT_Value_Luminous_Flux, true
+		return KnxDatapointType_DPT_Value_Luminance, true
 	case 184:
-		return KnxDatapointType_DPT_Value_Luminous_Intensity, true
+		return KnxDatapointType_DPT_Value_Luminous_Flux, true
 	case 185:
-		return KnxDatapointType_DPT_Value_Magnetic_FieldStrength, true
+		return KnxDatapointType_DPT_Value_Luminous_Intensity, true
 	case 186:
-		return KnxDatapointType_DPT_Value_Magnetic_Flux, true
+		return KnxDatapointType_DPT_Value_Magnetic_FieldStrength, true
 	case 187:
-		return KnxDatapointType_DPT_Value_Magnetic_FluxDensity, true
+		return KnxDatapointType_DPT_Value_Magnetic_Flux, true
 	case 188:
-		return KnxDatapointType_DPT_Value_Magnetic_Moment, true
+		return KnxDatapointType_DPT_Value_Magnetic_FluxDensity, true
 	case 189:
-		return KnxDatapointType_DPT_Value_Magnetic_Polarization, true
+		return KnxDatapointType_DPT_Value_Magnetic_Moment, true
 	case 19:
 		return KnxDatapointType_WSTRING, true
 	case 190:
-		return KnxDatapointType_DPT_Value_Magnetization, true
+		return KnxDatapointType_DPT_Value_Magnetic_Polarization, true
 	case 191:
-		return KnxDatapointType_DPT_Value_MagnetomotiveForce, true
+		return KnxDatapointType_DPT_Value_Magnetization, true
 	case 192:
-		return KnxDatapointType_DPT_Value_Mass, true
+		return KnxDatapointType_DPT_Value_MagnetomotiveForce, true
 	case 193:
-		return KnxDatapointType_DPT_Value_MassFlux, true
+		return KnxDatapointType_DPT_Value_Mass, true
 	case 194:
-		return KnxDatapointType_DPT_Value_Momentum, true
+		return KnxDatapointType_DPT_Value_MassFlux, true
 	case 195:
-		return KnxDatapointType_DPT_Value_Phase_AngleRad, true
+		return KnxDatapointType_DPT_Value_Momentum, true
 	case 196:
-		return KnxDatapointType_DPT_Value_Phase_AngleDeg, true
+		return KnxDatapointType_DPT_Value_Phase_AngleRad, true
 	case 197:
-		return KnxDatapointType_DPT_Value_Power, true
+		return KnxDatapointType_DPT_Value_Phase_AngleDeg, true
 	case 198:
-		return KnxDatapointType_DPT_Value_Power_Factor, true
+		return KnxDatapointType_DPT_Value_Power, true
 	case 199:
-		return KnxDatapointType_DPT_Value_Pressure, true
+		return KnxDatapointType_DPT_Value_Power_Factor, true
 	case 2:
 		return KnxDatapointType_BYTE, true
 	case 20:
 		return KnxDatapointType_TIME, true
 	case 200:
-		return KnxDatapointType_DPT_Value_Reactance, true
+		return KnxDatapointType_DPT_Value_Pressure, true
 	case 201:
-		return KnxDatapointType_DPT_Value_Resistance, true
+		return KnxDatapointType_DPT_Value_Reactance, true
 	case 202:
-		return KnxDatapointType_DPT_Value_Resistivity, true
+		return KnxDatapointType_DPT_Value_Resistance, true
 	case 203:
-		return KnxDatapointType_DPT_Value_SelfInductance, true
+		return KnxDatapointType_DPT_Value_Resistivity, true
 	case 204:
-		return KnxDatapointType_DPT_Value_SolidAngle, true
+		return KnxDatapointType_DPT_Value_SelfInductance, true
 	case 205:
-		return KnxDatapointType_DPT_Value_Sound_Intensity, true
+		return KnxDatapointType_DPT_Value_SolidAngle, true
 	case 206:
-		return KnxDatapointType_DPT_Value_Speed, true
+		return KnxDatapointType_DPT_Value_Sound_Intensity, true
 	case 207:
-		return KnxDatapointType_DPT_Value_Stress, true
+		return KnxDatapointType_DPT_Value_Speed, true
 	case 208:
-		return KnxDatapointType_DPT_Value_Surface_Tension, true
+		return KnxDatapointType_DPT_Value_Stress, true
 	case 209:
-		return KnxDatapointType_DPT_Value_Common_Temperature, true
+		return KnxDatapointType_DPT_Value_Surface_Tension, true
 	case 21:
 		return KnxDatapointType_LTIME, true
 	case 210:
-		return KnxDatapointType_DPT_Value_Absolute_Temperature, true
+		return KnxDatapointType_DPT_Value_Common_Temperature, true
 	case 211:
-		return KnxDatapointType_DPT_Value_TemperatureDifference, true
+		return KnxDatapointType_DPT_Value_Absolute_Temperature, true
 	case 212:
-		return KnxDatapointType_DPT_Value_Thermal_Capacity, true
+		return KnxDatapointType_DPT_Value_TemperatureDifference, true
 	case 213:
-		return KnxDatapointType_DPT_Value_Thermal_Conductivity, true
+		return KnxDatapointType_DPT_Value_Thermal_Capacity, true
 	case 214:
-		return KnxDatapointType_DPT_Value_ThermoelectricPower, true
+		return KnxDatapointType_DPT_Value_Thermal_Conductivity, true
 	case 215:
-		return KnxDatapointType_DPT_Value_Time, true
+		return KnxDatapointType_DPT_Value_ThermoelectricPower, true
 	case 216:
-		return KnxDatapointType_DPT_Value_Torque, true
+		return KnxDatapointType_DPT_Value_Time, true
 	case 217:
-		return KnxDatapointType_DPT_Value_Volume, true
+		return KnxDatapointType_DPT_Value_Torque, true
 	case 218:
-		return KnxDatapointType_DPT_Value_Volume_Flux, true
+		return KnxDatapointType_DPT_Value_Volume, true
 	case 219:
-		return KnxDatapointType_DPT_Value_Weight, true
+		return KnxDatapointType_DPT_Value_Volume_Flux, true
 	case 22:
 		return KnxDatapointType_DATE, true
 	case 220:
-		return KnxDatapointType_DPT_Value_Work, true
+		return KnxDatapointType_DPT_Value_Weight, true
 	case 221:
-		return KnxDatapointType_DPT_Value_ApparentPower, true
+		return KnxDatapointType_DPT_Value_Work, true
 	case 222:
-		return KnxDatapointType_DPT_Volume_Flux_Meter, true
+		return KnxDatapointType_DPT_Value_ApparentPower, true
 	case 223:
-		return KnxDatapointType_DPT_Volume_Flux_ls, true
+		return KnxDatapointType_DPT_Volume_Flux_Meter, true
 	case 224:
-		return KnxDatapointType_DPT_Access_Data, true
+		return KnxDatapointType_DPT_Volume_Flux_ls, true
 	case 225:
-		return KnxDatapointType_DPT_String_ASCII, true
+		return KnxDatapointType_DPT_Access_Data, true
 	case 226:
-		return KnxDatapointType_DPT_String_8859_1, true
+		return KnxDatapointType_DPT_String_ASCII, true
 	case 227:
-		return KnxDatapointType_DPT_SceneNumber, true
+		return KnxDatapointType_DPT_String_8859_1, true
 	case 228:
-		return KnxDatapointType_DPT_SceneControl, true
+		return KnxDatapointType_DPT_SceneNumber, true
 	case 229:
-		return KnxDatapointType_DPT_DateTime, true
+		return KnxDatapointType_DPT_SceneControl, true
 	case 23:
 		return KnxDatapointType_TIME_OF_DAY, true
 	case 230:
-		return KnxDatapointType_DPT_SCLOMode, true
+		return KnxDatapointType_DPT_DateTime, true
 	case 231:
-		return KnxDatapointType_DPT_BuildingMode, true
+		return KnxDatapointType_DPT_SCLOMode, true
 	case 232:
-		return KnxDatapointType_DPT_OccMode, true
+		return KnxDatapointType_DPT_BuildingMode, true
 	case 233:
-		return KnxDatapointType_DPT_Priority, true
+		return KnxDatapointType_DPT_OccMode, true
 	case 234:
-		return KnxDatapointType_DPT_LightApplicationMode, true
+		return KnxDatapointType_DPT_Priority, true
 	case 235:
-		return KnxDatapointType_DPT_ApplicationArea, true
+		return KnxDatapointType_DPT_LightApplicationMode, true
 	case 236:
-		return KnxDatapointType_DPT_AlarmClassType, true
+		return KnxDatapointType_DPT_ApplicationArea, true
 	case 237:
-		return KnxDatapointType_DPT_PSUMode, true
+		return KnxDatapointType_DPT_AlarmClassType, true
 	case 238:
-		return KnxDatapointType_DPT_ErrorClass_System, true
+		return KnxDatapointType_DPT_PSUMode, true
 	case 239:
-		return KnxDatapointType_DPT_ErrorClass_HVAC, true
+		return KnxDatapointType_DPT_ErrorClass_System, true
 	case 24:
 		return KnxDatapointType_TOD, true
 	case 240:
-		return KnxDatapointType_DPT_Time_Delay, true
+		return KnxDatapointType_DPT_ErrorClass_HVAC, true
 	case 241:
-		return KnxDatapointType_DPT_Beaufort_Wind_Force_Scale, true
+		return KnxDatapointType_DPT_Time_Delay, true
 	case 242:
-		return KnxDatapointType_DPT_SensorSelect, true
+		return KnxDatapointType_DPT_Beaufort_Wind_Force_Scale, true
 	case 243:
-		return KnxDatapointType_DPT_ActuatorConnectType, true
+		return KnxDatapointType_DPT_SensorSelect, true
 	case 244:
-		return KnxDatapointType_DPT_Cloud_Cover, true
+		return KnxDatapointType_DPT_ActuatorConnectType, true
 	case 245:
-		return KnxDatapointType_DPT_PowerReturnMode, true
+		return KnxDatapointType_DPT_Cloud_Cover, true
 	case 246:
-		return KnxDatapointType_DPT_FuelType, true
+		return KnxDatapointType_DPT_PowerReturnMode, true
 	case 247:
-		return KnxDatapointType_DPT_BurnerType, true
+		return KnxDatapointType_DPT_FuelType, true
 	case 248:
-		return KnxDatapointType_DPT_HVACMode, true
+		return KnxDatapointType_DPT_BurnerType, true
 	case 249:
-		return KnxDatapointType_DPT_DHWMode, true
+		return KnxDatapointType_DPT_HVACMode, true
 	case 25:
 		return KnxDatapointType_DATE_AND_TIME, true
 	case 250:
-		return KnxDatapointType_DPT_LoadPriority, true
+		return KnxDatapointType_DPT_DHWMode, true
 	case 251:
-		return KnxDatapointType_DPT_HVACContrMode, true
+		return KnxDatapointType_DPT_LoadPriority, true
 	case 252:
-		return KnxDatapointType_DPT_HVACEmergMode, true
+		return KnxDatapointType_DPT_HVACContrMode, true
 	case 253:
-		return KnxDatapointType_DPT_ChangeoverMode, true
+		return KnxDatapointType_DPT_HVACEmergMode, true
 	case 254:
-		return KnxDatapointType_DPT_ValveMode, true
+		return KnxDatapointType_DPT_ChangeoverMode, true
 	case 255:
-		return KnxDatapointType_DPT_DamperMode, true
+		return KnxDatapointType_DPT_ValveMode, true
 	case 256:
-		return KnxDatapointType_DPT_HeaterMode, true
+		return KnxDatapointType_DPT_DamperMode, true
 	case 257:
-		return KnxDatapointType_DPT_FanMode, true
+		return KnxDatapointType_DPT_HeaterMode, true
 	case 258:
-		return KnxDatapointType_DPT_MasterSlaveMode, true
+		return KnxDatapointType_DPT_FanMode, true
 	case 259:
-		return KnxDatapointType_DPT_StatusRoomSetp, true
+		return KnxDatapointType_DPT_MasterSlaveMode, true
 	case 26:
 		return KnxDatapointType_DT, true
 	case 260:
-		return KnxDatapointType_DPT_Metering_DeviceType, true
+		return KnxDatapointType_DPT_StatusRoomSetp, true
 	case 261:
-		return KnxDatapointType_DPT_HumDehumMode, true
+		return KnxDatapointType_DPT_Metering_DeviceType, true
 	case 262:
-		return KnxDatapointType_DPT_EnableHCStage, true
+		return KnxDatapointType_DPT_HumDehumMode, true
 	case 263:
-		return KnxDatapointType_DPT_ADAType, true
+		return KnxDatapointType_DPT_EnableHCStage, true
 	case 264:
-		return KnxDatapointType_DPT_BackupMode, true
+		return KnxDatapointType_DPT_ADAType, true
 	case 265:
-		return KnxDatapointType_DPT_StartSynchronization, true
+		return KnxDatapointType_DPT_BackupMode, true
 	case 266:
-		return KnxDatapointType_DPT_Behaviour_Lock_Unlock, true
+		return KnxDatapointType_DPT_StartSynchronization, true
 	case 267:
-		return KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down, true
+		return KnxDatapointType_DPT_Behaviour_Lock_Unlock, true
 	case 268:
-		return KnxDatapointType_DPT_DALI_Fade_Time, true
+		return KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down, true
 	case 269:
-		return KnxDatapointType_DPT_BlinkingMode, true
+		return KnxDatapointType_DPT_DALI_Fade_Time, true
 	case 27:
 		return KnxDatapointType_DPT_Switch, true
 	case 270:
-		return KnxDatapointType_DPT_LightControlMode, true
+		return KnxDatapointType_DPT_BlinkingMode, true
 	case 271:
-		return KnxDatapointType_DPT_SwitchPBModel, true
+		return KnxDatapointType_DPT_LightControlMode, true
 	case 272:
-		return KnxDatapointType_DPT_PBAction, true
+		return KnxDatapointType_DPT_SwitchPBModel, true
 	case 273:
-		return KnxDatapointType_DPT_DimmPBModel, true
+		return KnxDatapointType_DPT_PBAction, true
 	case 274:
-		return KnxDatapointType_DPT_SwitchOnMode, true
+		return KnxDatapointType_DPT_DimmPBModel, true
 	case 275:
-		return KnxDatapointType_DPT_LoadTypeSet, true
+		return KnxDatapointType_DPT_SwitchOnMode, true
 	case 276:
-		return KnxDatapointType_DPT_LoadTypeDetected, true
+		return KnxDatapointType_DPT_LoadTypeSet, true
 	case 277:
-		return KnxDatapointType_DPT_Converter_Test_Control, true
+		return KnxDatapointType_DPT_LoadTypeDetected, true
 	case 278:
-		return KnxDatapointType_DPT_SABExcept_Behaviour, true
+		return KnxDatapointType_DPT_Converter_Test_Control, true
 	case 279:
-		return KnxDatapointType_DPT_SABBehaviour_Lock_Unlock, true
+		return KnxDatapointType_DPT_SABExcept_Behaviour, true
 	case 28:
 		return KnxDatapointType_DPT_Bool, true
 	case 280:
-		return KnxDatapointType_DPT_SSSBMode, true
+		return KnxDatapointType_DPT_SABBehaviour_Lock_Unlock, true
 	case 281:
-		return KnxDatapointType_DPT_BlindsControlMode, true
+		return KnxDatapointType_DPT_SSSBMode, true
 	case 282:
-		return KnxDatapointType_DPT_CommMode, true
+		return KnxDatapointType_DPT_BlindsControlMode, true
 	case 283:
-		return KnxDatapointType_DPT_AddInfoTypes, true
+		return KnxDatapointType_DPT_CommMode, true
 	case 284:
-		return KnxDatapointType_DPT_RF_ModeSelect, true
+		return KnxDatapointType_DPT_AddInfoTypes, true
 	case 285:
-		return KnxDatapointType_DPT_RF_FilterSelect, true
+		return KnxDatapointType_DPT_RF_ModeSelect, true
 	case 286:
-		return KnxDatapointType_DPT_StatusGen, true
+		return KnxDatapointType_DPT_RF_FilterSelect, true
 	case 287:
-		return KnxDatapointType_DPT_Device_Control, true
+		return KnxDatapointType_DPT_StatusGen, true
 	case 288:
-		return KnxDatapointType_DPT_ForceSign, true
+		return KnxDatapointType_DPT_Device_Control, true
 	case 289:
-		return KnxDatapointType_DPT_ForceSignCool, true
+		return KnxDatapointType_DPT_ForceSign, true
 	case 29:
 		return KnxDatapointType_DPT_Enable, true
 	case 290:
-		return KnxDatapointType_DPT_StatusRHC, true
+		return KnxDatapointType_DPT_ForceSignCool, true
 	case 291:
-		return KnxDatapointType_DPT_StatusSDHWC, true
+		return KnxDatapointType_DPT_StatusRHC, true
 	case 292:
-		return KnxDatapointType_DPT_FuelTypeSet, true
+		return KnxDatapointType_DPT_StatusSDHWC, true
 	case 293:
-		return KnxDatapointType_DPT_StatusRCC, true
+		return KnxDatapointType_DPT_FuelTypeSet, true
 	case 294:
-		return KnxDatapointType_DPT_StatusAHU, true
+		return KnxDatapointType_DPT_StatusRCC, true
 	case 295:
-		return KnxDatapointType_DPT_CombinedStatus_RTSM, true
+		return KnxDatapointType_DPT_StatusAHU, true
 	case 296:
-		return KnxDatapointType_DPT_LightActuatorErrorInfo, true
+		return KnxDatapointType_DPT_CombinedStatus_RTSM, true
 	case 297:
-		return KnxDatapointType_DPT_RF_ModeInfo, true
+		return KnxDatapointType_DPT_LightActuatorErrorInfo, true
 	case 298:
-		return KnxDatapointType_DPT_RF_FilterInfo, true
+		return KnxDatapointType_DPT_RF_ModeInfo, true
 	case 299:
-		return KnxDatapointType_DPT_Channel_Activation_8, true
+		return KnxDatapointType_DPT_RF_FilterInfo, true
 	case 3:
 		return KnxDatapointType_WORD, true
 	case 30:
 		return KnxDatapointType_DPT_Ramp, true
 	case 300:
-		return KnxDatapointType_DPT_StatusDHWC, true
+		return KnxDatapointType_DPT_Channel_Activation_8, true
 	case 301:
-		return KnxDatapointType_DPT_StatusRHCC, true
+		return KnxDatapointType_DPT_StatusDHWC, true
 	case 302:
-		return KnxDatapointType_DPT_CombinedStatus_HVA, true
+		return KnxDatapointType_DPT_StatusRHCC, true
 	case 303:
-		return KnxDatapointType_DPT_CombinedStatus_RTC, true
+		return KnxDatapointType_DPT_CombinedStatus_HVA, true
 	case 304:
-		return KnxDatapointType_DPT_Media, true
+		return KnxDatapointType_DPT_CombinedStatus_RTC, true
 	case 305:
-		return KnxDatapointType_DPT_Channel_Activation_16, true
+		return KnxDatapointType_DPT_Media, true
 	case 306:
-		return KnxDatapointType_DPT_OnOffAction, true
+		return KnxDatapointType_DPT_Channel_Activation_16, true
 	case 307:
-		return KnxDatapointType_DPT_Alarm_Reaction, true
+		return KnxDatapointType_DPT_OnOffAction, true
 	case 308:
-		return KnxDatapointType_DPT_UpDown_Action, true
+		return KnxDatapointType_DPT_Alarm_Reaction, true
 	case 309:
-		return KnxDatapointType_DPT_HVAC_PB_Action, true
+		return KnxDatapointType_DPT_UpDown_Action, true
 	case 31:
 		return KnxDatapointType_DPT_Alarm, true
 	case 310:
-		return KnxDatapointType_DPT_DoubleNibble, true
+		return KnxDatapointType_DPT_HVAC_PB_Action, true
 	case 311:
-		return KnxDatapointType_DPT_SceneInfo, true
+		return KnxDatapointType_DPT_DoubleNibble, true
 	case 312:
-		return KnxDatapointType_DPT_CombinedInfoOnOff, true
+		return KnxDatapointType_DPT_SceneInfo, true
 	case 313:
-		return KnxDatapointType_DPT_ActiveEnergy_V64, true
+		return KnxDatapointType_DPT_CombinedInfoOnOff, true
 	case 314:
-		return KnxDatapointType_DPT_ApparantEnergy_V64, true
+		return KnxDatapointType_DPT_ActiveEnergy_V64, true
 	case 315:
-		return KnxDatapointType_DPT_ReactiveEnergy_V64, true
+		return KnxDatapointType_DPT_ApparantEnergy_V64, true
 	case 316:
-		return KnxDatapointType_DPT_Channel_Activation_24, true
+		return KnxDatapointType_DPT_ReactiveEnergy_V64, true
 	case 317:
-		return KnxDatapointType_DPT_HVACModeNext, true
+		return KnxDatapointType_DPT_Channel_Activation_24, true
 	case 318:
-		return KnxDatapointType_DPT_DHWModeNext, true
+		return KnxDatapointType_DPT_HVACModeNext, true
 	case 319:
-		return KnxDatapointType_DPT_OccModeNext, true
+		return KnxDatapointType_DPT_DHWModeNext, true
 	case 32:
 		return KnxDatapointType_DPT_BinaryValue, true
 	case 320:
-		return KnxDatapointType_DPT_BuildingModeNext, true
+		return KnxDatapointType_DPT_OccModeNext, true
 	case 321:
-		return KnxDatapointType_DPT_StatusLightingActuator, true
+		return KnxDatapointType_DPT_BuildingModeNext, true
 	case 322:
-		return KnxDatapointType_DPT_Version, true
+		return KnxDatapointType_DPT_StatusLightingActuator, true
 	case 323:
-		return KnxDatapointType_DPT_AlarmInfo, true
+		return KnxDatapointType_DPT_Version, true
 	case 324:
-		return KnxDatapointType_DPT_TempRoomSetpSetF16_3, true
+		return KnxDatapointType_DPT_AlarmInfo, true
 	case 325:
-		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3, true
+		return KnxDatapointType_DPT_TempRoomSetpSetF16_3, true
 	case 326:
-		return KnxDatapointType_DPT_Scaling_Speed, true
+		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_3, true
 	case 327:
-		return KnxDatapointType_DPT_Scaling_Step_Time, true
+		return KnxDatapointType_DPT_Scaling_Speed, true
 	case 328:
-		return KnxDatapointType_DPT_MeteringValue, true
+		return KnxDatapointType_DPT_Scaling_Step_Time, true
 	case 329:
-		return KnxDatapointType_DPT_MBus_Address, true
+		return KnxDatapointType_DPT_MeteringValue, true
 	case 33:
 		return KnxDatapointType_DPT_Step, true
 	case 330:
-		return KnxDatapointType_DPT_Colour_RGB, true
+		return KnxDatapointType_DPT_MBus_Address, true
 	case 331:
-		return KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII, true
+		return KnxDatapointType_DPT_Colour_RGB, true
 	case 332:
-		return KnxDatapointType_DPT_Tariff_ActiveEnergy, true
+		return KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII, true
 	case 333:
-		return KnxDatapointType_DPT_Prioritised_Mode_Control, true
+		return KnxDatapointType_DPT_Tariff_ActiveEnergy, true
 	case 334:
-		return KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic, true
+		return KnxDatapointType_DPT_Prioritised_Mode_Control, true
 	case 335:
-		return KnxDatapointType_DPT_DALI_Diagnostics, true
+		return KnxDatapointType_DPT_DALI_Control_Gear_Diagnostic, true
 	case 336:
-		return KnxDatapointType_DPT_CombinedPosition, true
+		return KnxDatapointType_DPT_DALI_Diagnostics, true
 	case 337:
-		return KnxDatapointType_DPT_StatusSAB, true
+		return KnxDatapointType_DPT_CombinedPosition, true
 	case 338:
-		return KnxDatapointType_DPT_Colour_xyY, true
+		return KnxDatapointType_DPT_StatusSAB, true
 	case 339:
-		return KnxDatapointType_DPT_Converter_Status, true
+		return KnxDatapointType_DPT_Colour_xyY, true
 	case 34:
 		return KnxDatapointType_DPT_UpDown, true
 	case 340:
-		return KnxDatapointType_DPT_Converter_Test_Result, true
+		return KnxDatapointType_DPT_Converter_Status, true
 	case 341:
-		return KnxDatapointType_DPT_Battery_Info, true
+		return KnxDatapointType_DPT_Converter_Test_Result, true
 	case 342:
-		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition, true
+		return KnxDatapointType_DPT_Battery_Info, true
 	case 343:
-		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Control, true
+		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Transition, true
 	case 344:
-		return KnxDatapointType_DPT_Colour_RGBW, true
+		return KnxDatapointType_DPT_Brightness_Colour_Temperature_Control, true
 	case 345:
-		return KnxDatapointType_DPT_Relative_Control_RGBW, true
+		return KnxDatapointType_DPT_Colour_RGBW, true
 	case 346:
-		return KnxDatapointType_DPT_Relative_Control_RGB, true
+		return KnxDatapointType_DPT_Relative_Control_RGBW, true
 	case 347:
-		return KnxDatapointType_DPT_GeographicalLocation, true
+		return KnxDatapointType_DPT_Relative_Control_RGB, true
 	case 348:
-		return KnxDatapointType_DPT_TempRoomSetpSetF16_4, true
+		return KnxDatapointType_DPT_GeographicalLocation, true
 	case 349:
-		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4, true
+		return KnxDatapointType_DPT_TempRoomSetpSetF16_4, true
 	case 35:
 		return KnxDatapointType_DPT_OpenClose, true
+	case 350:
+		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4, true
 	case 36:
 		return KnxDatapointType_DPT_Start, true
 	case 37:
@@ -5761,6 +5777,8 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_ULINT, true
 	case "DPT_Concentration_ygm3":
 		return KnxDatapointType_DPT_Concentration_ygm3, true
+	case "DPT_Coefficient":
+		return KnxDatapointType_DPT_Coefficient, true
 	case "DPT_TimeOfDay":
 		return KnxDatapointType_DPT_TimeOfDay, true
 	case "DPT_Date":
@@ -5777,10 +5795,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_VolumeLiquid_Litre, true
 	case "DPT_Volume_m_3":
 		return KnxDatapointType_DPT_Volume_m_3, true
-	case "DPT_Value_4_Count":
-		return KnxDatapointType_DPT_Value_4_Count, true
 	case "LINT":
 		return KnxDatapointType_LINT, true
+	case "DPT_Value_4_Count":
+		return KnxDatapointType_DPT_Value_4_Count, true
 	case "DPT_FlowRate_m3h":
 		return KnxDatapointType_DPT_FlowRate_m3h, true
 	case "DPT_ActiveEnergy":
@@ -5799,10 +5817,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_ActiveEnergy_MWh, true
 	case "DPT_LongDeltaTimeSec":
 		return KnxDatapointType_DPT_LongDeltaTimeSec, true
-	case "DPT_DeltaVolumeLiquid_Litre":
-		return KnxDatapointType_DPT_DeltaVolumeLiquid_Litre, true
 	case "REAL":
 		return KnxDatapointType_REAL, true
+	case "DPT_DeltaVolumeLiquid_Litre":
+		return KnxDatapointType_DPT_DeltaVolumeLiquid_Litre, true
 	case "DPT_DeltaVolume_m_3":
 		return KnxDatapointType_DPT_DeltaVolume_m_3, true
 	case "DPT_Value_Acceleration":
@@ -5821,10 +5839,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Value_AngleRad, true
 	case "DPT_Value_AngleDeg":
 		return KnxDatapointType_DPT_Value_AngleDeg, true
-	case "DPT_Value_Angular_Momentum":
-		return KnxDatapointType_DPT_Value_Angular_Momentum, true
 	case "LREAL":
 		return KnxDatapointType_LREAL, true
+	case "DPT_Value_Angular_Momentum":
+		return KnxDatapointType_DPT_Value_Angular_Momentum, true
 	case "DPT_Value_Angular_Velocity":
 		return KnxDatapointType_DPT_Value_Angular_Velocity, true
 	case "DPT_Value_Area":
@@ -5843,10 +5861,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Value_Electrical_Conductivity, true
 	case "DPT_Value_Density":
 		return KnxDatapointType_DPT_Value_Density, true
-	case "DPT_Value_Electric_Charge":
-		return KnxDatapointType_DPT_Value_Electric_Charge, true
 	case "CHAR":
 		return KnxDatapointType_CHAR, true
+	case "DPT_Value_Electric_Charge":
+		return KnxDatapointType_DPT_Value_Electric_Charge, true
 	case "DPT_Value_Electric_Current":
 		return KnxDatapointType_DPT_Value_Electric_Current, true
 	case "DPT_Value_Electric_CurrentDensity":
@@ -5865,10 +5883,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Value_Electric_Polarization, true
 	case "DPT_Value_Electric_Potential":
 		return KnxDatapointType_DPT_Value_Electric_Potential, true
-	case "DPT_Value_Electric_PotentialDifference":
-		return KnxDatapointType_DPT_Value_Electric_PotentialDifference, true
 	case "WCHAR":
 		return KnxDatapointType_WCHAR, true
+	case "DPT_Value_Electric_PotentialDifference":
+		return KnxDatapointType_DPT_Value_Electric_PotentialDifference, true
 	case "DPT_Value_ElectromagneticMoment":
 		return KnxDatapointType_DPT_Value_ElectromagneticMoment, true
 	case "DPT_Value_Electromotive_Force":
@@ -5887,10 +5905,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Value_Heat_FlowRate, true
 	case "DPT_Value_Heat_Quantity":
 		return KnxDatapointType_DPT_Value_Heat_Quantity, true
-	case "DPT_Value_Impedance":
-		return KnxDatapointType_DPT_Value_Impedance, true
 	case "STRING":
 		return KnxDatapointType_STRING, true
+	case "DPT_Value_Impedance":
+		return KnxDatapointType_DPT_Value_Impedance, true
 	case "DPT_Value_Length":
 		return KnxDatapointType_DPT_Value_Length, true
 	case "DPT_Value_Light_Quantity":
@@ -5909,10 +5927,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Value_Magnetic_FluxDensity, true
 	case "DPT_Value_Magnetic_Moment":
 		return KnxDatapointType_DPT_Value_Magnetic_Moment, true
-	case "DPT_Value_Magnetic_Polarization":
-		return KnxDatapointType_DPT_Value_Magnetic_Polarization, true
 	case "WSTRING":
 		return KnxDatapointType_WSTRING, true
+	case "DPT_Value_Magnetic_Polarization":
+		return KnxDatapointType_DPT_Value_Magnetic_Polarization, true
 	case "DPT_Value_Magnetization":
 		return KnxDatapointType_DPT_Value_Magnetization, true
 	case "DPT_Value_MagnetomotiveForce":
@@ -5931,12 +5949,12 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Value_Power, true
 	case "DPT_Value_Power_Factor":
 		return KnxDatapointType_DPT_Value_Power_Factor, true
-	case "DPT_Value_Pressure":
-		return KnxDatapointType_DPT_Value_Pressure, true
 	case "BYTE":
 		return KnxDatapointType_BYTE, true
 	case "TIME":
 		return KnxDatapointType_TIME, true
+	case "DPT_Value_Pressure":
+		return KnxDatapointType_DPT_Value_Pressure, true
 	case "DPT_Value_Reactance":
 		return KnxDatapointType_DPT_Value_Reactance, true
 	case "DPT_Value_Resistance":
@@ -5955,10 +5973,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Value_Stress, true
 	case "DPT_Value_Surface_Tension":
 		return KnxDatapointType_DPT_Value_Surface_Tension, true
-	case "DPT_Value_Common_Temperature":
-		return KnxDatapointType_DPT_Value_Common_Temperature, true
 	case "LTIME":
 		return KnxDatapointType_LTIME, true
+	case "DPT_Value_Common_Temperature":
+		return KnxDatapointType_DPT_Value_Common_Temperature, true
 	case "DPT_Value_Absolute_Temperature":
 		return KnxDatapointType_DPT_Value_Absolute_Temperature, true
 	case "DPT_Value_TemperatureDifference":
@@ -5977,10 +5995,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Value_Volume, true
 	case "DPT_Value_Volume_Flux":
 		return KnxDatapointType_DPT_Value_Volume_Flux, true
-	case "DPT_Value_Weight":
-		return KnxDatapointType_DPT_Value_Weight, true
 	case "DATE":
 		return KnxDatapointType_DATE, true
+	case "DPT_Value_Weight":
+		return KnxDatapointType_DPT_Value_Weight, true
 	case "DPT_Value_Work":
 		return KnxDatapointType_DPT_Value_Work, true
 	case "DPT_Value_ApparentPower":
@@ -5999,10 +6017,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_SceneNumber, true
 	case "DPT_SceneControl":
 		return KnxDatapointType_DPT_SceneControl, true
-	case "DPT_DateTime":
-		return KnxDatapointType_DPT_DateTime, true
 	case "TIME_OF_DAY":
 		return KnxDatapointType_TIME_OF_DAY, true
+	case "DPT_DateTime":
+		return KnxDatapointType_DPT_DateTime, true
 	case "DPT_SCLOMode":
 		return KnxDatapointType_DPT_SCLOMode, true
 	case "DPT_BuildingMode":
@@ -6021,10 +6039,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_PSUMode, true
 	case "DPT_ErrorClass_System":
 		return KnxDatapointType_DPT_ErrorClass_System, true
-	case "DPT_ErrorClass_HVAC":
-		return KnxDatapointType_DPT_ErrorClass_HVAC, true
 	case "TOD":
 		return KnxDatapointType_TOD, true
+	case "DPT_ErrorClass_HVAC":
+		return KnxDatapointType_DPT_ErrorClass_HVAC, true
 	case "DPT_Time_Delay":
 		return KnxDatapointType_DPT_Time_Delay, true
 	case "DPT_Beaufort_Wind_Force_Scale":
@@ -6043,10 +6061,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_BurnerType, true
 	case "DPT_HVACMode":
 		return KnxDatapointType_DPT_HVACMode, true
-	case "DPT_DHWMode":
-		return KnxDatapointType_DPT_DHWMode, true
 	case "DATE_AND_TIME":
 		return KnxDatapointType_DATE_AND_TIME, true
+	case "DPT_DHWMode":
+		return KnxDatapointType_DPT_DHWMode, true
 	case "DPT_LoadPriority":
 		return KnxDatapointType_DPT_LoadPriority, true
 	case "DPT_HVACContrMode":
@@ -6065,10 +6083,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_FanMode, true
 	case "DPT_MasterSlaveMode":
 		return KnxDatapointType_DPT_MasterSlaveMode, true
-	case "DPT_StatusRoomSetp":
-		return KnxDatapointType_DPT_StatusRoomSetp, true
 	case "DT":
 		return KnxDatapointType_DT, true
+	case "DPT_StatusRoomSetp":
+		return KnxDatapointType_DPT_StatusRoomSetp, true
 	case "DPT_Metering_DeviceType":
 		return KnxDatapointType_DPT_Metering_DeviceType, true
 	case "DPT_HumDehumMode":
@@ -6087,10 +6105,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Behaviour_Bus_Power_Up_Down, true
 	case "DPT_DALI_Fade_Time":
 		return KnxDatapointType_DPT_DALI_Fade_Time, true
-	case "DPT_BlinkingMode":
-		return KnxDatapointType_DPT_BlinkingMode, true
 	case "DPT_Switch":
 		return KnxDatapointType_DPT_Switch, true
+	case "DPT_BlinkingMode":
+		return KnxDatapointType_DPT_BlinkingMode, true
 	case "DPT_LightControlMode":
 		return KnxDatapointType_DPT_LightControlMode, true
 	case "DPT_SwitchPBModel":
@@ -6109,10 +6127,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Converter_Test_Control, true
 	case "DPT_SABExcept_Behaviour":
 		return KnxDatapointType_DPT_SABExcept_Behaviour, true
-	case "DPT_SABBehaviour_Lock_Unlock":
-		return KnxDatapointType_DPT_SABBehaviour_Lock_Unlock, true
 	case "DPT_Bool":
 		return KnxDatapointType_DPT_Bool, true
+	case "DPT_SABBehaviour_Lock_Unlock":
+		return KnxDatapointType_DPT_SABBehaviour_Lock_Unlock, true
 	case "DPT_SSSBMode":
 		return KnxDatapointType_DPT_SSSBMode, true
 	case "DPT_BlindsControlMode":
@@ -6131,10 +6149,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Device_Control, true
 	case "DPT_ForceSign":
 		return KnxDatapointType_DPT_ForceSign, true
-	case "DPT_ForceSignCool":
-		return KnxDatapointType_DPT_ForceSignCool, true
 	case "DPT_Enable":
 		return KnxDatapointType_DPT_Enable, true
+	case "DPT_ForceSignCool":
+		return KnxDatapointType_DPT_ForceSignCool, true
 	case "DPT_StatusRHC":
 		return KnxDatapointType_DPT_StatusRHC, true
 	case "DPT_StatusSDHWC":
@@ -6153,12 +6171,12 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_RF_ModeInfo, true
 	case "DPT_RF_FilterInfo":
 		return KnxDatapointType_DPT_RF_FilterInfo, true
-	case "DPT_Channel_Activation_8":
-		return KnxDatapointType_DPT_Channel_Activation_8, true
 	case "WORD":
 		return KnxDatapointType_WORD, true
 	case "DPT_Ramp":
 		return KnxDatapointType_DPT_Ramp, true
+	case "DPT_Channel_Activation_8":
+		return KnxDatapointType_DPT_Channel_Activation_8, true
 	case "DPT_StatusDHWC":
 		return KnxDatapointType_DPT_StatusDHWC, true
 	case "DPT_StatusRHCC":
@@ -6177,10 +6195,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Alarm_Reaction, true
 	case "DPT_UpDown_Action":
 		return KnxDatapointType_DPT_UpDown_Action, true
-	case "DPT_HVAC_PB_Action":
-		return KnxDatapointType_DPT_HVAC_PB_Action, true
 	case "DPT_Alarm":
 		return KnxDatapointType_DPT_Alarm, true
+	case "DPT_HVAC_PB_Action":
+		return KnxDatapointType_DPT_HVAC_PB_Action, true
 	case "DPT_DoubleNibble":
 		return KnxDatapointType_DPT_DoubleNibble, true
 	case "DPT_SceneInfo":
@@ -6199,10 +6217,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_HVACModeNext, true
 	case "DPT_DHWModeNext":
 		return KnxDatapointType_DPT_DHWModeNext, true
-	case "DPT_OccModeNext":
-		return KnxDatapointType_DPT_OccModeNext, true
 	case "DPT_BinaryValue":
 		return KnxDatapointType_DPT_BinaryValue, true
+	case "DPT_OccModeNext":
+		return KnxDatapointType_DPT_OccModeNext, true
 	case "DPT_BuildingModeNext":
 		return KnxDatapointType_DPT_BuildingModeNext, true
 	case "DPT_StatusLightingActuator":
@@ -6221,10 +6239,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_Scaling_Step_Time, true
 	case "DPT_MeteringValue":
 		return KnxDatapointType_DPT_MeteringValue, true
-	case "DPT_MBus_Address":
-		return KnxDatapointType_DPT_MBus_Address, true
 	case "DPT_Step":
 		return KnxDatapointType_DPT_Step, true
+	case "DPT_MBus_Address":
+		return KnxDatapointType_DPT_MBus_Address, true
 	case "DPT_Colour_RGB":
 		return KnxDatapointType_DPT_Colour_RGB, true
 	case "DPT_LanguageCodeAlpha2_ASCII":
@@ -6243,10 +6261,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_StatusSAB, true
 	case "DPT_Colour_xyY":
 		return KnxDatapointType_DPT_Colour_xyY, true
-	case "DPT_Converter_Status":
-		return KnxDatapointType_DPT_Converter_Status, true
 	case "DPT_UpDown":
 		return KnxDatapointType_DPT_UpDown, true
+	case "DPT_Converter_Status":
+		return KnxDatapointType_DPT_Converter_Status, true
 	case "DPT_Converter_Test_Result":
 		return KnxDatapointType_DPT_Converter_Test_Result, true
 	case "DPT_Battery_Info":
@@ -6265,10 +6283,10 @@ func KnxDatapointTypeByName(value string) (enum KnxDatapointType, ok bool) {
 		return KnxDatapointType_DPT_GeographicalLocation, true
 	case "DPT_TempRoomSetpSetF16_4":
 		return KnxDatapointType_DPT_TempRoomSetpSetF16_4, true
-	case "DPT_TempRoomSetpSetShiftF16_4":
-		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4, true
 	case "DPT_OpenClose":
 		return KnxDatapointType_DPT_OpenClose, true
+	case "DPT_TempRoomSetpSetShiftF16_4":
+		return KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4, true
 	case "DPT_Start":
 		return KnxDatapointType_DPT_Start, true
 	case "DPT_State":
@@ -6524,6 +6542,8 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "ULINT"
 	case KnxDatapointType_DPT_Concentration_ygm3:
 		return "DPT_Concentration_ygm3"
+	case KnxDatapointType_DPT_Coefficient:
+		return "DPT_Coefficient"
 	case KnxDatapointType_DPT_TimeOfDay:
 		return "DPT_TimeOfDay"
 	case KnxDatapointType_DPT_Date:
@@ -6540,10 +6560,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_VolumeLiquid_Litre"
 	case KnxDatapointType_DPT_Volume_m_3:
 		return "DPT_Volume_m_3"
-	case KnxDatapointType_DPT_Value_4_Count:
-		return "DPT_Value_4_Count"
 	case KnxDatapointType_LINT:
 		return "LINT"
+	case KnxDatapointType_DPT_Value_4_Count:
+		return "DPT_Value_4_Count"
 	case KnxDatapointType_DPT_FlowRate_m3h:
 		return "DPT_FlowRate_m3h"
 	case KnxDatapointType_DPT_ActiveEnergy:
@@ -6562,10 +6582,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_ActiveEnergy_MWh"
 	case KnxDatapointType_DPT_LongDeltaTimeSec:
 		return "DPT_LongDeltaTimeSec"
-	case KnxDatapointType_DPT_DeltaVolumeLiquid_Litre:
-		return "DPT_DeltaVolumeLiquid_Litre"
 	case KnxDatapointType_REAL:
 		return "REAL"
+	case KnxDatapointType_DPT_DeltaVolumeLiquid_Litre:
+		return "DPT_DeltaVolumeLiquid_Litre"
 	case KnxDatapointType_DPT_DeltaVolume_m_3:
 		return "DPT_DeltaVolume_m_3"
 	case KnxDatapointType_DPT_Value_Acceleration:
@@ -6584,10 +6604,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Value_AngleRad"
 	case KnxDatapointType_DPT_Value_AngleDeg:
 		return "DPT_Value_AngleDeg"
-	case KnxDatapointType_DPT_Value_Angular_Momentum:
-		return "DPT_Value_Angular_Momentum"
 	case KnxDatapointType_LREAL:
 		return "LREAL"
+	case KnxDatapointType_DPT_Value_Angular_Momentum:
+		return "DPT_Value_Angular_Momentum"
 	case KnxDatapointType_DPT_Value_Angular_Velocity:
 		return "DPT_Value_Angular_Velocity"
 	case KnxDatapointType_DPT_Value_Area:
@@ -6606,10 +6626,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Value_Electrical_Conductivity"
 	case KnxDatapointType_DPT_Value_Density:
 		return "DPT_Value_Density"
-	case KnxDatapointType_DPT_Value_Electric_Charge:
-		return "DPT_Value_Electric_Charge"
 	case KnxDatapointType_CHAR:
 		return "CHAR"
+	case KnxDatapointType_DPT_Value_Electric_Charge:
+		return "DPT_Value_Electric_Charge"
 	case KnxDatapointType_DPT_Value_Electric_Current:
 		return "DPT_Value_Electric_Current"
 	case KnxDatapointType_DPT_Value_Electric_CurrentDensity:
@@ -6628,10 +6648,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Value_Electric_Polarization"
 	case KnxDatapointType_DPT_Value_Electric_Potential:
 		return "DPT_Value_Electric_Potential"
-	case KnxDatapointType_DPT_Value_Electric_PotentialDifference:
-		return "DPT_Value_Electric_PotentialDifference"
 	case KnxDatapointType_WCHAR:
 		return "WCHAR"
+	case KnxDatapointType_DPT_Value_Electric_PotentialDifference:
+		return "DPT_Value_Electric_PotentialDifference"
 	case KnxDatapointType_DPT_Value_ElectromagneticMoment:
 		return "DPT_Value_ElectromagneticMoment"
 	case KnxDatapointType_DPT_Value_Electromotive_Force:
@@ -6650,10 +6670,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Value_Heat_FlowRate"
 	case KnxDatapointType_DPT_Value_Heat_Quantity:
 		return "DPT_Value_Heat_Quantity"
-	case KnxDatapointType_DPT_Value_Impedance:
-		return "DPT_Value_Impedance"
 	case KnxDatapointType_STRING:
 		return "STRING"
+	case KnxDatapointType_DPT_Value_Impedance:
+		return "DPT_Value_Impedance"
 	case KnxDatapointType_DPT_Value_Length:
 		return "DPT_Value_Length"
 	case KnxDatapointType_DPT_Value_Light_Quantity:
@@ -6672,10 +6692,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Value_Magnetic_FluxDensity"
 	case KnxDatapointType_DPT_Value_Magnetic_Moment:
 		return "DPT_Value_Magnetic_Moment"
-	case KnxDatapointType_DPT_Value_Magnetic_Polarization:
-		return "DPT_Value_Magnetic_Polarization"
 	case KnxDatapointType_WSTRING:
 		return "WSTRING"
+	case KnxDatapointType_DPT_Value_Magnetic_Polarization:
+		return "DPT_Value_Magnetic_Polarization"
 	case KnxDatapointType_DPT_Value_Magnetization:
 		return "DPT_Value_Magnetization"
 	case KnxDatapointType_DPT_Value_MagnetomotiveForce:
@@ -6694,12 +6714,12 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Value_Power"
 	case KnxDatapointType_DPT_Value_Power_Factor:
 		return "DPT_Value_Power_Factor"
-	case KnxDatapointType_DPT_Value_Pressure:
-		return "DPT_Value_Pressure"
 	case KnxDatapointType_BYTE:
 		return "BYTE"
 	case KnxDatapointType_TIME:
 		return "TIME"
+	case KnxDatapointType_DPT_Value_Pressure:
+		return "DPT_Value_Pressure"
 	case KnxDatapointType_DPT_Value_Reactance:
 		return "DPT_Value_Reactance"
 	case KnxDatapointType_DPT_Value_Resistance:
@@ -6718,10 +6738,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Value_Stress"
 	case KnxDatapointType_DPT_Value_Surface_Tension:
 		return "DPT_Value_Surface_Tension"
-	case KnxDatapointType_DPT_Value_Common_Temperature:
-		return "DPT_Value_Common_Temperature"
 	case KnxDatapointType_LTIME:
 		return "LTIME"
+	case KnxDatapointType_DPT_Value_Common_Temperature:
+		return "DPT_Value_Common_Temperature"
 	case KnxDatapointType_DPT_Value_Absolute_Temperature:
 		return "DPT_Value_Absolute_Temperature"
 	case KnxDatapointType_DPT_Value_TemperatureDifference:
@@ -6740,10 +6760,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Value_Volume"
 	case KnxDatapointType_DPT_Value_Volume_Flux:
 		return "DPT_Value_Volume_Flux"
-	case KnxDatapointType_DPT_Value_Weight:
-		return "DPT_Value_Weight"
 	case KnxDatapointType_DATE:
 		return "DATE"
+	case KnxDatapointType_DPT_Value_Weight:
+		return "DPT_Value_Weight"
 	case KnxDatapointType_DPT_Value_Work:
 		return "DPT_Value_Work"
 	case KnxDatapointType_DPT_Value_ApparentPower:
@@ -6762,10 +6782,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_SceneNumber"
 	case KnxDatapointType_DPT_SceneControl:
 		return "DPT_SceneControl"
-	case KnxDatapointType_DPT_DateTime:
-		return "DPT_DateTime"
 	case KnxDatapointType_TIME_OF_DAY:
 		return "TIME_OF_DAY"
+	case KnxDatapointType_DPT_DateTime:
+		return "DPT_DateTime"
 	case KnxDatapointType_DPT_SCLOMode:
 		return "DPT_SCLOMode"
 	case KnxDatapointType_DPT_BuildingMode:
@@ -6784,10 +6804,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_PSUMode"
 	case KnxDatapointType_DPT_ErrorClass_System:
 		return "DPT_ErrorClass_System"
-	case KnxDatapointType_DPT_ErrorClass_HVAC:
-		return "DPT_ErrorClass_HVAC"
 	case KnxDatapointType_TOD:
 		return "TOD"
+	case KnxDatapointType_DPT_ErrorClass_HVAC:
+		return "DPT_ErrorClass_HVAC"
 	case KnxDatapointType_DPT_Time_Delay:
 		return "DPT_Time_Delay"
 	case KnxDatapointType_DPT_Beaufort_Wind_Force_Scale:
@@ -6806,10 +6826,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_BurnerType"
 	case KnxDatapointType_DPT_HVACMode:
 		return "DPT_HVACMode"
-	case KnxDatapointType_DPT_DHWMode:
-		return "DPT_DHWMode"
 	case KnxDatapointType_DATE_AND_TIME:
 		return "DATE_AND_TIME"
+	case KnxDatapointType_DPT_DHWMode:
+		return "DPT_DHWMode"
 	case KnxDatapointType_DPT_LoadPriority:
 		return "DPT_LoadPriority"
 	case KnxDatapointType_DPT_HVACContrMode:
@@ -6828,10 +6848,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_FanMode"
 	case KnxDatapointType_DPT_MasterSlaveMode:
 		return "DPT_MasterSlaveMode"
-	case KnxDatapointType_DPT_StatusRoomSetp:
-		return "DPT_StatusRoomSetp"
 	case KnxDatapointType_DT:
 		return "DT"
+	case KnxDatapointType_DPT_StatusRoomSetp:
+		return "DPT_StatusRoomSetp"
 	case KnxDatapointType_DPT_Metering_DeviceType:
 		return "DPT_Metering_DeviceType"
 	case KnxDatapointType_DPT_HumDehumMode:
@@ -6850,10 +6870,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Behaviour_Bus_Power_Up_Down"
 	case KnxDatapointType_DPT_DALI_Fade_Time:
 		return "DPT_DALI_Fade_Time"
-	case KnxDatapointType_DPT_BlinkingMode:
-		return "DPT_BlinkingMode"
 	case KnxDatapointType_DPT_Switch:
 		return "DPT_Switch"
+	case KnxDatapointType_DPT_BlinkingMode:
+		return "DPT_BlinkingMode"
 	case KnxDatapointType_DPT_LightControlMode:
 		return "DPT_LightControlMode"
 	case KnxDatapointType_DPT_SwitchPBModel:
@@ -6872,10 +6892,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Converter_Test_Control"
 	case KnxDatapointType_DPT_SABExcept_Behaviour:
 		return "DPT_SABExcept_Behaviour"
-	case KnxDatapointType_DPT_SABBehaviour_Lock_Unlock:
-		return "DPT_SABBehaviour_Lock_Unlock"
 	case KnxDatapointType_DPT_Bool:
 		return "DPT_Bool"
+	case KnxDatapointType_DPT_SABBehaviour_Lock_Unlock:
+		return "DPT_SABBehaviour_Lock_Unlock"
 	case KnxDatapointType_DPT_SSSBMode:
 		return "DPT_SSSBMode"
 	case KnxDatapointType_DPT_BlindsControlMode:
@@ -6894,10 +6914,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Device_Control"
 	case KnxDatapointType_DPT_ForceSign:
 		return "DPT_ForceSign"
-	case KnxDatapointType_DPT_ForceSignCool:
-		return "DPT_ForceSignCool"
 	case KnxDatapointType_DPT_Enable:
 		return "DPT_Enable"
+	case KnxDatapointType_DPT_ForceSignCool:
+		return "DPT_ForceSignCool"
 	case KnxDatapointType_DPT_StatusRHC:
 		return "DPT_StatusRHC"
 	case KnxDatapointType_DPT_StatusSDHWC:
@@ -6916,12 +6936,12 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_RF_ModeInfo"
 	case KnxDatapointType_DPT_RF_FilterInfo:
 		return "DPT_RF_FilterInfo"
-	case KnxDatapointType_DPT_Channel_Activation_8:
-		return "DPT_Channel_Activation_8"
 	case KnxDatapointType_WORD:
 		return "WORD"
 	case KnxDatapointType_DPT_Ramp:
 		return "DPT_Ramp"
+	case KnxDatapointType_DPT_Channel_Activation_8:
+		return "DPT_Channel_Activation_8"
 	case KnxDatapointType_DPT_StatusDHWC:
 		return "DPT_StatusDHWC"
 	case KnxDatapointType_DPT_StatusRHCC:
@@ -6940,10 +6960,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Alarm_Reaction"
 	case KnxDatapointType_DPT_UpDown_Action:
 		return "DPT_UpDown_Action"
-	case KnxDatapointType_DPT_HVAC_PB_Action:
-		return "DPT_HVAC_PB_Action"
 	case KnxDatapointType_DPT_Alarm:
 		return "DPT_Alarm"
+	case KnxDatapointType_DPT_HVAC_PB_Action:
+		return "DPT_HVAC_PB_Action"
 	case KnxDatapointType_DPT_DoubleNibble:
 		return "DPT_DoubleNibble"
 	case KnxDatapointType_DPT_SceneInfo:
@@ -6962,10 +6982,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_HVACModeNext"
 	case KnxDatapointType_DPT_DHWModeNext:
 		return "DPT_DHWModeNext"
-	case KnxDatapointType_DPT_OccModeNext:
-		return "DPT_OccModeNext"
 	case KnxDatapointType_DPT_BinaryValue:
 		return "DPT_BinaryValue"
+	case KnxDatapointType_DPT_OccModeNext:
+		return "DPT_OccModeNext"
 	case KnxDatapointType_DPT_BuildingModeNext:
 		return "DPT_BuildingModeNext"
 	case KnxDatapointType_DPT_StatusLightingActuator:
@@ -6984,10 +7004,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_Scaling_Step_Time"
 	case KnxDatapointType_DPT_MeteringValue:
 		return "DPT_MeteringValue"
-	case KnxDatapointType_DPT_MBus_Address:
-		return "DPT_MBus_Address"
 	case KnxDatapointType_DPT_Step:
 		return "DPT_Step"
+	case KnxDatapointType_DPT_MBus_Address:
+		return "DPT_MBus_Address"
 	case KnxDatapointType_DPT_Colour_RGB:
 		return "DPT_Colour_RGB"
 	case KnxDatapointType_DPT_LanguageCodeAlpha2_ASCII:
@@ -7006,10 +7026,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_StatusSAB"
 	case KnxDatapointType_DPT_Colour_xyY:
 		return "DPT_Colour_xyY"
-	case KnxDatapointType_DPT_Converter_Status:
-		return "DPT_Converter_Status"
 	case KnxDatapointType_DPT_UpDown:
 		return "DPT_UpDown"
+	case KnxDatapointType_DPT_Converter_Status:
+		return "DPT_Converter_Status"
 	case KnxDatapointType_DPT_Converter_Test_Result:
 		return "DPT_Converter_Test_Result"
 	case KnxDatapointType_DPT_Battery_Info:
@@ -7028,10 +7048,10 @@ func (e KnxDatapointType) PLC4XEnumName() string {
 		return "DPT_GeographicalLocation"
 	case KnxDatapointType_DPT_TempRoomSetpSetF16_4:
 		return "DPT_TempRoomSetpSetF16_4"
-	case KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4:
-		return "DPT_TempRoomSetpSetShiftF16_4"
 	case KnxDatapointType_DPT_OpenClose:
 		return "DPT_OpenClose"
+	case KnxDatapointType_DPT_TempRoomSetpSetShiftF16_4:
+		return "DPT_TempRoomSetpSetShiftF16_4"
 	case KnxDatapointType_DPT_Start:
 		return "DPT_Start"
 	case KnxDatapointType_DPT_State:

@@ -53,6 +53,7 @@ type _BACnetOptionalUnsigned struct {
 type _BACnetOptionalUnsignedChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetOptionalUnsignedParent interface {

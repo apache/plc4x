@@ -53,6 +53,7 @@ type _BACnetScale struct {
 type _BACnetScaleChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetScaleParent interface {

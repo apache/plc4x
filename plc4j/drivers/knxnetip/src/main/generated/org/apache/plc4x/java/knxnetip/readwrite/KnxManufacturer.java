@@ -681,8 +681,7 @@ public enum KnxManufacturer {
   M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_(
       (int) 593, (int) 651, (String) "Shanghai Lewin Intelligent Technology Co.,Ltd."),
   M_KG_POWER((int) 594, (int) 652, (String) "KG-POWER"),
-  M_ZHEJIANG_MOORGEN_INTELLIGENT_TECHNOLOGY_CO___LTD(
-      (int) 595, (int) 653, (String) "Zhejiang Moorgen Intelligent Technology Co., Ltd"),
+  M_ZHEJIANG_MOORGEN_GROUP_CO__LTD((int) 595, (int) 653, (String) "Zhejiang Moorgen Group Co.,Ltd"),
   M_GUANGDONG_KANWAY((int) 596, (int) 654, (String) "Guangdong Kanway"),
   M_RAMIREZ_ENGINEERING_GMBH((int) 597, (int) 656, (String) "RAMIREZ Engineering GmbH"),
   M_ZHONGSHAN_TAIYANG_IMPANDEXP__CO_LTD(

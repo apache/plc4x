@@ -54,6 +54,7 @@ type _MonitoredSAL struct {
 type _MonitoredSALChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetSalType() byte
 }
 
 type MonitoredSALParent interface {

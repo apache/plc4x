@@ -54,6 +54,7 @@ type _CBusPointToMultiPointCommand struct {
 type _CBusPointToMultiPointCommandChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedApplication() byte
 }
 
 type CBusPointToMultiPointCommandParent interface {

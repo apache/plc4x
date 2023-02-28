@@ -151,13 +151,13 @@ type _${type.name} struct {
 }
 
 <#if type.isDiscriminatedParentTypeDefinition()>
-<#assign discriminatedParentType = type.asComplexTypeDefinition().orElseThrow()>
+<#assign complexTypeDefinition = type.asComplexTypeDefinition().orElseThrow()>
 type _${type.name}ChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
-    <#list discriminatedParentType.getDiscriminatorNames() as discriminatorName>
+    <#list complexTypeDefinition.getDiscriminatorNames() as discriminatorName>
     <#-- If the discriminator name matches that of another field, suppress the methods generation -->
-        <#if !type.isNonDiscriminatorField(discriminatorName)>
+        <#if type.isDiscriminatorField(discriminatorName)>
             <#assign typeRef=helper.getDiscriminatorTypes()[discriminatorName]>
 	Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
         </#if>

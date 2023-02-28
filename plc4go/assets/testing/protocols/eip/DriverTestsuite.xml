@@ -345,10 +345,10 @@
         </parser-arguments>
         <EipPacket>
           <command dataType="uint" bitLength="16">111</command>
-          <packetLength dataType="uint" bitLength="16">112</packetLength>
-          <sessionHandle dataType="uint" bitLength="32">1073742122</sessionHandle>
+          <packetLength dataType="uint" bitLength="16">36</packetLength>
+          <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
           <status dataType="uint" bitLength="32">0</status>
-          <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+          <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
           <options dataType="uint" bitLength="32">0</options>
           <CipRRData>
             <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
@@ -364,7 +364,7 @@
               <TypeId>
                 <id dataType="uint" bitLength="16">178</id>
                 <UnConnectedDataItem>
-                  <packetSize dataType="uint" bitLength="16">96</packetSize>
+                  <packetSize dataType="uint" bitLength="16">10</packetSize>
                   <service>
                     <CipService>
                       <response dataType="bit" bitLength="1">true</response>
@@ -376,9 +376,9 @@
                         <data>
                           <CIPData>
                             <dataType>
-                              <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="STRUCTURED">672</CIPDataTypeCode>
+                              <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
                             </dataType>
-                            <data dataType="byte" bitLength="720">0xce0f2b000000556d6d2c2049206e6f772073656520796f7520696e207468652077697265736861726b20636170747572650000000000000000000000000000000000000000000000000000000000000000000000000000000000</data>
+                            <data dataType="byte" bitLength="32">0x00000216</data>
                           </CIPData>
                         </data>
                       </CipReadResponse>
@@ -397,13 +397,18 @@
               <hurz>
                 <EipTag>
                   <node dataType="string" bitLength="40" encoding="UTF-8">%rate</node>
-                  <elementNb dataType="uint" bitLength="16">0</elementNb>
-                  <defaultJavaType dataType="string" bitLength="128" encoding="UTF-8">java.lang.Object</defaultJavaType>
+                  <elementNb dataType="uint" bitLength="16">1</elementNb>
                 </EipTag>
               </hurz>
             </tags>
           </PlcReadRequest>
           <values>
+            <hurz>
+              <ResponseItem>
+                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
+                <PlcDINT dataType="int" bitLength="32">369229824</PlcDINT>
+              </ResponseItem>
+            </hurz>
           </values>
         </PlcReadResponse>
       </api-response>

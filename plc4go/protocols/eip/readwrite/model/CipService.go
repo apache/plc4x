@@ -149,6 +149,30 @@ func CipServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 		_childTemp, typeSwitchError = GetAttributeAllRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x01 && response == bool(true): // GetAttributeAllResponse
 		_childTemp, typeSwitchError = GetAttributeAllResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x02 && response == bool(false): // SetAttributeAllRequest
+		_childTemp, typeSwitchError = SetAttributeAllRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x02 && response == bool(true): // SetAttributeAllResponse
+		_childTemp, typeSwitchError = SetAttributeAllResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x03 && response == bool(false): // GetAttributeListRequest
+		_childTemp, typeSwitchError = GetAttributeListRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x03 && response == bool(true): // GetAttributeListResponse
+		_childTemp, typeSwitchError = GetAttributeListResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x04 && response == bool(false): // SetAttributeListRequest
+		_childTemp, typeSwitchError = SetAttributeListRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x04 && response == bool(true): // SetAttributeListResponse
+		_childTemp, typeSwitchError = SetAttributeListResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x0A && response == bool(false): // MultipleServiceRequest
+		_childTemp, typeSwitchError = MultipleServiceRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x0A && response == bool(true): // MultipleServiceResponse
+		_childTemp, typeSwitchError = MultipleServiceResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x0E && response == bool(false): // GetAttributeSingleRequest
+		_childTemp, typeSwitchError = GetAttributeSingleRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x0E && response == bool(true): // GetAttributeSingleResponse
+		_childTemp, typeSwitchError = GetAttributeSingleResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x10 && response == bool(false): // SetAttributeSingleRequest
+		_childTemp, typeSwitchError = SetAttributeSingleRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	case service == 0x10 && response == bool(true): // SetAttributeSingleResponse
+		_childTemp, typeSwitchError = SetAttributeSingleResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x4C && response == bool(false): // CipReadRequest
 		_childTemp, typeSwitchError = CipReadRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x4C && response == bool(true): // CipReadResponse
@@ -161,10 +185,6 @@ func CipServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 		_childTemp, typeSwitchError = CipConnectionManagerCloseRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x4E && response == bool(true): // CipConnectionManagerCloseResponse
 		_childTemp, typeSwitchError = CipConnectionManagerCloseResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
-	case service == 0x0A && response == bool(false): // MultipleServiceRequest
-		_childTemp, typeSwitchError = MultipleServiceRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
-	case service == 0x0A && response == bool(true): // MultipleServiceResponse
-		_childTemp, typeSwitchError = MultipleServiceResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x52 && response == bool(false) && connected == bool(false): // CipUnconnectedRequest
 		_childTemp, typeSwitchError = CipUnconnectedRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
 	case service == 0x52 && response == bool(false) && connected == bool(true): // CipConnectedRequest

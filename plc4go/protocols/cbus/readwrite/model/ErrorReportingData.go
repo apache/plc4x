@@ -53,6 +53,7 @@ type _ErrorReportingData struct {
 type _ErrorReportingDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetCommandType() ErrorReportingCommandType
 }
 
 type ErrorReportingDataParent interface {

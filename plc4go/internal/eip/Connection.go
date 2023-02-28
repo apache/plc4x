@@ -52,6 +52,8 @@ type Connection struct {
 	cipEncapsulationAvailable bool
 	connectionSerialNumber    uint16
 	connectionPathSize        uint8
+	useMessageRouter          bool
+	useConnectionManager      bool
 	routingAddress            []readWriteModel.PathSegment
 	tracer                    *spi.Tracer
 }
@@ -271,8 +273,70 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		case err := <-connectionResponseErrorChan:
 			m.fireConnectionError(errors.Wrap(err, "Error receiving of ListServices response"), ch)
 		case _ = <-connectionResponseChan:
-			// Send an event that connection setup is complete.
-			m.fireConnected(ch)
+
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// List All Attributes
+
+			log.Debug().Msg("Sending ListAllAttributes Request")
+			listAllAttributesResponseChan := make(chan readWriteModel.GetAttributeAllResponse)
+			listAllAttributesErrorChan := make(chan error)
+			classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(uint8(0), uint8(2)))
+			instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(uint8(0), uint8(1)))
+			if err := m.messageCodec.SendRequest(ctx, readWriteModel.NewCipRRData(EmptyInterfaceHandle, 0,
+				[]readWriteModel.TypeId{
+					readWriteModel.NewNullAddressItem(),
+					readWriteModel.NewUnConnectedDataItem(
+						readWriteModel.NewGetAttributeAllRequest(
+							classSegment, instanceSegment, uint16(0))),
+				}, m.sessionHandle, uint32(readWriteModel.CIPStatus_Success), m.senderContext, 0), func(message spi.Message) bool {
+				eipPacket := message.(readWriteModel.CipRRData)
+				return eipPacket != nil
+			}, func(message spi.Message) error {
+				cipRrData := message.(readWriteModel.CipRRData)
+				if cipRrData.GetStatus() == uint32(readWriteModel.CIPStatus_Success) {
+					dataItem := cipRrData.GetTypeIds()[1].(readWriteModel.UnConnectedDataItem)
+					response := dataItem.GetService().(readWriteModel.GetAttributeAllResponse)
+					if response.GetStatus() != uint8(readWriteModel.CIPStatus_Success) {
+						// TODO: Return an error ...
+					} else if response.GetAttributes() != nil {
+						for _, classId := range response.GetAttributes().GetClassId() {
+							if curCipClassId, ok := readWriteModel.CIPClassIDByValue(classId); ok {
+								switch curCipClassId {
+								case readWriteModel.CIPClassID_MessageRouter:
+									m.useMessageRouter = true
+								case readWriteModel.CIPClassID_ConnectionManager:
+									m.useConnectionManager = true
+								}
+							}
+						}
+					}
+					log.Debug().Msgf("Connection using message router %t, using connection manager %t", m.useMessageRouter, m.useConnectionManager)
+					listAllAttributesResponseChan <- response
+				}
+				return nil
+			}, func(err error) error {
+				// If this is a timeout, do a check if the connection requires a reconnection
+				if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+					log.Warn().Msg("Timeout during Connection establishing, closing channel...")
+					m.Close()
+				}
+				connectionResponseErrorChan <- errors.Wrap(err, "got error processing request")
+				return nil
+			}, m.GetTtl()); err != nil {
+				m.fireConnectionError(errors.Wrap(err, "Error during sending of EIP ListServices Request"), ch)
+			}
+
+			select {
+			case err := <-listAllAttributesErrorChan:
+				m.fireConnectionError(errors.Wrap(err, "Error receiving of ListServices response"), ch)
+			case _ = <-listAllAttributesResponseChan:
+				if m.useConnectionManager {
+					// TODO: Continue here ....
+				} else {
+					// Send an event that connection setup is complete.
+					m.fireConnected(ch)
+				}
+			}
 		}
 	}
 }

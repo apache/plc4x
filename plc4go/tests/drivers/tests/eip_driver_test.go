@@ -20,16 +20,25 @@
 package tests
 
 import (
+	"os"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/eip"
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 func TestEIPDriver(t *testing.T) {
-	zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	log.Logger = log.
+		With().Caller().Logger().
+		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
+		Level(zerolog.DebugLevel)
+	config.TraceTransactionManagerWorkers = true
+	config.TraceTransactionManagerTransactions = true
+	config.TraceDefaultMessageCodecWorker = true
 	testutils.RunDriverTestsuite(t, eip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml", readwrite.EipXmlParserHelper{})
 }

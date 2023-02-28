@@ -116,7 +116,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 			return errors.Wrap(err, "error in setup step "+testStep.name)
 		}
 		// We sleep a bit to not run too fast into the post setup steps and give connections a bit time to settle built up
-		time.Sleep(time.Second)
+		time.Sleep(2 * time.Millisecond)
 	}
 
 	// Run the actual scenario steps
@@ -305,9 +305,9 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 				drainableBytes := testTransportInstance.GetNumDrainableBytes()
 				actualRawOutput, _ := testTransportInstance.DrainWriteBuffer(drainableBytes)
 				return errors.Errorf("error getting bytes from transport. Not enough data available: actual(%d)<expected(%d), \nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s",
-					drainableBytes, expectedRawOutputLength, actualRawOutput, expectedRawOutput, utils.DiffHex(actualRawOutput, expectedRawOutput))
+					drainableBytes, expectedRawOutputLength, actualRawOutput, expectedRawOutput, utils.DiffHex(expectedRawOutput, actualRawOutput))
 			}
-			time.Sleep(10 * time.Millisecond)
+			time.Sleep(2 * time.Millisecond)
 		}
 		actualRawOutput, err := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
 		if testTransportInstance.GetNumDrainableBytes() != 0 {
@@ -334,7 +334,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 					actual, err := m.rootTypeParser(readBufferByteBased)
 					log.Error().Err(err).Msgf("A readable render of expectation:\n%v\nvs actual paket\n%v\n", expectedSerializable, actual)
 				}
-				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s", actualRawOutput, expectedRawOutput, utils.DiffHex(actualRawOutput, expectedRawOutput))
+				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s", actualRawOutput, expectedRawOutput, utils.DiffHex(expectedRawOutput, actualRawOutput))
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging
@@ -354,7 +354,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		log.Trace().Msg("Comparing bytes")
 		for i := range expectedRawInput {
 			if expectedRawInput[i] != rawInput[i] {
-				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s", rawInput, expectedRawInput, utils.DiffHex(rawInput, expectedRawInput))
+				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s", rawInput, expectedRawInput, utils.DiffHex(expectedRawInput, rawInput))
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging
@@ -415,7 +415,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		}
 		// Sleep for that long
 		log.Debug().Int("delay", delay).Msg("Sleeping")
-		time.Sleep(time.Millisecond * time.Duration(delay))
+		time.Sleep(time.Duration(delay) * time.Millisecond)
 	case StepTypeTerminate:
 		// Simply close the transport connection
 		log.Trace().Msg("closing transport")

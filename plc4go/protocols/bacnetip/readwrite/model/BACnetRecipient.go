@@ -53,6 +53,7 @@ type _BACnetRecipient struct {
 type _BACnetRecipientChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetRecipientParent interface {

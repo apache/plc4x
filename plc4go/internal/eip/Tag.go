@@ -20,6 +20,7 @@
 package eip
 
 import (
+	"context"
 	"encoding/binary"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -30,6 +31,7 @@ import (
 
 type EIPPlcTag interface {
 	model.PlcTag
+	utils.Serializable
 
 	GetTag() string
 	GetType() readWrite.CIPDataTypeCode
@@ -40,6 +42,14 @@ type plcTag struct {
 	Tag       string
 	Type      readWrite.CIPDataTypeCode
 	ElementNb uint16
+}
+
+func NewTag(tag string, _type readWrite.CIPDataTypeCode, elementNb uint16) plcTag {
+	return plcTag{
+		Tag:       tag,
+		Type:      _type,
+		ElementNb: elementNb,
+	}
 }
 
 func (m plcTag) GetAddressString() string {
@@ -58,14 +68,6 @@ func (m plcTag) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func NewTag(tag string, _type readWrite.CIPDataTypeCode, elementNb uint16) plcTag {
-	return plcTag{
-		Tag:       tag,
-		Type:      _type,
-		ElementNb: elementNb,
-	}
-}
-
 func (m plcTag) GetTag() string {
 	return m.Tag
 }
@@ -80,13 +82,13 @@ func (m plcTag) GetElementNb() uint16 {
 
 func (m plcTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext("EipTag"); err != nil {
 		return err
 	}
@@ -102,11 +104,6 @@ func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 	}
 
 	if err := writeBuffer.WriteUint16("elementNb", 16, m.ElementNb); err != nil {
-		return err
-	}
-
-	// TODO: remove this from the spec
-	if err := writeBuffer.WriteString("defaultJavaType", uint32(len([]rune("java.lang.Object"))*8), "UTF-8", "java.lang.Object"); err != nil {
 		return err
 	}
 

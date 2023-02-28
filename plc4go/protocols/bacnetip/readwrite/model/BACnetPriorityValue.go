@@ -58,6 +58,8 @@ type _BACnetPriorityValue struct {
 type _BACnetPriorityValueChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
+	GetPeekedIsContextTag() bool
 }
 
 type BACnetPriorityValueParent interface {

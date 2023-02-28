@@ -55,6 +55,8 @@ type _BACnetChannelValue struct {
 type _BACnetChannelValueChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
+	GetPeekedIsContextTag() bool
 }
 
 type BACnetChannelValueParent interface {

@@ -2157,6 +2157,22 @@ public class KnxDatapoint {
       Float value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readFloat("", 16);
 
       return new PlcREAL(value);
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Coefficient)) { // REAL
+
+      // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+      {
+        short reserved = /*TODO: migrate me*/ /*TODO: migrate me*/
+            readBuffer.readUnsignedShort("", 8);
+        if (reserved != (short) 0x00) {
+          LOGGER.info(
+              "Expected constant value " + 0x00 + " but got " + reserved + " for reserved field.");
+        }
+      }
+
+      // Simple Field (value)
+      Float value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readFloat("", 16);
+
+      return new PlcREAL(value);
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_TimeOfDay)) { // Struct
 
       // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -9457,6 +9473,15 @@ public class KnxDatapoint {
       float value = (float) _value.getFloat();
       /*TODO: migrate me*/
       /*TODO: migrate me*/ writeBuffer.writeFloat("", 16, (value));
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Coefficient)) { // REAL
+      // Reserved Field
+      /*TODO: migrate me*/
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort(
+          "", 8, ((Number) (short) 0x00).shortValue());
+      // Simple Field (value)
+      float value = (float) _value.getFloat();
+      /*TODO: migrate me*/
+      /*TODO: migrate me*/ writeBuffer.writeFloat("", 16, (value));
     } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_TimeOfDay)) { // Struct
       // Reserved Field
       /*TODO: migrate me*/
@@ -14079,6 +14104,11 @@ public class KnxDatapoint {
       sizeInBits += 16;
     } else if (EvaluationHelper.equals(
         datapointType, KnxDatapointType.DPT_Concentration_ygm3)) { // REAL
+      // Reserved Field
+      sizeInBits += 8;
+      // Simple Field (value)
+      sizeInBits += 16;
+    } else if (EvaluationHelper.equals(datapointType, KnxDatapointType.DPT_Coefficient)) { // REAL
       // Reserved Field
       sizeInBits += 8;
       // Simple Field (value)

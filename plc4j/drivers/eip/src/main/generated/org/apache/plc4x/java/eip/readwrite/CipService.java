@@ -143,6 +143,56 @@ public abstract class CipService implements Message {
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder =
           GetAttributeAllResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x02)
+        && EvaluationHelper.equals(response, (boolean) false)) {
+      builder =
+          SetAttributeAllRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x02)
+        && EvaluationHelper.equals(response, (boolean) true)) {
+      builder =
+          SetAttributeAllResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x03)
+        && EvaluationHelper.equals(response, (boolean) false)) {
+      builder =
+          GetAttributeListRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x03)
+        && EvaluationHelper.equals(response, (boolean) true)) {
+      builder =
+          GetAttributeListResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x04)
+        && EvaluationHelper.equals(response, (boolean) false)) {
+      builder =
+          SetAttributeListRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x04)
+        && EvaluationHelper.equals(response, (boolean) true)) {
+      builder =
+          SetAttributeListResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x0A)
+        && EvaluationHelper.equals(response, (boolean) false)) {
+      builder =
+          MultipleServiceRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x0A)
+        && EvaluationHelper.equals(response, (boolean) true)) {
+      builder =
+          MultipleServiceResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x0E)
+        && EvaluationHelper.equals(response, (boolean) false)) {
+      builder =
+          GetAttributeSingleRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x0E)
+        && EvaluationHelper.equals(response, (boolean) true)) {
+      builder =
+          GetAttributeSingleResponse.staticParseCipServiceBuilder(
+              readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x10)
+        && EvaluationHelper.equals(response, (boolean) false)) {
+      builder =
+          SetAttributeSingleRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
+    } else if (EvaluationHelper.equals(service, (short) 0x10)
+        && EvaluationHelper.equals(response, (boolean) true)) {
+      builder =
+          SetAttributeSingleResponse.staticParseCipServiceBuilder(
+              readBuffer, connected, serviceLen);
     } else if (EvaluationHelper.equals(service, (short) 0x4C)
         && EvaluationHelper.equals(response, (boolean) false)) {
       builder = CipReadRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
@@ -165,14 +215,6 @@ public abstract class CipService implements Message {
       builder =
           CipConnectionManagerCloseResponse.staticParseCipServiceBuilder(
               readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (short) 0x0A)
-        && EvaluationHelper.equals(response, (boolean) false)) {
-      builder =
-          MultipleServiceRequest.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
-    } else if (EvaluationHelper.equals(service, (short) 0x0A)
-        && EvaluationHelper.equals(response, (boolean) true)) {
-      builder =
-          MultipleServiceResponse.staticParseCipServiceBuilder(readBuffer, connected, serviceLen);
     } else if (EvaluationHelper.equals(service, (short) 0x52)
         && EvaluationHelper.equals(response, (boolean) false)
         && EvaluationHelper.equals(connected, (boolean) false)) {

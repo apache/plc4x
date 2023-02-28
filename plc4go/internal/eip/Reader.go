@@ -22,8 +22,9 @@ package eip
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
+	"regexp"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -59,7 +60,7 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 	result := make(chan model.PlcReadRequestResult)
 	go func() {
 		classSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 6))
-		instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewClassID(0, 1))
+		instanceSegment := readWriteModel.NewLogicalSegment(readWriteModel.NewInstanceID(0, 1))
 		for _, tagName := range readRequest.GetTagNames() {
 			plcTag := readRequest.GetTag(tagName).(EIPPlcTag)
 			tag := plcTag.GetTag()
@@ -76,19 +77,17 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 				}
 				return
 			}
-			request := readWriteModel.NewCipReadRequest(ansi, elementsNb, uint16(0))
-			requestItem := readWriteModel.NewCipUnconnectedRequest(classSegment, instanceSegment, request,
+			requestItem := readWriteModel.NewCipUnconnectedRequest(classSegment, instanceSegment,
+				readWriteModel.NewCipReadRequest(ansi, elementsNb, 0),
 				m.configuration.backplane, m.configuration.slot, uint16(0))
 			typeIds := []readWriteModel.TypeId{
 				readWriteModel.NewNullAddressItem(),
 				readWriteModel.NewUnConnectedDataItem(requestItem),
 			}
-			pkt := readWriteModel.NewCipRRData(0, 0, typeIds, *m.sessionHandle,
-				uint32(readWriteModel.CIPStatus_Success), []byte(DefaultSenderContext), 0)
-
+			request := readWriteModel.NewCipRRData(0, 0, typeIds, *m.sessionHandle, uint32(readWriteModel.CIPStatus_Success), []byte(DefaultSenderContext), 0)
 			transaction := m.tm.StartTransaction()
 			transaction.Submit(func() {
-				if err := m.messageCodec.SendRequest(ctx, pkt,
+				if err := m.messageCodec.SendRequest(ctx, request,
 					func(message spi.Message) bool {
 						eipPacket := message.(readWriteModel.EipPacket)
 						if eipPacket == nil {
@@ -140,81 +139,43 @@ func (m *Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-c
 }
 
 func toAnsi(tag string) ([]byte, error) {
-	arrayIndex := byte(0)
-	isArray := false
-	isStruct := false
-	tagFinal := tag
-	if strings.Contains(tag, "[") {
-		isArray = true
-		index := tag[strings.Index(tag, "[")+1 : strings.Index(tag, "]")]
-		parsedArrayIndex, err := strconv.ParseUint(index, 10, 8)
-		if err != nil {
-			return nil, err
-		}
-		arrayIndex = byte(parsedArrayIndex)
-		tagFinal = tag[0:strings.Index(tag, "[")]
-	}
-	if strings.Contains(tag, ".") {
-		tagFinal = tag[0:strings.Index(tag, ".")]
-		isStruct = true
-	}
-	isPadded := len(tagFinal)%2 != 0
-	dataSegLength := 2 + len(tagFinal)
-	if isPadded {
-		dataSegLength += 1
-	}
-	if isArray {
-		dataSegLength += 2
-	}
+	resourceAddressPattern := regexp.MustCompile("([.\\[\\]])*([A-Za-z_0-9]+){1}")
 
-	if isStruct {
-		for _, subStr := range strings.Split(tag[strings.Index(tag, ".")+1:], ".") {
-			dataSegLength += 2 + len(subStr) + len(subStr)%2
-		}
-	}
+	segments := make([]readWriteModel.PathSegment, 0)
+	lengthInBytes := uint16(0)
+	submatch := resourceAddressPattern.FindAllStringSubmatch(tag, -1)
+	for _, match := range submatch {
+		identifier := match[2]
+		qualifier := match[1]
 
-	buffer := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-
-	err := buffer.WriteByte("", 0x91)
-	if err != nil {
-		return nil, err
-	}
-	err = buffer.WriteByte("", byte(len(tagFinal)))
-	if err != nil {
-		return nil, err
-	}
-
-	quoteToASCII := strconv.QuoteToASCII(tagFinal)
-	err = buffer.WriteByteArray("", []byte(quoteToASCII)[1:len(quoteToASCII)-1])
-	if err != nil {
-		return nil, err
-	}
-
-	if isPadded {
-		err = buffer.WriteByte("", 0x00)
-		if err != nil {
-			return nil, err
+		var newSegment readWriteModel.PathSegment
+		if len(qualifier) > 0 {
+			if qualifier == "[" {
+				numericIdentifier, err := strconv.Atoi(identifier)
+				if err != nil {
+					return nil, fmt.Errorf("error parsing address %s, identifier %s couldn't be parsed to an integer", tag, identifier)
+				}
+				newSegment = readWriteModel.NewLogicalSegment(readWriteModel.NewMemberID(0, uint8(numericIdentifier)))
+			} else {
+				newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, nil))
+			}
+		} else {
+			var pad *uint8
+			if len(identifier)%2 != 0 {
+				paddingValue := uint8(0)
+				pad = &paddingValue
+			}
+			newSegment = readWriteModel.NewDataSegment(readWriteModel.NewAnsiExtendedSymbolSegment(identifier, pad))
 		}
+		lengthInBytes += newSegment.GetLengthInBytes(context.Background())
+		segments = append(segments, newSegment)
 	}
-
-	if isArray {
-		err = buffer.WriteByte("", 0x28)
-		if err != nil {
-			return nil, err
-		}
-		err = buffer.WriteByte("", arrayIndex)
-		if err != nil {
-			return nil, err
-		}
-	}
-	if isStruct {
-		ansi, err := toAnsi(tag[strings.Index(tag, ".")+1:])
-		if err != nil {
-			return nil, err
-		}
-		err = buffer.WriteByteArray("", ansi)
-		if err != nil {
-			return nil, err
+	buffer := utils.NewWriteBufferByteBased(
+		utils.WithInitialSizeForByteBasedBuffer(int(lengthInBytes)),
+		utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	for _, segment := range segments {
+		if err := segment.SerializeWithWriteBuffer(context.Background(), buffer); err != nil {
+			return nil, errors.Wrap(err, "error converting tag to ansi")
 		}
 	}
 	return buffer.GetBytes(), nil

@@ -53,6 +53,7 @@ type _BACnetEventParameter struct {
 type _BACnetEventParameterChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetEventParameterParent interface {

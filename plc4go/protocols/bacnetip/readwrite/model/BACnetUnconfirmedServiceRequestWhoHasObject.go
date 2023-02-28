@@ -53,6 +53,7 @@ type _BACnetUnconfirmedServiceRequestWhoHasObject struct {
 type _BACnetUnconfirmedServiceRequestWhoHasObjectChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetUnconfirmedServiceRequestWhoHasObjectParent interface {

@@ -50,6 +50,7 @@ public class EipTag implements PlcTag, Serializable {
 
     public EipTag(String tag) {
         this.tag = tag;
+        this.elementNb = 1;
     }
 
     public EipTag(String tag, int elementNb) {
@@ -111,7 +112,7 @@ public class EipTag implements PlcTag, Serializable {
         Matcher matcher = ADDRESS_PATTERN.matcher(tagString);
         if (matcher.matches()) {
             String tag = matcher.group(TAG);
-            int nb = 0;
+            int nb = 1;
             CIPDataTypeCode type;
             if (!matcher.group(ELEMENTS).isEmpty()) {
                 nb = Integer.parseInt(matcher.group(ELEMENTS));
@@ -122,15 +123,9 @@ public class EipTag implements PlcTag, Serializable {
                 type = CIPDataTypeCode.DINT;
             }
             if (nb != 0) {
-                if (type != null) {
-                    return new EipTag(tag, type, nb);
-                }
-                return new EipTag(tag, nb);
+                return new EipTag(tag, type, nb);
             } else {
-                if (type != null) {
-                    return new EipTag(tag, type);
-                }
-                return new EipTag(tag);
+                return new EipTag(tag, type);
             }
         }
         return null;
@@ -145,9 +140,6 @@ public class EipTag implements PlcTag, Serializable {
             writeBuffer.writeString("type", type.name().getBytes(StandardCharsets.UTF_8).length * 8, type.name(), WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
         }
         writeBuffer.writeUnsignedInt("elementNb", 16, elementNb);
-        // TODO: remove this (not language agnostic)
-        String defaultJavaType = (type == null ? Object.class : getPlcValueType().getDefaultJavaType()).getName();
-        writeBuffer.writeString("defaultJavaType", defaultJavaType.getBytes(StandardCharsets.UTF_8).length * 8, defaultJavaType, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
 
         writeBuffer.popContext(getClass().getSimpleName());
     }
