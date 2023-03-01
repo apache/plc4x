@@ -16,24 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.eip.readwrite;
 
-package org.apache.plc4x.java.mock.tag;
+import org.apache.plc4x.test.parserserializer.ParserSerializerTestsuiteRunner;
 
+public class EIPParserSerializerLittleTest extends ParserSerializerTestsuiteRunner {
 
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
-
-public class MockTagHandler implements PlcTagHandler {
-
-    @Override
-    public PlcTag parseTag(String tagAddress) {
-        return new MockTag(tagAddress);
-    }
-
-    @Override
-    public PlcQuery parseQuery(String query) {
-        throw new UnsupportedOperationException("This driver doesn't support browsing");
+    public EIPParserSerializerLittleTest() {
+        super("/protocols/eip/ParserSerializerTestsuiteLittle.xml");
     }
 
 }

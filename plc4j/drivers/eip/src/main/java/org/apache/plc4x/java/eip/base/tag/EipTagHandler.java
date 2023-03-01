@@ -17,18 +17,18 @@
  * under the License.
  */
 
-package org.apache.plc4x.java.mock.tag;
+package org.apache.plc4x.java.eip.base.tag;
 
 
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.model.PlcQuery;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 
-public class MockTagHandler implements PlcTagHandler {
+public class EipTagHandler implements PlcTagHandler {
 
     @Override
     public PlcTag parseTag(String tagAddress) {
-        return new MockTag(tagAddress);
+        return new EipTag(tagAddress);
     }
 
     @Override

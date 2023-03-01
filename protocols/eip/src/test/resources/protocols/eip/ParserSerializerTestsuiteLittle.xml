@@ -1,0 +1,1499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+      https://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+<test:testsuite xmlns:test="https://plc4x.apache.org/schemas/parser-serializer-testsuite.xsd"
+                byteOrder="LITTLE_ENDIAN">
+
+  <name>EIP</name>
+
+  <protocolName>eip</protocolName>
+  <outputFlavor>read-write</outputFlavor>
+
+  <testcase>
+    <name>CIP Connected Read Request</name>
+    <raw>70003800c9070440000000005765277265000000000000000000000000000200a10004005942feffb10024000100520d91124b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b910370707000010000000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">112</command>
+        <packetLength dataType="uint" bitLength="16">56</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074005961</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x5765277265000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <SendUnitData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">161</id>
+              <ConnectedAddressItem>
+                <reserved dataType="uint" bitLength="16">4</reserved>
+                <connectionId dataType="uint" bitLength="32">4294853209</connectionId>
+              </ConnectedAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">177</id>
+              <ConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">36</packetSize>
+                <sequenceCount dataType="uint" bitLength="16">1</sequenceCount>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">false</response>
+                    <service dataType="uint" bitLength="7">82</service>
+                    <CipConnectedRequest>
+                      <requestPathSize dataType="uint" bitLength="8">13</requestPathSize>
+                      <pathSegments dataType="byte" bitLength="208">0x91124b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b910370707000</pathSegments>
+                      <reserved dataType="uint" bitLength="16">1</reserved>
+                      <reserved dataType="uint" bitLength="32">0</reserved>
+                    </CipConnectedRequest>
+                  </CipService>
+                </service>
+              </ConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </SendUnitData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Connection Manager Open Large Forward Request</name>
+    <raw>6f0044001d5e074000000000000000000000000000000000000000000000020000000000b20034005b02200624010a0e02000020b4a500002bcb37132a0000000300000034122000a20f004201402000a20f0042a303010020022401</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">68</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">52</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">false</response>
+                    <service dataType="uint" bitLength="7">91</service>
+                    <CipConnectionManagerRequest>
+                      <requestPathSize dataType="int" bitLength="8">2</requestPathSize>
+                      <classSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                <ClassID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <segmentClass dataType="uint" bitLength="8">6</segmentClass>
+                                </ClassID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </classSegment>
+                      <instanceSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                <InstanceID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <instance dataType="uint" bitLength="8">1</instance>
+                                </InstanceID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </instanceSegment>
+                      <priority dataType="uint" bitLength="4">0</priority>
+                      <tickTime dataType="uint" bitLength="4">10</tickTime>
+                      <timeoutTicks dataType="uint" bitLength="8">14</timeoutTicks>
+                      <otConnectionId dataType="uint" bitLength="32">536870914</otConnectionId>
+                      <toConnectionId dataType="uint" bitLength="32">42420</toConnectionId>
+                      <connectionSerialNumber dataType="uint" bitLength="16">52011</connectionSerialNumber>
+                      <originatorVendorId dataType="uint" bitLength="16">4919</originatorVendorId>
+                      <originatorSerialNumber dataType="uint" bitLength="32">42</originatorSerialNumber>
+                      <timeoutMultiplier dataType="uint" bitLength="8">3</timeoutMultiplier>
+                      <reserved dataType="uint" bitLength="24">0</reserved>
+                      <otRpi dataType="uint" bitLength="32">2101812</otRpi>
+                      <otConnectionParameters>
+                        <NetworkConnectionParameters>
+                          <connectionSize dataType="uint" bitLength="16">4002</connectionSize>
+                          <reserved dataType="uint" bitLength="8">0</reserved>
+                          <owner dataType="bit" bitLength="1">false</owner>
+                          <connectionType dataType="uint" bitLength="2">2</connectionType>
+                          <reserved dataType="bit" bitLength="1">false</reserved>
+                          <priority dataType="uint" bitLength="2">0</priority>
+                          <connectionSizeType dataType="bit" bitLength="1">true</connectionSizeType>
+                          <reserved dataType="bit" bitLength="1">false</reserved>
+                        </NetworkConnectionParameters>
+                      </otConnectionParameters>
+                      <toRpi dataType="uint" bitLength="32">2113537</toRpi>
+                      <toConnectionParameters>
+                        <NetworkConnectionParameters>
+                          <connectionSize dataType="uint" bitLength="16">4002</connectionSize>
+                          <reserved dataType="uint" bitLength="8">0</reserved>
+                          <owner dataType="bit" bitLength="1">false</owner>
+                          <connectionType dataType="uint" bitLength="2">2</connectionType>
+                          <reserved dataType="bit" bitLength="1">false</reserved>
+                          <priority dataType="uint" bitLength="2">0</priority>
+                          <connectionSizeType dataType="bit" bitLength="1">true</connectionSizeType>
+                          <reserved dataType="bit" bitLength="1">false</reserved>
+                        </NetworkConnectionParameters>
+                      </toConnectionParameters>
+                      <transportType>
+                        <TransportType>
+                          <direction dataType="bit" bitLength="1">true</direction>
+                          <trigger dataType="uint" bitLength="3">2</trigger>
+                          <classTransport dataType="uint" bitLength="4">3</classTransport>
+                        </TransportType>
+                      </transportType>
+                      <connectionPathSize dataType="uint" bitLength="8">3</connectionPathSize>
+                      <connectionPaths isList="true">
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">0</pathSegment>
+                          <PortSegment>
+                            <segmentType>
+                              <PortSegmentType>
+                                <extendedLinkAddress dataType="bit" bitLength="1">false</extendedLinkAddress>
+                                <PortSegmentNormal>
+                                  <port dataType="uint" bitLength="4">1</port>
+                                  <linkAddress dataType="uint" bitLength="8">0</linkAddress>
+                                </PortSegmentNormal>
+                              </PortSegmentType>
+                            </segmentType>
+                          </PortSegment>
+                        </PathSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                <ClassID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <segmentClass dataType="uint" bitLength="8">2</segmentClass>
+                                </ClassID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                <InstanceID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <instance dataType="uint" bitLength="8">1</instance>
+                                </InstanceID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </connectionPaths>
+                    </CipConnectionManagerRequest>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Connection Manager Open Large Forward Response</name>
+    <raw>6f002e001d5e074000000000000000000000000000000000000000000000020000000000b2001e00db0000005b6bfeffb4a500002bcb37132a00000034122000014020000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">46</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">30</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">91</service>
+                    <CipConnectionManagerResponse>
+                      <reserved dataType="uint" bitLength="24">0</reserved>
+                      <otConnectionId dataType="uint" bitLength="32">4294863707</otConnectionId>
+                      <toConnectionId dataType="uint" bitLength="32">42420</toConnectionId>
+                      <connectionSerialNumber dataType="uint" bitLength="16">52011</connectionSerialNumber>
+                      <originatorVendorId dataType="uint" bitLength="16">4919</originatorVendorId>
+                      <originatorSerialNumber dataType="uint" bitLength="32">42</originatorSerialNumber>
+                      <otApi dataType="uint" bitLength="32">2101812</otApi>
+                      <toApi dataType="uint" bitLength="32">2113537</toApi>
+                      <replySize dataType="uint" bitLength="8">0</replySize>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                    </CipConnectionManagerResponse>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Connected Write Request</name>
+    <raw>70002e001d5e0740000000005765277265000000000000000000000000000200a10004005b6bfeffb1001a0001005208910d5a5a5a5f5a5a5a5f415252415900010000000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">112</command>
+        <packetLength dataType="uint" bitLength="16">46</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x5765277265000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <SendUnitData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">161</id>
+              <ConnectedAddressItem>
+                <reserved dataType="uint" bitLength="16">4</reserved>
+                <connectionId dataType="uint" bitLength="32">4294863707</connectionId>
+              </ConnectedAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">177</id>
+              <ConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">26</packetSize>
+                <sequenceCount dataType="uint" bitLength="16">1</sequenceCount>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">false</response>
+                    <service dataType="uint" bitLength="7">82</service>
+                    <CipConnectedRequest>
+                      <requestPathSize dataType="uint" bitLength="8">8</requestPathSize>
+                      <pathSegments dataType="byte" bitLength="128">0x910d5a5a5a5f5a5a5a5f415252415900</pathSegments>
+                      <reserved dataType="uint" bitLength="16">1</reserved>
+                      <reserved dataType="uint" bitLength="32">0</reserved>
+                    </CipConnectedRequest>
+                  </CipService>
+                </service>
+              </ConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </SendUnitData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Connected Write Response</name>
+    <raw>700020001d5e0740000000000000000000000000000000000000000000000200a1000400b4a50000b1000c000100d2000000c40000000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">112</command>
+        <packetLength dataType="uint" bitLength="16">32</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <SendUnitData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">161</id>
+              <ConnectedAddressItem>
+                <reserved dataType="uint" bitLength="16">4</reserved>
+                <connectionId dataType="uint" bitLength="32">42420</connectionId>
+              </ConnectedAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">177</id>
+              <ConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">12</packetSize>
+                <sequenceCount dataType="uint" bitLength="16">1</sequenceCount>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">82</service>
+                    <CipConnectedResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">0</status>
+                      <additionalStatusWords dataType="uint" bitLength="8">0</additionalStatusWords>
+                      <data>
+                        <CIPDataConnected>
+                          <value dataType="uint" bitLength="32">196</value>
+                          <tagStatus dataType="uint" bitLength="16">0</tagStatus>
+                        </CIPDataConnected>
+                      </data>
+                    </CipConnectedResponse>
+                  </CipService>
+                </service>
+              </ConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </SendUnitData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Connected Write Request 4D</name>
+    <raw>700032001d5e0740000000006e6f000000000000000000000000000000000200a10004005b6bfeffb1001e0002004d09910d5a5a5a5f5a5a5a5f4152524159002801c400010001000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">112</command>
+        <packetLength dataType="uint" bitLength="16">50</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x6e6f000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <SendUnitData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">161</id>
+              <ConnectedAddressItem>
+                <reserved dataType="uint" bitLength="16">4</reserved>
+                <connectionId dataType="uint" bitLength="32">4294863707</connectionId>
+              </ConnectedAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">177</id>
+              <ConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">30</packetSize>
+                <sequenceCount dataType="uint" bitLength="16">2</sequenceCount>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">false</response>
+                    <service dataType="uint" bitLength="7">77</service>
+                    <CipWriteRequest>
+                      <requestPathSize dataType="int" bitLength="8">9</requestPathSize>
+                      <tag dataType="byte" bitLength="144">0x910d5a5a5a5f5a5a5a5f4152524159002801</tag>
+                      <dataType>
+                        <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
+                      </dataType>
+                      <elementNb dataType="uint" bitLength="16">1</elementNb>
+                      <data dataType="byte" bitLength="32">0x01000000</data>
+                    </CipWriteRequest>
+                  </CipService>
+                </service>
+              </ConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </SendUnitData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Connected Write Response 4D</name>
+    <raw>700032001d5e0740000000006e6f000000000000000000000000000000000200a10004005b6bfeffb1001e0002004d09910d5a5a5a5f5a5a5a5f4152524159002801c400010001000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">112</command>
+        <packetLength dataType="uint" bitLength="16">50</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x6e6f000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <SendUnitData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">161</id>
+              <ConnectedAddressItem>
+                <reserved dataType="uint" bitLength="16">4</reserved>
+                <connectionId dataType="uint" bitLength="32">4294863707</connectionId>
+              </ConnectedAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">177</id>
+              <ConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">30</packetSize>
+                <sequenceCount dataType="uint" bitLength="16">2</sequenceCount>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">false</response>
+                    <service dataType="uint" bitLength="7">77</service>
+                    <CipWriteRequest>
+                      <requestPathSize dataType="int" bitLength="8">9</requestPathSize>
+                      <tag dataType="byte" bitLength="144">0x910d5a5a5a5f5a5a5a5f4152524159002801</tag>
+                      <dataType>
+                        <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
+                      </dataType>
+                      <elementNb dataType="uint" bitLength="16">1</elementNb>
+                      <data dataType="byte" bitLength="32">0x01000000</data>
+                    </CipWriteRequest>
+                  </CipService>
+                </service>
+              </ConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </SendUnitData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Connection Manager Close Request</name>
+    <raw>6f0028001d5e074000000000000000000000000000000000000000000000020000000000b20018004e02200624010a0e2bcb37132a0000000300010020022401</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">40</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">24</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">false</response>
+                    <service dataType="uint" bitLength="7">78</service>
+                    <CipConnectionManagerCloseRequest>
+                      <requestPathSize dataType="int" bitLength="8">2</requestPathSize>
+                      <classSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                <ClassID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <segmentClass dataType="uint" bitLength="8">6</segmentClass>
+                                </ClassID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </classSegment>
+                      <instanceSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                <InstanceID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <instance dataType="uint" bitLength="8">1</instance>
+                                </InstanceID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </instanceSegment>
+                      <priority dataType="uint" bitLength="4">0</priority>
+                      <tickTime dataType="uint" bitLength="4">10</tickTime>
+                      <timeoutTicks dataType="uint" bitLength="8">14</timeoutTicks>
+                      <connectionSerialNumber dataType="uint" bitLength="16">52011</connectionSerialNumber>
+                      <originatorVendorId dataType="uint" bitLength="16">4919</originatorVendorId>
+                      <originatorSerialNumber dataType="uint" bitLength="32">42</originatorSerialNumber>
+                      <connectionPathSize dataType="uint" bitLength="8">3</connectionPathSize>
+                      <reserved dataType="byte" bitLength="8">0x00</reserved>
+                      <connectionPaths isList="true">
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">0</pathSegment>
+                          <PortSegment>
+                            <segmentType>
+                              <PortSegmentType>
+                                <extendedLinkAddress dataType="bit" bitLength="1">false</extendedLinkAddress>
+                                <PortSegmentNormal>
+                                  <port dataType="uint" bitLength="4">1</port>
+                                  <linkAddress dataType="uint" bitLength="8">0</linkAddress>
+                                </PortSegmentNormal>
+                              </PortSegmentType>
+                            </segmentType>
+                          </PortSegment>
+                        </PathSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                <ClassID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <segmentClass dataType="uint" bitLength="8">2</segmentClass>
+                                </ClassID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                <InstanceID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <instance dataType="uint" bitLength="8">1</instance>
+                                </InstanceID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </connectionPaths>
+                    </CipConnectionManagerCloseRequest>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Connection Manager Close Response</name>
+    <raw>6f001e00c907044000000000000000000000000000000000000000000000020000000000b2000e00ce000000902137132a0000000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">30</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074005961</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">14</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">78</service>
+                    <CipConnectionManagerCloseResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">0</status>
+                      <additionalStatusWords dataType="uint" bitLength="8">0</additionalStatusWords>
+                      <connectionSerialNumber dataType="uint" bitLength="16">8592</connectionSerialNumber>
+                      <originatorVendorId dataType="uint" bitLength="16">4919</originatorVendorId>
+                      <originatorSerialNumber dataType="uint" bitLength="32">42</originatorSerialNumber>
+                      <applicationReplySize dataType="uint" bitLength="8">0</applicationReplySize>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                    </CipConnectionManagerCloseResponse>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ENIP Register Session Request</name>
+    <raw>650004000000000000000000302e382e332020200000000001000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">101</command>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x302e382e33202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <EipConnectionRequest>
+          <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
+          <flags dataType="uint" bitLength="16">0</flags>
+        </EipConnectionRequest>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ENIP Register Session Response</name>
+    <raw>650004001d5e074000000000302e382e332020200000000001000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">101</command>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x302e382e33202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <EipConnectionResponse>
+          <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
+          <flags dataType="uint" bitLength="16">0</flags>
+        </EipConnectionResponse>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>ENIP Un-Register Session Request</name>
+    <raw>660000001d5e074000000000000000000000000000000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">102</command>
+        <packetLength dataType="uint" bitLength="16">0</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <EipDisconnectRequest>
+        </EipDisconnectRequest>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Unconnected Send Request</name>
+    <raw>6f002c002a01004000000000000000000000000000000000000000000000020000000000b2001c00520220062401059d0e004c0591084d79537472696e67010001000100</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">44</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1073742122</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">28</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">false</response>
+                    <service dataType="uint" bitLength="7">82</service>
+                    <CipUnconnectedRequest>
+                      <requestPathSize dataType="int" bitLength="8">2</requestPathSize>
+                      <classSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                <ClassID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <segmentClass dataType="uint" bitLength="8">6</segmentClass>
+                                </ClassID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </classSegment>
+                      <instanceSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                <InstanceID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <instance dataType="uint" bitLength="8">1</instance>
+                                </InstanceID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </instanceSegment>
+                      <reserved dataType="uint" bitLength="16">40197</reserved>
+                      <messageSize dataType="uint" bitLength="16">14</messageSize>
+                      <unconnectedService>
+                        <CipService>
+                          <response dataType="bit" bitLength="1">false</response>
+                          <service dataType="uint" bitLength="7">76</service>
+                          <CipReadRequest>
+                            <requestPathSize dataType="int" bitLength="8">5</requestPathSize>
+                            <tag dataType="byte" bitLength="80">0x91084d79537472696e67</tag>
+                            <elementNb dataType="uint" bitLength="16">1</elementNb>
+                          </CipReadRequest>
+                        </CipService>
+                      </unconnectedService>
+                      <route dataType="uint" bitLength="16">1</route>
+                      <backPlane dataType="int" bitLength="8">1</backPlane>
+                      <slot dataType="int" bitLength="8">0</slot>
+                    </CipUnconnectedRequest>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Unconnected Send Response</name>
+    <raw>6f0070002a01004000000000000000000000000000000000000000000000020000000000b2006000cc000000a002ce0f2b000000556d6d2c2049206e6f772073656520796f7520696e207468652077697265736861726b20636170747572650000000000000000000000000000000000000000000000000000000000000000000000000000000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">112</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1073742122</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">96</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">76</service>
+                    <CipReadResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">0</status>
+                      <extStatus dataType="uint" bitLength="8">0</extStatus>
+                      <data>
+                        <CIPData>
+                          <dataType>
+                            <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="STRING36">672</CIPDataTypeCode>
+                          </dataType>
+                          <data dataType="byte" bitLength="720">0xce0f2b000000556d6d2c2049206e6f772073656520796f7520696e207468652077697265736861726b20636170747572650000000000000000000000000000000000000000000000000000000000000000000000000000000000</data>
+                        </CIPData>
+                      </data>
+                    </CipReadResponse>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Register Response - Simulator</name>
+    <raw>6500040081926a3500000000504c4334582020200000000001000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">101</command>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">896176769</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <EipConnectionResponse>
+          <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
+          <flags dataType="uint" bitLength="16">0</flags>
+        </EipConnectionResponse>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Read Response 4C</name>
+    <raw>700020005e5dccfd00000000504c433458202020000000000000000000000200a1000400c3a45cf2b1000c000100cc000000ca0000000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">112</command>
+        <packetLength dataType="uint" bitLength="16">32</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">4258028894</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <SendUnitData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">161</id>
+              <ConnectedAddressItem>
+                <reserved dataType="uint" bitLength="16">4</reserved>
+                <connectionId dataType="uint" bitLength="32">4066157763</connectionId>
+              </ConnectedAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">177</id>
+              <ConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">12</packetSize>
+                <sequenceCount dataType="uint" bitLength="16">1</sequenceCount>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">76</service>
+                    <CipReadResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">0</status>
+                      <extStatus dataType="uint" bitLength="8">0</extStatus>
+                      <data>
+                        <CIPData>
+                          <dataType>
+                            <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="REAL">202</CIPDataTypeCode>
+                          </dataType>
+                          <data dataType="byte" bitLength="32">0x00000000</data>
+                        </CIPData>
+                      </data>
+                    </CipReadResponse>
+                  </CipService>
+                </service>
+              </ConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </SendUnitData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>EIP List Services Request</name>
+    <raw>04000000ec9a149000000000000000000000000000000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">4</command>
+        <packetLength dataType="uint" bitLength="16">0</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">2417269484</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <ListServicesRequest>
+        </ListServicesRequest>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>EIP List Services Response</name>
+    <raw>04001900ec9a14900000000000000000000000000000000001000001130001002000436f6d6d756e69636174696f6e7300</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">4</command>
+        <packetLength dataType="uint" bitLength="16">25</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">2417269484</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x0000000000000000</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <ListServicesResponse>
+          <itemCount dataType="uint" bitLength="16">1</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">256</id>
+              <ServicesResponse>
+                <serviceLen dataType="uint" bitLength="16">19</serviceLen>
+                <encapsulationProtocol dataType="uint" bitLength="16">1</encapsulationProtocol>
+                <reserved dataType="uint" bitLength="2">0</reserved>
+                <supportsCIPEncapsulation dataType="bit" bitLength="1">true</supportsCIPEncapsulation>
+                <reserved dataType="uint" bitLength="12">0</reserved>
+                <supportsUDP dataType="bit" bitLength="1">false</supportsUDP>
+                <data dataType="byte" bitLength="120">0x436f6d6d756e69636174696f6e7300</data>
+              </ServicesResponse>
+            </TypeId>
+          </typeId>
+        </ListServicesResponse>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>EIP List Services Response 2</name>
+    <raw>040019000000000000000000504c4334582020200000000001000001130001002000436f6d6d756e69636174696f6e7300</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">4</command>
+        <packetLength dataType="uint" bitLength="16">25</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <ListServicesResponse>
+          <itemCount dataType="uint" bitLength="16">1</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">256</id>
+              <ServicesResponse>
+                <serviceLen dataType="uint" bitLength="16">19</serviceLen>
+                <encapsulationProtocol dataType="uint" bitLength="16">1</encapsulationProtocol>
+                <reserved dataType="uint" bitLength="2">0</reserved>
+                <supportsCIPEncapsulation dataType="bit" bitLength="1">true</supportsCIPEncapsulation>
+                <reserved dataType="uint" bitLength="12">0</reserved>
+                <supportsUDP dataType="bit" bitLength="1">false</supportsUDP>
+                <data dataType="byte" bitLength="120">0x436f6d6d756e69636174696f6e7300</data>
+              </ServicesResponse>
+            </TypeId>
+          </typeId>
+        </ListServicesResponse>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>EIP Get Attribute List Request - Message Router</name>
+    <raw>6f00160045000040000000001400000030145b0300000000000000002000020000000000b2000600010220022401</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>false</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">22</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1073741893</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x1400000030145b03</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">32</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">6</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">false</response>
+                    <service dataType="uint" bitLength="7">1</service>
+                    <GetAttributeAllRequest>
+                      <requestPathSize dataType="int" bitLength="8">2</requestPathSize>
+                      <classSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                <ClassID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <segmentClass dataType="uint" bitLength="8">2</segmentClass>
+                                </ClassID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </classSegment>
+                      <instanceSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                <InstanceID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <instance dataType="uint" bitLength="8">1</instance>
+                                </InstanceID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </instanceSegment>
+                    </GetAttributeAllRequest>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>EIP Get Attribute List Response - Message Router</name>
+    <raw>6f00b60045000040000000001400000030145b0300000000000000000000020000000000b200a600810000004e003a03770066004300f6003700f500ac035f005d005e000003ab033703a503040348004203a4038b002f031204b603b203b303b003b10330034f004e00aa03a803a703a6036e037003320331032d031703b20049033503710072007803ac00b0002b03b100730067006b0068007d038d008c006d006a0038031a0369004500f20074006e008e0070006c0002006a036400a100f4000100c100c000060000010500</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">182</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1073741893</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x1400000030145b03</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">166</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">1</service>
+                    <GetAttributeAllResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">0</status>
+                      <extStatus dataType="uint" bitLength="8">0</extStatus>
+                      <attributes>
+                        <CIPAttributes>
+                          <numberOfClasses dataType="uint" bitLength="16">78</numberOfClasses>
+                          <classId isList="true">
+                            <value dataType="uint" bitLength="16">826</value>
+                            <value dataType="uint" bitLength="16">119</value>
+                            <value dataType="uint" bitLength="16">102</value>
+                            <value dataType="uint" bitLength="16">67</value>
+                            <value dataType="uint" bitLength="16">246</value>
+                            <value dataType="uint" bitLength="16">55</value>
+                            <value dataType="uint" bitLength="16">245</value>
+                            <value dataType="uint" bitLength="16">940</value>
+                            <value dataType="uint" bitLength="16">95</value>
+                            <value dataType="uint" bitLength="16">93</value>
+                            <value dataType="uint" bitLength="16">94</value>
+                            <value dataType="uint" bitLength="16">768</value>
+                            <value dataType="uint" bitLength="16">939</value>
+                            <value dataType="uint" bitLength="16">823</value>
+                            <value dataType="uint" bitLength="16">933</value>
+                            <value dataType="uint" bitLength="16">772</value>
+                            <value dataType="uint" bitLength="16">72</value>
+                            <value dataType="uint" bitLength="16">834</value>
+                            <value dataType="uint" bitLength="16">932</value>
+                            <value dataType="uint" bitLength="16">139</value>
+                            <value dataType="uint" bitLength="16">815</value>
+                            <value dataType="uint" bitLength="16">1042</value>
+                            <value dataType="uint" bitLength="16">950</value>
+                            <value dataType="uint" bitLength="16">946</value>
+                            <value dataType="uint" bitLength="16">947</value>
+                            <value dataType="uint" bitLength="16">944</value>
+                            <value dataType="uint" bitLength="16">945</value>
+                            <value dataType="uint" bitLength="16">816</value>
+                            <value dataType="uint" bitLength="16">79</value>
+                            <value dataType="uint" bitLength="16">78</value>
+                            <value dataType="uint" bitLength="16">938</value>
+                            <value dataType="uint" bitLength="16">936</value>
+                            <value dataType="uint" bitLength="16">935</value>
+                            <value dataType="uint" bitLength="16">934</value>
+                            <value dataType="uint" bitLength="16">878</value>
+                            <value dataType="uint" bitLength="16">880</value>
+                            <value dataType="uint" bitLength="16">818</value>
+                            <value dataType="uint" bitLength="16">817</value>
+                            <value dataType="uint" bitLength="16">813</value>
+                            <value dataType="uint" bitLength="16">791</value>
+                            <value dataType="uint" bitLength="16">178</value>
+                            <value dataType="uint" bitLength="16">841</value>
+                            <value dataType="uint" bitLength="16">821</value>
+                            <value dataType="uint" bitLength="16">113</value>
+                            <value dataType="uint" bitLength="16">114</value>
+                            <value dataType="uint" bitLength="16">888</value>
+                            <value dataType="uint" bitLength="16">172</value>
+                            <value dataType="uint" bitLength="16">176</value>
+                            <value dataType="uint" bitLength="16">811</value>
+                            <value dataType="uint" bitLength="16">177</value>
+                            <value dataType="uint" bitLength="16">115</value>
+                            <value dataType="uint" bitLength="16">103</value>
+                            <value dataType="uint" bitLength="16">107</value>
+                            <value dataType="uint" bitLength="16">104</value>
+                            <value dataType="uint" bitLength="16">893</value>
+                            <value dataType="uint" bitLength="16">141</value>
+                            <value dataType="uint" bitLength="16">140</value>
+                            <value dataType="uint" bitLength="16">109</value>
+                            <value dataType="uint" bitLength="16">106</value>
+                            <value dataType="uint" bitLength="16">824</value>
+                            <value dataType="uint" bitLength="16">794</value>
+                            <value dataType="uint" bitLength="16">105</value>
+                            <value dataType="uint" bitLength="16">69</value>
+                            <value dataType="uint" bitLength="16">242</value>
+                            <value dataType="uint" bitLength="16">116</value>
+                            <value dataType="uint" bitLength="16">110</value>
+                            <value dataType="uint" bitLength="16">142</value>
+                            <value dataType="uint" bitLength="16">112</value>
+                            <value dataType="uint" bitLength="16">108</value>
+                            <value dataType="uint" bitLength="16">2</value>
+                            <value dataType="uint" bitLength="16">874</value>
+                            <value dataType="uint" bitLength="16">100</value>
+                            <value dataType="uint" bitLength="16">161</value>
+                            <value dataType="uint" bitLength="16">244</value>
+                            <value dataType="uint" bitLength="16">1</value>
+                            <value dataType="uint" bitLength="16">193</value>
+                            <value dataType="uint" bitLength="16">192</value>
+                            <value dataType="uint" bitLength="16">6</value>
+                          </classId>
+                          <numberAvailable dataType="uint" bitLength="16">256</numberAvailable>
+                          <numberActive dataType="uint" bitLength="16">5</numberActive>
+                          <data dataType="byte" bitLength="0">0x</data>
+                        </CIPAttributes>
+                      </attributes>
+                    </GetAttributeAllResponse>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>EIP Get Attribute List Response - Message Router - Multiple Attributes - Bad Response Handling</name>
+    <raw>6f004c08b181852100000000504c43345820202000000000000000000000020000000000b2003c088100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">2124</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">562397617</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">2108</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">1</service>
+                    <GetAttributeAllResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">0</status>
+                      <extStatus dataType="uint" bitLength="8">0</extStatus>
+                      <attributes>
+                        <CIPAttributes>
+                          <numberOfClasses dataType="uint" bitLength="16">0</numberOfClasses>
+                          <classId isList="true">
+                          </classId>
+                          <numberAvailable dataType="uint" bitLength="16">0</numberAvailable>
+                          <numberActive dataType="uint" bitLength="16">0</numberActive>
+                          <data dataType="byte" bitLength="16784">0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</data>
+                        </CIPAttributes>
+                      </attributes>
+                    </GetAttributeAllResponse>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+
+  <testcase>
+    <name>EIP Get Attribute List Response - Message Router - Unknown Service Response Handling</name>
+    <raw>6f0014000100000000000000504c43345820202000000000000000000000020000000000b200040081000800</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">20</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">4</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">1</service>
+                    <GetAttributeAllResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">8</status>
+                      <extStatus dataType="uint" bitLength="8">0</extStatus>
+                    </GetAttributeAllResponse>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+  <testcase>
+    <name>CIP Read Response - Unknown Service Response Handling</name>
+    <raw>6f0014000100000000000000504c43345820202000000000000000000000020000000000b2000400d2000800</raw>
+    <root-type>EipPacket</root-type>
+    <parser-arguments>
+      <byteOrder>LITTLE_ENDIAN</byteOrder>
+      <response>true</response>
+    </parser-arguments>
+    <xml>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">20</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <itemCount dataType="uint" bitLength="16">2</itemCount>
+          <typeId isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">4</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">82</service>
+                    <CipConnectedResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">8</status>
+                      <additionalStatusWords dataType="uint" bitLength="8">0</additionalStatusWords>
+                    </CipConnectedResponse>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeId>
+        </CipRRData>
+      </EipPacket>
+    </xml>
+  </testcase>
+
+</test:testsuite>

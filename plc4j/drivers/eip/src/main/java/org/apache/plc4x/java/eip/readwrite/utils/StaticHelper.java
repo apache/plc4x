@@ -16,24 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.eip.readwrite.utils;
 
-package org.apache.plc4x.java.mock.tag;
+import org.apache.plc4x.java.eip.readwrite.IntegerEncoding;
+import org.apache.plc4x.java.eip.readwrite.PathSegment;
+import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.spi.generation.ReadBuffer;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 
-public class MockTagHandler implements PlcTagHandler {
+public class StaticHelper {
 
-    @Override
-    public PlcTag parseTag(String tagAddress) {
-        return new MockTag(tagAddress);
-    }
-
-    @Override
-    public PlcQuery parseQuery(String query) {
-        throw new UnsupportedOperationException("This driver doesn't support browsing");
+    public static boolean isStillAPathSegment(ReadBuffer io, IntegerEncoding order) {
+        int initialPosition = io.getPos();
+        try {
+            PathSegment ps = PathSegment.staticParse(io, order);
+            return false;
+        } catch (Exception e) {
+            return true;
+        } finally {
+            io.reset(initialPosition);
+        }
     }
 
 }

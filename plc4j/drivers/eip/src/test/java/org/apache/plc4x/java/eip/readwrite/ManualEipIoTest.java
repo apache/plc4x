@@ -16,24 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.plc4x.java.eip.readwrite;
 
-package org.apache.plc4x.java.mock.tag;
+import org.apache.plc4x.java.DefaultPlcDriverManager;
+import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.messages.PlcReadRequest;
+import org.apache.plc4x.java.api.messages.PlcReadResponse;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.api.model.PlcQuery;
-import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+public class ManualEipIoTest {
 
-public class MockTagHandler implements PlcTagHandler {
-
-    @Override
-    public PlcTag parseTag(String tagAddress) {
-        return new MockTag(tagAddress);
+    public static void main(String[] args) throws Exception {
+        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("logix://localhost");
+        final PlcReadRequest readRequest = connection.readRequestBuilder().addTagAddress("MyTag", "MyTag").build();
+        final PlcReadResponse plcReadResponse = readRequest.execute().get();
+        connection.close();
+        assertEquals(plcReadResponse.getInteger("MyTag"), 0);
     }
-
-    @Override
-    public PlcQuery parseQuery(String query) {
-        throw new UnsupportedOperationException("This driver doesn't support browsing");
-    }
-
 }
