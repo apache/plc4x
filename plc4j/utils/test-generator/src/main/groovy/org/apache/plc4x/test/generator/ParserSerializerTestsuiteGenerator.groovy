@@ -20,6 +20,7 @@ package org.apache.plc4x.test.generator
 
 import groovy.xml.MarkupBuilder
 import groovyjarjarpicocli.CommandLine
+import org.apache.commons.lang3.SystemUtils
 import org.apache.plc4x.java.spi.generation.ByteOrder
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased
 import org.apache.plc4x.java.spi.generation.WriteBufferXmlBased
@@ -62,6 +63,16 @@ class ParserSerializerTestsuiteGenerator implements Runnable {
     static Consumer<Integer> exitFunc = System::exit
 
     static void main(String... args) {
+        if (SystemUtils.IS_OS_MAC) {
+            // On my Intel Mac I found the libs in: "/usr/local/Cellar/libpcap/1.10.1/lib"
+            // On my M1 Mac I found the libs in: "/opt/homebrew/Cellar/libpcap/1.10.1/lib"
+            if (new File("/usr/local/Cellar/libpcap/1.10.1/lib").exists()) {
+                System.getProperties().setProperty("jna.library.path", "/usr/local/Cellar/libpcap/1.10.1/lib");
+            } else if (new File("/opt/homebrew/opt/libpcap/lib").exists()) {
+                System.getProperties().setProperty("jna.library.path", "/opt/homebrew/opt/libpcap/lib");
+            }
+        }
+
         int exitCode = new CommandLine(new ParserSerializerTestsuiteGenerator()).execute(args)
         exitFunc.accept(exitCode)
     }
@@ -155,25 +166,30 @@ class ParserSerializerTestsuiteGenerator implements Runnable {
         def values = []
         def pcapHandle = Pcaps.openOffline(pcapFile, PcapHandle.TimestampPrecision.NANO)
         Packet packet
-        while ((packet = pcapHandle.nextPacket) != null) {
-            def udpPacket = packet.get(UdpPacket.class)
-            if (udpPacket != null) {
-                values << udpPacket.payload.rawData
-            } else {
-                def tcpPacket = packet.get(TcpPacket.class)
-                if (tcpPacket != null) {
-                    values << tcpPacket.payload.rawData
+        try {
+            while ((packet = pcapHandle.nextPacket) != null) {
+                def udpPacket = packet.get(UdpPacket.class)
+                if (udpPacket != null) {
+                    values << udpPacket.payload.rawData
                 } else {
-                    def ethernetPacket = packet.get(EthernetPacket.class)
-                    if(ethernetPacket != null) {
-                        values << ethernetPacket.rawData
+                    def tcpPacket = packet.get(TcpPacket.class)
+                    if (tcpPacket != null) {
+                        values << tcpPacket.payload.rawData
                     } else {
-                        values << new byte[]{0, 0, 0, 0}
+                        def ethernetPacket = packet.get(EthernetPacket.class)
+                        if (ethernetPacket != null) {
+                            values << ethernetPacket.rawData
+                        } else {
+                            values << new byte[]{0, 0, 0, 0}
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace()
+        } finally {
+            pcapHandle.close()
         }
-        pcapHandle.close()
         values
     }
 
