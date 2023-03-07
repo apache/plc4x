@@ -491,7 +491,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                         throw new PlcRuntimeException(e);
                     }
                 }
-                return new String(strBytes, StandardCharsets.US_ASCII).substring(0, realLength);
+                return new String(strBytes, 0, realLength, StandardCharsets.US_ASCII);
             }
             case "UTF8": {
                 byte[] strBytes = new byte[bitLength / 8];
@@ -510,7 +510,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                         throw new PlcRuntimeException(e);
                     }
                 }
-                return new String(strBytes, StandardCharsets.UTF_8).substring(0, realLength);
+                return new String(strBytes, 0, realLength, StandardCharsets.UTF_8);
             }
             case "UTF16":
             case "UTF16LE":
@@ -527,7 +527,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                         } else if (!finishedReading) {
                             strBytes[(i * 2)] = b1;
                             strBytes[(i * 2) + 1] = b2;
-                            realLength++;
+                            realLength += 2;
                         }
                     } catch (Exception e) {
                         throw new PlcRuntimeException(e);
@@ -544,7 +544,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                     default:
                         charset = StandardCharsets.UTF_16;
                 }
-                return new String(strBytes, charset).substring(0, realLength);
+                return new String(strBytes, 0, realLength, charset);
             }
             default:
                 throw new ParseException("Unsupported encoding: " + encoding);
