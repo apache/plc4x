@@ -473,7 +473,8 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
     public String readString(String logicalName, int bitLength, WithReaderArgs... readerArgs) throws ParseException {
         String encoding = extractEncoding(readerArgs).orElse("UTF-8");
         encoding = encoding.replaceAll("[^a-zA-Z0-9]", "");
-        switch (encoding.toUpperCase()) {
+        encoding = encoding.toUpperCase();
+        switch (encoding) {
             case "ASCII": {
                 byte[] strBytes = new byte[bitLength / 8];
                 int realLength = 0;
