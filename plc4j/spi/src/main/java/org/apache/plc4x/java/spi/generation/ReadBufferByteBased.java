@@ -475,25 +475,7 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
         encoding = encoding.replaceAll("[^a-zA-Z0-9]", "");
         encoding = encoding.toUpperCase();
         switch (encoding) {
-            case "ASCII": {
-                byte[] strBytes = new byte[bitLength / 8];
-                int realLength = 0;
-                boolean finishedReading = false;
-                for (int i = 0; (i < (bitLength / 8)) && hasMore(8); i++) {
-                    try {
-                        byte b = readByte(logicalName);
-                        if (!disable0Termination() && (b == 0x00)) {
-                            finishedReading = true;
-                        } else if (!finishedReading) {
-                            strBytes[i] = b;
-                            realLength++;
-                        }
-                    } catch (Exception e) {
-                        throw new PlcRuntimeException(e);
-                    }
-                }
-                return new String(strBytes, 0, realLength, StandardCharsets.US_ASCII);
-            }
+            case "ASCII":
             case "UTF8": {
                 byte[] strBytes = new byte[bitLength / 8];
                 int realLength = 0;
@@ -511,7 +493,15 @@ public class ReadBufferByteBased implements ReadBuffer, BufferCommons {
                         throw new PlcRuntimeException(e);
                     }
                 }
-                return new String(strBytes, 0, realLength, StandardCharsets.UTF_8);
+                Charset charset;
+                switch (encoding) {
+                    case "UTF8":
+                        charset = StandardCharsets.UTF_8;
+                        break;
+                    default:
+                        charset = StandardCharsets.US_ASCII;
+                }
+                return new String(strBytes, 0, realLength, charset);
             }
             case "UTF16":
             case "UTF16LE":
