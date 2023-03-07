@@ -58,7 +58,7 @@ We are planning on shipping libraries for usage in:
 2. Go
 3. C (not ready for usage)
 4. Python (not ready for usage)
-5. C# (.Net) (not ready for usage)
+5. C# (.Net) (not ready for usage - abandoned)
 
 PLC4X also integrates with other Apache projects, such as:
 
@@ -191,7 +191,7 @@ In order to be able to build the Python module, you currently need to activate t
 In order to build everything the following command should work:
 
 ```
-./mvnw -P with-c,with-dotnet,with-go,with-python,with-sandbox install
+./mvnw -P with-c,with-go,with-python,with-sandbox install
 ```
 
 ## Community
