@@ -1438,6 +1438,7 @@ const (
 	BACnetVendorId_TECHKNAVE                                                                    BACnetVendorId = 1407
 	BACnetVendorId_ELSNER_ELEKTRONIK                                                            BACnetVendorId = 1408
 	BACnetVendorId_LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD                                             BACnetVendorId = 1409
+	BACnetVendorId_CALIBRATION_TECHNOLOGIES_INC                                                 BACnetVendorId = 1410
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2847,6 +2848,7 @@ func init() {
 		BACnetVendorId_TECHKNAVE,
 		BACnetVendorId_ELSNER_ELEKTRONIK,
 		BACnetVendorId_LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD,
+		BACnetVendorId_CALIBRATION_TECHNOLOGIES_INC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4680,6 +4682,10 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 141:
 		{ /* '141' */
 			return 141
+		}
+	case 1410:
+		{ /* '1410' */
+			return 1410
 		}
 	case 142:
 		{ /* '142' */
@@ -10307,6 +10313,10 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '141' */
 			return "Yaskawa America, Inc."
 		}
+	case 1410:
+		{ /* '1410' */
+			return "Calibration Technologies, Inc."
+		}
 	case 142:
 		{ /* '142' */
 			return "DEOS control systems GmbH"
@@ -15018,6 +15028,8 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD, true
 	case 141:
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
+	case 1410:
+		return BACnetVendorId_CALIBRATION_TECHNOLOGIES_INC, true
 	case 142:
 		return BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH, true
 	case 143:
@@ -17828,6 +17840,8 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD, true
 	case "YASKAWA_AMERICA_INC":
 		return BACnetVendorId_YASKAWA_AMERICA_INC, true
+	case "CALIBRATION_TECHNOLOGIES_INC":
+		return BACnetVendorId_CALIBRATION_TECHNOLOGIES_INC, true
 	case "DEO_SCONTROLSYSTEMS_GMBH":
 		return BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH, true
 	case "DIGITALE_MESSUND_STEUERSYSTEMEAG":
@@ -20695,6 +20709,8 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD"
 	case BACnetVendorId_YASKAWA_AMERICA_INC:
 		return "YASKAWA_AMERICA_INC"
+	case BACnetVendorId_CALIBRATION_TECHNOLOGIES_INC:
+		return "CALIBRATION_TECHNOLOGIES_INC"
 	case BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH:
 		return "DEO_SCONTROLSYSTEMS_GMBH"
 	case BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG:

@@ -116,7 +116,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 			return errors.Wrap(err, "error in setup step "+testStep.name)
 		}
 		// We sleep a bit to not run too fast into the post setup steps and give connections a bit time to settle built up
-		time.Sleep(2 * time.Millisecond)
+		time.Sleep(10 * time.Millisecond)
 	}
 
 	// Run the actual scenario steps
@@ -126,6 +126,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 		if err != nil {
 			return errors.Wrap(err, "error in step "+testStep.name)
 		}
+		time.Sleep(10 * time.Millisecond)
 	}
 
 	// Run the teardown steps
@@ -135,6 +136,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 		if err != nil {
 			return errors.Wrap(err, "error in teardown step "+testStep.name)
 		}
+		time.Sleep(10 * time.Millisecond)
 	}
 
 	log.Info().Msgf("\n-------------------------------------------------------\nDone\n-------------------------------------------------------\n")
