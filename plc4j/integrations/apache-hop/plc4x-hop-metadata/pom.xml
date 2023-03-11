@@ -68,7 +68,23 @@
                         <dependency>javax.annotation:javax.annotation-api:jar:1.2</dependency>
                     </ignoredDependencies>
                 </configuration>
-            </plugin>             
+            </plugin>  
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- <mainClass>main class</mainClass> -->
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+                       
+                                             
         </plugins>         
     </build>    
     

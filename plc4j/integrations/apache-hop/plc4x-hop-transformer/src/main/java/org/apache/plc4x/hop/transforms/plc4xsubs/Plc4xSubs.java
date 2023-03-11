@@ -17,13 +17,16 @@
 
 package org.apache.plc4x.hop.transforms.plc4xsubs;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hop.core.CheckResult;
 import org.apache.hop.core.Const;
@@ -50,32 +53,40 @@ import org.apache.hop.pipeline.transform.ITransform;
 import org.apache.hop.pipeline.transform.TransformMeta;
 import org.apache.plc4x.hop.metadata.Plc4xConnection;
 import org.apache.plc4x.hop.transforms.util.Plc4xGeneratorField;
-import org.apache.plc4x.hop.transforms.util.Plc4xPlcField;
+import org.apache.plc4x.hop.transforms.util.Plc4xPlcTag;
+import org.apache.plc4x.hop.transforms.util.Plc4xPlcSubscriptionTag;
 import org.apache.plc4x.hop.transforms.util.Plc4xWrapperConnection;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
+import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
+import org.apache.plc4x.java.s7.events.S7Event;
 
 /**
  * Transform That contains the basic skeleton needed to create your own plugin
  *
  */
-public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> implements ITransform {
+public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> {
 
   private static final Class<?> PKG = Plc4xSubs.class; // Needed by Translator
   
   private Plc4xConnection connmeta = null;
   private Plc4xWrapperConnection connwrapper = null;
-  private PlcReadRequest readRequest = null;
-  private PlcReadResponse readResponse = null;  
+  private PlcSubscriptionRequest subsRequest = null;
+  private PlcSubscriptionResponse subsResponse = null;  
   private int maxwait = 0;
   private static final ReentrantLock lock = new ReentrantLock();
+  
+  private ConcurrentLinkedQueue<PlcSubscriptionEvent> events = new ConcurrentLinkedQueue();
+  private boolean stopBundle = false;
   
   private static final String dummy = "dummy";
   
   private Map<String, Integer> index = new HashMap();
-  private Map<String, Plc4xPlcField> plcfields = new HashMap();  
+  private Map<String, Plc4xPlcSubscriptionTag> plctags = new HashMap();  
 
   public Plc4xSubs(TransformMeta transformMeta, Plc4xSubsMeta meta, Plc4xSubsData data, int copyNr, PipelineMeta pipelineMeta,
                 Pipeline pipeline ) {
@@ -108,7 +119,7 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> imple
     for (Plc4xGeneratorField field : meta.getFields()) {
       int typeString = ValueMetaFactory.getIdForValueMeta(field.getType());
       if (StringUtils.isNotEmpty(field.getType())) {
-          System.out.println("typeString: " + typeString); 
+
         IValueMeta valueMeta =
             ValueMetaFactory.createValueMeta(field.getName(), typeString); // build a
         // value!
@@ -145,7 +156,7 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> imple
             // Convert the data from String to the specified type ...
             //
             try {
-                System.out.println("stringValue: " + stringValue);
+
               rowData[index] = valueMeta.convertData(stringMeta, stringValue);
             } catch (HopValueException e) {
               switch (valueMeta.getType()) {
@@ -252,11 +263,11 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> imple
     
     if (first) {
         index.clear();
-        plcfields.clear();
+        plctags.clear();
         //This performs a minimal check on the user item.
         //It guarantees that the rates are within those managed by Plc4x.
         meta.getFields().forEach((f) ->{
-            plcfields.put(f.getName(),Plc4xPlcField.of(f.getItem()));
+            plctags.put(f.getName(),Plc4xPlcSubscriptionTag.of(f.getItem()));
         });
         first = false;
     }    
@@ -266,6 +277,7 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> imple
         IHopMetadataProvider metaprovider = getMetadataProvider();
         connmeta = metaprovider.getSerializer(Plc4xConnection.class).load(meta.getConnection());
         if (connwrapper == null) {
+            System.out.println("PASO 02");
             connwrapper = (Plc4xWrapperConnection) getPipeline().getExtensionDataMap().get(meta.getConnection()); //(02)
             if (connwrapper != null) connwrapper.retain();
         };
@@ -279,7 +291,7 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> imple
         }
 
         if ((connmeta != null) && (connwrapper == null)){
-            readRequest = null;
+            subsRequest = null;
             try{
                 PlcConnection conn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(03)
                 if (conn.isConnected()) {
@@ -297,24 +309,28 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> imple
     
     if ((connmeta != null) && (connwrapper != null)){
         if (connwrapper.getConnection().isConnected()){
-            if (readRequest == null){
-                PlcReadRequest.Builder builder = connwrapper.getConnection().readRequestBuilder(); //(05)
+            if (subsRequest == null){
+                PlcSubscriptionRequest.Builder builder = connwrapper.getConnection().subscriptionRequestBuilder(); //(05)
                 for (Plc4xGeneratorField field: meta.getFields()){
-                    builder.addTagAddress(field.getName(), field.getItem());
+                    System.out.println(field.getName() + " : " + field.getItem().toString());
+                    builder.addCyclicTagAddress(field.getName(), field.getItem().toString(),  Duration.ofMillis(1000));                    
                 }                
-                readRequest = builder.build();                  
+                System.out.println("PASO: 05");
+                subsRequest = builder.build();                  
             }            
             try {            
                 maxwait = Integer.parseInt(meta.getMaxwaitInMs());
-                maxwait = (maxwait<100)?100:maxwait;
-                readResponse = readRequest.execute().get(maxwait, TimeUnit.MILLISECONDS);
-
-                for (Plc4xGeneratorField field: meta.getFields()){
-                    field.setValue(readResponse.getString(field.getName()));
-                }                  
+                maxwait = (maxwait<1000)?1000:maxwait;
+                System.out.println("PASO: 06");
+                subsResponse = subsRequest.execute().get();
+                System.out.println("PASO: 07");
+                //Only for Siemens S7
+                subsResponse.getSubscriptionHandles().forEach(a -> a.register(e -> events.add(e)));
+                System.out.println("PASO: 08");
             } catch (Exception ex) {
                 setErrors(1L);                
                 logError("Unable read from PLC. " + ex.getMessage());
+                ex.printStackTrace();
             }
             
         } else {
@@ -332,17 +348,23 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> imple
     }
 
     //
-    int interval = Integer.parseInt(meta.getIntervalInMs());
+    while (events.size() == 0) {
+        try {          
+            Thread.sleep(100);
+            if (stopBundle) {
+                setOutputDone(); // signal end to receiver(s)
+                return false; 
+            }
+        } catch (InterruptedException ex) {
+            break;
+        }
+    } 
     
-    try {
-        Thread.sleep(interval);
-    } catch (InterruptedException ex) {
-        setErrors(1L);                
-        logError(ex.getMessage());
-    }
+    PlcSubscriptionEvent s7event = events.poll();    
+    System.out.println("Ejecuto el consumidor en el cliente..." + s7event.getTagNames());
     
     r = data.outputRowMeta.cloneRow(data.outputRowData); 
-    logBasic("Tamano de los datos: " + r.length);
+
     data.prevDate = data.rowDate;
     data.rowDate = new Date();    
     int index = 0;
@@ -435,12 +457,16 @@ public class Plc4xSubs extends BaseTransform<Plc4xSubsMeta, Plc4xSubsData> imple
                 getPipeline().getExtensionDataMap().remove(meta.getConnection());
             }            
             connwrapper = null;
-            readRequest = null;
-
+            subsRequest = null;
         }
     }
  
-  
+
+    @Override
+    public void stopRunning() throws HopException {
+        super.stopRunning();
+        stopBundle = true;
+    }  
   
   
 }

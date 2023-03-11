@@ -31,32 +31,25 @@ import org.apache.hop.workflow.action.IAction;
 
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.hop.core.Const;
 import org.apache.hop.core.exception.HopException;
 import org.apache.plc4x.hop.metadata.Plc4xConnection;
-import org.apache.plc4x.java.DefaultPlcDriverManager;
-import org.apache.plc4x.java.api.PlcConnection;
-import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.w3c.dom.Node;
 
 
 @Action(
-    id = "CHECK_PLC4X_CONNECTIONS",
-    name = "i18n::Plc4xActionConnections.Name",
-    description = "i18n::Plc4xActionConnections.Description",
+    id = "CHECK_PLC4X_DISCONNECTIONS",
+    name = "i18n::Plc4xActionDisConnections.Name",
+    description = "i18n::Plc4xActionDisConnections.Description",
     image = "plc4x_toddy.svg",
     categoryDescription = "i18n:org.apache.hop.workflow:ActionCategory.Category.Conditions",
-    keywords = "i18n::Plc4xActionConnections.keyword",
-    documentationUrl = "/workflow/actions/plc4x.html")
-public class Plc4xCheckConnections extends ActionBase implements Cloneable, IAction {
-  private static final Class<?> PKG = Plc4xCheckConnections.class; // Needed by Translator
+    keywords = "i18n::Plc4xActionDisConnections.keyword",
+    documentationUrl = "/workflow/actions/checkdbconnection.html")
+public class Plc4xCheckDisConnections extends ActionBase implements Cloneable, IAction {
+  private static final Class<?> PKG = Plc4xCheckDisConnections.class; // Needed by Translator
 
   
   private Plc4xConnection[] connections;  
-  private boolean connected = false;
-  private PlcConnection plcconn = null;
   
   protected static final String[] unitTimeDesc =
       new String[] {
@@ -79,19 +72,19 @@ public class Plc4xCheckConnections extends ActionBase implements Cloneable, IAct
   private long timeStart;
   private long now;  
      
-  public Plc4xCheckConnections( String name) {
+  public Plc4xCheckDisConnections( String name) {
     super(name, "");
     //connections = null;
     waitfors = null;
     waittimes = null;
   }
 
-  public Plc4xCheckConnections() {
+  public Plc4xCheckDisConnections() {
     this( "");
   }
   
   public Object clone() {
-    Plc4xCheckConnections c = (Plc4xCheckConnections) super.clone();
+    Plc4xCheckDisConnections c = (Plc4xCheckDisConnections) super.clone();
     return c;
   }
 
@@ -248,41 +241,17 @@ public class Plc4xCheckConnections extends ActionBase implements Cloneable, IAct
   }
 
   /**
-   * Execute this action and return the result. 
-   * In this case it means, just set the result boolean in the Result
+   * Execute this action and return the result. In this case it means, just set the result boolean in the Result
    * class.
-   * Check all conections metadata from the dialog.
-   * @param prevResult The result of the previous execution
+   *
+   * @param result The result of the previous execution
    * @return The Result of the execution.
    */
   @Override
-  public Result execute( Result prevResult, int nr ) {
-    Result result = prevResult;
-    result.setNrErrors(0);
-    connected = true;
-    for (Plc4xConnection connmeta:connections) {
-        try {
-            plcconn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(01)
-            if (!plcconn.isConnected()) {
-                logBasic("Cant connect to: " + connmeta.getUrl());
-                connected = false;
-                plcconn = null;
-                //break;
-            }
-            plcconn.close();
-            plcconn = null;
-        } catch (Exception ex) {
-            Logger.getLogger(Plc4xCheckConnections.class.getName()).log(Level.SEVERE, null, ex);
-            connected = false;
-            plcconn = null;
-            //break;            
-        } finally {
-            
-        }
-          
-    }
-    
-    result.setResult(connected);
+  public Result execute( Result result, int nr ) {
+      result.setResult(true);
+      System.out.println("NR: " + nr);
+
     return result;
   }
 
@@ -299,23 +268,4 @@ public class Plc4xCheckConnections extends ActionBase implements Cloneable, IAct
   public void check( List<ICheckResult> remarks, WorkflowMeta workflowMeta, IVariables variables,
                      IHopMetadataProvider metadataProvider ) {
   }
-
-  @Override
-  public boolean resetErrorsBeforeExecution() {
-    return false;
-  }
-
-    @Override
-    public boolean isEvaluation() {
-        return true;
-    }
-
-    @Override
-    public boolean isUnconditional() {
-        return false;
-    }
-  
-  
-  
-  
 }
