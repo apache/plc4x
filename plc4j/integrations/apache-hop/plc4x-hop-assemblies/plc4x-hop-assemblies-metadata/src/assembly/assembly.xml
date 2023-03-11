@@ -57,11 +57,42 @@
             <includes>
                 <include>com.github.jinahya:bit-io:jar</include>
                 <include>ch.qos.logback:logback-core</include>
+                
                 <include>io.netty:netty-buffer</include>
                 <include>io.netty:netty-codec:jar</include>
+                <include>io.netty:netty-codec-dns:jar</include>  
+                <include>io.netty:netty-codec-haproxy:jar</include>  
+                <include>io.netty:netty-codec-http:jar</include>
+                <include>io.netty:netty-codec-http2:jar</include>
+                <include>io.netty:netty-codec-memcache:jar</include>
+                <include>io.netty:netty-codec-mqtt:jar</include>
+                <include>io.netty:netty-codec-redis:jar</include>
+                <include>io.netty:netty-codec-smtp:jar</include>
+                <include>io.netty:netty-codec-socks:jar</include>
+                <include>io.netty:netty-codec-stomp:jar</include>
+                <include>io.netty:netty-codec-xml:jar</include>
                 <include>io.netty:netty-common:jar</include>
+                <include>io.netty:netty-handler:jar</include>                
+                <include>io.netty:netty-handler-proxy:jar</include>
+                <include>io.netty:netty-ssl-ocsp:jar</include>                                
                 <include>io.netty:netty-resolver:jar</include>
-                <include>io.netty:netty-transport</include>
+                <include>io.netty:netty-resolver-dns:jar</include>
+                <include>io.netty:netty-resolver-dns-classes-macos:jar</include>
+                <include>io.netty:netty-transport:jar</include>
+                <include>io.netty:netty-transport-classes-kqueue:jar</include>                
+                <include>io.netty:netty-transport-native-unix-common:jar</include>
+                <include>io.netty:netty-transport-rxtx:jar</include>
+                <include>io.netty:netty-transport-sctp:jar</include>
+                <include>io.netty:netty-transport-udt:jar</include>
+                
+                <include>io.vavr:vavr:jar</include>
+                <include>io.vavr:vavr-match:jar</include>  
+                
+                <include>org.apache.plc4x:plc4j-api:jar</include>
+                <include>org.apache.plc4x:plc4j-spi:jar</include>
+                <include>org.apache.plc4x:plc4j-spi:jar</include>
+                <include>org.apache.plc4x:plc4j-transport-tcp:jar</include>
+                <include>org.apache.plc4x:plc4j-driver-s7:jar</include>                                    
             </includes>
         </dependencySet>
         

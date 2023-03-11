@@ -19,17 +19,19 @@
 package org.apache.plc4x.hop.transforms.util;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.time.Duration;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
-import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.spi.generation.ParseException;
+import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 
 /*
 * Code taken from the Modbus driver implementation.
@@ -40,7 +42,7 @@ import java.util.regex.Pattern;
 *       the "Integer" fields.
 */
 
-public  class Plc4xPlcField implements PlcTag, Serializable {
+public  class Plc4xPlcSubscriptionTag implements PlcTag, Serializable {
 
     public static final Pattern ADDRESS_PATTERN = Pattern.compile("(?<address>[\\%a-zA-Z_\\.0-9]+)(:(?<datatype>[a-zA-Z_]+))?(\\[(?<quantity>\\d+)])?");
 
@@ -52,8 +54,8 @@ public  class Plc4xPlcField implements PlcTag, Serializable {
 
     private final Plc4xDataType dataType;
 
-    public static Plc4xPlcField of(String addressString) {
-        if (Plc4xPlcField.matches(addressString)) {
+    public static Plc4xPlcSubscriptionTag of(String addressString) {
+        if (Plc4xPlcSubscriptionTag.matches(addressString)) {
             Matcher matcher = ADDRESS_PATTERN.matcher(addressString); 
 
             matcher.matches();
@@ -66,13 +68,13 @@ public  class Plc4xPlcField implements PlcTag, Serializable {
             Plc4xDataType dataType = (matcher.group("datatype") != null) ? Plc4xDataType.valueOf(matcher.group("datatype")) : Plc4xDataType.BOOL;
 
             
-            return new Plc4xPlcField(address, quantity, dataType);
+            return new Plc4xPlcSubscriptionTag(address, quantity, dataType);
         }
 
         throw new PlcInvalidTagException("Unable to parse address: " + addressString);
     }
 
-    protected Plc4xPlcField(String address, Integer quantity, Plc4xDataType dataType) {
+    protected Plc4xPlcSubscriptionTag(String address, Integer quantity, Plc4xDataType dataType) {
         this.address = address;
 
         this.quantity = quantity != null ? quantity : 1;
@@ -114,10 +116,10 @@ public  class Plc4xPlcField implements PlcTag, Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Plc4xPlcField)) {
+        if (!(o instanceof Plc4xPlcSubscriptionTag)) {
             return false;
         }
-        Plc4xPlcField that = (Plc4xPlcField) o;
+        Plc4xPlcSubscriptionTag that = (Plc4xPlcSubscriptionTag) o;
         return address == that.address;
     }
 
@@ -128,7 +130,7 @@ public  class Plc4xPlcField implements PlcTag, Serializable {
 
     @Override
     public String toString() {
-        return "Plc4xPlcField{" +
+        return "Plc4xPlcSubscriptionField{" +
             " address=" + address +
             " datatype=" + dataType +
             " quantity=" + quantity +
@@ -137,12 +139,22 @@ public  class Plc4xPlcField implements PlcTag, Serializable {
 
     @Override
     public void serialize(WriteBuffer wb) throws SerializationException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public String getAddressString() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        throw new UnsupportedOperationException("Not supported yet.");
     }
+
+//    @Override
+//    public PlcSubscriptionType getPlcSubscriptionType() {
+//        throw new UnsupportedOperationException("Not supported yet.");
+//    }
+//
+//    @Override
+//    public Optional<Duration> getDuration() {
+//        throw new UnsupportedOperationException("Not supported yet.");
+//    }
 
 }

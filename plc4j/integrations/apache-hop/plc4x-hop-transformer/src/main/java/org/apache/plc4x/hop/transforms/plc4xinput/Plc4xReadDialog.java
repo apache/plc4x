@@ -148,7 +148,7 @@ public class Plc4xReadDialog extends BaseTransformDialog implements ITransformDi
     try {
       wConnection.fillItems();
     } catch (Exception e) {
-      new ErrorDialog(shell, "Error", "Error listing Cassandra connection metadata objects", e);
+      new ErrorDialog(shell, "Error", "Error listing Plc4x connection metadata objects", e);
     }    
     
     Control lastControl = wConnection;    

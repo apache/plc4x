@@ -54,7 +54,7 @@ import org.apache.plc4x.hop.transforms.util.Plc4xGeneratorField;
         categoryDescription = "i18n:org.apache.plc4x.hop.transforms.plc4xinput:Plc4x.Category.plc4x",
         documentationUrl = "https://plc4x.apache.org/users/integrations/apache-calcite.html"
 )
-public class Plc4xSubsMeta extends BaseTransformMeta implements ITransformMeta {
+public class Plc4xSubsMeta extends BaseTransformMeta<Plc4xSubs, Plc4xSubsData>{
 
   private static final Class<?> PKG = Plc4xSubsMeta.class; // Needed by Translator
 
@@ -136,28 +136,24 @@ public class Plc4xSubsMeta extends BaseTransformMeta implements ITransformMeta {
   public void getFields( IRowMeta inputRowMeta, String name, IRowMeta[] info, TransformMeta nextTransform,
                          IVariables variables, IHopMetadataProvider metadataProvider ) throws HopTransformException {
     try {
-        logBasic("PASO 1");
         List<ICheckResult> remarks = new ArrayList<>();
         RowMetaAndData rowMetaAndData = Plc4xSubs.buildRow(this, remarks, name);
-        logBasic("PASO 2");
-      if (!remarks.isEmpty()) {
-        logBasic("PASO 3");
-        StringBuilder stringRemarks = new StringBuilder();
-        for (ICheckResult remark : remarks) {
-          logBasic("PASO 3x: " + remark.toString());   
-          stringRemarks.append(remark.toString()).append(Const.CR);
+
+        if (!remarks.isEmpty()) {
+            StringBuilder stringRemarks = new StringBuilder();
+            for (ICheckResult remark : remarks) {
+              stringRemarks.append(remark.toString()).append(Const.CR);
+            }       
+            throw new HopTransformException(stringRemarks.toString());
         }
-        logBasic("PASO 3.1");        
-        throw new HopTransformException(stringRemarks.toString());
-      }
-              logBasic("PASO 4");
-      for (IValueMeta valueMeta : rowMetaAndData.getRowMeta().getValueMetaList()) {
-        valueMeta.setOrigin(name);
-      }
-        logBasic("PASO 5");
-      inputRowMeta.mergeRowMeta(rowMetaAndData.getRowMeta());
+
+        for (IValueMeta valueMeta : rowMetaAndData.getRowMeta().getValueMetaList()) {
+            valueMeta.setOrigin(name);
+        }
+
+        inputRowMeta.mergeRowMeta(rowMetaAndData.getRowMeta());
     } catch (Exception e) {
-      throw new HopTransformException(e);
+        throw new HopTransformException(e);
     }
   }
 

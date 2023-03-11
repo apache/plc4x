@@ -25,8 +25,8 @@ import org.apache.hop.metadata.api.IHopMetadata;
  * @author cgarcia
  */
 @HopMetadata(
-    key = "Xplc4xconnection",
-    name = "PLC4x Connection",
+    key = "Xplc4xaction",
+    name = "PLC4x Action",
     description = "A shared PLC4x connection to a PLC",
     image = "plc4x_toddy.svg",
     documentationUrl = "/metadata-types/neo4j/neo4j-connection.html")

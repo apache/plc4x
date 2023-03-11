@@ -17,11 +17,17 @@
 
 package org.apache.plc4x.hop.transforms.plc4xevent;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.hop.core.CheckResult;
 import org.apache.hop.core.Const;
 import org.apache.hop.core.ICheckResult;
@@ -30,8 +36,11 @@ import org.apache.hop.core.exception.HopException;
 import org.apache.hop.core.exception.HopPluginException;
 import org.apache.hop.core.logging.LogLevel;
 import org.apache.hop.core.row.IRowMeta;
+import org.apache.hop.core.row.IValueMeta;
 import org.apache.hop.core.row.RowDataUtil;
 import org.apache.hop.core.row.RowMeta;
+import org.apache.hop.core.row.value.ValueMetaFactory;
+import org.apache.hop.core.util.StringUtil;
 import org.apache.hop.i18n.BaseMessages;
 import org.apache.hop.metadata.api.IHopMetadataProvider;
 import org.apache.hop.pipeline.Pipeline;
@@ -40,6 +49,7 @@ import org.apache.hop.pipeline.transform.BaseTransform;
 import org.apache.hop.pipeline.transform.ITransform;
 import org.apache.hop.pipeline.transform.TransformMeta;
 import org.apache.plc4x.hop.metadata.Plc4xConnection;
+import org.apache.plc4x.hop.transforms.util.Plc4xGeneratorField;
 import org.apache.plc4x.hop.transforms.util.Plc4xWrapperConnection;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
@@ -48,14 +58,20 @@ import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.s7.events.S7AlarmEvent;
+import org.apache.plc4x.java.s7.events.S7Event;
 import org.apache.plc4x.java.s7.events.S7ModeEvent;
+import org.apache.plc4x.java.s7.events.S7ModeEvent.Fields;
+import org.apache.plc4x.java.s7.events.S7SysEvent;
+import org.apache.plc4x.java.s7.events.S7UserEvent;
 import org.apache.plc4x.java.s7.readwrite.ModeTransitionType;
 
 /**
- * Transform That contains the basic skeleton needed to create your own plugin
+ * This transform receives an event from the S7 driver, of type MODE, SYS, 
+ * USR or ALM. Only one type can be processed at a time.
  *
  */
-public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> implements ITransform {
+public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> {
 
   public static String FIELD_MODE_EVENT = "MODE";
   public static String FIELD_USER_EVENT = "USR";
@@ -75,6 +91,17 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> im
   private PlcSubscriptionRequest subsbuild      = null;
   private PlcSubscriptionResponse subresponse   = null;
   
+  private List<ICheckResult> remarks = new ArrayList<>(); // stores the errors...
+  
+  /*
+   * The transfer of events is done from the driver tasks. A delay can be added 
+   * for the execution of this transformer.
+   */
+  private ObjectMapper mapper = new ObjectMapper();
+  private ConcurrentLinkedQueue<S7Event> events = new ConcurrentLinkedQueue();
+  private boolean stopBundle = false;
+  private int index = 0;
+  
   private static final ReentrantLock lock = new ReentrantLock();
   
   private static final String dummy = "dummy";
@@ -91,12 +118,41 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> im
   * @param remarks Error registers
   * @param origin transform instance name
   */
-  public static final RowMetaAndData buildRow(
-    Plc4xEventMeta meta, List<ICheckResult> remarks, String origin) throws HopPluginException {
+  public static final RowMetaAndData buildRow(Plc4xEventMeta meta, 
+          List<ICheckResult> remarks, 
+          String origin) throws HopPluginException {
     IRowMeta rowMeta = new RowMeta();
     Object[] rowData = RowDataUtil.allocateRowData(2);
     int index = 0;
-
+    
+    ArrayList<String> fields = new ArrayList<String>();
+    
+    if (meta.isModeEvent()) {
+        for (S7ModeEvent.Fields field:S7ModeEvent.Fields.values()) {
+            fields.add(field.name());
+        }
+    } else if (meta.isSysEvent()) {
+        for (S7SysEvent.Fields field:S7SysEvent.Fields.values()) {
+            fields.add(field.name());
+        }        
+    } else if (meta.isUserEvent()) {
+        for (S7UserEvent.Fields field:S7UserEvent.Fields.values()) {
+            fields.add(field.name());
+        }        
+    } else if (meta.isAlarmEvent()) {
+        fields.add("ALARM");    
+    }
+    
+    for (String field : fields) {
+        IValueMeta valueMeta =
+            ValueMetaFactory.createValueMeta(field, IValueMeta.TYPE_STRING); // build a  
+          rowData[index] = StringUtil.EMPTY_STRING;
+        // Now add value to the row!
+        // This is in fact a copy from the fields row, but now with data.
+        rowMeta.addValueMeta(valueMeta);
+        index++;        
+    }
+  
     return new RowMetaAndData(rowMeta, rowData);
   }
   
@@ -174,15 +230,7 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> im
                         subresponse
                         .getSubscriptionHandle(FIELD_MODE_EVENT)
                         .register(msg -> {
-                            System.out.println("******** S7ModeEvent ********");
-                            Map<String, Object> map = ((S7ModeEvent) msg).getMap();
-                            map.forEach((x, y) -> { 
-                                System.out.println(x + " : " + y);
-                            });
-                            short currentmode = (short) 
-                                    map.get(S7ModeEvent.Fields.CURRENT_MODE.name());
-                            System.out.println("CURRENT_MODE MSG: " + ModeTransitionType.enumForValue(currentmode).name());
-                            System.out.println("****************************");
+                            events.add((S7Event) msg);
                         });
                 }    
                 
@@ -191,15 +239,7 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> im
                         subresponse
                         .getSubscriptionHandle(FIELD_USER_EVENT)
                         .register(msg -> {
-                            System.out.println("******** S7ModeEvent ********");
-                            Map<String, Object> map = ((S7ModeEvent) msg).getMap();
-                            map.forEach((x, y) -> { 
-                                System.out.println(x + " : " + y);
-                            });
-                            short currentmode = (short) 
-                                    map.get(S7ModeEvent.Fields.CURRENT_MODE.name());
-                            System.out.println("CURRENT_MODE MSG: " + ModeTransitionType.enumForValue(currentmode).name());
-                            System.out.println("****************************");
+                            events.add((S7Event) msg);                            
                         });
                 } 
 
@@ -208,15 +248,7 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> im
                         subresponse
                         .getSubscriptionHandle(FIELD_SYS_EVENT)
                         .register(msg -> {
-                            System.out.println("******** S7ModeEvent ********");
-                            Map<String, Object> map = ((S7ModeEvent) msg).getMap();
-                            map.forEach((x, y) -> { 
-                                System.out.println(x + " : " + y);
-                            });
-                            short currentmode = (short) 
-                                    map.get(S7ModeEvent.Fields.CURRENT_MODE.name());
-                            System.out.println("CURRENT_MODE MSG: " + ModeTransitionType.enumForValue(currentmode).name());
-                            System.out.println("****************************");
+                            events.add((S7Event) msg);                            
                         });
                 } 
 
@@ -225,15 +257,7 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> im
                         subresponse
                         .getSubscriptionHandle(FIELD_ALARM_EVENT)
                         .register(msg -> {
-                            System.out.println("******** S7ModeEvent ********");
-                            Map<String, Object> map = ((S7ModeEvent) msg).getMap();
-                            map.forEach((x, y) -> { 
-                                System.out.println(x + " : " + y);
-                            });
-                            short currentmode = (short) 
-                                    map.get(S7ModeEvent.Fields.CURRENT_MODE.name());
-                            System.out.println("CURRENT_MODE MSG: " + ModeTransitionType.enumForValue(currentmode).name());
-                            System.out.println("****************************");
+                            events.add((S7Event) msg);                            
                         });
                 }                 
 
@@ -256,12 +280,38 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> im
         return false;        
     }
 
+   while (events.size() == 0) {
+        try {          
+            Thread.sleep(100);
+            if (stopBundle) {
+                setOutputDone(); // signal end to receiver(s)
+                return false; 
+            }
+        } catch (InterruptedException ex) {
+            break;
+        }
+   } 
+     
+    S7Event s7event = events.poll();
+    index = 0;
+    r = data.outputRowMeta.cloneRow(data.outputRowData);     
+    for (String name:data.outputRowMeta.getFieldNames()) {
+        System.out.println(name + ": " + s7event.getMap().get(name));
+        if (null != s7event.getMap().get(name)) {
+            r[index++] = s7event.getMap().get(name).toString();
+        } else {
+            try {
+                r[index++] = mapper.writer()
+                                .writeValueAsString(s7event.getMap());
+            } catch (Exception ex) {
+                Logger.getLogger(Plc4xEvent.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
     
-    r = data.outputRowMeta.cloneRow(data.outputRowData); 
-    logBasic("Tamano de los datos: " + r.length);
+
     data.prevDate = data.rowDate;
     data.rowDate = new Date();    
-
 
     putRow(data.outputRowMeta, r ); // return your data
     data.rowsWritten++;
@@ -293,7 +343,9 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> im
             }
 
             data.outputRowData = outputRow.getData();
-            data.outputRowMeta = outputRow.getRowMeta();            
+            data.outputRowMeta = outputRow.getRowMeta();  
+            
+            mapper.findAndRegisterModules();
 
           return true;
         }
@@ -313,8 +365,13 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> im
     public void cleanup() {
         super.cleanup();
         logBasic("Cleanup. Release connection.");
-        if (connwrapper != null)
-        connwrapper.release();     
+        if (null != connwrapper) {
+            if (null != registerMode )  registerMode.unregister();
+            if (null != registerUser)   registerUser.unregister();
+            if (null != registerSys)    registerSys.unregister();
+            if (null != registerAlarm)  registerAlarm.unregister();           
+            connwrapper.release();    
+        }
     }
 
 
@@ -334,10 +391,20 @@ public class Plc4xEvent extends BaseTransform<Plc4xEventMeta, Plc4xEventData> im
             if (!connwrapper.getConnection().isConnected()){           
                 getPipeline().getExtensionDataMap().remove(meta.getConnection());
             }            
-            connwrapper = null;
-            readRequest = null;
+            connwrapper     = null;
+            readRequest     = null;
+            registerMode    = null;
+            registerUser    = null;
+            registerSys     = null;
+            registerAlarm   = null;
 
         }
+    }
+
+    @Override
+    public void stopRunning() throws HopException {
+        super.stopRunning();
+        stopBundle = true;
     }
  
   

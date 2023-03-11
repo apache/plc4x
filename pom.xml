@@ -818,6 +818,8 @@
             <!-- Exclude core dumps-->
             <exclude>**/hs_err_pid*</exclude>
             <exclude>**/replay_pid*</exclude>
+            
+            <exclude>**/*.svg</exclude>
           </excludes>
         </configuration>
       </plugin>

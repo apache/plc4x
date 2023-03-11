@@ -50,7 +50,7 @@ import org.apache.hop.pipeline.transform.ITransform;
 import org.apache.hop.pipeline.transform.TransformMeta;
 import org.apache.plc4x.hop.metadata.Plc4xConnection;
 import org.apache.plc4x.hop.transforms.util.Plc4xGeneratorField;
-import org.apache.plc4x.hop.transforms.util.Plc4xPlcField;
+import org.apache.plc4x.hop.transforms.util.Plc4xPlcTag;
 import org.apache.plc4x.hop.transforms.util.Plc4xWrapperConnection;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
@@ -61,7 +61,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
  * Transform That contains the basic skeleton needed to create your own plugin
  *
  */
-public class Plc4xRead extends BaseTransform<Plc4xReadMeta, Plc4xReadData> implements ITransform {
+public class Plc4xRead extends BaseTransform<Plc4xReadMeta, Plc4xReadData> {
 
   private static final Class<?> PKG = Plc4xRead.class; // Needed by Translator
   
@@ -75,7 +75,7 @@ public class Plc4xRead extends BaseTransform<Plc4xReadMeta, Plc4xReadData> imple
   private static final String dummy = "dummy";
   
   private Map<String, Integer> index = new HashMap();
-  private Map<String, Plc4xPlcField> plcfields = new HashMap();  
+  private Map<String, Plc4xPlcTag> plcfields = new HashMap();  
 
   public Plc4xRead(TransformMeta transformMeta, Plc4xReadMeta meta, Plc4xReadData data, int copyNr, PipelineMeta pipelineMeta,
                 Pipeline pipeline ) {
@@ -89,8 +89,10 @@ public class Plc4xRead extends BaseTransform<Plc4xReadMeta, Plc4xReadData> imple
   * @param remarks Error registers
   * @param origin transform instance name
   */
-  public static final RowMetaAndData buildRow(
-      Plc4xReadMeta meta, List<ICheckResult> remarks, String origin) throws HopPluginException {
+  public static final RowMetaAndData buildRow(Plc4xReadMeta meta, 
+          List<ICheckResult> remarks, 
+          String origin) throws HopPluginException {
+      
     IRowMeta rowMeta = new RowMeta();
     Object[] rowData = RowDataUtil.allocateRowData(meta.getFields().size() + 2);
     int index = 0;
@@ -108,7 +110,7 @@ public class Plc4xRead extends BaseTransform<Plc4xReadMeta, Plc4xReadData> imple
     for (Plc4xGeneratorField field : meta.getFields()) {
       int typeString = ValueMetaFactory.getIdForValueMeta(field.getType());
       if (StringUtils.isNotEmpty(field.getType())) {
-          System.out.println("typeString: " + typeString); 
+ 
         IValueMeta valueMeta =
             ValueMetaFactory.createValueMeta(field.getName(), typeString); // build a
         // value!
@@ -146,7 +148,7 @@ public class Plc4xRead extends BaseTransform<Plc4xReadMeta, Plc4xReadData> imple
             //
             try {
                 System.out.println("stringValue: " + stringValue);
-              rowData[index] = valueMeta.convertData(stringMeta, stringValue);
+                rowData[index] = valueMeta.convertData(stringMeta, stringValue);
             } catch (HopValueException e) {
               switch (valueMeta.getType()) {
                 case IValueMeta.TYPE_NUMBER:
@@ -226,7 +228,6 @@ public class Plc4xRead extends BaseTransform<Plc4xReadMeta, Plc4xReadData> imple
         index++;
       }
     }
-
     return new RowMetaAndData(rowMeta, rowData);
   }
   
@@ -238,17 +239,18 @@ public class Plc4xRead extends BaseTransform<Plc4xReadMeta, Plc4xReadData> imple
   * 4. Register the connection wrapper for global access.
   * 5. If the connection to the PLC is made, then it creates the query 
   *    and executes it.
-  *
+  * TODO: Field validation.
   */
   @Override
   public  boolean processRow() throws HopException {
+  
     Object[] r = getRow(); // Get row from input rowset & set row busy!
     setLogLevel(LogLevel.DEBUG);
     
     if ((!meta.isNeverEnding() && data.rowsWritten >= data.rowLimit) && !isStopped()) {   
       setOutputDone(); // signal end to receiver(s)
       return false;        
-    }    
+    }
     
     if (first) {
         index.clear();
@@ -256,7 +258,7 @@ public class Plc4xRead extends BaseTransform<Plc4xReadMeta, Plc4xReadData> imple
         //This performs a minimal check on the user item.
         //It guarantees that the rates are within those managed by Plc4x.
         meta.getFields().forEach((f) ->{
-            plcfields.put(f.getName(),Plc4xPlcField.of(f.getItem()));
+            plcfields.put(f.getName(),Plc4xPlcTag.of(f.getItem()));
         });
         first = false;
     }    
@@ -282,10 +284,12 @@ public class Plc4xRead extends BaseTransform<Plc4xReadMeta, Plc4xReadData> imple
             readRequest = null;
             try{
                 PlcConnection conn =  new DefaultPlcDriverManager().getConnection(connmeta.getUrl()); //(03)
+                
                 if (conn.isConnected()) {
                     connwrapper = new Plc4xWrapperConnection(conn);            
                     getPipeline().getExtensionDataMap().put(meta.getConnection(), connwrapper); //(04)
                 }
+
             } catch (Exception ex){
                 setErrors(1L);
                 logError("Unable to create connection to PLC. " + ex.getMessage());
@@ -342,7 +346,7 @@ public class Plc4xRead extends BaseTransform<Plc4xReadMeta, Plc4xReadData> imple
     }
     
     r = data.outputRowMeta.cloneRow(data.outputRowData); 
-    logBasic("Tamano de los datos: " + r.length);
+
     data.prevDate = data.rowDate;
     data.rowDate = new Date();    
     int index = 0;

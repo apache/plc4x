@@ -49,7 +49,7 @@ import org.apache.hop.pipeline.transform.ITransform;
 import org.apache.hop.pipeline.transform.TransformMeta;
 import org.apache.plc4x.hop.metadata.Plc4xConnection;
 import org.apache.plc4x.hop.transforms.util.Plc4xGeneratorField;
-import org.apache.plc4x.hop.transforms.util.Plc4xPlcField;
+import org.apache.plc4x.hop.transforms.util.Plc4xPlcTag;
 import org.apache.plc4x.hop.transforms.util.Plc4xWrapperConnection;
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
@@ -60,7 +60,7 @@ import org.apache.plc4x.java.api.messages.PlcWriteResponse;
  * Transform That contains the basic skeleton needed to create your own plugin
  *
  */
-public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> implements ITransform {
+public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> {
 
   private static final Class<?> PKG = Plc4xWrite.class; // Needed by Translator
   
@@ -75,7 +75,7 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> im
   private static final String dummy = "dummy";
   
   private Map<String, Integer> index = new HashMap();
-  private Map<String, Plc4xPlcField> plcfields = new HashMap();  
+  private Map<String, Plc4xPlcTag> plcfields = new HashMap();  
 
   public Plc4xWrite(TransformMeta transformMeta, Plc4xWriteMeta meta, Plc4xWriteData data, int copyNr, PipelineMeta pipelineMeta,
                 Pipeline pipeline ) {
@@ -108,7 +108,6 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> im
     for (Plc4xGeneratorField field : meta.getFields()) {
       int typeString = ValueMetaFactory.getIdForValueMeta(field.getType());
       if (StringUtils.isNotEmpty(field.getType())) {
-          System.out.println("typeString: " + typeString); 
         IValueMeta valueMeta =
             ValueMetaFactory.createValueMeta(field.getName(), typeString); // build a
         // value!
@@ -145,7 +144,6 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> im
             // Convert the data from String to the specified type ...
             //
             try {
-                System.out.println("stringValue: " + stringValue);
               rowData[index] = valueMeta.convertData(stringMeta, stringValue);
             } catch (HopValueException e) {
               switch (valueMeta.getType()) {
@@ -261,7 +259,7 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> im
             Integer i = getInputRowMeta().indexOfValue(f.getName()); //(01)
             if (i>=0) {
                 index.put(f.getName(), i);
-                plcfields.put(f.getName(),Plc4xPlcField.of(f.getItem()));
+                plcfields.put(f.getName(),Plc4xPlcTag.of(f.getItem()));
             }
         });
         first = false;
@@ -309,14 +307,15 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> im
     } finally {
         lock.unlock();
     }
-    
+
     if ((connmeta != null) && (connwrapper != null)){
         if (connwrapper.getConnection().isConnected()){
-            
+
             builder = null;
             builder = connwrapper.getConnection().writeRequestBuilder(); //(05)
             Integer i;
             for (Plc4xGeneratorField field: meta.getFields()){
+
                 i = index.get(field.getName());
                 if (i != null) {
                     //From Input Type
@@ -329,7 +328,7 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> im
                         case IValueMeta.TYPE_BIGNUMBER: 
                             builder.addTagAddress(field.getName(), 
                                 field.getItem(),
-                                r[i]);                            
+                                r[i]);    
                             break;
                         case IValueMeta.TYPE_DATE:
                             builder.addTagAddress(field.getName(), 
@@ -369,13 +368,14 @@ public class Plc4xWrite extends BaseTransform<Plc4xWriteMeta, Plc4xWriteData> im
                 maxwait = (maxwait<100)?100:maxwait;
                 writeResponse = writeRequest.execute().get(maxwait, TimeUnit.MILLISECONDS);
 
+                if (isDebug())
                 index.forEach((n,y)->{
-                    System.out.println("Resultado: " + writeResponse.getResponseCode(n));
+                    logDebug("Result: " + writeResponse.getResponseCode(n));
                 });
 
             } catch (Exception ex) {
                 setErrors(1L);                
-                logError("Unable read from PLC. " + ex.getMessage());
+                logError("Unable write to PLC. " + ex.getMessage());
             }
             
         } else {

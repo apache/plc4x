@@ -204,7 +204,7 @@ public class Plc4xEventDialog extends BaseTransformDialog implements ITransformD
     * Mode Events
     ********************/
     Label wlModeEvent = new Label(shell, SWT.RIGHT);
-    wlModeEvent.setText(BaseMessages.getString(PKG, "Plc4x.Read.Meta.Dialog.NeverEnding.Label"));
+    wlModeEvent.setText(BaseMessages.getString(PKG, "Plc4x.Read.Meta.Dialog.ModeEvent.Label"));
     props.setLook(wlModeEvent);
     FormData fdlModeEvent = new FormData();
     fdlModeEvent.left = new FormAttachment(0, 0);
@@ -233,7 +233,7 @@ public class Plc4xEventDialog extends BaseTransformDialog implements ITransformD
     * User Events
     ********************/
     Label wlUserEvent = new Label(shell, SWT.RIGHT);
-    wlUserEvent.setText(BaseMessages.getString(PKG, "Plc4x.Read.Meta.Dialog.NeverEnding.Label"));
+    wlUserEvent.setText(BaseMessages.getString(PKG, "Plc4x.Read.Meta.Dialog.UserEvent.Label"));
     props.setLook(wlUserEvent);
     FormData fdlUserEvent = new FormData();
     fdlUserEvent.left = new FormAttachment(0, 0);
@@ -262,7 +262,7 @@ public class Plc4xEventDialog extends BaseTransformDialog implements ITransformD
     * Sys Events
     ********************/
     Label wlSysEvent = new Label(shell, SWT.RIGHT);
-    wlSysEvent.setText(BaseMessages.getString(PKG, "Plc4x.Read.Meta.Dialog.NeverEnding.Label"));
+    wlSysEvent.setText(BaseMessages.getString(PKG, "Plc4x.Read.Meta.Dialog.SysEvent.Label"));
     props.setLook(wlSysEvent);
     FormData fdlSysEvent = new FormData();
     fdlSysEvent.left = new FormAttachment(0, 0);
@@ -291,7 +291,7 @@ public class Plc4xEventDialog extends BaseTransformDialog implements ITransformD
     * Alarm Events
     ********************/
     Label wlAlarmEvent = new Label(shell, SWT.RIGHT);
-    wlAlarmEvent.setText(BaseMessages.getString(PKG, "Plc4x.Read.Meta.Dialog.NeverEnding.Label"));
+    wlAlarmEvent.setText(BaseMessages.getString(PKG, "Plc4x.Read.Meta.Dialog.AlarmEvent.Label"));
     props.setLook(wlAlarmEvent);
     FormData fdlAlarmEvent = new FormData();
     fdlAlarmEvent.left = new FormAttachment(0, 0);
@@ -544,6 +544,10 @@ public class Plc4xEventDialog extends BaseTransformDialog implements ITransformD
     wLimit.setText(input.getRowLimit());
     wNeverEnding.setSelection(input.isNeverEnding());
 
+    wModeEvent.setSelection(input.isModeEvent());
+    wUserEvent.setSelection(input.isUserEvent());
+    wSysEvent.setSelection(input.isSysEvent());
+    wAlarmEvent.setSelection(input.isAlarmEvent());
 
     setActive();
 
@@ -560,6 +564,11 @@ public class Plc4xEventDialog extends BaseTransformDialog implements ITransformD
     meta.setConnection(wConnection.getText());
     meta.setRowLimit(wLimit.getText());
     meta.setNeverEnding(wNeverEnding.getSelection());
+    
+    meta.setModeEvent(wModeEvent.getSelection());
+    meta.setUserEvent(wUserEvent.getSelection());
+    meta.setSysEvent(wSysEvent.getSelection());
+    meta.setAlarmEvent(wAlarmEvent.getSelection());
 
   }
 

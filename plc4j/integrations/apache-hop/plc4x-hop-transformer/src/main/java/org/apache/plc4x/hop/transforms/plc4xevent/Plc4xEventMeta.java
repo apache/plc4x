@@ -49,7 +49,7 @@ import org.apache.hop.pipeline.transform.TransformIOMeta;
         categoryDescription = "i18n:org.apache.plc4x.hop.transforms.plc4xevent:Plc4x.Category.plc4x",
         documentationUrl = "https://plc4x.apache.org/users/integrations/apache-hop.html"
 )
-public class Plc4xEventMeta extends BaseTransformMeta implements ITransformMeta {
+public class Plc4xEventMeta extends BaseTransformMeta<Plc4xEvent, Plc4xEventData> {
 
   private static final Class<?> PKG = Plc4xEventMeta.class; // Needed by Translator
 
@@ -70,23 +70,23 @@ public class Plc4xEventMeta extends BaseTransformMeta implements ITransformMeta 
   private boolean neverEnding;
   
   @HopMetadataProperty(
-      key = "never_ending",
-      injectionKeyDescription = "Plc4x.Read.Meta.Injection.NeverEnding")
+      key = "mode_event",
+      injectionKeyDescription = "Plc4x.Read.Meta.Injection.ModeEvent")
   private boolean modeEvent;
 
   @HopMetadataProperty(
-      key = "never_ending",
-      injectionKeyDescription = "Plc4x.Read.Meta.Injection.NeverEnding")
+      key = "user_event",
+      injectionKeyDescription = "Plc4x.Read.Meta.Injection.UserEvent")
   private boolean userEvent;
 
   @HopMetadataProperty(
-      key = "never_ending",
-      injectionKeyDescription = "Plc4x.Read.Meta.Injection.NeverEnding")
+      key = "sys_event",
+      injectionKeyDescription = "Plc4x.Read.Meta.Injection.SysEvent")
   private boolean sysEvent;
 
   @HopMetadataProperty(
-      key = "never_ending",
-      injectionKeyDescription = "Plc4x.Read.Meta.Injection.NeverEnding")
+      key = "alarm_event",
+      injectionKeyDescription = "Plc4x.Read.Meta.Injection.AlarmEvent")
   private boolean alarmEvent;  
 
 
@@ -205,7 +205,7 @@ public class Plc4xEventMeta extends BaseTransformMeta implements ITransformMeta 
   }
   
   public boolean isModeEvent() {
-    return neverEnding;
+    return modeEvent;
   }
 
   public void setModeEvent(boolean modeEvent) {
@@ -213,7 +213,7 @@ public class Plc4xEventMeta extends BaseTransformMeta implements ITransformMeta 
   }
   
   public boolean isUserEvent() {
-    return neverEnding;
+    return userEvent;
   }
 
   public void setUserEvent(boolean userEvent) {
