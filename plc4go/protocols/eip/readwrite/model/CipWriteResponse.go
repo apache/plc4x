@@ -60,7 +60,15 @@ type _CipWriteResponse struct {
 ///////////////////////
 
 func (m *_CipWriteResponse) GetService() uint8 {
-	return 0xCD
+	return 0x4D
+}
+
+func (m *_CipWriteResponse) GetResponse() bool {
+	return bool(true)
+}
+
+func (m *_CipWriteResponse) GetConnected() bool {
+	return false
 }
 
 ///////////////////////
@@ -137,11 +145,11 @@ func (m *_CipWriteResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipWriteResponseParse(theBytes []byte, serviceLen uint16) (CipWriteResponse, error) {
-	return CipWriteResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceLen)
+func CipWriteResponseParse(theBytes []byte, connected bool, serviceLen uint16) (CipWriteResponse, error) {
+	return CipWriteResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipWriteResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceLen uint16) (CipWriteResponse, error) {
+func CipWriteResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipWriteResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipWriteResponse"); pullErr != nil {

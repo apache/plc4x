@@ -413,8 +413,8 @@ func (m *Connection) createCOTPConnectionRequest() readWriteModel.COTPPacket {
 		0x000F,
 		readWriteModel.COTPProtocolClass_CLASS_0,
 		[]readWriteModel.COTPParameter{
-			readWriteModel.NewCOTPParameterCalledTsap(m.driverContext.CalledTsapId, 0),
 			readWriteModel.NewCOTPParameterCallingTsap(m.driverContext.CallingTsapId, 0),
+			readWriteModel.NewCOTPParameterCalledTsap(m.driverContext.CalledTsapId, 0),
 			readWriteModel.NewCOTPParameterTpduSize(m.driverContext.CotpTpduSize, 0),
 		},
 		nil,

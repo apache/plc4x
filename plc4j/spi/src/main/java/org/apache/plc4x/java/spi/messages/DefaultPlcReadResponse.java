@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
@@ -40,15 +39,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
 
     private final PlcReadRequest request;
     private final Map<String, ResponseItem<PlcValue>> values;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcReadResponse(@JsonProperty("request") PlcReadRequest request,
-                                  @JsonProperty("values") Map<String, ResponseItem<PlcValue>> values) {
+    public DefaultPlcReadResponse(PlcReadRequest request,
+                                  Map<String, ResponseItem<PlcValue>> values) {
         this.request = request;
         this.values = values;
     }
@@ -59,7 +56,6 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public PlcValue getAsPlcValue() {
         Map<String, PlcValue> structMap = new HashMap<>();
         for (String tagName : request.getTagNames()) {
@@ -70,13 +66,11 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public PlcValue getPlcValue(String name) {
         return values.getOrDefault(name, new ResponseItem<>(null, null)).getValue();
     }
 
     @Override
-    @JsonIgnore
     public int getNumberOfValues(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -88,19 +82,16 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public Collection<String> getTagNames() {
         return request.getTagNames();
     }
 
     @Override
-    @JsonIgnore
     public PlcTag getTag(String name) {
         return request.getTag(name);
     }
 
     @Override
-    @JsonIgnore
     public PlcResponseCode getResponseCode(String name) {
         if (values.get(name) == null) {
             throw new PlcInvalidTagException(name);
@@ -108,13 +99,11 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
         return values.get(name).getCode();
     }
 
-    @JsonIgnore
     public Map<String, ResponseItem<PlcValue>> getValues() {
         return values;
     }
 
     @Override
-    @JsonIgnore
     public Object getObject(String name) {
         if(getTagInternal(name) != null) {
             return getTagInternal(name).getObject();
@@ -123,7 +112,6 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public Object getObject(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         if(tagInternal != null) {
@@ -133,7 +121,6 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public Collection<Object> getAllObjects(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -148,33 +135,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidBoolean(String name) {
         return isValidBoolean(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidBoolean(String name, int index) {
         PlcValue tagInternal = getTagInternal(name);
         return tagInternal.isBoolean();
     }
 
     @Override
-    @JsonIgnore
     public Boolean getBoolean(String name) {
         return getBoolean(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public Boolean getBoolean(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getBoolean();
     }
 
     @Override
-    @JsonIgnore
     public Collection<Boolean> getAllBooleans(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -189,33 +171,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidByte(String name) {
         return isValidByte(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidByte(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isByte();
     }
 
     @Override
-    @JsonIgnore
     public Byte getByte(String name) {
         return getByte(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public Byte getByte(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getByte();
     }
 
     @Override
-    @JsonIgnore
     public Collection<Byte> getAllBytes(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -230,33 +207,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidShort(String name) {
         return isValidShort(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidShort(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isShort();
     }
 
     @Override
-    @JsonIgnore
     public Short getShort(String name) {
         return getShort(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public Short getShort(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getShort();
     }
 
     @Override
-    @JsonIgnore
     public Collection<Short> getAllShorts(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -271,33 +243,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidInteger(String name) {
         return isValidInteger(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidInteger(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isInteger();
     }
 
     @Override
-    @JsonIgnore
     public Integer getInteger(String name) {
         return getInteger(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public Integer getInteger(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getInteger();
     }
 
     @Override
-    @JsonIgnore
     public Collection<Integer> getAllIntegers(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -312,33 +279,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidBigInteger(String name) {
         return isValidBigInteger(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidBigInteger(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isBigInteger();
     }
 
     @Override
-    @JsonIgnore
     public BigInteger getBigInteger(String name) {
         return getBigInteger(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public BigInteger getBigInteger(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getBigInteger();
     }
 
     @Override
-    @JsonIgnore
     public Collection<BigInteger> getAllBigIntegers(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -353,33 +315,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidLong(String name) {
         return isValidLong(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidLong(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isLong();
     }
 
     @Override
-    @JsonIgnore
     public Long getLong(String name) {
         return getLong(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public Long getLong(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getLong();
     }
 
     @Override
-    @JsonIgnore
     public Collection<Long> getAllLongs(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -394,33 +351,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidFloat(String name) {
         return isValidFloat(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidFloat(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isFloat();
     }
 
     @Override
-    @JsonIgnore
     public Float getFloat(String name) {
         return getFloat(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public Float getFloat(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getFloat();
     }
 
     @Override
-    @JsonIgnore
     public Collection<Float> getAllFloats(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -435,33 +387,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidDouble(String name) {
         return isValidDouble(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidDouble(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isDouble();
     }
 
     @Override
-    @JsonIgnore
     public Double getDouble(String name) {
         return getDouble(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public Double getDouble(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getDouble();
     }
 
     @Override
-    @JsonIgnore
     public Collection<Double> getAllDoubles(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -476,33 +423,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidBigDecimal(String name) {
         return isValidBigDecimal(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidBigDecimal(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isBigDecimal();
     }
 
     @Override
-    @JsonIgnore
     public BigDecimal getBigDecimal(String name) {
         return getBigDecimal(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public BigDecimal getBigDecimal(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getBigDecimal();
     }
 
     @Override
-    @JsonIgnore
     public Collection<BigDecimal> getAllBigDecimals(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -517,33 +459,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidString(String name) {
         return isValidString(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidString(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isString();
     }
 
     @Override
-    @JsonIgnore
     public String getString(String name) {
         return getString(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public String getString(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getString();
     }
 
     @Override
-    @JsonIgnore
     public Collection<String> getAllStrings(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -558,33 +495,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidTime(String name) {
         return isValidTime(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidTime(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isTime();
     }
 
     @Override
-    @JsonIgnore
     public LocalTime getTime(String name) {
         return getTime(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public LocalTime getTime(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getTime();
     }
 
     @Override
-    @JsonIgnore
     public Collection<LocalTime> getAllTimes(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -599,33 +531,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidDate(String name) {
         return isValidDate(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidDate(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isDate();
     }
 
     @Override
-    @JsonIgnore
     public LocalDate getDate(String name) {
         return getDate(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public LocalDate getDate(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getDate();
     }
 
     @Override
-    @JsonIgnore
     public Collection<LocalDate> getAllDates(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -640,33 +567,28 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidDateTime(String name) {
         return isValidDateTime(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isValidDateTime(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.isDateTime();
     }
 
     @Override
-    @JsonIgnore
     public LocalDateTime getDateTime(String name) {
         return getDateTime(name, 0);
     }
 
     @Override
-    @JsonIgnore
     public LocalDateTime getDateTime(String name, int index) {
         PlcValue tagInternal = getTagIndexInternal(name, index);
         return tagInternal.getDateTime();
     }
 
     @Override
-    @JsonIgnore
     public Collection<LocalDateTime> getAllDateTimes(String name) {
         PlcValue tagInternal = getTagInternal(name);
         if(tagInternal instanceof PlcList) {
@@ -680,12 +602,10 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
         return Collections.singletonList(tagInternal.getDateTime());
     }
 
-    @JsonAnySetter
     public void add(String key, ResponseItem<PlcValue> value) {
         values.put(key, value);
     }
 
-    @JsonAnyGetter
     public Map<String, ResponseItem<PlcValue>> getMap() {
         return values;
     }

@@ -91,7 +91,6 @@
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
             <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.knxnetip.KnxNetIpDriver</Export-Service>
             <Import-Package>
-              com.fasterxml.jackson.annotation;resolution:=optional,
               *
             </Import-Package>
           </instructions>
@@ -178,17 +177,6 @@
       <groupId>org.apache.plc4x</groupId>
       <artifactId>plc4j-utils-test-utils</artifactId>
       <version>0.11.0-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
       <scope>test</scope>
     </dependency>
 

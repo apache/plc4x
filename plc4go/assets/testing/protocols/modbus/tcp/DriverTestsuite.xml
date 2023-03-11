@@ -432,13 +432,13 @@
                   <numberOfElements dataType="uint" bitLength="16">1</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusTagHoldingRegister>
-                <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
+                <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
               </hurz>
             </tags>
           </PlcWriteRequest>
-          <tags>
+          <responseCodes>
             <hurz dataType="string" bitLength="16" encoding="UTF-8">OK</hurz>
-          </tags>
+          </responseCodes>
         </PlcWriteResponse>
       </api-response>
     </steps>
@@ -519,14 +519,16 @@
                   <numberOfElements dataType="uint" bitLength="16">2</numberOfElements>
                   <dataType dataType="string" bitLength="32" encoding="UTF-8">REAL</dataType>
                 </ModbusTagHoldingRegister>
-                <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
-                <value dataType="string" bitLength="72" encoding="UTF-8">3.1415927</value>
+                <PlcList>
+                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                  <PlcREAL dataType="float" bitLength="32">3.1415927410125732</PlcREAL>
+                </PlcList>
               </hurz>
             </tags>
           </PlcWriteRequest>
-          <tags>
+          <responseCodes>
             <hurz dataType="string" bitLength="16" encoding="UTF-8">OK</hurz>
-          </tags>
+          </responseCodes>
         </PlcWriteResponse>
       </api-response>
     </steps>

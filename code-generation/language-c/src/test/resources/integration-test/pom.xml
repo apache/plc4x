@@ -241,7 +241,6 @@
           <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.protocol.test
           </Export-Service>
           <Import-Package>
-            com.fasterxml.jackson.annotation;resolution:=optional,
             *
           </Import-Package>
         </instructions>

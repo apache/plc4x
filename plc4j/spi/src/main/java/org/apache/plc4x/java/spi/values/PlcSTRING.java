@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -31,7 +27,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcSTRING extends PlcSimpleValue<String> {
 
     public static PlcSTRING of(Object value) {
@@ -41,8 +36,7 @@ public class PlcSTRING extends PlcSimpleValue<String> {
         return new PlcSTRING(String.valueOf(value));
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcSTRING(@JsonProperty("value") String value) {
+    public PlcSTRING(String value) {
         super(value, true);
     }
 
@@ -52,19 +46,16 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     @SuppressWarnings("all")
     public boolean isBoolean() {
         try {
@@ -76,13 +67,11 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    @JsonIgnore
     public boolean getBoolean() {
         return Boolean.parseBoolean(value);
     }
 
     @Override
-    @JsonIgnore
     @SuppressWarnings("all")
     public boolean isByte() {
         try {
@@ -94,13 +83,11 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    @JsonIgnore
     public byte getByte() {
         return Byte.parseByte(value);
     }
 
     @Override
-    @JsonIgnore
     @SuppressWarnings("all")
     public boolean isShort() {
         try {
@@ -112,13 +99,11 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    @JsonIgnore
     public short getShort() {
         return Short.parseShort(value);
     }
 
     @Override
-    @JsonIgnore
     public boolean isInteger() {
         try {
             Integer.parseInt(value);
@@ -129,13 +114,11 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    @JsonIgnore
     public int getInteger() {
         return Integer.parseInt(value);
     }
 
     @Override
-    @JsonIgnore
     public boolean isLong() {
         try {
             Long.parseLong(value);
@@ -146,13 +129,11 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    @JsonIgnore
     public long getLong() {
         return Long.parseLong(value);
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigInteger() {
         try {
             new BigInteger(value);
@@ -163,13 +144,11 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    @JsonIgnore
     public BigInteger getBigInteger() {
         return new BigInteger(value);
     }
 
     @Override
-    @JsonIgnore
     public boolean isFloat() {
         try {
             Float.parseFloat(value);
@@ -180,13 +159,11 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    @JsonIgnore
     public float getFloat() {
         return Float.parseFloat(value);
     }
 
     @Override
-    @JsonIgnore
     public boolean isDouble() {
         try {
             Double.parseDouble(value);
@@ -197,13 +174,11 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    @JsonIgnore
     public double getDouble() {
         return Double.parseDouble(value);
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigDecimal() {
         try {
             new BigDecimal(value);
@@ -214,19 +189,16 @@ public class PlcSTRING extends PlcSimpleValue<String> {
     }
 
     @Override
-    @JsonIgnore
     public BigDecimal getBigDecimal() {
         return new BigDecimal(value);
     }
 
     @Override
-    @JsonIgnore
     public int getLength() {
         return value.length();
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return "\"" + value + "\"";
     }

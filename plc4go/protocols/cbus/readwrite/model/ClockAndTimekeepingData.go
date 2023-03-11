@@ -56,6 +56,8 @@ type _ClockAndTimekeepingData struct {
 type _ClockAndTimekeepingDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetCommandType() ClockAndTimekeepingCommandType
+	GetArgument() byte
 }
 
 type ClockAndTimekeepingDataParent interface {

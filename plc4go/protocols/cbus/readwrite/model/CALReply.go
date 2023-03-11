@@ -58,6 +58,7 @@ type _CALReply struct {
 type _CALReplyChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetCalType() byte
 }
 
 type CALReplyParent interface {

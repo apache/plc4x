@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -61,12 +60,20 @@ func (m *_EipConnectionRequest) GetCommand() uint16 {
 	return 0x0065
 }
 
+func (m *_EipConnectionRequest) GetResponse() bool {
+	return bool(false)
+}
+
+func (m *_EipConnectionRequest) GetPacketLength() uint16 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_EipConnectionRequest) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
+func (m *_EipConnectionRequest) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32) {
 	m.SessionHandle = sessionHandle
 	m.Status = status
 	m.SenderContext = senderContext
@@ -96,7 +103,7 @@ func (m *_EipConnectionRequest) GetFlags() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewEipConnectionRequest factory function for _EipConnectionRequest
-func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_EipConnectionRequest {
+func NewEipConnectionRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipConnectionRequest {
 	_result := &_EipConnectionRequest{
 		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
@@ -135,11 +142,11 @@ func (m *_EipConnectionRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipConnectionRequestParse(theBytes []byte) (EipConnectionRequest, error) {
-	return EipConnectionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func EipConnectionRequestParse(theBytes []byte, response bool) (EipConnectionRequest, error) {
+	return EipConnectionRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func EipConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EipConnectionRequest, error) {
+func EipConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipConnectionRequest"); pullErr != nil {
@@ -179,7 +186,7 @@ func EipConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 }
 
 func (m *_EipConnectionRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

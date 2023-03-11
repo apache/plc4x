@@ -62,6 +62,7 @@ type _BACnetLogData struct {
 type _BACnetLogDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetLogDataParent interface {

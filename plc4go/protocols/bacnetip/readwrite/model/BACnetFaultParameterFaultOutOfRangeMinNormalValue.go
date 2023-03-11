@@ -62,6 +62,7 @@ type _BACnetFaultParameterFaultOutOfRangeMinNormalValue struct {
 type _BACnetFaultParameterFaultOutOfRangeMinNormalValueChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetFaultParameterFaultOutOfRangeMinNormalValueParent interface {

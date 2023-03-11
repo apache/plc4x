@@ -18,16 +18,11 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcRawByteArray extends PlcIECValue<byte[]> {
 
     public static PlcRawByteArray of(Object value) {
@@ -37,8 +32,7 @@ public class PlcRawByteArray extends PlcIECValue<byte[]> {
         throw new IllegalArgumentException("Only byte[] supported here");
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcRawByteArray(@JsonProperty("value")byte[] value) {
+    public PlcRawByteArray(byte[] value) {
         this.value = value;
         this.isNullable = false;
     }
@@ -49,12 +43,10 @@ public class PlcRawByteArray extends PlcIECValue<byte[]> {
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return Hex.encodeHexString(value);
     }
 
-    @JsonIgnore
     public byte[] getBytes() {
         return value;
     }

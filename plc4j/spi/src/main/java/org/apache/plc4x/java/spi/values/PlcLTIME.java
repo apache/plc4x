@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -33,7 +29,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcLTIME extends PlcSimpleValue<Duration> {
 
     public static PlcLTIME of(Object value) {
@@ -59,16 +54,15 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
         return new PlcLTIME(Duration.ofNanos(nanoseconds.longValue()));
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLTIME(@JsonProperty("value") Duration value) {
+    public PlcLTIME(Duration value) {
         super(value, true);
     }
 
-    public PlcLTIME(@JsonProperty("value") long nanoseconds) {
+    public PlcLTIME(long nanoseconds) {
         super(Duration.ofNanos(nanoseconds), true);
     }
 
-    public PlcLTIME(@JsonProperty("value") BigInteger nanoseconds) {
+    public PlcLTIME(BigInteger nanoseconds) {
         // TODO: Not 100% correct, we're loosing precision here
         super(Duration.ofNanos(nanoseconds.longValue()), true);
     }
@@ -98,7 +92,6 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
@@ -129,13 +122,11 @@ public class PlcLTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }

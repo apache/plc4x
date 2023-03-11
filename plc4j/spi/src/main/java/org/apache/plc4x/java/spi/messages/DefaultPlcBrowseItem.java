@@ -18,9 +18,6 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -32,7 +29,6 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
 
     private final PlcTag tag;
@@ -47,14 +43,13 @@ public class DefaultPlcBrowseItem implements PlcBrowseItem, Serializable {
 
     private final Map<String, PlcValue> options;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcBrowseItem(@JsonProperty("tag") PlcTag tag,
-                                @JsonProperty("name") String name,
-                                @JsonProperty("readable") boolean readable,
-                                @JsonProperty("writable") boolean writable,
-                                @JsonProperty("subscribable") boolean subscribable,
-                                @JsonProperty("children") Map<String, PlcBrowseItem> children,
-                                @JsonProperty("options") Map<String, PlcValue> options) {
+    public DefaultPlcBrowseItem(PlcTag tag,
+                                String name,
+                                boolean readable,
+                                boolean writable,
+                                boolean subscribable,
+                                Map<String, PlcBrowseItem> children,
+                                Map<String, PlcValue> options) {
         this.tag = tag;
         this.name = name;
         this.readable = readable;

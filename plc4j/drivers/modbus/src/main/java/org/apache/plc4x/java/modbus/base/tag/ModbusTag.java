@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.modbus.base.tag;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.model.ArrayInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
@@ -122,7 +121,6 @@ public abstract class ModbusTag implements PlcTag, Serializable {
         return quantity * dataType.getDataTypeSize();
     }
 
-    @JsonIgnore
     public int getLengthWords() {
         return (int) ((quantity * (float) dataType.getDataTypeSize()) / 2.0f);
     }

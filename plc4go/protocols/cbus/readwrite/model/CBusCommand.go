@@ -58,6 +58,8 @@ type _CBusCommand struct {
 type _CBusCommandChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetDestinationAddressType() DestinationAddressType
+	GetIsDeviceManagement() bool
 }
 
 type CBusCommandParent interface {

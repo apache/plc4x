@@ -92,7 +92,6 @@
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
             <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.modbus.tcp.ModbusTcpDriver</Export-Service>
             <Import-Package>
-              com.fasterxml.jackson.annotation;resolution:=optional,
               *
             </Import-Package>
           </instructions>
@@ -149,10 +148,6 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>

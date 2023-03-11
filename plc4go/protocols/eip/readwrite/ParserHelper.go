@@ -34,26 +34,60 @@ type EipParserHelper struct {
 
 func (m EipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
 	switch typeName {
-	case "CipService":
-		serviceLen, err := utils.StrToUint16(arguments[0])
+	case "PathSegment":
+		return model.PathSegmentParseWithBuffer(context.Background(), io)
+	case "TransportType":
+		return model.TransportTypeParseWithBuffer(context.Background(), io)
+	case "PortSegmentType":
+		return model.PortSegmentTypeParseWithBuffer(context.Background(), io)
+	case "NetworkConnectionParameters":
+		return model.NetworkConnectionParametersParseWithBuffer(context.Background(), io)
+	case "TypeId":
+		return model.TypeIdParseWithBuffer(context.Background(), io)
+	case "InstanceSegment":
+		return model.InstanceSegmentParseWithBuffer(context.Background(), io)
+	case "CIPData":
+		packetLength, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
-		return model.CipServiceParseWithBuffer(context.Background(), io, serviceLen)
+		return model.CIPDataParseWithBuffer(context.Background(), io, packetLength)
+	case "ClassSegment":
+		return model.ClassSegmentParseWithBuffer(context.Background(), io)
 	case "EipPacket":
-		return model.EipPacketParseWithBuffer(context.Background(), io)
+		response, err := utils.StrToBool(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.EipPacketParseWithBuffer(context.Background(), io, response)
+	case "CIPAttributes":
+		packetLength, err := utils.StrToUint16(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.CIPAttributesParseWithBuffer(context.Background(), io, packetLength)
+	case "CipService":
+		connected, err := utils.StrToBool(arguments[0])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		serviceLen, err := utils.StrToUint16(arguments[1])
+		if err != nil {
+			return nil, errors.Wrap(err, "Error parsing")
+		}
+		return model.CipServiceParseWithBuffer(context.Background(), io, connected, serviceLen)
 	case "Services":
 		servicesLen, err := utils.StrToUint16(arguments[0])
 		if err != nil {
 			return nil, errors.Wrap(err, "Error parsing")
 		}
 		return model.ServicesParseWithBuffer(context.Background(), io, servicesLen)
-	case "CipExchange":
-		exchangeLen, err := utils.StrToUint16(arguments[0])
-		if err != nil {
-			return nil, errors.Wrap(err, "Error parsing")
-		}
-		return model.CipExchangeParseWithBuffer(context.Background(), io, exchangeLen)
+	case "LogicalSegmentType":
+		return model.LogicalSegmentTypeParseWithBuffer(context.Background(), io)
+	case "DataSegmentType":
+		return model.DataSegmentTypeParseWithBuffer(context.Background(), io)
+	case "CIPDataConnected":
+		return model.CIPDataConnectedParseWithBuffer(context.Background(), io)
 	}
 	return nil, errors.Errorf("Unsupported type %s", typeName)
 }

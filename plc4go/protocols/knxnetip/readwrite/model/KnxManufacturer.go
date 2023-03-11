@@ -632,7 +632,7 @@ const (
 	KnxManufacturer_M_DELTA_ELECTRONICS                                  KnxManufacturer = 592
 	KnxManufacturer_M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_     KnxManufacturer = 593
 	KnxManufacturer_M_KG_POWER                                           KnxManufacturer = 594
-	KnxManufacturer_M_ZHEJIANG_MOORGEN_INTELLIGENT_TECHNOLOGY_CO___LTD   KnxManufacturer = 595
+	KnxManufacturer_M_ZHEJIANG_MOORGEN_GROUP_CO__LTD                     KnxManufacturer = 595
 	KnxManufacturer_M_GUANGDONG_KANWAY                                   KnxManufacturer = 596
 	KnxManufacturer_M_RAMIREZ_ENGINEERING_GMBH                           KnxManufacturer = 597
 	KnxManufacturer_M_ZHONGSHAN_TAIYANG_IMPANDEXP__CO_LTD                KnxManufacturer = 598
@@ -1255,7 +1255,7 @@ func init() {
 		KnxManufacturer_M_DELTA_ELECTRONICS,
 		KnxManufacturer_M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_,
 		KnxManufacturer_M_KG_POWER,
-		KnxManufacturer_M_ZHEJIANG_MOORGEN_INTELLIGENT_TECHNOLOGY_CO___LTD,
+		KnxManufacturer_M_ZHEJIANG_MOORGEN_GROUP_CO__LTD,
 		KnxManufacturer_M_GUANGDONG_KANWAY,
 		KnxManufacturer_M_RAMIREZ_ENGINEERING_GMBH,
 		KnxManufacturer_M_ZHONGSHAN_TAIYANG_IMPANDEXP__CO_LTD,
@@ -5969,7 +5969,7 @@ func (e KnxManufacturer) Name() string {
 		}
 	case 595:
 		{ /* '595' */
-			return "Zhejiang Moorgen Intelligent Technology Co., Ltd"
+			return "Zhejiang Moorgen Group Co.,Ltd"
 		}
 	case 596:
 		{ /* '596' */
@@ -7347,7 +7347,7 @@ func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	case 594:
 		return KnxManufacturer_M_KG_POWER, true
 	case 595:
-		return KnxManufacturer_M_ZHEJIANG_MOORGEN_INTELLIGENT_TECHNOLOGY_CO___LTD, true
+		return KnxManufacturer_M_ZHEJIANG_MOORGEN_GROUP_CO__LTD, true
 	case 596:
 		return KnxManufacturer_M_GUANGDONG_KANWAY, true
 	case 597:
@@ -8584,8 +8584,8 @@ func KnxManufacturerByName(value string) (enum KnxManufacturer, ok bool) {
 		return KnxManufacturer_M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_, true
 	case "M_KG_POWER":
 		return KnxManufacturer_M_KG_POWER, true
-	case "M_ZHEJIANG_MOORGEN_INTELLIGENT_TECHNOLOGY_CO___LTD":
-		return KnxManufacturer_M_ZHEJIANG_MOORGEN_INTELLIGENT_TECHNOLOGY_CO___LTD, true
+	case "M_ZHEJIANG_MOORGEN_GROUP_CO__LTD":
+		return KnxManufacturer_M_ZHEJIANG_MOORGEN_GROUP_CO__LTD, true
 	case "M_GUANGDONG_KANWAY":
 		return KnxManufacturer_M_GUANGDONG_KANWAY, true
 	case "M_RAMIREZ_ENGINEERING_GMBH":
@@ -9879,8 +9879,8 @@ func (e KnxManufacturer) PLC4XEnumName() string {
 		return "M_SHANGHAI_LEWIN_INTELLIGENT_TECHNOLOGY_CO__LTD_"
 	case KnxManufacturer_M_KG_POWER:
 		return "M_KG_POWER"
-	case KnxManufacturer_M_ZHEJIANG_MOORGEN_INTELLIGENT_TECHNOLOGY_CO___LTD:
-		return "M_ZHEJIANG_MOORGEN_INTELLIGENT_TECHNOLOGY_CO___LTD"
+	case KnxManufacturer_M_ZHEJIANG_MOORGEN_GROUP_CO__LTD:
+		return "M_ZHEJIANG_MOORGEN_GROUP_CO__LTD"
 	case KnxManufacturer_M_GUANGDONG_KANWAY:
 		return "M_GUANGDONG_KANWAY"
 	case KnxManufacturer_M_RAMIREZ_ENGINEERING_GMBH:

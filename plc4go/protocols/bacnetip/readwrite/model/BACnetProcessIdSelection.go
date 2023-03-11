@@ -53,6 +53,7 @@ type _BACnetProcessIdSelection struct {
 type _BACnetProcessIdSelectionChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetProcessIdSelectionParent interface {

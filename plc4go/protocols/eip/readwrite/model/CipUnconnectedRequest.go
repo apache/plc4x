@@ -36,6 +36,10 @@ type CipUnconnectedRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	CipService
+	// GetClassSegment returns ClassSegment (property field)
+	GetClassSegment() PathSegment
+	// GetInstanceSegment returns InstanceSegment (property field)
+	GetInstanceSegment() PathSegment
 	// GetUnconnectedService returns UnconnectedService (property field)
 	GetUnconnectedService() CipService
 	// GetBackPlane returns BackPlane (property field)
@@ -54,16 +58,13 @@ type CipUnconnectedRequestExactly interface {
 // _CipUnconnectedRequest is the data-structure of this message
 type _CipUnconnectedRequest struct {
 	*_CipService
+	ClassSegment       PathSegment
+	InstanceSegment    PathSegment
 	UnconnectedService CipService
 	BackPlane          int8
 	Slot               int8
 	// Reserved Fields
-	reservedField0 *uint8
-	reservedField1 *uint8
-	reservedField2 *uint8
-	reservedField3 *uint8
-	reservedField4 *uint8
-	reservedField5 *uint16
+	reservedField0 *uint16
 }
 
 ///////////////////////////////////////////////////////////
@@ -73,6 +74,14 @@ type _CipUnconnectedRequest struct {
 
 func (m *_CipUnconnectedRequest) GetService() uint8 {
 	return 0x52
+}
+
+func (m *_CipUnconnectedRequest) GetResponse() bool {
+	return bool(false)
+}
+
+func (m *_CipUnconnectedRequest) GetConnected() bool {
+	return bool(false)
 }
 
 ///////////////////////
@@ -90,6 +99,14 @@ func (m *_CipUnconnectedRequest) GetParent() CipService {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
+
+func (m *_CipUnconnectedRequest) GetClassSegment() PathSegment {
+	return m.ClassSegment
+}
+
+func (m *_CipUnconnectedRequest) GetInstanceSegment() PathSegment {
+	return m.InstanceSegment
+}
 
 func (m *_CipUnconnectedRequest) GetUnconnectedService() CipService {
 	return m.UnconnectedService
@@ -122,8 +139,10 @@ func (m *_CipUnconnectedRequest) GetRoute() uint16 {
 ///////////////////////////////////////////////////////////
 
 // NewCipUnconnectedRequest factory function for _CipUnconnectedRequest
-func NewCipUnconnectedRequest(unconnectedService CipService, backPlane int8, slot int8, serviceLen uint16) *_CipUnconnectedRequest {
+func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8, serviceLen uint16) *_CipUnconnectedRequest {
 	_result := &_CipUnconnectedRequest{
+		ClassSegment:       classSegment,
+		InstanceSegment:    instanceSegment,
 		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
@@ -151,20 +170,14 @@ func (m *_CipUnconnectedRequest) GetTypeName() string {
 func (m *_CipUnconnectedRequest) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
-	// Reserved Field (reserved)
+	// Implicit Field (requestPathSize)
 	lengthInBits += 8
 
-	// Reserved Field (reserved)
-	lengthInBits += 8
+	// Simple field (classSegment)
+	lengthInBits += m.ClassSegment.GetLengthInBits(ctx)
 
-	// Reserved Field (reserved)
-	lengthInBits += 8
-
-	// Reserved Field (reserved)
-	lengthInBits += 8
-
-	// Reserved Field (reserved)
-	lengthInBits += 8
+	// Simple field (instanceSegment)
+	lengthInBits += m.InstanceSegment.GetLengthInBits(ctx)
 
 	// Reserved Field (reserved)
 	lengthInBits += 16
@@ -191,11 +204,11 @@ func (m *_CipUnconnectedRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipUnconnectedRequestParse(theBytes []byte, serviceLen uint16) (CipUnconnectedRequest, error) {
-	return CipUnconnectedRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceLen)
+func CipUnconnectedRequestParse(theBytes []byte, connected bool, serviceLen uint16) (CipUnconnectedRequest, error) {
+	return CipUnconnectedRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceLen uint16) (CipUnconnectedRequest, error) {
+func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipUnconnectedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipUnconnectedRequest"); pullErr != nil {
@@ -204,92 +217,40 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
-		}
-		if reserved != uint8(0x02) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
-				"expected value": uint8(0x02),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	// Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+	requestPathSize, _requestPathSizeErr := readBuffer.ReadUint8("requestPathSize", 8)
+	_ = requestPathSize
+	if _requestPathSizeErr != nil {
+		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipUnconnectedRequest")
 	}
 
-	var reservedField1 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
-		}
-		if reserved != uint8(0x20) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
-				"expected value": uint8(0x20),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	// Simple Field (classSegment)
+	if pullErr := readBuffer.PullContext("classSegment"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for classSegment")
+	}
+	_classSegment, _classSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
+	if _classSegmentErr != nil {
+		return nil, errors.Wrap(_classSegmentErr, "Error parsing 'classSegment' field of CipUnconnectedRequest")
+	}
+	classSegment := _classSegment.(PathSegment)
+	if closeErr := readBuffer.CloseContext("classSegment"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for classSegment")
 	}
 
-	var reservedField2 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
-		}
-		if reserved != uint8(0x06) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
-				"expected value": uint8(0x06),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField2 = &reserved
-		}
+	// Simple Field (instanceSegment)
+	if pullErr := readBuffer.PullContext("instanceSegment"); pullErr != nil {
+		return nil, errors.Wrap(pullErr, "Error pulling for instanceSegment")
+	}
+	_instanceSegment, _instanceSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
+	if _instanceSegmentErr != nil {
+		return nil, errors.Wrap(_instanceSegmentErr, "Error parsing 'instanceSegment' field of CipUnconnectedRequest")
+	}
+	instanceSegment := _instanceSegment.(PathSegment)
+	if closeErr := readBuffer.CloseContext("instanceSegment"); closeErr != nil {
+		return nil, errors.Wrap(closeErr, "Error closing for instanceSegment")
 	}
 
-	var reservedField3 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
-		}
-		if reserved != uint8(0x24) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
-				"expected value": uint8(0x24),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField3 = &reserved
-		}
-	}
-
-	var reservedField4 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
-		}
-		if reserved != uint8(0x01) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
-				"expected value": uint8(0x01),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField4 = &reserved
-		}
-	}
-
-	var reservedField5 *uint16
+	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
 		reserved, _err := readBuffer.ReadUint16("reserved", 16)
@@ -302,7 +263,7 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
 			// We save the value, so it can be re-serialized
-			reservedField5 = &reserved
+			reservedField0 = &reserved
 		}
 	}
 
@@ -317,7 +278,7 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 	if pullErr := readBuffer.PullContext("unconnectedService"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for unconnectedService")
 	}
-	_unconnectedService, _unconnectedServiceErr := CipServiceParseWithBuffer(ctx, readBuffer, uint16(messageSize))
+	_unconnectedService, _unconnectedServiceErr := CipServiceParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint16(messageSize))
 	if _unconnectedServiceErr != nil {
 		return nil, errors.Wrap(_unconnectedServiceErr, "Error parsing 'unconnectedService' field of CipUnconnectedRequest")
 	}
@@ -358,15 +319,12 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
 		},
+		ClassSegment:       classSegment,
+		InstanceSegment:    instanceSegment,
 		UnconnectedService: unconnectedService,
 		BackPlane:          backPlane,
 		Slot:               slot,
 		reservedField0:     reservedField0,
-		reservedField1:     reservedField1,
-		reservedField2:     reservedField2,
-		reservedField3:     reservedField3,
-		reservedField4:     reservedField4,
-		reservedField5:     reservedField5,
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
@@ -388,95 +346,46 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(pushErr, "Error pushing for CipUnconnectedRequest")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x02)
-			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
-					"expected value": uint8(0x02),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField0
-			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		// Implicit Field (requestPathSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		requestPathSize := uint8(uint8((uint8(m.GetClassSegment().GetLengthInBytes(ctx)) + uint8(m.GetInstanceSegment().GetLengthInBytes(ctx)))) / uint8(uint8(2)))
+		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, (requestPathSize))
+		if _requestPathSizeErr != nil {
+			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x20)
-			if m.reservedField1 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
-					"expected value": uint8(0x20),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField1
-			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		// Simple Field (classSegment)
+		if pushErr := writeBuffer.PushContext("classSegment"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for classSegment")
+		}
+		_classSegmentErr := writeBuffer.WriteSerializable(ctx, m.GetClassSegment())
+		if popErr := writeBuffer.PopContext("classSegment"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for classSegment")
+		}
+		if _classSegmentErr != nil {
+			return errors.Wrap(_classSegmentErr, "Error serializing 'classSegment' field")
 		}
 
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x06)
-			if m.reservedField2 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
-					"expected value": uint8(0x06),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField2
-			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		// Simple Field (instanceSegment)
+		if pushErr := writeBuffer.PushContext("instanceSegment"); pushErr != nil {
+			return errors.Wrap(pushErr, "Error pushing for instanceSegment")
 		}
-
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x24)
-			if m.reservedField3 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
-					"expected value": uint8(0x24),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField3
-			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		_instanceSegmentErr := writeBuffer.WriteSerializable(ctx, m.GetInstanceSegment())
+		if popErr := writeBuffer.PopContext("instanceSegment"); popErr != nil {
+			return errors.Wrap(popErr, "Error popping for instanceSegment")
 		}
-
-		// Reserved Field (reserved)
-		{
-			var reserved uint8 = uint8(0x01)
-			if m.reservedField4 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
-					"expected value": uint8(0x01),
-					"got value":      reserved,
-				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField4
-			}
-			_err := writeBuffer.WriteUint8("reserved", 8, reserved)
-			if _err != nil {
-				return errors.Wrap(_err, "Error serializing 'reserved' field")
-			}
+		if _instanceSegmentErr != nil {
+			return errors.Wrap(_instanceSegmentErr, "Error serializing 'instanceSegment' field")
 		}
 
 		// Reserved Field (reserved)
 		{
 			var reserved uint16 = uint16(0x9D05)
-			if m.reservedField5 != nil {
+			if m.reservedField0 != nil {
 				Plc4xModelLog.Info().Fields(map[string]interface{}{
 					"expected value": uint16(0x9D05),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")
-				reserved = *m.reservedField5
+				reserved = *m.reservedField0
 			}
 			_err := writeBuffer.WriteUint16("reserved", 16, reserved)
 			if _err != nil {

@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
@@ -48,57 +44,48 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
     private final PlcWriter writer;
 
     private final LinkedHashMap<String, TagValueItem> tags;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcWriteRequest(@JsonProperty("writer") PlcWriter writer,
-                                  @JsonProperty("tags") LinkedHashMap<String, TagValueItem> tags) {
+    public DefaultPlcWriteRequest(PlcWriter writer,
+                                  LinkedHashMap<String, TagValueItem> tags) {
         this.writer = writer;
         this.tags = tags;
     }
 
     @Override
-    @JsonIgnore
     public CompletableFuture<PlcWriteResponse> execute() {
         return writer.write(this);
     }
 
     @Override
-    @JsonIgnore
     public int getNumberOfTags() {
         return tags.size();
     }
 
     @Override
-    @JsonIgnore
     public LinkedHashSet<String> getTagNames() {
         // TODO: Check if this already is a LinkedHashSet.
         return new LinkedHashSet<>(tags.keySet());
     }
 
     @Override
-    @JsonIgnore
     public PlcTag getTag(String name) {
         return tags.get(name).getTag();
     }
 
     @Override
-    @JsonIgnore
     public List<PlcTag> getTags() {
         return tags.values().stream().map(TagValueItem::getTag).collect(Collectors.toCollection(LinkedList::new));
     }
 
-    @JsonIgnore
     public PlcValue getPlcValue(String name) {
         return tags.get(name).getValue();
     }
 
-    @JsonIgnore
     public List<PlcValue> getPlcValues() {
         return tags.values().stream().map(TagValueItem::getValue).collect(Collectors.toCollection(LinkedList::new));
     }
@@ -108,7 +95,6 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
     }
 
     @Override
-    @JsonIgnore
     public int getNumberOfValues(String name) {
         final PlcValue value = tags.get(name).getValue();
         if (value instanceof PlcList) {
@@ -129,29 +115,28 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
             writeBuffer.pushContext(tagName);
             PlcTag tag = tagValueItem.getTag();
             if (!(tag instanceof Serializable)) {
-                throw new RuntimeException("Error serializing. Tag doesn't implement XmlSerializable");
+                throw new RuntimeException("Error serializing. Tag doesn't implement Serializable");
             }
             ((Serializable) tag).serialize(writeBuffer);
             final PlcValue value = tagValueItem.getValue();
-            if (value instanceof PlcList) {
-                PlcList list = (PlcList) value;
-                for (PlcValue plcValue : list.getList()) {
-                    String plcValueString = plcValue.getString();
-                    writeBuffer.writeString("value",
-                        plcValueString.getBytes(StandardCharsets.UTF_8).length * 8,
-                        plcValueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
-                }
-            } else {
-                String plcValueString = value.getString();
-                writeBuffer.writeString("value",
-                    plcValueString.getBytes(StandardCharsets.UTF_8).length * 8,
-                    plcValueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
-            }
+            serializePlcValue(value, writeBuffer);
             writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("tags");
 
         writeBuffer.popContext("PlcWriteRequest");
+    }
+
+    protected void serializePlcValue(PlcValue plcValue, WriteBuffer writeBuffer) throws SerializationException {
+        if(plcValue instanceof Serializable) {
+            Serializable serializable = (Serializable) plcValue;
+            serializable.serialize(writeBuffer);
+        } else {
+            String plcValueString = plcValue.getString();
+            writeBuffer.writeString("value",
+                plcValueString.getBytes(StandardCharsets.UTF_8).length * 8,
+                plcValueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+        }
     }
 
     public static class Builder implements PlcWriteRequest.Builder {

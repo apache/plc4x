@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -32,7 +28,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcLDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
 
     public static PlcLDATE_AND_TIME of(Object value) {
@@ -52,13 +47,11 @@ public class PlcLDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
             ZoneOffset.of(ZoneOffset.systemDefault().getId())));
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLDATE_AND_TIME(@JsonProperty("value") LocalDateTime value) {
+    public PlcLDATE_AND_TIME(LocalDateTime value) {
         super(value, true);
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLDATE_AND_TIME(@JsonProperty("value") BigInteger nanosecondsSinceEpoch) {
+    public PlcLDATE_AND_TIME(BigInteger nanosecondsSinceEpoch) {
         super(LocalDateTime.ofEpochSecond(nanosecondsSinceEpoch.divide(BigInteger.valueOf(1000_000)).longValue(),
             nanosecondsSinceEpoch.mod(BigInteger.valueOf(1000_000)).intValue(),
             ZoneOffset.of(ZoneOffset.systemDefault().getId())), true);
@@ -86,55 +79,46 @@ public class PlcLDATE_AND_TIME extends PlcSimpleValue<LocalDateTime> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public boolean isTime() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalTime getTime() {
         return value.toLocalTime();
     }
 
     @Override
-    @JsonIgnore
     public boolean isDate() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalDate getDate() {
         return value.toLocalDate();
     }
 
     @Override
-    @JsonIgnore
     public boolean isDateTime() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalDateTime getDateTime() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }

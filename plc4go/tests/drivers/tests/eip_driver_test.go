@@ -20,20 +20,21 @@
 package tests
 
 import (
-	"context"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/internal/eip"
-	eipIO "github.com/apache/plc4x/plc4go/protocols/eip/readwrite"
-	eipModel "github.com/apache/plc4x/plc4go/protocols/eip/readwrite/model"
+	"github.com/apache/plc4x/plc4go/protocols/eip/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
 )
 
 func TestEIPDriver(t *testing.T) {
-	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
-		return eipModel.EipPacketParseWithBuffer(context.Background(), readBufferByteBased)
-	})}
-	testutils.RunDriverTestsuiteWithOptions(t, eip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml", eipIO.EipXmlParserHelper{}, options)
+	/*log.Logger = log.
+		With().Caller().Logger().
+		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
+		Level(zerolog.DebugLevel)
+	config.TraceTransactionManagerWorkers = true
+	config.TraceTransactionManagerTransactions = true
+	config.TraceDefaultMessageCodecWorker = true*/
+	testutils.RunDriverTestsuite(t, eip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml", readwrite.EipXmlParserHelper{})
 }

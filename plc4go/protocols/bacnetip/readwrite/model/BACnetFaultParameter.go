@@ -53,6 +53,7 @@ type _BACnetFaultParameter struct {
 type _BACnetFaultParameterChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetFaultParameterParent interface {

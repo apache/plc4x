@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcQuery;
@@ -32,33 +31,28 @@ import java.util.LinkedHashSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcBrowseRequest implements PlcBrowseRequest, Serializable {
 
     private final PlcBrowser browser;
 
     private final LinkedHashMap<String, PlcQuery> queries;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcBrowseRequest(@JsonProperty("browser") PlcBrowser browser,
-                                   @JsonProperty("queries") LinkedHashMap<String, PlcQuery> queries) {
+    public DefaultPlcBrowseRequest(PlcBrowser browser,
+                                   LinkedHashMap<String, PlcQuery> queries) {
         this.browser = browser;
         this.queries = queries;
     }
 
     @Override
-    @JsonIgnore
     public CompletableFuture<PlcBrowseResponse> execute() {
         return browser.browse(this);
     }
 
     @Override
-    @JsonIgnore
     public CompletableFuture<? extends PlcBrowseResponse> executeWithInterceptor(PlcBrowseRequestInterceptor interceptor) {
         return browser.browseWithInterceptor(this, interceptor);
     }
 
-    @JsonIgnore
     public PlcBrowser getBrowser() {
         return browser;
     }

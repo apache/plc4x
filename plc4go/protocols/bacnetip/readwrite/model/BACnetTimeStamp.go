@@ -53,6 +53,7 @@ type _BACnetTimeStamp struct {
 type _BACnetTimeStampChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetTimeStampParent interface {

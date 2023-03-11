@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -32,7 +28,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.*;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcLDATE extends PlcSimpleValue<LocalDate> {
 
     public static PlcLDATE of(Object value) {
@@ -52,13 +47,11 @@ public class PlcLDATE extends PlcSimpleValue<LocalDate> {
             ZoneOffset.of(ZoneOffset.systemDefault().getId())).toLocalDate());
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLDATE(@JsonProperty("value") LocalDate value) {
+    public PlcLDATE(LocalDate value) {
         super(value, true);
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcLDATE(@JsonProperty("value") BigInteger nanosecondsSinceEpoch) {
+    public PlcLDATE(BigInteger nanosecondsSinceEpoch) {
         super(LocalDateTime.ofEpochSecond(nanosecondsSinceEpoch.longValue() / 1000000,
             (int) (nanosecondsSinceEpoch.longValue() % 1000000),
             ZoneOffset.of(ZoneOffset.systemDefault().getId())).toLocalDate(), true);
@@ -86,31 +79,26 @@ public class PlcLDATE extends PlcSimpleValue<LocalDate> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public boolean isDate() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalDate getDate() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }

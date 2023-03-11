@@ -70,7 +70,15 @@ type _MultipleServiceResponse struct {
 ///////////////////////
 
 func (m *_MultipleServiceResponse) GetService() uint8 {
-	return 0x8A
+	return 0x0A
+}
+
+func (m *_MultipleServiceResponse) GetResponse() bool {
+	return bool(true)
+}
+
+func (m *_MultipleServiceResponse) GetConnected() bool {
+	return false
 }
 
 ///////////////////////
@@ -175,11 +183,11 @@ func (m *_MultipleServiceResponse) GetLengthInBytes(ctx context.Context) uint16 
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func MultipleServiceResponseParse(theBytes []byte, serviceLen uint16) (MultipleServiceResponse, error) {
-	return MultipleServiceResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceLen)
+func MultipleServiceResponseParse(theBytes []byte, connected bool, serviceLen uint16) (MultipleServiceResponse, error) {
+	return MultipleServiceResponseParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceLen uint16) (MultipleServiceResponse, error) {
+func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (MultipleServiceResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MultipleServiceResponse"); pullErr != nil {

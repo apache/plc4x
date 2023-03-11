@@ -103,7 +103,10 @@ profinet:raw://{ip-address}:{port}?{options}
 
 ----
 
-An example of this connection string would be:-
+Where the {ip-address}, unlike other PLC4X driver, uses the local IP address of the network interface you would like to bind to.
+This allows us to connect to multiple devices at once via the devices parameter.
+
+An example of this connection string which has two devices test-device-1 and test-device-2, connected on the localhost interface would be:-
 
 ----
 
@@ -158,7 +161,8 @@ The following data types are supported
 
 === Some useful tips
 
-The GSD file contains all the information of what the addresses will end up being. The easiest approach is to use the browsing
-function of the Profinet driver to return a list of all available tags. Then only the address of interest can be selected.
+Although the GSD file contains all the information needed to configure which data will be available from a device.
+The easiest approach is to use the browsing function of the Profinet driver to return a list of all available tags.
+Then only the addresses of interest can be selected.
 
 |===

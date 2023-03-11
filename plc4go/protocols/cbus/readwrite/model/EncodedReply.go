@@ -57,6 +57,7 @@ type _EncodedReply struct {
 type _EncodedReplyChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetIsMonitoredSAL() bool
 }
 
 type EncodedReplyParent interface {

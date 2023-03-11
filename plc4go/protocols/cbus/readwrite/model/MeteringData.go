@@ -56,6 +56,8 @@ type _MeteringData struct {
 type _MeteringDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetCommandType() MeteringCommandType
+	GetArgument() byte
 }
 
 type MeteringDataParent interface {

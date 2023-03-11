@@ -105,7 +105,6 @@
             <Bundle-Activator>org.apache.plc4x.java.osgi.DriverActivator</Bundle-Activator>
             <Export-Service>org.apache.plc4x.java.api.PlcDriver,org.apache.plc4x.java.ads.AdsPlcDriver</Export-Service>
             <Import-Package>
-              com.fasterxml.jackson.annotation;resolution:=optional,
               *
             </Import-Package>
           </instructions>

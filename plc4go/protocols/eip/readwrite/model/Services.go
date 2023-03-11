@@ -32,8 +32,6 @@ import (
 type Services interface {
 	utils.LengthAware
 	utils.Serializable
-	// GetServiceNb returns ServiceNb (property field)
-	GetServiceNb() uint16
 	// GetOffsets returns Offsets (property field)
 	GetOffsets() []uint16
 	// GetServices returns Services (property field)
@@ -49,9 +47,8 @@ type ServicesExactly interface {
 
 // _Services is the data-structure of this message
 type _Services struct {
-	ServiceNb uint16
-	Offsets   []uint16
-	Services  []CipService
+	Offsets  []uint16
+	Services []CipService
 
 	// Arguments.
 	ServicesLen uint16
@@ -61,10 +58,6 @@ type _Services struct {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
-
-func (m *_Services) GetServiceNb() uint16 {
-	return m.ServiceNb
-}
 
 func (m *_Services) GetOffsets() []uint16 {
 	return m.Offsets
@@ -80,8 +73,8 @@ func (m *_Services) GetServices() []CipService {
 ///////////////////////////////////////////////////////////
 
 // NewServices factory function for _Services
-func NewServices(serviceNb uint16, offsets []uint16, services []CipService, servicesLen uint16) *_Services {
-	return &_Services{ServiceNb: serviceNb, Offsets: offsets, Services: services, ServicesLen: servicesLen}
+func NewServices(offsets []uint16, services []CipService, servicesLen uint16) *_Services {
+	return &_Services{Offsets: offsets, Services: services, ServicesLen: servicesLen}
 }
 
 // Deprecated: use the interface for direct cast
@@ -102,7 +95,7 @@ func (m *_Services) GetTypeName() string {
 func (m *_Services) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
-	// Simple field (serviceNb)
+	// Implicit Field (serviceNb)
 	lengthInBits += 16
 
 	// Array field
@@ -140,12 +133,12 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (serviceNb)
-	_serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)
+	// Implicit Field (serviceNb) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+	serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)
+	_ = serviceNb
 	if _serviceNbErr != nil {
 		return nil, errors.Wrap(_serviceNbErr, "Error parsing 'serviceNb' field of Services")
 	}
-	serviceNb := _serviceNb
 
 	// Array field (offsets)
 	if pullErr := readBuffer.PullContext("offsets", utils.WithRenderAsList(true)); pullErr != nil {
@@ -190,7 +183,7 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := CipServiceParseWithBuffer(arrayCtx, readBuffer, uint16(servicesLen)/uint16(serviceNb))
+			_item, _err := CipServiceParseWithBuffer(arrayCtx, readBuffer, bool(false), uint16(servicesLen)/uint16(serviceNb))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'services' field of Services")
 			}
@@ -208,7 +201,6 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	// Create the instance
 	return &_Services{
 		ServicesLen: servicesLen,
-		ServiceNb:   serviceNb,
 		Offsets:     offsets,
 		Services:    services,
 	}, nil
@@ -229,8 +221,8 @@ func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		return errors.Wrap(pushErr, "Error pushing for Services")
 	}
 
-	// Simple Field (serviceNb)
-	serviceNb := uint16(m.GetServiceNb())
+	// Implicit Field (serviceNb) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+	serviceNb := uint16(uint16(len(m.GetOffsets())))
 	_serviceNbErr := writeBuffer.WriteUint16("serviceNb", 16, (serviceNb))
 	if _serviceNbErr != nil {
 		return errors.Wrap(_serviceNbErr, "Error serializing 'serviceNb' field")

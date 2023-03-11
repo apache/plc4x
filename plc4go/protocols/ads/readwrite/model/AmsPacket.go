@@ -83,6 +83,7 @@ type _AmsPacket struct {
 type _AmsPacketChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetErrorCode() uint32
 	GetCommandId() CommandId
 	GetResponse() bool
 }

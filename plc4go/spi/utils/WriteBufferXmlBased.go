@@ -161,12 +161,12 @@ func (x *xmlWriteBuffer) WriteBigInt(logicalName string, bitLength uint8, value 
 
 func (x *xmlWriteBuffer) WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error {
 	x.move(uint(bitLength))
-	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, fmt.Sprintf("%16.16f", value), x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error {
 	x.move(uint(bitLength))
-	return x.encodeElement(logicalName, value, x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
+	return x.encodeElement(logicalName, fmt.Sprintf("%32.32f", value), x.generateAttr(rwFloatKey, uint(bitLength), writerArgs...), writerArgs...)
 }
 
 func (x *xmlWriteBuffer) WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error {

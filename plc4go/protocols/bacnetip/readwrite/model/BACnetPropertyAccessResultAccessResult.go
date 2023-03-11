@@ -58,6 +58,7 @@ type _BACnetPropertyAccessResultAccessResult struct {
 type _BACnetPropertyAccessResultAccessResultChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetPropertyAccessResultAccessResultParent interface {

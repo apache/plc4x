@@ -18,9 +18,6 @@
  */
 package org.apache.plc4x.java.api.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 /**
  * Base type for all query types.
  * Typically, every driver provides an implementation of this interface in order
@@ -31,12 +28,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * In order to stay platform and protocol independent every driver connection implementation
  * provides a prepareQuery(String) method that is able to parse a string representation of
  * a resource into it's individual query type. Manually constructing PlcQuery objects
- * manually makes the solution less independent from the protocol, but might be faster.
+ * manually makes the solution less dependent on the protocol, but might be faster.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface PlcQuery {
 
-    @JsonIgnore
     String getQueryString();
 
 }

@@ -51,13 +51,14 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	// Cast the message to the correct type of struct
 	eipPacket := message.(model.EipPacket)
 	// Serialize the request
-	theBytes, err := eipPacket.Serialize()
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	err := eipPacket.SerializeWithWriteBuffer(context.Background(), wb)
 	if err != nil {
 		return errors.Wrap(err, "error serializing request")
 	}
 
 	// Send it to the PLC
-	err = m.GetTransportInstance().Write(theBytes)
+	err = m.GetTransportInstance().Write(wb.GetBytes())
 	if err != nil {
 		return errors.Wrap(err, "error sending request")
 	}
@@ -87,7 +88,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 			return nil, nil
 		}
 		rb := utils.NewReadBufferByteBased(data, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		eipPacket, err := model.EipPacketParseWithBuffer(context.Background(), rb)
+		eipPacket, err := model.EipPacketParseWithBuffer(context.Background(), rb, true)
 		if err != nil {
 			log.Warn().Err(err).Msg("error parsing")
 			// TODO: Possibly clean up ...

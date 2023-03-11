@@ -18,7 +18,6 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.*;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -27,7 +26,6 @@ import org.apache.plc4x.java.spi.utils.Serializable;
 
 import java.util.*;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcBrowseResponse implements PlcBrowseResponse, Serializable {
 
     private final PlcBrowseRequest request;
@@ -36,8 +34,9 @@ public class DefaultPlcBrowseResponse implements PlcBrowseResponse, Serializable
 
     private final Map<String, List<PlcBrowseItem>> values;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcBrowseResponse(@JsonProperty("request") PlcBrowseRequest request, @JsonProperty("responseCodes") Map<String, PlcResponseCode> responseCodes, @JsonProperty("values") Map<String, List<PlcBrowseItem>> values) {
+    public DefaultPlcBrowseResponse(PlcBrowseRequest request,
+                                    Map<String, PlcResponseCode> responseCodes,
+                                    Map<String, List<PlcBrowseItem>> values) {
         this.request = request;
         this.responseCodes = responseCodes;
         this.values = values;

@@ -20,11 +20,15 @@
 package model
 
 import (
+	"context"
+	"encoding/binary"
+	"fmt"
+
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionHandle
 type DefaultPlcSubscriptionHandle struct {
 	handleToRegister model.PlcSubscriptionHandle `ignore:"true"`
 	plcSubscriber    spi.PlcSubscriber
@@ -50,4 +54,49 @@ func NewDefaultPlcSubscriptionHandleWithHandleToRegister(plcSubscriber spi.PlcSu
 // Register registers at the spi.PlcSubscriber
 func (d *DefaultPlcSubscriptionHandle) Register(consumer model.PlcSubscriptionEventConsumer) model.PlcConsumerRegistration {
 	return d.plcSubscriber.Register(consumer, []model.PlcSubscriptionHandle{d.handleToRegister})
+}
+
+func (d *DefaultPlcSubscriptionHandle) Serialize() ([]byte, error) {
+	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
+		return nil, err
+	}
+	return wb.GetBytes(), nil
+}
+
+func (d *DefaultPlcSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if err := writeBuffer.PushContext("PlcSubscriptionHandle"); err != nil {
+		return err
+	}
+
+	if d.plcSubscriber != nil {
+		if serializableField, ok := d.plcSubscriber.(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("plcSubscriber"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("plcSubscriber"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.plcSubscriber)
+			if err := writeBuffer.WriteString("plcSubscriber", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				return err
+			}
+		}
+	}
+	if err := writeBuffer.PopContext("PlcSubscriptionHandle"); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *DefaultPlcSubscriptionHandle) String() string {
+	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
+	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+		return err.Error()
+	}
+	return writeBuffer.GetBox().String()
 }

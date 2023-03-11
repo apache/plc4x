@@ -62,6 +62,8 @@ type _CALData struct {
 type _CALDataChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetCommandType() CALCommandType
+	GetSendIdentifyRequestBefore() bool
 }
 
 type CALDataParent interface {

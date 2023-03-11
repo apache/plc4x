@@ -63,6 +63,7 @@ type _BACnetNotificationParameters struct {
 type _BACnetNotificationParametersChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetPeekedTagNumber() uint8
 }
 
 type BACnetNotificationParametersParent interface {

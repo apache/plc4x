@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionEvent;
 import org.apache.plc4x.java.api.messages.PlcSubscriptionRequest;
@@ -41,7 +37,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Serializable {
 
     private final PlcSubscriber subscriber;
@@ -50,47 +45,40 @@ public class DefaultPlcSubscriptionRequest implements PlcSubscriptionRequest, Se
 
     private final LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> preRegisteredConsumers;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public DefaultPlcSubscriptionRequest(@JsonProperty("subscriber") PlcSubscriber subscriber,
-                                         @JsonProperty("tags") LinkedHashMap<String, PlcSubscriptionTag> tags,
-                                         @JsonProperty("preRegisteredConsumers") LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> preRegisteredConsumers) {
+    public DefaultPlcSubscriptionRequest(PlcSubscriber subscriber,
+                                         LinkedHashMap<String, PlcSubscriptionTag> tags,
+                                         LinkedHashMap<String, List<Consumer<PlcSubscriptionEvent>>> preRegisteredConsumers) {
         this.subscriber = subscriber;
         this.tags = tags;
         this.preRegisteredConsumers = preRegisteredConsumers;
     }
 
     @Override
-    @JsonIgnore
     public CompletableFuture<PlcSubscriptionResponse> execute() {
         return subscriber.subscribe(this);
     }
 
     @Override
-    @JsonIgnore
     public int getNumberOfTags() {
         return tags.size();
     }
 
     @Override
-    @JsonIgnore
     public LinkedHashSet<String> getTagNames() {
         return new LinkedHashSet<>(tags.keySet());
     }
 
     @Override
-    @JsonIgnore
     public PlcSubscriptionTag getTag(String name) {
         return tags.get(name);
     }
 
     @Override
-    @JsonIgnore
     public List<PlcSubscriptionTag> getTags() {
         return new ArrayList<>(tags.values());
     }
 
     @Override
-    @JsonIgnore
     public Map<String, List<Consumer<PlcSubscriptionEvent>>> getPreRegisteredConsumers() {
         return new LinkedHashMap<>(preRegisteredConsumers);
     }

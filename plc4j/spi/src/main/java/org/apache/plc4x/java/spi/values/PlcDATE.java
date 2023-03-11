@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -34,7 +30,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcDATE extends PlcSimpleValue<LocalDate> {
 
     public static PlcDATE of(Object value) {
@@ -62,20 +57,17 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
         return ofDaysSinceEpoch(daysSinceSiemensEpoch + 7305);
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcDATE(@JsonProperty("value") LocalDate value) {
+    public PlcDATE(LocalDate value) {
         super(value, true);
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcDATE(@JsonProperty("value") int daysSinceEpoch) {
+    public PlcDATE(int daysSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         super(LocalDateTime.ofInstant(
             Instant.ofEpochSecond(((long) daysSinceEpoch) * 86400), ZoneId.systemDefault()).toLocalDate(), true);
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcDATE(@JsonProperty("value") long secondsSinceEpoch) {
+    public PlcDATE(long secondsSinceEpoch) {
         // REMARK: Yes, I'm using LocalDataTime.ofInstant as LocalDate.ofInstant is marked "JDK 1.9"
         super(LocalDateTime.ofInstant(
             Instant.ofEpochSecond(secondsSinceEpoch), ZoneId.systemDefault()).toLocalDate(), true);
@@ -110,31 +102,26 @@ public class PlcDATE extends PlcSimpleValue<LocalDate> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public boolean isDate() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public LocalDate getDate() {
         return value;
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }

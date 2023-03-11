@@ -20,9 +20,10 @@
 package eip
 
 import (
+	"strconv"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"strconv"
 )
 
 type Configuration struct {
@@ -32,7 +33,7 @@ type Configuration struct {
 
 func ParseFromOptions(options map[string][]string) (Configuration, error) {
 	configuration := Configuration{
-		backplane: 0,
+		backplane: 1,
 		slot:      0,
 	}
 	if localRackString := getFromOptions(options, "backplane"); localRackString != "" {

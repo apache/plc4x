@@ -26,25 +26,74 @@
   <outputFlavor>read-write</outputFlavor>
 
   <driver-name>eip</driver-name>
+  <driver-parameters>
+    <parameter>
+      <name>bigEndian</name>
+      <value>false</value>
+    </parameter>
+  </driver-parameters>
 
   <setup>
-    <!-- First the driver is expected to send a RegisterSession connection request -->
-    <outgoing-plc-message name="Send connection request">
+    <!--
+      First the driver is expected to send a ListServicesRequest in order to find out if CIP
+      encapsulation is supported.
+    -->
+    <outgoing-plc-message name="Send list services request">
+      <parser-arguments>
+        <response>false</response>
+      </parser-arguments>
       <EipPacket>
-        <command dataType="uint" bitLength="16">101</command>
-        <len dataType="uint" bitLength="16">4</len>
+        <command dataType="uint" bitLength="16">4</command>
+        <packetLength dataType="uint" bitLength="16">0</packetLength>
         <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
-        <senderContext isList="true">
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-        </senderContext>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <ListServicesRequest>
+        </ListServicesRequest>
+      </EipPacket>
+    </outgoing-plc-message>
+    <!-- The PLC will respond accordingly -->
+    <incoming-plc-message name="Receive list services response">
+      <parser-arguments>
+        <response>true</response>
+      </parser-arguments>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">4</command>
+        <packetLength dataType="uint" bitLength="16">25</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">2417269484</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <ListServicesResponse>
+          <typeIdCount dataType="uint" bitLength="16">1</typeIdCount>
+          <typeIds isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">256</id>
+              <ServicesResponse>
+                <serviceLen dataType="uint" bitLength="16">19</serviceLen>
+                <encapsulationProtocol dataType="uint" bitLength="16">1</encapsulationProtocol>
+                <reserved dataType="uint" bitLength="2">0</reserved>
+                <supportsCIPEncapsulation dataType="bit" bitLength="1">true</supportsCIPEncapsulation>
+                <reserved dataType="uint" bitLength="12">0</reserved>
+                <supportsUDP dataType="bit" bitLength="1">false</supportsUDP>
+                <data dataType="byte" bitLength="120">0x436f6d6d756e69636174696f6e7300</data>
+              </ServicesResponse>
+            </TypeId>
+          </typeIds>
+        </ListServicesResponse>
+      </EipPacket>
+    </incoming-plc-message>
+    <outgoing-plc-message name="Send connection request">
+      <parser-arguments>
+        <response>false</response>
+      </parser-arguments>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">101</command>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">0</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
         <options dataType="uint" bitLength="32">0</options>
         <EipConnectionRequest>
           <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
@@ -52,32 +101,142 @@
         </EipConnectionRequest>
       </EipPacket>
     </outgoing-plc-message>
-    <!-- The PLC will send the connection response with a sender context and session handle-->
     <incoming-plc-message name="Receive connection response">
+      <parser-arguments>
+        <response>true</response>
+      </parser-arguments>
       <EipPacket>
         <command dataType="uint" bitLength="16">101</command>
-        <len dataType="uint" bitLength="16">4</len>
-        <sessionHandle dataType="uint" bitLength="32">1</sessionHandle>
+        <packetLength dataType="uint" bitLength="16">4</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
         <status dataType="uint" bitLength="32">0</status>
-        <senderContext isList="true">
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">0</value>
-          <value dataType="uint" bitLength="8">2</value>
-        </senderContext>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
         <options dataType="uint" bitLength="32">0</options>
-        <EipConnectionRequest>
+        <EipConnectionResponse>
           <protocolVersion dataType="uint" bitLength="16">1</protocolVersion>
           <flags dataType="uint" bitLength="16">0</flags>
-        </EipConnectionRequest>
+        </EipConnectionResponse>
       </EipPacket>
+    </incoming-plc-message>
 
+    <outgoing-plc-message name="Send get attribute all request">
+      <parser-arguments>
+        <response>false</response>
+      </parser-arguments>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">22</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">6</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">false</response>
+                    <service dataType="uint" bitLength="7">1</service>
+                    <GetAttributeAllRequest>
+                      <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
+                      <classSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                <ClassID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <segmentClass dataType="uint" bitLength="8">2</segmentClass>
+                                </ClassID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </classSegment>
+                      <instanceSegment>
+                        <PathSegment>
+                          <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                          <LogicalSegment>
+                            <segmentType>
+                              <LogicalSegmentType>
+                                <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                <InstanceID>
+                                  <format dataType="uint" bitLength="2">0</format>
+                                  <instance dataType="uint" bitLength="8">1</instance>
+                                </InstanceID>
+                              </LogicalSegmentType>
+                            </segmentType>
+                          </LogicalSegment>
+                        </PathSegment>
+                      </instanceSegment>
+                    </GetAttributeAllRequest>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeIds>
+        </CipRRData>
+      </EipPacket>
+    </outgoing-plc-message>
+    <incoming-plc-message name="Receive get attribute all response">
+      <parser-arguments>
+        <response>true</response>
+      </parser-arguments>
+      <EipPacket>
+        <command dataType="uint" bitLength="16">111</command>
+        <packetLength dataType="uint" bitLength="16">22</packetLength>
+        <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
+        <status dataType="uint" bitLength="32">0</status>
+        <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
+        <options dataType="uint" bitLength="32">0</options>
+        <CipRRData>
+          <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+          <timeout dataType="uint" bitLength="16">0</timeout>
+          <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+          <typeIds isList="true">
+            <TypeId>
+              <id dataType="uint" bitLength="16">0</id>
+              <NullAddressItem>
+                <reserved dataType="uint" bitLength="16">0</reserved>
+              </NullAddressItem>
+            </TypeId>
+            <TypeId>
+              <id dataType="uint" bitLength="16">178</id>
+              <UnConnectedDataItem>
+                <packetSize dataType="uint" bitLength="16">4</packetSize>
+                <service>
+                  <CipService>
+                    <response dataType="bit" bitLength="1">true</response>
+                    <service dataType="uint" bitLength="7">1</service>
+                    <GetAttributeAllResponse>
+                      <reserved dataType="uint" bitLength="8">0</reserved>
+                      <status dataType="uint" bitLength="8">0</status>
+                      <extStatus dataType="uint" bitLength="8">0</extStatus>
+                    </GetAttributeAllResponse>
+                  </CipService>
+                </service>
+              </UnConnectedDataItem>
+            </TypeId>
+          </typeIds>
+        </CipRRData>
+      </EipPacket>
     </incoming-plc-message>
   </setup>
+
   <testcase>
     <name>Single element read request</name>
     <steps>
@@ -92,106 +251,142 @@
         </TestReadRequest>
       </api-request>
       <outgoing-plc-message name="Send CipReadRequest to PLC">
+        <parser-arguments>
+          <response>false</response>
+        </parser-arguments>
         <EipPacket>
           <command dataType="uint" bitLength="16">111</command>
-          <len dataType="uint" bitLength="16">40</len>
-          <sessionHandle dataType="uint" bitLength="32">1</sessionHandle>
+          <packetLength dataType="uint" bitLength="16">40</packetLength>
+          <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
           <status dataType="uint" bitLength="32">0</status>
-          <senderContext isList="true">
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-          </senderContext>
+          <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
           <options dataType="uint" bitLength="32">0</options>
           <CipRRData>
-            <reserved dataType="uint" bitLength="32">0</reserved>
-            <reserved dataType="uint" bitLength="16">0</reserved>
-            <exchange>
-              <CipExchange>
-                <itemCount dataType="uint" bitLength="16">2</itemCount>
-                <nullPtr dataType="uint" bitLength="32">0</nullPtr>
-                <unconnectedData dataType="uint" bitLength="16">178</unconnectedData>
-                <size dataType="uint" bitLength="16">24</size>
-                <service>
-                  <CipService>
-                    <service dataType="uint" bitLength="8">82</service>
-                    <CipUnconnectedRequest>
-                      <reserved dataType="uint" bitLength="8">2</reserved>
-                      <reserved dataType="uint" bitLength="8">32</reserved>
-                      <reserved dataType="uint" bitLength="8">6</reserved>
-                      <reserved dataType="uint" bitLength="8">36</reserved>
-                      <reserved dataType="uint" bitLength="8">1</reserved>
-                      <reserved dataType="uint" bitLength="16">40197</reserved>
-                      <messageSize dataType="uint" bitLength="16">10</messageSize>
-                      <unconnectedService>
-                        <CipService>
-                          <service dataType="uint" bitLength="8">76</service>
-                          <CipReadRequest>
-                            <requestPathSize dataType="int" bitLength="8">3</requestPathSize>
-                            <tag dataType="byte" bitLength="48">0x910472617465</tag>
-                            <elementNb dataType="uint" bitLength="16">1</elementNb>
-                          </CipReadRequest>
-                        </CipService>
-                      </unconnectedService>
-                      <route dataType="uint" bitLength="16">1</route>
-                      <backPlane dataType="int" bitLength="8">0</backPlane>
-                      <slot dataType="int" bitLength="8">0</slot>
-                    </CipUnconnectedRequest>
-                  </CipService>
-                </service>
-              </CipExchange>
-            </exchange>
+            <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+            <timeout dataType="uint" bitLength="16">0</timeout>
+            <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+            <typeIds isList="true">
+              <TypeId>
+                <id dataType="uint" bitLength="16">0</id>
+                <NullAddressItem>
+                  <reserved dataType="uint" bitLength="16">0</reserved>
+                </NullAddressItem>
+              </TypeId>
+              <TypeId>
+                <id dataType="uint" bitLength="16">178</id>
+                <UnConnectedDataItem>
+                  <packetSize dataType="uint" bitLength="16">24</packetSize>
+                  <service>
+                    <CipService>
+                      <response dataType="bit" bitLength="1">false</response>
+                      <service dataType="uint" bitLength="7">82</service>
+                      <CipUnconnectedRequest>
+                        <requestPathSize dataType="uint" bitLength="8">2</requestPathSize>
+                        <classSegment>
+                          <PathSegment>
+                            <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                            <LogicalSegment>
+                              <segmentType>
+                                <LogicalSegmentType>
+                                  <logicalSegmentType dataType="uint" bitLength="3">0</logicalSegmentType>
+                                  <ClassID>
+                                    <format dataType="uint" bitLength="2">0</format>
+                                    <segmentClass dataType="uint" bitLength="8">6</segmentClass>
+                                  </ClassID>
+                                </LogicalSegmentType>
+                              </segmentType>
+                            </LogicalSegment>
+                          </PathSegment>
+                        </classSegment>
+                        <instanceSegment>
+                          <PathSegment>
+                            <pathSegment dataType="uint" bitLength="3">1</pathSegment>
+                            <LogicalSegment>
+                              <segmentType>
+                                <LogicalSegmentType>
+                                  <logicalSegmentType dataType="uint" bitLength="3">1</logicalSegmentType>
+                                  <InstanceID>
+                                    <format dataType="uint" bitLength="2">0</format>
+                                    <instance dataType="uint" bitLength="8">1</instance>
+                                  </InstanceID>
+                                </LogicalSegmentType>
+                              </segmentType>
+                            </LogicalSegment>
+                          </PathSegment>
+                        </instanceSegment>
+                        <reserved dataType="uint" bitLength="16">40197</reserved>
+                        <messageSize dataType="uint" bitLength="16">10</messageSize>
+                        <unconnectedService>
+                          <CipService>
+                            <response dataType="bit" bitLength="1">false</response>
+                            <service dataType="uint" bitLength="7">76</service>
+                            <CipReadRequest>
+                              <requestPathSize dataType="uint" bitLength="8">3</requestPathSize>
+                              <tag dataType="byte" bitLength="48">0x910472617465</tag>
+                              <elementNb dataType="uint" bitLength="16">1</elementNb>
+                            </CipReadRequest>
+                          </CipService>
+                        </unconnectedService>
+                        <route dataType="uint" bitLength="16">1</route>
+                        <backPlane dataType="int" bitLength="8">1</backPlane>
+                        <slot dataType="int" bitLength="8">0</slot>
+                      </CipUnconnectedRequest>
+                    </CipService>
+                  </service>
+                </UnConnectedDataItem>
+              </TypeId>
+            </typeIds>
           </CipRRData>
         </EipPacket>
       </outgoing-plc-message>
       <incoming-plc-message name="Get CipReadResponse from PLC">
+        <parser-arguments>
+          <response>true</response>
+        </parser-arguments>
         <EipPacket>
           <command dataType="uint" bitLength="16">111</command>
-          <len dataType="uint" bitLength="16">26</len>
-          <sessionHandle dataType="uint" bitLength="32">1</sessionHandle>
+          <packetLength dataType="uint" bitLength="16">36</packetLength>
+          <sessionHandle dataType="uint" bitLength="32">1074224669</sessionHandle>
           <status dataType="uint" bitLength="32">0</status>
-          <senderContext isList="true">
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">0</value>
-            <value dataType="uint" bitLength="8">2</value>
-          </senderContext>
+          <senderContext dataType="byte" bitLength="64">0x504c433458202020</senderContext>
           <options dataType="uint" bitLength="32">0</options>
           <CipRRData>
-            <reserved dataType="uint" bitLength="32">0</reserved>
-            <reserved dataType="uint" bitLength="16">0</reserved>
-            <exchange>
-              <CipExchange>
-                <itemCount dataType="uint" bitLength="16">2</itemCount>
-                <nullPtr dataType="uint" bitLength="32">0</nullPtr>
-                <unconnectedData dataType="uint" bitLength="16">178</unconnectedData>
-                <size dataType="uint" bitLength="16">10</size>
-                <service>
-                  <CipService>
-                    <service dataType="uint" bitLength="8">204</service>
-                    <CipReadResponse>
-                      <reserved dataType="uint" bitLength="8">0</reserved>
-                      <status dataType="uint" bitLength="8">0</status>
-                      <extStatus dataType="uint" bitLength="8">0</extStatus>
-                      <dataType>
-                        <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196
-                        </CIPDataTypeCode>
-                      </dataType>
-                      <data dataType="byte" bitLength="32">0x00000216</data>
-                    </CipReadResponse>
-                  </CipService>
-                </service>
-              </CipExchange>
-            </exchange>
+            <interfaceHandle dataType="uint" bitLength="32">0</interfaceHandle>
+            <timeout dataType="uint" bitLength="16">0</timeout>
+            <typeIdCount dataType="uint" bitLength="16">2</typeIdCount>
+            <typeIds isList="true">
+              <TypeId>
+                <id dataType="uint" bitLength="16">0</id>
+                <NullAddressItem>
+                  <reserved dataType="uint" bitLength="16">0</reserved>
+                </NullAddressItem>
+              </TypeId>
+              <TypeId>
+                <id dataType="uint" bitLength="16">178</id>
+                <UnConnectedDataItem>
+                  <packetSize dataType="uint" bitLength="16">10</packetSize>
+                  <service>
+                    <CipService>
+                      <response dataType="bit" bitLength="1">true</response>
+                      <service dataType="uint" bitLength="7">76</service>
+                      <CipReadResponse>
+                        <reserved dataType="uint" bitLength="8">0</reserved>
+                        <status dataType="uint" bitLength="8">0</status>
+                        <extStatus dataType="uint" bitLength="8">0</extStatus>
+                        <data>
+                          <CIPData>
+                            <dataType>
+                              <CIPDataTypeCode dataType="uint" bitLength="16" stringRepresentation="DINT">196</CIPDataTypeCode>
+                            </dataType>
+                            <data dataType="byte" bitLength="32">0x00000216</data>
+                          </CIPData>
+                        </data>
+                      </CipReadResponse>
+                    </CipService>
+                  </service>
+                </UnConnectedDataItem>
+              </TypeId>
+            </typeIds>
           </CipRRData>
         </EipPacket>
       </incoming-plc-message>
@@ -201,9 +396,8 @@
             <tags>
               <hurz>
                 <EipTag>
-                  <node dataType="string" bitLength="32" encoding="UTF-8">rate</node>
-                  <elementNb dataType="uint" bitLength="16">0</elementNb>
-                  <defaultJavaType dataType="string" bitLength="128" encoding="UTF-8">java.lang.Object</defaultJavaType>
+                  <node dataType="string" bitLength="40" encoding="UTF-8">%rate</node>
+                  <elementNb dataType="uint" bitLength="16">1</elementNb>
                 </EipTag>
               </hurz>
             </tags>
@@ -212,7 +406,7 @@
             <hurz>
               <ResponseItem>
                 <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcDINT dataType="int" bitLength="64">369229824</PlcDINT>
+                <PlcDINT dataType="int" bitLength="32">369229824</PlcDINT>
               </ResponseItem>
             </hurz>
           </values>

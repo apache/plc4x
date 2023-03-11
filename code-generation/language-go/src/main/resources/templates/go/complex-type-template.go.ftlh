@@ -151,13 +151,13 @@ type _${type.name} struct {
 }
 
 <#if type.isDiscriminatedParentTypeDefinition()>
-<#assign discriminatedParentType = type.asComplexTypeDefinition().orElseThrow()>
+<#assign complexTypeDefinition = type.asComplexTypeDefinition().orElseThrow()>
 type _${type.name}ChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
-    <#list discriminatedParentType.getDiscriminatorNames() as discriminatorName>
+    <#list complexTypeDefinition.getDiscriminatorNames() as discriminatorName>
     <#-- If the discriminator name matches that of another field, suppress the methods generation -->
-        <#if !type.isNonDiscriminatorField(discriminatorName)>
+        <#if type.isDiscriminatorField(discriminatorName)>
             <#assign typeRef=helper.getDiscriminatorTypes()[discriminatorName]>
 	Get${discriminatorName?cap_first}() <#if typeRef.isNonSimpleTypeReference() && !typeRef.isEnumTypeReference()>I</#if>${helper.getLanguageTypeNameForTypeReference(typeRef)}
         </#if>
@@ -750,7 +750,7 @@ func (m *_${type.name}) GetLengthInBytes(ctx context.Context) uint16 {
 <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name} ${helper.getLanguageTypeNameForTypeReference(parserArgument.type)}<#sep>, </#sep></#list></#if></#assign>
 <#assign parserArgumentNameList><#if hasParserArguments><#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>
 func ${type.name}Parse(theBytes []byte<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
-	return ${type.name}ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true)})<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
+	return ${type.name}ParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true, parserArguments)})<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
 }
 
 func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
@@ -1542,7 +1542,7 @@ func (pm *_${type.name}) SerializeParent(ctx context.Context, writeBuffer utils.
 	_ = m
 <#else>
 func (m *_${type.name}) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background())))${helper.getEndiannessOptions(false, true)})
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background())))${helper.getEndiannessOptions(false, true, parserArguments)})
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

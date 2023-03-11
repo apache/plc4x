@@ -20,12 +20,16 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
-func TestEipParserSerializer(t *testing.T) {
-	//t.Skip("Still a WIP")
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/eip/ParserSerializerTestsuite.xml")
+func TestEipParserSerializerBigEndian(t *testing.T) {
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/eip/ParserSerializerTestsuiteBigEndian.xml")
+}
+
+func TestEipParserSerializerLittleEndian(t *testing.T) {
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/eip/ParserSerializerTestsuiteLittleEndian.xml")
 }

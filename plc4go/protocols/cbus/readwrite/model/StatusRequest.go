@@ -51,6 +51,7 @@ type _StatusRequest struct {
 type _StatusRequestChildRequirements interface {
 	utils.Serializable
 	GetLengthInBits(ctx context.Context) uint16
+	GetStatusType() byte
 }
 
 type StatusRequestParent interface {

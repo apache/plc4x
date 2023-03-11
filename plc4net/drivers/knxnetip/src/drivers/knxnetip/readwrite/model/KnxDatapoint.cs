@@ -1814,6 +1814,20 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = readBuffer.ReadFloat("", 16);
 
                 return new PlcREAL(value);
+            } else if( datapointType == KnxDatapointType.DPT_Coefficient ) { // REAL
+
+                // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+                {
+                    var reserved = readBuffer.ReadByte("", 8);
+                    if(reserved != 0x00) {
+                        Logger.Info("Expected constant value {expected} but got {got} for reserved field.", 0x00, reserved);
+                    }
+                }
+
+                // Simple Field (value)
+                var value = readBuffer.ReadFloat("", 16);
+
+                return new PlcREAL(value);
             } else if( datapointType == KnxDatapointType.DPT_TimeOfDay ) { // Struct
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -3260,6 +3274,20 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
 
                 return new PlcREAL(value);
             } else if( datapointType == KnxDatapointType.DPT_Value_Work ) { // REAL
+
+                // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
+                {
+                    var reserved = readBuffer.ReadByte("", 8);
+                    if(reserved != 0x00) {
+                        Logger.Info("Expected constant value {expected} but got {got} for reserved field.", 0x00, reserved);
+                    }
+                }
+
+                // Simple Field (value)
+                var value = readBuffer.ReadFloat("", 32);
+
+                return new PlcREAL(value);
+            } else if( datapointType == KnxDatapointType.DPT_Value_ApparentPower ) { // REAL
 
                 // Reserved Field (Compartmentalized so the "reserved" variable can't leak)
                 {
@@ -7688,6 +7716,15 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 var value = (float) _value.GetFloat();
                 writeBuffer.WriteFloat("", 16,(value));
             return writeBuffer;
+        } else if( datapointType == KnxDatapointType.DPT_Coefficient ) { // REAL
+                var writeBuffer = new WriteBuffer();
+
+                // Reserved Field
+                writeBuffer.WriteByte("", 8, (byte) 0x00);
+                // Simple Field (value)
+                var value = (float) _value.GetFloat();
+                writeBuffer.WriteFloat("", 16,(value));
+            return writeBuffer;
         } else if( datapointType == KnxDatapointType.DPT_TimeOfDay ) { // Struct
                 var writeBuffer = new WriteBuffer();
 
@@ -8605,6 +8642,15 @@ if( datapointType == KnxDatapointType.BOOL ) { // BOOL
                 writeBuffer.WriteFloat("", 32,(value));
             return writeBuffer;
         } else if( datapointType == KnxDatapointType.DPT_Value_Work ) { // REAL
+                var writeBuffer = new WriteBuffer();
+
+                // Reserved Field
+                writeBuffer.WriteByte("", 8, (byte) 0x00);
+                // Simple Field (value)
+                var value = (float) _value.GetFloat();
+                writeBuffer.WriteFloat("", 32,(value));
+            return writeBuffer;
+        } else if( datapointType == KnxDatapointType.DPT_Value_ApparentPower ) { // REAL
                 var writeBuffer = new WriteBuffer();
 
                 // Reserved Field

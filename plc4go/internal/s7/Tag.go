@@ -20,6 +20,7 @@
 package s7
 
 import (
+	"context"
 	"encoding/binary"
 	"fmt"
 
@@ -32,6 +33,7 @@ import (
 
 type PlcTag interface {
 	model.PlcTag
+	utils.Serializable
 
 	GetDataType() readWriteModel.TransportSize
 	GetNumElements() uint16
@@ -134,15 +136,16 @@ func (m plcTag) GetBitOffset() uint8 {
 func (m plcTag) GetQuantity() uint16 {
 	return m.NumElements
 }
+
 func (m plcTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.TagType.GetName()); err != nil {
 		return err
 	}
@@ -174,13 +177,13 @@ func (m plcTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
 
 func (m PlcStringTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := m.SerializeWithWriteBuffer(wb); err != nil {
+	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}
 	return wb.GetBytes(), nil
 }
 
-func (m PlcStringTag) SerializeWithWriteBuffer(writeBuffer utils.WriteBuffer) error {
+func (m PlcStringTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(m.TagType.GetName()); err != nil {
 		return err
 	}

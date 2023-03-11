@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -34,7 +30,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcStruct extends PlcValueAdapter {
 
     private final Map<String, PlcValue> map;
@@ -44,8 +39,7 @@ public class PlcStruct extends PlcValueAdapter {
         return map;
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcStruct(@JsonProperty("map") Map<String, PlcValue> map) {
+    public PlcStruct(Map<String, PlcValue> map) {
         this.map = Collections.unmodifiableMap(map);
     }
 
@@ -55,43 +49,36 @@ public class PlcStruct extends PlcValueAdapter {
     }
 
     @Override
-    @JsonIgnore
     public int getLength() {
         return 1;
     }
 
     @Override
-    @JsonIgnore
     public boolean isStruct() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public Set<String> getKeys() {
         return map.keySet();
     }
 
     @Override
-    @JsonIgnore
     public boolean hasKey(String key) {
         return map.containsKey(key);
     }
 
     @Override
-    @JsonIgnore
     public PlcValue getValue(String key) {
         return map.get(key);
     }
 
     @Override
-    @JsonIgnore
     public Map<String, ? extends PlcValue> getStruct() {
         return map;
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return "{" + map.entrySet().stream().map(entry -> String.format("\"%s\": %s", entry.getKey(), entry.getValue())).collect(Collectors.joining(",")) + "}";
     }

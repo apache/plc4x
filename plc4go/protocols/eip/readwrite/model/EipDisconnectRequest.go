@@ -21,7 +21,6 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -56,12 +55,20 @@ func (m *_EipDisconnectRequest) GetCommand() uint16 {
 	return 0x0066
 }
 
+func (m *_EipDisconnectRequest) GetResponse() bool {
+	return false
+}
+
+func (m *_EipDisconnectRequest) GetPacketLength() uint16 {
+	return 0
+}
+
 ///////////////////////
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-func (m *_EipDisconnectRequest) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []uint8, options uint32) {
+func (m *_EipDisconnectRequest) InitializeParent(parent EipPacket, sessionHandle uint32, status uint32, senderContext []byte, options uint32) {
 	m.SessionHandle = sessionHandle
 	m.Status = status
 	m.SenderContext = senderContext
@@ -73,7 +80,7 @@ func (m *_EipDisconnectRequest) GetParent() EipPacket {
 }
 
 // NewEipDisconnectRequest factory function for _EipDisconnectRequest
-func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_EipDisconnectRequest {
+func NewEipDisconnectRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipDisconnectRequest {
 	_result := &_EipDisconnectRequest{
 		_EipPacket: NewEipPacket(sessionHandle, status, senderContext, options),
 	}
@@ -106,11 +113,11 @@ func (m *_EipDisconnectRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func EipDisconnectRequestParse(theBytes []byte) (EipDisconnectRequest, error) {
-	return EipDisconnectRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
+func EipDisconnectRequestParse(theBytes []byte, response bool) (EipDisconnectRequest, error) {
+	return EipDisconnectRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), response)
 }
 
-func EipDisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EipDisconnectRequest, error) {
+func EipDisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipDisconnectRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("EipDisconnectRequest"); pullErr != nil {
@@ -132,7 +139,7 @@ func EipDisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 }
 
 func (m *_EipDisconnectRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))), utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
+	wb := utils.NewWriteBufferByteBased(utils.WithInitialSizeForByteBasedBuffer(int(m.GetLengthInBytes(context.Background()))))
 	if err := m.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
 	}

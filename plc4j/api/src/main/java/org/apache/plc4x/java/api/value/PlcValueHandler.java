@@ -18,13 +18,11 @@
  */
 package org.apache.plc4x.java.api.value;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.model.PlcTag;
 
 /**
  * Base Valuehandler
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface PlcValueHandler {
 
     PlcValue newPlcValue(Object value);

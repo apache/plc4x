@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
@@ -32,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcTIME extends PlcSimpleValue<Duration> {
 
     public static PlcTIME of(Object value) {
@@ -50,12 +45,11 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
         return new PlcTIME(Duration.ofMillis(milliseconds));
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcTIME(@JsonProperty("value") Duration value) {
+    public PlcTIME(Duration value) {
         super(value, true);
     }
 
-    public PlcTIME(@JsonProperty("value") long milliseconds) {
+    public PlcTIME(long milliseconds) {
         super(Duration.ofMillis(milliseconds), true);
     }
 
@@ -79,7 +73,6 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
@@ -105,13 +98,11 @@ public class PlcTIME extends PlcSimpleValue<Duration> {
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return value.toString();
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return String.valueOf(value);
     }

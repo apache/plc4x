@@ -108,7 +108,7 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.70</bouncycastle.version>
-    <byte-buddy.version>1.14.0</byte-buddy.version>
+    <byte-buddy.version>1.14.1</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
@@ -126,7 +126,7 @@
     <commons-text.version>1.10.0</commons-text.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <equalsverifier.version>3.13.2</equalsverifier.version>
+    <equalsverifier.version>3.14</equalsverifier.version>
     <freemarker.version>2.3.32</freemarker.version>
     <groovy.version>4.0.9</groovy.version>
     <gson.version>2.10.1</gson.version>
@@ -134,12 +134,11 @@
     <hamcrest.version>2.2</hamcrest.version>
     <httpclient.version>4.5.14</httpclient.version>
     <httpcore.version>4.4.16</httpcore.version>
-    <!-- ! 2.13.4 has a known CVE and 2.14.0-rc1 seems to fix that, even if not finally released -->
     <jackson.version>2.14.2</jackson.version>
     <woodstox-core.version>6.5.0</woodstox-core.version>
     <!-- When updating this to the latest version, we're getting errors in the opcua server tests -->
     <jaxb.version>4.0.2</jaxb.version>
-    <jetty-util.version>11.0.13</jetty-util.version>
+    <jetty-util.version>11.0.14</jetty-util.version>
     <jna.version>5.13.0</jna.version>
     <joda-time.version>2.12.2</joda-time.version>
     <jserialcom.version>2.9.3</jserialcom.version>
@@ -293,7 +292,7 @@
       <dependency>
         <groupId>com.google.googlejavaformat</groupId>
         <artifactId>google-java-format</artifactId>
-        <version>1.15.0</version>
+        <version>1.16.0</version>
       </dependency>
 
       <dependency>
@@ -576,7 +575,7 @@
       <dependency>
         <groupId>org.json</groupId>
         <artifactId>json</artifactId>
-        <version>20220924</version>
+        <version>20230227</version>
       </dependency>
 
       <dependency>
@@ -1118,7 +1117,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.10.1</version>
+          <version>3.11.0</version>
           <configuration>
             <!--
               Use the eclipse compiler instead of the normal jdk one, as we were seeing

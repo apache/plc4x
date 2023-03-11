@@ -18,10 +18,6 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -30,7 +26,6 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class PlcBOOL extends PlcIECValue<Boolean> {
 
     private static final String VALUE_OUT_OF_RANGE = "Value of type %s is out of range %d - %d for a %s Value";
@@ -148,8 +143,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
         }
     }
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public PlcBOOL(@JsonProperty("value") boolean value) {
+    public PlcBOOL(boolean value) {
         this.value = value;
         this.isNullable = true;
     }
@@ -160,132 +154,110 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
     }
 
     @Override
-    @JsonIgnore
     public boolean isBoolean() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public boolean getBoolean() {
         return (value != null) && value;
     }
 
     @Override
-    @JsonIgnore
     public boolean isByte() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public byte getByte() {
         return (byte) (((value != null) && value) ? 1 : 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isShort() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public short getShort() {
         return (short) (((value != null) && value) ? 1 : 0);
     }
 
     @Override
-    @JsonIgnore
     public boolean isInteger() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public int getInteger() {
         return ((value != null) && value) ? 1 : 0;
     }
 
     @Override
-    @JsonIgnore
     public boolean isLong() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public long getLong() {
         return ((value != null) && value) ? 1 : 0;
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigInteger() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public BigInteger getBigInteger() {
         return value ? BigInteger.ONE : BigInteger.ZERO;
     }
 
     @Override
-    @JsonIgnore
     public boolean isFloat() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public float getFloat() {
         return ((value != null) && value) ? 1.0f : 0.0f;
     }
 
     @Override
-    @JsonIgnore
     public boolean isDouble() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public double getDouble() {
         return ((value != null) && value) ? 1.0 : 0.0;
     }
 
     @Override
-    @JsonIgnore
     public boolean isBigDecimal() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public BigDecimal getBigDecimal() {
         return value ? BigDecimal.ONE : BigDecimal.ZERO;
     }
 
     @Override
-    @JsonIgnore
     public boolean isString() {
         return true;
     }
 
     @Override
-    @JsonIgnore
     public String getString() {
         return toString();
     }
 
-    @JsonIgnore
     public byte[] getBytes() {
         return ((value != null) && value) ? new byte[]{0x01} : new byte[]{0x00};
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return Boolean.toString(value);
     }

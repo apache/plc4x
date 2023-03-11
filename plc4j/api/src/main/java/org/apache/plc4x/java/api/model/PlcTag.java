@@ -18,8 +18,6 @@
  */
 package org.apache.plc4x.java.api.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.plc4x.java.api.types.PlcValueType;
 
 import java.util.Collections;
@@ -37,7 +35,6 @@ import java.util.List;
  * a resource into it's individual tag type. Manually constructing PlcTag objects
  * manually makes the solution less independent of the protocol, but might be faster.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public interface PlcTag {
 
     /**
@@ -58,7 +55,6 @@ public interface PlcTag {
      *
      * @return The data type is generally parsed to the PlcTag class, if not a default datatype is returned.
      */
-    @JsonIgnore
     default PlcValueType getPlcValueType() {
         return PlcValueType.NULL;
     }
@@ -68,7 +64,6 @@ public interface PlcTag {
      *
      * @return The number of elements to expect.
      */
-    @JsonIgnore
     default List<ArrayInfo> getArrayInfo() {
         return Collections.emptyList();
     }

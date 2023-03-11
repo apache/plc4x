@@ -18,9 +18,6 @@
  */
 package org.apache.plc4x.java.s7.readwrite.tag;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
@@ -42,7 +39,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
 public class S7Tag implements PlcTag, Serializable {
 
     //byteOffset theoretically can reach up to 2097151 ... see checkByteOffset() below --> 7digits
@@ -81,10 +77,9 @@ public class S7Tag implements PlcTag, Serializable {
     private final byte bitOffset;
     private final int numElements;
 
-    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    protected S7Tag(@JsonProperty("dataType") TransportSize dataType, @JsonProperty("memoryArea") MemoryArea memoryArea,
-                    @JsonProperty("blockNumber") int blockNumber, @JsonProperty("byteOffset") int byteOffset,
-                    @JsonProperty("bitOffset") byte bitOffset, @JsonProperty("numElements") int numElements) {
+    protected S7Tag(TransportSize dataType, MemoryArea memoryArea,
+                    int blockNumber, int byteOffset,
+                    byte bitOffset, int numElements) {
         this.dataType = dataType;
         this.memoryArea = memoryArea;
         this.blockNumber = blockNumber;

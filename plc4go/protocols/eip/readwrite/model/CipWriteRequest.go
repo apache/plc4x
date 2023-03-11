@@ -32,8 +32,6 @@ type CipWriteRequest interface {
 	utils.LengthAware
 	utils.Serializable
 	CipService
-	// GetRequestPathSize returns RequestPathSize (property field)
-	GetRequestPathSize() int8
 	// GetTag returns Tag (property field)
 	GetTag() []byte
 	// GetDataType returns DataType (property field)
@@ -54,11 +52,10 @@ type CipWriteRequestExactly interface {
 // _CipWriteRequest is the data-structure of this message
 type _CipWriteRequest struct {
 	*_CipService
-	RequestPathSize int8
-	Tag             []byte
-	DataType        CIPDataTypeCode
-	ElementNb       uint16
-	Data            []byte
+	Tag       []byte
+	DataType  CIPDataTypeCode
+	ElementNb uint16
+	Data      []byte
 }
 
 ///////////////////////////////////////////////////////////
@@ -68,6 +65,14 @@ type _CipWriteRequest struct {
 
 func (m *_CipWriteRequest) GetService() uint8 {
 	return 0x4D
+}
+
+func (m *_CipWriteRequest) GetResponse() bool {
+	return bool(false)
+}
+
+func (m *_CipWriteRequest) GetConnected() bool {
+	return false
 }
 
 ///////////////////////
@@ -85,10 +90,6 @@ func (m *_CipWriteRequest) GetParent() CipService {
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
 ///////////////////////
-
-func (m *_CipWriteRequest) GetRequestPathSize() int8 {
-	return m.RequestPathSize
-}
 
 func (m *_CipWriteRequest) GetTag() []byte {
 	return m.Tag
@@ -112,14 +113,13 @@ func (m *_CipWriteRequest) GetData() []byte {
 ///////////////////////////////////////////////////////////
 
 // NewCipWriteRequest factory function for _CipWriteRequest
-func NewCipWriteRequest(requestPathSize int8, tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *_CipWriteRequest {
+func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *_CipWriteRequest {
 	_result := &_CipWriteRequest{
-		RequestPathSize: requestPathSize,
-		Tag:             tag,
-		DataType:        dataType,
-		ElementNb:       elementNb,
-		Data:            data,
-		_CipService:     NewCipService(serviceLen),
+		Tag:         tag,
+		DataType:    dataType,
+		ElementNb:   elementNb,
+		Data:        data,
+		_CipService: NewCipService(serviceLen),
 	}
 	_result._CipService._CipServiceChildRequirements = _result
 	return _result
@@ -143,7 +143,7 @@ func (m *_CipWriteRequest) GetTypeName() string {
 func (m *_CipWriteRequest) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(m.GetParentLengthInBits(ctx))
 
-	// Simple field (requestPathSize)
+	// Implicit Field (requestPathSize)
 	lengthInBits += 8
 
 	// Array field
@@ -169,11 +169,11 @@ func (m *_CipWriteRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func CipWriteRequestParse(theBytes []byte, serviceLen uint16) (CipWriteRequest, error) {
-	return CipWriteRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), serviceLen)
+func CipWriteRequestParse(theBytes []byte, connected bool, serviceLen uint16) (CipWriteRequest, error) {
+	return CipWriteRequestParseWithBuffer(context.Background(), utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
-func CipWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceLen uint16) (CipWriteRequest, error) {
+func CipWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("CipWriteRequest"); pullErr != nil {
@@ -182,12 +182,12 @@ func CipWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestPathSize)
-	_requestPathSize, _requestPathSizeErr := readBuffer.ReadInt8("requestPathSize", 8)
+	// Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
+	requestPathSize, _requestPathSizeErr := readBuffer.ReadUint8("requestPathSize", 8)
+	_ = requestPathSize
 	if _requestPathSizeErr != nil {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipWriteRequest")
 	}
-	requestPathSize := _requestPathSize
 	// Byte Array field (tag)
 	numberOfBytestag := int(uint16(requestPathSize) * uint16(uint16(2)))
 	tag, _readArrayErr := readBuffer.ReadByteArray("tag", numberOfBytestag)
@@ -230,11 +230,10 @@ func CipWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		_CipService: &_CipService{
 			ServiceLen: serviceLen,
 		},
-		RequestPathSize: requestPathSize,
-		Tag:             tag,
-		DataType:        dataType,
-		ElementNb:       elementNb,
-		Data:            data,
+		Tag:       tag,
+		DataType:  dataType,
+		ElementNb: elementNb,
+		Data:      data,
 	}
 	_child._CipService._CipServiceChildRequirements = _child
 	return _child, nil
@@ -256,9 +255,9 @@ func (m *_CipWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(pushErr, "Error pushing for CipWriteRequest")
 		}
 
-		// Simple Field (requestPathSize)
-		requestPathSize := int8(m.GetRequestPathSize())
-		_requestPathSizeErr := writeBuffer.WriteInt8("requestPathSize", 8, (requestPathSize))
+		// Implicit Field (requestPathSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
+		requestPathSize := uint8(uint8(uint8(len(m.GetTag()))) / uint8(uint8(2)))
+		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, (requestPathSize))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
