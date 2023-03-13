@@ -24,7 +24,7 @@ go 1.18
 require (
 	github.com/IBM/netaddr v1.5.0
 	github.com/ajankovic/xdiff v0.0.1
-	github.com/fatih/color v1.14.1
+	github.com/fatih/color v1.15.0
 	github.com/gdamore/tcell/v2 v2.6.0
 	github.com/gopacket/gopacket v1.0.0
 	github.com/icza/bitio v1.1.0
