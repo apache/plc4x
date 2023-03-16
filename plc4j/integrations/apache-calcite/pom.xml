@@ -32,7 +32,7 @@
   <name>PLC4J: Integrations: Apache Calcite</name>
 
   <properties>
-    <calcite-core.version>1.33.0</calcite-core.version>
+    <calcite-core.version>1.34.0</calcite-core.version>
   </properties>
 
   <build>
