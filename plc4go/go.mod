@@ -24,7 +24,7 @@ go 1.18
 require (
 	github.com/IBM/netaddr v1.5.0
 	github.com/ajankovic/xdiff v0.0.1
-	github.com/fatih/color v1.14.1
+	github.com/fatih/color v1.15.0
 	github.com/gdamore/tcell/v2 v2.6.0
 	github.com/gopacket/gopacket v1.0.0
 	github.com/icza/bitio v1.1.0
@@ -34,7 +34,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/rivo/tview v0.0.0-20230208211350-7dfff1ce7854
 	github.com/rs/zerolog v1.29.0
-	github.com/schollz/progressbar/v3 v3.13.0
+	github.com/schollz/progressbar/v3 v3.13.1
 	github.com/snksoft/crc v1.1.0
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/viper v1.15.0

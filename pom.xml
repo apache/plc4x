@@ -108,7 +108,7 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.70</bouncycastle.version>
-    <byte-buddy.version>1.14.1</byte-buddy.version>
+    <byte-buddy.version>1.14.2</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
@@ -128,7 +128,7 @@
     <dom4j.version>2.1.4</dom4j.version>
     <equalsverifier.version>3.14</equalsverifier.version>
     <freemarker.version>2.3.32</freemarker.version>
-    <groovy.version>4.0.9</groovy.version>
+    <groovy.version>4.0.10</groovy.version>
     <gson.version>2.10.1</gson.version>
     <guava.version>31.1-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
@@ -144,12 +144,12 @@
     <jserialcom.version>2.9.3</jserialcom.version>
     <junit.jupiter.version>5.9.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
-    <logback.version>1.4.5</logback.version>
+    <logback.version>1.4.6</logback.version>
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <!-- version 0.6.7 is newer, however the ExampleServer doesn't seem to run with that -->
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
     <milo.version>0.6.8</milo.version>
-    <mockito.version>5.1.1</mockito.version>
+    <mockito.version>5.2.0</mockito.version>
     <netty.version>4.1.89.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.6</slf4j.version>
@@ -816,7 +816,7 @@
 
             <exclude>.mvn/**</exclude>
 
-            <!-- Exlude core dumps-->
+            <!-- Exclude core dumps-->
             <exclude>**/hs_err_pid*</exclude>
             <exclude>**/replay_pid*</exclude>
             
