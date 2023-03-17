@@ -816,7 +816,7 @@
 
             <exclude>.mvn/**</exclude>
 
-            <!-- Exlude core dumps-->
+            <!-- Exclude core dumps-->
             <exclude>**/hs_err_pid*</exclude>
             <exclude>**/replay_pid*</exclude>
           </excludes>

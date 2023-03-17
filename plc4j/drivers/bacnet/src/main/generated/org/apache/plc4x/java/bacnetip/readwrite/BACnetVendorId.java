@@ -1619,6 +1619,7 @@ public enum BACnetVendorId {
   ELSNER_ELEKTRONIK((int) 1408, (int) 1408, (String) "Elsner Elektronik"),
   LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD(
       (int) 1409, (int) 1409, (String) "LEFOO Industrial (Hangzhou) Co., Ltd."),
+  CALIBRATION_TECHNOLOGIES_INC((int) 1410, (int) 1410, (String) "Calibration Technologies, Inc."),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
