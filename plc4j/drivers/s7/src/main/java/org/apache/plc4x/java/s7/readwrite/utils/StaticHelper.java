@@ -50,6 +50,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.plc4x.java.s7.readwrite.DataTransportSize;
 
 /**
  * +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
@@ -397,7 +398,7 @@ public class StaticHelper {
     /**
      *
      */
-    public enum SSL {
+    public enum SZL {
         ID_0x0011(0x0011, "Module identification.") {
             @Override
             public StringBuilder execute(ByteBuf data) {
@@ -570,16 +571,16 @@ public class StaticHelper {
         private final int code;
         private final String description;
 
-        private static final Map<Integer, SSL> map;
+        private static final Map<Integer, SZL> map;
 
         static {
             map = new HashMap<>();
-            for (SSL subssl : SSL.values()) {
-                map.put(subssl.code, subssl);
+            for (SZL subszl : SZL.values()) {
+                map.put(subszl.code, subszl);
             }
         }
 
-        SSL(final int code, final String description) {
+        SZL(final int code, final String description) {
             this.code = code;
             this.description = description;
         }
@@ -592,7 +593,7 @@ public class StaticHelper {
             return description;
         }
 
-        public static SSL valueOf(int code) {
+        public static SZL valueOf(int code) {
             return map.get(code);
         }
 
@@ -1415,6 +1416,16 @@ public class StaticHelper {
 
     public static int RightShift3(final ReadBuffer buffer) throws ParseException {
         return buffer.readUnsignedInt(16) >> 3;
+    }
+    
+    public static int RightShift3(final ReadBuffer buffer, DataTransportSize tsize) throws ParseException {
+        int value = 0;
+        if (tsize == DataTransportSize.OCTET_STRING){
+            value = buffer.readUnsignedInt(16);
+        } else {
+            value = buffer.readUnsignedInt(16) >> 3;
+        }
+        return value;    
     }
 
     //TODO: apply only if not the last item

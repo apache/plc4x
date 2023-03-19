@@ -6,7 +6,7 @@
 //  (the "License"); you may not use this file except in compliance with
 //  the License.  You may obtain a copy of the License at
 //
-//      https://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 //  Unless required by applicable law or agreed to in writing, software
 //  distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,7 +15,11 @@
 //  limitations under the License.
 //
 :imagesdir: ../../images/users/protocols
-:icons: font
+:icons: image
+:iconsdir: ../../images/users/protocols
+:source-highlighter: rouge
+//:coderay-linenums-mode: inline
+//:coderay-css: class
 
 == S7 (Step7)
 image::s7_banner.png[banner,512,167]
@@ -69,38 +73,65 @@ image::s7_banner.png[banner,512,167]
 3+|Options
 
 |
-| `local-rack` (1)
+| `local-rack`
 | `Rack` value for the client (PLC4X device). Defaults to 1.
+Default value: 1
 
 |
-| `local-slot` (1)
+| `local-slot`
 | `Slot` value for the client (PLC4X device). Defaults to 1.
+Default value: 1
 
 |
-| `remote-rack` (0)
-| `Rack` value for the remote (PLC). Defaults to 0.
+| `local-tsap`
+| `tsap` .
+Default value: 0
 
 |
-| `remote-slot` (0)
-| `Slot` value for the remote (PLC). Defaults to 0.
+| `remote-rack`
+| `Rack` value for the remote main CPU (PLC). Defaults to 0.
+Default value: 0
 
 |
-| `pdu-size` (1024)
+| `remote-slot`
+| `Slot` value for the remote main CPU (PLC). Defaults to 0.
+Default value: 0
+
+|
+| `remote-rack2`
+| `Rack` value for the remote secondary CPU (PLC). Defaults to 0.
+Default value: 0
+
+|
+| `remote-slot2`
+| `Slot` value for the remote secondary CPU (PLC). Defaults to 0.
+Default value: 0
+
+|
+| `remote-tsap`
+| `tsap` .
+Default value: 0
+
+|
+| `pdu-size`
 | Maximum size of a data-packet sent to and received from the remote PLC.
 During the connection process both parties will negotiate a maximum size both parties can work with and is equal or smaller than the given value is used.
-The driver will automatically split up large requests to not exceed this value in a request or expected response.
+The driver will automatically split up large requests to not exceed this value in a request or expected response. 
+Default value: 1024 bytes
 
 |
-| `max-amq-caller` (8)
+| `max-amq-caller`
 | Maximum number of unconfirmed requests the PLC will accept in parallel before discarding with errors.
 This parameter also will be negotiated during the connection process and the maximum both parties can work with and is equal or smaller than the given value is used.
 The driver will automatically take care not exceeding this value while processing requests. Too many requests can cause a growing queue.
+Default value: 8
 
 |
-| `max-amq-callee` (8)
+| `max-amq-callee`
 | Maximum number of unconfirmed responses or requests PLC4X will accept in parallel before discarding with errors.
 This option is available for completeness and is correctly handled out during the connection process, however it is currently not enforced on PLC4X's side.
 So if a PLC would send more messages than agreed upon, these would still be processed.
+Default value: 8
 
 |
 | `controller-type`
@@ -114,6 +145,29 @@ Possible values are:
 - `S7_1200`
 - `S7_1500`
 - `LOGO`
+
+|
+| `read-timeout`
+| This is the maximum waiting time for reading on the TCP channel. 
+As there is no traffic, it must be assumed that the connection with the interlocutor was lost and it must be restarted.
+When the channel is closed, the "fail over" is carried out in case of having the secondary channel, or it is expected that it will be restored automatically, which is done every 4 seconds.
+Default value: 8 seconds.
+
+|
+| `retry-time`
+| Time for supervision of TCP channels. If the channel is not active, a safe stop of the EventLoop must be performed, to ensure that no additional tasks are created.
+Default value: 4 seconds  
+
+|
+| `ping`
+| If your application requires sampling times greater than the set "read-timeout" time, it is important that the PING option is activated, this will prevent the TCP channel from being closed unnecessarily. 
+Default value: false
+
+|
+| `ping-time`
+| Time value in seconds at which the execution of the PING will be scheduled.
+Generally set by developer experience, but generally should be the same as (read-timeout / 2).
+Default value: -1 seconds  
 
 |===
 
@@ -260,7 +314,7 @@ Not all S7 device types support the same full set of memory areas, so the last c
 |CHAR           |B |Character               |8 bit character                                                                        |1  |All
 |WCHAR          |X |Double byte character   |16 bit character value                                                                 |2  |S7_1200, S7_1500
 |STRING         |X |String                  |String 2 + n bytes                                                                     |1  |All
-|WSTRING        |X |Double byte String      |String of 16 bit characters 2 + n bytes                                                |1  |S7_1200, S7_1500
+ |WSTRING        |X |Double byte String      |String of 16 bit characters 2 + n bytes                                                |1  |S7_1200, S7_1500
 
 6+|Temporal values
 |S5TIME          |X |S5 Time            |S5 Time (like in duration)                                                                 |2  |S7_300, S7_400, S7_1500
@@ -275,21 +329,603 @@ Not all S7 device types support the same full set of memory areas, so the last c
 
 The S7 driver allows the subscription to asynchronous events generated in the PLC.
 
-This type of event is generated by S7-300, S7-400 controllers and VIPA devices. Unfortunately for the S7-1200 and S7-1500 series this functionality has been superseded.
+This type of event is generated by S7-300, S7-400, G120C-PN, S120-PN controllers and VIPA devices. Unfortunately for the S7-1200 and S7-1500 series this functionality has been superseded.
 
+[NOTE,icon=s7_note.png]
 For a complete list of compatibility between the S7-300,400 and S7-1200 & S7-1500, you can see the document in [1] provided by Siemens.
 
-In applications
+These services have the following advantages:
+
+. Report the status of the CPUs and other components within the control architecture that support it (CP, IM, DI, etc).
+. Transfer of values when a change occurs.
+. Associate values to the events sent.
+. A better handling of the TimeStamp of the associated values.
+
+The messages are classified into two groups depending on how they are generated:
+
+. SCAN: All those events generated by the system or preset in Step7 (TIA Portal). The change of state of the configured signals is carried out by the operating system at specific intervals (500 ms, 100ms or 16 ms).
+. ALARM: These are events generated by the user application using the alarm blocks (ALARM_S, ALARM_SQ, NOTIFY, ALARM, ALARM_8). In addition to user applications, these events can be generated from technological functions such as PCS7 or Braumat.
+
+The data associated with the events is represented in a HashMap in order to facilitate its transfer to other applications based on a standard such as JMS, MQTT or other messaging technology.
+
+The handling of the TimeStamp of the SCAN type events is generated in the computer. In ALARM type messages the TimeStamps are generated in the PLC. It is extremely important that the date and time synchronization is done between both computers and PLC.
+
+The values associated with the events can have different types of representation, so their interpretation must be agreed upon during the programming of the application in the PLC and your application.
+
+For each type of event, the particular fields of type <String, T> will be arranged within the Map. These will be documented for each type of event.
+
+To maximize the use of the data fields associated with the events, the use of the intra-area pointer system and the ANY type pointer is recommended in the PLC, As well as the recommendations for the management of the time stamp [2].
+
+The different actors that iterate in the driver for asynchronous events and cyclical subscription can be seen in image 1.
+
+
+[plantuml, target="image01", format=png, align="center"]
+....
+autonumber "<b>(00)"
+title Participants in the communication model of the S7 driver.
+footer Image 1
+
+actor App
+participant PLC4X
+box "PLC (AS)" #LightBlue
+participant OS
+participant PCS7
+participant S7App
+endbox
+....
+
+
+. `PLC (AS)`, the controller. `AS` is the reference used in PCS7.
+. `App`,  your application.
+. `PLC4X`, implementation of the S7 driver.
+. `OS`, PLC operating system.
+. `PCS7`, represents the technological functions used in the PLC. PCS7 are Siemens DCS libraries.
+. `S7App`, your application that runs on the PLC.
+
+At the user application level `App`, you can use the PLC4X API to subscribe SCAN or ALARM type events by selecting any of the following fields according to the requirement:
 
 . `MODE`: Change of operating state in the controller, change from STOP to RUN and vice versa.
 . `SYS`: System events, associated with internal events of the controller or events previously parameterized for their indication.
 . `USR`: Events programmed by the user and that are registered in the internal diagnostic buffer.
 . `ALM`: Alarm events generated by the user program, ALARM_S, ALARM_8, NOTIFY.
 
+In the following sections we will describe in more detail the functionalities of each field.
 
-==== Diagnostic request
+==== SCAN Events
 
-TODO
+==== Subscription to MODE events (S7ModeEvent).
+
+By subscribing to controller status changes or `MODE` events, the PLC status changes can be tracked.
+
+Depending on the CPU model, these state changes are followed in the user application (PLC program), OB100 and OB101, allowing these applications to be brought to a safe state.
+
+Now, how do these state changes affect external applications, for example HMI or custom user applications?
+
+In the use of a unified Siemens architecture, the operator panels (HMI) and WinCC (Scada) detect the status of the CPU and pass the quality of the points in the database in real time to poor quality.
+
+In the case of an application developed with PLC4X, the use of MODE events will allow your application to indicate to users the quality of the points used, and that by design the quality is not updated in the controller.
+
+
+[plantuml, target=image02, format=png, align="center"]
+....
+autonumber "<b>(00)"
+title PLC4X Simatic S7 <b>MODE</b> Suscription.
+footer Image 2
+
+actor App
+participant PLC4X
+box "PLC (AS)" #LightBlue
+participant OS
+participant PCS7
+participant S7App
+endbox
+
+App -> PLC4X : subscription("MODE")
+PLC4X -> OS
+OS -> PLC4X
+PLC4X -> App : OK
+App -> PLC4X : Register the consumer
+OS -> OS : STOP
+OS --> PLC4X
+PLC4X --> App : to consumer
+...latter...
+OS -> OS : WARM_RESTART
+OS --> PLC4X
+PLC4X --> App : to consumer
+OS -> OS : RUN 
+OS --> PLC4X
+PLC4X --> App : to consumer
+....
+
+From image 2, we can describe the sequence of actions that can be followed for subscription. In the first place, the subscription process occurs from the *App* of the user (1)(2)(3)(4), having a positive response the application is ready to receive the events asynchronously from the *PLC (AS)*. 
+
+Suppose that the manager for a reason passes the controller to *STOP* (06) through the front switch or from the engineering station, then *OS* proceeds to send a notification (07)(08) to all consoles that are registered to receive this event. 
+
+Subsequently, the manager decides to switch the controller to execution mode, through the front switch or the engineering console, at this time the *OS* is in charge of generating the startup events, initially it indicates the hot start *WARN_RESTART* (09)(10)(11) and if the startup is successful, indicate that the controller is in execution mode or *RUN* (12)(13)(14).
+
+The information received in (08)(11)(14) is included in the attached table.
+
+|===
+|Field |Type |Description
+
+|TYPE |STRING |Fixed value.
+|TIMESTAMP |Instant |Instant.now () value assigned when receiving the event from the PLC. 
+|MAP |HashMap |The HashMap with all fields.
+|METHOD |byte |Value of "method" as defined in S7Parameter.
+|FUNCTION |byte |Value of "function" as defined in S7Parameter.
+|CURRENT_MODE |short |Status value reported in the event. Check the ModeTransitionType enum.
+|===
+
+With the sequence diagram and the data structures that will be received by the application, we can analyze the Java code for this specific function. We think this should serve as a pseudocode for the other languages.
+
+
+[source,java]
+----
+public class PLCEventModeSubscription {
+ 
+   public static void main(String[] args) throws Exception {
+    try (PlcConnection connection = new PlcDriverManager()
+			.getConnection("s7://192.168.1.51?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
+
+      final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder(); // <01>
+
+      subscription.addEventField("myMODE", "MODE");
+      final PlcSubscriptionRequest sub = subscription.build();
+            
+      System.out.println("Query: " + sub.toString());
+
+      final PlcSubscriptionResponse subresponse = sub.execute().get();
+            
+      if (subresponse.getResponseCode("myMODE") == PlcResponseCode.OK) { //<04>      
+				PlcConsumerRegistration registerMode = 
+        	subresponse
+          	.getSubscriptionHandle("myMODE") //<05>
+          	.register(msg -> { //<08><11><14>                                      
+           		System.out.println("******** S7ModeEvent ********");   
+            	Map<String, Object> map = ((S7ModeEvent) msg).getMap();
+            	map.forEach((x, y) -> { 
+              	System.out.println(x + " : " + y);
+            	});
+            	short currentmode = (short) 
+              map.get(S7ModeEvent.Fields.CURRENT_MODE.name());
+            	System.out.println("CURRENT_MODE MSG: " + ModeTransitionType.enumForValue(currentmode).name());
+            	System.out.println("****************************");
+          	});
+			}
+          System.out.println("Waiting for the messages.");            
+          Thread.sleep(120000);            
+          connection.close();            
+          System.out.println("Ending the connection.");                         
+        }        
+    }    
+}
+----
+
+
+==== Subscription to SYS events (S7SysEvent) and USER events (S7UserEvent).
+
+System events allow to receive asynchronously any event that affects the operation of the controller, or any of its peripheral equipment that is capable of sending events through a PROFIBUS or Profinet fieldbus.
+
+[plantuml, target="image03", format=png, align="center"]
+....
+autonumber "<b>(00)"
+title PLC4X Simatic S7 System Event <b>SYS</b> subscription.
+footer Image 3
+
+actor App
+participant PLC4X
+box "PLC (AS)" #LightBlue
+participant OS
+participant PCS7
+participant S7App
+endbox
+
+box "CP" #LightGray
+participant CP
+endbox
+
+App -> PLC4X : subscription("MODE")
+PLC4X -> OS
+OS -> PLC4X
+PLC4X -> App : OK
+App -> PLC4X : Register the consumer
+
+CP -> OS : STOP
+OS ->  OS : To Diagnostic buffer
+OS --> PLC4X
+PLC4X --> App : to consumer
+....
+
+A first example of its use is the change of state of a CP, IM or FM within the architecture of the controller. This will allow the application to indicate that there is an effect on the system that may affect the quality of the signals used, allowing preventive or corrective actions to be taken as required.
+
+[plantuml, target="image04", format=png, align="center"]
+....
+autonumber "<b>(00)"
+title PLC4X User Event <b>USR</b> subscription.
+footer Image 4
+
+actor App
+participant PLC4X
+box "PLC (AS)" #LightBlue
+participant OS
+participant PCS7
+participant S7App
+endbox
+
+box "CP" #LightGray
+participant CP
+endbox
+
+App -> PLC4X : subscription("USR")
+PLC4X -> OS
+OS -> PLC4X
+PLC4X -> App : OK
+App -> PLC4X : Register the consumer
+
+S7App -> OS : To diagnostic buffer
+S7App -> OS : To registered console
+OS --> PLC4X
+PLC4X --> App : to consumer
+....
+
+In general, system and user events are part of the same group of events, but they are differentiated to facilitate their processing.
+
+From the sequence diagrams after subscribing to the required event type (01)(02)(03)(04), the consumer (05) is registered to start receiving the events either from the *SYS* system or from the user *USR*.
+
+When the event is generated, it is sent to the diagnostic buffer (06) and an image of it is sent to all consoles registered to receive this type of event (07) distributed by the OS (08).
+
+Since at the protocol level the events are not differentiated, the PLC4X driver (08) is in charge of classifying the events in *SYS* or *USR* and transferring them to the registered consumer (09).
+
+[TIP,icon=s7_tip.png]
+For didactic purposes, a step-by-step explanation has been carried out, but in general the *App* application can be subscribed to the four types of events simultaneously.
+
+
+The following table shows the fields available for each message.
+
+
+
+|===
+|Field |Type |Description
+
+|TYPE |STRING |Fixed value.
+|TIMESTAMP |Instant |Instant.now () value assigned when receiving the event from the PLC. 
+|EVENT_ID |short |OS generated event ID.
+|PRIORITY_CLASS |byte |Value of "method" as defined in S7Parameter.
+|OB_NUMBER |byte |Value of "function" as defined in S7Parameter.
+|DAT_ID |short |Status value reported in the event. Check the ModeTransitionType enum.
+|INFO1 |WORD |System information 1 word long.
+|INFO2 |DWORD |System information 2 words l ng.
+|===
+
+For SYS events, the EVENT_ID is generated automatically by the *OS*, and basically they are constant in the different families of controllers.
+
+For the USER or User-defined events follow the same pattern as system events. They have the particularity that the value of EVENT_ID must be between the values 0xAXXX and 0xBYYY.
+
+This programming of the user-defined events is carried out at the level of the *PLC(AS)* controller, so we recommend the technical note [3] of the Siemens portal.
+
+[TIP,icon=s7_tip.png]
+In the case of user-defined messages, it is important to take into account that these are reported to the diagnostic buffer, which has a limited capacity depending on the CPU model used. Also take into account that the diagnostic buffer works like a circular buffer, so the oldest messages will be lost.
+
+....
+   +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+   |15|14|13|12|11|10| 9| 8| 7| 6| 5| 4| 3| 2| 1|
+   +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+   \__________/\__________/\____________________/
+    Event class     IDs         Event number
+  
+    Event Class:
+       1   Standard OB Events
+       2   Synchronous errors
+       3   Asynchronous errors
+       4   Mode transition
+       5   Run-time events
+       6   Communications events
+       7   Events for fail-safe and fault tolerant systems
+       8   Standardized diagnostic data on modules
+       9   Predefined user events
+     A,B   Freely definable events
+   C,D,E   Reserved
+       F   Events for modules other than CPUs (for example, CPs, FMs)
+  
+   IDs (Bit)
+       8   0:Event leaving state, 1:Event entering state
+       9   1:Entry in diagnostic buffer
+      10   1:Internal error
+      11   1:External error
+....
+
+In the previous table we can see how the event classes are coded, and how they are classified. If you require detailed information on each event, the user's *App* must interpret the indicated bits.
+
+In the INFO1 and INFO2 fields, specific diagnostic information associated with the event is generally attached, or some information that needs to be recorded in the case of user events.
+
+The INFO1 field contains information that can be stored in a word, namely, WORD, INT of ARRAY [0..1] OF CHAR.
+
+The INFO2 field contains information that can be stored in a double word, namely, DWORD, DINT, REAL, TIME, ARRAY [0..3] OF CHAR.
+
+Below is an example code for the subscription of events type *SYS*.
+
+[source,java]
+----
+public static void main(String[] args) throws Exception {
+ try (PlcConnection connection = new PlcDriverManager().
+  getConnection("s7://192.168.1.51?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
+
+   final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder(); //<01>
+
+   subscription.addEventField("mySYS", "SYS");
+   final PlcSubscriptionRequest sub = subscription.build();
+
+   System.out.println("Query: " + sub.toString());
+
+   final PlcSubscriptionResponse subresponse = sub.execute().get();
+
+   PlcConsumerRegistration registerSys =
+    subresponse
+     .getSubscriptionHandle("mySYS") //<05>
+     .register(msg -> { //<09>
+      System.out.println("******** S7SysEvent ********");
+      Map<String, Object> map = ((S7SysEvent) msg).getMap();
+      map.forEach((x, y) -> {
+       System.out.println(x + " : " + y);
+      });
+      Integer eventid = (Integer) map.get(S7SysEvent.Fields.EVENT_ID.name());
+      System.out.println("DIAGNOSTIC: " + S7DiagnosticEventId.
+      valueOf(eventid.shortValue()).getDescription()); //<10> 
+      System.out.println("****************************");
+     });
+
+   System.out.println("Waiting for the messages.");
+   Thread.sleep(120000);
+   connection.close();
+   System.out.println("Ending the connection.");
+  }
+ }
+----
+
+And below is an example code for the subscription of events type *USR*.
+
+[source,java]
+----
+public static void main(String[] args) throws Exception {
+ try (PlcConnection connection = new PlcDriverManager().
+  getConnection("s7://192.168.1.51?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
+
+   final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder();
+
+   subscription.addEventField("myUSR", "USR");
+   final PlcSubscriptionRequest sub = subscription.build();
+            
+   System.out.println("Query: " + sub.toString());
+
+   final PlcSubscriptionResponse subresponse = sub.execute().get();
+            
+   PlcConsumerRegistration registerUsr = 
+    subresponse
+    .getSubscriptionHandle("myUSR") //<05>
+    .register(msg -> {
+     System.out.println("******** S7UserEvent *******");
+     Map<String, Object> map = ((S7UserEvent) msg).getMap();
+     map.forEach((x, y) -> { //<09> 
+      System.out.println(x + " : " + y);
+     });
+     System.out.println("****************************");
+    });    
+
+   System.out.println("Waiting for the messages.");            
+   Thread.sleep(120000);
+   connection.close();
+   System.out.println("Ending the connection.");                
+  }        
+ }
+----
+
+The Java code shows how to detect the type of event in an event type *SYS*. In the S7 driver, there is an enum object _S7DiagnosticEventId_(10) that allows us to identify which internal event of the *PLC(AS)* generated it and thus, through the interpretation of the INFO1 and INFO2 fields, determine the root cause of the event.
+
+[NOTE, icon = s7_note.png]
+To date, the enum object _S7DiagnosticEventId_ contains a considerable amount of diagnostic values, it must be updated according to the new CPUs or firmware versions available.
+
+Unlike *SYS* events, *USR* events must be interpreted directly by the *App* application, so they are generally scheduled during the development phase of the *S7App* application.
+
+By having INFO1 and INFO2 in the *S7App* program, the user can transfer data associated with events, such as transitions between phases, events of diagnostic routines such as firts-out or the start or end of a batch process, all asynchronously. 
+
+==== Subscription to ALM type events (S7AlarmEvent).
+
+
+
+
+
+[plantuml, target="image05", format=png, align="center"]
+....
+autonumber "<b>(00)"
+title PLC4X Simatic S7 Alarm Event <b>ALM</b> suscription.
+footer Image 5
+
+actor App
+participant PLC4X
+box "PLC (AS)" #LightBlue
+participant OS
+participant PCS7
+participant S7App
+endbox
+
+box "CP" #LightGray
+participant CP
+endbox
+
+App -> PLC4X : subscription("ALM")
+PLC4X -> OS
+OS -> PLC4X
+PLC4X -> App : OK
+App -> PLC4X : Register the consumer
+
+App -> PLC4X : Request alarms
+PLC4X -> OS 
+OS -> PLC4X : Alarm_1,Alarm_2,
+PLC4X -> OS : Next seq   
+OS -> PLC4X : Alarm_3,Alarm_4,Alarm_9000  
+PLC4X -> OS : Next seq   
+OS -> PLC4X : Alarm_5,Alarm_6,
+PLC4X -> OS : Next seq
+OS -> PLC4X : Alarm_7,Alarm_8.
+
+PLC4X -> App : Alarm_1,Alarm_2,Alarm_3,Alarm_4,Alarm_9000,Alarm_5,Alarm_6,Alarm_7,Alarm_8
+PCS7 --> OS : Alarm_1000 to console 
+OS --> PLC4X
+PLC4X --> App : Alarm_1000 to consumer
+
+S7App --> OS : Alarm_9000 to console 
+OS --> PLC4X
+PLC4X --> App : Alarm_9000 to consumer
+
+S7App --> OS : Alarm_6 User defined alarm to console 
+activate S7App
+OS --> PLC4X
+PLC4X --> App : Alarm_6 to consumer
+
+S7App -> S7App : Wait for Alarm_6 ack
+
+App -> PLC4X : ACK Alarm_6
+PLC4X -> OS : ACK Alarm_6 
+OS -> PLC4X : OK
+PLC4X -> App : OK
+deactivate S7App
+OS --> PLC4X : Alarm_6 status update
+PLC4X --> App : to consumer
+
+....
+
+The registration sequence for subscription is the typical one carried out so far (01)(02)(03)(04)(05). From that moment on, you can start receiving alarm events asynchronously.
+
+Depending on your application, you can make a request for the currently active alarms in the alarm buffer of the *PLC(AS)*, in this way you can prepare a reception buffer or establish the correct state of a state machine that depends on the Active events in the controller.
+
+You must take into account that when making the request (06), from a few to hundreds of alarms can be stored depending on the complexity of your application and the capacity of the *PLC (AS)*.
+
+In this scenario, the *PLC4X* driver maintains the dialogue with the *OS* to receive sequentially (07)(08)(09)(10)(11)(12)(13)(14) the alarms stored on the controller, to later transfer them to the user application *App* (15).
+
+At the end of the subscription process, it will begin to receive the events generated by the system, such as high precision time signals (16)(17)(18)(19) or events generated by the user application (20)(21)(22).
+
+This simple sequence of events is used by process applications based on PCS7, for the handling of alarms, events and logging of practically all the events of the distributed control system (DCS).
+
+Another important feature of the driver is the ability to recognize the alarms generated from the *PLC(AS)*. In (23)(24)(25) the *S7App* application generates an alarm/event that is required to be acknowledged by the user to continue with the execution of a specific routine. The user applications *App* generates the acknowledgment (27)(28) using the corresponding alarm identifier, the *OS* is responsible for making the confirmation (29)(30) and asynchronously generating an event for the update of the state machine in the *App*(31)(32).
+
+Within the cyclical execution of the application *S7App* waits for the confirmation of the alarm (26) to continue with some specific routine. 
+
+TODO: Field description
+
+|===
+|Field |Type |Description
+
+|TYPE  | |
+|TIMESTAMP | |
+|TIMESTAMP_GOING | |
+|TIMESTAMP_COMING | |
+|ASSOCIATED_VALUES | |
+|MAP | |
+|EVENT_ID | |
+|EVENT_STATE | |
+|STATE | |
+|ACKSTATE_GOING | |
+|ACKSTATE_COMING | |
+|EVENT_GOING | |
+|EVENT_COMING | |
+|EVENT_LAST_CHANGE | |
+|SIG | |
+|SIG_[1...8] | |
+|SIG_STATE | |
+|SIG_[1...8]_STATE | |
+|SIG_DATA | |
+|SIG_[1...8]_DATA | |
+|SIG_[1...8]_DATA_GOING | |
+|SIG_[1...8]_DATA_CO
+|SIG_[1..8]_DATA_STATUS | |
+|SIG_[1...8]_DATA_SIZE | |
+|SIG_[1...8]_DATA_LENGTH | |
+|===
+
+
+TODO: Example code
+
+
+==== TODO: Cyclic subscription (CYC).
+
+The cyclical subscription allows the acquisition of data in passive mode, that is, the data is sent from the PLC in a cyclical and synchronous way.
+
+[plantuml, target="image01", format=png, align="center"]
+....
+autonumber "<b>(00)"
+title Participants in the communication model of the S7 driver.
+footer Image 1
+
+actor App
+participant PLC4X
+box "PLC (AS)" #LightBlue
+participant OS
+participant PCS7
+participant S7App
+endbox
+....
+
+
+The data transfer has three time bases:
+
+. *B01SEC*: Time base 0.1 Sec. (100 mSec.).
+. *B0SEC*: Time base 1.0 Sec.
+. *B10SEC*: Time base 10 Sec.
+
+
+
+==== TODO: Diagnostic request
+
+....
+
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  |15|14|13|12|11|10| 9| 8| 7| 6| 5| 4| 3| 2| 1|
+  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+  \__________/\__________/\____________________/
+   Module      Number of   Number of the partial 
+   class       the partial list
+               list 
+               extract
+ 
+  Module Class:
+  +--------------+-----------------+ 
+  | Module class | Coding (Binary) |
+  +--------------|-----------------+
+  |     CPU      |      0000       | 
+  +--------------|-----------------+
+  |     IM       |      0100       | 
+  +--------------|-----------------+
+  |     FM       |      1000       | 
+  +--------------|-----------------+
+  |     CP       |      1100       | 
+  +--------------|-----------------+
+....
+
+|===
+|*Module class* |*ZSL-ID* |*Implemented*
+|Module identification |16#xy11 |
+|CPU characteristics |16#xy12 |
+|User memory areas |16#xy13   |
+|System areas |16#xy14   |
+|Block types  |16#xy15   |
+|Interrupt status |16#xy22   |
+|Assignment between process image partitions and OBs |16#xy25   |
+|Communication status data |16#xy32   |
+|H CPU group information |16#xy71   |
+|Status of the module LEDs |16#xy74   |
+|Switched DP slaves in the H-system |16#xy75   |
+|Module status information |16#xy91   |
+|Rack / station status information |16#xy92   |
+|Rack / station status information |16#xy94   |
+|Extended DP master system / PROFINET IO system information |16#xy95   |
+|Module status information, PROFINET IO and PROFIBUS DP |16#xy96   |
+|Tool changer information (PROFINET IO) |16#xy9C   |
+|Diagnostic buffer of the CPU |16#xyA0   |
+|Module diagnostic information (data record 0) |16#xyB1   |
+|Module diagnostic information (data record 1), geographical address|16#xyB2   |
+|Module diagnostic information (data record 1), local address |16#xyB3   |
+|Diagnostic data of a DP slave |16#xyB4   |
+|===
 
 ==== Some useful tips
 
@@ -314,3 +950,15 @@ Each digital input and output can be addresses by a single bit-address (start-ad
 ==== Resources
 
 1. https://support.industry.siemens.com/cs/document/109797648/simatic-comparison-list-for-s7-300-s7-400-s7-1200-s7-1500?dti=0&lc=en-WW
+2. https://support.industry.siemens.com/cs/mdm/109746537?c=98956468747&lc=es-DO
+3. https://support.industry.siemens.com/cs/document/15166942/writing-user-specific-information-to-the-diagnostic-buffer-of-a-cpu-(sfc-52)?dti=0&lc=en-ES
+4. https://support.industry.siemens.com/cs/document/24013249/how-do-you-display-alarm_s-or-alarm_d-messages-with-process-values-(so-called-associated-values)-on-a-wincc-flexible-operator-panel-?dti=0&lc=en-WW
+5. https://support.industry.siemens.com/cs/document/109481157/comunicaci%C3%B3n-entre-paneles-de-operador-simatic-hmi-y-convertidores-de-frecuencia-sinamics-g120-para-el-manejo-y-la-visualizaci%C3%B3n-de-avisos-de-fallo-y-de-advertencia-(enlace-directo-sin-controlador)?dti=0&lc=es-WW
+6. https://support.industry.siemens.com/cs/document/97550333/sinamics-g-s-hmi-direct-access?dti=0&lc=en-WW
+7. https://support.industry.siemens.com/cs/document/21402122/technology-cpus-technology-template-error-messages-?dti=0&lc=en-WW
+8. https://support.industry.siemens.com/cs/document/77467239/transforming-warning-and-error-messages-of-a-sinamics-drive-with-the-aid-of-the-xml-parser-and-integrating-them-into-a-step-7-hmi-project?dti=0&lc=en-WW
+9. https://support.industry.siemens.com/cs/document/24037531/%C2%BFqu%C3%A9-pasos-de-configuraci%C3%B3n-hay-que-realizar-en-el-simotion-scout-y-el-wincc-flexible-para-que-se-muestren-los-avisos-alarm_s-y-las-alarmas-tecnol%C3%B3gicas-dentro-del-wincc-flexible-runtime-?dti=0&lc=es-ES
+
+
+
+

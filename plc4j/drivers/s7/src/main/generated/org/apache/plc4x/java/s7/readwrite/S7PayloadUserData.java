@@ -113,6 +113,11 @@ public class S7PayloadUserData extends S7Payload implements Message {
                             (CAST(
                                     CAST(parameter, S7ParameterUserData.class).getItems().get(0),
                                     S7ParameterUserDataItemCPUFunctions.class)
+                                .getCpuFunctionGroup()),
+                        (byte)
+                            (CAST(
+                                    CAST(parameter, S7ParameterUserData.class).getItems().get(0),
+                                    S7ParameterUserDataItemCPUFunctions.class)
                                 .getCpuFunctionType()),
                         (short)
                             (CAST(

@@ -36,6 +36,7 @@ import org.apache.plc4x.java.api.messages.PlcUnsubscriptionResponse;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.events.S7AlarmEvent;
+import org.apache.plc4x.java.s7.events.S7CyclicEvent;
 import org.apache.plc4x.java.s7.events.S7ModeEvent;
 import org.apache.plc4x.java.s7.events.S7SysEvent;
 import org.apache.plc4x.java.s7.events.S7UserEvent;
@@ -119,7 +120,7 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
         private final BlockingQueue eventqueue;
         private final BlockingQueue dispathqueue;        
         private boolean shutdown = false;
-        private int delay = 5000;
+        private int delay = 100;
         
         public ObjectProcessor(BlockingQueue eventqueue, BlockingQueue dispathqueue) {
             this.eventqueue = eventqueue;
@@ -145,6 +146,9 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                                 S7SysEvent sysevent = new S7SysEvent(msg);
                                 dispathqueue.add(sysevent);
                             }
+                        } else                           
+                        if (obj instanceof S7CyclicEvent){
+                                dispathqueue.add(obj);  
                         } else {
                             S7AlarmEvent alarmevent = new S7AlarmEvent(obj);
                             dispathqueue.add(alarmevent);
@@ -165,7 +169,8 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
     private class EventDispacher implements Runnable {
         private final BlockingQueue dispachqueue; 
         private boolean shutdown = false;
-        private int delay = 5000;  
+        private int delay = 100;  
+        private Object cycDelayedObject = null;        
 
         public EventDispacher(BlockingQueue dispachqueue) {
             this.dispachqueue = dispachqueue;
@@ -173,6 +178,11 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
         
         @Override
         public void run() {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException ex) {
+                logger.warn(ex.toString());
+            }
             while(!shutdown){
                 try {
                     Object obj = dispachqueue.poll(delay, TimeUnit.MILLISECONDS);
@@ -197,6 +207,17 @@ public class S7ProtocolEventLogic implements PlcSubscriber {
                                 Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.ALM);
                                 mapConsumers.forEach((x,y) -> y.accept(obj)); 
                             }
+                        }else if (obj instanceof S7CyclicEvent) {  
+                            if (mapIndex.containsKey(EventType.CYC)) {
+                                Map<PlcConsumerRegistration, Consumer> mapConsumers = mapIndex.get(EventType.CYC);
+                                    if (cycDelayedObject != null) {                                                                          
+                                        mapConsumers.forEach((x,y) -> y.accept(cycDelayedObject)); 
+                                        cycDelayedObject = null;
+                                    }                                                                       
+                                    mapConsumers.forEach((x,y) -> y.accept(obj)); 
+                            } else {
+                                cycDelayedObject = obj;
+                            }                           
                         }                         
                     }
                 } catch (Exception ex) {

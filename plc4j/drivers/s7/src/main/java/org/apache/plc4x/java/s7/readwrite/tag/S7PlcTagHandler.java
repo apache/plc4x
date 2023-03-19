@@ -31,8 +31,8 @@ public class S7PlcTagHandler implements PlcTagHandler {
             return S7Tag.of(tagAddress);
         } else if (S7SubscriptionTag.matches(tagAddress)){
             return S7SubscriptionTag.of(tagAddress);
-        } else if (S7SslTag.matches(tagAddress)){
-            return S7SslTag.of(tagAddress);
+        } else if (S7SzlTag.matches(tagAddress)){
+            return S7SzlTag.of(tagAddress);
         }
         throw new PlcInvalidTagException(tagAddress);
     }

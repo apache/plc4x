@@ -24,5 +24,6 @@ public enum S7SubscriptionType {
     ALARM_ACK,
     ALARM_QUERY,
     CYCLIC_SUBSCRIPTION,
+    CYCLIC_DB_SUBSCRIPTION,    
     CYCLIC_UNSUBSCRIPTION;    
 }
