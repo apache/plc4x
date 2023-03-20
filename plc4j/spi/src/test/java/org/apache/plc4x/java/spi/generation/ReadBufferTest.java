@@ -38,4 +38,17 @@ class ReadBufferTest {
 
         assertEquals(value, answer);
     }
+
+    /**
+     * Test which makes sure that UTF8 encoding with multi-byte characters works
+     */
+    @Test
+    void readStringUtf8() throws ParseException {
+        String value = "molybdän";
+        final var serialized = value.getBytes(StandardCharsets.UTF_8);
+        final ReadBuffer buffer = new ReadBufferByteBased(serialized);
+        String answer = buffer.readString("", serialized.length * 8, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
+
+        assertEquals(value, answer);
+    }
 }
