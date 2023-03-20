@@ -48,7 +48,7 @@
 			<plugin>
 				<groupId>org.apache.nifi</groupId>
 				<artifactId>nifi-nar-maven-plugin</artifactId>
-				<version>1.4.0</version>
+				<version>1.5.0</version>
 				<extensions>true</extensions>
 			</plugin>
 			<!-- Makes buildRevision and buildBranch available to the NAR Plugin, so they can be populated in the MANIFEST -->
