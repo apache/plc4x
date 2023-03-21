@@ -36,7 +36,7 @@ type Worker struct {
 	shutdown    atomic.Bool
 	runnable    Runnable
 	interrupted atomic.Bool
-	executor    *Executor
+	executor    *executor
 }
 
 func (w *Worker) work() {
@@ -85,7 +85,14 @@ func (w *WorkItem) String() string {
 	return fmt.Sprintf("Workitem{wid:%d}", w.workItemId)
 }
 
-type Executor struct {
+type Executor interface {
+	Start()
+	Stop()
+	Submit(ctx context.Context, workItemId int32, runnable Runnable) CompletionFuture
+	IsRunning() bool
+}
+
+type executor struct {
 	running      bool
 	shutdown     bool
 	stateChange  sync.Mutex
@@ -94,14 +101,14 @@ type Executor struct {
 	traceWorkers bool
 }
 
-func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, options ...ExecutorOption) *Executor {
+func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, options ...ExecutorOption) Executor {
 	workers := make([]*Worker, numberOfWorkers)
 	for i := 0; i < numberOfWorkers; i++ {
 		workers[i] = &Worker{
 			id: i,
 		}
 	}
-	executor := &Executor{
+	executor := &executor{
 		queue:  make(chan WorkItem, queueDepth),
 		worker: workers,
 	}
@@ -114,15 +121,15 @@ func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, options ...ExecutorOp
 	return executor
 }
 
-type ExecutorOption func(*Executor)
+type ExecutorOption func(*executor)
 
 func WithExecutorOptionTracerWorkers(traceWorkers bool) ExecutorOption {
-	return func(executor *Executor) {
+	return func(executor *executor) {
 		executor.traceWorkers = traceWorkers
 	}
 }
 
-func (e *Executor) Submit(ctx context.Context, workItemId int32, runnable Runnable) CompletionFuture {
+func (e *executor) Submit(ctx context.Context, workItemId int32, runnable Runnable) CompletionFuture {
 	log.Trace().Int32("workItemId", workItemId).Msg("Submitting runnable")
 	completionFuture := &future{}
 	select {
@@ -140,7 +147,7 @@ func (e *Executor) Submit(ctx context.Context, workItemId int32, runnable Runnab
 	return completionFuture
 }
 
-func (e *Executor) Start() {
+func (e *executor) Start() {
 	e.stateChange.Lock()
 	defer e.stateChange.Unlock()
 	if e.running || e.shutdown {
@@ -154,10 +161,10 @@ func (e *Executor) Start() {
 	}
 }
 
-func (e *Executor) Stop() {
+func (e *executor) Stop() {
 	e.stateChange.Lock()
 	defer e.stateChange.Unlock()
-	if !e.running {
+	if !e.running || e.shutdown {
 		return
 	}
 	e.shutdown = true
@@ -171,7 +178,7 @@ func (e *Executor) Stop() {
 	e.shutdown = false
 }
 
-func (e *Executor) IsRunning() bool {
+func (e *executor) IsRunning() bool {
 	return e.running && !e.shutdown
 }
 

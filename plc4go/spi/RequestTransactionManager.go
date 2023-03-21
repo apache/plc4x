@@ -38,7 +38,7 @@ import (
 var sharedExecutorInstance utils.Executor // shared instance
 
 func init() {
-	sharedExecutorInstance = *utils.NewFixedSizeExecutor(runtime.NumCPU(), 100, utils.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers))
+	sharedExecutorInstance = utils.NewFixedSizeExecutor(runtime.NumCPU(), 100, utils.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers))
 	sharedExecutorInstance.Start()
 }
 
@@ -68,7 +68,7 @@ type RequestTransactionManager struct {
 	// Important, this is a FIFO Queue for Fairness!
 	workLog      list.List
 	workLogMutex sync.RWMutex
-	executor     *utils.Executor
+	executor     utils.Executor
 }
 
 // NewRequestTransactionManager creates a new RequestTransactionManager
@@ -77,7 +77,7 @@ func NewRequestTransactionManager(numberOfConcurrentRequests int, requestTransac
 		numberOfConcurrentRequests: numberOfConcurrentRequests,
 		transactionId:              0,
 		workLog:                    *list.New(),
-		executor:                   &sharedExecutorInstance,
+		executor:                   sharedExecutorInstance,
 	}
 	for _, requestTransactionManagerOption := range requestTransactionManagerOptions {
 		requestTransactionManagerOption(requestTransactionManager)
@@ -88,7 +88,7 @@ func NewRequestTransactionManager(numberOfConcurrentRequests int, requestTransac
 type RequestTransactionManagerOption func(requestTransactionManager *RequestTransactionManager)
 
 // WithCustomExecutor sets a custom Executor for the RequestTransactionManager
-func WithCustomExecutor(executor *utils.Executor) RequestTransactionManagerOption {
+func WithCustomExecutor(executor utils.Executor) RequestTransactionManagerOption {
 	return func(requestTransactionManager *RequestTransactionManager) {
 		requestTransactionManager.executor = executor
 	}
