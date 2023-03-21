@@ -22,6 +22,7 @@ package utils
 import (
 	"context"
 	"fmt"
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"sync"
@@ -31,15 +32,15 @@ import (
 
 type Runnable func()
 
-type Worker struct {
+type worker struct {
 	id          int
 	shutdown    atomic.Bool
-	runnable    Runnable
 	interrupted atomic.Bool
 	executor    *executor
+	hasEnded    bool
 }
 
-func (w *Worker) work() {
+func (w *worker) work() {
 	defer func() {
 		if recovered := recover(); recovered != nil {
 			log.Error().Msgf("Recovering from panic()=%v", recovered)
@@ -49,6 +50,7 @@ func (w *Worker) work() {
 			w.work()
 		}
 	}()
+	w.hasEnded = false
 	workerLog := log.With().Int("Worker id", w.id).Logger()
 	if !w.executor.traceWorkers {
 		workerLog = zerolog.Nop()
@@ -57,31 +59,32 @@ func (w *Worker) work() {
 	for !w.shutdown.Load() {
 		workerLog.Debug().Msg("Working")
 		select {
-		case workItem := <-w.executor.queue:
-			workerLog.Debug().Msgf("Got work item %v", workItem)
-			if workItem.completionFuture.cancelRequested.Load() || (w.shutdown.Load() && w.interrupted.Load()) {
+		case _workItem := <-w.executor.queue:
+			workerLog.Debug().Msgf("Got work item %v", _workItem)
+			if _workItem.completionFuture.cancelRequested.Load() || (w.shutdown.Load() && w.interrupted.Load()) {
 				workerLog.Debug().Msg("We need to stop")
 				// TODO: do we need to complete with a error?
 			} else {
-				workerLog.Debug().Msgf("Running work item %v", workItem)
-				workItem.runnable()
-				workItem.completionFuture.complete()
-				workerLog.Debug().Msgf("work item %v completed", workItem)
+				workerLog.Debug().Msgf("Running work item %v", _workItem)
+				_workItem.runnable()
+				_workItem.completionFuture.complete()
+				workerLog.Debug().Msgf("work item %v completed", _workItem)
 			}
 		default:
 			workerLog.Debug().Msgf("Idling")
 			time.Sleep(time.Millisecond * 10)
 		}
 	}
+	w.hasEnded = true
 }
 
-type WorkItem struct {
+type workItem struct {
 	workItemId       int32
 	runnable         Runnable
 	completionFuture *future
 }
 
-func (w *WorkItem) String() string {
+func (w *workItem) String() string {
 	return fmt.Sprintf("Workitem{wid:%d}", w.workItemId)
 }
 
@@ -96,20 +99,20 @@ type executor struct {
 	running      bool
 	shutdown     bool
 	stateChange  sync.Mutex
-	worker       []*Worker
-	queue        chan WorkItem
+	worker       []*worker
+	queue        chan workItem
 	traceWorkers bool
 }
 
 func NewFixedSizeExecutor(numberOfWorkers, queueDepth int, options ...ExecutorOption) Executor {
-	workers := make([]*Worker, numberOfWorkers)
+	workers := make([]*worker, numberOfWorkers)
 	for i := 0; i < numberOfWorkers; i++ {
-		workers[i] = &Worker{
+		workers[i] = &worker{
 			id: i,
 		}
 	}
 	executor := &executor{
-		queue:  make(chan WorkItem, queueDepth),
+		queue:  make(chan workItem, queueDepth),
 		worker: workers,
 	}
 	for _, option := range options {
@@ -133,7 +136,7 @@ func (e *executor) Submit(ctx context.Context, workItemId int32, runnable Runnab
 	log.Trace().Int32("workItemId", workItemId).Msg("Submitting runnable")
 	completionFuture := &future{}
 	select {
-	case e.queue <- WorkItem{
+	case e.queue <- workItem{
 		workItemId:       workItemId,
 		runnable:         runnable,
 		completionFuture: completionFuture,
@@ -198,20 +201,31 @@ type future struct {
 func (f *future) Cancel(interrupt bool, err error) {
 	f.cancelRequested.Store(true)
 	f.interruptRequested.Store(interrupt)
-	f.errored.Store(true)
-	f.err.Store(err)
+	if err != nil {
+		f.errored.Store(true)
+		f.err.Store(err)
+	}
 }
 
 func (f *future) complete() {
 	f.completed.Store(true)
 }
 
+// Canceled is returned on CompletionFuture.AwaitCompletion when a CompletionFuture was canceled
+var Canceled = errors.New("Canceled")
+
 func (f *future) AwaitCompletion(ctx context.Context) error {
-	for !f.completed.Load() && !f.errored.Load() && ctx.Err() != nil {
+	for !f.completed.Load() && !f.errored.Load() && !f.cancelRequested.Load() && ctx.Err() == nil {
 		time.Sleep(time.Millisecond * 10)
 	}
 	if err := ctx.Err(); err != nil {
 		return err
 	}
-	return f.err.Load().(error)
+	if err, ok := f.err.Load().(error); ok {
+		return err
+	}
+	if f.cancelRequested.Load() {
+		return Canceled
+	}
+	return nil
 }
