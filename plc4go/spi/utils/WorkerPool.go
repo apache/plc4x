@@ -20,6 +20,7 @@
 package utils
 
 import (
+	"context"
 	"fmt"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -63,7 +64,7 @@ func (w *Worker) work() {
 			} else {
 				workerLog.Debug().Msgf("Running work item %v", workItem)
 				workItem.runnable()
-				workItem.completionFuture.Complete()
+				workItem.completionFuture.complete()
 				workerLog.Debug().Msgf("work item %v completed", workItem)
 			}
 		default:
@@ -76,7 +77,7 @@ func (w *Worker) work() {
 type WorkItem struct {
 	workItemId       int32
 	runnable         Runnable
-	completionFuture *CompletionFuture
+	completionFuture *future
 }
 
 func (w *WorkItem) String() string {
@@ -125,9 +126,9 @@ func WithExecutorOptionTracerWorkers(traceWorkers bool) ExecutorOption {
 	}
 }
 
-func (e *Executor) Submit(workItemId int32, runnable Runnable) *CompletionFuture {
+func (e *Executor) Submit(workItemId int32, runnable Runnable) CompletionFuture {
 	log.Trace().Int32("workItemId", workItemId).Msg("Submitting runnable")
-	completionFuture := &CompletionFuture{}
+	completionFuture := &future{}
 	// TODO: add select and timeout if queue is full
 	e.queue <- WorkItem{
 		workItemId:       workItemId,
@@ -168,7 +169,12 @@ func (e *Executor) Stop() {
 	e.running = false
 }
 
-type CompletionFuture struct {
+type CompletionFuture interface {
+	AwaitCompletion(ctx context.Context) error
+	Cancel(interrupt bool, err error)
+}
+
+type future struct {
 	cancelRequested    bool
 	interruptRequested bool
 	completed          bool
@@ -176,20 +182,23 @@ type CompletionFuture struct {
 	err                error
 }
 
-func (f *CompletionFuture) Cancel(interrupt bool, err error) {
+func (f *future) Cancel(interrupt bool, err error) {
 	f.cancelRequested = true
 	f.interruptRequested = interrupt
 	f.errored = true
 	f.err = err
 }
 
-func (f *CompletionFuture) Complete() {
+func (f *future) complete() {
 	f.completed = true
 }
 
-func (f *CompletionFuture) AwaitCompletion() error {
-	for !f.completed && !f.errored {
+func (f *future) AwaitCompletion(ctx context.Context) error {
+	for !f.completed && !f.errored && ctx.Err() != nil {
 		time.Sleep(time.Millisecond * 10)
+	}
+	if err := ctx.Err(); err != nil {
+		return err
 	}
 	return f.err
 }

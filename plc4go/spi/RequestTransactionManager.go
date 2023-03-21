@@ -21,6 +21,7 @@ package spi
 
 import (
 	"container/list"
+	"context"
 	"fmt"
 	"runtime"
 	"sync"
@@ -47,7 +48,7 @@ type RequestTransaction struct {
 
 	/** The initial operation to perform to kick off the request */
 	operation        utils.Runnable
-	completionFuture *utils.CompletionFuture
+	completionFuture utils.CompletionFuture
 
 	transactionLog zerolog.Logger
 }
@@ -221,11 +222,11 @@ func (t *RequestTransaction) Submit(operation utils.Runnable) {
 }
 
 // AwaitCompletion wait for this RequestTransaction to finish. Returns an error if it finished unsuccessful
-func (t *RequestTransaction) AwaitCompletion() error {
+func (t *RequestTransaction) AwaitCompletion(ctx context.Context) error {
 	for t.completionFuture == nil {
 		time.Sleep(time.Millisecond * 10)
 	}
-	if err := t.completionFuture.AwaitCompletion(); err != nil {
+	if err := t.completionFuture.AwaitCompletion(ctx); err != nil {
 		return err
 	}
 	stillActive := true
