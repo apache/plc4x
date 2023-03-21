@@ -399,7 +399,7 @@ func (m *Reader) Read(ctx context.Context, readRequest apiModel.PlcReadRequest) 
 					_ = transaction.FailRequest(errors.Errorf("timeout after %ss", time.Second*1))
 				}
 			})
-			if err := transaction.AwaitCompletion(); err != nil {
+			if err := transaction.AwaitCompletion(ctx); err != nil {
 				log.Warn().Err(err).Msg("Error while awaiting completion")
 			}
 		}
