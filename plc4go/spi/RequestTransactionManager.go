@@ -134,8 +134,7 @@ func (r *RequestTransactionManager) processWorklog() {
 		next := front.Value.(*RequestTransaction)
 		log.Debug().Msgf("Handling next %v. (Adding to running requests (length: %d))", next, len(r.runningRequests))
 		r.runningRequests = append(r.runningRequests, next)
-		// TODO: use sharedInstance if none is present
-		completionFuture := sharedExecutorInstance.Submit(next.transactionId, next.operation)
+		completionFuture := r.executor.Submit(context.Background(), next.transactionId, next.operation)
 		next.completionFuture = completionFuture
 		r.workLog.Remove(front)
 	}

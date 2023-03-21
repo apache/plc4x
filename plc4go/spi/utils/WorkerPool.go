@@ -122,15 +122,20 @@ func WithExecutorOptionTracerWorkers(traceWorkers bool) ExecutorOption {
 	}
 }
 
-func (e *Executor) Submit(workItemId int32, runnable Runnable) CompletionFuture {
+func (e *Executor) Submit(ctx context.Context, workItemId int32, runnable Runnable) CompletionFuture {
 	log.Trace().Int32("workItemId", workItemId).Msg("Submitting runnable")
 	completionFuture := &future{}
-	// TODO: add select and timeout if queue is full
-	e.queue <- WorkItem{
+	select {
+	case e.queue <- WorkItem{
 		workItemId:       workItemId,
 		runnable:         runnable,
 		completionFuture: completionFuture,
+	}:
+		log.Trace().Msg("Item added")
+	case <-ctx.Done():
+		completionFuture.Cancel(false, ctx.Err())
 	}
+
 	log.Trace().Int32("workItemId", workItemId).Msg("runnable queued")
 	return completionFuture
 }
@@ -138,7 +143,7 @@ func (e *Executor) Submit(workItemId int32, runnable Runnable) CompletionFuture 
 func (e *Executor) Start() {
 	e.stateChange.Lock()
 	defer e.stateChange.Unlock()
-	if e.running {
+	if e.running || e.shutdown {
 		return
 	}
 	e.running = true
@@ -163,6 +168,11 @@ func (e *Executor) Stop() {
 		worker.interrupted.Store(true)
 	}
 	e.running = false
+	e.shutdown = false
+}
+
+func (e *Executor) IsRunning() bool {
+	return e.running && !e.shutdown
 }
 
 type CompletionFuture interface {
