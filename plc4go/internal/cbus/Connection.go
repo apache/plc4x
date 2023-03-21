@@ -455,6 +455,9 @@ func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnecti
 	} else {
 		log.Error().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
 	}
+	if err := c.messageCodec.Disconnect(); err != nil {
+		log.Debug().Err(err).Msg("Error disconnecting message codec on connection error")
+	}
 }
 
 func (c *Connection) fireConnected(ch chan<- plc4go.PlcConnectionConnectResult) {
