@@ -21,7 +21,6 @@ package utils
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"sync"
@@ -49,7 +48,7 @@ func (w *Worker) work() {
 		}
 	}()
 	workerLog := log.With().Int("Worker id", w.id).Logger()
-	if !config.TraceTransactionManagerWorkers {
+	if !w.executor.traceWorkers {
 		workerLog = zerolog.Nop()
 	}
 
@@ -75,24 +74,25 @@ func (w *Worker) work() {
 }
 
 type WorkItem struct {
-	transactionId    int32
+	workItemId       int32
 	runnable         Runnable
 	completionFuture *CompletionFuture
 }
 
 func (w *WorkItem) String() string {
-	return fmt.Sprintf("Workitem{tid:%d}", w.transactionId)
+	return fmt.Sprintf("Workitem{wid:%d}", w.workItemId)
 }
 
 type Executor struct {
-	running     bool
-	shutdown    bool
-	stateChange sync.Mutex
-	worker      []*Worker
-	queue       chan WorkItem
+	running      bool
+	shutdown     bool
+	stateChange  sync.Mutex
+	worker       []*Worker
+	queue        chan WorkItem
+	traceWorkers bool
 }
 
-func NewFixedSizeExecutor(numberOfWorkers int) *Executor {
+func NewFixedSizeExecutor(numberOfWorkers int, options ...ExecutorOption) *Executor {
 	workers := make([]*Worker, numberOfWorkers)
 	for i := 0; i < numberOfWorkers; i++ {
 		workers[i] = &Worker{
@@ -103,27 +103,38 @@ func NewFixedSizeExecutor(numberOfWorkers int) *Executor {
 			executor:    nil,
 		}
 	}
-	executor := Executor{
+	executor := &Executor{
 		queue:  make(chan WorkItem, 100),
 		worker: workers,
 	}
+	for _, option := range options {
+		option(executor)
+	}
 	for i := 0; i < numberOfWorkers; i++ {
 		worker := workers[i]
-		worker.executor = &executor
+		worker.executor = executor
 	}
-	return &executor
+	return executor
 }
 
-func (e *Executor) Submit(transactionId int32, runnable Runnable) *CompletionFuture {
-	log.Trace().Int32("transactionId", transactionId).Msg("Submitting runnable")
+type ExecutorOption func(*Executor)
+
+func WithExecutorOptionTracerWorkers(traceWorkers bool) ExecutorOption {
+	return func(executor *Executor) {
+		executor.traceWorkers = traceWorkers
+	}
+}
+
+func (e *Executor) Submit(workItemId int32, runnable Runnable) *CompletionFuture {
+	log.Trace().Int32("workItemId", workItemId).Msg("Submitting runnable")
 	completionFuture := &CompletionFuture{}
 	// TODO: add select and timeout if queue is full
 	e.queue <- WorkItem{
-		transactionId:    transactionId,
+		workItemId:       workItemId,
 		runnable:         runnable,
 		completionFuture: completionFuture,
 	}
-	log.Trace().Int32("transactionId", transactionId).Msg("runnable queued")
+	log.Trace().Int32("workItemId", workItemId).Msg("runnable queued")
 	return completionFuture
 }
 

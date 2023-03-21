@@ -37,7 +37,7 @@ import (
 var sharedExecutorInstance utils.Executor // shared instance
 
 func init() {
-	sharedExecutorInstance = *utils.NewFixedSizeExecutor(runtime.NumCPU())
+	sharedExecutorInstance = *utils.NewFixedSizeExecutor(runtime.NumCPU(), utils.WithExecutorOptionTracerWorkers(config.TraceTransactionManagerWorkers))
 	sharedExecutorInstance.Start()
 }
 
