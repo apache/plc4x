@@ -592,6 +592,7 @@
           </packages>
           <sources>${project.basedir}</sources>
           <verbose>true</verbose>
+          <goVersion>1.19</goVersion>
         </configuration>
       </plugin>
 

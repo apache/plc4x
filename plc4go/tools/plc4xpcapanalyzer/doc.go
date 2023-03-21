@@ -17,10 +17,10 @@
  * under the License.
  */
 
-/* Package main contains the code for the plc4xpcapanalyzer
+/*
+	Package main contains the code for the plc4xpcapanalyzer
 
 The plc4xpcapanalyzer is meant to be used for internal plc4x development. It can be used to analyze pcap files using the
 parser/serializers of plc4x.
-
 */
 package main

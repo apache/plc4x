@@ -183,22 +183,23 @@ func NewNetworkServiceAccessPoint(routerInfoCache *RouterInfoCache, sapID *int, 
 	return n, nil
 }
 
-/* bind creates a network adapter object and bind.
+/*
+bind creates a network adapter object and bind.
 
-   bind(s, None, None)
-       Called for simple applications, local network unknown, no specific
-       address, APDUs sent upstream
+	bind(s, None, None)
+	    Called for simple applications, local network unknown, no specific
+	    address, APDUs sent upstream
 
-   bind(s, net, None)
-       Called for routers, bind to the network, (optionally?) drop APDUs
+	bind(s, net, None)
+	    Called for routers, bind to the network, (optionally?) drop APDUs
 
-   bind(s, None, address)
-       Called for applications or routers, bind to the network (to be
-       discovered), send up APDUs with a metching address
+	bind(s, None, address)
+	    Called for applications or routers, bind to the network (to be
+	    discovered), send up APDUs with a metching address
 
-   bind(s, net, address)
-       Called for applications or routers, bind to the network, send up
-       APDUs with a metching address.
+	bind(s, net, address)
+	    Called for applications or routers, bind to the network, send up
+	    APDUs with a metching address.
 */
 func (n *NetworkServiceAccessPoint) bind(server _Server, net *uint16, address *Address) error {
 	log.Debug().Msgf("bind %v net=%v address=%v", server, net, address)

@@ -34,7 +34,8 @@ func InlineIf(test bool, a func() interface{}, b func() interface{}) interface{}
 }
 
 // CleanupTimer stops a timer and purges anything left in the channel
-//              and is safe to call even if the channel has already been received
+//
+//	and is safe to call even if the channel has already been received
 func CleanupTimer(timer *time.Timer) {
 	if !timer.Stop() {
 		select {
