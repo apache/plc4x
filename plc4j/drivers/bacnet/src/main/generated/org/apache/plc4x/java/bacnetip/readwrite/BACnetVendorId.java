@@ -287,7 +287,7 @@ public enum BACnetVendorId {
   CONTROL_TECHNIQUES_LTD((int) 220, (int) 220, (String) "Control Techniques, Ltd."),
   OPEN_GENERAL_PTY_LTD((int) 221, (int) 221, (String) "OpenGeneral Pty., Ltd."),
   WAGO_KONTAKTTECHNIK_GMBH_COKG((int) 222, (int) 222, (String) "WAGO Kontakttechnik GmbH & Co. KG"),
-  CERUS_INDUSTRIAL((int) 223, (int) 223, (String) "Cerus Industrial"),
+  FRANKLIN_ELECTRIC((int) 223, (int) 223, (String) "Franklin Electric"),
   CHLORIDE_POWER_PROTECTION_COMPANY(
       (int) 224, (int) 224, (String) "Chloride Power Protection Company"),
   COMPUTROLS_INC((int) 225, (int) 225, (String) "Computrols, Inc."),
@@ -1620,6 +1620,8 @@ public enum BACnetVendorId {
   LEFOO_INDUSTRIAL_HANGZHOU_CO_LTD(
       (int) 1409, (int) 1409, (String) "LEFOO Industrial (Hangzhou) Co., Ltd."),
   CALIBRATION_TECHNOLOGIES_INC((int) 1410, (int) 1410, (String) "Calibration Technologies, Inc."),
+  ALLORADO((int) 1411, (int) 1411, (String) "Allorado"),
+  VERKADA((int) 1412, (int) 1412, (String) "Verkada"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 
