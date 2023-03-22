@@ -200,5 +200,5 @@ func (m *TransportInstance) GetReader() *bufio.Reader {
 }
 
 func (m *TransportInstance) String() string {
-	return fmt.Sprintf("pcap:%s(%s)x%d", m.transportFile, m.portRange, m.speedFactor)
+	return fmt.Sprintf("pcap:%s(%s)x%f", m.transportFile, m.portRange, m.speedFactor)
 }
