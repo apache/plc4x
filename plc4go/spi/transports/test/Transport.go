@@ -49,6 +49,10 @@ func (m Transport) CreateTransportInstance(_ url.URL, _ map[string][]string) (tr
 	return NewTransportInstance(&m), nil
 }
 
+func (m Transport) String() string {
+	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
+}
+
 type TransportInstance struct {
 	readBuffer  []byte
 	writeBuffer []byte
@@ -139,4 +143,8 @@ func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) ([]uint8, error) {
 	data := m.writeBuffer[0:int(numBytes)]
 	m.writeBuffer = m.writeBuffer[int(numBytes):]
 	return data, nil
+}
+
+func (m *TransportInstance) String() string {
+	return "test"
 }
