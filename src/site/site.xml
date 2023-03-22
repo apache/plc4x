@@ -93,6 +93,7 @@
         <item name="Apache Kafka" href="users/integrations/apache-kafka.html"/>
         <item name="Apache NiFi" href="users/integrations/apache-nifi.html"/>
         <item name="Apache StreamPipes" href="users/integrations/apache-streampipes.html"/>
+        <item name="Apache Hop" href="users/integrations/apache-hop.html"/>        
         <item name="Eclipse Ditto" href="users/integrations/eclipse-ditto.html"/>
         <item name="Eclipse Milo OPC UA Server" href="users/integrations/eclipse-milo.html"/>
       </item>
