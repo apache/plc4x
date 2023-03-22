@@ -26,6 +26,7 @@ import (
 	"net"
 	"net/url"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -39,8 +40,10 @@ import (
 )
 
 type Discoverer struct {
-	transportInstanceCreationQueue utils.Executor
-	deviceScanningQueue            utils.Executor
+	transportInstanceCreationWorkItemId atomic.Int32
+	transportInstanceCreationQueue      utils.Executor
+	deviceScanningWorkItemId            atomic.Int32
+	deviceScanningQueue                 utils.Executor
 }
 
 func NewDiscoverer() *Discoverer {
@@ -120,7 +123,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 					defer func() { wg.Done() }()
 					for ip := range addresses {
 						log.Trace().Msgf("Handling found ip %v", ip)
-						d.transportInstanceCreationQueue.Submit(ctx, 0, d.createTransportInstanceDispatcher(ctx, wg, ip, tcpTransport, transportInstances))
+						d.transportInstanceCreationQueue.Submit(ctx, d.transportInstanceCreationWorkItemId.Add(1), d.createTransportInstanceDispatcher(ctx, wg, ip, tcpTransport, transportInstances))
 					}
 				}()
 			}
@@ -134,7 +137,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 
 	go func() {
 		for transportInstance := range transportInstances {
-			d.deviceScanningQueue.Submit(ctx, 0, d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
+			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
 		}
 	}()
 	return nil
@@ -169,12 +172,14 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 				return
 			}
 		}
+		log.Debug().Msgf("Adding transport instance to scan %v", transportInstance)
 		transportInstances <- transportInstance
 	}
 }
 
 func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) utils.Runnable {
 	return func() {
+		log.Debug().Msgf("Scanning %v", tcpTransportInstance)
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(tcpTransportInstance)
 		// Explicitly start the worker

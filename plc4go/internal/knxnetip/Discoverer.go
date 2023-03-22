@@ -28,6 +28,7 @@ import (
 	"net"
 	"net/url"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -39,8 +40,10 @@ import (
 )
 
 type Discoverer struct {
-	transportInstanceCreationQueue utils.Executor
-	deviceScanningQueue            utils.Executor
+	transportInstanceCreationWorkItemId atomic.Int32
+	transportInstanceCreationQueue      utils.Executor
+	deviceScanningWorkItemId            atomic.Int32
+	deviceScanningQueue                 utils.Executor
 }
 
 func NewDiscoverer() *Discoverer {
@@ -118,7 +121,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				if ipv4Addr == nil || ipv4Addr.IsLoopback() {
 					continue
 				}
-				d.transportInstanceCreationQueue.Submit(ctx, 0, d.createTransportInstanceDispatcher(ctx, wg, connectionUrl, ipv4Addr, udpTransport, transportInstances))
+				d.transportInstanceCreationQueue.Submit(ctx, d.transportInstanceCreationWorkItemId.Add(1), d.createTransportInstanceDispatcher(ctx, wg, connectionUrl, ipv4Addr, udpTransport, transportInstances))
 			}
 		}(netInterface)
 	}
@@ -130,7 +133,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 
 	go func() {
 		for transportInstance := range transportInstances {
-			d.deviceScanningQueue.Submit(ctx, 0, d.createDeviceScanDispatcher(transportInstance.(*udp.TransportInstance), callback))
+			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*udp.TransportInstance), callback))
 		}
 	}()
 	return nil
@@ -153,12 +156,14 @@ func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *
 			log.Debug().Err(err).Msg("Error Connecting")
 			return
 		}
+		log.Debug().Msgf("Adding transport instance to scan %v", transportInstance)
 		transportInstances <- transportInstance
 	}
 }
 
 func (d *Discoverer) createDeviceScanDispatcher(udpTransportInstance *udp.TransportInstance, callback func(event apiModel.PlcDiscoveryItem)) utils.Runnable {
 	return func() {
+		log.Debug().Msgf("Scanning %v", udpTransportInstance)
 		// Create a codec for sending and receiving messages.
 		codec := NewMessageCodec(udpTransportInstance, nil)
 		// Explicitly start the worker
