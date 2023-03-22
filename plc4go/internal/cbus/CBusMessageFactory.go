@@ -41,6 +41,7 @@ func TagToCBusMessage(tag model.PlcTag, value values.PlcValue, alphaGenerator *A
 		case StatusRequestTypeLevel:
 			statusRequest = readWriteModel.NewStatusRequestLevel(tagType.application, *tagType.startingGroupAddressLabel, 0x73)
 		}
+		//TODO: we need support for bridged commands
 		command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(tagType.application), cbusOptions)
 		header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint)
 		cbusCommand := readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions)
