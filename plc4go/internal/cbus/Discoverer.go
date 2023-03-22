@@ -132,9 +132,11 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 		close(transportInstances)
 	}()
 
-	for transportInstance := range transportInstances {
-		d.deviceScanningQueue.Submit(ctx, 0, d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
-	}
+	go func() {
+		for transportInstance := range transportInstances {
+			d.deviceScanningQueue.Submit(ctx, 0, d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
+		}
+	}()
 	return nil
 }
 
