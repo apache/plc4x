@@ -96,6 +96,7 @@
              <UseableModules>
                <ModuleItemRef ModuleItemTarget="PLC4X_DUMMY_MODULE" AllowedInSlots="1..4"/>
                <ModuleItemRef ModuleItemTarget="PLC4X DUMMY MODULE" AllowedInSlots="1..4"/>
+               <ModuleItemRef ModuleItemTarget="1" AllowedInSlots="4"/>
              </UseableModules>
              <VirtualSubmoduleList>
                <VirtualSubmoduleItem ID="PLC4X_1_V0" SubmoduleIdentNumber="0x00000001" Writeable_IM_Records="1 2 3" MayIssueProcessAlarm="false">
@@ -158,6 +159,37 @@
                </VirtualSubmoduleList>
             </ModuleItem>
            <ModuleItem ID="PLC4X DUMMY MODULE" ModuleIdentNumber="0x00000004">
+             <ModuleInfo>
+               <Name TextId="PLC4X_INPUT_MODULE_NAME"/>
+               <InfoText TextId="PLC4X_INPUT_MODULE_INFO"/>
+               <HardwareRelease Value="0.11"/>
+               <SoftwareRelease Value="0.11"/>
+             </ModuleInfo>
+             <VirtualSubmoduleList>
+               <VirtualSubmoduleItem ID="PLC4X_DUMMY_MODULE_V0" SubmoduleIdentNumber="0x0002" MayIssueProcessAlarm="true">
+                 <IOData>
+                   <Input Consistency="None">
+                     <DataItem DataType="Unsigned8" TextId="PLC4X_INPUT_MODULE_INFO_32" UseAsBits="true">
+                       <BitDataItem BitOffset="0" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="1" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="2" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="3" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="4" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="5" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="6" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                       <BitDataItem BitOffset="7" TextId="PLC4X_INPUT_MODULE_INFO_32"/>
+                     </DataItem>
+                     <DataItem DataType="Float32" TextId="PLC4X_INPUT_MODULE_INFO_FLOAT"/>
+                   </Input>
+                 </IOData>
+                 <ModuleInfo>
+                   <Name TextId="PLC4X_VIRTUAL_INPUT_MODULE_NAME"/>
+                   <InfoText TextId="PLC4X_VIRTUAL_INPUT_MODULE_INFO"/>
+                 </ModuleInfo>
+               </VirtualSubmoduleItem>
+             </VirtualSubmoduleList>
+           </ModuleItem>
+           <ModuleItem ID="1" ModuleIdentNumber="0x00000005">
              <ModuleInfo>
                <Name TextId="PLC4X_INPUT_MODULE_NAME"/>
                <InfoText TextId="PLC4X_INPUT_MODULE_INFO"/>

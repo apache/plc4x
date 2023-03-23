@@ -189,4 +189,23 @@ public class ProfinetConfigurationTests {
             assertEquals(devices.get(deviceName).getDeviceContext().getSubModules()[0], "PLC4X DUMMY MODULE");
         }
     }
+
+    @Test
+    public void parseAllowedModuleSingleSlot() {
+        String[] deviceNames = new String[] {"DEVICE NAME 1"};
+
+        ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1)]]&gsddirectory=src/test/resources");
+
+        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        XmlMapper xmlMapper = new XmlMapper();
+
+        assertDoesNotThrow(() -> devices.get("DEVICE NAME 1").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
+
+        for (String deviceName : deviceNames) {
+            assert(devices.containsKey(deviceName));
+            assertEquals(devices.get(deviceName).getDeviceContext().getSubModules().length, 4);
+            assertEquals(devices.get(deviceName).getDeviceContext().getSubModules()[3], "1");
+        }
+    }
 }

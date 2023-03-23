@@ -48,7 +48,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     public static final short BLOCK_VERSION_HIGH = 1;
     public static final short BLOCK_VERSION_LOW = 0;
     public static final MacAddress DEFAULT_EMPTY_MAC_ADDRESS;
-    public static final Pattern RANGE_PATTERN = Pattern.compile("(?<from>\\d+)\\.\\.(?<to>\\d+)");
+    public static final Pattern RANGE_PATTERN = Pattern.compile("(?<from>\\d+)(\\.\\.(?<to>\\d+))*");
 
     static {
         try {
@@ -369,7 +369,8 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         if (!matcher.group("from").equals("0")) {
             throw new PlcConnectionException("Physical Slots don't start from 0, instead starts at " + deviceAccessItem.getPhysicalSlots());
         }
-        int numberOfSlots = Integer.parseInt(matcher.group("to"));
+        int numberOfSlots = matcher.group("to") != null ? Integer.parseInt(matcher.group("to")) : 0;
+
         this.modules = new ProfinetModule[numberOfSlots];
         this.modules[deviceAccessItem.getFixedInSlots()] = new ProfinetModuleImpl(deviceAccessItem, 0, 0, deviceAccessItem.getFixedInSlots());
 
@@ -387,8 +388,8 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
                         if (!matcher.matches()) {
                             throw new PlcConnectionException("Physical Slots Range is not in the correct format " + useableModule.getAllowedInSlots());
                         }
-                        int from = Integer.parseInt(matcher.group("from"));
-                        int to = Integer.parseInt(matcher.group("to"));
+                        int from = matcher.group("to") != null ? Integer.parseInt(matcher.group("from")) : 0;
+                        int to = matcher.group("to") != null ? Integer.parseInt(matcher.group("to")) : Integer.parseInt(matcher.group("from"));
                         if (currentSlot < from || currentSlot > to) {
                             throw new PlcConnectionException("Current Submodule Slot " + currentSlot + " is not with the allowable slots" + useableModule.getAllowedInSlots());
                         }
