@@ -74,7 +74,7 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 
 		cBusMessage, supportsRead = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions), true
 		return
-	case *calGetstatusTag:
+	case *calGetStatusTag:
 		calData := readWriteModel.NewCALDataGetStatus(tagType.parameter, tagType.count, readWriteModel.CALCommandTypeContainer_CALCommandGetStatus, nil, requestContext)
 		//TODO: we need support for bridged commands
 		command := readWriteModel.NewCBusPointToPointCommandDirect(tagType.unitAddress, 0x0000, calData, cbusOptions)

@@ -116,7 +116,7 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 				}
 				readTagName := fmt.Sprintf("%s/%d/%s", queryName, unitAddress, attribute)
 				readRequest, _ := m.connection.ReadRequestBuilder().
-					AddTag(readTagName, NewCALIdentifyTag(unit, attribute, 1)).
+					AddTag(readTagName, NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1)).
 					Build()
 				timeoutCtx, timeoutCancel := context.WithTimeout(ctx, time.Second*2)
 				requestResult := <-readRequest.ExecuteWithContext(timeoutCtx)
@@ -133,7 +133,7 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 					continue unitLoop
 				}
 				queryResult := &model.DefaultPlcBrowseItem{
-					Tag:          NewCALIdentifyTag(unit, attribute, 1),
+					Tag:          NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1),
 					Name:         queryName,
 					Readable:     true,
 					Writable:     false,

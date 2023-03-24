@@ -74,6 +74,7 @@ func NewStatusTag(statusRequestType StatusRequestType, startingGroupAddressLabel
 }
 
 type CalTag interface {
+	GetBridgeAddresses() []readWriteModel.BridgeAddress
 	GetUnitAddress() readWriteModel.UnitAddress
 }
 
@@ -86,9 +87,9 @@ type CALRecallTag interface {
 	GetCount() uint8
 }
 
-func NewCALRecallTag(unitAddress readWriteModel.UnitAddress, parameter readWriteModel.Parameter, count uint8, numElements uint16) CALRecallTag {
+func NewCALRecallTag(unitAddress readWriteModel.UnitAddress, bridgeAddresses []readWriteModel.BridgeAddress, parameter readWriteModel.Parameter, count uint8, numElements uint16) CALRecallTag {
 	return &calRecallTag{
-		calTag:      calTag{unitAddress: unitAddress},
+		calTag:      calTag{bridgeAddresses, unitAddress},
 		tagType:     CAL_RECALL,
 		parameter:   parameter,
 		count:       count,
@@ -104,17 +105,17 @@ type CALIdentifyTag interface {
 	GetAttribute() readWriteModel.Attribute
 }
 
-func NewCALIdentifyTag(unitAddress readWriteModel.UnitAddress, attribute readWriteModel.Attribute, numElements uint16) CALIdentifyTag {
+func NewCALIdentifyTag(unitAddress readWriteModel.UnitAddress, bridgeAddresses []readWriteModel.BridgeAddress, attribute readWriteModel.Attribute, numElements uint16) CALIdentifyTag {
 	return &calIdentifyTag{
-		calTag:      calTag{unitAddress: unitAddress},
+		calTag:      calTag{bridgeAddresses, unitAddress},
 		tagType:     CAL_IDENTIFY,
 		attribute:   attribute,
 		numElements: numElements,
 	}
 }
 
-// CALGetstatusTag can be used to get device/network management tags
-type CALGetstatusTag interface {
+// CALGetStatusTag can be used to get device/network management tags
+type CALGetStatusTag interface {
 	Tag
 	CalTag
 
@@ -122,9 +123,9 @@ type CALGetstatusTag interface {
 	GetCount() uint8
 }
 
-func NewCALGetstatusTag(unitAddress readWriteModel.UnitAddress, parameter readWriteModel.Parameter, count uint8, numElements uint16) CALGetstatusTag {
-	return &calGetstatusTag{
-		calTag:      calTag{unitAddress: unitAddress},
+func NewCALGetStatusTag(unitAddress readWriteModel.UnitAddress, bridgeAddresses []readWriteModel.BridgeAddress, parameter readWriteModel.Parameter, count uint8, numElements uint16) CALGetStatusTag {
+	return &calGetStatusTag{
+		calTag:      calTag{bridgeAddresses, unitAddress},
 		tagType:     CAL_RECALL,
 		parameter:   parameter,
 		count:       count,
@@ -198,7 +199,8 @@ type statusTag struct {
 }
 
 type calTag struct {
-	unitAddress readWriteModel.UnitAddress
+	bridgeAddresses []readWriteModel.BridgeAddress
+	unitAddress     readWriteModel.UnitAddress
 }
 
 type calRecallTag struct {
@@ -216,7 +218,7 @@ type calIdentifyTag struct {
 	numElements uint16
 }
 
-type calGetstatusTag struct {
+type calGetStatusTag struct {
 	calTag
 	tagType     TagType
 	parameter   readWriteModel.Parameter
@@ -302,7 +304,7 @@ func (s statusTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (s statusTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+func (s statusTag) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(s.tagType.GetName()); err != nil {
 		return err
 	}
@@ -333,6 +335,10 @@ func (s statusTag) String() string {
 	return writeBuffer.GetBox().String()
 }
 
+func (c calTag) GetBridgeAddresses() []readWriteModel.BridgeAddress {
+	return c.bridgeAddresses
+}
+
 func (c calTag) GetUnitAddress() readWriteModel.UnitAddress {
 	return c.unitAddress
 }
@@ -346,6 +352,19 @@ func (c calTag) Serialize() ([]byte, error) {
 }
 
 func (c calTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	if len(c.bridgeAddresses) > 0 {
+		if err := writeBuffer.PushContext("bridgeAddresses"); err != nil {
+			return err
+		}
+		for _, address := range c.bridgeAddresses {
+			if err := address.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+		}
+		if err := writeBuffer.PopContext("bridgeAddresses"); err != nil {
+			return err
+		}
+	}
 	if unitAddress := c.unitAddress; unitAddress != nil {
 		return c.unitAddress.SerializeWithWriteBuffer(ctx, writeBuffer)
 	}
@@ -388,8 +407,8 @@ func (c calRecallTag) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s calRecallTag) GetTagType() TagType {
-	return s.tagType
+func (c calRecallTag) GetTagType() TagType {
+	return c.tagType
 }
 
 func (c calRecallTag) Serialize() ([]byte, error) {
@@ -455,8 +474,8 @@ func (c calIdentifyTag) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s calIdentifyTag) GetTagType() TagType {
-	return s.tagType
+func (c calIdentifyTag) GetTagType() TagType {
+	return c.tagType
 }
 
 func (c calIdentifyTag) Serialize() ([]byte, error) {
@@ -494,23 +513,23 @@ func (c calIdentifyTag) String() string {
 	return writeBuffer.GetBox().String()
 }
 
-func (c calGetstatusTag) GetParameter() readWriteModel.Parameter {
+func (c calGetStatusTag) GetParameter() readWriteModel.Parameter {
 	return c.parameter
 }
 
-func (c calGetstatusTag) GetCount() uint8 {
+func (c calGetStatusTag) GetCount() uint8 {
 	return c.count
 }
 
-func (c calGetstatusTag) GetAddressString() string {
+func (c calGetStatusTag) GetAddressString() string {
 	return fmt.Sprintf("cal/getstatus=%s, %d", c.parameter, c.GetCount())
 }
 
-func (c calGetstatusTag) GetValueType() values.PlcValueType {
+func (c calGetStatusTag) GetValueType() values.PlcValueType {
 	return values.Struct
 }
 
-func (c calGetstatusTag) GetArrayInfo() []model.ArrayInfo {
+func (c calGetStatusTag) GetArrayInfo() []model.ArrayInfo {
 	if c.count != 1 {
 		return []model.ArrayInfo{
 			model2.DefaultArrayInfo{
@@ -522,11 +541,11 @@ func (c calGetstatusTag) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s calGetstatusTag) GetTagType() TagType {
-	return s.tagType
+func (c calGetStatusTag) GetTagType() TagType {
+	return c.tagType
 }
 
-func (c calGetstatusTag) Serialize() ([]byte, error) {
+func (c calGetStatusTag) Serialize() ([]byte, error) {
 	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
 	if err := c.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
 		return nil, err
@@ -534,7 +553,7 @@ func (c calGetstatusTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (c calGetstatusTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+func (c calGetStatusTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	if err := writeBuffer.PushContext(c.tagType.GetName()); err != nil {
 		return err
 	}
@@ -557,7 +576,7 @@ func (c calGetstatusTag) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	return nil
 }
 
-func (c calGetstatusTag) String() string {
+func (c calGetStatusTag) String() string {
 	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
 	if err := writeBuffer.WriteSerializable(context.Background(), c); err != nil {
 		return err.Error()
@@ -738,8 +757,8 @@ func (m mmiMonitorTag) GetArrayInfo() []model.ArrayInfo {
 	return []model.ArrayInfo{}
 }
 
-func (s mmiMonitorTag) GetTagType() TagType {
-	return s.tagType
+func (m mmiMonitorTag) GetTagType() TagType {
+	return m.tagType
 }
 
 func (m mmiMonitorTag) GetUnitAddress() *readWriteModel.UnitAddress {
