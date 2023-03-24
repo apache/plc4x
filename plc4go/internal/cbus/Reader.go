@@ -291,49 +291,49 @@ func (m *Reader) mapEncodedReply(transaction *spi.RequestTransaction, encodedRep
 				addPlcValue(tagName, spiValues.NewPlcRawByteArray(identifyReplyCommand.GetCurrentSenseLevels()))
 			case readWriteModel.IdentifyReplyCommandDelaysExactly:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
-					"ReStrikeDelay": spiValues.NewPlcUSINT(identifyReplyCommand.GetReStrikeDelay()),
-					"TerminalLevel": spiValues.NewPlcRawByteArray(identifyReplyCommand.GetTerminalLevels()),
+					"reStrikeDelay": spiValues.NewPlcUSINT(identifyReplyCommand.GetReStrikeDelay()),
+					"terminalLevel": spiValues.NewPlcRawByteArray(identifyReplyCommand.GetTerminalLevels()),
 				}))
 			case readWriteModel.IdentifyReplyCommandDSIStatusExactly:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
-					"ChannelStatus1":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus1().String()),
-					"ChannelStatus2":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus2().String()),
-					"ChannelStatus3":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus3().String()),
-					"ChannelStatus4":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus4().String()),
-					"ChannelStatus5":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus5().String()),
-					"ChannelStatus6":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus6().String()),
-					"ChannelStatus7":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus7().String()),
-					"ChannelStatus8":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus8().String()),
-					"UnitStatus":              spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitStatus().String()),
-					"DimmingUCRevisionNumber": spiValues.NewPlcUSINT(identifyReplyCommand.GetDimmingUCRevisionNumber()),
+					"channelStatus1":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus1().String()),
+					"channelStatus2":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus2().String()),
+					"channelStatus3":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus3().String()),
+					"channelStatus4":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus4().String()),
+					"channelStatus5":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus5().String()),
+					"channelStatus6":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus6().String()),
+					"channelStatus7":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus7().String()),
+					"channelStatus8":          spiValues.NewPlcSTRING(identifyReplyCommand.GetChannelStatus8().String()),
+					"unitStatus":              spiValues.NewPlcSTRING(identifyReplyCommand.GetUnitStatus().String()),
+					"dimmingUCRevisionNumber": spiValues.NewPlcUSINT(identifyReplyCommand.GetDimmingUCRevisionNumber()),
 				}))
 			case readWriteModel.IdentifyReplyCommandExtendedDiagnosticSummaryExactly:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
-					"LowApplication":         spiValues.NewPlcSTRING(identifyReplyCommand.GetLowApplication().String()),
-					"HighApplication":        spiValues.NewPlcSTRING(identifyReplyCommand.GetHighApplication().String()),
-					"Area":                   spiValues.NewPlcUSINT(identifyReplyCommand.GetArea()),
-					"Crc":                    spiValues.NewPlcUINT(identifyReplyCommand.GetCrc()),
-					"SerialNumber":           spiValues.NewPlcUDINT(identifyReplyCommand.GetSerialNumber()),
-					"NetworkVoltage":         spiValues.NewPlcUSINT(identifyReplyCommand.GetNetworkVoltage()),
-					"UnitInLearnMode":        spiValues.NewPlcBOOL(identifyReplyCommand.GetUnitInLearnMode()),
-					"NetworkVoltageLow":      spiValues.NewPlcBOOL(identifyReplyCommand.GetNetworkVoltageLow()),
-					"NetworkVoltageMarginal": spiValues.NewPlcBOOL(identifyReplyCommand.GetNetworkVoltageMarginal()),
-					"EnableChecksumAlarm":    spiValues.NewPlcBOOL(identifyReplyCommand.GetEnableChecksumAlarm()),
-					"OutputUnit":             spiValues.NewPlcBOOL(identifyReplyCommand.GetOutputUnit()),
-					"InstallationMMIError":   spiValues.NewPlcBOOL(identifyReplyCommand.GetInstallationMMIError()),
+					"lowApplication":         spiValues.NewPlcSTRING(identifyReplyCommand.GetLowApplication().String()),
+					"highApplication":        spiValues.NewPlcSTRING(identifyReplyCommand.GetHighApplication().String()),
+					"area":                   spiValues.NewPlcUSINT(identifyReplyCommand.GetArea()),
+					"crc":                    spiValues.NewPlcUINT(identifyReplyCommand.GetCrc()),
+					"serialNumber":           spiValues.NewPlcUDINT(identifyReplyCommand.GetSerialNumber()),
+					"networkVoltage":         spiValues.NewPlcUSINT(identifyReplyCommand.GetNetworkVoltage()),
+					"unitInLearnMode":        spiValues.NewPlcBOOL(identifyReplyCommand.GetUnitInLearnMode()),
+					"networkVoltageLow":      spiValues.NewPlcBOOL(identifyReplyCommand.GetNetworkVoltageLow()),
+					"networkVoltageMarginal": spiValues.NewPlcBOOL(identifyReplyCommand.GetNetworkVoltageMarginal()),
+					"enableChecksumAlarm":    spiValues.NewPlcBOOL(identifyReplyCommand.GetEnableChecksumAlarm()),
+					"outputUnit":             spiValues.NewPlcBOOL(identifyReplyCommand.GetOutputUnit()),
+					"installationMMIError":   spiValues.NewPlcBOOL(identifyReplyCommand.GetInstallationMMIError()),
 					"EEWriteError":           spiValues.NewPlcBOOL(identifyReplyCommand.GetEEWriteError()),
 					"EEChecksumError":        spiValues.NewPlcBOOL(identifyReplyCommand.GetEEChecksumError()),
 					"EEDataError":            spiValues.NewPlcBOOL(identifyReplyCommand.GetEEDataError()),
-					"MicroReset":             spiValues.NewPlcBOOL(identifyReplyCommand.GetMicroReset()),
-					"CommsTxError":           spiValues.NewPlcBOOL(identifyReplyCommand.GetCommsTxError()),
-					"InternalStackOverflow":  spiValues.NewPlcBOOL(identifyReplyCommand.GetInternalStackOverflow()),
-					"MicroPowerReset":        spiValues.NewPlcBOOL(identifyReplyCommand.GetMicroPowerReset()),
+					"microReset":             spiValues.NewPlcBOOL(identifyReplyCommand.GetMicroReset()),
+					"commsTxError":           spiValues.NewPlcBOOL(identifyReplyCommand.GetCommsTxError()),
+					"internalStackOverflow":  spiValues.NewPlcBOOL(identifyReplyCommand.GetInternalStackOverflow()),
+					"microPowerReset":        spiValues.NewPlcBOOL(identifyReplyCommand.GetMicroPowerReset()),
 				}))
 			case readWriteModel.IdentifyReplyCommandSummaryExactly:
 				addPlcValue(tagName, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
-					"PartName":        spiValues.NewPlcSTRING(identifyReplyCommand.GetPartName()),
-					"UnitServiceType": spiValues.NewPlcUSINT(identifyReplyCommand.GetUnitServiceType()),
-					"Version":         spiValues.NewPlcSTRING(identifyReplyCommand.GetVersion()),
+					"partName":        spiValues.NewPlcSTRING(identifyReplyCommand.GetPartName()),
+					"unitServiceType": spiValues.NewPlcUSINT(identifyReplyCommand.GetUnitServiceType()),
+					"version":         spiValues.NewPlcSTRING(identifyReplyCommand.GetVersion()),
 				}))
 			case readWriteModel.IdentifyReplyCommandFirmwareVersionExactly:
 				addPlcValue(tagName, spiValues.NewPlcSTRING(identifyReplyCommand.GetFirmwareVersion()))
@@ -347,12 +347,12 @@ func (m *Reader) mapEncodedReply(transaction *spi.RequestTransaction, encodedRep
 				var plcValues []apiValues.PlcValue
 				for _, logicAssigment := range identifyReplyCommand.GetLogicAssigment() {
 					plcValues = append(plcValues, spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
-						"GreaterOfOrLogic": spiValues.NewPlcBOOL(logicAssigment.GetGreaterOfOrLogic()),
-						"ReStrikeDelay":    spiValues.NewPlcBOOL(logicAssigment.GetReStrikeDelay()),
-						"AssignedToGav16":  spiValues.NewPlcBOOL(logicAssigment.GetAssignedToGav16()),
-						"AssignedToGav15":  spiValues.NewPlcBOOL(logicAssigment.GetAssignedToGav15()),
-						"AssignedToGav14":  spiValues.NewPlcBOOL(logicAssigment.GetAssignedToGav14()),
-						"AssignedToGav13":  spiValues.NewPlcBOOL(logicAssigment.GetAssignedToGav13()),
+						"greaterOfOrLogic": spiValues.NewPlcBOOL(logicAssigment.GetGreaterOfOrLogic()),
+						"reStrikeDelay":    spiValues.NewPlcBOOL(logicAssigment.GetReStrikeDelay()),
+						"assignedToGav16":  spiValues.NewPlcBOOL(logicAssigment.GetAssignedToGav16()),
+						"assignedToGav15":  spiValues.NewPlcBOOL(logicAssigment.GetAssignedToGav15()),
+						"assignedToGav14":  spiValues.NewPlcBOOL(logicAssigment.GetAssignedToGav14()),
+						"assignedToGav13":  spiValues.NewPlcBOOL(logicAssigment.GetAssignedToGav13()),
 					}))
 				}
 				addPlcValue(tagName, spiValues.NewPlcList(plcValues))
@@ -382,23 +382,23 @@ func (m *Reader) mapEncodedReply(transaction *spi.RequestTransaction, encodedRep
 			case readWriteModel.IdentifyReplyCommandOutputUnitSummaryExactly:
 				unitFlags := identifyReplyCommand.GetUnitFlags()
 				structContent := map[string]apiValues.PlcValue{
-					"UnitFlags": spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
-						"AssertingNetworkBurden": spiValues.NewPlcBOOL(unitFlags.GetAssertingNetworkBurden()),
-						"RestrikeTimingActive":   spiValues.NewPlcBOOL(unitFlags.GetRestrikeTimingActive()),
-						"RemoteOFFInputAsserted": spiValues.NewPlcBOOL(unitFlags.GetRemoteOFFInputAsserted()),
-						"RemoteONInputAsserted":  spiValues.NewPlcBOOL(unitFlags.GetRemoteONInputAsserted()),
-						"LocalToggleEnabled":     spiValues.NewPlcBOOL(unitFlags.GetLocalToggleEnabled()),
-						"LocalToggleActiveState": spiValues.NewPlcBOOL(unitFlags.GetLocalToggleActiveState()),
-						"ClockGenerationEnabled": spiValues.NewPlcBOOL(unitFlags.GetClockGenerationEnabled()),
-						"UnitGeneratingClock":    spiValues.NewPlcBOOL(unitFlags.GetUnitGeneratingClock()),
+					"unitFlags": spiValues.NewPlcStruct(map[string]apiValues.PlcValue{
+						"assertingNetworkBurden": spiValues.NewPlcBOOL(unitFlags.GetAssertingNetworkBurden()),
+						"restrikeTimingActive":   spiValues.NewPlcBOOL(unitFlags.GetRestrikeTimingActive()),
+						"remoteOFFInputAsserted": spiValues.NewPlcBOOL(unitFlags.GetRemoteOFFInputAsserted()),
+						"remoteONInputAsserted":  spiValues.NewPlcBOOL(unitFlags.GetRemoteONInputAsserted()),
+						"localToggleEnabled":     spiValues.NewPlcBOOL(unitFlags.GetLocalToggleEnabled()),
+						"localToggleActiveState": spiValues.NewPlcBOOL(unitFlags.GetLocalToggleActiveState()),
+						"clockGenerationEnabled": spiValues.NewPlcBOOL(unitFlags.GetClockGenerationEnabled()),
+						"unitGeneratingClock":    spiValues.NewPlcBOOL(unitFlags.GetUnitGeneratingClock()),
 					}),
-					"TimeFromLastRecoverOfMainsInSeconds": spiValues.NewPlcUSINT(identifyReplyCommand.GetTimeFromLastRecoverOfMainsInSeconds()),
+					"timeFromLastRecoverOfMainsInSeconds": spiValues.NewPlcUSINT(identifyReplyCommand.GetTimeFromLastRecoverOfMainsInSeconds()),
 				}
 				if gavStoreEnabledByte1 := identifyReplyCommand.GetGavStoreEnabledByte1(); gavStoreEnabledByte1 != nil {
-					structContent["GavStoreEnabledByte1"] = spiValues.NewPlcUSINT(*gavStoreEnabledByte1)
+					structContent["gavStoreEnabledByte1"] = spiValues.NewPlcUSINT(*gavStoreEnabledByte1)
 				}
 				if gavStoreEnabledByte2 := identifyReplyCommand.GetGavStoreEnabledByte2(); gavStoreEnabledByte2 != nil {
-					structContent["GavStoreEnabledByte2"] = spiValues.NewPlcUSINT(*gavStoreEnabledByte2)
+					structContent["gavStoreEnabledByte2"] = spiValues.NewPlcUSINT(*gavStoreEnabledByte2)
 				}
 				addPlcValue(tagName, spiValues.NewPlcStruct(structContent))
 			case readWriteModel.IdentifyReplyCommandTerminalLevelsExactly:
