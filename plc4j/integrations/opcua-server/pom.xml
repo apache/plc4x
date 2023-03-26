@@ -166,7 +166,6 @@
       <scope>runtime</scope>
     </dependency>
 
-    <!-- Logging dependancies -->
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcmail-jdk15on</artifactId>
@@ -180,6 +179,7 @@
       <artifactId>bcprov-jdk15on</artifactId>
     </dependency>
 
+    <!-- Logging dependencies -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
