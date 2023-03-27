@@ -49,18 +49,18 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 		var cbusCommand readWriteModel.CBusCommand
 		bridgeAddresses := tagType.bridgeAddresses
 		numberOfBridgeAddresses := len(bridgeAddresses)
-		if numberOfBridgeAddresses <= 0 {
-			command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(tagType.application), cbusOptions)
-			header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint)
-			cbusCommand = readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions)
-		} else {
-			var networkRoute readWriteModel.NetworkRoute
-			if numberOfBridgeAddresses > 1 {
-				networkRoute = readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
+		if numberOfBridgeAddresses > 0 {
+			if numberOfBridgeAddresses > 6 {
+				return nil, false, false, false, errors.Errorf("Can't have a path longer than 6. Actuall path length = %d", numberOfBridgeAddresses)
 			}
+			networkRoute := readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
 			command := readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(statusRequest, bridgeAddresses[0], networkRoute, byte(tagType.application), cbusOptions)
 			header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint)
 			cbusCommand = readWriteModel.NewCBusCommandPointToPointToMultiPoint(command, header, cbusOptions)
+		} else {
+			command := readWriteModel.NewCBusPointToMultiPointCommandStatus(statusRequest, byte(tagType.application), cbusOptions)
+			header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint)
+			cbusCommand = readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions)
 		}
 		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
 
@@ -218,18 +218,18 @@ func TagToCBusMessage(tag apiModel.PlcTag, value apiValues.PlcValue, alphaGenera
 		var cbusCommand readWriteModel.CBusCommand
 		bridgeAddresses := tagType.bridgeAddresses
 		numberOfBridgeAddresses := len(bridgeAddresses)
-		if numberOfBridgeAddresses <= 0 {
-			command := readWriteModel.NewCBusPointToMultiPointCommandNormal(tagType.application, salData, 0x00, cbusOptions)
-			header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
-			cbusCommand = readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions)
-		} else {
-			var networkRoute readWriteModel.NetworkRoute
-			if numberOfBridgeAddresses > 1 {
-				networkRoute = readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
+		if numberOfBridgeAddresses > 0 {
+			if numberOfBridgeAddresses > 6 {
+				return nil, false, false, false, errors.Errorf("Can't have a path longer than 6. Actuall path length = %d", numberOfBridgeAddresses)
 			}
+			networkRoute := readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
 			command := readWriteModel.NewCBusPointToPointToMultiPointCommandNormal(tagType.application, salData, bridgeAddresses[0], networkRoute, byte(tagType.application), cbusOptions)
 			header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint)
 			cbusCommand = readWriteModel.NewCBusCommandPointToPointToMultiPoint(command, header, cbusOptions)
+		} else {
+			command := readWriteModel.NewCBusPointToMultiPointCommandNormal(tagType.application, salData, 0x00, cbusOptions)
+			header := readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint)
+			cbusCommand = readWriteModel.NewCBusCommandPointToMultiPoint(command, header, cbusOptions)
 		}
 		request := readWriteModel.NewRequestCommand(cbusCommand, nil, readWriteModel.NewAlpha(alphaGenerator.getAndIncrement()), readWriteModel.RequestType_REQUEST_COMMAND, nil, nil, readWriteModel.RequestType_EMPTY, readWriteModel.NewRequestTermination(), cbusOptions)
 		cBusMessage = readWriteModel.NewCBusMessageToServer(request, requestContext, cbusOptions)
@@ -243,12 +243,9 @@ func producePointToPointCommand(unitAddress readWriteModel.UnitAddress, bridgeAd
 	numberOfBridgeAddresses := len(bridgeAddresses)
 	if numberOfBridgeAddresses > 0 {
 		if numberOfBridgeAddresses > 6 {
-			return nil, errors.Errorf("invalid number of bridge addresses %d. Max 6 allowed", numberOfBridgeAddresses)
+			return nil, errors.Errorf("Can't have a path longer than 6. Actuall path length = %d", numberOfBridgeAddresses)
 		}
-		var networkRoute readWriteModel.NetworkRoute
-		if numberOfBridgeAddresses > 1 {
-			networkRoute = readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
-		}
+		networkRoute := readWriteModel.NewNetworkRoute(readWriteModel.NewNetworkProtocolControlInformation(uint8(numberOfBridgeAddresses), uint8(numberOfBridgeAddresses)), bridgeAddresses[1:])
 		return readWriteModel.NewCBusPointToPointCommandIndirect(bridgeAddresses[0], networkRoute, unitAddress, 0x0000, calData, cbusOptions), nil
 	}
 
