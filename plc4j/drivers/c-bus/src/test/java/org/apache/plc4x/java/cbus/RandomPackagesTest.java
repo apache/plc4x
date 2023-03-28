@@ -484,5 +484,17 @@ public class RandomPackagesTest {
 
             assertMessageMatches(bytes, msg);
         }
+        @Test
+        void BridgedIdentifyResponse2() throws Exception {
+            byte[] bytes = ("86FD0201078900434C495053414C20C2\r\n").getBytes(StandardCharsets.UTF_8);
+            ReadBufferByteBased readBufferByteBased = new ReadBufferByteBased(bytes);
+            cBusOptions = C_BUS_OPTIONS_WITH_SRCHK;
+            requestContext = new RequestContext(true);
+            CBusMessage msg = CBusMessage.staticParse(readBufferByteBased, true, requestContext, cBusOptions);
+            assertThat(msg).isNotNull();
+            System.out.println(msg);
+
+            assertMessageMatches(bytes, msg);
+        }
     }
 }
