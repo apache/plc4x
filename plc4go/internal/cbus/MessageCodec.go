@@ -128,6 +128,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 		}
 		readableBytes = numBytesAvailableInBuffer
 	}
+	log.Trace().Msgf("%d bytes available in buffer", readableBytes)
 
 	// Check for an isolated error
 	if bytes, err := ti.PeekReadableBytes(1); err == nil && (bytes[0] == byte(readWriteModel.ConfirmationType_CHECKSUM_FAILURE)) {
@@ -179,6 +180,8 @@ lookingForTheEnd:
 		// This means a <cr> is directly followed by a <lf> which means that we know for sure this is a response
 		pciResponse = true
 	}
+	const numberOfCyclesToWait = 15
+	const estimatedElapsedTime = numberOfCyclesToWait * 10
 	if !pciResponse && !requestToPci && indexOfLF < 0 {
 		// To be sure we might receive that package later we hash the bytes and check if we might receive one
 		hash := crc32.NewIEEE()
@@ -189,11 +192,12 @@ lookingForTheEnd:
 		}
 		log.Trace().Msgf("new hash %x, last hash %x, seen %d times", newPackageHash, m.lastPackageHash, m.hashEncountered)
 		m.lastPackageHash = newPackageHash
-		if m.hashEncountered < 11 {
+		if m.hashEncountered < numberOfCyclesToWait {
 			log.Trace().Msg("Waiting for more data")
 			return nil, nil
 		} else {
-			// after 110ms we give up finding a lf
+			log.Trace().Msgf("stopping after ~%dms", estimatedElapsedTime)
+			// after numberOfCyclesToWait*10 ms we give up finding a lf
 			m.lastPackageHash, m.hashEncountered = 0, 0
 			if indexOfCR >= 0 {
 				log.Trace().Msg("setting requestToPci")
