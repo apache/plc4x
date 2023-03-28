@@ -187,19 +187,23 @@ lookingForTheEnd:
 		if newPackageHash == m.lastPackageHash {
 			m.hashEncountered++
 		}
+		log.Trace().Msgf("new hash %x, last hash %x, seen %d times", newPackageHash, m.lastPackageHash, m.hashEncountered)
 		m.lastPackageHash = newPackageHash
-		if m.hashEncountered < 9 {
+		if m.hashEncountered < 11 {
+			log.Trace().Msg("Waiting for more data")
 			return nil, nil
 		} else {
-			// after 90ms we give up finding a lf
+			// after 110ms we give up finding a lf
 			m.lastPackageHash, m.hashEncountered = 0, 0
 			if indexOfCR >= 0 {
+				log.Trace().Msg("setting requestToPci")
 				requestToPci = true
 			}
 		}
 	}
 	if !pciResponse && !requestToPci && !confirmation {
 		// Apparently we have not found any message yet
+		log.Trace().Msg("no message found yet")
 		return nil, nil
 	}
 
