@@ -89,15 +89,19 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	confirmation := false
 	// Fill the buffer
 	{
-		if err := ti.FillBuffer(func(_ uint, currentByte byte, reader *bufio.Reader) bool {
+		if err := ti.FillBuffer(func(pos uint, currentByte byte, reader *bufio.Reader) bool {
 			log.Trace().Uint8("byte", currentByte).Msg("current byte")
 			switch currentByte {
 			case
 				readWriteModel.ResponseTermination_CR,
 				readWriteModel.ResponseTermination_LF:
 				return false
+			case byte(readWriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL):
+				confirmation = true
+				// In case we have directly more data in the buffer after a confirmation
+				_, err := reader.Peek(int(pos + 1))
+				return err == nil
 			case
-				byte(readWriteModel.ConfirmationType_CONFIRMATION_SUCCESSFUL),
 				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_TO_MANY_RE_TRANSMISSIONS),
 				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_CORRUPTION),
 				byte(readWriteModel.ConfirmationType_NOT_TRANSMITTED_SYNC_LOSS),
