@@ -30,7 +30,7 @@
   <name>PLC4J: Examples: Hello-World: Kotlin</name>
 
   <properties>
-    <kotlin.version>1.7.22</kotlin.version>
+    <kotlin.version>1.8.20</kotlin.version>
     <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
     <app.main.class>org.apache.plc4x.java.examples.hellokotlin.ReadModbusPalKt</app.main.class>
   </properties>
