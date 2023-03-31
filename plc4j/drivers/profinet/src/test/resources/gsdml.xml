@@ -212,6 +212,10 @@
                      </DataItem>
                      <DataItem DataType="Float32" TextId="PLC4X_INPUT_MODULE_INFO_FLOAT"/>
                    </Input>
+                   <Input Consistency="None">
+                     <DataItem Length="15" TextId="Inputs" DataType="OctetString" UseAsBits="true" />
+                     <DataItem DataType="Float32" TextId="PLC4X_INPUT_MODULE_INFO_FLOAT"/>
+                   </Input>
                  </IOData>
                  <ModuleInfo>
                    <Name TextId="PLC4X_VIRTUAL_INPUT_MODULE_NAME"/>

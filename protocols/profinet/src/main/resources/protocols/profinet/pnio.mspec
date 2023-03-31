@@ -523,6 +523,12 @@
         ['BOOL'      List
             [array    bit     value count 'numberOfValues'     ]
         ]
+        ['OCTETSTRING','1'  USINT
+            [simple uint 8 value]
+        ]
+        ['OCTETSTRING' List
+            [array    uint 8     value count 'numberOfValues' ]
+        ]
         ['BYTE','1'  BYTE
             [simple uint 8 value]
         ]
@@ -610,6 +616,30 @@
         ['WCHAR' List
             [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
         ]
+        ['UNICODESTRING8','1' CHAR
+            [simple string 8 value encoding='"UTF-8"']
+        ]
+        ['UNICODESTRING8' List
+            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
+        ]
+        ['WSTRING','1' CHAR
+            [simple string 16 value encoding='"UTF-16"']
+        ]
+        ['WSTRING' List
+            [array string 16 value count 'numberOfValues' encoding='"UTF-16"']
+        ]
+        ['VISIBLESTRING','1' CHAR
+            [simple string 8 value encoding='"UTF-8"']
+        ]
+        ['VISIBLESTRING' List
+            [array string 8 value count 'numberOfValues' encoding='"UTF-8"']
+        ]
+        ['F_MESSAGETRAILER4BYTE','1'  List
+            [array    uint 8     value count '4 * 8' ]
+        ]
+        ['F_MESSAGETRAILER4BYTE' List
+            [array    uint 8     value count 'numberOfValues * 32' ]
+        ]
     ]
 ]
 
@@ -639,6 +669,12 @@
     ['23' LDATE_AND_TIME ['8','LDATE_AND_TIME']]
     ['24' CHAR ['1','CHAR']]
     ['25' WCHAR ['2','WCHAR']]
-    ['26' STRING ['1','STRING']]
+    ['26' UNICODESTRING8 ['1','UNICODESTRING8']]
     ['27' WSTRING ['2','WSTRING']]
+    ['28' VISIBLESTRING ['1','VISIBLESTRING']]
+    ['29' F_MESSAGETRAILER4BYTE ['4','F_MESSAGETRAILER4BYTE']]
+    ['30' TIMESTAMP ['12','TIMESTAMP']]
+    ['31' TIMESTAMPDIFFERENCE ['12','TIMESTAMPDIFFERENCE']]
+    ['32' TIMESTAMPDIFFERENCESHORT ['8','TIMESTAMPDIFFERENCESHORT']]
+    ['33' OCTETSTRING ['1','OCTETSTRING']]
 ]
