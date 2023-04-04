@@ -56,10 +56,10 @@ func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser 
 	return &browser
 }
 
-func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
+func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool, _ string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
 	switch query.(type) {
 	case DeviceQuery:
-		queryResults, err := m.executeDeviceQuery(ctx, query.(DeviceQuery), browseRequest, queryName, interceptor)
+		queryResults, err := m.executeDeviceQuery(ctx, query.(DeviceQuery), interceptor)
 		if err != nil {
 			log.Warn().Err(err).Msg("Error executing device query")
 			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
@@ -79,7 +79,7 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 	}
 }
 
-func (m Browser) executeDeviceQuery(ctx context.Context, query DeviceQuery, browseRequest apiModel.PlcBrowseRequest, queryName string, interceptor func(result apiModel.PlcBrowseItem) bool) ([]apiModel.PlcBrowseItem, error) {
+func (m Browser) executeDeviceQuery(ctx context.Context, query DeviceQuery, interceptor func(result apiModel.PlcBrowseItem) bool) ([]apiModel.PlcBrowseItem, error) {
 	// Create a list of address strings, which doesn't contain any ranges, lists or wildcards
 	knxAddresses, err := m.calculateAddresses(query)
 	if err != nil {
