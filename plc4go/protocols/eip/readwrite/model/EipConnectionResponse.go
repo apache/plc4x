@@ -34,6 +34,7 @@ const EipConnectionResponse_FLAGS uint16 = 0x00
 
 // EipConnectionResponse is the corresponding interface of EipConnectionResponse
 type EipConnectionResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	EipPacket

@@ -33,6 +33,7 @@ const ModbusPDUReadDeviceIdentificationRequest_MEITYPE uint8 = 0x0E
 
 // ModbusPDUReadDeviceIdentificationRequest is the corresponding interface of ModbusPDUReadDeviceIdentificationRequest
 type ModbusPDUReadDeviceIdentificationRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ModbusPDU

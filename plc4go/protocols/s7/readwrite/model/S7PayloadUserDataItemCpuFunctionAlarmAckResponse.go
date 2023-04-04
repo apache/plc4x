@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -30,6 +31,7 @@ import (
 
 // S7PayloadUserDataItemCpuFunctionAlarmAckResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmAckResponse
 type S7PayloadUserDataItemCpuFunctionAlarmAckResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem

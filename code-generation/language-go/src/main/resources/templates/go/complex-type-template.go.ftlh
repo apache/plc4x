@@ -83,6 +83,7 @@ const ${type.name}_${field.name?upper_case} ${helper.getLanguageTypeNameForField
 
 // ${type.name} is the corresponding interface of ${type.name?cap_first}
 type ${type.name} interface {
+	fmt.Stringer<@emitImport import="fmt" />
 	utils.LengthAware
 	utils.Serializable
 <#if type.isDiscriminatedChildTypeDefinition()>

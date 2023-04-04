@@ -34,6 +34,7 @@ const IdentifyReplyCommandNetworkVoltage_V byte = 0x56
 
 // IdentifyReplyCommandNetworkVoltage is the corresponding interface of IdentifyReplyCommandNetworkVoltage
 type IdentifyReplyCommandNetworkVoltage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	IdentifyReplyCommand

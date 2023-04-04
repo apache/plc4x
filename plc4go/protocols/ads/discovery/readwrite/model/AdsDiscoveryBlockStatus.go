@@ -33,6 +33,7 @@ const AdsDiscoveryBlockStatus_STATUSLENGTH uint16 = 0x0004
 
 // AdsDiscoveryBlockStatus is the corresponding interface of AdsDiscoveryBlockStatus
 type AdsDiscoveryBlockStatus interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AdsDiscoveryBlock

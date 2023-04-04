@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // InterfaceOptions3 is the corresponding interface of InterfaceOptions3
 type InterfaceOptions3 interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetExstat returns Exstat (property field)

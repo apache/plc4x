@@ -50,6 +50,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -61,6 +62,7 @@ import (
 type ${type.name} ${baseType}
 
 type I${type.name} interface {
+	fmt.Stringer
 	utils.Serializable
 <#if type.constantNames?has_content>
 	<#list type.constantNames as constantName>

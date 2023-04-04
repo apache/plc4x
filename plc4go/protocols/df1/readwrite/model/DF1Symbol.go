@@ -34,6 +34,7 @@ const DF1Symbol_MESSAGESTART uint8 = 0x10
 
 // DF1Symbol is the corresponding interface of DF1Symbol
 type DF1Symbol interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetSymbolType returns SymbolType (discriminator field)

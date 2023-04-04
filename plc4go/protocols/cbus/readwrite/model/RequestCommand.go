@@ -34,6 +34,7 @@ const RequestCommand_INITIATOR byte = 0x5C
 
 // RequestCommand is the corresponding interface of RequestCommand
 type RequestCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request

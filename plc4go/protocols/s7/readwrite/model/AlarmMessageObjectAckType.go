@@ -34,6 +34,7 @@ const AlarmMessageObjectAckType_LENGTH uint8 = 0x08
 
 // AlarmMessageObjectAckType is the corresponding interface of AlarmMessageObjectAckType
 type AlarmMessageObjectAckType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetSyntaxId returns SyntaxId (property field)

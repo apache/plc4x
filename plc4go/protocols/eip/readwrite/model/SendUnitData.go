@@ -34,6 +34,7 @@ const SendUnitData_INTERFACEHANDLE uint32 = 0x00000000
 
 // SendUnitData is the corresponding interface of SendUnitData
 type SendUnitData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	EipPacket

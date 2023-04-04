@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetPortPermission is the corresponding interface of BACnetPortPermission
 type BACnetPortPermission interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPort returns Port (property field)

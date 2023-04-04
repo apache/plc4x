@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // DF1Command is the corresponding interface of DF1Command
 type DF1Command interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandCode returns CommandCode (discriminator field)

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -31,6 +32,7 @@ import (
 type BACnetDeviceStatus uint16
 
 type IBACnetDeviceStatus interface {
+	fmt.Stringer
 	utils.Serializable
 }
 

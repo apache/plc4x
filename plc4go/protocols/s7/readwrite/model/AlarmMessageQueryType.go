@@ -34,6 +34,7 @@ const AlarmMessageQueryType_DATALENGTH uint16 = 0xFFFF
 
 // AlarmMessageQueryType is the corresponding interface of AlarmMessageQueryType
 type AlarmMessageQueryType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetFunctionId returns FunctionId (property field)

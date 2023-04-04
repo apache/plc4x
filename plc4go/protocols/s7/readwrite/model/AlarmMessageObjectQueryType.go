@@ -33,6 +33,7 @@ const AlarmMessageObjectQueryType_VARIABLESPEC uint8 = 0x12
 
 // AlarmMessageObjectQueryType is the corresponding interface of AlarmMessageObjectQueryType
 type AlarmMessageObjectQueryType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetLengthDataset returns LengthDataset (property field)

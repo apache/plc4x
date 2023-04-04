@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ModbusPDUWriteFileRecordRequestItem is the corresponding interface of ModbusPDUWriteFileRecordRequestItem
 type ModbusPDUWriteFileRecordRequestItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetReferenceType returns ReferenceType (property field)

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7VarPayloadStatusItem is the corresponding interface of S7VarPayloadStatusItem
 type S7VarPayloadStatusItem interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetReturnCode returns ReturnCode (property field)

@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ import (
 
 // BVLCRegisterForeignDevice is the corresponding interface of BVLCRegisterForeignDevice
 type BVLCRegisterForeignDevice interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BVLC

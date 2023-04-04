@@ -34,6 +34,7 @@ const PowerUp_POWERUPINDICATOR2 byte = 0x2B
 
 // PowerUp is the corresponding interface of PowerUp
 type PowerUp interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }

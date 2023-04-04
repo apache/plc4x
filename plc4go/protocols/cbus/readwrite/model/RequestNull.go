@@ -33,6 +33,7 @@ const RequestNull_NULLINDICATOR uint32 = 0x6E756C6C
 
 // RequestNull is the corresponding interface of RequestNull
 type RequestNull interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request

@@ -34,6 +34,7 @@ const ParameterChange_SPECIALCHAR2 byte = 0x3D
 
 // ParameterChange is the corresponding interface of ParameterChange
 type ParameterChange interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }

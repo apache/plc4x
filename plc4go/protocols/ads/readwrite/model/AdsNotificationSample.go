@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // AdsNotificationSample is the corresponding interface of AdsNotificationSample
 type AdsNotificationSample interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetNotificationHandle returns NotificationHandle (property field)
