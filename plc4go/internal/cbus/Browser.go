@@ -60,7 +60,7 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 		allAttributes := false
 		var attributes []readWriteModel.Attribute
 		if unitAddress := query.unitAddress; unitAddress != nil {
-			units = append(units, *unitAddress)
+			units = append(units, unitAddress)
 		} else {
 			// TODO: check if we still want the option to brute force all addresses
 			installedUnitAddressBytes, err := m.getInstalledUnitAddressBytes(ctx)

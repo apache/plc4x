@@ -19,6 +19,7 @@
 package cbus
 
 import (
+	"fmt"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/stretchr/testify/assert"
@@ -108,6 +109,14 @@ func TestTagHandler_ParseTag(t *testing.T) {
 			},
 		},
 		{
+			name: "sal monitor all",
+			args: args{tagAddress: "salmonitor/*/*"},
+			want: &salMonitorTag{
+				tagType:     SAL_MONITOR,
+				numElements: 1,
+			},
+		},
+		{
 			name: "sal monitor",
 			args: args{tagAddress: "salmonitor/2/LIGHTING"},
 			want: &salMonitorTag{
@@ -117,6 +126,14 @@ func TestTagHandler_ParseTag(t *testing.T) {
 					lighting_38 := readWriteModel.ApplicationIdContainer_LIGHTING_38
 					return &lighting_38
 				}(),
+				numElements: 1,
+			},
+		},
+		{
+			name: "mmi monitor all",
+			args: args{tagAddress: "mmimonitor/*/*"},
+			want: &mmiMonitorTag{
+				tagType:     MMI_STATUS_MONITOR,
 				numElements: 1,
 			},
 		},
@@ -240,7 +257,34 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 			args:    args{query: "gobblegobble"},
 			wantErr: true,
 		},
-		// TODO: other cases
+		{
+			name: "unitQuery all",
+			args: args{
+				query: "info/*/*",
+			},
+			want: &unitInfoQuery{
+				tagType:     UNIT_INFO,
+				unitAddress: nil,
+				attribute:   nil,
+				numElements: 1,
+			},
+		},
+		{
+			name: "unitQuery",
+			args: args{
+				query: "info/0x13/DSIStatus",
+			},
+			want: &unitInfoQuery{
+				tagType:     UNIT_INFO,
+				unitAddress: readWriteModel.NewUnitAddress(19),
+				attribute: func() *readWriteModel.Attribute {
+					var attribute readWriteModel.Attribute
+					attribute = readWriteModel.Attribute_DSIStatus
+					return &attribute
+				}(),
+				numElements: 1,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -250,9 +294,169 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				t.Errorf("ParseQuery() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, got, tt.want) {
 				t.Errorf("ParseQuery() got = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func TestTagHandler_applicationIdFromArgument(t *testing.T) {
+	type fields struct {
+		statusRequestPattern *regexp.Regexp
+		calPattern           *regexp.Regexp
+		salPattern           *regexp.Regexp
+		salMonitorPattern    *regexp.Regexp
+		mmiMonitorPattern    *regexp.Regexp
+		unityQuery           *regexp.Regexp
+	}
+	type args struct {
+		applicationIdArgument string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    readWriteModel.ApplicationIdContainer
+		wantErr assert.ErrorAssertionFunc
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := TagHandler{
+				statusRequestPattern: tt.fields.statusRequestPattern,
+				calPattern:           tt.fields.calPattern,
+				salPattern:           tt.fields.salPattern,
+				salMonitorPattern:    tt.fields.salMonitorPattern,
+				mmiMonitorPattern:    tt.fields.mmiMonitorPattern,
+				unityQuery:           tt.fields.unityQuery,
+			}
+			got, err := m.applicationIdFromArgument(tt.args.applicationIdArgument)
+			if !tt.wantErr(t, err, fmt.Sprintf("applicationIdFromArgument(%v)", tt.args.applicationIdArgument)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "applicationIdFromArgument(%v)", tt.args.applicationIdArgument)
+		})
+	}
+}
+
+func TestTagHandler_extractBridges(t *testing.T) {
+	type fields struct {
+		statusRequestPattern *regexp.Regexp
+		calPattern           *regexp.Regexp
+		salPattern           *regexp.Regexp
+		salMonitorPattern    *regexp.Regexp
+		mmiMonitorPattern    *regexp.Regexp
+		unityQuery           *regexp.Regexp
+	}
+	type args struct {
+		match map[string]string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    []readWriteModel.BridgeAddress
+		wantErr assert.ErrorAssertionFunc
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := TagHandler{
+				statusRequestPattern: tt.fields.statusRequestPattern,
+				calPattern:           tt.fields.calPattern,
+				salPattern:           tt.fields.salPattern,
+				salMonitorPattern:    tt.fields.salMonitorPattern,
+				mmiMonitorPattern:    tt.fields.mmiMonitorPattern,
+				unityQuery:           tt.fields.unityQuery,
+			}
+			got, err := m.extractBridges(tt.args.match)
+			if !tt.wantErr(t, err, fmt.Sprintf("extractBridges(%v)", tt.args.match)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "extractBridges(%v)", tt.args.match)
+		})
+	}
+}
+
+func TestTagHandler_handleCalPattern(t *testing.T) {
+	type fields struct {
+		statusRequestPattern *regexp.Regexp
+		calPattern           *regexp.Regexp
+		salPattern           *regexp.Regexp
+		salMonitorPattern    *regexp.Regexp
+		mmiMonitorPattern    *regexp.Regexp
+		unityQuery           *regexp.Regexp
+	}
+	type args struct {
+		match map[string]string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    apiModel.PlcTag
+		wantErr assert.ErrorAssertionFunc
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := TagHandler{
+				statusRequestPattern: tt.fields.statusRequestPattern,
+				calPattern:           tt.fields.calPattern,
+				salPattern:           tt.fields.salPattern,
+				salMonitorPattern:    tt.fields.salMonitorPattern,
+				mmiMonitorPattern:    tt.fields.mmiMonitorPattern,
+				unityQuery:           tt.fields.unityQuery,
+			}
+			got, err := m.handleCalPattern(tt.args.match)
+			if !tt.wantErr(t, err, fmt.Sprintf("handleCalPattern(%v)", tt.args.match)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "handleCalPattern(%v)", tt.args.match)
+		})
+	}
+}
+
+func TestTagHandler_handleMMIMonitorPattern(t *testing.T) {
+	type fields struct {
+		statusRequestPattern *regexp.Regexp
+		calPattern           *regexp.Regexp
+		salPattern           *regexp.Regexp
+		salMonitorPattern    *regexp.Regexp
+		mmiMonitorPattern    *regexp.Regexp
+		unityQuery           *regexp.Regexp
+	}
+	type args struct {
+		match map[string]string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    apiModel.PlcTag
+		wantErr assert.ErrorAssertionFunc
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := TagHandler{
+				statusRequestPattern: tt.fields.statusRequestPattern,
+				calPattern:           tt.fields.calPattern,
+				salPattern:           tt.fields.salPattern,
+				salMonitorPattern:    tt.fields.salMonitorPattern,
+				mmiMonitorPattern:    tt.fields.mmiMonitorPattern,
+				unityQuery:           tt.fields.unityQuery,
+			}
+			got, err := m.handleMMIMonitorPattern(tt.args.match)
+			if !tt.wantErr(t, err, fmt.Sprintf("handleMMIMonitorPattern(%v)", tt.args.match)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "handleMMIMonitorPattern(%v)", tt.args.match)
 		})
 	}
 }
@@ -295,92 +499,6 @@ func TestTagHandler_handleStatusRequestPattern(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("handleStatusRequestPattern() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestTagHandler_handleCalPattern(t *testing.T) {
-	type fields struct {
-		statusRequestPattern *regexp.Regexp
-		calPattern           *regexp.Regexp
-		salPattern           *regexp.Regexp
-		salMonitorPattern    *regexp.Regexp
-		mmiMonitorPattern    *regexp.Regexp
-		unityQuery           *regexp.Regexp
-	}
-	type args struct {
-		match map[string]string
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    apiModel.PlcTag
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := TagHandler{
-				statusRequestPattern: tt.fields.statusRequestPattern,
-				calPattern:           tt.fields.calPattern,
-				salPattern:           tt.fields.salPattern,
-				salMonitorPattern:    tt.fields.salMonitorPattern,
-				mmiMonitorPattern:    tt.fields.mmiMonitorPattern,
-				unityQuery:           tt.fields.unityQuery,
-			}
-			got, err := m.handleCalPattern(tt.args.match)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("handleCalPattern() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("handleCalPattern() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestTagHandler_handleMMIMonitorPattern(t *testing.T) {
-	type fields struct {
-		statusRequestPattern *regexp.Regexp
-		calPattern           *regexp.Regexp
-		salPattern           *regexp.Regexp
-		salMonitorPattern    *regexp.Regexp
-		mmiMonitorPattern    *regexp.Regexp
-		unityQuery           *regexp.Regexp
-	}
-	type args struct {
-		match map[string]string
-	}
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    apiModel.PlcTag
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := TagHandler{
-				statusRequestPattern: tt.fields.statusRequestPattern,
-				calPattern:           tt.fields.calPattern,
-				salPattern:           tt.fields.salPattern,
-				salMonitorPattern:    tt.fields.salMonitorPattern,
-				mmiMonitorPattern:    tt.fields.mmiMonitorPattern,
-				unityQuery:           tt.fields.unityQuery,
-			}
-			got, err := m.handleMMIMonitorPattern(tt.args.match)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("handleMMIMonitorPattern() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("handleMMIMonitorPattern() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -532,33 +650,48 @@ func TestTagType_GetName(t *testing.T) {
 	}
 }
 
-func Test_applicationIdFromArgument(t *testing.T) {
+func TestTagHandler_unitAddressFromArgument(t *testing.T) {
+	type fields struct {
+		statusRequestPattern *regexp.Regexp
+		calPattern           *regexp.Regexp
+		salPattern           *regexp.Regexp
+		salMonitorPattern    *regexp.Regexp
+		mmiMonitorPattern    *regexp.Regexp
+		unityQuery           *regexp.Regexp
+	}
 	type args struct {
-		applicationIdArgument string
+		unitAddressArgument string
+		allowWildcard       bool
 	}
 	tests := []struct {
 		name    string
+		fields  fields
 		args    args
-		want    readWriteModel.ApplicationIdContainer
-		wantErr bool
+		want    readWriteModel.UnitAddress
+		wantErr assert.ErrorAssertionFunc
 	}{
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := applicationIdFromArgument(tt.args.applicationIdArgument)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("applicationIdFromArgument() error = %v, wantErr %v", err, tt.wantErr)
+			m := TagHandler{
+				statusRequestPattern: tt.fields.statusRequestPattern,
+				calPattern:           tt.fields.calPattern,
+				salPattern:           tt.fields.salPattern,
+				salMonitorPattern:    tt.fields.salMonitorPattern,
+				mmiMonitorPattern:    tt.fields.mmiMonitorPattern,
+				unityQuery:           tt.fields.unityQuery,
+			}
+			got, err := m.unitAddressFromArgument(tt.args.unitAddressArgument, tt.args.allowWildcard)
+			if !tt.wantErr(t, err, fmt.Sprintf("unitAddressFromArgument(%v, %v)", tt.args.unitAddressArgument, tt.args.allowWildcard)) {
 				return
 			}
-			if got != tt.want {
-				t.Errorf("applicationIdFromArgument() got = %v, want %v", got, tt.want)
-			}
+			assert.Equalf(t, tt.want, got, "unitAddressFromArgument(%v, %v)", tt.args.unitAddressArgument, tt.args.allowWildcard)
 		})
 	}
 }
 
-func Test_c2nl(t *testing.T) {
+func Test_c2nl1(t *testing.T) {
 	type args struct {
 		t []CommandAndArgumentsCount
 	}
@@ -571,9 +704,7 @@ func Test_c2nl(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := c2nl(tt.args.t); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("c2nl() = %v, want %v", got, tt.want)
-			}
+			assert.Equalf(t, tt.want, c2nl(tt.args.t), "c2nl(%v)", tt.args.t)
 		})
 	}
 }
