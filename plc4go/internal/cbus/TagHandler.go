@@ -67,7 +67,7 @@ type TagHandler struct {
 func NewTagHandler() TagHandler {
 	return TagHandler{
 		statusRequestPattern: regexp.MustCompile(`^status/(?:(?P<bridges>b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})(?:-b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})){0,5})/)?(?P<statusRequestType>(?P<binary>binary)|level=0x(?P<startingGroupAddressLabel>00|20|40|60|80|A0|C0|E0))/(?P<application>.*)$`),
-		calPattern:           regexp.MustCompile(`^cal/(?:(?P<bridges>b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})(?:-b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})){0,5})-)?(?P<unitAddress>u?(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3}))/(?P<calType>reset|recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getStatus=(?P<getStatusParamNo>\w+), ?(?P<getStatusCount>\d+)|write=\[(?P<writeParamNo>\w+), ?(?P<writeCode>0[xX][0-9a-fA-F][0-9a-fA-F])]|identifyReply=(?P<replyAttribute>\w+)|reply=(?P<replyParamNo>\w+)|status=(?P<statusApplication>.*)|statusExtended=(?P<statusExtendedApplication>.*))$`),
+		calPattern:           regexp.MustCompile(`^cal/(?:(?P<bridges>b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})(?:-b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})){0,5})-)?(?P<unitAddress>u?(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3}))/(?P<calType>reset|recall=\[(?P<recallParamNo>(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getStatus=(?P<getStatusParamNo>\w+), ?(?P<getStatusCount>\d+)|write=\[(?P<writeParamNo>\w+), ?(?P<writeCode>0[xX][0-9a-fA-F][0-9a-fA-F])]|identifyReply=(?P<replyAttribute>\w+)|reply=(?P<replyParamNo>\w+)|status=(?P<statusApplication>.*)|statusExtended=(?P<statusExtendedApplication>.*))$`),
 		salPattern:           regexp.MustCompile(`^sal/(?:(?P<bridges>b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})(?:-b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})){0,5})/)?(?P<application>.*)/(?P<salCommand>.*)$`),
 		salMonitorPattern:    regexp.MustCompile(`^salmonitor/(?P<unitAddress>u?(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3}|\*))/(?P<application>.+|\*)$`),
 		mmiMonitorPattern:    regexp.MustCompile(`^mmimonitor/(?P<unitAddress>u?(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3}|\*))/(?P<application>.+|\*)$`),
@@ -144,8 +144,7 @@ func (m TagHandler) handleStatusRequestPattern(match map[string]string) (apiMode
 			statusRequestType = StatusRequestTypeBinaryState
 		} else if levelArgument := match["startingGroupAddressLabel"]; levelArgument != "" {
 			statusRequestType = StatusRequestTypeLevel
-			startingGroupAddressLabelArgument := match["startingGroupAddressLabel"]
-			decodedHex, _ := hex.DecodeString(startingGroupAddressLabelArgument)
+			decodedHex, _ := hex.DecodeString(levelArgument)
 			if len(decodedHex) != 1 {
 				panic("invalid state. Should have exactly 1")
 			}
@@ -192,7 +191,6 @@ func (m TagHandler) handleCalPattern(match map[string]string) (apiModel.PlcTag, 
 			}
 			recalParamNo = readWriteModel.Parameter(decodedHex[0])
 		} else {
-
 			if atoi, err := strconv.ParseUint(recallParamNoArgument, 10, 8); err == nil {
 				recalParamNo = readWriteModel.Parameter(atoi)
 			} else {
@@ -290,7 +288,7 @@ func (m TagHandler) handleSALPattern(match map[string]string) (apiModel.PlcTag, 
 	}
 	salCommand := match["salCommand"]
 	if salCommand == "" {
-		return nil, errors.Wrap(err, "Error getting salCommand from argument")
+		return nil, errors.New("Error getting salCommand from argument")
 	}
 	isValid := false
 	numElements := uint16(0)
