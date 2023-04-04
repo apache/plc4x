@@ -302,36 +302,48 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 }
 
 func TestTagHandler_applicationIdFromArgument(t *testing.T) {
-	type fields struct {
-		statusRequestPattern *regexp.Regexp
-		calPattern           *regexp.Regexp
-		salPattern           *regexp.Regexp
-		salMonitorPattern    *regexp.Regexp
-		mmiMonitorPattern    *regexp.Regexp
-		unityQuery           *regexp.Regexp
-	}
 	type args struct {
 		applicationIdArgument string
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    readWriteModel.ApplicationIdContainer
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "empty",
+			args:    args{applicationIdArgument: ""},
+			wantErr: assert.Error,
+		},
+		{
+			name:    "number",
+			args:    args{applicationIdArgument: "56"},
+			want:    readWriteModel.ApplicationIdContainer_LIGHTING_38,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "hex",
+			args:    args{applicationIdArgument: "0x38"},
+			want:    readWriteModel.ApplicationIdContainer_LIGHTING_38,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "by name",
+			args:    args{applicationIdArgument: "LIGHTING"},
+			want:    readWriteModel.ApplicationIdContainer_LIGHTING_38,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "by exact name",
+			args:    args{applicationIdArgument: "LIGHTING_39"},
+			want:    readWriteModel.ApplicationIdContainer_LIGHTING_39,
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := TagHandler{
-				statusRequestPattern: tt.fields.statusRequestPattern,
-				calPattern:           tt.fields.calPattern,
-				salPattern:           tt.fields.salPattern,
-				salMonitorPattern:    tt.fields.salMonitorPattern,
-				mmiMonitorPattern:    tt.fields.mmiMonitorPattern,
-				unityQuery:           tt.fields.unityQuery,
-			}
+			m := NewTagHandler()
 			got, err := m.applicationIdFromArgument(tt.args.applicationIdArgument)
 			if !tt.wantErr(t, err, fmt.Sprintf("applicationIdFromArgument(%v)", tt.args.applicationIdArgument)) {
 				return
@@ -342,36 +354,94 @@ func TestTagHandler_applicationIdFromArgument(t *testing.T) {
 }
 
 func TestTagHandler_extractBridges(t *testing.T) {
-	type fields struct {
-		statusRequestPattern *regexp.Regexp
-		calPattern           *regexp.Regexp
-		salPattern           *regexp.Regexp
-		salMonitorPattern    *regexp.Regexp
-		mmiMonitorPattern    *regexp.Regexp
-		unityQuery           *regexp.Regexp
-	}
 	type args struct {
 		match map[string]string
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    []readWriteModel.BridgeAddress
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "no matches",
+			args:    args{match: map[string]string{}},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "empty bridges",
+			args: args{match: map[string]string{
+				"bridges": "",
+			}},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "one bridge",
+			args: args{match: map[string]string{
+				"bridges": "3",
+			}},
+			want:    []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(3)},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "one bridge prefixed",
+			args: args{match: map[string]string{
+				"bridges": "b3",
+			}},
+			want:    []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(3)},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "one hex bridge",
+			args: args{match: map[string]string{
+				"bridges": "0x03",
+			}},
+			want:    []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(3)},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "two bridges",
+			args: args{match: map[string]string{
+				"bridges": "3-4",
+			}},
+			want:    []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(3), readWriteModel.NewBridgeAddress(4)},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "two bridges prefixed",
+			args: args{match: map[string]string{
+				"bridges": "b3-b4",
+			}},
+			want:    []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(3), readWriteModel.NewBridgeAddress(4)},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "two hex bridges prefixed",
+			args: args{match: map[string]string{
+				"bridges": "b0x03-b0x04",
+			}},
+			want:    []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(3), readWriteModel.NewBridgeAddress(4)},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "six hex bridges prefixed",
+			args: args{match: map[string]string{
+				"bridges": "b0x01-b0x02-b0x03-b0x04-b0x05-b0x06",
+			}},
+			want:    []readWriteModel.BridgeAddress{readWriteModel.NewBridgeAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewBridgeAddress(3), readWriteModel.NewBridgeAddress(4), readWriteModel.NewBridgeAddress(5), readWriteModel.NewBridgeAddress(6)},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "seven hex bridges prefixed",
+			args: args{match: map[string]string{
+				"bridges": "b0x01-b0x02-b0x03-b0x04-b0x05-b0x06-b0x07",
+			}},
+			wantErr: assert.Error,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := TagHandler{
-				statusRequestPattern: tt.fields.statusRequestPattern,
-				calPattern:           tt.fields.calPattern,
-				salPattern:           tt.fields.salPattern,
-				salMonitorPattern:    tt.fields.salMonitorPattern,
-				mmiMonitorPattern:    tt.fields.mmiMonitorPattern,
-				unityQuery:           tt.fields.unityQuery,
-			}
+			m := NewTagHandler()
 			got, err := m.extractBridges(tt.args.match)
 			if !tt.wantErr(t, err, fmt.Sprintf("extractBridges(%v)", tt.args.match)) {
 				return

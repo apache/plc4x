@@ -531,6 +531,9 @@ func (m TagHandler) extractBridges(match map[string]string) ([]readWriteModel.Br
 			}
 		}
 	}
+	if len(bridgeAddresses) > 6 {
+		return nil, errors.Errorf("Can only contain up to 6 bridges. Actual length: %d", len(bridgeAddresses))
+	}
 	return bridgeAddresses, nil
 }
 
