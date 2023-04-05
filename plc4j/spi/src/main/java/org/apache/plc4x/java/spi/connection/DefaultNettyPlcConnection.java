@@ -212,18 +212,48 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
                         } else if (evt instanceof DisconnectedEvent) {
                             sessionDisconnectCompleteFuture.complete(null);
                             eventListeners.forEach(ConnectionStateListener::disconnected);
+                            // Fix for https://github.com/apache/plc4x/issues/801
+                            super.userEventTriggered(ctx, evt);
                         } else if (evt instanceof DiscoveredEvent) {
                             sessionDiscoverCompleteFuture.complete(((DiscoveredEvent) evt).getConfiguration());
+                        } else if (evt instanceof ConnectEvent) {
+                            // Fix for https://github.com/apache/plc4x/issues/801
+                            if (!sessionSetupCompleteFuture.isCompletedExceptionally()) {
+                                if (awaitSessionSetupComplete) {
+                                    setProtocol(
+                                            stackConfigurer.configurePipeline(
+                                                    configuration,
+                                                    pipeline,
+                                                    getAuthentication(),
+                                                    channelFactory.isPassive()
+                                            )
+                                    );
+                                }
+                                super.userEventTriggered(ctx, evt);
+                            }
                         } else {
                             super.userEventTriggered(ctx, evt);
                         }
                     }
                 });
+                // Fix for https://github.com/apache/plc4x/issues/801
+                pipeline.addLast(
+                        new ChannelInboundHandlerAdapter() {
+                            @Override
+                            public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws PlcConnectionException {
+                                logger.error("unknown error, close the connection", cause);
+                                close();
+                            }
+                        }
+                );
                 // Initialize via Transport Layer
                 channelFactory.initializePipeline(pipeline);
                 // Initialize Protocol Layer
-                setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
-                    channelFactory.isPassive()));
+                // Fix for https://github.com/apache/plc4x/issues/801
+                if (!awaitSessionSetupComplete) {
+                    setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
+                            channelFactory.isPassive()));
+                }
             }
         };
     }
