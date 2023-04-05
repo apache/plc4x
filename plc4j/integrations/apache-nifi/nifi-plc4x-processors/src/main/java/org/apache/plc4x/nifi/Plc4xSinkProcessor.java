@@ -19,6 +19,8 @@
 package org.apache.plc4x.nifi;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.ReadsAttribute;
@@ -88,7 +90,7 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
 
             // Send the request to the PLC.
             try {
-                final PlcWriteResponse plcWriteResponse = writeRequest.execute().get();
+                final PlcWriteResponse plcWriteResponse = writeRequest.execute().get(this.timeout, TimeUnit.MILLISECONDS);
                 PlcResponseCode code = null;
 
                 for (String tag : plcWriteResponse.getTagNames()) {
@@ -112,7 +114,6 @@ public class Plc4xSinkProcessor extends BasePlc4xProcessor {
                         null
                     );
                 }
-                
             } catch (Exception e) {
                 flowFile = session.putAttribute(flowFile, "exception", e.getLocalizedMessage());
                 session.transfer(flowFile, REL_FAILURE);

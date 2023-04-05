@@ -43,7 +43,6 @@ import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
-import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.nifi.serialization.RecordReader;
 import org.apache.nifi.serialization.RecordReaderFactory;
 import org.apache.nifi.serialization.record.Record;
@@ -77,14 +76,6 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 			.required(true)
 			.build();
 
-	public static final PropertyDescriptor PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS = new PropertyDescriptor.Builder().name("plc4x-record-write-timeout").displayName("Write timeout (miliseconds)")
-			.description("Write timeout in miliseconds")
-			.defaultValue("10000")
-			.required(true)
-			.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
-			.build();
-	
-
 	public Plc4xSinkRecordProcessor() {
 	}
 
@@ -98,7 +89,6 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 		final List<PropertyDescriptor> pds = new ArrayList<>();
 		pds.addAll(super.getSupportedPropertyDescriptors());
 		pds.add(PLC_RECORD_READER_FACTORY);
-		pds.add(PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS);
 		this.properties = Collections.unmodifiableList(pds);
 	}
 
@@ -163,9 +153,8 @@ public class Plc4xSinkRecordProcessor extends BasePlc4xProcessor {
 					}
 					writeRequest = builder.build();
 
-					plcWriteResponse = writeRequest.execute().get(
-						context.getProperty(PLC_WRITE_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger(), TimeUnit.MILLISECONDS
-						);
+					plcWriteResponse = writeRequest.execute().get(this.timeout, TimeUnit.MILLISECONDS);
+
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 					in.close();

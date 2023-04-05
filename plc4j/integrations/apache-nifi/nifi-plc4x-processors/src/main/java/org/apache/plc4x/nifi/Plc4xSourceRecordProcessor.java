@@ -44,7 +44,6 @@ import org.apache.nifi.processor.ProcessSession;
 import org.apache.nifi.processor.ProcessorInitializationContext;
 import org.apache.nifi.processor.Relationship;
 import org.apache.nifi.processor.exception.ProcessException;
-import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.nifi.serialization.RecordSetWriterFactory;
 import org.apache.nifi.serialization.record.RecordSchema;
 import org.apache.nifi.util.StopWatch;
@@ -76,14 +75,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		.required(true)
 		.build();
 	
-	public static final PropertyDescriptor PLC_READ_FUTURE_TIMEOUT_MILISECONDS = new PropertyDescriptor.Builder().name("plc4x-record-read-timeout").displayName("Read timeout (miliseconds)")
-		.description("Read timeout in miliseconds")
-		.defaultValue("10000")
-		.required(true)
-		.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
-		.build();
-
-	Integer readTimeout;
 	public Plc4xSourceRecordProcessor() {
 	}
 
@@ -97,7 +88,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		final List<PropertyDescriptor> pds = new ArrayList<>();
 		pds.addAll(super.getSupportedPropertyDescriptors());
 		pds.add(PLC_RECORD_WRITER_FACTORY);
-		pds.add(PLC_READ_FUTURE_TIMEOUT_MILISECONDS);
 		this.properties = Collections.unmodifiableList(pds);
 	}
 
@@ -105,8 +95,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 	@Override
 	public void onScheduled(final ProcessContext context) {
 		super.onScheduled(context);
-        super.connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
-        this.readTimeout = context.getProperty(PLC_READ_FUTURE_TIMEOUT_MILISECONDS.getName()).asInteger();
 	}
 	
 	@Override
@@ -165,7 +153,7 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 			final FlowFile originalFlowFile = fileToProcess;
 			resultSetFF = session.write(resultSetFF, out -> {
 				try {
-					PlcReadResponse readResponse = readRequest.execute().get(this.readTimeout, TimeUnit.MILLISECONDS);
+					PlcReadResponse readResponse = readRequest.execute().get(this.timeout, TimeUnit.MILLISECONDS);
 					
 					if(originalFlowFile == null) //there is no inherit attributes to use in writer service 
 						nrOfRows.set(plc4xWriter.writePlcReadResponse(readResponse, out, logger, null, recordSchema));

@@ -21,6 +21,7 @@ package org.apache.plc4x.nifi;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.WritesAttribute;
@@ -74,7 +75,7 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
                 }
 
                 PlcReadRequest readRequest = builder.build();
-                PlcReadResponse response = readRequest.execute().get();
+                PlcReadResponse response = readRequest.execute().get(this.timeout, TimeUnit.MILLISECONDS);
                 Map<String, String> attributes = new HashMap<>();
                 for (String tagName : response.getTagNames()) {
                     for (int i = 0; i < response.getNumberOfValues(tagName); i++) {
