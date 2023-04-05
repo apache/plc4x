@@ -67,6 +67,11 @@ image::knx_banner.png[banner,512,167]
 NOTE: This setting is currently only supported in the Java implementation
 
 |
+| `knxproj-password`
+| Password needed to read the knxproj file.
+NOTE: This setting is currently only supported in the Java implementation
+
+|
 | `group-address-num-levels` (3)
 | KNX Addresses can be encoded in multiple ways. Which encoding is used, is too not provided by the protocol itself so it has to be provided externally:
 
@@ -84,6 +89,13 @@ The default is 3 levels. If the `knxproj-file-path` this information is provided
 - 'RAW': The client gets unmanaged access to the bus (be careful with this)
 - 'BUSMONITOR': The client operates as a busmonitor where he can't actively participate on the bus. Only one 'BUSMONITOR' connection is allowed at the same time on a KNXnet/IP gateway.
 
+|
+| `replay-speed-factor`
+| When running in pcap-replay mode, the speed in which the replay should be done. `1.0f` being the normal speed.
+
+|
+| `loop`
+| When running in pcap-replay mode, tell if the replay should start from the beginning once it reaches the end of the recording.
 |===
 
 === Individual Resource Address Format

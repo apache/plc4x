@@ -209,12 +209,15 @@ plc4j/transports/test/src/main/java/io/netty/channel/embedded/Plc4xEmbeddedEvent
 plc4j/utils/pcap-shared/src/main/java/org/apache/plc4x/java/utils/pcap/netty/exception/PcapException.java
 Are copyrighted by the The Netty Project which is distributed under the Apache 2.0 license.
 
-The files:
+The file:
 .mvn/wrapper/MavenWrapperDownloader.java
+Is provided from the Github Project: https://github.com/takari/maven-wrapper
+which is distributed under the Apache 2.0 license.
+
+The files:
 mvnw
 mvnw.cmd
-Are provided from the Github Project: https://github.com/takari/maven-wrapper
-which is distributed under the Apache 2.0 license.
+Are provided from the Apache Maven project: https://maven.apache.org
 
 The file:
 code-generation/protocol-base-mspec/src/main/antlr4/org/apache/plc4x/plugins/codegenerator/language/mspec/expression/Expression.g4

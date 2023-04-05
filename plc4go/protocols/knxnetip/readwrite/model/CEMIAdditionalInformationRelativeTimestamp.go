@@ -33,6 +33,7 @@ const CEMIAdditionalInformationRelativeTimestamp_LEN uint8 = uint8(2)
 
 // CEMIAdditionalInformationRelativeTimestamp is the corresponding interface of CEMIAdditionalInformationRelativeTimestamp
 type CEMIAdditionalInformationRelativeTimestamp interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMIAdditionalInformation

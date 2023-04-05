@@ -34,6 +34,7 @@ const EipConnectionRequest_FLAGS uint16 = 0x00
 
 // EipConnectionRequest is the corresponding interface of EipConnectionRequest
 type EipConnectionRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	EipPacket

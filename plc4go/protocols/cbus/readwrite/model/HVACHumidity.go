@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // HVACHumidity is the corresponding interface of HVACHumidity
 type HVACHumidity interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetHumidityValue returns HumidityValue (property field)

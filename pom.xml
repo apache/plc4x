@@ -96,8 +96,6 @@
     <!-- Exclude all generated code -->
     <sonar.exclusions>**/generated-sources</sonar.exclusions>
     <sonar.cfamily.build-wrapper-output>${project.basedir}/plc4c/target/build-wrapper-output</sonar.cfamily.build-wrapper-output>
-    <sonar.cfamily.threads>1</sonar.cfamily.threads>
-    <sonar.cfamily.cache.enabled>false</sonar.cfamily.cache.enabled>
 
     <plc4x-code-generation.version>1.7.0-SNAPSHOT</plc4x-code-generation.version>
 
@@ -108,15 +106,15 @@
     <!-- The currently available version is 2.0.5 and anything above 1.4.3 is no longer compatible with our code -->
     <bit-io.version>1.4.3</bit-io.version>
     <bouncycastle.version>1.70</bouncycastle.version>
-    <byte-buddy.version>1.14.2</byte-buddy.version>
+    <byte-buddy.version>1.14.3</byte-buddy.version>
     <!-- Be sure to keep this version set to the version of the cmake-maven-plugin -->
     <cmake-version>3.22.1</cmake-version>
     <commons-beanutils.version>1.9.4</commons-beanutils.version>
     <commons-cli.version>1.5.0</commons-cli.version>
     <commons-codec.version>1.15</commons-codec.version>
     <commons-collections4.version>4.4</commons-collections4.version>
-    <commons-compress.version>1.22</commons-compress.version>
-    <commons-configuration2.version>2.8.0</commons-configuration2.version>
+    <commons-compress.version>1.23.0</commons-compress.version>
+    <commons-configuration2.version>2.9.0</commons-configuration2.version>
     <commons-io.version>2.11.0</commons-io.version>
     <commons-lang3.version>3.12.0</commons-lang3.version>
     <commons-logging.version>1.2</commons-logging.version>
@@ -126,9 +124,9 @@
     <commons-text.version>1.10.0</commons-text.version>
     <commons-csv.version>1.10.0</commons-csv.version>
     <dom4j.version>2.1.4</dom4j.version>
-    <equalsverifier.version>3.14</equalsverifier.version>
+    <equalsverifier.version>3.14.1</equalsverifier.version>
     <freemarker.version>2.3.32</freemarker.version>
-    <groovy.version>4.0.10</groovy.version>
+    <groovy.version>4.0.11</groovy.version>
     <gson.version>2.10.1</gson.version>
     <guava.version>31.1-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
@@ -140,7 +138,7 @@
     <jaxb.version>4.0.2</jaxb.version>
     <jetty-util.version>11.0.14</jetty-util.version>
     <jna.version>5.13.0</jna.version>
-    <joda-time.version>2.12.2</joda-time.version>
+    <joda-time.version>2.12.5</joda-time.version>
     <jserialcom.version>2.9.3</jserialcom.version>
     <junit.jupiter.version>5.9.2</junit.jupiter.version>
     <junit.platform.version>1.8.2</junit.platform.version>
@@ -148,16 +146,16 @@
     <maven.clean.plugin.version>3.2.0</maven.clean.plugin.version>
     <!-- version 0.6.7 is newer, however the ExampleServer doesn't seem to run with that -->
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
-    <milo.version>0.6.8</milo.version>
+    <milo.version>0.6.9</milo.version>
     <mockito.version>5.2.0</mockito.version>
-    <netty.version>4.1.89.Final</netty.version>
+    <netty.version>4.1.91.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
-    <slf4j.version>2.0.6</slf4j.version>
+    <slf4j.version>2.0.7</slf4j.version>
     <vavr.version>0.10.4</vavr.version>
     <xmlunit.version>2.9.1</xmlunit.version>
 
     <!-- Site properties -->
-    <asciidoctor.maven.plugin.version>2.2.2</asciidoctor.maven.plugin.version>
+    <asciidoctor.maven.plugin.version>2.2.3</asciidoctor.maven.plugin.version>
     <asciidoctorj.version>2.5.7</asciidoctorj.version>
     <asciidoctorj.diagram.version>2.2.4</asciidoctorj.diagram.version>
 
@@ -935,7 +933,7 @@
           <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
-            <version>1.6.1</version>
+            <version>1.6.2</version>
           </dependency>
           <dependency>
             <groupId>org.apache.maven.shared</groupId>
@@ -1069,7 +1067,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>3.3.0</version>
         </plugin>
 
         <plugin>
@@ -1093,7 +1091,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>3.3.1</version>
         </plugin>
 
         <plugin>
@@ -1111,7 +1109,7 @@
         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.8.8</version>
+          <version>0.8.9</version>
         </plugin>
 
         <plugin>
@@ -1149,7 +1147,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.0.0-M9</version>
+          <version>3.0.0</version>
           <dependencies>
             <dependency>
               <groupId>org.junit.jupiter</groupId>
@@ -1165,7 +1163,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.0.0-M9</version>
+          <version>3.0.0</version>
           <!--version>2.22.2</version-->
           <dependencies>
             <dependency>
@@ -1330,13 +1328,13 @@
         <plugin>
           <groupId>com.googlecode.cmake-maven-project</groupId>
           <artifactId>cmake-maven-plugin</artifactId>
-          <version>3.23.2-b1</version>
+          <version>3.25.2-b1</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>3.0.0-M7</version>
+          <version>3.0.0</version>
           <configuration>
             <!-- Tell the plugin to always release all modules using the same version -->
             <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -1894,7 +1892,7 @@
           <plugin>
             <groupId>org.cyclonedx</groupId>
             <artifactId>cyclonedx-maven-plugin</artifactId>
-            <version>2.7.5</version>
+            <version>2.7.6</version>
             <!-- Only run this in the root module of the project -->
             <inherited>false</inherited>
             <configuration>

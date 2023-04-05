@@ -34,6 +34,7 @@ const BVLC_BACNETTYPE uint8 = 0x81
 
 // BVLC is the corresponding interface of BVLC
 type BVLC interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetBvlcFunction returns BvlcFunction (discriminator field)

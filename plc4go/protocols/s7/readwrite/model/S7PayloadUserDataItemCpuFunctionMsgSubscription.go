@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // S7PayloadUserDataItemCpuFunctionMsgSubscription is the corresponding interface of S7PayloadUserDataItemCpuFunctionMsgSubscription
 type S7PayloadUserDataItemCpuFunctionMsgSubscription interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem

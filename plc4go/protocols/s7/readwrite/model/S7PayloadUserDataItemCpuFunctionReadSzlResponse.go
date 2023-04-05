@@ -34,6 +34,7 @@ const S7PayloadUserDataItemCpuFunctionReadSzlResponse_SZLITEMLENGTH uint16 = uin
 
 // S7PayloadUserDataItemCpuFunctionReadSzlResponse is the corresponding interface of S7PayloadUserDataItemCpuFunctionReadSzlResponse
 type S7PayloadUserDataItemCpuFunctionReadSzlResponse interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConstructedDataElement is the corresponding interface of BACnetConstructedDataElement
 type BACnetConstructedDataElement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)

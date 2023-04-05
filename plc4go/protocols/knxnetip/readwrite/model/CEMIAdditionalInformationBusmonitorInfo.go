@@ -33,6 +33,7 @@ const CEMIAdditionalInformationBusmonitorInfo_LEN uint8 = uint8(1)
 
 // CEMIAdditionalInformationBusmonitorInfo is the corresponding interface of CEMIAdditionalInformationBusmonitorInfo
 type CEMIAdditionalInformationBusmonitorInfo interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CEMIAdditionalInformation

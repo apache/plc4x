@@ -34,6 +34,7 @@ const ResponseTermination_LF byte = 0x0A
 
 // ResponseTermination is the corresponding interface of ResponseTermination
 type ResponseTermination interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }

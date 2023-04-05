@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetObjectPropertyReference is the corresponding interface of BACnetObjectPropertyReference
 type BACnetObjectPropertyReference interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)

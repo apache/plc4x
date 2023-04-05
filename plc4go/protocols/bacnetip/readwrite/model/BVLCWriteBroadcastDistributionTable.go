@@ -22,6 +22,7 @@ package model
 import (
 	"context"
 	"encoding/binary"
+	"fmt"
 	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -31,6 +32,7 @@ import (
 
 // BVLCWriteBroadcastDistributionTable is the corresponding interface of BVLCWriteBroadcastDistributionTable
 type BVLCWriteBroadcastDistributionTable interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	BVLC

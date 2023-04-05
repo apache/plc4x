@@ -73,6 +73,36 @@ public class DataItem {
       }
 
       return new PlcList(value);
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.OCTETSTRING)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // USINT
+
+      // Simple Field (value)
+      Short value = /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.readUnsignedShort("", 8);
+
+      return new PlcUSINT(value);
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.OCTETSTRING)) { // List
+      // Array field (value)
+      // Count array
+      if (numberOfValues > Integer.MAX_VALUE) {
+        throw new ParseException(
+            "Array count of "
+                + (numberOfValues)
+                + " exceeds the maximum allowed count of "
+                + Integer.MAX_VALUE);
+      }
+      List<PlcValue> value;
+      {
+        int itemCount = (int) numberOfValues;
+        value = new LinkedList<>();
+        for (int curItem = 0; curItem < itemCount; curItem++) {
+          value.add(
+              new PlcUINT(
+                  (Short) /*TODO: migrate me*/ /*TODO: migrate me*/
+                      readBuffer.readUnsignedShort("", 8)));
+        }
+      }
+
+      return new PlcList(value);
     } else if (EvaluationHelper.equals(dataType, ProfinetDataType.BYTE)
         && EvaluationHelper.equals(numberOfValues, 1)) { // BYTE
 
@@ -480,6 +510,146 @@ public class DataItem {
       }
 
       return new PlcList(value);
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.UNICODESTRING8)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
+
+      // Simple Field (value)
+      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readString("", 8, WithOption.WithEncoding("UTF-8"));
+
+      return new PlcCHAR(value);
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.UNICODESTRING8)) { // List
+      // Array field (value)
+      // Count array
+      if (numberOfValues > Integer.MAX_VALUE) {
+        throw new ParseException(
+            "Array count of "
+                + (numberOfValues)
+                + " exceeds the maximum allowed count of "
+                + Integer.MAX_VALUE);
+      }
+      List<PlcValue> value;
+      {
+        int itemCount = (int) numberOfValues;
+        value = new LinkedList<>();
+        for (int curItem = 0; curItem < itemCount; curItem++) {
+          value.add(
+              new PlcSTRING(
+                  (String) /*TODO: migrate me*/ /*TODO: migrate me*/
+                      readBuffer.readString("", 8, WithOption.WithEncoding("UTF-8"))));
+        }
+      }
+
+      return new PlcList(value);
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.WSTRING)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
+
+      // Simple Field (value)
+      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readString("", 16, WithOption.WithEncoding("UTF-16"));
+
+      return new PlcCHAR(value);
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.WSTRING)) { // List
+      // Array field (value)
+      // Count array
+      if (numberOfValues > Integer.MAX_VALUE) {
+        throw new ParseException(
+            "Array count of "
+                + (numberOfValues)
+                + " exceeds the maximum allowed count of "
+                + Integer.MAX_VALUE);
+      }
+      List<PlcValue> value;
+      {
+        int itemCount = (int) numberOfValues;
+        value = new LinkedList<>();
+        for (int curItem = 0; curItem < itemCount; curItem++) {
+          value.add(
+              new PlcSTRING(
+                  (String) /*TODO: migrate me*/ /*TODO: migrate me*/
+                      readBuffer.readString("", 16, WithOption.WithEncoding("UTF-16"))));
+        }
+      }
+
+      return new PlcList(value);
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.VISIBLESTRING)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
+
+      // Simple Field (value)
+      String value = /*TODO: migrate me*/ /*TODO: migrate me*/
+          readBuffer.readString("", 8, WithOption.WithEncoding("UTF-8"));
+
+      return new PlcCHAR(value);
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.VISIBLESTRING)) { // List
+      // Array field (value)
+      // Count array
+      if (numberOfValues > Integer.MAX_VALUE) {
+        throw new ParseException(
+            "Array count of "
+                + (numberOfValues)
+                + " exceeds the maximum allowed count of "
+                + Integer.MAX_VALUE);
+      }
+      List<PlcValue> value;
+      {
+        int itemCount = (int) numberOfValues;
+        value = new LinkedList<>();
+        for (int curItem = 0; curItem < itemCount; curItem++) {
+          value.add(
+              new PlcSTRING(
+                  (String) /*TODO: migrate me*/ /*TODO: migrate me*/
+                      readBuffer.readString("", 8, WithOption.WithEncoding("UTF-8"))));
+        }
+      }
+
+      return new PlcList(value);
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.F_MESSAGETRAILER4BYTE)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // List
+      // Array field (value)
+      // Count array
+      if ((4) * (8) > Integer.MAX_VALUE) {
+        throw new ParseException(
+            "Array count of "
+                + ((4) * (8))
+                + " exceeds the maximum allowed count of "
+                + Integer.MAX_VALUE);
+      }
+      List<PlcValue> value;
+      {
+        int itemCount = (int) (4) * (8);
+        value = new LinkedList<>();
+        for (int curItem = 0; curItem < itemCount; curItem++) {
+          value.add(
+              new PlcUINT(
+                  (Short) /*TODO: migrate me*/ /*TODO: migrate me*/
+                      readBuffer.readUnsignedShort("", 8)));
+        }
+      }
+
+      return new PlcList(value);
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.F_MESSAGETRAILER4BYTE)) { // List
+      // Array field (value)
+      // Count array
+      if ((numberOfValues) * (32) > Integer.MAX_VALUE) {
+        throw new ParseException(
+            "Array count of "
+                + ((numberOfValues) * (32))
+                + " exceeds the maximum allowed count of "
+                + Integer.MAX_VALUE);
+      }
+      List<PlcValue> value;
+      {
+        int itemCount = (int) (numberOfValues) * (32);
+        value = new LinkedList<>();
+        for (int curItem = 0; curItem < itemCount; curItem++) {
+          value.add(
+              new PlcUINT(
+                  (Short) /*TODO: migrate me*/ /*TODO: migrate me*/
+                      readBuffer.readUnsignedShort("", 8)));
+        }
+      }
+
+      return new PlcList(value);
     }
     return null;
   }
@@ -510,6 +680,21 @@ public class DataItem {
         Boolean value = (Boolean) val.getBoolean();
         /*TODO: migrate me*/
         /*TODO: migrate me*/ writeBuffer.writeBit("", (boolean) (value));
+      }
+
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.OCTETSTRING)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // USINT
+      // Simple Field (value)
+      short value = (short) _value.getShort();
+      /*TODO: migrate me*/
+      /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.OCTETSTRING)) { // List
+      PlcList values = (PlcList) _value;
+
+      for (PlcValue val : ((List<PlcValue>) values.getList())) {
+        Short value = (Short) val.getShort();
+        /*TODO: migrate me*/
+        /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
       }
 
     } else if (EvaluationHelper.equals(dataType, ProfinetDataType.BYTE)
@@ -725,6 +910,76 @@ public class DataItem {
         /*TODO: migrate me*/ writeBuffer.writeString(
             "", 16, (String) (value), WithOption.WithEncoding("UTF-16"));
       }
+
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.UNICODESTRING8)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
+      // Simple Field (value)
+      String value = (String) _value.getString();
+      /*TODO: migrate me*/
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.UNICODESTRING8)) { // List
+      PlcList values = (PlcList) _value;
+
+      for (PlcValue val : ((List<PlcValue>) values.getList())) {
+        String value = (String) val.getString();
+        /*TODO: migrate me*/
+        /*TODO: migrate me*/ writeBuffer.writeString(
+            "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
+      }
+
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.WSTRING)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
+      // Simple Field (value)
+      String value = (String) _value.getString();
+      /*TODO: migrate me*/
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 16, (String) (value), WithOption.WithEncoding("UTF-16"));
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.WSTRING)) { // List
+      PlcList values = (PlcList) _value;
+
+      for (PlcValue val : ((List<PlcValue>) values.getList())) {
+        String value = (String) val.getString();
+        /*TODO: migrate me*/
+        /*TODO: migrate me*/ writeBuffer.writeString(
+            "", 16, (String) (value), WithOption.WithEncoding("UTF-16"));
+      }
+
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.VISIBLESTRING)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
+      // Simple Field (value)
+      String value = (String) _value.getString();
+      /*TODO: migrate me*/
+      /*TODO: migrate me*/ writeBuffer.writeString(
+          "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.VISIBLESTRING)) { // List
+      PlcList values = (PlcList) _value;
+
+      for (PlcValue val : ((List<PlcValue>) values.getList())) {
+        String value = (String) val.getString();
+        /*TODO: migrate me*/
+        /*TODO: migrate me*/ writeBuffer.writeString(
+            "", 8, (String) (value), WithOption.WithEncoding("UTF-8"));
+      }
+
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.F_MESSAGETRAILER4BYTE)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // List
+      PlcList values = (PlcList) _value;
+
+      for (PlcValue val : ((List<PlcValue>) values.getList())) {
+        Short value = (Short) val.getShort();
+        /*TODO: migrate me*/
+        /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
+      }
+
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.F_MESSAGETRAILER4BYTE)) { // List
+      PlcList values = (PlcList) _value;
+
+      for (PlcValue val : ((List<PlcValue>) values.getList())) {
+        Short value = (Short) val.getShort();
+        /*TODO: migrate me*/
+        /*TODO: migrate me*/ writeBuffer.writeUnsignedShort("", 8, ((Number) (value)).shortValue());
+      }
     }
   }
 
@@ -743,6 +998,13 @@ public class DataItem {
     } else if (EvaluationHelper.equals(dataType, ProfinetDataType.BOOL)) { // List
       PlcList values = (PlcList) _value;
       sizeInBits += values.getList().size() * 1;
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.OCTETSTRING)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // USINT
+      // Simple Field (value)
+      sizeInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.OCTETSTRING)) { // List
+      PlcList values = (PlcList) _value;
+      sizeInBits += values.getList().size() * 8;
     } else if (EvaluationHelper.equals(dataType, ProfinetDataType.BYTE)
         && EvaluationHelper.equals(numberOfValues, 1)) { // BYTE
       // Simple Field (value)
@@ -843,6 +1105,34 @@ public class DataItem {
     } else if (EvaluationHelper.equals(dataType, ProfinetDataType.WCHAR)) { // List
       PlcList values = (PlcList) _value;
       sizeInBits += values.getList().size() * 16;
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.UNICODESTRING8)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
+      // Simple Field (value)
+      sizeInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.UNICODESTRING8)) { // List
+      PlcList values = (PlcList) _value;
+      sizeInBits += values.getList().size() * 8;
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.WSTRING)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
+      // Simple Field (value)
+      sizeInBits += 16;
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.WSTRING)) { // List
+      PlcList values = (PlcList) _value;
+      sizeInBits += values.getList().size() * 16;
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.VISIBLESTRING)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // CHAR
+      // Simple Field (value)
+      sizeInBits += 8;
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.VISIBLESTRING)) { // List
+      PlcList values = (PlcList) _value;
+      sizeInBits += values.getList().size() * 8;
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.F_MESSAGETRAILER4BYTE)
+        && EvaluationHelper.equals(numberOfValues, 1)) { // List
+      PlcList values = (PlcList) _value;
+      sizeInBits += values.getList().size() * 8;
+    } else if (EvaluationHelper.equals(dataType, ProfinetDataType.F_MESSAGETRAILER4BYTE)) { // List
+      PlcList values = (PlcList) _value;
+      sizeInBits += values.getList().size() * 8;
     }
     return sizeInBits;
   }

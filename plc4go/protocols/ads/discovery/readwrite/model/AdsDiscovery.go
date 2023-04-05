@@ -35,6 +35,7 @@ const AdsDiscovery_HEADER uint32 = 0x71146603
 
 // AdsDiscovery is the corresponding interface of AdsDiscovery
 type AdsDiscovery interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetRequestId returns RequestId (property field)

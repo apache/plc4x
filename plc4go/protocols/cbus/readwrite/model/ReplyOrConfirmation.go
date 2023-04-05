@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ReplyOrConfirmation is the corresponding interface of ReplyOrConfirmation
 type ReplyOrConfirmation interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPeekedByte returns PeekedByte (property field)

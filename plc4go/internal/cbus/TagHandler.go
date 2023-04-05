@@ -26,7 +26,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -36,20 +36,15 @@ type TagType uint8
 
 //go:generate stringer -type TagType
 const (
-	STATUS TagType = iota
-	// TODO: implement
-	CAL_RESET
+	STATUS    TagType = iota
+	CAL_RESET         /* TODO: implement me*/
 	CAL_RECALL
 	CAL_IDENTIFY
 	CAL_GETSTATUS
-	// TODO: implement
-	CAL_WRITE
-	// TODO: implement
-	CAL_IDENTIFY_REPLY
-	// TODO: implement
-	CAL_STATUS
-	// TODO: implement
-	CAL_STATUS_EXTENDED
+	CAL_WRITE           /* TODO: implement me*/
+	CAL_IDENTIFY_REPLY  /* TODO: implement me*/
+	CAL_STATUS          /* TODO: implement me*/
+	CAL_STATUS_EXTENDED /* TODO: implement me*/
 	SAL
 	SAL_MONITOR
 	MMI_STATUS_MONITOR
@@ -71,12 +66,12 @@ type TagHandler struct {
 
 func NewTagHandler() TagHandler {
 	return TagHandler{
-		statusRequestPattern: regexp.MustCompile(`^status/(?P<statusRequestType>(?P<binary>binary)|level=0x(?P<startingGroupAddressLabel>00|20|40|60|80|A0|C0|E0))/(?P<application>.*)`),
-		calPattern:           regexp.MustCompile(`^cal/(?P<unitAddress>.+)/(?P<calType>reset|recall=\[(?P<recallParamNo>\w+), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getstatus=(?P<getstatusParamNo>\w+), ?(?P<getstatusCount>\d+)|write=\[(?P<writeParamNo>\w+), ?(?P<writeCode>0[xX][0-9a-fA-F][0-9a-fA-F])]|identifyReply=(?P<replyAttribute>\w+)|reply=(?P<replyParamNo>\w+)|status=(?P<statusApplication>.*)|statusExtended=(?P<statusExtendedApplication>.*))`),
-		salPattern:           regexp.MustCompile(`^sal/(?P<application>.*)/(?P<salCommand>.*)`),
-		salMonitorPattern:    regexp.MustCompile(`^salmonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
-		mmiMonitorPattern:    regexp.MustCompile(`^mmimonitor/(?P<unitAddress>.+)/(?P<application>.+)`),
-		unityQuery:           regexp.MustCompile(`^info/(?P<unitAddress>.+)/(?P<identifyAttribute>.+)`),
+		statusRequestPattern: regexp.MustCompile(`^status/(?:(?P<bridges>b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})(?:-b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})){0,5})/)?(?P<statusRequestType>(?P<binary>binary)|level=0x(?P<startingGroupAddressLabel>00|20|40|60|80|A0|C0|E0))/(?P<application>.*)$`),
+		calPattern:           regexp.MustCompile(`^cal/(?:(?P<bridges>b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})(?:-b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})){0,5})-)?(?P<unitAddress>u?(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3}))/(?P<calType>reset|recall=\[(?P<recallParamNo>(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})), ?(?P<recallCount>\d+)]|identify=(?P<identifyAttribute>\w+)|getStatus=(?P<getStatusParamNo>\w+), ?(?P<getStatusCount>\d+)|write=\[(?P<writeParamNo>\w+), ?(?P<writeCode>0[xX][0-9a-fA-F][0-9a-fA-F])]|identifyReply=(?P<replyAttribute>\w+)|reply=(?P<replyParamNo>\w+)|status=(?P<statusApplication>.*)|statusExtended=(?P<statusExtendedApplication>.*))$`),
+		salPattern:           regexp.MustCompile(`^sal/(?:(?P<bridges>b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})(?:-b(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3})){0,5})/)?(?P<application>.*)/(?P<salCommand>.*)$`),
+		salMonitorPattern:    regexp.MustCompile(`^salmonitor/(?P<unitAddress>u?(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3}|\*))/(?P<application>.+|\*)$`),
+		mmiMonitorPattern:    regexp.MustCompile(`^mmimonitor/(?P<unitAddress>u?(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3}|\*))/(?P<application>.+|\*)$`),
+		unityQuery:           regexp.MustCompile(`^info/(?P<unitAddress>u?(?:(?:0x)?[A-Fa-f0-9]{1,2}|\d{1,3}|\*))/(?P<identifyAttribute>.+|\*)$`),
 	}
 }
 
@@ -112,7 +107,7 @@ var PossibleSalCommands = map[readWriteModel.ApplicationId][]CommandAndArguments
 	readWriteModel.ApplicationId_HVAC_ACTUATOR:                      c2nl(readWriteModel.LightingCommandTypeValues),
 }
 
-func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
+func (m TagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
 	if match := utils.GetSubgroupMatches(m.statusRequestPattern, tagAddress); match != nil {
 		return m.handleStatusRequestPattern(match)
 	} else if match := utils.GetSubgroupMatches(m.calPattern, tagAddress); match != nil {
@@ -128,7 +123,7 @@ func (m TagHandler) ParseTag(tagAddress string) (model.PlcTag, error) {
 	}
 }
 
-func (m TagHandler) ParseQuery(query string) (model.PlcQuery, error) {
+func (m TagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
 	if match := utils.GetSubgroupMatches(m.unityQuery, query); match != nil {
 		return m.handleUnitQuery(match)
 	} else {
@@ -136,7 +131,11 @@ func (m TagHandler) ParseQuery(query string) (model.PlcQuery, error) {
 	}
 }
 
-func (m TagHandler) handleStatusRequestPattern(match map[string]string) (model.PlcTag, error) {
+func (m TagHandler) handleStatusRequestPattern(match map[string]string) (apiModel.PlcTag, error) {
+	bridgeAddresses, err := m.extractBridges(match)
+	if err != nil {
+		return nil, errors.Wrap(err, "error extracting bridges")
+	}
 	var startingGroupAddressLabel *byte
 	var statusRequestType StatusRequestType
 	statusRequestArgument := match["statusRequestType"]
@@ -145,8 +144,7 @@ func (m TagHandler) handleStatusRequestPattern(match map[string]string) (model.P
 			statusRequestType = StatusRequestTypeBinaryState
 		} else if levelArgument := match["startingGroupAddressLabel"]; levelArgument != "" {
 			statusRequestType = StatusRequestTypeLevel
-			startingGroupAddressLabelArgument := match["startingGroupAddressLabel"]
-			decodedHex, _ := hex.DecodeString(startingGroupAddressLabelArgument)
+			decodedHex, _ := hex.DecodeString(levelArgument)
 			if len(decodedHex) != 1 {
 				panic("invalid state. Should have exactly 1")
 			}
@@ -155,31 +153,25 @@ func (m TagHandler) handleStatusRequestPattern(match map[string]string) (model.P
 			return nil, errors.Errorf("Unknown statusRequestType%s", statusRequestArgument)
 		}
 	}
-	application, err := applicationIdFromArgument(match["application"])
+	application, err := m.applicationIdFromArgument(match["application"])
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting application id from argument")
 	}
-	return NewStatusTag(statusRequestType, startingGroupAddressLabel, application, 1), nil
+	return NewStatusTag(bridgeAddresses, statusRequestType, startingGroupAddressLabel, application, 1), nil
 }
 
-func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, error) {
+func (m TagHandler) handleCalPattern(match map[string]string) (apiModel.PlcTag, error) {
 	var unitAddress readWriteModel.UnitAddress
 	unitAddressArgument := match["unitAddress"]
-	if strings.HasPrefix(unitAddressArgument, "0x") {
-		decodedHex, err := hex.DecodeString(unitAddressArgument[2:])
-		if err != nil {
-			return nil, errors.Wrap(err, "Not a valid hex")
-		}
-		if len(decodedHex) != 1 {
-			return nil, errors.Errorf("Hex must be exatly one byte")
-		}
-		unitAddress = readWriteModel.NewUnitAddress(decodedHex[0])
-	} else {
-		atoi, err := strconv.ParseUint(unitAddressArgument, 10, 8)
-		if err != nil {
-			return nil, errors.Errorf("Unknown unit address %s", unitAddressArgument)
-		}
-		unitAddress = readWriteModel.NewUnitAddress(byte(atoi))
+	unitAddressArgument = strings.TrimPrefix(unitAddressArgument, "u")
+	var err error
+	unitAddress, err = m.unitAddressFromArgument(unitAddressArgument, false)
+	if err != nil {
+		return nil, errors.Wrap(err, "error getting unit address from argument")
+	}
+	bridgeAddresses, err := m.extractBridges(match)
+	if err != nil {
+		return nil, errors.Wrap(err, "error extracting bridges")
 	}
 
 	calTypeArgument := match["calType"]
@@ -199,7 +191,6 @@ func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, err
 			}
 			recalParamNo = readWriteModel.Parameter(decodedHex[0])
 		} else {
-
 			if atoi, err := strconv.ParseUint(recallParamNoArgument, 10, 8); err == nil {
 				recalParamNo = readWriteModel.Parameter(atoi)
 			} else {
@@ -216,7 +207,7 @@ func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, err
 			return nil, errors.Wrap(err, "recallCount not a valid number")
 		}
 		count = uint8(atoi)
-		return NewCALRecallTag(unitAddress, recalParamNo, count, 1), nil
+		return NewCALRecallTag(unitAddress, bridgeAddresses, recalParamNo, count, 1), nil
 	case strings.HasPrefix(calTypeArgument, "identify="):
 		var attribute readWriteModel.Attribute
 		attributeArgument := match["identifyAttribute"]
@@ -240,10 +231,10 @@ func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, err
 				attribute = parameterByName
 			}
 		}
-		return NewCALIdentifyTag(unitAddress, attribute, 1), nil
-	case strings.HasPrefix(calTypeArgument, "getstatus="):
+		return NewCALIdentifyTag(unitAddress, bridgeAddresses, attribute, 1), nil
+	case strings.HasPrefix(calTypeArgument, "getStatus="):
 		var recalParamNo readWriteModel.Parameter
-		recallParamNoArgument := match["getstatusParamNo"]
+		recallParamNoArgument := match["getStatusParamNo"]
 		if strings.HasPrefix(recallParamNoArgument, "0x") {
 			decodedHex, err := hex.DecodeString(recallParamNoArgument[2:])
 			if err != nil {
@@ -259,18 +250,18 @@ func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, err
 			} else {
 				parameterByName, ok := readWriteModel.ParameterByName(recallParamNoArgument)
 				if !ok {
-					return nil, errors.Errorf("Unknown getstatusParamNo %s", recallParamNoArgument)
+					return nil, errors.Errorf("Unknown getStatusParamNo %s", recallParamNoArgument)
 				}
 				recalParamNo = parameterByName
 			}
 		}
 		var count uint8
-		atoi, err := strconv.ParseUint(match["getstatusCount"], 10, 8)
+		atoi, err := strconv.ParseUint(match["getStatusCount"], 10, 8)
 		if err != nil {
-			return nil, errors.Wrap(err, "getstatusCount not a valid number")
+			return nil, errors.Wrap(err, "getStatusCount not a valid number")
 		}
 		count = uint8(atoi)
-		return NewCALGetstatusTag(unitAddress, recalParamNo, count, 1), nil
+		return NewCALGetStatusTag(unitAddress, bridgeAddresses, recalParamNo, count, 1), nil
 	case strings.HasPrefix(calTypeArgument, "write="):
 		panic("Not implemented") // TODO: implement me
 	case strings.HasPrefix(calTypeArgument, "identifyReply="):
@@ -286,14 +277,18 @@ func (m TagHandler) handleCalPattern(match map[string]string) (model.PlcTag, err
 	}
 }
 
-func (m TagHandler) handleSALPattern(match map[string]string) (model.PlcTag, error) {
-	application, err := applicationIdFromArgument(match["application"])
+func (m TagHandler) handleSALPattern(match map[string]string) (apiModel.PlcTag, error) {
+	bridgeAddresses, err := m.extractBridges(match)
+	if err != nil {
+		return nil, errors.Wrap(err, "error extracting bridges")
+	}
+	application, err := m.applicationIdFromArgument(match["application"])
 	if err != nil {
 		return nil, errors.Wrap(err, "Error getting application id from argument")
 	}
 	salCommand := match["salCommand"]
 	if salCommand == "" {
-		return nil, errors.Wrap(err, "Error getting salCommand from argument")
+		return nil, errors.New("Error getting salCommand from argument")
 	}
 	isValid := false
 	numElements := uint16(0)
@@ -307,34 +302,18 @@ func (m TagHandler) handleSALPattern(match map[string]string) (model.PlcTag, err
 	if !isValid {
 		return nil, errors.Errorf("Invalid sal command %s for %s. Allowed requests: %s", salCommand, application, PossibleSalCommands[application.ApplicationId()])
 	}
-	return NewSALTag(application, salCommand, numElements), nil
+	return NewSALTag(bridgeAddresses, application, salCommand, numElements), nil
 }
 
-func (m TagHandler) handleSALMonitorPattern(match map[string]string) (model.PlcTag, error) {
-	var unitAddress *readWriteModel.UnitAddress
+func (m TagHandler) handleSALMonitorPattern(match map[string]string) (apiModel.PlcTag, error) {
+	var unitAddress readWriteModel.UnitAddress
 	{
 		unitAddressArgument := match["unitAddress"]
-		if unitAddressArgument == "*" {
-			unitAddress = nil
-		} else if strings.HasPrefix(unitAddressArgument, "0x") {
-			decodedHex, err := hex.DecodeString(unitAddressArgument[2:])
-			if err != nil {
-				return nil, errors.Wrap(err, "Not a valid hex")
-			}
-			if len(decodedHex) != 1 {
-				return nil, errors.Errorf("Hex must be exatly one byte")
-			}
-			var unitAddressVar readWriteModel.UnitAddress
-			unitAddressVar = readWriteModel.NewUnitAddress(decodedHex[0])
-			unitAddress = &unitAddressVar
-		} else {
-			atoi, err := strconv.ParseUint(unitAddressArgument, 10, 8)
-			if err != nil {
-				return nil, errors.Errorf("Unknown unit address %s", unitAddressArgument)
-			}
-			var unitAddressVar readWriteModel.UnitAddress
-			unitAddressVar = readWriteModel.NewUnitAddress(byte(atoi))
-			unitAddress = &unitAddressVar
+		unitAddressArgument = strings.TrimPrefix(unitAddressArgument, "u")
+		var err error
+		unitAddress, err = m.unitAddressFromArgument(unitAddressArgument, true)
+		if err != nil {
+			return nil, errors.Wrap(err, "error getting unit address from argument")
 		}
 	}
 
@@ -344,7 +323,7 @@ func (m TagHandler) handleSALMonitorPattern(match map[string]string) (model.PlcT
 		if applicationIdArgument == "*" {
 			application = nil
 		} else {
-			applicationId, err := applicationIdFromArgument(applicationIdArgument)
+			applicationId, err := m.applicationIdFromArgument(applicationIdArgument)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error getting application id from argument")
 			}
@@ -355,31 +334,15 @@ func (m TagHandler) handleSALMonitorPattern(match map[string]string) (model.PlcT
 	return NewSALMonitorTag(unitAddress, application, 1), nil
 }
 
-func (m TagHandler) handleMMIMonitorPattern(match map[string]string) (model.PlcTag, error) {
-	var unitAddress *readWriteModel.UnitAddress
+func (m TagHandler) handleMMIMonitorPattern(match map[string]string) (apiModel.PlcTag, error) {
+	var unitAddress readWriteModel.UnitAddress
 	{
 		unitAddressArgument := match["unitAddress"]
-		if unitAddressArgument == "*" {
-			unitAddress = nil
-		} else if strings.HasPrefix(unitAddressArgument, "0x") {
-			decodedHex, err := hex.DecodeString(unitAddressArgument[2:])
-			if err != nil {
-				return nil, errors.Wrap(err, "Not a valid hex")
-			}
-			if len(decodedHex) != 1 {
-				return nil, errors.Errorf("Hex must be exatly one byte")
-			}
-			var unitAddressVar readWriteModel.UnitAddress
-			unitAddressVar = readWriteModel.NewUnitAddress(decodedHex[0])
-			unitAddress = &unitAddressVar
-		} else {
-			atoi, err := strconv.ParseUint(unitAddressArgument, 10, 8)
-			if err != nil {
-				return nil, errors.Errorf("Unknown unit address %s", unitAddressArgument)
-			}
-			var unitAddressVar readWriteModel.UnitAddress
-			unitAddressVar = readWriteModel.NewUnitAddress(byte(atoi))
-			unitAddress = &unitAddressVar
+		unitAddressArgument = strings.TrimPrefix(unitAddressArgument, "u")
+		var err error
+		unitAddress, err = m.unitAddressFromArgument(unitAddressArgument, true)
+		if err != nil {
+			return nil, errors.Wrap(err, "error getting unit address from argument")
 		}
 	}
 
@@ -389,7 +352,7 @@ func (m TagHandler) handleMMIMonitorPattern(match map[string]string) (model.PlcT
 		if applicationIdArgument == "*" {
 			application = nil
 		} else {
-			applicationId, err := applicationIdFromArgument(applicationIdArgument)
+			applicationId, err := m.applicationIdFromArgument(applicationIdArgument)
 			if err != nil {
 				return nil, errors.Wrap(err, "Error getting application id from argument")
 			}
@@ -400,30 +363,14 @@ func (m TagHandler) handleMMIMonitorPattern(match map[string]string) (model.PlcT
 	return NewMMIMonitorTag(unitAddress, application, 1), nil
 }
 
-func (m TagHandler) handleUnitQuery(match map[string]string) (model.PlcQuery, error) {
-	var unitAddress *readWriteModel.UnitAddress
+func (m TagHandler) handleUnitQuery(match map[string]string) (apiModel.PlcQuery, error) {
+	var unitAddress readWriteModel.UnitAddress
 	unitAddressArgument := match["unitAddress"]
-	if unitAddressArgument == "*" {
-		unitAddress = nil
-	} else if strings.HasPrefix(unitAddressArgument, "0x") {
-		decodedHex, err := hex.DecodeString(unitAddressArgument[2:])
-		if err != nil {
-			return nil, errors.Wrap(err, "Not a valid hex")
-		}
-		if len(decodedHex) != 1 {
-			return nil, errors.Errorf("Hex must be exatly one byte")
-		}
-		var unitAddressVar readWriteModel.UnitAddress
-		unitAddressVar = readWriteModel.NewUnitAddress(decodedHex[0])
-		unitAddress = &unitAddressVar
-	} else {
-		atoi, err := strconv.ParseUint(unitAddressArgument, 10, 8)
-		if err != nil {
-			return nil, errors.Errorf("Unknown unit address %s", unitAddressArgument)
-		}
-		var unitAddressVar readWriteModel.UnitAddress
-		unitAddressVar = readWriteModel.NewUnitAddress(byte(atoi))
-		unitAddress = &unitAddressVar
+	unitAddressArgument = strings.TrimPrefix(unitAddressArgument, "u")
+	var err error
+	unitAddress, err = m.unitAddressFromArgument(unitAddressArgument, true)
+	if err != nil {
+		return nil, errors.Wrap(err, "error getting unit address from argument")
 	}
 
 	var attribute *readWriteModel.Attribute
@@ -459,7 +406,30 @@ func (m TagHandler) handleUnitQuery(match map[string]string) (model.PlcQuery, er
 	return NewUnitInfoQuery(unitAddress, attribute, 1), nil
 }
 
-func applicationIdFromArgument(applicationIdArgument string) (readWriteModel.ApplicationIdContainer, error) {
+func (m TagHandler) unitAddressFromArgument(unitAddressArgument string, allowWildcard bool) (readWriteModel.UnitAddress, error) {
+	if unitAddressArgument == "*" && allowWildcard {
+		return nil, nil
+	}
+
+	if strings.HasPrefix(unitAddressArgument, "0x") {
+		decodedHex, err := hex.DecodeString(unitAddressArgument[2:])
+		if err != nil {
+			return nil, errors.Wrap(err, "Not a valid hex")
+		}
+		if len(decodedHex) != 1 {
+			return nil, errors.Errorf("Hex must be exatly one byte")
+		}
+		return readWriteModel.NewUnitAddress(decodedHex[0]), nil
+	}
+
+	atoi, err := strconv.ParseUint(unitAddressArgument, 10, 8)
+	if err != nil {
+		return nil, errors.Errorf("Unknown unit address %s", unitAddressArgument)
+	}
+	return readWriteModel.NewUnitAddress(byte(atoi)), nil
+}
+
+func (m TagHandler) applicationIdFromArgument(applicationIdArgument string) (readWriteModel.ApplicationIdContainer, error) {
 	if strings.HasPrefix(applicationIdArgument, "0x") {
 		decodedHex, err := hex.DecodeString(applicationIdArgument[2:])
 		if err != nil {
@@ -470,6 +440,7 @@ func applicationIdFromArgument(applicationIdArgument string) (readWriteModel.App
 		}
 		return readWriteModel.ApplicationIdContainer(decodedHex[0]), nil
 	}
+
 	if atoi, err := strconv.ParseUint(applicationIdArgument, 10, 8); err == nil {
 		return readWriteModel.ApplicationIdContainer(atoi), nil
 	}
@@ -533,6 +504,35 @@ func applicationIdFromArgument(applicationIdArgument string) (readWriteModel.App
 		}
 		return applicationIdByName, nil
 	}
+}
+
+func (m TagHandler) extractBridges(match map[string]string) ([]readWriteModel.BridgeAddress, error) {
+	var bridgeAddresses []readWriteModel.BridgeAddress
+	if match["bridges"] != "" {
+		for _, bridge := range strings.Split(match["bridges"], "-") {
+			bridge = strings.TrimPrefix(bridge, "b")
+			if strings.HasPrefix(bridge, "0x") {
+				decodedHex, err := hex.DecodeString(bridge[2:])
+				if err != nil {
+					return nil, errors.Wrap(err, "Not a valid hex")
+				}
+				if len(decodedHex) != 1 {
+					return nil, errors.Errorf("Hex must be exatly one byte")
+				}
+				bridgeAddresses = append(bridgeAddresses, readWriteModel.NewBridgeAddress(decodedHex[0]))
+			} else {
+				atoi, err := strconv.ParseUint(bridge, 10, 8)
+				if err != nil {
+					return nil, errors.Errorf("Unknown bridge address %s", bridge)
+				}
+				bridgeAddresses = append(bridgeAddresses, readWriteModel.NewBridgeAddress(byte(atoi)))
+			}
+		}
+	}
+	if len(bridgeAddresses) > 6 {
+		return nil, errors.Errorf("Can only contain up to 6 bridges. Actual length: %d", len(bridgeAddresses))
+	}
+	return bridgeAddresses, nil
 }
 
 func c2nl[T CommandAndArgumentsCount](t []T) []CommandAndArgumentsCount {

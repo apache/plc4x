@@ -33,6 +33,7 @@ const CipUnconnectedRequest_ROUTE uint16 = 0x0001
 
 // CipUnconnectedRequest is the corresponding interface of CipUnconnectedRequest
 type CipUnconnectedRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CipService

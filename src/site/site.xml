@@ -70,6 +70,7 @@
         <item name="EtherNet/IP" href="users/protocols/ethernet-ip.html"/>
         <item name="Firmata" href="users/protocols/firmata.html"/>
         <item name="KNXnet/IP" href="users/protocols/knxnetip.html"/>
+        <item name="Logix" href="users/protocols/logix.html"/>
         <item name="Modbus" href="users/protocols/modbus.html"/>
         <item name="OPC UA" href="users/protocols/opc-ua.html"/>
         <item name="PLC4X (Proxy)" href="users/protocols/plc4x.html"/>

@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // CBusHeader is the corresponding interface of CBusHeader
 type CBusHeader interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPriorityClass returns PriorityClass (property field)

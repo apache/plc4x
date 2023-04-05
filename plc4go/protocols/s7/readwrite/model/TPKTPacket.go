@@ -34,6 +34,7 @@ const TPKTPacket_PROTOCOLID uint8 = 0x03
 
 // TPKTPacket is the corresponding interface of TPKTPacket
 type TPKTPacket interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetPayload returns Payload (property field)

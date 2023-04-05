@@ -20,6 +20,7 @@
 package _default
 
 import (
+	"context"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/spi/options"
@@ -39,6 +40,8 @@ type DefaultConnectionRequirements interface {
 	GetConnection() plc4go.PlcConnection
 	// GetMessageCodec should return the spi.MessageCodec in use
 	GetMessageCodec() spi.MessageCodec
+	// ConnectWithContext is declared here for Connect redirection
+	ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult
 }
 
 // DefaultConnection should be used as an embedded struct. All defined methods here have default implementations
@@ -226,10 +229,14 @@ func (d *defaultConnection) SetConnected(connected bool) {
 }
 
 func (d *defaultConnection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+	return d.DefaultConnectionRequirements.ConnectWithContext(context.Background())
+}
+
+func (d *defaultConnection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
-		err := d.GetMessageCodec().Connect()
+		err := d.GetMessageCodec().ConnectWithContext(ctx)
 		d.SetConnected(true)
 		connection := d.GetConnection()
 		ch <- NewDefaultPlcConnectionConnectResult(connection, err)

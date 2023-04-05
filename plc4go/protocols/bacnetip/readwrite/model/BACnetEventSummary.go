@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetEventSummary is the corresponding interface of BACnetEventSummary
 type BACnetEventSummary interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)

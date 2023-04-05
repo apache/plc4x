@@ -33,6 +33,7 @@ const AdsDiscoveryBlockAmsNetId_AMSNETIDLENGTH uint16 = 0x0006
 
 // AdsDiscoveryBlockAmsNetId is the corresponding interface of AdsDiscoveryBlockAmsNetId
 type AdsDiscoveryBlockAmsNetId interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	AdsDiscoveryBlock

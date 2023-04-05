@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -30,6 +31,7 @@ import (
 
 // BACnetLightingCommand is the corresponding interface of BACnetLightingCommand
 type BACnetLightingCommand interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetLightningOperation returns LightningOperation (property field)

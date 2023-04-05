@@ -117,7 +117,7 @@ func (m *Subscriber) handleMonitoredMMI(calReply readWriteModel.CALReply) bool {
 			tagName := subscriptionHandle.tagName
 
 			if unitAddress := tag.GetUnitAddress(); unitAddress != nil {
-				unitSuffix := fmt.Sprintf("u%d", (*unitAddress).GetAddress())
+				unitSuffix := fmt.Sprintf("u%d", unitAddress.GetAddress())
 				if !strings.HasSuffix(unitAddressString, unitSuffix) {
 					log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
 					continue
@@ -275,7 +275,7 @@ func (m *Subscriber) handleMonitoredSal(sal readWriteModel.MonitoredSAL) bool {
 				salData = sal.GetSalData()
 			}
 			if unitAddress := tag.GetUnitAddress(); unitAddress != nil {
-				unitSuffix := fmt.Sprintf("u%d", (*unitAddress).GetAddress())
+				unitSuffix := fmt.Sprintf("u%d", unitAddress.GetAddress())
 				if !strings.HasSuffix(unitAddressString, unitSuffix) {
 					log.Debug().Msgf("Current address string %s has not the suffix %s", unitAddressString, unitSuffix)
 					continue

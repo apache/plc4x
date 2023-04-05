@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ErrorReportingSystemCategoryType is the corresponding interface of ErrorReportingSystemCategoryType
 type ErrorReportingSystemCategoryType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetErrorReportingSystemCategoryClass returns ErrorReportingSystemCategoryClass (discriminator field)

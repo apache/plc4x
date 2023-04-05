@@ -35,6 +35,7 @@ const DF1SymbolMessageFrame_ENDTRANSACTION uint8 = 0x03
 
 // DF1SymbolMessageFrame is the corresponding interface of DF1SymbolMessageFrame
 type DF1SymbolMessageFrame interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	DF1Symbol

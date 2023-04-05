@@ -95,6 +95,10 @@ func (m Transport) CreateTransportInstance(transportUrl url.URL, options map[str
 	return NewTcpTransportInstance(tcpAddr, connectTimeout, &m), nil
 }
 
+func (m Transport) String() string {
+	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
+}
+
 type TransportInstance struct {
 	transports.DefaultBufferedTransportInstance
 	RemoteAddress  *net.TCPAddr
@@ -166,4 +170,8 @@ func (m *TransportInstance) Write(data []uint8) error {
 
 func (m *TransportInstance) GetReader() *bufio.Reader {
 	return m.reader
+}
+
+func (m *TransportInstance) String() string {
+	return fmt.Sprintf("tcp:%s->%s", m.LocalAddress, m.RemoteAddress)
 }

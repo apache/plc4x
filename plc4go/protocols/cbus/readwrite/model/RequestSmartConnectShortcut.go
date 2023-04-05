@@ -33,6 +33,7 @@ const RequestSmartConnectShortcut_PIPE byte = 0x7C
 
 // RequestSmartConnectShortcut is the corresponding interface of RequestSmartConnectShortcut
 type RequestSmartConnectShortcut interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request

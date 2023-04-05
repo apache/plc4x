@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -74,11 +75,11 @@ func (c *Connection) GetTracer() *spi.Tracer {
 	return c.tracer
 }
 
-func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
+func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
-		connectionConnectResult := <-c.DefaultConnection.Connect()
+		connectionConnectResult := <-c.DefaultConnection.ConnectWithContext(ctx)
 		go func() {
 			for c.IsConnected() {
 				log.Trace().Msg("Polling data")

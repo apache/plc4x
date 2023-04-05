@@ -33,6 +33,7 @@ const AlarmMessageAckObjectPushType_VARIABLESPEC uint8 = 0x12
 
 // AlarmMessageAckObjectPushType is the corresponding interface of AlarmMessageAckObjectPushType
 type AlarmMessageAckObjectPushType interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetLengthSpec returns LengthSpec (property field)

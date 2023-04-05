@@ -51,8 +51,14 @@ public enum ProfinetDataType {
   LDATE_AND_TIME((short) 23, (short) 8, (String) "LDATE_AND_TIME"),
   CHAR((short) 24, (short) 1, (String) "CHAR"),
   WCHAR((short) 25, (short) 2, (String) "WCHAR"),
-  STRING((short) 26, (short) 1, (String) "STRING"),
-  WSTRING((short) 27, (short) 2, (String) "WSTRING");
+  UNICODESTRING8((short) 26, (short) 1, (String) "UNICODESTRING8"),
+  WSTRING((short) 27, (short) 2, (String) "WSTRING"),
+  VISIBLESTRING((short) 28, (short) 1, (String) "VISIBLESTRING"),
+  F_MESSAGETRAILER4BYTE((short) 29, (short) 4, (String) "F_MESSAGETRAILER4BYTE"),
+  TIMESTAMP((short) 30, (short) 12, (String) "TIMESTAMP"),
+  TIMESTAMPDIFFERENCE((short) 31, (short) 12, (String) "TIMESTAMPDIFFERENCE"),
+  TIMESTAMPDIFFERENCESHORT((short) 32, (short) 8, (String) "TIMESTAMPDIFFERENCESHORT"),
+  OCTETSTRING((short) 33, (short) 1, (String) "OCTETSTRING");
   private static final Map<Short, ProfinetDataType> map;
 
   static {

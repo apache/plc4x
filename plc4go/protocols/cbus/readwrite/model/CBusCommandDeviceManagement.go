@@ -33,6 +33,7 @@ const CBusCommandDeviceManagement_DELIMITER byte = 0x0
 
 // CBusCommandDeviceManagement is the corresponding interface of CBusCommandDeviceManagement
 type CBusCommandDeviceManagement interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	CBusCommand

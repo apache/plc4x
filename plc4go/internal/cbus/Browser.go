@@ -51,7 +51,7 @@ func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser 
 	return &browser
 }
 
-func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrowseRequest, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
+func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
 	var queryResults []apiModel.PlcBrowseItem
 	switch query := query.(type) {
 	case *unitInfoQuery:
@@ -60,7 +60,7 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 		allAttributes := false
 		var attributes []readWriteModel.Attribute
 		if unitAddress := query.unitAddress; unitAddress != nil {
-			units = append(units, *unitAddress)
+			units = append(units, unitAddress)
 		} else {
 			// TODO: check if we still want the option to brute force all addresses
 			installedUnitAddressBytes, err := m.getInstalledUnitAddressBytes(ctx)
@@ -116,7 +116,7 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 				}
 				readTagName := fmt.Sprintf("%s/%d/%s", queryName, unitAddress, attribute)
 				readRequest, _ := m.connection.ReadRequestBuilder().
-					AddTag(readTagName, NewCALIdentifyTag(unit, attribute, 1)).
+					AddTag(readTagName, NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1)).
 					Build()
 				timeoutCtx, timeoutCancel := context.WithTimeout(ctx, time.Second*2)
 				requestResult := <-readRequest.ExecuteWithContext(timeoutCtx)
@@ -133,7 +133,7 @@ func (m Browser) BrowseQuery(ctx context.Context, browseRequest apiModel.PlcBrow
 					continue unitLoop
 				}
 				queryResult := &model.DefaultPlcBrowseItem{
-					Tag:          NewCALIdentifyTag(unit, attribute, 1),
+					Tag:          NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1),
 					Name:         queryName,
 					Readable:     true,
 					Writable:     false,

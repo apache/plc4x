@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ApduDataExtReadRouterStatusRequest is the corresponding interface of ApduDataExtReadRouterStatusRequest
 type ApduDataExtReadRouterStatusRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	ApduDataExt

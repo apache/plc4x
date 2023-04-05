@@ -285,7 +285,7 @@ func (m *TaskManager) resumeTask(task _TaskRequirements) {
 }
 
 func (m *TaskManager) getNextTask() (_TaskRequirements, time.Duration) {
-	log.Trace().Msgf("getNextTask")
+	//log.Trace().Msgf("getNextTask")
 	m.Lock()
 	defer m.Unlock()
 

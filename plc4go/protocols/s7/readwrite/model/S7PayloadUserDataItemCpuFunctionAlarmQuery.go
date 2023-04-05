@@ -36,6 +36,7 @@ const S7PayloadUserDataItemCpuFunctionAlarmQuery_LENGTH uint8 = 0x08
 
 // S7PayloadUserDataItemCpuFunctionAlarmQuery is the corresponding interface of S7PayloadUserDataItemCpuFunctionAlarmQuery
 type S7PayloadUserDataItemCpuFunctionAlarmQuery interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7PayloadUserDataItem

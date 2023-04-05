@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // ClockAndTimekeepingData is the corresponding interface of ClockAndTimekeepingData
 type ClockAndTimekeepingData interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)

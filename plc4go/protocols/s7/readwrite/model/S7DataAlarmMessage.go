@@ -34,6 +34,7 @@ const S7DataAlarmMessage_NUMBERMESSAGEOBJ uint8 = 0x01
 
 // S7DataAlarmMessage is the corresponding interface of S7DataAlarmMessage
 type S7DataAlarmMessage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCpuFunctionType returns CpuFunctionType (discriminator field)

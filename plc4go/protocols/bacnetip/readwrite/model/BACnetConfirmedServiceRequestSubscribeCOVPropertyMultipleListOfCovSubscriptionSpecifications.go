@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
@@ -30,6 +31,7 @@ import (
 
 // BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications is the corresponding interface of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications
 type BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)

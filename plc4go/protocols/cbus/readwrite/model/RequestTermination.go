@@ -33,6 +33,7 @@ const RequestTermination_CR byte = 0x0D
 
 // RequestTermination is the corresponding interface of RequestTermination
 type RequestTermination interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 }

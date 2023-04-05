@@ -34,6 +34,7 @@ const S7Message_PROTOCOLID uint8 = 0x32
 
 // S7Message is the corresponding interface of S7Message
 type S7Message interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMessageType returns MessageType (discriminator field)

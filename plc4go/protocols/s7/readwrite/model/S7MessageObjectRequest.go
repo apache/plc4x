@@ -34,6 +34,7 @@ const S7MessageObjectRequest_LENGTH uint8 = 0x08
 
 // S7MessageObjectRequest is the corresponding interface of S7MessageObjectRequest
 type S7MessageObjectRequest interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	S7DataAlarmMessage

@@ -22,6 +22,7 @@ package udp
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/libp2p/go-reuseport"
@@ -105,6 +106,10 @@ func (m Transport) CreateTransportInstanceForLocalAddress(transportUrl url.URL, 
 	}
 
 	return NewTransportInstance(localAddress, remoteAddress, connectTimeout, soReUse, &m), nil
+}
+
+func (m Transport) String() string {
+	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
 }
 
 type TransportInstance struct {
@@ -261,4 +266,8 @@ func (m *TransportInstance) Write(data []uint8) error {
 		return errors.New("error writing: not all bytes written")
 	}
 	return nil
+}
+
+func (m *TransportInstance) String() string {
+	return fmt.Sprintf("udp:%s->%s", m.LocalAddress, m.RemoteAddress)
 }

@@ -199,7 +199,8 @@ func (i *IOCB) Trigger() {
 }
 
 // Complete Called to complete a transaction, usually when ProcessIO has shipped the IOCB off to some other thread or
-//        function.
+//
+//	function.
 func (i *IOCB) Complete(apdu _PDU) error {
 	log.Debug().Msgf("Complete(%d)\n%s", i.ioID, apdu)
 
@@ -346,7 +347,8 @@ func NewIOQueue(name string) *IOQueue {
 }
 
 // Put an IOCB to a queue.  This is usually called by the function that filters requests and passes them out to the
-//        correct processing thread.
+//
+//	correct processing thread.
 func (i *IOQueue) Put(iocb _IOCB) error {
 	log.Debug().Msgf("Put %s", iocb)
 
@@ -408,7 +410,8 @@ func (i *IOQueue) Get(block bool, delay *time.Duration) (_IOCB, error) {
 }
 
 // Remove a control block from the queue, called if the request
-//        is canceled/aborted
+//
+//	is canceled/aborted
 func (i *IOQueue) Remove(iocb _IOCB) error {
 	for _, item := range i.queue {
 		if iocb == item.value {
@@ -423,7 +426,7 @@ func (i *IOQueue) Remove(iocb _IOCB) error {
 	return nil
 }
 
-//Abort all the control blocks in the queue
+// Abort all the control blocks in the queue
 func (i *IOQueue) Abort(err error) {
 	for _, item := range i.queue {
 		item.value.clearQueue()
@@ -657,7 +660,7 @@ func (i *IOQController) ProcessIO(_IOCB) error {
 	panic("IOController must implement ProcessIO()")
 }
 
-//ActiveIO Called by a handler to notify the controller that a request is being processed
+// ActiveIO Called by a handler to notify the controller that a request is being processed
 func (i *IOQController) ActiveIO(iocb _IOCB) error {
 	log.Debug().Msgf("ActiveIO %v", iocb)
 

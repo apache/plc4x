@@ -37,7 +37,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
-        <version>3.5.0</version>
+        <version>3.5.1</version>
         <executions>
           <execution>
             <id>integration-test</id>
@@ -61,7 +61,6 @@
                 <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-language-base:${plc4x-code-generation.version}</extraArtifact>
                 <extraArtifact>org.apache.plc4x.plugins:plc4x-maven-plugin:${plc4x-code-generation.version}</extraArtifact>
                 <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-protocol-base:${plc4x-code-generation.version}</extraArtifact>
-                <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-types-base:${plc4x-code-generation.version}</extraArtifact>
                 <extraArtifact>org.apache.plc4x.plugins:plc4x-code-generation-types-base:${plc4x-code-generation.version}</extraArtifact>
               </extraArtifacts>
               <pomIncludes>

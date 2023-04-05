@@ -21,6 +21,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -29,6 +30,7 @@ import (
 
 // BACnetTagHeader is the corresponding interface of BACnetTagHeader
 type BACnetTagHeader interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetTagNumber returns TagNumber (property field)

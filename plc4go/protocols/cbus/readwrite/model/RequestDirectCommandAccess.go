@@ -34,6 +34,7 @@ const RequestDirectCommandAccess_AT byte = 0x40
 
 // RequestDirectCommandAccess is the corresponding interface of RequestDirectCommandAccess
 type RequestDirectCommandAccess interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	Request

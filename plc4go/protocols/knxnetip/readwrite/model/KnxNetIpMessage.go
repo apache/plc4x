@@ -34,6 +34,7 @@ const KnxNetIpMessage_PROTOCOLVERSION uint8 = 0x10
 
 // KnxNetIpMessage is the corresponding interface of KnxNetIpMessage
 type KnxNetIpMessage interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetMsgType returns MsgType (discriminator field)

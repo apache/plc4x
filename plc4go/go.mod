@@ -19,14 +19,14 @@
 
 module github.com/apache/plc4x/plc4go
 
-go 1.18
+go 1.19
 
 require (
 	github.com/IBM/netaddr v1.5.0
 	github.com/ajankovic/xdiff v0.0.1
 	github.com/fatih/color v1.15.0
 	github.com/gdamore/tcell/v2 v2.6.0
-	github.com/gopacket/gopacket v1.0.0
+	github.com/gopacket/gopacket v1.1.0
 	github.com/icza/bitio v1.1.0
 	github.com/jacobsa/go-serial v0.0.0-20180131005756-15cf729a72d4
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
@@ -36,7 +36,7 @@ require (
 	github.com/rs/zerolog v1.29.0
 	github.com/schollz/progressbar/v3 v3.13.1
 	github.com/snksoft/crc v1.1.0
-	github.com/spf13/cobra v1.6.1
+	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
 	github.com/subchen/go-xmldom v1.1.2
@@ -52,7 +52,7 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gdamore/encoding v1.0.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/inconshreveable/mousetrap v1.0.1 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

@@ -107,9 +107,7 @@ func (c *Connection) GetMessageCodec() spi.MessageCodec {
 	return c.messageCodec
 }
 
-func (c *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	// TODO: use proper context
-	ctx := context.TODO()
+func (c *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {
@@ -454,6 +452,9 @@ func (c *Connection) fireConnectionError(err error, ch chan<- plc4go.PlcConnecti
 		ch <- _default.NewDefaultPlcConnectionConnectResult(nil, errors.Wrap(err, "Error during connection"))
 	} else {
 		log.Error().Err(err).Msg("awaitSetupComplete set to false and we got a error during connect")
+	}
+	if err := c.messageCodec.Disconnect(); err != nil {
+		log.Debug().Err(err).Msg("Error disconnecting message codec on connection error")
 	}
 }
 

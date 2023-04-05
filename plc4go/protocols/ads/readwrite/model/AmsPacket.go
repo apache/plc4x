@@ -40,6 +40,7 @@ const AmsPacket_BROADCAST bool = bool(false)
 
 // AmsPacket is the corresponding interface of AmsPacket
 type AmsPacket interface {
+	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
 	// GetCommandId returns CommandId (discriminator field)
