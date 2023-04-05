@@ -1,0 +1,185 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package cbus
+
+import (
+	"context"
+	"fmt"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi"
+	_default "github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	"github.com/stretchr/testify/assert"
+	"net/url"
+	"testing"
+)
+
+func TestDriver_DiscoverWithContext(t *testing.T) {
+	type fields struct {
+		DefaultDriver           _default.DefaultDriver
+		tm                      spi.RequestTransactionManager
+		awaitSetupComplete      bool
+		awaitDisconnectComplete bool
+	}
+	type args struct {
+		ctx              context.Context
+		callback         func(event apiModel.PlcDiscoveryItem)
+		discoveryOptions []options.WithDiscoveryOption
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name: "localhost discovery",
+			args: args{
+				ctx: context.Background(),
+				callback: func(event apiModel.PlcDiscoveryItem) {
+					t.Log(event)
+				},
+				discoveryOptions: []options.WithDiscoveryOption{options.WithDiscoveryOptionLocalAddress("localhost")},
+			},
+			wantErr: assert.NoError,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Driver{
+				DefaultDriver:           tt.fields.DefaultDriver,
+				tm:                      tt.fields.tm,
+				awaitSetupComplete:      tt.fields.awaitSetupComplete,
+				awaitDisconnectComplete: tt.fields.awaitDisconnectComplete,
+			}
+			tt.wantErr(t, m.DiscoverWithContext(tt.args.ctx, tt.args.callback, tt.args.discoveryOptions...), fmt.Sprintf("DiscoverWithContext(%v, func()*, %v)", tt.args.ctx, tt.args.discoveryOptions))
+		})
+	}
+}
+
+func TestDriver_GetConnectionWithContext(t *testing.T) {
+	type fields struct {
+		DefaultDriver           _default.DefaultDriver
+		tm                      spi.RequestTransactionManager
+		awaitSetupComplete      bool
+		awaitDisconnectComplete bool
+	}
+	type args struct {
+		ctx          context.Context
+		transportUrl url.URL
+		transports   map[string]transports.Transport
+		options      map[string][]string
+	}
+	tests := []struct {
+		name         string
+		fields       fields
+		args         args
+		wantVerifier func(t *testing.T, result <-chan plc4go.PlcConnectionConnectResult) bool
+	}{
+		{
+			name: "get connection transport not found",
+			fields: fields{
+				DefaultDriver:           _default.NewDefaultDriver(nil, "test", "test", "test", NewTagHandler()),
+				tm:                      nil,
+				awaitSetupComplete:      false,
+				awaitDisconnectComplete: false,
+			},
+			args: args{
+				ctx: context.Background(),
+				transportUrl: url.URL{
+					Scheme: "test",
+				},
+				transports: map[string]transports.Transport{},
+				options:    map[string][]string{},
+			},
+			wantVerifier: func(t *testing.T, result <-chan plc4go.PlcConnectionConnectResult) bool {
+				connectResult := <-result
+				assert.NotNil(t, connectResult)
+				return true
+			},
+		}, {
+			name: "get connection",
+			fields: fields{
+				DefaultDriver:           _default.NewDefaultDriver(nil, "test", "test", "test", NewTagHandler()),
+				tm:                      nil,
+				awaitSetupComplete:      false,
+				awaitDisconnectComplete: false,
+			},
+			args: args{
+				ctx: context.Background(),
+				transportUrl: url.URL{
+					Scheme: "test",
+				},
+				transports: map[string]transports.Transport{
+					"test": test.NewTransport(),
+				},
+				options: map[string][]string{},
+			},
+			wantVerifier: func(t *testing.T, result <-chan plc4go.PlcConnectionConnectResult) bool {
+				connectResult := <-result
+				assert.NotNil(t, connectResult)
+				return true
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Driver{
+				DefaultDriver:           tt.fields.DefaultDriver,
+				tm:                      tt.fields.tm,
+				awaitSetupComplete:      tt.fields.awaitSetupComplete,
+				awaitDisconnectComplete: tt.fields.awaitDisconnectComplete,
+			}
+			assert.Truef(t, tt.wantVerifier(t, m.GetConnectionWithContext(tt.args.ctx, tt.args.transportUrl, tt.args.transports, tt.args.options)), "GetConnectionWithContext(%v, %v, %v, %v)", tt.args.ctx, tt.args.transportUrl, tt.args.transports, tt.args.options)
+		})
+	}
+}
+
+func TestDriver_SetAwaitDisconnectComplete(t *testing.T) {
+	NewDriver().(*Driver).SetAwaitDisconnectComplete(true)
+}
+
+func TestDriver_SetAwaitSetupComplete(t *testing.T) {
+	NewDriver().(*Driver).SetAwaitSetupComplete(true)
+}
+
+func TestDriver_SupportsDiscovery(t *testing.T) {
+	NewDriver().(*Driver).SupportsDiscovery()
+}
+
+func TestNewDriver(t *testing.T) {
+	tests := []struct {
+		name string
+		want plc4go.PlcDriver
+	}{
+		{
+			name: "create",
+			want: NewDriver(),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, NewDriver(), "NewDriver()")
+		})
+	}
+}
