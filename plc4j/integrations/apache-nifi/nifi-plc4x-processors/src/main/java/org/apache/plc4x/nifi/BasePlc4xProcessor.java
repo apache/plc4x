@@ -58,12 +58,13 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
   
     protected String connectionString;
     protected Map<String, String> addressMap;
+    protected Integer timeout;
 
     protected final SchemaCache schemaCache = new SchemaCache(0);
 
     private final PlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder()
-        .withMaxLeaseTime(Duration.ofSeconds(1L))
-        .withMaxWaitTime(Duration.ofSeconds(1L))
+        .withMaxLeaseTime(Duration.ofSeconds(1000L))
+        .withMaxWaitTime(Duration.ofSeconds(500L))
         .build();
 
     protected static final List<AllowableValue> addressAccessStrategy = Collections.unmodifiableList(Arrays.asList(
@@ -71,21 +72,32 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         AddressesAccessUtils.ADDRESS_TEXT));
 
 
-	protected static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor
-        .Builder().name("PLC_CONNECTION_STRING")
+	protected static final PropertyDescriptor PLC_CONNECTION_STRING = new PropertyDescriptor.Builder()
+        .name("plc4x-connection-string")
         .displayName("PLC connection String")
         .description("PLC4X connection string used to connect to a given PLC device.")
         .required(true)
         .addValidator(new Plc4xConnectionStringValidator())
         .build();
 	
-    public static final PropertyDescriptor PLC_SCHEMA_CACHE_SIZE = new PropertyDescriptor.Builder().name("plc4x-record-schema-cache-size")
+    public static final PropertyDescriptor PLC_SCHEMA_CACHE_SIZE = new PropertyDescriptor.Builder()
+        .name("plc4x-record-schema-cache-size")
         .displayName("Schema Cache Size")
 		.description("Maximum number of entries in the cache. Can improve performance when addresses change dynamically.")
 		.defaultValue("1")
 		.required(true)
 		.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
 		.build();
+
+    public static final PropertyDescriptor PLC_FUTURE_TIMEOUT_MILISECONDS = new PropertyDescriptor.Builder()
+		.name("plc4x-request-timeout")
+		.displayName("Timeout (miliseconds)")
+		.description( "Request timeout in miliseconds")
+		.defaultValue("10000")
+		.required(true)
+		.addValidator(StandardValidators.POSITIVE_INTEGER_VALIDATOR)
+		.build();
+
 
     protected static final Relationship REL_SUCCESS = new Relationship.Builder()
 	    .name("success")
@@ -106,6 +118,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
         properties.add(AddressesAccessUtils.PLC_ADDRESS_ACCESS_STRATEGY);
         properties.add(AddressesAccessUtils.ADDRESS_TEXT_PROPERTY);
         properties.add(PLC_SCHEMA_CACHE_SIZE);
+        properties.add(PLC_FUTURE_TIMEOUT_MILISECONDS);
         this.properties = Collections.unmodifiableList(properties);
 
     	
@@ -157,6 +170,7 @@ public abstract class BasePlc4xProcessor extends AbstractProcessor {
 		connectionString = context.getProperty(PLC_CONNECTION_STRING.getName()).getValue();
         schemaCache.restartCache(context.getProperty(PLC_SCHEMA_CACHE_SIZE).asInteger());
         debugEnabled = getLogger().isDebugEnabled();
+        timeout = Integer.valueOf(context.getProperty(PLC_FUTURE_TIMEOUT_MILISECONDS.getName()).getValue());
     }
 
     @Override
