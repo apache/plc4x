@@ -102,9 +102,7 @@ func (m *Connection) GetMessageCodec() spi.MessageCodec {
 	return m.messageCodec
 }
 
-func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	// TODO: use proper context
-	ctx := context.TODO()
+func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {

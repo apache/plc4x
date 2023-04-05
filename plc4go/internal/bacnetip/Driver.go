@@ -49,8 +49,7 @@ type Driver struct {
 }
 
 func NewDriver() plc4go.PlcDriver {
-	return &Driver{
-		DefaultDriver: _default.NewDefaultDriver("bacnet-ip", "BACnet/IP", "udp", NewTagHandler()),
+	driver := &Driver{
 		applicationManager: ApplicationManager{
 			applications: map[string]*ApplicationLayerMessageCodec{},
 		},
@@ -58,11 +57,13 @@ func NewDriver() plc4go.PlcDriver {
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 	}
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "bacnet-ip", "BACnet/IP", "udp", NewTagHandler())
+	return driver
 }
 
-func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
-	// Get an the transport specified in the url
+	// Get the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
 		log.Error().Stringer("transportUrl", &transportUrl).Msgf("We couldn't find a transport for scheme %s", transportUrl.Scheme)
@@ -104,15 +105,11 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	// Create the new connection
 	connection := NewConnection(codec, m.GetPlcTagHandler(), &m.tm, options)
 	log.Debug().Msg("created connection, connecting now")
-	return connection.Connect()
+	return connection.ConnectWithContext(ctx)
 }
 
 func (m *Driver) SupportsDiscovery() bool {
 	return true
-}
-
-func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return m.DiscoverWithContext(context.TODO(), callback, discoveryOptions...)
 }
 
 func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {

@@ -20,6 +20,7 @@
 package modbus
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/protocols/modbus/readwrite/model"
@@ -36,12 +37,12 @@ type ModbusAsciiDriver struct {
 }
 
 func NewModbusAsciiDriver() *ModbusAsciiDriver {
-	return &ModbusAsciiDriver{
-		DefaultDriver: _default.NewDefaultDriver("modbus-ascii", "Modbus ASCII", "serial", NewTagHandler()),
-	}
+	driver := &ModbusAsciiDriver{}
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "modbus-ascii", "Modbus ASCII", "serial", NewTagHandler())
+	return driver
 }
 
-func (m ModbusAsciiDriver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (m ModbusAsciiDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	log.Debug().Stringer("transportUrl", &transportUrl).Msgf("Get connection for transport url with %d transport(s) and %d option(s)", len(transports), len(options))
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
@@ -98,5 +99,5 @@ func (m ModbusAsciiDriver) GetConnection(transportUrl url.URL, transports map[st
 	// Create the new connection
 	connection := NewConnection(unitIdentifier, codec, options, m.GetPlcTagHandler())
 	log.Debug().Stringer("connection", connection).Msg("created connection, connecting now")
-	return connection.Connect()
+	return connection.ConnectWithContext(ctx)
 }
