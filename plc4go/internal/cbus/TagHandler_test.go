@@ -339,6 +339,149 @@ func TestTagHandler_applicationIdFromArgument(t *testing.T) {
 			want:    readWriteModel.ApplicationIdContainer_LIGHTING_39,
 			wantErr: assert.NoError,
 		},
+		{
+			name:    "TEMPERATURE_BROADCAST",
+			args:    args{applicationIdArgument: "TEMPERATURE_BROADCAST"},
+			want:    readWriteModel.ApplicationIdContainer_TEMPERATURE_BROADCAST_19,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "ROOM_CONTROL_SYSTEM",
+			args:    args{applicationIdArgument: "ROOM_CONTROL_SYSTEM"},
+			want:    readWriteModel.ApplicationIdContainer_ROOM_CONTROL_SYSTEM_26,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "LIGHTING",
+			args:    args{applicationIdArgument: "LIGHTING"},
+			want:    readWriteModel.ApplicationIdContainer_LIGHTING_38,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "VENTILATION",
+			args:    args{applicationIdArgument: "VENTILATION"},
+			want:    readWriteModel.ApplicationIdContainer_VENTILATION_70,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "IRRIGATION_CONTROL",
+			args:    args{applicationIdArgument: "IRRIGATION_CONTROL"},
+			want:    readWriteModel.ApplicationIdContainer_IRRIGATION_CONTROL_71,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "POOLS_SPAS_PONDS_FOUNTAINS_CONTROL",
+			args:    args{applicationIdArgument: "POOLS_SPAS_PONDS_FOUNTAINS_CONTROL"},
+			want:    readWriteModel.ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "HEATING",
+			args:    args{applicationIdArgument: "HEATING"},
+			want:    readWriteModel.ApplicationIdContainer_HEATING_88,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "AIR_CONDITIONING",
+			args:    args{applicationIdArgument: "AIR_CONDITIONING"},
+			want:    readWriteModel.ApplicationIdContainer_AIR_CONDITIONING_AC,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "TRIGGER_CONTROL",
+			args:    args{applicationIdArgument: "TRIGGER_CONTROL"},
+			want:    readWriteModel.ApplicationIdContainer_TRIGGER_CONTROL_CA,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "ENABLE_CONTROL",
+			args:    args{applicationIdArgument: "ENABLE_CONTROL"},
+			want:    readWriteModel.ApplicationIdContainer_ENABLE_CONTROL_CB,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "AUDIO_AND_VIDEO",
+			args:    args{applicationIdArgument: "AUDIO_AND_VIDEO"},
+			want:    readWriteModel.ApplicationIdContainer_AUDIO_AND_VIDEO_CD,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "SECURITY",
+			args:    args{applicationIdArgument: "SECURITY"},
+			want:    readWriteModel.ApplicationIdContainer_SECURITY_D0,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "METERING",
+			args:    args{applicationIdArgument: "METERING"},
+			want:    readWriteModel.ApplicationIdContainer_METERING_D1,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "ACCESS_CONTROL",
+			args:    args{applicationIdArgument: "ACCESS_CONTROL"},
+			want:    readWriteModel.ApplicationIdContainer_ACCESS_CONTROL_D5,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "CLOCK_AND_TIMEKEEPING",
+			args:    args{applicationIdArgument: "CLOCK_AND_TIMEKEEPING"},
+			want:    readWriteModel.ApplicationIdContainer_CLOCK_AND_TIMEKEEPING_DF,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "TELEPHONY_STATUS_AND_CONTROL",
+			args:    args{applicationIdArgument: "TELEPHONY_STATUS_AND_CONTROL"},
+			want:    readWriteModel.ApplicationIdContainer_TELEPHONY_STATUS_AND_CONTROL_E0,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "MEASUREMENT",
+			args:    args{applicationIdArgument: "MEASUREMENT"},
+			want:    readWriteModel.ApplicationIdContainer_MEASUREMENT_E4,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "TESTING",
+			args:    args{applicationIdArgument: "TESTING"},
+			want:    readWriteModel.ApplicationIdContainer_TESTING_FA,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "MEDIA_TRANSPORT_CONTROL",
+			args:    args{applicationIdArgument: "MEDIA_TRANSPORT_CONTROL"},
+			want:    readWriteModel.ApplicationIdContainer_MEDIA_TRANSPORT_CONTROL_C0,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "ERROR_REPORTING",
+			args:    args{applicationIdArgument: "ERROR_REPORTING"},
+			want:    readWriteModel.ApplicationIdContainer_ERROR_REPORTING_CE,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "HVAC_ACTUATOR",
+			args:    args{applicationIdArgument: "HVAC_ACTUATOR"},
+			want:    readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_73,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "INFO_MESSAGES",
+			args:    args{applicationIdArgument: "INFO_MESSAGES"},
+			want:    readWriteModel.ApplicationIdContainer_INFO_MESSAGES,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "NETWORK_CONTROL",
+			args:    args{applicationIdArgument: "NETWORK_CONTROL"},
+			want:    readWriteModel.ApplicationIdContainer_NETWORK_CONTROL,
+			wantErr: assert.NoError,
+		},
+		{
+			name:    "RESERVED",
+			args:    args{applicationIdArgument: "RESERVED"},
+			wantErr: assert.Error,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -519,6 +662,44 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
+			name: "recall hex",
+			args: args{match: map[string]string{
+				"unitAddress":   "0",
+				"calType":       "recall=",
+				"recallParamNo": "0x30",
+				"recallCount":   "2",
+			}},
+			want: &calRecallTag{
+				calTag: calTag{
+					unitAddress: readWriteModel.NewUnitAddress(0),
+				},
+				tagType:     CAL_RECALL,
+				parameter:   readWriteModel.Parameter_INTERFACE_OPTIONS_1,
+				count:       2,
+				numElements: 1,
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "recall name",
+			args: args{match: map[string]string{
+				"unitAddress":   "0",
+				"calType":       "recall=",
+				"recallParamNo": "INTERFACE_OPTIONS_1",
+				"recallCount":   "2",
+			}},
+			want: &calRecallTag{
+				calTag: calTag{
+					unitAddress: readWriteModel.NewUnitAddress(0),
+				},
+				tagType:     CAL_RECALL,
+				parameter:   readWriteModel.Parameter_INTERFACE_OPTIONS_1,
+				count:       2,
+				numElements: 1,
+			},
+			wantErr: assert.NoError,
+		},
+		{
 			name: "identify unknown param",
 			args: args{match: map[string]string{
 				"unitAddress": "0",
@@ -532,6 +713,23 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 				"unitAddress":       "0",
 				"calType":           "identify=",
 				"identifyAttribute": "1",
+			}},
+			want: &calIdentifyTag{
+				calTag: calTag{
+					unitAddress: readWriteModel.NewUnitAddress(0),
+				},
+				tagType:     CAL_IDENTIFY,
+				attribute:   readWriteModel.Attribute_Type,
+				numElements: 1,
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "identify with hex",
+			args: args{match: map[string]string{
+				"unitAddress":       "0",
+				"calType":           "identify=",
+				"identifyAttribute": "0x01",
 			}},
 			want: &calIdentifyTag{
 				calTag: calTag{
@@ -583,6 +781,25 @@ func TestTagHandler_handleCalPattern(t *testing.T) {
 				"unitAddress":      "0",
 				"calType":          "getStatus=",
 				"getStatusParamNo": "1",
+				"getStatusCount":   "2",
+			}},
+			want: &calGetStatusTag{
+				calTag: calTag{
+					unitAddress: readWriteModel.NewUnitAddress(0),
+				},
+				tagType:     CAL_GETSTATUS,
+				parameter:   readWriteModel.Parameter_UNKNOWN_02,
+				count:       2,
+				numElements: 1,
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "getStatus by hex",
+			args: args{match: map[string]string{
+				"unitAddress":      "0",
+				"calType":          "getStatus=",
+				"getStatusParamNo": "0x01",
 				"getStatusCount":   "2",
 			}},
 			want: &calGetStatusTag{
