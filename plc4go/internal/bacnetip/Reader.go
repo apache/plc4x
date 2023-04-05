@@ -37,13 +37,13 @@ import (
 type Reader struct {
 	invokeIdGenerator *InvokeIdGenerator
 	messageCodec      spi.MessageCodec
-	tm                *spi.RequestTransactionManager
+	tm                spi.RequestTransactionManager
 
 	maxSegmentsAccepted   readWriteModel.MaxSegmentsAccepted
 	maxApduLengthAccepted readWriteModel.MaxApduLengthAccepted
 }
 
-func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCodec, tm *spi.RequestTransactionManager) *Reader {
+func NewReader(invokeIdGenerator *InvokeIdGenerator, messageCodec spi.MessageCodec, tm spi.RequestTransactionManager) *Reader {
 	return &Reader{
 		invokeIdGenerator: invokeIdGenerator,
 		messageCodec:      messageCodec,

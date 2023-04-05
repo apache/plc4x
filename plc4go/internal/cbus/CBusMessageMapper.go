@@ -252,7 +252,7 @@ func producePointToPointCommand(unitAddress readWriteModel.UnitAddress, bridgeAd
 	return readWriteModel.NewCBusPointToPointCommandDirect(unitAddress, 0x0000, calData, cbusOptions), nil
 }
 
-func MapEncodedReply(transaction *spi.RequestTransaction, encodedReply readWriteModel.EncodedReply, tagName string, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), addPlcValue func(name string, plcValue apiValues.PlcValue)) error {
+func MapEncodedReply(transaction spi.RequestTransaction, encodedReply readWriteModel.EncodedReply, tagName string, addResponseCode func(name string, responseCode apiModel.PlcResponseCode), addPlcValue func(name string, plcValue apiValues.PlcValue)) error {
 	switch reply := encodedReply.(type) {
 	case readWriteModel.EncodedReplyCALReplyExactly:
 		calData := reply.GetCalReply().GetCalData()

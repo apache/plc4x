@@ -58,7 +58,7 @@ type Connection struct {
 	alphaGenerator AlphaGenerator
 	messageCodec   spi.MessageCodec
 	subscribers    []*Subscriber
-	tm             *spi.RequestTransactionManager
+	tm             spi.RequestTransactionManager
 
 	configuration Configuration
 	driverContext DriverContext
@@ -67,7 +67,7 @@ type Connection struct {
 	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		alphaGenerator: AlphaGenerator{currentAlpha: 'g'},
 		messageCodec:   messageCodec,

@@ -44,7 +44,7 @@ type Driver struct {
 
 func NewDriver() plc4go.PlcDriver {
 	driver := &Driver{
-		tm:                      *spi.NewRequestTransactionManager(1),
+		tm:                      spi.NewRequestTransactionManager(1),
 		awaitSetupComplete:      true,
 		awaitDisconnectComplete: true,
 	}
@@ -103,7 +103,7 @@ func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.
 	driverContext.awaitDisconnectComplete = m.awaitDisconnectComplete
 
 	// Create the new connection
-	connection := NewConnection(codec, configuration, driverContext, m.GetPlcTagHandler(), &m.tm, options)
+	connection := NewConnection(codec, configuration, driverContext, m.GetPlcTagHandler(), m.tm, options)
 	log.Debug().Msg("created connection, connecting now")
 	return connection.ConnectWithContext(ctx)
 }

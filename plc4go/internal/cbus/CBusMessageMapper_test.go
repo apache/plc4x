@@ -292,7 +292,7 @@ func TestTagToCBusMessage(t *testing.T) {
 
 func TestMapEncodedReply(t *testing.T) {
 	type args struct {
-		transaction     *spi.RequestTransaction
+		transaction     spi.RequestTransaction
 		encodedReply    readWriteModel.EncodedReply
 		tagName         string
 		addResponseCode func(name string, responseCode apiModel.PlcResponseCode)
@@ -306,7 +306,7 @@ func TestMapEncodedReply(t *testing.T) {
 		{
 			name: "empty input",
 			args: args{
-				transaction: func() *spi.RequestTransaction {
+				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
 					transaction.Submit(func() {
@@ -323,7 +323,7 @@ func TestMapEncodedReply(t *testing.T) {
 		{
 			name: "CALDataStatus",
 			args: args{
-				transaction: func() *spi.RequestTransaction {
+				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
 					transaction := transactionManager.StartTransaction()
 					transaction.Submit(func() {

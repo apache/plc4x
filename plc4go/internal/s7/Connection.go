@@ -60,13 +60,13 @@ type Connection struct {
 	messageCodec  spi.MessageCodec
 	configuration Configuration
 	driverContext DriverContext
-	tm            *spi.RequestTransactionManager
+	tm            spi.RequestTransactionManager
 
 	connectionId string
 	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		tpduGenerator: TpduGenerator{currentTpduId: 10},
 		messageCodec:  messageCodec,

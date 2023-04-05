@@ -39,13 +39,13 @@ type Connection struct {
 	invokeIdGenerator InvokeIdGenerator
 	messageCodec      spi.MessageCodec
 	subscribers       []*Subscriber
-	tm                *spi.RequestTransactionManager
+	tm                spi.RequestTransactionManager
 
 	connectionId string
 	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, tagHandler spi.PlcTagHandler, tm spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		invokeIdGenerator: InvokeIdGenerator{currentInvokeId: 0},
 		messageCodec:      messageCodec,

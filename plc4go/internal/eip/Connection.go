@@ -45,7 +45,7 @@ type Connection struct {
 	messageCodec              spi.MessageCodec
 	configuration             Configuration
 	driverContext             DriverContext
-	tm                        *spi.RequestTransactionManager
+	tm                        spi.RequestTransactionManager
 	sessionHandle             uint32
 	senderContext             []uint8
 	connectionId              uint32
@@ -58,7 +58,7 @@ type Connection struct {
 	tracer                    *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		messageCodec:  messageCodec,
 		configuration: configuration,

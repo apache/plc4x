@@ -549,7 +549,9 @@ func RunDriverTestsuiteWithOptions(t *testing.T, driver plc4go.PlcDriver, testPa
 }
 
 type ConnectionConnectAwaiter interface {
+	// SetAwaitSetupComplete sets a flag that the driver should await a connection completion
 	SetAwaitSetupComplete(awaitComplete bool)
+	// SetAwaitDisconnectComplete sets a flag that the driver should await a dis-connection completion
 	SetAwaitDisconnectComplete(awaitComplete bool)
 }
 

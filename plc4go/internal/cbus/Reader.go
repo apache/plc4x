@@ -36,10 +36,10 @@ import (
 type Reader struct {
 	alphaGenerator *AlphaGenerator
 	messageCodec   spi.MessageCodec
-	tm             *spi.RequestTransactionManager
+	tm             spi.RequestTransactionManager
 }
 
-func NewReader(tpduGenerator *AlphaGenerator, messageCodec spi.MessageCodec, tm *spi.RequestTransactionManager) *Reader {
+func NewReader(tpduGenerator *AlphaGenerator, messageCodec spi.MessageCodec, tm spi.RequestTransactionManager) *Reader {
 	return &Reader{
 		alphaGenerator: tpduGenerator,
 		messageCodec:   messageCodec,
@@ -135,7 +135,7 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 				}
 				return confirmation.GetConfirmation().GetAlpha().GetCharacter() == messageToSend.(readWriteModel.CBusMessageToServer).GetRequest().(readWriteModel.RequestCommand).GetAlpha().GetCharacter()
 			}, func(receivedMessage spi.Message) error {
-				defer func(transaction *spi.RequestTransaction) {
+				defer func(transaction spi.RequestTransaction) {
 					// This is just to make sure we don't forget to close the transaction here
 					_ = transaction.EndRequest()
 				}(transaction)
