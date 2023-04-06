@@ -31,26 +31,39 @@ import (
 )
 
 type Transport struct {
+	preregisteredInstances map[url.URL]transports.TransportInstance
 }
 
 func NewTransport() *Transport {
-	return &Transport{}
+	return &Transport{preregisteredInstances: map[url.URL]transports.TransportInstance{}}
 }
 
-func (m Transport) GetTransportCode() string {
+func (m *Transport) GetTransportCode() string {
 	return "test"
 }
 
-func (m Transport) GetTransportName() string {
+func (m *Transport) GetTransportName() string {
 	return "Test Transport"
 }
 
-func (m Transport) CreateTransportInstance(_ url.URL, _ map[string][]string) (transports.TransportInstance, error) {
+func (m *Transport) CreateTransportInstance(transportUrl url.URL, _ map[string][]string) (transports.TransportInstance, error) {
+	if preregisteredInstance, ok := m.preregisteredInstances[transportUrl]; ok {
+		log.Trace().Msgf("Returning pre registered instance for %v", transportUrl)
+		return preregisteredInstance, nil
+	}
 	log.Trace().Msg("create transport instance")
-	return NewTransportInstance(&m), nil
+	return NewTransportInstance(m), nil
 }
 
-func (m Transport) String() string {
+func (m *Transport) AddPreregisteredInstances(transportUrl url.URL, preregisteredInstance transports.TransportInstance) error {
+	if _, ok := m.preregisteredInstances[transportUrl]; ok {
+		return errors.Errorf("registered instance for %v already registered", transportUrl)
+	}
+	m.preregisteredInstances[transportUrl] = preregisteredInstance
+	return nil
+}
+
+func (m *Transport) String() string {
 	return m.GetTransportCode() + "(" + m.GetTransportName() + ")"
 }
 
