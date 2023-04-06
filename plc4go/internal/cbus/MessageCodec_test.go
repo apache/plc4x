@@ -128,10 +128,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
 					transport := test.NewTransport()
 					transportInstance := test.NewTransportInstance(transport)
-					if err := transportInstance.FillReadBuffer([]byte("!")); err != nil {
-						t.Error(err)
-						return nil
-					}
+					transportInstance.FillReadBuffer([]byte("!"))
 					return transportInstance
 				}()),
 				requestContext:                requestContext,
@@ -156,10 +153,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
 					transport := test.NewTransport()
 					transportInstance := test.NewTransportInstance(transport)
-					if err := transportInstance.FillReadBuffer([]byte("@A62120\r@A62120\r")); err != nil {
-						t.Error(err)
-						return nil
-					}
+					transportInstance.FillReadBuffer([]byte("@A62120\r@A62120\r"))
 					return transportInstance
 				}()),
 				requestContext:                requestContext,
@@ -178,10 +172,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
 					transport := test.NewTransport()
 					transportInstance := test.NewTransportInstance(transport)
-					if err := transportInstance.FillReadBuffer([]byte("what on earth\n\r")); err != nil {
-						t.Error(err)
-						return nil
-					}
+					transportInstance.FillReadBuffer([]byte("what on earth\n\r"))
 					return transportInstance
 				}()),
 				requestContext:                requestContext,
@@ -200,10 +191,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
 					transport := test.NewTransport()
 					transportInstance := test.NewTransportInstance(transport)
-					if err := transportInstance.FillReadBuffer([]byte("AFFE!!!\r")); err != nil {
-						t.Error(err)
-						return nil
-					}
+					transportInstance.FillReadBuffer([]byte("AFFE!!!\r"))
 					return transportInstance
 				}()),
 				requestContext:                requestContext,
@@ -228,10 +216,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
 					transport := test.NewTransport()
 					transportInstance := test.NewTransportInstance(transport)
-					if err := transportInstance.FillReadBuffer([]byte("@1A2001!!!\r")); err != nil {
-						t.Error(err)
-						return nil
-					}
+					transportInstance.FillReadBuffer([]byte("@1A2001!!!\r"))
 					return transportInstance
 				}()),
 				requestContext:                requestContext,
@@ -269,10 +254,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
 					transport := test.NewTransport()
 					transportInstance := test.NewTransportInstance(transport)
-					if err := transportInstance.FillReadBuffer([]byte("86040200F940380001000000000000000008000000000000000000000000FA\r\n")); err != nil {
-						t.Error(err)
-						return nil
-					}
+					transportInstance.FillReadBuffer([]byte("86040200F940380001000000000000000008000000000000000000000000FA\r\n"))
 					return transportInstance
 				}()),
 				requestContext:                requestContext,
@@ -468,10 +450,7 @@ func TestMessageCodec_Receive(t *testing.T) {
 				DefaultCodec: NewMessageCodec(func() transports.TransportInstance {
 					transport := test.NewTransport()
 					transportInstance := test.NewTransportInstance(transport)
-					if err := transportInstance.FillReadBuffer([]byte("0531AC0079042F0401430316000011\r\n")); err != nil {
-						t.Error(err)
-						return nil
-					}
+					transportInstance.FillReadBuffer([]byte("0531AC0079042F0401430316000011\r\n"))
 					return transportInstance
 				}()),
 				requestContext:                requestContext,
@@ -572,8 +551,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		assert.Error(t, err)
 		assert.Nil(t, msg)
 		// Now we add a confirmation
-		err = transportInstance.FillReadBuffer([]byte("i."))
-		assert.NoError(t, err)
+		transportInstance.FillReadBuffer([]byte("i."))
 
 		// We should wait for more data, so no error, no message
 		msg, err = codec.Receive()
@@ -581,8 +559,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		assert.Nil(t, msg)
 
 		// Now we fill in the payload
-		err = transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
-		assert.NoError(t, err)
+		transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
 
 		// We should wait for more data, so no error, no message
 		msg, err = codec.Receive()
@@ -605,8 +582,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		assert.Error(t, err)
 		assert.Nil(t, msg)
 		// Now we add a confirmation
-		err = transportInstance.FillReadBuffer([]byte("i."))
-		assert.NoError(t, err)
+		transportInstance.FillReadBuffer([]byte("i."))
 
 		for i := 0; i < 8; i++ {
 			t.Logf("%d try", i+1)
@@ -617,8 +593,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		}
 
 		// Now we fill in the payload
-		err = transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
-		assert.NoError(t, err)
+		transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
 
 		// We should wait for more data, so no error, no message
 		msg, err = codec.Receive()
@@ -641,8 +616,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		assert.Error(t, err)
 		assert.Nil(t, msg)
 		// Now we add a confirmation
-		err = transportInstance.FillReadBuffer([]byte("i."))
-		assert.NoError(t, err)
+		transportInstance.FillReadBuffer([]byte("i."))
 
 		for i := 0; i < 16; i++ {
 			t.Logf("%d try", i+1)
@@ -663,8 +637,7 @@ func TestMessageCodec_Receive_Delayed_Response(t *testing.T) {
 		}
 
 		// Now we fill in the payload
-		err = transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
-		assert.NoError(t, err)
+		transportInstance.FillReadBuffer([]byte("86FD0201078900434C495053414C20C2\r\n"))
 
 		// We should wait for more data, so no error, no message
 		msg, err = codec.Receive()

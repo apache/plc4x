@@ -227,6 +227,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 
 func (m *defaultCodec) HandleMessages(message spi.Message) bool {
 	messageHandled := false
+	log.Trace().Msgf("Current number of expectations: %d", len(m.expectations))
 	for index, expectation := range m.expectations {
 		// Check if the current message matches the expectations
 		// If it does, let it handle the message.

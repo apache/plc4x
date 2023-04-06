@@ -149,10 +149,9 @@ func (m *TransportInstance) Write(data []uint8) error {
 	return nil
 }
 
-func (m *TransportInstance) FillReadBuffer(data []uint8) error {
+func (m *TransportInstance) FillReadBuffer(data []byte) {
 	log.Trace().Msgf("FillReadBuffer with 0x%x", data)
 	m.readBuffer = append(m.readBuffer, data...)
-	return nil
 }
 
 func (m *TransportInstance) GetNumDrainableBytes() uint32 {
@@ -160,11 +159,11 @@ func (m *TransportInstance) GetNumDrainableBytes() uint32 {
 	return uint32(len(m.writeBuffer))
 }
 
-func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) DrainWriteBuffer(numBytes uint32) []byte {
 	log.Trace().Msgf("Drain write buffer with number of bytes %d", numBytes)
 	data := m.writeBuffer[0:int(numBytes)]
 	m.writeBuffer = m.writeBuffer[int(numBytes):]
-	return data, nil
+	return data
 }
 
 func (m *TransportInstance) String() string {

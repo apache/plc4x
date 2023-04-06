@@ -78,9 +78,9 @@ func WithRootTypeParser(rootTypeParser func(utils.ReadBufferByteBased) (interfac
 
 type TestTransportInstance interface {
 	transports.TransportInstance
-	FillReadBuffer(data []uint8) error
+	FillReadBuffer(data []byte)
 	GetNumDrainableBytes() uint32
-	DrainWriteBuffer(numBytes uint32) ([]uint8, error)
+	DrainWriteBuffer(numBytes uint32) []byte
 }
 
 type withRootTypeParser struct {
@@ -305,18 +305,15 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		for testTransportInstance.GetNumDrainableBytes() < expectedRawOutputLength {
 			if time.Now().Sub(now) > 2*time.Second {
 				drainableBytes := testTransportInstance.GetNumDrainableBytes()
-				actualRawOutput, _ := testTransportInstance.DrainWriteBuffer(drainableBytes)
+				actualRawOutput := testTransportInstance.DrainWriteBuffer(drainableBytes)
 				return errors.Errorf("error getting bytes from transport. Not enough data available: actual(%d)<expected(%d), \nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s",
 					drainableBytes, expectedRawOutputLength, actualRawOutput, expectedRawOutput, utils.DiffHex(expectedRawOutput, actualRawOutput))
 			}
 			time.Sleep(2 * time.Millisecond)
 		}
-		actualRawOutput, err := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
+		actualRawOutput := testTransportInstance.DrainWriteBuffer(expectedRawOutputLength)
 		if testTransportInstance.GetNumDrainableBytes() != 0 {
 			//panic(fmt.Sprintf("leftover drainable bytes (%d)", testTransportInstance.GetNumDrainableBytes()))
-		}
-		if err != nil {
-			return errors.Wrap(err, "error getting bytes from transport")
 		}
 
 		var bufferFactory func([]byte, ...utils.ReadBufferByteBasedOptions) utils.ReadBufferByteBased
@@ -347,10 +344,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 		if err != nil {
 			return errors.Wrap(err, "error decoding hex-encoded byte data")
 		}
-		rawInput, err := testTransportInstance.DrainWriteBuffer(uint32(len(expectedRawInput)))
-		if err != nil {
-			return errors.Wrap(err, "error getting bytes from transport")
-		}
+		rawInput := testTransportInstance.DrainWriteBuffer(uint32(len(expectedRawInput)))
 
 		// Compare the bytes read with the ones we expect
 		log.Trace().Msg("Comparing bytes")
@@ -390,10 +384,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Send these bytes to the transport
 		log.Trace().Msg("Writing to transport")
-		err = testTransportInstance.FillReadBuffer(wb.GetBytes())
-		if err != nil {
-			return errors.Wrap(err, "error writing data to transport")
-		}
+		testTransportInstance.FillReadBuffer(wb.GetBytes())
 	case StepTypeIncomingPlcBytes:
 		// Get the raw hex-data.
 		log.Trace().Msg("Get hex data")
@@ -404,10 +395,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 
 		// Send these bytes to the transport
 		log.Trace().Msg("Writing bytes to transport")
-		err = testTransportInstance.FillReadBuffer(rawInput)
-		if err != nil {
-			return errors.Wrap(err, "error writing data to transport")
-		}
+		testTransportInstance.FillReadBuffer(rawInput)
 	case StepTypeDelay:
 		// Get the number of milliseconds
 		log.Trace().Msg("Getting millis")
