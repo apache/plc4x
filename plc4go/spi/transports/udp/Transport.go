@@ -223,18 +223,18 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 	}
 }
 
-func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 	if m.reader == nil {
 		return nil, errors.New("error peeking from transport. No reader available")
 	}
 	return m.reader.Peek(int(numBytes))
 }
 
-func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
 	if m.reader == nil {
 		return nil, errors.New("error reading from transport. No reader available")
 	}
-	data := make([]uint8, numBytes)
+	data := make([]byte, numBytes)
 	for i := uint32(0); i < numBytes; i++ {
 		val, err := m.reader.ReadByte()
 		if err != nil {
@@ -245,7 +245,7 @@ func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
 	return data, nil
 }
 
-func (m *TransportInstance) Write(data []uint8) error {
+func (m *TransportInstance) Write(data []byte) error {
 	if m.udpConn == nil {
 		return errors.New("error writing to transport. No writer available")
 	}

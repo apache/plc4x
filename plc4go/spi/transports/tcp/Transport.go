@@ -154,7 +154,7 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.tcpConn != nil
 }
 
-func (m *TransportInstance) Write(data []uint8) error {
+func (m *TransportInstance) Write(data []byte) error {
 	if m.tcpConn == nil {
 		return errors.New("error writing to transport. No writer available")
 	}

@@ -68,10 +68,11 @@ func (m *Transport) String() string {
 }
 
 type TransportInstance struct {
-	readBuffer  []byte
-	writeBuffer []byte
-	connected   bool
-	transport   *Transport
+	readBuffer       []byte
+	writeBuffer      []byte
+	connected        bool
+	transport        *Transport
+	writeInterceptor func(transportInstance *TransportInstance, data []byte)
 }
 
 func NewTransportInstance(transport *Transport) *TransportInstance {
@@ -123,7 +124,7 @@ func (m *TransportInstance) FillBuffer(until func(pos uint, currentByte byte, re
 	}
 }
 
-func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]byte, error) {
 	log.Trace().Msgf("Peek %d readable bytes", numBytes)
 	availableBytes := uint32(math.Min(float64(numBytes), float64(len(m.readBuffer))))
 	var err error
@@ -136,14 +137,21 @@ func (m *TransportInstance) PeekReadableBytes(numBytes uint32) ([]uint8, error) 
 	return m.readBuffer[0:availableBytes], nil
 }
 
-func (m *TransportInstance) Read(numBytes uint32) ([]uint8, error) {
+func (m *TransportInstance) Read(numBytes uint32) ([]byte, error) {
 	log.Trace().Msgf("Read num bytes %d", numBytes)
 	data := m.readBuffer[0:int(numBytes)]
 	m.readBuffer = m.readBuffer[int(numBytes):]
 	return data, nil
 }
 
-func (m *TransportInstance) Write(data []uint8) error {
+func (m *TransportInstance) SetWriteInterceptor(writeInterceptor func(transportInstance *TransportInstance, data []byte)) {
+	m.writeInterceptor = writeInterceptor
+}
+
+func (m *TransportInstance) Write(data []byte) error {
+	if m.writeInterceptor != nil {
+		m.writeInterceptor(m, data)
+	}
 	log.Trace().Msgf("Write data 0x%x", data)
 	m.writeBuffer = append(m.writeBuffer, data...)
 	return nil
