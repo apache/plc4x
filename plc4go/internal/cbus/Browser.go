@@ -22,26 +22,27 @@ package cbus
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi/model"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
 type Browser struct {
 	_default.DefaultBrowser
-	connection      *Connection
+	connection      spi.PlcConnection
 	messageCodec    spi.MessageCodec
 	sequenceCounter uint8
 }
 
-func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser {
+func NewBrowser(connection spi.PlcConnection, messageCodec spi.MessageCodec) *Browser {
 	browser := Browser{
 		connection:      connection,
 		messageCodec:    messageCodec,
@@ -132,7 +133,7 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 					event.Msgf("unit %d: error reading tag %s. Code %s", unitAddress, attribute, code)
 					continue unitLoop
 				}
-				queryResult := &model.DefaultPlcBrowseItem{
+				queryResult := &spiModel.DefaultPlcBrowseItem{
 					Tag:          NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1),
 					Name:         queryName,
 					Readable:     true,
