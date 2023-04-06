@@ -237,7 +237,7 @@ func (c *Connection) WriteRequestBuilder() model.PlcWriteRequestBuilder {
 }
 
 func (c *Connection) SubscriptionRequestBuilder() model.PlcSubscriptionRequestBuilder {
-	panic("not implemented")
+	return internalModel.NewDefaultPlcSubscriptionRequestBuilder(c.tagHandler, c.valueHandler, NewSubscriber(c.device, c.options, c.tracer))
 }
 
 func (c *Connection) UnsubscriptionRequestBuilder() model.PlcUnsubscriptionRequestBuilder {

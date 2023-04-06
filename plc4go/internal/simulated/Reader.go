@@ -36,16 +36,15 @@ type Reader struct {
 	tracer  *spi.Tracer
 }
 
-func NewReader(device *Device, options map[string][]string, tracer *spi.Tracer) Reader {
-	return Reader{
+func NewReader(device *Device, options map[string][]string, tracer *spi.Tracer) *Reader {
+	return &Reader{
 		device:  device,
 		options: options,
 		tracer:  tracer,
 	}
 }
 
-func (r Reader) Read(ctx context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
-	// TODO: handle ctx
+func (r *Reader) Read(_ context.Context, readRequest model.PlcReadRequest) <-chan model.PlcReadRequestResult {
 	ch := make(chan model.PlcReadRequestResult)
 	go func() {
 		var txId string
