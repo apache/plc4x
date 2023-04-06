@@ -263,6 +263,7 @@ lookingForTheEnd:
 
 	var rawInput []byte
 	{
+		log.Trace().Msgf("Read packet length %d", packetLength)
 		read, err := ti.Read(uint32(packetLength))
 		if err != nil {
 			panic("Invalid state... If we have peeked that before we should be able to read that now")

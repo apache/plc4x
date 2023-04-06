@@ -38,14 +38,12 @@ import (
 type Browser struct {
 	_default.DefaultBrowser
 	connection      spi.PlcConnection
-	messageCodec    spi.MessageCodec
 	sequenceCounter uint8
 }
 
-func NewBrowser(connection spi.PlcConnection, messageCodec spi.MessageCodec) *Browser {
+func NewBrowser(connection spi.PlcConnection) *Browser {
 	browser := Browser{
 		connection:      connection,
-		messageCodec:    messageCodec,
 		sequenceCounter: 0,
 	}
 	browser.DefaultBrowser = _default.NewDefaultBrowser(browser)
@@ -156,7 +154,7 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 }
 
 func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any, error) {
-	// We need to presubscribe to catch the 2 followup responses
+	// We need to pre-subscribe to catch the 2 followup responses
 	subscriptionRequest, err := m.connection.SubscriptionRequestBuilder().
 		AddEventTagAddress("installationMMIMonitor", "mmimonitor/*/NETWORK_CONTROL").
 		Build()
