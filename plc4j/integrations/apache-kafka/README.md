@@ -234,3 +234,11 @@ between the base schemas.
 
 The schemas for the sink and source connectors are the same. This allows us to producer from one PLC and send the
 data to a sink.
+
+
+### Start with Docker
+If you want to use PLC4x with Kafka on Docker, simply download the docker-compose.yml file, configure the necessary port and IP settings, and start the containers. The available docker-compose.yml file includes four containers: zookeeper, kafka, kafka connect, and control-center. The control-center container provides a web interface to facilitate the configuration of kafka connect. If you don't want to use it, you can remove it from the docker-compose.yml file.
+
+To start the docker-compose.yml file, download it and use the following command to start it:
+    docker-compose up -d
+
