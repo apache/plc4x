@@ -1,4 +1,4 @@
-'/*
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -203,6 +203,12 @@
     ]
 ]
 
+/*
+ * SZL is used as a reference to the list of system states. 
+ * Siemens literature and forums use SZL or SSL interchangeably.
+ * SZL = System Zustand Liste
+ * SSL = System Status List
+ */
 [type SzlId
     [simple SzlModuleTypeClass typeClass]
     [simple uint 4             sublistExtract]
@@ -910,15 +916,21 @@
     ['0x22' INTERRUPT_STATUS]
     ['0x25' ASSIGNMENT_BETWEEN_PROCESS_IMAGE_PARTITIONS_AND_OBS]
     ['0x32' COMMUNICATION_STATUS_DATA]
+    ['0x71' H_CPU_GROUP_INFORMATION]
     ['0x74' STATUS_SINGLE_MODULE_LED]
+    ['0x75' SWITCHED_DP_SLAVES_H_SYSTEM]
     ['0x90' DP_MASTER_SYSTEM_INFORMATION]
     ['0x91' MODULE_STATUS_INFORMATION]
     ['0x92' RACK_OR_STATION_STATUS_INFORMATION]
     ['0x94' RACK_OR_STATION_STATUS_INFORMATION_2]
     ['0x95' ADDITIONAL_DP_MASTER_SYSTEM_OR_PROFINET_IO_SYSTEM_INFORMATION]
     ['0x96' MODULE_STATUS_INFORMATION_PROFINET_IO_AND_PROFIBUS_DP]
+    ['0x9C' TOOL_CHANGER_INFORMATION_PROFINET]
     ['0xA0' DIAGNOSTIC_BUFFER]
-    ['0xB1' MODULE_DIAGNOSTIC_DATA]
+    ['0xB1' MODULE_DIAGNOSTIC_INFORMATION_DR0]
+    ['0xB2' MODULE_DIAGNOSTIC_INFORMATION_DR1_GI]
+    ['0xB3' MODULE_DIAGNOSTIC_INFORMATION_DR1_LA]
+    ['0xB4' DIAGNOSTIC_DATA_DP_SLAVE]
 ]
 
 [enum uint 8 CpuSubscribeEvents

@@ -34,8 +34,9 @@ import org.apache.plc4x.java.spi.values.PlcValueHandler;
 
 import java.util.function.Consumer;
 import java.util.function.ToIntFunction;
+import org.apache.plc4x.java.s7.readwrite.protocol.S7HGeneratedDriverBase;
 
-public class S7Driver extends GeneratedDriverBase<TPKTPacket> {
+public class S7Driver extends S7HGeneratedDriverBase {
 
     public static final int ISO_ON_TCP_PORT = 102;
 
