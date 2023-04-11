@@ -521,16 +521,8 @@ func TestLeasedPlcConnection_SubscriptionRequestBuilder(t *testing.T) {
 			assert.Nil(t, connectionResult.GetErr())
 			if assert.NotNil(t, connectionResult.GetConnection()) {
 				connection := connectionResult.GetConnection()
-				func() {
-					defer func() {
-						if r := recover(); r != nil {
-							assert.Equal(t, r, "not implemented")
-						} else {
-							t.Errorf("The code did not panic")
-						}
-					}()
-					connection.SubscriptionRequestBuilder()
-				}()
+				builder := connection.SubscriptionRequestBuilder()
+				assert.NotNil(t, builder)
 				connection.BlockingClose()
 				func() {
 					defer func() {

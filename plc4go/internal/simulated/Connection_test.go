@@ -20,6 +20,7 @@
 package simulated
 
 import (
+	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
 	"time"
@@ -649,12 +650,7 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 				options:      tt.fields.options,
 				connected:    tt.fields.connected,
 			}
-			defer func() {
-				if r := recover(); tt.wantErr && r == nil {
-					t.Errorf("The code did not panic")
-				}
-			}()
-			c.SubscriptionRequestBuilder()
+			assert.NotNil(t, c.SubscriptionRequestBuilder())
 		})
 	}
 }
