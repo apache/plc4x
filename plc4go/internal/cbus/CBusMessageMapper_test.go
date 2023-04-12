@@ -1172,7 +1172,7 @@ func TestMapEncodedReply(t *testing.T) {
 			},
 		},
 		{
-			name: "CALDataIdentifyReplyExactly (terminal levels)",
+			name: "CALDataIdentifyReplyExactly (network terminal levels)",
 			args: args{
 				transaction: func() spi.RequestTransaction {
 					transactionManager := spi.NewRequestTransactionManager(1)
@@ -1183,7 +1183,7 @@ func TestMapEncodedReply(t *testing.T) {
 					return transaction
 				}(),
 				encodedReply: func() readWriteModel.EncodedReplyCALReply {
-					command := readWriteModel.NewIdentifyReplyCommandTerminalLevels([]byte{1, 2, 3, 4}, 1)
+					command := readWriteModel.NewIdentifyReplyCommandNetworkTerminalLevels([]byte{1, 2, 3, 4}, 1)
 					calDataIdentify := readWriteModel.NewCALDataIdentifyReply(readWriteModel.Attribute_DSIStatus, command, readWriteModel.CALCommandTypeContainer_CALCommandIdentify, nil, nil)
 					calReplyLong := readWriteModel.NewCALReplyLong(0, readWriteModel.NewUnitAddress(1), readWriteModel.NewBridgeAddress(2), readWriteModel.NewSerialInterfaceAddress(3), nil, nil, 0, calDataIdentify, nil, nil)
 					return readWriteModel.NewEncodedReplyCALReply(calReplyLong, 0, nil, nil)
