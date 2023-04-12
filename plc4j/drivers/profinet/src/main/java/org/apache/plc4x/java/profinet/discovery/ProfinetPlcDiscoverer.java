@@ -236,14 +236,11 @@ public class ProfinetPlcDiscoverer implements PlcDiscoverer {
             if (unit instanceof TlvPortId) {
                 TlvPortId portIdPacket = (TlvPortId) unit;
                 options.put("portId", portIdPacket.getPortId());
-                if (portIdPacket.getPortId().contains(".")) {
-                    options.put("deviceName", portIdPacket.getPortId().split("\\.")[1]);
-                } else {
-                    options.put("deviceName", portIdPacket.getPortId());
-                }
+
             } else if (unit instanceof TlvChassisId) {
                 TlvChassisId chassisIdPacket = (TlvChassisId) unit;
                 options.put("chassisId", chassisIdPacket.getChassisId());
+                options.put("deviceName", chassisIdPacket.getChassisId());
             } else if (unit instanceof TlvManagementAddress) {
                 TlvManagementAddress managementAddressPacket = (TlvManagementAddress) unit;
                 try {
