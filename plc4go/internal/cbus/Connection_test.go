@@ -1645,6 +1645,43 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				DefaultConnection: _default.NewDefaultConnection(nil),
 			},
 		},
+		{
+			name: "just start and feed (no subs)",
+			fields: fields{
+				DefaultConnection: func() _default.DefaultConnection {
+					defaultConnection := _default.NewDefaultConnection(nil)
+					defaultConnection.SetConnected(true)
+					return defaultConnection
+				}(),
+				messageCodec: func() *MessageCodec {
+					messageCodec := NewMessageCodec(nil)
+					go func() {
+						messageCodec.monitoredMMIs <- nil
+						messageCodec.monitoredSALs <- nil
+					}()
+					return messageCodec
+				}(),
+			},
+		},
+		{
+			name: "just start and feed",
+			fields: fields{
+				DefaultConnection: func() _default.DefaultConnection {
+					defaultConnection := _default.NewDefaultConnection(nil)
+					defaultConnection.SetConnected(true)
+					return defaultConnection
+				}(),
+				messageCodec: func() *MessageCodec {
+					messageCodec := NewMessageCodec(nil)
+					go func() {
+						messageCodec.monitoredMMIs <- readWriteModel.NewCALReplyShort(0, nil, nil, nil)
+						messageCodec.monitoredSALs <- readWriteModel.NewMonitoredSAL(0, nil)
+					}()
+					return messageCodec
+				}(),
+				subscribers: []*Subscriber{NewSubscriber(nil)},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1659,6 +1696,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 				tracer:            tt.fields.tracer,
 			}
 			c.startSubscriptionHandler()
+			time.Sleep(50 * time.Millisecond)
 		})
 	}
 }
