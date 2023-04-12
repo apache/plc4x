@@ -92,7 +92,7 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
 
     public static class ProfinetDeviceConvertor implements ConfigurationParameterConverter<ProfinetDevices> {
 
-        public static final String DEVICE_STRING = "((?<devicename>[\\w- ]*){1}[, ]+(?<deviceaccess>[\\w ]*){1}[, ]+\\((?<submodules>[\\w, ]*)\\))";
+        public static final String DEVICE_STRING = "((?<devicename>[\\w- ]*){1}[, ]+(?<deviceaccess>[\\w ]*){1}[, ]+\\((?<submodules>[\\w, ]*)\\)[, ]*(?<ipaddress>[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)?)";
         public static final String DEVICE_ARRAY_STRING = "^\\[(?:(\\[" + DEVICE_STRING + "{1}\\])[, ]?)+\\]";
         public static final Pattern DEVICE_NAME_ARRAY_PATTERN = Pattern.compile(DEVICE_ARRAY_STRING);
         public static final Pattern DEVICE_PARAMETERS = Pattern.compile(DEVICE_STRING);
@@ -126,6 +126,9 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
                                                (vendorId, deviceId) -> gsdFiles.getGsdFiles().get("0x" + vendorId + "-0x" + deviceId)
                             )
                         );
+                        if (matcher.group("ipaddress") != null) {
+                            devices.get(matcher.group("devicename")).setIpAddress(matcher.group("ipaddress"));
+                        }
                     }
                 }
             }

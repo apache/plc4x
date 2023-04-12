@@ -208,4 +208,18 @@ public class ProfinetConfigurationTests {
             assertEquals(devices.get(deviceName).getDeviceContext().getSubModules()[3], "1");
         }
     }
+
+    @Test
+    public void parseIpAddress() {
+        String[] deviceNames = new String[] {"DEVICE NAME 1"};
+
+        ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1), 10.1.1.1]]&gsddirectory=src/test/resources");
+
+        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        XmlMapper xmlMapper = new XmlMapper();
+
+        assertEquals(devices.get("DEVICE NAME 1").getDeviceContext().getIpAddress(), "10.1.1.1");
+
+    }
 }
