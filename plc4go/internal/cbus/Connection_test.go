@@ -30,6 +30,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/stretchr/testify/assert"
 	"net/url"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -1290,6 +1291,315 @@ func TestConnection_setupConnection(t *testing.T) {
 					}
 					return ti
 				}()),
+			},
+			args: args{
+				ctx: context.Background(),
+				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+			},
+		},
+		{
+			name: "setup connection (failing after reset)",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					type MockState uint8
+					const (
+						RESET MockState = iota
+						DONE
+					)
+					currentState := atomic.Value{}
+					currentState.Store(RESET)
+					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						switch currentState.Load().(MockState) {
+						case RESET:
+							t.Log("Dispatching reset echo")
+							transportInstance.FillReadBuffer([]byte("~~~\r"))
+							currentState.Store(DONE)
+						case DONE:
+							t.Log("Done")
+						}
+					})
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
+			},
+			args: args{
+				ctx: context.Background(),
+				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+			},
+		},
+		{
+			name: "setup connection (failing after app filters)",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					type MockState uint8
+					const (
+						RESET MockState = iota
+						APPLICATION_FILTER_1
+						APPLICATION_FILTER_2
+						DONE
+					)
+					currentState := atomic.Value{}
+					currentState.Store(RESET)
+					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						switch currentState.Load().(MockState) {
+						case RESET:
+							t.Log("Dispatching reset echo")
+							transportInstance.FillReadBuffer([]byte("~~~\r"))
+							currentState.Store(APPLICATION_FILTER_1)
+						case APPLICATION_FILTER_1:
+							t.Log("Dispatching app1 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+							transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+							currentState.Store(APPLICATION_FILTER_2)
+						case APPLICATION_FILTER_2:
+							t.Log("Dispatching app2 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+							transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+							currentState.Store(DONE)
+						case DONE:
+							t.Log("Done")
+						}
+					})
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
+			},
+			args: args{
+				ctx: context.Background(),
+				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+			},
+		},
+		{
+			name: "setup connection (failing after interface options 3",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					type MockState uint8
+					const (
+						RESET MockState = iota
+						APPLICATION_FILTER_1
+						APPLICATION_FILTER_2
+						INTERFACE_OPTIONS_3
+						DONE
+					)
+					currentState := atomic.Value{}
+					currentState.Store(RESET)
+					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						switch currentState.Load().(MockState) {
+						case RESET:
+							t.Log("Dispatching reset echo")
+							transportInstance.FillReadBuffer([]byte("~~~\r"))
+							currentState.Store(APPLICATION_FILTER_1)
+						case APPLICATION_FILTER_1:
+							t.Log("Dispatching app1 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+							transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+							currentState.Store(APPLICATION_FILTER_2)
+						case APPLICATION_FILTER_2:
+							t.Log("Dispatching app2 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+							transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_3)
+						case INTERFACE_OPTIONS_3:
+							t.Log("Dispatching interface 3 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A342000A\r"))
+							transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
+							currentState.Store(DONE)
+						case DONE:
+							t.Log("Done")
+						}
+					})
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
+			},
+			args: args{
+				ctx: context.Background(),
+				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+			},
+		},
+		{
+			name: "setup connection (failing after interface options 1 pun)",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					type MockState uint8
+					const (
+						RESET MockState = iota
+						APPLICATION_FILTER_1
+						APPLICATION_FILTER_2
+						INTERFACE_OPTIONS_3
+						INTERFACE_OPTIONS_1_PUN
+						DONE
+					)
+					currentState := atomic.Value{}
+					currentState.Store(RESET)
+					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						switch currentState.Load().(MockState) {
+						case RESET:
+							t.Log("Dispatching reset echo")
+							transportInstance.FillReadBuffer([]byte("~~~\r"))
+							currentState.Store(APPLICATION_FILTER_1)
+						case APPLICATION_FILTER_1:
+							t.Log("Dispatching app1 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+							transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+							currentState.Store(APPLICATION_FILTER_2)
+						case APPLICATION_FILTER_2:
+							t.Log("Dispatching app2 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+							transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_3)
+						case INTERFACE_OPTIONS_3:
+							t.Log("Dispatching interface 3 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A342000A\r"))
+							transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_1_PUN)
+						case INTERFACE_OPTIONS_1_PUN:
+							t.Log("Dispatching interface 1 PUN echo and confirm???")
+							transportInstance.FillReadBuffer([]byte("@A3410079\r"))
+							transportInstance.FillReadBuffer([]byte("3241008D\r\n"))
+							currentState.Store(DONE)
+						case DONE:
+							t.Log("Done")
+						}
+					})
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
+			},
+			args: args{
+				ctx: context.Background(),
+				ch:  make(chan plc4go.PlcConnectionConnectResult, 1),
+			},
+		},
+		{
+			name: "setup connection",
+			fields: fields{
+				DefaultConnection: _default.NewDefaultConnection(nil),
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					type MockState uint8
+					const (
+						RESET MockState = iota
+						APPLICATION_FILTER_1
+						APPLICATION_FILTER_2
+						INTERFACE_OPTIONS_3
+						INTERFACE_OPTIONS_1_PUN
+						INTERFACE_OPTIONS_1
+						DONE
+					)
+					currentState := atomic.Value{}
+					currentState.Store(RESET)
+					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						switch currentState.Load().(MockState) {
+						case RESET:
+							t.Log("Dispatching reset echo")
+							transportInstance.FillReadBuffer([]byte("~~~\r"))
+							currentState.Store(APPLICATION_FILTER_1)
+						case APPLICATION_FILTER_1:
+							t.Log("Dispatching app1 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32100FF\r"))
+							transportInstance.FillReadBuffer([]byte("322100AD\r\n"))
+							currentState.Store(APPLICATION_FILTER_2)
+						case APPLICATION_FILTER_2:
+							t.Log("Dispatching app2 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A32200FF\r"))
+							transportInstance.FillReadBuffer([]byte("322200AC\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_3)
+						case INTERFACE_OPTIONS_3:
+							t.Log("Dispatching interface 3 echo and confirm")
+							transportInstance.FillReadBuffer([]byte("@A342000A\r"))
+							transportInstance.FillReadBuffer([]byte("3242008C\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_1_PUN)
+						case INTERFACE_OPTIONS_1_PUN:
+							t.Log("Dispatching interface 1 PUN echo and confirm???")
+							transportInstance.FillReadBuffer([]byte("@A3410079\r"))
+							transportInstance.FillReadBuffer([]byte("3241008D\r\n"))
+							currentState.Store(INTERFACE_OPTIONS_1)
+						case INTERFACE_OPTIONS_1:
+							t.Log("Dispatching interface 1 echo and confirm???")
+							transportInstance.FillReadBuffer([]byte("@A3300079\r"))
+							transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
+							currentState.Store(DONE)
+						case DONE:
+							t.Log("Done")
+						}
+					})
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
 			},
 			args: args{
 				ctx: context.Background(),
