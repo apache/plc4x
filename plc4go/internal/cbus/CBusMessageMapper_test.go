@@ -20,6 +20,7 @@
 package cbus
 
 import (
+	"fmt"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -27,7 +28,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/stretchr/testify/assert"
-	"reflect"
 	"testing"
 )
 
@@ -266,6 +266,819 @@ func TestTagToCBusMessage(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "recall",
+			args: args{
+				tag:            NewCALRecallTag(readWriteModel.NewUnitAddress(1), nil, readWriteModel.Parameter_BAUD_RATE_SELECTOR, 1, 1),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToPoint(
+						readWriteModel.NewCBusPointToPointCommandDirect(
+							readWriteModel.NewUnitAddress(1),
+							0,
+							readWriteModel.NewCALDataRecall(
+								readWriteModel.Parameter_BAUD_RATE_SELECTOR,
+								1,
+								readWriteModel.CALCommandTypeContainer_CALCommandRecall,
+								nil,
+								requestContext,
+							),
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      true,
+			wantSupportsSubscribe: false,
+		},
+		{
+			name: "identify",
+			args: args{
+				tag:            NewCALIdentifyTag(readWriteModel.NewUnitAddress(1), nil, readWriteModel.Attribute_Manufacturer, 1),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToPoint(
+						readWriteModel.NewCBusPointToPointCommandDirect(
+							readWriteModel.NewUnitAddress(1),
+							0,
+							readWriteModel.NewCALDataIdentify(
+								readWriteModel.Attribute_Manufacturer,
+								readWriteModel.CALCommandTypeContainer_CALCommandIdentify,
+								nil,
+								requestContext,
+							),
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      true,
+			wantSupportsSubscribe: false,
+		},
+		{
+			name: "getStatus",
+			args: args{
+				tag:            NewCALGetStatusTag(readWriteModel.NewUnitAddress(1), nil, readWriteModel.Parameter_BAUD_RATE_SELECTOR, 1, 1),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToPoint(
+						readWriteModel.NewCBusPointToPointCommandDirect(
+							readWriteModel.NewUnitAddress(1),
+							0,
+							readWriteModel.NewCALDataGetStatus(
+								readWriteModel.Parameter_BAUD_RATE_SELECTOR,
+								1,
+								readWriteModel.CALCommandTypeContainer_CALCommandGetStatus,
+								nil,
+								requestContext,
+							),
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      true,
+			wantSupportsSubscribe: false,
+		},
+		// TODO: test sal free usage
+		{
+			name: "sal temperature command not found",
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_TEMPERATURE_BROADCAST_19, "asd", 1),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sal temperature command event not enough arguments",
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_TEMPERATURE_BROADCAST_19, "BROADCAST_EVENT", 1),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sal temperature command event wrong arguments",
+			args: args{
+				tag: NewSALTag(nil, readWriteModel.ApplicationIdContainer_TEMPERATURE_BROADCAST_19, "BROADCAST_EVENT", 1),
+				value: spiValues.NewPlcList([]apiValues.PlcValue{
+					spiValues.NewPlcSTRING("asd"),
+					spiValues.NewPlcBYTE(3),
+				}),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sal temperature command event",
+			args: args{
+				tag: NewSALTag(nil, readWriteModel.ApplicationIdContainer_TEMPERATURE_BROADCAST_19, "BROADCAST_EVENT", 1),
+				value: spiValues.NewPlcList([]apiValues.PlcValue{
+					spiValues.NewPlcBYTE(2),
+					spiValues.NewPlcBYTE(3),
+				}),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							readWriteModel.ApplicationIdContainer_TEMPERATURE_BROADCAST_19,
+							readWriteModel.NewSALDataTemperatureBroadcast(
+								readWriteModel.NewTemperatureBroadcastData(
+									readWriteModel.TemperatureBroadcastCommandTypeContainer_TemperatureBroadcastCommandSetBroadcastEvent1_2Bytes,
+									2,
+									3,
+								),
+								nil,
+							),
+							0,
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      false,
+			wantSupportsWrite:     true,
+			wantSupportsSubscribe: false,
+		},
+		// TODO: test sal room control system
+		{
+			name: "sal lighting command not found",
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "asd", 1),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sal lighting command off not enough arguments",
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "OFF", 1),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sal lighting command on not enough arguments",
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "ON", 1),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sal lighting command ramp to level not enough arguments",
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "RAMP_TO_LEVEL", 1),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sal lighting command terminate ramp not enough arguments",
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "TERMINATE_RAMP", 1),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		// TODO: add support for label
+		{
+			name: "sal lighting command off wrong arguments",
+			args: args{
+				tag: NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "OFF", 1),
+				value: spiValues.NewPlcList([]apiValues.PlcValue{
+					spiValues.NewPlcSTRING("asd"),
+					spiValues.NewPlcBYTE(3),
+				}),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sal lighting command on wrong arguments",
+			args: args{
+				tag: NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "ON", 1),
+				value: spiValues.NewPlcList([]apiValues.PlcValue{
+					spiValues.NewPlcSTRING("asd"),
+					spiValues.NewPlcBYTE(3),
+				}),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sal lighting command ramp to level wrong arguments",
+			args: args{
+				tag: NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "RAMP_TO_LEVEL", 1),
+				value: spiValues.NewPlcList([]apiValues.PlcValue{
+					spiValues.NewPlcSTRING("asd"),
+					spiValues.NewPlcBYTE(3),
+				}),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "sal lighting command terminate ramp wrong arguments",
+			args: args{
+				tag: NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "TERMINATE_RAMP", 1),
+				value: spiValues.NewPlcList([]apiValues.PlcValue{
+					spiValues.NewPlcSTRING("asd"),
+					spiValues.NewPlcBYTE(3),
+				}),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantErr: true,
+		},
+		// TODO: implement label support command check
+		{
+			name: "sal lighting command on",
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "ON", 1),
+				value:          spiValues.NewPlcBYTE(2),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							readWriteModel.NewSALDataLighting(
+								readWriteModel.NewLightingDataOn(
+									2,
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+								),
+								nil,
+							),
+							0,
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      false,
+			wantSupportsWrite:     true,
+			wantSupportsSubscribe: false,
+		},
+		{
+			name: "sal lighting command off",
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "OFF", 1),
+				value:          spiValues.NewPlcBYTE(2),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							readWriteModel.NewSALDataLighting(
+								readWriteModel.NewLightingDataOff(
+									2,
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOff,
+								),
+								nil,
+							),
+							0,
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      false,
+			wantSupportsWrite:     true,
+			wantSupportsSubscribe: false,
+		},
+		{
+			name: "sal lighting command ramp to level",
+			args: args{
+				tag: NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "RAMP_TO_LEVEL", 1),
+				value: spiValues.NewPlcList([]apiValues.PlcValue{
+					spiValues.NewPlcSTRING("4Second"),
+					spiValues.NewPlcBYTE(2),
+					spiValues.NewPlcBYTE(3),
+				}),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							readWriteModel.NewSALDataLighting(
+								readWriteModel.NewLightingDataRampToLevel(
+									2,
+									3,
+									readWriteModel.LightingCommandTypeContainer_LightingCommandRampToLevel_4Second,
+								),
+								nil,
+							),
+							0,
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      false,
+			wantSupportsWrite:     true,
+			wantSupportsSubscribe: false,
+		},
+		{
+			name: "sal lighting command terminate ramp",
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_LIGHTING_3A, "TERMINATE_RAMP", 1),
+				value:          spiValues.NewPlcBYTE(2),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							readWriteModel.ApplicationIdContainer_LIGHTING_3A,
+							readWriteModel.NewSALDataLighting(
+								readWriteModel.NewLightingDataTerminateRamp(
+									2,
+									readWriteModel.LightingCommandTypeContainer_LightingCommandTerminateRamp,
+								),
+								nil,
+							),
+							0,
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      false,
+			wantSupportsWrite:     true,
+			wantSupportsSubscribe: false,
+		},
+		// TODO: implement label support command
+		{
+			name: "sal ventilation command on", // Note: is based on lighting, so we just test "on" here
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_VENTILATION_70, "ON", 1),
+				value:          spiValues.NewPlcBYTE(2),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							readWriteModel.ApplicationIdContainer_VENTILATION_70,
+							readWriteModel.NewSALDataLighting(
+								readWriteModel.NewLightingDataOn(
+									2,
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+								),
+								nil,
+							),
+							0,
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      false,
+			wantSupportsWrite:     true,
+			wantSupportsSubscribe: false,
+		},
+		{
+			name: "sal irrigation control command on", // Note: is based on lighting, so we just test "on" here
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_IRRIGATION_CONTROL_71, "ON", 1),
+				value:          spiValues.NewPlcBYTE(2),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							readWriteModel.ApplicationIdContainer_IRRIGATION_CONTROL_71,
+							readWriteModel.NewSALDataLighting(
+								readWriteModel.NewLightingDataOn(
+									2,
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+								),
+								nil,
+							),
+							0,
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      false,
+			wantSupportsWrite:     true,
+			wantSupportsSubscribe: false,
+		},
+		{
+			name: "sal pools spas ponds fountains control command on", // Note: is based on lighting, so we just test "on" here
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72, "ON", 1),
+				value:          spiValues.NewPlcBYTE(2),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							readWriteModel.ApplicationIdContainer_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL_72,
+							readWriteModel.NewSALDataLighting(
+								readWriteModel.NewLightingDataOn(
+									2,
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+								),
+								nil,
+							),
+							0,
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      false,
+			wantSupportsWrite:     true,
+			wantSupportsSubscribe: false,
+		},
+		{
+			name: "sal heating on", // Note: is based on lighting, so we just test "on" here
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_HEATING_88, "ON", 1),
+				value:          spiValues.NewPlcBYTE(2),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							readWriteModel.ApplicationIdContainer_HEATING_88,
+							readWriteModel.NewSALDataLighting(
+								readWriteModel.NewLightingDataOn(
+									2,
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+								),
+								nil,
+							),
+							0,
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      false,
+			wantSupportsWrite:     true,
+			wantSupportsSubscribe: false,
+		},
+		{
+			name: "sal audio and video on", // Note: is based on lighting, so we just test "on" here
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_AUDIO_AND_VIDEO_CD, "ON", 1),
+				value:          spiValues.NewPlcBYTE(2),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							readWriteModel.ApplicationIdContainer_AUDIO_AND_VIDEO_CD,
+							readWriteModel.NewSALDataLighting(
+								readWriteModel.NewLightingDataOn(
+									2,
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+								),
+								nil,
+							),
+							0,
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      false,
+			wantSupportsWrite:     true,
+			wantSupportsSubscribe: false,
+		},
+		{
+			name: "sal hvac actuator on", // Note: is based on lighting, so we just test "on" here
+			args: args{
+				tag:            NewSALTag(nil, readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74, "ON", 1),
+				value:          spiValues.NewPlcBYTE(2),
+				alphaGenerator: &AlphaGenerator{},
+				messageCodec: &MessageCodec{
+					cbusOptions:    cbusOptions,
+					requestContext: requestContext,
+				},
+			},
+			wantCBusMessage: readWriteModel.NewCBusMessageToServer(
+				readWriteModel.NewRequestCommand(
+					readWriteModel.NewCBusCommandPointToMultiPoint(
+						readWriteModel.NewCBusPointToMultiPointCommandNormal(
+							readWriteModel.ApplicationIdContainer_HVAC_ACTUATOR_74,
+							readWriteModel.NewSALDataLighting(
+								readWriteModel.NewLightingDataOn(
+									2,
+									readWriteModel.LightingCommandTypeContainer_LightingCommandOn,
+								),
+								nil,
+							),
+							0,
+							cbusOptions,
+						),
+						readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+						cbusOptions,
+					),
+					nil,
+					readWriteModel.NewAlpha(0),
+					readWriteModel.RequestType_REQUEST_COMMAND,
+					nil,
+					nil,
+					readWriteModel.RequestType_EMPTY,
+					readWriteModel.NewRequestTermination(),
+					cbusOptions,
+				),
+				requestContext,
+				cbusOptions,
+			),
+			wantSupportsRead:      false,
+			wantSupportsWrite:     true,
+			wantSupportsSubscribe: false,
+		},
+		// TODO: implement air conditioning
+		// TODO: implement trigger control
+		// TODO: implement enable control
+		// TODO: implement security
+		// TODO: implement metering
+		// TODO: implement access control
+		// TODO: implement clock and timekeeping
+		// TODO: implement telephony status and control
+		// TODO: implement measurement
+		// TODO: implement testing
+		// TODO: implement media transport control
+		// TODO: implement error reporting
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -274,7 +1087,7 @@ func TestTagToCBusMessage(t *testing.T) {
 				t.Errorf("TagToCBusMessage() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(gotCBusMessage, tt.wantCBusMessage) {
+			if !assert.Equal(t, gotCBusMessage, tt.wantCBusMessage) {
 				gotBox := utils.BoxAnything("got", gotCBusMessage, 120)
 				wantBox := utils.BoxAnything("want", tt.wantCBusMessage, 120)
 				t.Errorf("TagToCBusMessage():\n%s", utils.NewAsciiBoxWriter().BoxSideBySide(gotBox, wantBox))
@@ -286,8 +1099,337 @@ func TestTagToCBusMessage(t *testing.T) {
 				t.Errorf("TagToCBusMessage() gotSupportsWrite = %v, want %v", gotSupportsWrite, tt.wantSupportsWrite)
 			}
 			if gotSupportsSubscribe != tt.wantSupportsSubscribe {
-				t.Errorf("TagToCBusMessage() gotSupportsSubscribe = %v, want %v", gotSupportsSubscribe, tt.wantSupportsSubscribe)
+				t.Errorf("TagToCBusMessage() got SupportsSubscribe = %v, want %v", gotSupportsSubscribe, tt.wantSupportsSubscribe)
 			}
+		})
+	}
+}
+
+func Test_producePointToPointCommand(t *testing.T) {
+	type args struct {
+		unitAddress     readWriteModel.UnitAddress
+		bridgeAddresses []readWriteModel.BridgeAddress
+		calData         readWriteModel.CALData
+		cbusOptions     readWriteModel.CBusOptions
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    readWriteModel.CBusCommand
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name: "no bridge",
+			want: readWriteModel.NewCBusCommandPointToPoint(
+				readWriteModel.NewCBusPointToPointCommandDirect(
+					nil,
+					0,
+					nil,
+					nil,
+				),
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+				nil,
+			),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "one bridge",
+			args: args{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+				},
+			},
+			want: readWriteModel.NewCBusCommandPointToPoint(
+				readWriteModel.NewCBusPointToPointCommandIndirect(
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewNetworkRoute(
+						readWriteModel.NewNetworkProtocolControlInformation(1, 1),
+						[]readWriteModel.BridgeAddress{},
+					),
+					nil,
+					0,
+					nil,
+					nil,
+				),
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+				nil,
+			),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "6 bridges",
+			args: args{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewBridgeAddress(2),
+					readWriteModel.NewBridgeAddress(3),
+					readWriteModel.NewBridgeAddress(4),
+					readWriteModel.NewBridgeAddress(5),
+					readWriteModel.NewBridgeAddress(6),
+				},
+			},
+			want: readWriteModel.NewCBusCommandPointToPoint(
+				readWriteModel.NewCBusPointToPointCommandIndirect(
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewNetworkRoute(
+						readWriteModel.NewNetworkProtocolControlInformation(6, 6),
+						[]readWriteModel.BridgeAddress{
+							readWriteModel.NewBridgeAddress(2),
+							readWriteModel.NewBridgeAddress(3),
+							readWriteModel.NewBridgeAddress(4),
+							readWriteModel.NewBridgeAddress(5),
+							readWriteModel.NewBridgeAddress(6),
+						},
+					),
+					nil,
+					0,
+					nil,
+					nil,
+				), readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+				nil,
+			),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "7 bridges",
+
+			args: args{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewBridgeAddress(2),
+					readWriteModel.NewBridgeAddress(3),
+					readWriteModel.NewBridgeAddress(4),
+					readWriteModel.NewBridgeAddress(5),
+					readWriteModel.NewBridgeAddress(6),
+					readWriteModel.NewBridgeAddress(7),
+				},
+			},
+			wantErr: assert.Error,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := producePointToPointCommand(tt.args.unitAddress, tt.args.bridgeAddresses, tt.args.calData, tt.args.cbusOptions)
+			if !tt.wantErr(t, err, fmt.Sprintf("producePointToPointCommand(%v, %v, %v, %v)", tt.args.unitAddress, tt.args.bridgeAddresses, tt.args.calData, tt.args.cbusOptions)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "producePointToPointCommand(%v, %v, %v, %v)", tt.args.unitAddress, tt.args.bridgeAddresses, tt.args.calData, tt.args.cbusOptions)
+		})
+	}
+}
+
+func Test_producePointToMultiPointCommandStatus(t *testing.T) {
+	type args struct {
+		bridgeAddresses []readWriteModel.BridgeAddress
+		application     readWriteModel.ApplicationIdContainer
+		statusRequest   readWriteModel.StatusRequest
+		cbusOptions     readWriteModel.CBusOptions
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    readWriteModel.CBusCommand
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name: "no bridge",
+			want: readWriteModel.NewCBusCommandPointToMultiPoint(
+				readWriteModel.NewCBusPointToMultiPointCommandStatus(nil, 0, nil),
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToMultiPoint),
+				nil,
+			),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "one bridge",
+			args: args{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+				},
+			},
+			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
+				readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
+					nil,
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewNetworkRoute(
+						readWriteModel.NewNetworkProtocolControlInformation(1, 1),
+						[]readWriteModel.BridgeAddress{},
+					),
+					0,
+					nil,
+				),
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
+				nil,
+			),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "6 bridges",
+			args: args{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewBridgeAddress(2),
+					readWriteModel.NewBridgeAddress(3),
+					readWriteModel.NewBridgeAddress(4),
+					readWriteModel.NewBridgeAddress(5),
+					readWriteModel.NewBridgeAddress(6),
+				},
+			},
+			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
+				readWriteModel.NewCBusPointToPointToMultiPointCommandStatus(
+					nil,
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewNetworkRoute(
+						readWriteModel.NewNetworkProtocolControlInformation(6, 6),
+						[]readWriteModel.BridgeAddress{
+							readWriteModel.NewBridgeAddress(2),
+							readWriteModel.NewBridgeAddress(3),
+							readWriteModel.NewBridgeAddress(4),
+							readWriteModel.NewBridgeAddress(5),
+							readWriteModel.NewBridgeAddress(6),
+						},
+					),
+					0,
+					nil,
+				),
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
+				nil,
+			),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "7 bridges",
+
+			args: args{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewBridgeAddress(2),
+					readWriteModel.NewBridgeAddress(3),
+					readWriteModel.NewBridgeAddress(4),
+					readWriteModel.NewBridgeAddress(5),
+					readWriteModel.NewBridgeAddress(6),
+					readWriteModel.NewBridgeAddress(7),
+				},
+			},
+			wantErr: assert.Error,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := producePointToMultiPointCommandStatus(tt.args.bridgeAddresses, tt.args.application, tt.args.statusRequest, tt.args.cbusOptions)
+			if !tt.wantErr(t, err, fmt.Sprintf("producePointToMultiPointCommandStatus(%v, %v, %v, %v)", tt.args.bridgeAddresses, tt.args.application, tt.args.statusRequest, tt.args.cbusOptions)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "producePointToMultiPointCommandStatus(%v, %v, %v, %v)", tt.args.bridgeAddresses, tt.args.application, tt.args.statusRequest, tt.args.cbusOptions)
+		})
+	}
+}
+
+func Test_producePointToMultiPointCommandNormal(t *testing.T) {
+	type args struct {
+		bridgeAddresses []readWriteModel.BridgeAddress
+		application     readWriteModel.ApplicationIdContainer
+		salData         readWriteModel.SALData
+		cbusOptions     readWriteModel.CBusOptions
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    readWriteModel.CBusCommand
+		wantErr assert.ErrorAssertionFunc
+	}{
+		{
+			name: "no bridge",
+			want: readWriteModel.NewCBusCommandPointToMultiPoint(
+				readWriteModel.NewCBusPointToMultiPointCommandNormal(0, nil, 0, nil),
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPoint),
+				nil,
+			),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "one bridge",
+			args: args{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+				},
+			},
+			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
+				readWriteModel.NewCBusPointToPointToMultiPointCommandNormal(
+					0,
+					nil,
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewNetworkRoute(
+						readWriteModel.NewNetworkProtocolControlInformation(1, 1),
+						[]readWriteModel.BridgeAddress{},
+					),
+					0,
+					nil,
+				),
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
+				nil,
+			),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "6 bridges",
+			args: args{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewBridgeAddress(2),
+					readWriteModel.NewBridgeAddress(3),
+					readWriteModel.NewBridgeAddress(4),
+					readWriteModel.NewBridgeAddress(5),
+					readWriteModel.NewBridgeAddress(6),
+				},
+			},
+			want: readWriteModel.NewCBusCommandPointToPointToMultiPoint(
+				readWriteModel.NewCBusPointToPointToMultiPointCommandNormal(
+					0,
+					nil,
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewNetworkRoute(
+						readWriteModel.NewNetworkProtocolControlInformation(6, 6),
+						[]readWriteModel.BridgeAddress{
+							readWriteModel.NewBridgeAddress(2),
+							readWriteModel.NewBridgeAddress(3),
+							readWriteModel.NewBridgeAddress(4),
+							readWriteModel.NewBridgeAddress(5),
+							readWriteModel.NewBridgeAddress(6),
+						},
+					),
+					0,
+					nil,
+				),
+				readWriteModel.NewCBusHeader(readWriteModel.PriorityClass_Class4, false, 0, readWriteModel.DestinationAddressType_PointToPointToMultiPoint),
+				nil,
+			),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "7 bridges",
+
+			args: args{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewBridgeAddress(2),
+					readWriteModel.NewBridgeAddress(3),
+					readWriteModel.NewBridgeAddress(4),
+					readWriteModel.NewBridgeAddress(5),
+					readWriteModel.NewBridgeAddress(6),
+					readWriteModel.NewBridgeAddress(7),
+				},
+			},
+			wantErr: assert.Error,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := producePointToMultiPointCommandNormal(tt.args.bridgeAddresses, tt.args.application, tt.args.salData, tt.args.cbusOptions)
+			if !tt.wantErr(t, err, fmt.Sprintf("producePointToMultiPointCommandNormal(%v, %v, %v, %v)", tt.args.bridgeAddresses, tt.args.application, tt.args.salData, tt.args.cbusOptions)) {
+				return
+			}
+			assert.Equalf(t, tt.want, got, "producePointToMultiPointCommandNormal(%v, %v, %v, %v)", tt.args.bridgeAddresses, tt.args.application, tt.args.salData, tt.args.cbusOptions)
 		})
 	}
 }
