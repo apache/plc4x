@@ -33,6 +33,7 @@ type TelephonyCommandTypeContainer uint8
 
 type ITelephonyCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() TelephonyCommandType

@@ -33,6 +33,7 @@ type HVACHumidityType uint8
 
 type IHVACHumidityType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type BACnetLimitEnable uint8
 
 type IBACnetLimitEnable interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type EventType uint8
 
 type IEventType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

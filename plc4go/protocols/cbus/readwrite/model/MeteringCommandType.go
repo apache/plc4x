@@ -33,6 +33,7 @@ type MeteringCommandType uint8
 
 type IMeteringCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

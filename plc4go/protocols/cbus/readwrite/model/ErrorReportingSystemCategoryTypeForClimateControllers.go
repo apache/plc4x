@@ -33,6 +33,7 @@ type ErrorReportingSystemCategoryTypeForClimateControllers uint8
 
 type IErrorReportingSystemCategoryTypeForClimateControllers interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type BACnetAuthorizationMode uint16
 
 type IBACnetAuthorizationMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

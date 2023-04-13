@@ -33,6 +33,7 @@ type UnitStatus uint8
 
 type IUnitStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

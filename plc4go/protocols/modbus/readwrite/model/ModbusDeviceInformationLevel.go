@@ -33,6 +33,7 @@ type ModbusDeviceInformationLevel uint8
 
 type IModbusDeviceInformationLevel interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

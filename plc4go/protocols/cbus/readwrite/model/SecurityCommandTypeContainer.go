@@ -33,6 +33,7 @@ type SecurityCommandTypeContainer uint8
 
 type ISecurityCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() SecurityCommandType

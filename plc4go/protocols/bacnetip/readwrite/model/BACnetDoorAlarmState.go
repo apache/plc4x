@@ -33,6 +33,7 @@ type BACnetDoorAlarmState uint8
 
 type IBACnetDoorAlarmState interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

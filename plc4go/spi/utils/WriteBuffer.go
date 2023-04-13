@@ -25,8 +25,7 @@ import (
 )
 
 type WriteBuffer interface {
-	// GetPos return the current byte position
-	GetPos() uint16
+	PositionAware
 	// PushContext signals opening context with the supplied logical name
 	PushContext(logicalName string, writerArgs ...WithWriterArgs) error
 	WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error

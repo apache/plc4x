@@ -33,6 +33,7 @@ type ModeTransitionType uint8
 
 type IModeTransitionType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

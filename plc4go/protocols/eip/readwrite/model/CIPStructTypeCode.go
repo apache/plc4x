@@ -33,6 +33,7 @@ type CIPStructTypeCode uint16
 
 type ICIPStructTypeCode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

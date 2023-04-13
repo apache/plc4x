@@ -33,6 +33,7 @@ type StatusCoding byte
 
 type IStatusCoding interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

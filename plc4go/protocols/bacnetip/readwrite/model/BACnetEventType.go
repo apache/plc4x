@@ -33,6 +33,7 @@ type BACnetEventType uint16
 
 type IBACnetEventType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

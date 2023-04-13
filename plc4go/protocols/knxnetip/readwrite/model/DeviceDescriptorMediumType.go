@@ -33,6 +33,7 @@ type DeviceDescriptorMediumType uint8
 
 type IDeviceDescriptorMediumType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

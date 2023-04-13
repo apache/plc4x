@@ -33,6 +33,7 @@ type KnxDatapointMainType uint16
 
 type IKnxDatapointMainType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Number() uint16
 	Name() string

@@ -33,6 +33,7 @@ type ErrorReportingSystemCategoryTypeForSupportUnits uint8
 
 type IErrorReportingSystemCategoryTypeForSupportUnits interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

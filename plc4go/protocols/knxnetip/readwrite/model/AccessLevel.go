@@ -33,6 +33,7 @@ type AccessLevel uint8
 
 type IAccessLevel interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Purpose() string
 	NeedsAuthentication() bool

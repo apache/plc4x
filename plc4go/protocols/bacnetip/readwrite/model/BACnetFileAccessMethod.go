@@ -33,6 +33,7 @@ type BACnetFileAccessMethod uint8
 
 type IBACnetFileAccessMethod interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

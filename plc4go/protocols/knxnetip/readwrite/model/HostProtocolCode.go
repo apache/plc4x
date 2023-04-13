@@ -33,6 +33,7 @@ type HostProtocolCode uint8
 
 type IHostProtocolCode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

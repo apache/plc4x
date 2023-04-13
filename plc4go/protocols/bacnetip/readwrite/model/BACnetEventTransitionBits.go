@@ -33,6 +33,7 @@ type BACnetEventTransitionBits uint8
 
 type IBACnetEventTransitionBits interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

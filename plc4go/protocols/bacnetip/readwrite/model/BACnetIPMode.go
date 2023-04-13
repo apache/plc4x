@@ -33,6 +33,7 @@ type BACnetIPMode uint8
 
 type IBACnetIPMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

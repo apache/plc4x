@@ -33,6 +33,7 @@ type BACnetAuthorizationExemption uint8
 
 type IBACnetAuthorizationExemption interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type DeviceDescriptor uint16
 
 type IDeviceDescriptor interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	FirmwareType() FirmwareType
 	MediumType() DeviceDescriptorMediumType

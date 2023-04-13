@@ -33,6 +33,7 @@ type SecurityResponseCode uint8
 
 type ISecurityResponseCode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

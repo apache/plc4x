@@ -33,6 +33,7 @@ type KnxLayer uint8
 
 type IKnxLayer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

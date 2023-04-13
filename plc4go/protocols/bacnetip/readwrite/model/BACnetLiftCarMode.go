@@ -33,6 +33,7 @@ type BACnetLiftCarMode uint16
 
 type IBACnetLiftCarMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type DestinationAddressType uint8
 
 type IDestinationAddressType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type SimulatedDataTypeSizes uint8
 
 type ISimulatedDataTypeSizes interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	DataTypeSize() uint8
 }

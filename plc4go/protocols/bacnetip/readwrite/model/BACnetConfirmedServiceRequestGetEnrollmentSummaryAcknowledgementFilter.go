@@ -33,6 +33,7 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter uint
 
 type IBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

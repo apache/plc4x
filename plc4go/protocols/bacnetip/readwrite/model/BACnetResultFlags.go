@@ -33,6 +33,7 @@ type BACnetResultFlags uint8
 
 type IBACnetResultFlags interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

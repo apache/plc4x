@@ -33,6 +33,7 @@ type GAVState uint8
 
 type IGAVState interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

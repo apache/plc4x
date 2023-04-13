@@ -33,6 +33,7 @@ type BACnetLightingInProgress uint8
 
 type IBACnetLightingInProgress interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type HVACModeAndFlagsMode uint8
 
 type IHVACModeAndFlagsMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

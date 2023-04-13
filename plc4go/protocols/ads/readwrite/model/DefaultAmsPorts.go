@@ -33,6 +33,7 @@ type DefaultAmsPorts uint16
 
 type IDefaultAmsPorts interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

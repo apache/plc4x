@@ -33,6 +33,7 @@ type LevelInformationNibblePair uint8
 
 type ILevelInformationNibblePair interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NibbleValue() uint8
 }

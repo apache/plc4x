@@ -33,6 +33,7 @@ type FirmwareType uint16
 
 type IFirmwareType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

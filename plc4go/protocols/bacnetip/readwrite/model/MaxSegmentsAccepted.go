@@ -33,6 +33,7 @@ type MaxSegmentsAccepted uint8
 
 type IMaxSegmentsAccepted interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	MaxSegments() uint8
 }

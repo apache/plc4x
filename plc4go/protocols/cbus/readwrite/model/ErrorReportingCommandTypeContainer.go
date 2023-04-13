@@ -33,6 +33,7 @@ type ErrorReportingCommandTypeContainer uint8
 
 type IErrorReportingCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() ErrorReportingCommandType

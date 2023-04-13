@@ -33,6 +33,7 @@ type EiPCommand uint16
 
 type IEiPCommand interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

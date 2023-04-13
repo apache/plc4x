@@ -33,6 +33,7 @@ type TagClass uint8
 
 type ITagClass interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

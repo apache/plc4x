@@ -33,6 +33,7 @@ type MediaTransportControlCommandType uint8
 
 type IMediaTransportControlCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

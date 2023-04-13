@@ -33,6 +33,7 @@ type SzlSublist uint8
 
 type ISzlSublist interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

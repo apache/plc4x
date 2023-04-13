@@ -33,6 +33,7 @@ type BACnetProgramError uint16
 
 type IBACnetProgramError interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

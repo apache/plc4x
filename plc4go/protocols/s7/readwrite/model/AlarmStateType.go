@@ -33,6 +33,7 @@ type AlarmStateType uint8
 
 type IAlarmStateType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

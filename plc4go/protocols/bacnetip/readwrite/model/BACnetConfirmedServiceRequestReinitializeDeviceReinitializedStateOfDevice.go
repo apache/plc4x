@@ -33,6 +33,7 @@ type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice u
 
 type IBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

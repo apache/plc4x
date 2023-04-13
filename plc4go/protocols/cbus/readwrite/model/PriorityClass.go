@@ -33,6 +33,7 @@ type PriorityClass uint8
 
 type IPriorityClass interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

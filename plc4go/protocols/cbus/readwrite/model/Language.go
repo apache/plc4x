@@ -33,6 +33,7 @@ type Language uint8
 
 type ILanguage interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

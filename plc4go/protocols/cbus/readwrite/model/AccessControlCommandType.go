@@ -33,6 +33,7 @@ type AccessControlCommandType uint8
 
 type IAccessControlCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

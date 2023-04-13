@@ -33,6 +33,7 @@ type BVLCResultCode uint16
 
 type IBVLCResultCode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

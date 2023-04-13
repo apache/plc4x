@@ -33,6 +33,7 @@ type SupportedPhysicalMedia uint8
 
 type ISupportedPhysicalMedia interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	KnxSupport() bool
 	Description() string

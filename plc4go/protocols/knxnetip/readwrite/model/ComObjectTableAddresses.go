@@ -33,6 +33,7 @@ type ComObjectTableAddresses uint16
 
 type IComObjectTableAddresses interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	ComObjectTableAddress() uint16
 }

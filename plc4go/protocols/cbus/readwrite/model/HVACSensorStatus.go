@@ -33,6 +33,7 @@ type HVACSensorStatus uint8
 
 type IHVACSensorStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type DeviceGroup uint8
 
 type IDeviceGroup interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

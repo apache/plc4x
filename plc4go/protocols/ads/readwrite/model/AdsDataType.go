@@ -33,6 +33,7 @@ type AdsDataType int8
 
 type IAdsDataType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint16
 	PlcValueType() PlcValueType

@@ -33,6 +33,7 @@ type SzlModuleTypeClass uint8
 
 type ISzlModuleTypeClass interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

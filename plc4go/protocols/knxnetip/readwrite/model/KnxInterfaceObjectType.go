@@ -33,6 +33,7 @@ type KnxInterfaceObjectType uint16
 
 type IKnxInterfaceObjectType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Code() string
 	Name() string

@@ -33,6 +33,7 @@ type BACnetSilencedState uint16
 
 type IBACnetSilencedState interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

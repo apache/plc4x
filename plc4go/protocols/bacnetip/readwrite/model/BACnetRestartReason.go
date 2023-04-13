@@ -33,6 +33,7 @@ type BACnetRestartReason uint8
 
 type IBACnetRestartReason interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

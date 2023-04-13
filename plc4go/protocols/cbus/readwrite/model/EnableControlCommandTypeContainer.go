@@ -33,6 +33,7 @@ type EnableControlCommandTypeContainer uint8
 
 type IEnableControlCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() EnableControlCommandType

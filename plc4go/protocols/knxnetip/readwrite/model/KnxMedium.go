@@ -33,6 +33,7 @@ type KnxMedium uint8
 
 type IKnxMedium interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

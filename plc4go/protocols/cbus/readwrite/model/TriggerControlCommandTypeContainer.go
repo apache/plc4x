@@ -33,6 +33,7 @@ type TriggerControlCommandTypeContainer uint8
 
 type ITriggerControlCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() TriggerControlCommandType

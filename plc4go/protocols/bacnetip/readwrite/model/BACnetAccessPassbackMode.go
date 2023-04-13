@@ -33,6 +33,7 @@ type BACnetAccessPassbackMode uint8
 
 type IBACnetAccessPassbackMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

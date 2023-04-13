@@ -33,6 +33,7 @@ type CIPDataTypeCode uint16
 
 type ICIPDataTypeCode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Size() uint8
 }

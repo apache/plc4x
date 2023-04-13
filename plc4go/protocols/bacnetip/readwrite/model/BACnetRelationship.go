@@ -33,6 +33,7 @@ type BACnetRelationship uint16
 
 type IBACnetRelationship interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type Attribute uint8
 
 type IAttribute interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	BytesReturned() uint8
 }

@@ -33,6 +33,7 @@ type ZoneStatusTemp uint8
 
 type IZoneStatusTemp interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

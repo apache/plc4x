@@ -33,6 +33,7 @@ type BACnetLiftGroupMode uint8
 
 type IBACnetLiftGroupMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

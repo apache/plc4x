@@ -33,6 +33,7 @@ type BACnetAuthenticationFactorType uint8
 
 type IBACnetAuthenticationFactorType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

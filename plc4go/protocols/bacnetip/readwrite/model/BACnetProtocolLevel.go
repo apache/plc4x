@@ -33,6 +33,7 @@ type BACnetProtocolLevel uint8
 
 type IBACnetProtocolLevel interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

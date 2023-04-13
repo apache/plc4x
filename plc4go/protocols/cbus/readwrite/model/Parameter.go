@@ -33,6 +33,7 @@ type Parameter uint8
 
 type IParameter interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	ParameterType() ParameterType
 	Form() string

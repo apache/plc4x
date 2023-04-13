@@ -33,6 +33,7 @@ type BACnetObjectType uint16
 
 type IBACnetObjectType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

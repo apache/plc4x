@@ -33,6 +33,7 @@ type BACnetLiftCarDriveStatus uint16
 
 type IBACnetLiftCarDriveStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

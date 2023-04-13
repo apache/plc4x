@@ -33,6 +33,7 @@ type BACnetNetworkType uint8
 
 type IBACnetNetworkType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

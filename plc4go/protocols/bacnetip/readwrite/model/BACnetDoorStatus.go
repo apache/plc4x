@@ -33,6 +33,7 @@ type BACnetDoorStatus uint16
 
 type IBACnetDoorStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type EnableControlCommandType uint8
 
 type IEnableControlCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

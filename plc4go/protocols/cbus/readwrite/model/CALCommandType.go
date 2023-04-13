@@ -33,6 +33,7 @@ type CALCommandType uint8
 
 type ICALCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

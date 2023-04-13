@@ -33,6 +33,7 @@ type DataTransportErrorCode uint8
 
 type IDataTransportErrorCode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

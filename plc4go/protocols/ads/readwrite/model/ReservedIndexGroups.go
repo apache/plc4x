@@ -33,6 +33,7 @@ type ReservedIndexGroups uint32
 
 type IReservedIndexGroups interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

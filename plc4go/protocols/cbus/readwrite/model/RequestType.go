@@ -33,6 +33,7 @@ type RequestType uint8
 
 type IRequestType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	ControlChar() uint8
 }

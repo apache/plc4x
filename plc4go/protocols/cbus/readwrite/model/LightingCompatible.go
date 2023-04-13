@@ -33,6 +33,7 @@ type LightingCompatible uint8
 
 type ILightingCompatible interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

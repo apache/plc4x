@@ -33,6 +33,7 @@ type AccessControlCommandTypeContainer uint8
 
 type IAccessControlCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() AccessControlCommandType

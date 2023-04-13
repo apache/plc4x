@@ -33,6 +33,7 @@ type BACnetLightingTransition uint8
 
 type IBACnetLightingTransition interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

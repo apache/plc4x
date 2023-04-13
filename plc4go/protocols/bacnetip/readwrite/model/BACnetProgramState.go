@@ -33,6 +33,7 @@ type BACnetProgramState uint8
 
 type IBACnetProgramState interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

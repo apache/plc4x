@@ -33,6 +33,7 @@ type CpuSubscribeEvents uint8
 
 type ICpuSubscribeEvents interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

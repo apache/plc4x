@@ -33,6 +33,7 @@ type LightingCommandType uint8
 
 type ILightingCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

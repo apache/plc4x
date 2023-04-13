@@ -33,6 +33,7 @@ type ApduType uint8
 
 type IApduType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

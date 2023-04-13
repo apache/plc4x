@@ -33,6 +33,7 @@ type BACnetLiftCarDoorCommand uint8
 
 type IBACnetLiftCarDoorCommand interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type BACnetLiftFault uint16
 
 type IBACnetLiftFault interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

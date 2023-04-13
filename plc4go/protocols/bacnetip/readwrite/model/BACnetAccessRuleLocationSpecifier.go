@@ -33,6 +33,7 @@ type BACnetAccessRuleLocationSpecifier uint8
 
 type IBACnetAccessRuleLocationSpecifier interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type BACnetDaysOfWeek uint8
 
 type IBACnetDaysOfWeek interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

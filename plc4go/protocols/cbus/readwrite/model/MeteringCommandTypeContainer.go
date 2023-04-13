@@ -33,6 +33,7 @@ type MeteringCommandTypeContainer uint8
 
 type IMeteringCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() MeteringCommandType

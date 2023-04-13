@@ -33,6 +33,7 @@ type BACnetNotifyType uint8
 
 type IBACnetNotifyType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

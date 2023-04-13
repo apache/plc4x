@@ -33,6 +33,7 @@ type BACnetPolarity uint8
 
 type IBACnetPolarity interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

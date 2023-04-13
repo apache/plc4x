@@ -33,6 +33,7 @@ type CIPStatus uint32
 
 type ICIPStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

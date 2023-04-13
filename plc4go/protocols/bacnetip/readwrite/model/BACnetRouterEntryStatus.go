@@ -33,6 +33,7 @@ type BACnetRouterEntryStatus uint8
 
 type IBACnetRouterEntryStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

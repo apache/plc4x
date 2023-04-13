@@ -33,6 +33,7 @@ type ErrorReportingSystemCategoryTypeForBuildingManagementSystems uint8
 
 type IErrorReportingSystemCategoryTypeForBuildingManagementSystems interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

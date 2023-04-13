@@ -33,6 +33,7 @@ type ChannelStatus uint8
 
 type IChannelStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type HVACError uint8
 
 type IHVACError interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

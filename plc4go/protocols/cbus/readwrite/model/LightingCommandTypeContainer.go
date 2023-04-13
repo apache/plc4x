@@ -33,6 +33,7 @@ type LightingCommandTypeContainer uint8
 
 type ILightingCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() LightingCommandType

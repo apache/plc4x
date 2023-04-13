@@ -33,6 +33,7 @@ type AirConditioningCommandType uint8
 
 type IAirConditioningCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

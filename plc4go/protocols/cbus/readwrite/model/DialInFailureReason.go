@@ -33,6 +33,7 @@ type DialInFailureReason uint8
 
 type IDialInFailureReason interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

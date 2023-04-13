@@ -33,6 +33,7 @@ type DataTransportSize uint8
 
 type IDataTransportSize interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	SizeInBits() bool
 }

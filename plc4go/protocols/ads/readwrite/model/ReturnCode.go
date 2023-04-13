@@ -33,6 +33,7 @@ type ReturnCode uint32
 
 type IReturnCode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

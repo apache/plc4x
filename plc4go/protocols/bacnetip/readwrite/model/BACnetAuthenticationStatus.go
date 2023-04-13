@@ -33,6 +33,7 @@ type BACnetAuthenticationStatus uint8
 
 type IBACnetAuthenticationStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

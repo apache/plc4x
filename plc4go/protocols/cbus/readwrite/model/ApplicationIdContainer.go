@@ -33,6 +33,7 @@ type ApplicationIdContainer uint8
 
 type IApplicationIdContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	LightingCompatible() LightingCompatible
 	ApplicationId() ApplicationId

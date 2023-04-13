@@ -33,6 +33,7 @@ type AccessControlDirection uint8
 
 type IAccessControlDirection interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

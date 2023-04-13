@@ -33,6 +33,7 @@ type KnxInterfaceObjectProperty uint32
 
 type IKnxInterfaceObjectProperty interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	PropertyDataType() KnxPropertyDataType
 	Name() string

@@ -33,6 +33,7 @@ type BACnetAccessRuleTimeRangeSpecifier uint8
 
 type IBACnetAccessRuleTimeRangeSpecifier interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

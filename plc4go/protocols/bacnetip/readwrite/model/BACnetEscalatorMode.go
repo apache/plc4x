@@ -33,6 +33,7 @@ type BACnetEscalatorMode uint16
 
 type IBACnetEscalatorMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

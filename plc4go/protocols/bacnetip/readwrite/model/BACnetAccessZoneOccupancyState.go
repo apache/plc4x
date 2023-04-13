@@ -33,6 +33,7 @@ type BACnetAccessZoneOccupancyState uint16
 
 type IBACnetAccessZoneOccupancyState interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type BACnetSegmentation uint8
 
 type IBACnetSegmentation interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type BACnetDoorValue uint8
 
 type IBACnetDoorValue interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

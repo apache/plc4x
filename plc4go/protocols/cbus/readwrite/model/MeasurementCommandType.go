@@ -33,6 +33,7 @@ type MeasurementCommandType uint8
 
 type IMeasurementCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

@@ -33,6 +33,7 @@ type BACnetNodeType uint8
 
 type IBACnetNodeType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

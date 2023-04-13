@@ -33,6 +33,7 @@ type BACnetEscalatorFault uint16
 
 type IBACnetEscalatorFault interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type BACnetRejectReason uint8
 
 type IBACnetRejectReason interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

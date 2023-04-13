@@ -33,6 +33,7 @@ type ConfirmationType byte
 
 type IConfirmationType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

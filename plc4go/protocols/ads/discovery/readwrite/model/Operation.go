@@ -33,6 +33,7 @@ type Operation uint32
 
 type IOperation interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

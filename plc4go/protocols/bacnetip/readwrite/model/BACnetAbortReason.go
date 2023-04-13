@@ -33,6 +33,7 @@ type BACnetAbortReason uint8
 
 type IBACnetAbortReason interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

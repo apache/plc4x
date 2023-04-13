@@ -33,6 +33,7 @@ type TriggerControlCommandType uint8
 
 type ITriggerControlCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

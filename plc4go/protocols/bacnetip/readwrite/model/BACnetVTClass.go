@@ -33,6 +33,7 @@ type BACnetVTClass uint16
 
 type IBACnetVTClass interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

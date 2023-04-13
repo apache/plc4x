@@ -33,6 +33,7 @@ type SyntaxIdType uint8
 
 type ISyntaxIdType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

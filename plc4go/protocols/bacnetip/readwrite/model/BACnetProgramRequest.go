@@ -33,6 +33,7 @@ type BACnetProgramRequest uint8
 
 type IBACnetProgramRequest interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type NLMRejectRouterToNetworkRejectReason uint8
 
 type INLMRejectRouterToNetworkRejectReason interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

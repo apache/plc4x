@@ -33,6 +33,7 @@ type BACnetFaultType uint8
 
 type IBACnetFaultType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

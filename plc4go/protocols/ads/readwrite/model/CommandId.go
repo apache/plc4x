@@ -33,6 +33,7 @@ type CommandId uint16
 
 type ICommandId interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

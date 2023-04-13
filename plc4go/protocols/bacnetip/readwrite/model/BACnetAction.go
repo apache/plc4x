@@ -33,6 +33,7 @@ type BACnetAction uint8
 
 type IBACnetAction interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

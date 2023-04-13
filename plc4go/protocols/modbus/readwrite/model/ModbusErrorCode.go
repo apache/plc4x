@@ -33,6 +33,7 @@ type ModbusErrorCode uint8
 
 type IModbusErrorCode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

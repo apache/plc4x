@@ -33,6 +33,7 @@ type ErrorCode uint16
 
 type IErrorCode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

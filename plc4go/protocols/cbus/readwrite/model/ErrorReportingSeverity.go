@@ -33,6 +33,7 @@ type ErrorReportingSeverity uint8
 
 type IErrorReportingSeverity interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

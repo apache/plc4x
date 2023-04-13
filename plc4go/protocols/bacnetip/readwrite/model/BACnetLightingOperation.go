@@ -33,6 +33,7 @@ type BACnetLightingOperation uint16
 
 type IBACnetLightingOperation interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

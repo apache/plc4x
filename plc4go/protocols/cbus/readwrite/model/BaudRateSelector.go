@@ -33,6 +33,7 @@ type BaudRateSelector uint8
 
 type IBaudRateSelector interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type COTPTpduSize uint8
 
 type ICOTPTpduSize interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	SizeInBytes() uint16
 }

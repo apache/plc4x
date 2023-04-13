@@ -33,6 +33,7 @@ type BACnetLiftCarDirection uint16
 
 type IBACnetLiftCarDirection interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

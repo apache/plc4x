@@ -33,6 +33,7 @@ type Status uint32
 
 type IStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

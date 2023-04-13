@@ -33,6 +33,7 @@ type BACnetEngineeringUnits uint32
 
 type IBACnetEngineeringUnits interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

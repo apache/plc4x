@@ -33,6 +33,7 @@ type BACnetAccumulatorRecordAccumulatorStatus uint8
 
 type IBACnetAccumulatorRecordAccumulatorStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

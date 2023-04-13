@@ -33,6 +33,7 @@ type SecurityCommandType uint8
 
 type ISecurityCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

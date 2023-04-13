@@ -33,6 +33,7 @@ type ParameterType uint8
 
 type IParameterType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

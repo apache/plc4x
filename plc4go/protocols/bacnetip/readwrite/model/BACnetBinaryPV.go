@@ -33,6 +33,7 @@ type BACnetBinaryPV uint8
 
 type IBACnetBinaryPV interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

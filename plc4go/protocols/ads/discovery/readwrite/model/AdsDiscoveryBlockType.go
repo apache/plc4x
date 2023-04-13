@@ -33,6 +33,7 @@ type AdsDiscoveryBlockType uint16
 
 type IAdsDiscoveryBlockType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

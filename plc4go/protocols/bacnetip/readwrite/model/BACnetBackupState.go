@@ -33,6 +33,7 @@ type BACnetBackupState uint8
 
 type IBACnetBackupState interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

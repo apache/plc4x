@@ -33,6 +33,7 @@ type DriverType uint32
 
 type IDriverType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

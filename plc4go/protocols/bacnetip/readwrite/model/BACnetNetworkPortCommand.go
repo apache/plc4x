@@ -33,6 +33,7 @@ type BACnetNetworkPortCommand uint8
 
 type IBACnetNetworkPortCommand interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type ModbusDeviceInformationMoreFollows uint8
 
 type IModbusDeviceInformationMoreFollows interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

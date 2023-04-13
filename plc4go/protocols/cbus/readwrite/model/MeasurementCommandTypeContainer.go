@@ -33,6 +33,7 @@ type MeasurementCommandTypeContainer uint8
 
 type IMeasurementCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() MeasurementCommandType

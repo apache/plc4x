@@ -33,6 +33,7 @@ type LightingLabelType uint8
 
 type ILightingLabelType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

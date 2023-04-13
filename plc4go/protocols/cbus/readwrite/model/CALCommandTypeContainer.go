@@ -33,6 +33,7 @@ type CALCommandTypeContainer uint8
 
 type ICALCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() CALCommandType

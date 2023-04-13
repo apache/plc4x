@@ -33,6 +33,7 @@ type KnxPropertyDataType uint8
 
 type IKnxPropertyDataType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Number() uint8
 	SizeInBytes() uint8

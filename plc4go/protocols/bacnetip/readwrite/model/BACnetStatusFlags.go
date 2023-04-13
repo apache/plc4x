@@ -33,6 +33,7 @@ type BACnetStatusFlags uint8
 
 type IBACnetStatusFlags interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

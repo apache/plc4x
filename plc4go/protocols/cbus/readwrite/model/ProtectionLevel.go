@@ -33,6 +33,7 @@ type ProtectionLevel uint8
 
 type IProtectionLevel interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Description() string
 }

@@ -33,6 +33,7 @@ type NPDUNetworkPriority uint8
 
 type INPDUNetworkPriority interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

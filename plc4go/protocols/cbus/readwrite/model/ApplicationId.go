@@ -33,6 +33,7 @@ type ApplicationId uint8
 
 type IApplicationId interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

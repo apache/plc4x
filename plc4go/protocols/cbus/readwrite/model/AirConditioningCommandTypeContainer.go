@@ -33,6 +33,7 @@ type AirConditioningCommandTypeContainer uint8
 
 type IAirConditioningCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() AirConditioningCommandType

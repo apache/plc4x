@@ -33,6 +33,7 @@ type PlcValueType uint8
 
 type IPlcValueType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

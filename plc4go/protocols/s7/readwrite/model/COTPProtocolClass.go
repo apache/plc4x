@@ -33,6 +33,7 @@ type COTPProtocolClass uint8
 
 type ICOTPProtocolClass interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

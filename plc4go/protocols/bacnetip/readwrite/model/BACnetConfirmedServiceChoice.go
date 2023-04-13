@@ -33,6 +33,7 @@ type BACnetConfirmedServiceChoice uint8
 
 type IBACnetConfirmedServiceChoice interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

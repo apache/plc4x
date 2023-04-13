@@ -33,6 +33,7 @@ type BACnetServicesSupported uint8
 
 type IBACnetServicesSupported interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

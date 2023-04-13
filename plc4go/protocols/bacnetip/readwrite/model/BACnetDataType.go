@@ -33,6 +33,7 @@ type BACnetDataType uint8
 
 type IBACnetDataType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

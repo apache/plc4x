@@ -33,6 +33,7 @@ type PinMode uint8
 
 type IPinMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

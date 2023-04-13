@@ -33,6 +33,7 @@ type TemperatureBroadcastCommandTypeContainer uint8
 
 type ITemperatureBroadcastCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() TemperatureBroadcastCommandType

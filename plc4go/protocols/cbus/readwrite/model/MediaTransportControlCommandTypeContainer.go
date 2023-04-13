@@ -33,6 +33,7 @@ type MediaTransportControlCommandTypeContainer uint8
 
 type IMediaTransportControlCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() MediaTransportControlCommandType

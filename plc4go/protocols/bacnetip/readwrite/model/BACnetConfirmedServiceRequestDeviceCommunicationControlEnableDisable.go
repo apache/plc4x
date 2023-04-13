@@ -33,6 +33,7 @@ type BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable uint8
 
 type IBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

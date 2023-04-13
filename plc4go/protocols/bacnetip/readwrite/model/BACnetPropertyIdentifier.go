@@ -33,6 +33,7 @@ type BACnetPropertyIdentifier uint32
 
 type IBACnetPropertyIdentifier interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

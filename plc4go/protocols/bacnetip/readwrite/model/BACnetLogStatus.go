@@ -33,6 +33,7 @@ type BACnetLogStatus uint8
 
 type IBACnetLogStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

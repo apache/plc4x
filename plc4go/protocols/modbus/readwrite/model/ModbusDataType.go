@@ -33,6 +33,7 @@ type ModbusDataType uint8
 
 type IModbusDataType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	DataTypeSize() uint8
 }

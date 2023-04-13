@@ -33,6 +33,7 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority uint8
 
 type IBACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

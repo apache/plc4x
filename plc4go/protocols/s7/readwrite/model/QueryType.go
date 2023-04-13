@@ -33,6 +33,7 @@ type QueryType uint8
 
 type IQueryType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

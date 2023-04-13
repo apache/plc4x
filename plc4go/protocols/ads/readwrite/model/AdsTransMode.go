@@ -33,6 +33,7 @@ type AdsTransMode uint32
 
 type IAdsTransMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

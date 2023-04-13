@@ -33,6 +33,7 @@ type TransportSize uint8
 
 type ITransportSize interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Supported_S7_300() bool
 	Supported_LOGO() bool

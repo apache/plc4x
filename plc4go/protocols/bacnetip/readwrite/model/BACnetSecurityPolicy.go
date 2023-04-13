@@ -33,6 +33,7 @@ type BACnetSecurityPolicy uint8
 
 type IBACnetSecurityPolicy interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

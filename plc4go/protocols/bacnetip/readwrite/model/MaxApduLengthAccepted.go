@@ -33,6 +33,7 @@ type MaxApduLengthAccepted uint8
 
 type IMaxApduLengthAccepted interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfOctets() uint16
 }

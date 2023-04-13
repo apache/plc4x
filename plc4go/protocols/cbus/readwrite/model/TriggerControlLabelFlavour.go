@@ -33,6 +33,7 @@ type TriggerControlLabelFlavour uint8
 
 type ITriggerControlLabelFlavour interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type BACnetAccessAuthenticationFactorDisable uint16
 
 type IBACnetAccessAuthenticationFactorDisable interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

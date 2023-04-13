@@ -33,6 +33,7 @@ type BACnetCharacterEncoding byte
 
 type IBACnetCharacterEncoding interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

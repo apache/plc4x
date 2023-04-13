@@ -33,6 +33,7 @@ type HVACType uint8
 
 type IHVACType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

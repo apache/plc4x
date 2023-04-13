@@ -33,6 +33,7 @@ type HVACHumidityModeAndFlagsMode uint8
 
 type IHVACHumidityModeAndFlagsMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

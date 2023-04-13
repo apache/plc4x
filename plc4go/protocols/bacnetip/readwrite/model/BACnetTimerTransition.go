@@ -33,6 +33,7 @@ type BACnetTimerTransition uint8
 
 type IBACnetTimerTransition interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type ErrorReportingCommandType uint8
 
 type IErrorReportingCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

@@ -33,6 +33,7 @@ type BACnetShedState uint8
 
 type IBACnetShedState interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

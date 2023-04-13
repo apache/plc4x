@@ -33,6 +33,7 @@ type ClockAndTimekeepingCommandType uint8
 
 type IClockAndTimekeepingCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

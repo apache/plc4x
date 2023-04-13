@@ -33,6 +33,7 @@ type BACnetLifeSafetyMode uint16
 
 type IBACnetLifeSafetyMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

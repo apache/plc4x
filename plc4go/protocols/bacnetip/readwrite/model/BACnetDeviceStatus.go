@@ -33,6 +33,7 @@ type BACnetDeviceStatus uint16
 
 type IBACnetDeviceStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

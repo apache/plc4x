@@ -63,6 +63,7 @@ type ${type.name} ${baseType}
 
 type I${type.name} interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 <#if type.constantNames?has_content>
 	<#list type.constantNames as constantName>

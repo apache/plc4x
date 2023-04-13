@@ -33,6 +33,7 @@ type MemoryArea uint8
 
 type IMemoryArea interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	ShortName() string
 }

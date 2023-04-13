@@ -33,6 +33,7 @@ type BACnetAccessUserType uint16
 
 type IBACnetAccessUserType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

@@ -33,6 +33,7 @@ type BACnetReliability uint16
 
 type IBACnetReliability interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

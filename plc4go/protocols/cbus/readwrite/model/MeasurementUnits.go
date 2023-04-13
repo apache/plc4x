@@ -33,6 +33,7 @@ type MeasurementUnits uint8
 
 type IMeasurementUnits interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

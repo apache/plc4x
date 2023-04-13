@@ -33,6 +33,7 @@ type BACnetWriteStatus uint8
 
 type IBACnetWriteStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

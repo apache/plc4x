@@ -33,6 +33,7 @@ type ComObjectValueType uint8
 
 type IComObjectValueType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	SizeInBytes() uint8
 }

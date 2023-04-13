@@ -33,6 +33,7 @@ type AdsPortNumbers uint16
 
 type IAdsPortNumbers interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

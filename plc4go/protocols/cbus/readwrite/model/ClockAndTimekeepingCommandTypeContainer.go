@@ -33,6 +33,7 @@ type ClockAndTimekeepingCommandTypeContainer uint8
 
 type IClockAndTimekeepingCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() ClockAndTimekeepingCommandType

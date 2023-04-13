@@ -33,6 +33,7 @@ type AccessControlCategory uint8
 
 type IAccessControlCategory interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 

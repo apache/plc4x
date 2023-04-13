@@ -33,6 +33,7 @@ type TelephonyCommandType uint8
 
 type ITelephonyCommandType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumberOfArguments() uint8
 }

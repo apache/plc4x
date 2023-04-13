@@ -33,6 +33,7 @@ type LineOffHookReason uint8
 
 type ILineOffHookReason interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
