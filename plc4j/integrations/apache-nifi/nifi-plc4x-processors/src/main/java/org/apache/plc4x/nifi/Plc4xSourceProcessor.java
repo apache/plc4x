@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.nifi.annotation.behavior.InputRequirement;
 import org.apache.nifi.annotation.behavior.WritesAttribute;
@@ -101,6 +102,8 @@ public class Plc4xSourceProcessor extends BasePlc4xProcessor {
                 throw new ProcessException(e);
             } catch (ExecutionException e) {
                 throw new ProcessException(e);
+            } catch (TimeoutException e) {
+                session.remove(flowFile);
             }
             session.transfer(flowFile, REL_SUCCESS);
         } catch (ProcessException e) {

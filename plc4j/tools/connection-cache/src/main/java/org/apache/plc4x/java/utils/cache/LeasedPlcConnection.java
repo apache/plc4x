@@ -34,6 +34,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 public class LeasedPlcConnection implements PlcConnection {
@@ -111,7 +114,20 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<? extends PlcReadResponse> execute() {
                         CompletableFuture<? extends PlcReadResponse> future = innerPlcReadRequest.execute();
-                        final CompletableFuture<PlcReadResponse> responseFuture = new CompletableFuture<>();
+                        
+                        final CompletableFuture<PlcReadResponse> responseFuture = new CompletableFuture<PlcReadResponse>() {
+                            @Override
+                            public PlcReadResponse get(long timeout, TimeUnit unit)
+                                    throws InterruptedException, ExecutionException, TimeoutException {
+                                try {
+                                    return super.get(timeout, unit);
+                                } catch (TimeoutException e) {
+                                    future.completeExceptionally(e);
+                                    throw e;
+                                }
+                            }
+                        };
+
                         future.handle((plcReadResponse, throwable) -> {
                             if (throwable == null) {
                                 responseFuture.complete(plcReadResponse);
@@ -173,7 +189,19 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<? extends PlcWriteResponse> execute() {
                         CompletableFuture<? extends PlcWriteResponse> future = innerPlcWriteRequest.execute();
-                        final CompletableFuture<PlcWriteResponse> responseFuture = new CompletableFuture<>();
+                        
+                        final CompletableFuture<PlcWriteResponse> responseFuture = new CompletableFuture<PlcWriteResponse>() {
+                            @Override
+                            public PlcWriteResponse get(long timeout, TimeUnit unit)
+                                    throws InterruptedException, ExecutionException, TimeoutException {
+                                try {
+                                    return super.get(timeout, unit);
+                                } catch (TimeoutException e) {
+                                    future.completeExceptionally(e);
+                                    throw e;
+                                }
+                            }
+                        };
                         future.handle((plcWriteResponse, throwable)->{
                             if (throwable == null) {
                                 responseFuture.complete(plcWriteResponse);
@@ -245,7 +273,19 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<? extends PlcSubscriptionResponse> execute() {
                         CompletableFuture<? extends PlcSubscriptionResponse> future = innerPlcSubscriptionRequest.execute();
-                        final CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<>();
+
+                        final CompletableFuture<PlcSubscriptionResponse> responseFuture = new CompletableFuture<PlcSubscriptionResponse>() {
+                            @Override
+                            public PlcSubscriptionResponse get(long timeout, TimeUnit unit)
+                                    throws InterruptedException, ExecutionException, TimeoutException {
+                                try {
+                                    return super.get(timeout, unit);
+                                } catch (TimeoutException e) {
+                                    future.completeExceptionally(e);
+                                    throw e;
+                                }
+                            }
+                        };
                         future.handle((plcSubscriptionResponse, throwable)->{
                             if (throwable == null) {
                                 responseFuture.complete(plcSubscriptionResponse);
@@ -337,7 +377,19 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<PlcUnsubscriptionResponse> execute() {
                         CompletableFuture<? extends PlcUnsubscriptionResponse> future = innerPlcUnsubscriptionRequest.execute();
-                        final CompletableFuture<PlcUnsubscriptionResponse> responseFuture = new CompletableFuture<>();
+
+                        final CompletableFuture<PlcUnsubscriptionResponse> responseFuture = new CompletableFuture<PlcUnsubscriptionResponse>() {
+                            @Override
+                            public PlcUnsubscriptionResponse get(long timeout, TimeUnit unit)
+                                    throws InterruptedException, ExecutionException, TimeoutException {
+                                try {
+                                    return super.get(timeout, unit);
+                                } catch (TimeoutException e) {
+                                    future.completeExceptionally(e);
+                                    throw e;
+                                }
+                            }
+                        };
                         future.handle((plcUnsubscriptionResponse, throwable)->{
                             if (throwable == null) {
                                 responseFuture.complete(plcUnsubscriptionResponse);
@@ -389,7 +441,19 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<? extends PlcBrowseResponse> execute() {
                         CompletableFuture<? extends PlcBrowseResponse> future = innerPlcBrowseRequest.execute();
-                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<>();
+
+                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<PlcBrowseResponse>() {
+                            @Override
+                            public PlcBrowseResponse get(long timeout, TimeUnit unit)
+                                    throws InterruptedException, ExecutionException, TimeoutException {
+                                try {
+                                    return super.get(timeout, unit);
+                                } catch (TimeoutException e) {
+                                    future.completeExceptionally(e);
+                                    throw e;
+                                }
+                            }
+                        };
                         future.handle((plcBrowseResponse, throwable)->{
                             if (throwable == null) {
                                 responseFuture.complete(plcBrowseResponse);
@@ -406,7 +470,19 @@ public class LeasedPlcConnection implements PlcConnection {
                     @Override
                     public CompletableFuture<? extends PlcBrowseResponse> executeWithInterceptor(PlcBrowseRequestInterceptor interceptor) {
                         CompletableFuture<? extends PlcBrowseResponse> future = innerPlcBrowseRequest.executeWithInterceptor(interceptor);
-                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<>();
+                        
+                        final CompletableFuture<PlcBrowseResponse> responseFuture = new CompletableFuture<PlcBrowseResponse>() {
+                            @Override
+                            public PlcBrowseResponse get(long timeout, TimeUnit unit)
+                                    throws InterruptedException, ExecutionException, TimeoutException {
+                                try {
+                                    return super.get(timeout, unit);
+                                } catch (TimeoutException e) {
+                                    future.completeExceptionally(e);
+                                    throw e;
+                                }
+                            }
+                        };
                         future.handle((plcBrowseResponse, throwable)->{
                             if (throwable == null) {
                                 responseFuture.complete(plcBrowseResponse);

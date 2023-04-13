@@ -34,7 +34,6 @@ import org.apache.nifi.annotation.behavior.WritesAttribute;
 import org.apache.nifi.annotation.behavior.WritesAttributes;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
-import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.flowfile.FlowFile;
 import org.apache.nifi.flowfile.attributes.CoreAttributes;
@@ -89,12 +88,6 @@ public class Plc4xSourceRecordProcessor extends BasePlc4xProcessor {
 		pds.addAll(super.getSupportedPropertyDescriptors());
 		pds.add(PLC_RECORD_WRITER_FACTORY);
 		this.properties = Collections.unmodifiableList(pds);
-	}
-
-	@OnScheduled
-	@Override
-	public void onScheduled(final ProcessContext context) {
-		super.onScheduled(context);
 	}
 	
 	@Override
