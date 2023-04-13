@@ -28,6 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/nettest"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -45,10 +46,12 @@ func TestDiscoverer_Discover(t *testing.T) {
 		discoveryOptions []options.WithDiscoveryOption
 	}
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr assert.ErrorAssertionFunc
+		name     string
+		fields   fields
+		args     args
+		wantErr  assert.ErrorAssertionFunc
+		setup    func() (params []interface{})
+		teardown func(params []interface{})
 	}{
 		{
 			name: "discover unknown device",
@@ -66,6 +69,36 @@ func TestDiscoverer_Discover(t *testing.T) {
 			},
 			wantErr: assert.NoError,
 		},
+		{
+			name: "test with loopback",
+			fields: fields{
+				transportInstanceCreationQueue: utils.NewFixedSizeExecutor(50, 100),
+				deviceScanningQueue:            utils.NewFixedSizeExecutor(50, 100),
+			},
+			args: args{
+				ctx: context.Background(),
+				callback: func(_ apiModel.PlcDiscoveryItem) {
+				},
+				discoveryOptions: []options.WithDiscoveryOption{
+					options.WithDiscoveryOptionDeviceName("blub"),
+				},
+			},
+			wantErr: assert.NoError,
+			setup: func() (params []interface{}) {
+				oldaddressProviderRetriever := addressProviderRetriever
+				addressProviderRetriever = func(_ []string) ([]addressProvider, error) {
+					loopbackInterface, err := nettest.LoopbackInterface()
+					if err != nil {
+						return nil, err
+					}
+					return []addressProvider{&wrappedInterface{loopbackInterface}}, nil
+				}
+				return []interface{}{oldaddressProviderRetriever}
+			},
+			teardown: func(params []interface{}) {
+				addressProviderRetriever = params[0].(func(deviceNames []string) ([]addressProvider, error))
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -73,7 +106,14 @@ func TestDiscoverer_Discover(t *testing.T) {
 				transportInstanceCreationQueue: tt.fields.transportInstanceCreationQueue,
 				deviceScanningQueue:            tt.fields.deviceScanningQueue,
 			}
+			var params []interface{}
+			if tt.setup != nil {
+				params = tt.setup()
+			}
 			tt.wantErr(t, d.Discover(tt.args.ctx, tt.args.callback, tt.args.discoveryOptions...), fmt.Sprintf("Discover(%v, func(), %v)", tt.args.ctx, tt.args.discoveryOptions))
+			if tt.teardown != nil {
+				tt.teardown(params)
+			}
 		})
 	}
 }
