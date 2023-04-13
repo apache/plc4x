@@ -23,6 +23,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
+	"github.com/pkg/errors"
 	"net"
 	"net/url"
 	"sync"
@@ -58,33 +59,19 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	d.transportInstanceCreationQueue.Start()
 	d.deviceScanningQueue.Start()
 
-	tcpTransport := tcp.NewTransport()
-
-	allInterfaces, err := net.Interfaces()
-	if err != nil {
-		return err
+	deviceNamesOptions := options.FilterDiscoveryOptionsDeviceName(discoveryOptions)
+	deviceNames := make([]string, len(deviceNamesOptions))
+	for i, option := range deviceNamesOptions {
+		deviceNames[i] = option.GetDeviceName()
 	}
-
-	// If no device is explicitly selected via option, simply use all of them
-	// However if a discovery option is present to select a device by name, only
-	// add those devices matching any of the given names.
-	var interfaces []net.Interface
-	deviceNames := options.FilterDiscoveryOptionsDeviceName(discoveryOptions)
-	if len(deviceNames) > 0 {
-		for _, curInterface := range allInterfaces {
-			for _, deviceNameOption := range deviceNames {
-				if curInterface.Name == deviceNameOption.GetDeviceName() {
-					interfaces = append(interfaces, curInterface)
-					break
-				}
-			}
-		}
-	} else {
-		interfaces = allInterfaces
+	interfaces, err := addressProviderRetriever(deviceNames)
+	if err != nil {
+		return errors.Wrap(err, "error getting addresses")
 	}
 
 	transportInstances := make(chan transports.TransportInstance)
 	wg := &sync.WaitGroup{}
+	tcpTransport := tcp.NewTransport()
 	// Iterate over all network devices of this system.
 	for _, netInterface := range interfaces {
 		addrs, err := netInterface.Addrs()
@@ -92,7 +79,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 			return err
 		}
 		wg.Add(1)
-		go func(netInterface net.Interface) {
+		go func(netInterface addressProvider) {
 			defer func() { wg.Done() }()
 			// Iterate over all addresses the current interface has configured
 			for _, addr := range addrs {
@@ -113,7 +100,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 				if ipv4Addr == nil || ipv4Addr.IsLoopback() {
 					continue
 				}
-				addresses, err := utils.GetIPAddresses(ctx, netInterface, false)
+				addresses, err := utils.GetIPAddresses(ctx, netInterface.containedInterface(), false)
 				if err != nil {
 					log.Warn().Err(err).Msgf("Can't get addresses for %v", netInterface)
 					continue
@@ -274,4 +261,64 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 			}
 		}
 	}
+}
+
+// addressProvider is used to make discover testable
+type addressProvider interface {
+	// Addrs is implemented by net.Interface#Addrs
+	Addrs() ([]net.Addr, error)
+	name() string
+	containedInterface() net.Interface
+}
+
+// wrappedInterface extends net.Interface with name() and containedInterface()
+type wrappedInterface struct {
+	*net.Interface
+}
+
+func (w *wrappedInterface) name() string {
+	return w.Interface.Name
+}
+
+func (w *wrappedInterface) containedInterface() net.Interface {
+	return *w.Interface
+}
+
+// allInterfaceRetriever can be exchanged in tests
+var allInterfaceRetriever = func() ([]addressProvider, error) {
+	interfaces, err := net.Interfaces()
+	if err != nil {
+		return nil, errors.Wrap(err, "could not retrieve all interfaces")
+	}
+	addressProviders := make([]addressProvider, len(interfaces))
+	for i, networkInterface := range interfaces {
+		addressProviders[i] = &wrappedInterface{&networkInterface}
+	}
+	return addressProviders, nil
+}
+
+// addressProviderRetriever can be exchanged in tests
+var addressProviderRetriever = func(deviceNames []string) ([]addressProvider, error) {
+	allInterfaces, err := allInterfaceRetriever()
+	if err != nil {
+		return nil, errors.Wrap(err, "error getting all interfaces")
+	}
+
+	// If no device is explicitly selected via option, simply use all of them
+	// However if a discovery option is present to select a device by name, only
+	// add those devices matching any of the given names.
+	var interfaces []addressProvider
+	if len(deviceNames) <= 0 {
+		return allInterfaceRetriever()
+	}
+
+	for _, curInterface := range allInterfaces {
+		for _, deviceName := range deviceNames {
+			if curInterface.name() == deviceName {
+				interfaces = append(interfaces, curInterface)
+				break
+			}
+		}
+	}
+	return interfaces, nil
 }
