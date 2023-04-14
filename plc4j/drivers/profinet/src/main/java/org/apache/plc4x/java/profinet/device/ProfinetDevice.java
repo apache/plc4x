@@ -56,7 +56,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class ProfinetDevice implements PlcSubscriber{
+public class ProfinetDevice implements PlcSubscriber {
 
     private final Logger logger = LoggerFactory.getLogger(ProfinetDevice.class);
     private static final int DEFAULT_NUMBER_OF_PORTS_TO_SCAN = 100;
@@ -74,7 +74,7 @@ public class ProfinetDevice implements PlcSubscriber{
     private boolean firstMessage = true;
     private boolean setIpAddress = false;
 
-    public ProfinetDevice(String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler)  {
+    public ProfinetDevice(String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler) {
         this.gsdHandler = gsdHandler;
         deviceContext.setDeviceAccess(deviceAccess);
         deviceContext.setSubModules(subModules);
@@ -179,13 +179,13 @@ public class ProfinetDevice implements PlcSubscriber{
      */
     public void start() {
         final long timeout = (long) deviceContext.getConfiguration().getReductionRatio() * deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getWatchdogFactor() * MIN_CYCLE_NANO_SEC;
-        final int cycleTime = (int) (deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getReductionRatio() * (MIN_CYCLE_NANO_SEC/1000000.0));
+        final int cycleTime = (int) (deviceContext.getConfiguration().getSendClockFactor() * deviceContext.getConfiguration().getReductionRatio() * (MIN_CYCLE_NANO_SEC / 1000000.0));
         Function<Object, Boolean> subscription =
             message -> {
                 long startTime = System.nanoTime();
                 while (deviceContext.getState() != ProfinetDeviceState.ABORT) {
                     try {
-                        switch(deviceContext.getState()) {
+                        switch (deviceContext.getState()) {
                             case IDLE:
                                 CreateConnection createConnection = new CreateConnection();
                                 recordIdAndSend(createConnection);
@@ -422,12 +422,15 @@ public class ProfinetDevice implements PlcSubscriber{
 
         CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
         private long id = getObjectId();
+
         public CompletableFuture<Boolean> getResponseHandled() {
             return responseHandled;
         }
+
         public long getId() {
             return id;
         }
+
         public void setId(long id) {
             this.id = id;
         }
@@ -969,7 +972,7 @@ public class ProfinetDevice implements PlcSubscriber{
                     buffer.writeByte((byte) 0x00);
                 }
 
-                int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC)) + offset) % 65536);
+                int elapsedTime = (int) ((((System.nanoTime() - startTime) / (MIN_CYCLE_NANO_SEC)) + offset) % 65536);
 
                 Ethernet_Frame frame = new Ethernet_Frame(
                     deviceContext.getMacAddress(),
@@ -995,7 +998,7 @@ public class ProfinetDevice implements PlcSubscriber{
                 deviceContext.setState(ProfinetDeviceState.ABORT);
                 logger.error("Error serializing cyclic data for device {}", deviceContext.getDeviceName());
 
-                int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC)) + offset) % 65536);
+                int elapsedTime = (int) ((((System.nanoTime() - startTime) / (MIN_CYCLE_NANO_SEC)) + offset) % 65536);
 
                 Ethernet_Frame frame = new Ethernet_Frame(
                     deviceContext.getMacAddress(),
@@ -1021,7 +1024,7 @@ public class ProfinetDevice implements PlcSubscriber{
         }
 
         @Override
-        public void handle(Ethernet_Frame packet)  {
+        public void handle(Ethernet_Frame packet) {
             deviceContext.setState(ProfinetDeviceState.ABORT);
             logger.error("Error Parsing Cyclic Data from device {}", deviceContext.getDeviceName());
         }
@@ -1029,11 +1032,9 @@ public class ProfinetDevice implements PlcSubscriber{
 
     public class DcpSetIpAddress implements ProfinetCallable<Ethernet_Frame> {
 
-        private final long startTime;
         private long id = getObjectId();
 
-        public DcpSetIpAddress(long startTime) {
-            this.startTime = startTime;
+        public DcpSetIpAddress() {
         }
 
         public long getId() {
@@ -1046,83 +1047,41 @@ public class ProfinetDevice implements PlcSubscriber{
 
         public Ethernet_Frame create() {
 
-            WriteBufferByteBased buffer = new WriteBufferByteBased(deviceContext.getOutputReq().getDataLength());
-            PnIoCm_IoCrBlockReqApi api = deviceContext.getOutputReq().getApis().get(0);
-            try {
-                for (PnIoCm_IoCs iocs : api.getIoCss()) {
-                    PnIoCm_DataUnitIoCs ioc = new PnIoCm_DataUnitIoCs(false, (byte) 0x03, false);
-                    ioc.serialize(buffer);
-                }
+            Ethernet_Frame frame = new Ethernet_Frame(
+                deviceContext.getMacAddress(),
+                deviceContext.getLocalMacAddress(),
+                new Ethernet_FramePayload_VirtualLan(
+                    VirtualLanPriority.INTERNETWORK_CONTROL,
+                    false,
+                    0,
+                    new Ethernet_FramePayload_PnDcp(
+                        new PcDcp_GetSet_Pdu(
+                            PnDcp_FrameId.DCP_GetSet_PDU.getValue(),
+                            false,
+                            false,
+                            0x10000001L,
+                            Collections.singletonList(
+                                new PnDcp_Block_IpParameter(
+                                    false,
+                                    false,
+                                    true,
+                                    deviceContext.getIpAddressAsByteArray(),
+                                    deviceContext.getSubnetAsByteArray(),
+                                    deviceContext.getGatewayAsByteArray()
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+            return frame;
 
-                for (PnIoCm_IoDataObject dataObject : api.getIoDataObjects()) {
-                    // TODO: Need to specify the datatype length based on the gsd file
-                    PnIoCm_DataUnitDataObject ioc = new PnIoCm_DataUnitDataObject(
-                        new byte[1],
-                        new PnIoCm_DataUnitIoCs(false, (byte) 0x03, false),
-                        1
-                    );
-                    ioc.serialize(buffer);
-                }
-
-                while (buffer.getPos() < deviceContext.getOutputReq().getDataLength()) {
-                    buffer.writeByte((byte) 0x00);
-                }
-
-                int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC)) + offset) % 65536);
-
-                Ethernet_Frame frame = new Ethernet_Frame(
-                    deviceContext.getMacAddress(),
-                    deviceContext.getLocalMacAddress(),
-                    new Ethernet_FramePayload_VirtualLan(
-                        VirtualLanPriority.INTERNETWORK_CONTROL,
-                        false,
-                        0,
-                        new Ethernet_FramePayload_PnDcp(
-                            new PnDcp_Pdu_RealTimeCyclic(
-                                deviceContext.getOutputReq().getFrameId(),
-                                new PnIo_CyclicServiceDataUnit(buffer.getBytes(), (short) deviceContext.getOutputReq().getDataLength()),
-                                elapsedTime,
-                                false,
-                                true,
-                                true,
-                                true,
-                                false,
-                                true))
-                    ));
-                return frame;
-            } catch (SerializationException e) {
-                deviceContext.setState(ProfinetDeviceState.ABORT);
-                logger.error("Error serializing cyclic data for device {}", deviceContext.getDeviceName());
-
-                int elapsedTime = (int) ((((System.nanoTime() - startTime)/(MIN_CYCLE_NANO_SEC)) + offset) % 65536);
-
-                Ethernet_Frame frame = new Ethernet_Frame(
-                    deviceContext.getMacAddress(),
-                    deviceContext.getLocalMacAddress(),
-                    new Ethernet_FramePayload_VirtualLan(
-                        VirtualLanPriority.INTERNETWORK_CONTROL,
-                        false,
-                        0,
-                        new Ethernet_FramePayload_PnDcp(
-                            new PnDcp_Pdu_RealTimeCyclic(
-                                deviceContext.getOutputReq().getFrameId(),
-                                new PnIo_CyclicServiceDataUnit(new byte[]{}, (short) 0),
-                                elapsedTime,
-                                false,
-                                true,
-                                true,
-                                true,
-                                false,
-                                true))
-                    ));
-                return frame;
-            }
         }
 
         @Override
-        public void handle(Ethernet_Frame packet)  {
+        public void handle(Ethernet_Frame packet) {
             deviceContext.setState(ProfinetDeviceState.ABORT);
-            logger.error("Error Parsing Cyclic Data from device {}", deviceContext.getDeviceName());
+            logger.error("Error Parsing set IP Address from device {}", deviceContext.getDeviceName());
         }
     }
 }
