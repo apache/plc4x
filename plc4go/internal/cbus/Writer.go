@@ -34,11 +34,11 @@ import (
 
 type Writer struct {
 	alphaGenerator *AlphaGenerator
-	messageCodec   spi.MessageCodec
+	messageCodec   *MessageCodec
 	tm             spi.RequestTransactionManager
 }
 
-func NewWriter(tpduGenerator *AlphaGenerator, messageCodec spi.MessageCodec, tm spi.RequestTransactionManager) Writer {
+func NewWriter(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm spi.RequestTransactionManager) Writer {
 	return Writer{
 		alphaGenerator: tpduGenerator,
 		messageCodec:   messageCodec,
@@ -64,7 +64,7 @@ func (m Writer) Write(ctx context.Context, writeRequest apiModel.PlcWriteRequest
 		for _, tagName := range writeRequest.GetTagNames() {
 			tag := writeRequest.GetTag(tagName)
 			plcValue := writeRequest.GetValue(tagName)
-			message, _, supportsWrite, _, err := TagToCBusMessage(tag, plcValue, m.alphaGenerator, m.messageCodec.(*MessageCodec))
+			message, _, supportsWrite, _, err := TagToCBusMessage(tag, plcValue, m.alphaGenerator, m.messageCodec)
 			if !supportsWrite {
 				result <- &spiModel.DefaultPlcWriteRequestResult{
 					Request:  writeRequest,

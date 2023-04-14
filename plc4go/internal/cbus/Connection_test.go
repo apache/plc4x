@@ -82,7 +82,7 @@ func TestAlphaGenerator_getAndIncrement_Turnaround(t *testing.T) {
 func TestConnection_BrowseRequestBuilder(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -125,7 +125,7 @@ func TestConnection_BrowseRequestBuilder(t *testing.T) {
 func TestConnection_ConnectWithContext(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -209,7 +209,7 @@ func TestConnection_ConnectWithContext(t *testing.T) {
 func TestConnection_GetConnection(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -249,7 +249,7 @@ func TestConnection_GetConnection(t *testing.T) {
 func TestConnection_GetConnectionId(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -286,7 +286,7 @@ func TestConnection_GetConnectionId(t *testing.T) {
 func TestConnection_GetMessageCodec(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -300,7 +300,11 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 		want   spi.MessageCodec
 	}{
 		{
-			name: "just nil",
+			name: "just get",
+			fields: fields{
+				messageCodec: &MessageCodec{},
+			},
+			want: &MessageCodec{},
 		},
 	}
 	for _, tt := range tests {
@@ -323,7 +327,7 @@ func TestConnection_GetMessageCodec(t *testing.T) {
 func TestConnection_GetMetadata(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -367,7 +371,7 @@ func TestConnection_GetMetadata(t *testing.T) {
 func TestConnection_GetTracer(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -404,7 +408,7 @@ func TestConnection_GetTracer(t *testing.T) {
 func TestConnection_IsTraceEnabled(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -441,7 +445,7 @@ func TestConnection_IsTraceEnabled(t *testing.T) {
 func TestConnection_ReadRequestBuilder(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -484,7 +488,7 @@ func TestConnection_ReadRequestBuilder(t *testing.T) {
 func TestConnection_String(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -522,7 +526,7 @@ func TestConnection_String(t *testing.T) {
 func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -565,7 +569,7 @@ func TestConnection_SubscriptionRequestBuilder(t *testing.T) {
 func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -600,7 +604,7 @@ func TestConnection_UnsubscriptionRequestBuilder(t *testing.T) {
 func TestConnection_WriteRequestBuilder(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -643,7 +647,7 @@ func TestConnection_WriteRequestBuilder(t *testing.T) {
 func TestConnection_addSubscriber(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -698,7 +702,7 @@ func TestConnection_addSubscriber(t *testing.T) {
 func TestConnection_fireConnected(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -760,7 +764,7 @@ func TestConnection_fireConnected(t *testing.T) {
 func TestConnection_fireConnectionError(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -841,7 +845,7 @@ func TestConnection_fireConnectionError(t *testing.T) {
 func TestConnection_sendCalDataWrite(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -914,7 +918,7 @@ func TestConnection_sendCalDataWrite(t *testing.T) {
 func TestConnection_sendReset(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -985,7 +989,7 @@ func TestConnection_sendReset(t *testing.T) {
 func TestConnection_setApplicationFilter(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1054,7 +1058,7 @@ func TestConnection_setApplicationFilter(t *testing.T) {
 func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1123,7 +1127,7 @@ func TestConnection_setInterface1PowerUpSettings(t *testing.T) {
 func TestConnection_setInterfaceOptions1(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1192,7 +1196,7 @@ func TestConnection_setInterfaceOptions1(t *testing.T) {
 func TestConnection_setInterfaceOptions3(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1261,7 +1265,7 @@ func TestConnection_setInterfaceOptions3(t *testing.T) {
 func TestConnection_setupConnection(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1627,7 +1631,7 @@ func TestConnection_setupConnection(t *testing.T) {
 func TestConnection_startSubscriptionHandler(t *testing.T) {
 	type fields struct {
 		DefaultConnection _default.DefaultConnection
-		messageCodec      spi.MessageCodec
+		messageCodec      *MessageCodec
 		subscribers       []*Subscriber
 		tm                spi.RequestTransactionManager
 		configuration     Configuration
@@ -1703,7 +1707,7 @@ func TestConnection_startSubscriptionHandler(t *testing.T) {
 
 func TestNewConnection(t *testing.T) {
 	type args struct {
-		messageCodec  spi.MessageCodec
+		messageCodec  *MessageCodec
 		configuration Configuration
 		driverContext DriverContext
 		tagHandler    spi.PlcTagHandler

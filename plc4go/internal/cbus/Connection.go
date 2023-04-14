@@ -56,7 +56,7 @@ func (t *AlphaGenerator) getAndIncrement() byte {
 type Connection struct {
 	_default.DefaultConnection
 	alphaGenerator AlphaGenerator
-	messageCodec   spi.MessageCodec
+	messageCodec   *MessageCodec
 	subscribers    []*Subscriber
 	tm             spi.RequestTransactionManager
 
@@ -67,7 +67,7 @@ type Connection struct {
 	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec *MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		alphaGenerator: AlphaGenerator{currentAlpha: 'g'},
 		messageCodec:   messageCodec,
@@ -177,8 +177,8 @@ func (c *Connection) String() string {
 }
 
 func (c *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConnectionConnectResult) {
-	cbusOptions := &c.messageCodec.(*MessageCodec).cbusOptions
-	requestContext := &c.messageCodec.(*MessageCodec).requestContext
+	cbusOptions := &c.messageCodec.cbusOptions
+	requestContext := &c.messageCodec.requestContext
 
 	if !c.sendReset(ctx, ch, cbusOptions, requestContext, false) {
 		log.Warn().Msg("First reset failed")
@@ -213,7 +213,7 @@ func (c *Connection) startSubscriptionHandler() {
 	go func() {
 		log.Debug().Msg("SAL handler stated")
 		for c.IsConnected() {
-			for monitoredSal := range c.messageCodec.(*MessageCodec).monitoredSALs {
+			for monitoredSal := range c.messageCodec.monitoredSALs {
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredSal(monitoredSal); ok {
 						log.Debug().Msgf("%v handled\n%s", subscriber, monitoredSal)
@@ -227,7 +227,7 @@ func (c *Connection) startSubscriptionHandler() {
 	go func() {
 		log.Debug().Msg("default MMI started")
 		for c.IsConnected() {
-			for calReply := range c.messageCodec.(*MessageCodec).monitoredMMIs {
+			for calReply := range c.messageCodec.monitoredMMIs {
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredMMI(calReply); ok {
 						log.Debug().Msgf("%v handled\n%s", subscriber, calReply)

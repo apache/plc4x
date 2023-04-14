@@ -35,11 +35,11 @@ import (
 
 type Reader struct {
 	alphaGenerator *AlphaGenerator
-	messageCodec   spi.MessageCodec
+	messageCodec   *MessageCodec
 	tm             spi.RequestTransactionManager
 }
 
-func NewReader(tpduGenerator *AlphaGenerator, messageCodec spi.MessageCodec, tm spi.RequestTransactionManager) *Reader {
+func NewReader(tpduGenerator *AlphaGenerator, messageCodec *MessageCodec, tm spi.RequestTransactionManager) *Reader {
 	return &Reader{
 		alphaGenerator: tpduGenerator,
 		messageCodec:   messageCodec,
@@ -67,7 +67,7 @@ func (m *Reader) readSync(ctx context.Context, readRequest apiModel.PlcReadReque
 	messages := make(map[string]readWriteModel.CBusMessage)
 	for _, tagName := range readRequest.GetTagNames() {
 		tag := readRequest.GetTag(tagName)
-		message, supportsRead, _, _, err := TagToCBusMessage(tag, nil, m.alphaGenerator, m.messageCodec.(*MessageCodec))
+		message, supportsRead, _, _, err := TagToCBusMessage(tag, nil, m.alphaGenerator, m.messageCodec)
 		if !supportsRead {
 			result <- &spiModel.DefaultPlcReadRequestResult{
 				Request:  readRequest,
