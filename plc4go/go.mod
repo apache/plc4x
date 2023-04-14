@@ -33,7 +33,7 @@ require (
 	github.com/libp2p/go-reuseport v0.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/rivo/tview v0.0.0-20230208211350-7dfff1ce7854
-	github.com/rs/zerolog v1.29.0
+	github.com/rs/zerolog v1.29.1
 	github.com/schollz/progressbar/v3 v3.13.1
 	github.com/snksoft/crc v1.1.0
 	github.com/spf13/cobra v1.7.0
