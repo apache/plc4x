@@ -25,8 +25,11 @@ import (
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/stretchr/testify/assert"
+	"net/url"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -171,13 +174,44 @@ func TestReader_readSync(t *testing.T) {
 			},
 		},
 		{
-			name: "read something",
+			name: "read identify type",
 			fields: fields{
 				alphaGenerator: &AlphaGenerator{currentAlpha: 'g'},
-				messageCodec: &MessageCodec{
-					requestContext: readWriteModel.NewRequestContext(false),
-					cbusOptions:    readWriteModel.NewCBusOptions(false, false, false, false, false, false, false, false, false),
-				},
+				messageCodec: func() *MessageCodec {
+					transport := test.NewTransport()
+					transportUrl := url.URL{Scheme: "test"}
+					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					type MockState uint8
+					const (
+						INITIAL MockState = iota
+						DONE
+					)
+					currentState := atomic.Value{}
+					currentState.Store(INITIAL)
+					transportInstance.(*test.TransportInstance).SetWriteInterceptor(func(transportInstance *test.TransportInstance, data []byte) {
+						switch currentState.Load().(MockState) {
+						case INITIAL:
+							t.Log("Dispatching read response")
+							transportInstance.FillReadBuffer([]byte("g.890150435F434E49454421\r\n"))
+							currentState.Store(DONE)
+						case DONE:
+							t.Log("Done")
+						}
+					})
+					codec := NewMessageCodec(transportInstance)
+					err = codec.Connect()
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+						return nil
+					}
+					return codec
+				}(),
 				tm: spi.NewRequestTransactionManager(10),
 			},
 			args: args{
@@ -188,7 +222,7 @@ func TestReader_readSync(t *testing.T) {
 				}(),
 				readRequest: spiModel.NewDefaultPlcReadRequest(
 					map[string]apiModel.PlcTag{
-						"blub": NewCALIdentifyTag(nil, nil, readWriteModel.Attribute_Manufacturer, 1),
+						"blub": NewCALIdentifyTag(readWriteModel.NewUnitAddress(2), nil, readWriteModel.Attribute_Type, 1),
 					},
 					[]string{
 						"blub",
@@ -206,7 +240,11 @@ func TestReader_readSync(t *testing.T) {
 					t.Fail()
 				case result := <-results:
 					assert.Nil(t, result.GetErr())
-					assert.NotNil(t, result.GetResponse())
+					response := result.GetResponse()
+					assert.NotNil(t, response)
+					value := response.GetValue("blub")
+					assert.NotNil(t, value)
+					assert.Equal(t, "PC_CNIED", value.GetString())
 				}
 				return true
 			},
