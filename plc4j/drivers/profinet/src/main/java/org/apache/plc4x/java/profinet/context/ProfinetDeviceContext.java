@@ -231,6 +231,18 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         this.ipAddress = ipAddress;
     }
 
+    public byte[] getIpAddressAsByteArray() {
+        return null;
+    }
+
+    public byte[] getSubnetAsByteArray() {
+        return null;
+    }
+
+    public byte[] getGatewayAsByteArray() {
+        return null;
+    }
+
     public String getPortId() {
         return portId;
     }
