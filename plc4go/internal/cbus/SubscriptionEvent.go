@@ -23,29 +23,29 @@ import (
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	internalMode "github.com/apache/plc4x/plc4go/spi/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 )
 
 type SubscriptionEvent struct {
-	internalMode.DefaultPlcSubscriptionEvent
+	spiModel.DefaultPlcSubscriptionEvent
 	address map[string]string
 	sources map[string]string
 }
 
 func NewSubscriptionEvent(
 	tags map[string]apiModel.PlcTag,
-	types map[string]internalMode.SubscriptionType,
+	types map[string]spiModel.SubscriptionType,
 	intervals map[string]time.Duration,
 	responseCodes map[string]apiModel.PlcResponseCode,
 	address map[string]string,
 	sources map[string]string,
-	values map[string]values.PlcValue) SubscriptionEvent {
+	values map[string]apiValues.PlcValue) SubscriptionEvent {
 	subscriptionEvent := SubscriptionEvent{
 		address: address,
 		sources: sources,
 	}
-	subscriptionEvent.DefaultPlcSubscriptionEvent = internalMode.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
+	subscriptionEvent.DefaultPlcSubscriptionEvent = spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
 	return subscriptionEvent
 }
 
