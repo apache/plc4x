@@ -72,7 +72,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private MacAddress localMacAddress;
     private final DceRpc_ActivityUuid uuid;
     private ProfinetConfiguration configuration;
-    private InetAddress localIpAddress;
+
     private DatagramSocket socket;
     private ProfinetChannel channel;
     private MacAddress macAddress;
@@ -104,6 +104,7 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private ProfinetModule[] modules;
     private long sequenceNumber;
     private  DceRpc_ActivityUuid activityUuid;
+    private NetworkInterface networkInterface;
 
     public ProfinetDeviceContext() {
         // Generate a new Activity Id, which will be used throughout the connection.
@@ -167,14 +168,6 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
     public ProfinetConfiguration getConfiguration() {
         return configuration;
-    }
-
-    public InetAddress getLocalIpAddress() {
-        return localIpAddress;
-    }
-
-    public void setLocalIpAddress(InetAddress localIpAddress) {
-        this.localIpAddress = localIpAddress;
     }
 
     public ProfinetChannel getChannel() {
@@ -546,5 +539,13 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
 
     public void removeSubscriptionHandle(String tag) {
         subscriptionHandles.remove(tag);
+    }
+
+    public void setNetworkInterface(NetworkInterface networkInterface) {
+        this.networkInterface = networkInterface;
+    }
+
+    public NetworkInterface getNetworkInterface() {
+        return this.networkInterface;
     }
 }

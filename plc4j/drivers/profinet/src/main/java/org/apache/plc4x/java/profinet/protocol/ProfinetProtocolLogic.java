@@ -170,6 +170,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             driverContext.getChannel().setConfiguredDevices(devices);
             for (Map.Entry<String, ProfinetDevice> entry : devices.entrySet()) {
                 entry.getValue().setNetworkInterface(new ProfinetNetworkInterface(devByAddress));
+                entry.getValue().getDeviceContext().setChannel(driverContext.getChannel());
             }
         } catch (PcapNativeException | UnknownHostException e) {
             throw new RuntimeException(e);
@@ -179,11 +180,6 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             onDeviceDiscovery();
         } catch (PlcException | InterruptedException e) {
             throw new RuntimeException(e);
-        }
-
-        for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
-            device.getValue().getDeviceContext().setChannel(driverContext.getChannel());
-            device.getValue().getDeviceContext().setLocalIpAddress(localIpAddress);
         }
 
         try {

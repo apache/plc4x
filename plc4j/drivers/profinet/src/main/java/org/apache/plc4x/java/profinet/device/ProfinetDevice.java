@@ -71,7 +71,6 @@ public class ProfinetDevice implements PlcSubscriber {
     private int offset = 0;
     private boolean firstMessage = true;
     private boolean setIpAddress = false;
-    private NetworkInterface networkInterface = null;
 
     public ProfinetDevice(MessageWrapper messageWrapper, String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler) {
         this.messageWrapper = messageWrapper;
@@ -419,11 +418,11 @@ public class ProfinetDevice implements PlcSubscriber {
     }
 
     public void setNetworkInterface(NetworkInterface networkInterface) {
-        this.networkInterface = networkInterface;
+        this.deviceContext.setNetworkInterface(networkInterface);
     }
 
     public NetworkInterface getNetworkInterface() {
-        return networkInterface;
+        return this.deviceContext.getNetworkInterface();
     }
 
     public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {

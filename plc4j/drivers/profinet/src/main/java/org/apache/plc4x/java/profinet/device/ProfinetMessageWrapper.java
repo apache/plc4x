@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Random;
 
-public class ProfinetMessageWrapper implements MessageWrapper{
+public class ProfinetMessageWrapper implements MessageWrapper {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfinetMessageWrapper.class);
 
@@ -42,7 +42,7 @@ public class ProfinetMessageWrapper implements MessageWrapper{
                 true,
                 false,
                 (short) 64,
-                new IpAddress(context.getLocalIpAddress().getAddress()),
+                new IpAddress(context.getNetworkInterface().getIpAddressAsByteArray()),
                 new IpAddress(InetAddress.getByName(context.getIpAddress()).getAddress()),
                 context.getSourcePort(),
                 context.getDestinationPort(),
