@@ -35,7 +35,7 @@ public class ManualProfinetIoTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ManualProfinetIoTest.class);
 
     public static void main(String[] args) throws Exception {
-        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("profinet://192.168.90.1?gsddirectory=/Profinet/gsd&devices=[[test-device,MOD_1,(SUBMOD_1,SUBMOD_1,SUBMOD_1,)]]&reductionratio=16&sendclockfactor=32&dataholdfactor=3&watchdogfactor=2");
+        final PlcConnection connection = new DefaultPlcDriverManager().getConnection("profinet://192.168.54.2?gsddirectory=/home/missy/Documents/Profinet/gsd&devices=[[simocodexbpn156e,DAP%201,(1,)]]&reductionratio=16&sendclockfactor=32&dataholdfactor=3&watchdogfactor=2");
         PlcBrowseRequest browseRequest = connection.browseRequestBuilder().addQuery("Browse", "").build();
         final PlcBrowseResponse browseResponse = browseRequest.execute().get();
         PlcSubscriptionRequest.Builder builder = connection.subscriptionRequestBuilder();

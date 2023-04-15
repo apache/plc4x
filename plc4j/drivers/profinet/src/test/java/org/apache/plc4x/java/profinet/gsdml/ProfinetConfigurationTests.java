@@ -21,6 +21,8 @@ package org.apache.plc4x.java.profinet.gsdml;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.plc4x.java.api.exceptions.PlcException;
+import org.apache.plc4x.java.profinet.DummyMessageWrapper;
+import org.apache.plc4x.java.profinet.config.ConfigurationProfinetDevice;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
@@ -30,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,7 +80,7 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[[device_name_1, device_access_1, (submodule_1, submodule_2)]]&gsddirectory=src/test/resources");
 
-        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ConfigurationProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
 
         for (String deviceName : deviceNames) {
             assert(devices.containsKey(deviceName));
@@ -91,7 +94,7 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X_1, (PLC4X_01,PLC4X_02,PLC4X_01,PLC4X_02)],[device_name_2, PLC4X_1, (PLC4X_01,PLC4X_02,PLC4X_01,PLC4X_02)],[device_name_3, PLC4X_1, (PLC4X_01,PLC4X_02,PLC4X_01,PLC4X_02)]]&gsddirectory=src/test/resources");
 
-        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ConfigurationProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
 
         for (String deviceName : deviceNames) {
             assert(devices.containsKey(deviceName));
@@ -104,7 +107,7 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[[device_name_1, device_access_1, (submodule_1, submodule_2)]]&gsddirectory=src/test/resources");
 
-        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ConfigurationProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
 
         for (String mac : deviceName) {
             assert(devices.containsKey(mac.replace(":", "").toUpperCase()));
@@ -116,7 +119,20 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X_1, (PLC4X_01, PLC4X_02, PLC4X_01, PLC4X_02)]]&gsddirectory=src/test/resources");
 
-        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
 
         XmlMapper xmlMapper = new XmlMapper();
         assertThrows(PlcException.class, () -> devices.get("DEVICE_NAME_1").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
@@ -128,7 +144,20 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
 
-        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
 
         XmlMapper xmlMapper = new XmlMapper();
         assertDoesNotThrow(() -> devices.get("DEVICE_NAME_1").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
@@ -139,7 +168,20 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X_1, (PLC4X_DUMMY_MODULE, PLC4X_dummy_MODULE, PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
 
-        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
 
         XmlMapper xmlMapper = new XmlMapper();
         assertDoesNotThrow(() -> devices.get("DEVICE_NAME_1").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
@@ -152,7 +194,20 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[[device_name_1, PLC4X 1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
 
-        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
 
         for (String deviceName : deviceNames) {
             assert(devices.containsKey(deviceName));
@@ -167,7 +222,20 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X_DUMMY_MODULE, PLC4X_DUMMY_MODULE)]]&gsddirectory=src/test/resources");
 
-        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
 
         for (String deviceName : deviceNames) {
             assert(devices.containsKey(deviceName));
@@ -181,7 +249,20 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE)]]&gsddirectory=src/test/resources");
 
-        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
 
         for (String deviceName : deviceNames) {
             assert(devices.containsKey(deviceName));
@@ -197,7 +278,20 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1)]]&gsddirectory=src/test/resources");
 
-        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
         XmlMapper xmlMapper = new XmlMapper();
 
         assertDoesNotThrow(() -> devices.get("DEVICE NAME 1").getDeviceContext().setGsdFile(xmlMapper.readValue(new File("src/test/resources/gsdml.xml"), ProfinetISO15745Profile.class)));
@@ -216,8 +310,20 @@ public class ProfinetConfigurationTests {
         ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
             ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1), 10.1.1.1]]&gsddirectory=src/test/resources");
 
-        Map<String, ProfinetDevice> devices = configuration.getDevices().getConfiguredDevices();
-        XmlMapper xmlMapper = new XmlMapper();
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+        }
 
         assertEquals(devices.get("DEVICE NAME 1").getDeviceContext().getIpAddress(), "10.1.1.1");
 

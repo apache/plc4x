@@ -21,26 +21,28 @@ package org.apache.plc4x.java.profinet.device;
 
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItem;
 import org.apache.plc4x.java.api.messages.PlcDiscoveryItemHandler;
+import org.apache.plc4x.java.profinet.config.ProfinetDevices;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ProfinetDeviceMessageHandler implements PlcDiscoveryItemHandler {
 
-    private ProfinetDevices configuredDevices;
+    private Map<String, ProfinetDevice> devices = new HashMap<>();
 
-    public ProfinetDeviceMessageHandler(ProfinetDevices configuredDevices) {
-        this.configuredDevices = configuredDevices;
+    public ProfinetDeviceMessageHandler(Map<String, ProfinetDevice> devices) {
+        this.devices = devices;
     }
 
     @Override
     public void handle(PlcDiscoveryItem discoveryItem) {
         String deviceName = discoveryItem.getOptions().get("deviceName").toUpperCase();
-        if (configuredDevices.getConfiguredDevices().containsKey(deviceName)) {
-            configuredDevices.getConfiguredDevices().get(deviceName).handle(discoveryItem);
+        if (devices.containsKey(deviceName)) {
+            devices.get(deviceName).handle(discoveryItem);
         }
     }
 
-    public void setConfiguredDevices(ProfinetDevices configuredDevices) {
-        this.configuredDevices = configuredDevices;
+    public void setConfiguredDevices(Map<String, ProfinetDevice> devices) {
+        this.devices = devices;
     }
 }

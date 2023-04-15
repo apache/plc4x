@@ -20,8 +20,6 @@ package org.apache.plc4x.java.profinet.config;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.plc4x.java.profinet.device.GsdFileMap;
-import org.apache.plc4x.java.profinet.device.ProfinetDevice;
-import org.apache.plc4x.java.profinet.device.ProfinetDevices;
 import org.apache.plc4x.java.profinet.gsdml.ProfinetISO15745Profile;
 import org.apache.plc4x.java.spi.configuration.Configuration;
 import org.apache.plc4x.java.spi.configuration.ConfigurationParameterConverter;
@@ -113,14 +111,14 @@ public class ProfinetConfiguration implements Configuration, RawSocketTransportC
                 throw new RuntimeException("Profinet Device Array is not in the correct format " + value + ".");
             }
 
-            Map<String, ProfinetDevice> devices = new HashMap<>();
+            Map<String, ConfigurationProfinetDevice> devices = new HashMap<>();
             String[] deviceParameters  = value.substring(1, value.length() - 1).split("[\\[\\]]");
             for (String deviceParameter : deviceParameters) {
                 if (deviceParameter.length() > 7) {
                     matcher = DEVICE_PARAMETERS.matcher(deviceParameter);
                     if (matcher.matches()) {
                         devices.put(matcher.group("devicename"),
-                            new ProfinetDevice(matcher.group("devicename"),
+                            new ConfigurationProfinetDevice(matcher.group("devicename"),
                                                matcher.group("deviceaccess"),
                                                matcher.group("submodules"),
                                                (vendorId, deviceId) -> gsdFiles.getGsdFiles().get("0x" + vendorId + "-0x" + deviceId)

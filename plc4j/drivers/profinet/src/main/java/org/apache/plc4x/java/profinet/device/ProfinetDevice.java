@@ -63,6 +63,7 @@ public class ProfinetDevice implements PlcSubscriber {
     private static final int MIN_CYCLE_NANO_SEC = 31250;
     private final BiFunction<String, String, ProfinetISO15745Profile> gsdHandler;
     private final ProfinetDeviceContext deviceContext = new ProfinetDeviceContext();
+    private final MessageWrapper messageWrapper;
 
     // Each device should create a receiving socket, all the packets are then automatically transferred to the listener for the channel though.
     private DatagramSocket socket = null;
@@ -74,7 +75,8 @@ public class ProfinetDevice implements PlcSubscriber {
     private boolean firstMessage = true;
     private boolean setIpAddress = false;
 
-    public ProfinetDevice(String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler) {
+    public ProfinetDevice(MessageWrapper messageWrapper, String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler) {
+        this.messageWrapper = messageWrapper;
         this.gsdHandler = gsdHandler;
         deviceContext.setDeviceAccess(deviceAccess);
         deviceContext.setSubModules(subModules);
@@ -127,7 +129,7 @@ public class ProfinetDevice implements PlcSubscriber {
 
     private void recordIdAndSend(ProfinetCallable<DceRpc_Packet> callable) {
         deviceContext.addToQueue(callable.getId(), callable);
-        ProfinetMessageWrapper.sendUdpMessage(
+        this.messageWrapper.sendUdpMessage(
             callable,
             deviceContext
         );
@@ -211,7 +213,7 @@ public class ProfinetDevice implements PlcSubscriber {
                                 break;
                             case CYCLICDATA:
                                 CyclicData cyclicData = new CyclicData(startTime);
-                                ProfinetMessageWrapper.sendPnioMessage(cyclicData, deviceContext);
+                                this.messageWrapper.sendPnioMessage(cyclicData, deviceContext);
                                 Thread.sleep(cycleTime);
                                 break;
                         }
