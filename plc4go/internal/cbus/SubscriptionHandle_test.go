@@ -43,9 +43,10 @@ func TestNewSubscriptionHandle(t *testing.T) {
 		{
 			name: "empty",
 			want: func() *SubscriptionHandle {
-				subscriptionHandle := SubscriptionHandle{}
-				subscriptionHandle.DefaultPlcSubscriptionHandle = spiModel.NewDefaultPlcSubscriptionHandle(nil)
-				return &subscriptionHandle
+				subscriptionHandle := &SubscriptionHandle{}
+				var cbusSubscriber *Subscriber
+				subscriptionHandle.DefaultPlcSubscriptionHandle = spiModel.NewDefaultPlcSubscriptionHandleWithHandleToRegister(cbusSubscriber, subscriptionHandle)
+				return subscriptionHandle
 			}(),
 		},
 	}
