@@ -81,6 +81,8 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
     private boolean lldpReceived = false;
     private boolean dcpReceived = false;
     private String ipAddress;
+    private String subnetMask;
+    private String gateway;
     private String portId;
     private PnIoCm_Block_IoCrReq inputReq = null;
     private PnIoCm_Block_IoCrReq outputReq = null;

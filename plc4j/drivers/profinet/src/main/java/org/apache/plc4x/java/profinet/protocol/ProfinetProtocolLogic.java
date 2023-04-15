@@ -22,7 +22,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
-import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
@@ -38,7 +37,6 @@ import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
-import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.utils.rawsockets.netty.RawSocketChannel;
 import org.pcap4j.core.*;
@@ -46,13 +44,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.*;
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> implements HasConfiguration<ProfinetConfiguration> {
 
@@ -74,6 +69,7 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
     @Override
     public void setConfiguration(ProfinetConfiguration configuration) {
         driverContext.setConfiguration(configuration);
+
         Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
 
         for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
@@ -172,6 +168,9 @@ public class ProfinetProtocolLogic extends Plc4xProtocolBase<Ethernet_Frame> imp
             PcapNetworkInterface devByAddress = Pcaps.getDevByAddress(localIpAddress);
             driverContext.setChannel(new ProfinetChannel(Collections.singletonList(devByAddress), devices));
             driverContext.getChannel().setConfiguredDevices(devices);
+            for (Map.Entry<String, ProfinetDevice> entry : devices.entrySet()) {
+                entry.getValue().setNetworkInterface(new ProfinetNetworkInterface(devByAddress));
+            }
         } catch (PcapNativeException | UnknownHostException e) {
             throw new RuntimeException(e);
         }

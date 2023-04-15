@@ -25,13 +25,11 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
-import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcSubscriptionType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.profinet.context.ProfinetDeviceContext;
 import org.apache.plc4x.java.profinet.gsdml.*;
 import org.apache.plc4x.java.profinet.readwrite.*;
-import org.apache.plc4x.java.profinet.tag.ProfinetTag;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
@@ -39,7 +37,6 @@ import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionResponse;
 import org.apache.plc4x.java.spi.messages.PlcSubscriber;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
-import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.values.PlcSTRING;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,6 +71,7 @@ public class ProfinetDevice implements PlcSubscriber {
     private int offset = 0;
     private boolean firstMessage = true;
     private boolean setIpAddress = false;
+    private NetworkInterface networkInterface = null;
 
     public ProfinetDevice(MessageWrapper messageWrapper, String deviceName, String deviceAccess, String subModules, BiFunction<String, String, ProfinetISO15745Profile> gsdHandler) {
         this.messageWrapper = messageWrapper;
@@ -418,6 +416,14 @@ public class ProfinetDevice implements PlcSubscriber {
     public void handleAlarmResponse(PnDcp_Pdu_AlarmLow alarmPdu) {
         logger.error("Received Alarm Low packet, attempting to re-connect");
         deviceContext.setState(ProfinetDeviceState.IDLE);
+    }
+
+    public void setNetworkInterface(NetworkInterface networkInterface) {
+        this.networkInterface = networkInterface;
+    }
+
+    public NetworkInterface getNetworkInterface() {
+        return networkInterface;
     }
 
     public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {

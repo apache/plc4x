@@ -24,14 +24,20 @@ import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.DummyMessageWrapper;
 import org.apache.plc4x.java.profinet.config.ConfigurationProfinetDevice;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
-import org.apache.plc4x.java.profinet.context.ProfinetDriverContext;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
-import org.apache.plc4x.java.profinet.protocol.ProfinetProtocolLogic;
+import org.apache.plc4x.java.profinet.device.ProfinetNetworkInterface;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.pcap4j.core.PcapNativeException;
+import org.pcap4j.core.PcapNetworkInterface;
+import org.pcap4j.core.Pcaps;
+import org.pcap4j.util.Inet4NetworkAddress;
 
 import java.io.File;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -328,4 +334,5 @@ public class ProfinetConfigurationTests {
         assertEquals(devices.get("DEVICE NAME 1").getDeviceContext().getIpAddress(), "10.1.1.1");
 
     }
+
 }

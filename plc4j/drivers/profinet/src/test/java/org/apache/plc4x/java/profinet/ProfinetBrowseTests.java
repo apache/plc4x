@@ -20,7 +20,6 @@
 package org.apache.plc4x.java.profinet;
 
 import org.apache.plc4x.java.api.messages.PlcBrowseItem;
-import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.profinet.config.ConfigurationProfinetDevice;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
 import org.apache.plc4x.java.profinet.device.ProfinetDevice;
