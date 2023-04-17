@@ -110,7 +110,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 					defer func() { wg.Done() }()
 					for ip := range addresses {
 						log.Trace().Msgf("Handling found ip %v", ip)
-						d.transportInstanceCreationQueue.Submit(ctx, d.transportInstanceCreationWorkItemId.Add(1), d.createTransportInstanceDispatcher(ctx, wg, ip, tcpTransport, transportInstances))
+						d.transportInstanceCreationQueue.Submit(ctx, d.transportInstanceCreationWorkItemId.Add(1), d.createTransportInstanceDispatcher(ctx, wg, ip, tcpTransport, transportInstances, readWriteModel.CBusConstants_CBUSTCPDEFAULTPORT))
 					}
 				}()
 			}
@@ -130,14 +130,14 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	return nil
 }
 
-func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *sync.WaitGroup, ip net.IP, tcpTransport *tcp.Transport, transportInstances chan transports.TransportInstance) utils.Runnable {
+func (d *Discoverer) createTransportInstanceDispatcher(ctx context.Context, wg *sync.WaitGroup, ip net.IP, tcpTransport *tcp.Transport, transportInstances chan transports.TransportInstance, cBusPort uint16) utils.Runnable {
 	wg.Add(1)
 	return func() {
 		defer wg.Done()
 		// Create a new "connection" (Actually open a local udp socket and target outgoing packets to that address)
 		var connectionUrl url.URL
 		{
-			connectionUrlParsed, err := url.Parse(fmt.Sprintf("tcp://%s:%d", ip, readWriteModel.CBusConstants_CBUSTCPDEFAULTPORT))
+			connectionUrlParsed, err := url.Parse(fmt.Sprintf("tcp://%s:%d", ip, cBusPort))
 			if err != nil {
 				log.Error().Err(err).Msgf("Error parsing url for lookup")
 				return
@@ -190,6 +190,7 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 		// Keep on reading responses till the timeout is done.
 		// TODO: Make this configurable
 		timeout := time.NewTimer(time.Second * 1)
+		utils.CleanupTimer(timeout)
 		timeout.Stop()
 		for start := time.Now(); time.Since(start) < time.Second*5; {
 			timeout.Reset(time.Second * 1)
@@ -254,7 +255,7 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 				}
 				// Pass the event back to the callback
 				callback(discoveryEvent)
-				continue
+				return
 			case <-timeout.C:
 				timeout.Stop()
 				continue

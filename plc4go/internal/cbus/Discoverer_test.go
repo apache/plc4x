@@ -30,9 +30,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/nettest"
 	"net"
+	"net/url"
+	"strconv"
 	"sync"
-	"sync/atomic"
 	"testing"
+	"time"
 )
 
 func TestDiscoverer_Discover(t *testing.T) {
@@ -120,42 +122,83 @@ func TestDiscoverer_Discover(t *testing.T) {
 
 func TestDiscoverer_createDeviceScanDispatcher(t *testing.T) {
 	type fields struct {
-		transportInstanceCreationWorkItemId atomic.Int32
-		transportInstanceCreationQueue      utils.Executor
-		deviceScanningWorkItemId            atomic.Int32
-		deviceScanningQueue                 utils.Executor
+		transportInstanceCreationQueue utils.Executor
+		deviceScanningQueue            utils.Executor
 	}
 	type args struct {
 		tcpTransportInstance *tcp.TransportInstance
-		callback             func(event apiModel.PlcDiscoveryItem)
+		callback             func(t *testing.T, event apiModel.PlcDiscoveryItem)
 	}
 	tests := []struct {
 		name   string
 		fields fields
 		args   args
-		want   utils.Runnable
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create a dispatcher",
+			args: args{
+				tcpTransportInstance: func() *tcp.TransportInstance {
+					listen, err := net.Listen("tcp", "127.0.0.1:0")
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+					}
+					go func() {
+						conn, err := listen.Accept()
+						if err != nil {
+							t.Error(err)
+							return
+						}
+						write, err := conn.Write([]byte("x.890050435F434E49454422\r\n"))
+						if err != nil {
+							t.Error(err)
+							return
+						}
+						t.Logf("%d written", write)
+					}()
+					t.Cleanup(func() {
+						if err := listen.Close(); err != nil {
+							t.Error(err)
+						}
+					})
+					transport := tcp.NewTransport()
+					parse, err := url.Parse("tcp://" + listen.Addr().String())
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+					}
+					instance, err := transport.CreateTransportInstance(*parse, nil)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+					}
+					return instance.(*tcp.TransportInstance)
+				}(),
+				callback: func(t *testing.T, event apiModel.PlcDiscoveryItem) {
+					assert.NotNil(t, event)
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := &Discoverer{
-				transportInstanceCreationWorkItemId: tt.fields.transportInstanceCreationWorkItemId,
-				transportInstanceCreationQueue:      tt.fields.transportInstanceCreationQueue,
-				deviceScanningWorkItemId:            tt.fields.deviceScanningWorkItemId,
-				deviceScanningQueue:                 tt.fields.deviceScanningQueue,
+				transportInstanceCreationQueue: tt.fields.transportInstanceCreationQueue,
+				deviceScanningQueue:            tt.fields.deviceScanningQueue,
 			}
-			assert.Equalf(t, tt.want, d.createDeviceScanDispatcher(tt.args.tcpTransportInstance, tt.args.callback), "createDeviceScanDispatcher(%v, %v)", tt.args.tcpTransportInstance, tt.args.callback)
+			dispatcher := d.createDeviceScanDispatcher(tt.args.tcpTransportInstance, func(event apiModel.PlcDiscoveryItem) {
+				tt.args.callback(t, event)
+			})
+			assert.NotNilf(t, dispatcher, "createDeviceScanDispatcher(%v, func())", tt.args.tcpTransportInstance)
+			dispatcher()
 		})
 	}
 }
 
 func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 	type fields struct {
-		transportInstanceCreationWorkItemId atomic.Int32
-		transportInstanceCreationQueue      utils.Executor
-		deviceScanningWorkItemId            atomic.Int32
-		deviceScanningQueue                 utils.Executor
+		transportInstanceCreationQueue utils.Executor
+		deviceScanningQueue            utils.Executor
 	}
 	type args struct {
 		ctx                context.Context
@@ -163,24 +206,81 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 		ip                 net.IP
 		tcpTransport       *tcp.Transport
 		transportInstances chan transports.TransportInstance
+		cBusPort           uint16
 	}
 	tests := []struct {
 		name   string
 		fields fields
 		args   args
-		want   utils.Runnable
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create a dispatcher",
+			args: args{
+				ctx: context.Background(),
+				wg: func() *sync.WaitGroup {
+					var wg sync.WaitGroup
+					return &wg
+				}(),
+				ip:                 net.IPv4(127, 0, 0, 1),
+				tcpTransport:       tcp.NewTransport(),
+				transportInstances: make(chan transports.TransportInstance, 1),
+				cBusPort: func() uint16 {
+					listen, err := net.Listen("tcp", "127.0.0.1:0")
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+					}
+					go func() {
+						conn, err := listen.Accept()
+						if err != nil {
+							t.Error(err)
+							return
+						}
+						write, err := conn.Write([]byte("x.890050435F434E49454422\r\n"))
+						if err != nil {
+							t.Error(err)
+							return
+						}
+						t.Logf("%d written", write)
+					}()
+					t.Cleanup(func() {
+						if err := listen.Close(); err != nil {
+							t.Error(err)
+						}
+					})
+					parse, err := url.Parse("tcp://" + listen.Addr().String())
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+					}
+					port, err := strconv.ParseUint(parse.Port(), 10, 16)
+					if err != nil {
+						t.Error(err)
+						t.FailNow()
+					}
+					return uint16(port)
+				}(),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := &Discoverer{
-				transportInstanceCreationWorkItemId: tt.fields.transportInstanceCreationWorkItemId,
-				transportInstanceCreationQueue:      tt.fields.transportInstanceCreationQueue,
-				deviceScanningWorkItemId:            tt.fields.deviceScanningWorkItemId,
-				deviceScanningQueue:                 tt.fields.deviceScanningQueue,
+				transportInstanceCreationQueue: tt.fields.transportInstanceCreationQueue,
+				deviceScanningQueue:            tt.fields.deviceScanningQueue,
 			}
-			assert.Equalf(t, tt.want, d.createTransportInstanceDispatcher(tt.args.ctx, tt.args.wg, tt.args.ip, tt.args.tcpTransport, tt.args.transportInstances), "createTransportInstanceDispatcher(%v, %v, %v, %v, %v)", tt.args.ctx, tt.args.wg, tt.args.ip, tt.args.tcpTransport, tt.args.transportInstances)
+			dispatcher := d.createTransportInstanceDispatcher(tt.args.ctx, tt.args.wg, tt.args.ip, tt.args.tcpTransport, tt.args.transportInstances, tt.args.cBusPort)
+			assert.NotNilf(t, dispatcher, "createTransportInstanceDispatcher(%v, %v, %v, %v, %v)", tt.args.ctx, tt.args.wg, tt.args.ip, tt.args.tcpTransport, tt.args.transportInstances)
+			dispatcher()
+			timeout := time.NewTimer(2 * time.Second)
+			utils.CleanupTimer(timeout)
+			select {
+			case <-timeout.C:
+				t.Error("timeout")
+			case ti := <-tt.args.transportInstances:
+				timeout.Stop()
+				assert.NotNil(t, ti)
+			}
 		})
 	}
 }
@@ -188,13 +288,14 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 func TestNewDiscoverer(t *testing.T) {
 	tests := []struct {
 		name string
-		want *Discoverer
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just create it",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, NewDiscoverer(), "NewDiscoverer()")
+			assert.NotNilf(t, NewDiscoverer(), "NewDiscoverer()")
 		})
 	}
 }
