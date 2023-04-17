@@ -124,8 +124,8 @@ type DefaultPlcWriteRequest struct {
 	writeRequestInterceptor interceptors.WriteRequestInterceptor
 }
 
-func NewDefaultPlcWriteRequest(fields map[string]model.PlcTag, fieldNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor interceptors.WriteRequestInterceptor) model.PlcWriteRequest {
-	return &DefaultPlcWriteRequest{NewDefaultPlcTagRequest(fields, fieldNames), values, writer, writeRequestInterceptor}
+func NewDefaultPlcWriteRequest(tags map[string]model.PlcTag, tagNames []string, values map[string]values.PlcValue, writer spi.PlcWriter, writeRequestInterceptor interceptors.WriteRequestInterceptor) model.PlcWriteRequest {
+	return &DefaultPlcWriteRequest{NewDefaultPlcTagRequest(tags, tagNames), values, writer, writeRequestInterceptor}
 }
 
 func (d *DefaultPlcWriteRequest) Execute() <-chan model.PlcWriteRequestResult {

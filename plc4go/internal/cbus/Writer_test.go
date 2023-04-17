@@ -21,8 +21,12 @@ package cbus
 
 import (
 	"context"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
+	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -37,9 +41,15 @@ func TestNewWriter(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want Writer
+		want *Writer
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create a new one",
+			want: func() *Writer {
+				var writer Writer
+				return &writer
+			}(),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -59,12 +69,100 @@ func TestWriter_Write(t *testing.T) {
 		writeRequest apiModel.PlcWriteRequest
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   <-chan apiModel.PlcWriteRequestResult
+		name         string
+		fields       fields
+		args         args
+		wantAsserter func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "write something",
+			args: args{
+				ctx:          context.Background(),
+				writeRequest: spiModel.NewDefaultPlcWriteRequest(nil, nil, nil, nil, nil),
+			},
+			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
+				timeout := time.NewTimer(2 * time.Second)
+				utils.CleanupTimer(timeout)
+				select {
+				case <-timeout.C:
+					t.Error("timeout")
+					t.FailNow()
+				case result := <-results:
+					assert.NotNil(t, result)
+					assert.Nil(t, result.GetErr())
+				}
+				return true
+			},
+		},
+		{
+			name: "too many tags",
+			args: args{
+				ctx: context.Background(),
+				writeRequest: spiModel.NewDefaultPlcWriteRequest(nil, func() []string {
+					return strings.Split(strings.Repeat("asd,", 30), ",")
+				}(), nil, nil, nil),
+			},
+			wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
+				timeout := time.NewTimer(2 * time.Second)
+				utils.CleanupTimer(timeout)
+				select {
+				case <-timeout.C:
+					t.Fatal("timeout")
+				case result := <-results:
+					assert.NotNil(t, result)
+					assert.NotNil(t, result.GetErr())
+					assert.Equal(t, "Only 20 tags can be handled at once", result.GetErr().Error())
+				}
+				return true
+			},
+		},
+		/*
+			TODO: implement once we have a writable tag
+			{
+				name: "one tag",
+				fields: fields{
+					alphaGenerator: &AlphaGenerator{
+						currentAlpha: 'g',
+					},
+					messageCodec: NewMessageCodec(func() transports.TransportInstance {
+						transport := test.NewTransport()
+						instance, err := transport.CreateTransportInstance(url.URL{Scheme: "test"}, nil)
+						if err != nil {
+							t.Fatal(err)
+						}
+						return instance
+					}()),
+					tm: spi.NewRequestTransactionManager(10),
+				},
+				args: args{
+					ctx: context.Background(),
+					writeRequest: spiModel.NewDefaultPlcWriteRequest(
+						map[string]apiModel.PlcTag{
+							"asd": &statusTag{},
+						},
+						[]string{
+							"asd",
+						},
+						nil,
+						nil,
+						nil,
+					),
+				},
+				wantAsserter: func(t *testing.T, results <-chan apiModel.PlcWriteRequestResult) bool {
+					timeout := time.NewTimer(2 * time.Second)
+					utils.CleanupTimer(timeout)
+					select {
+					case <-timeout.C:
+						t.Error("timeout")
+						t.FailNow()
+					case result := <-results:
+						assert.NotNil(t, result)
+						assert.NotNil(t, result.GetErr())
+						assert.Equal(t, "Only 20 tags can be handled at once", result.GetErr().Error())
+					}
+					return true
+				},
+			},*/
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -73,7 +171,7 @@ func TestWriter_Write(t *testing.T) {
 				messageCodec:   tt.fields.messageCodec,
 				tm:             tt.fields.tm,
 			}
-			assert.Equalf(t, tt.want, m.Write(tt.args.ctx, tt.args.writeRequest), "Write(%v, %v)", tt.args.ctx, tt.args.writeRequest)
+			assert.Truef(t, tt.wantAsserter(t, m.Write(tt.args.ctx, tt.args.writeRequest)), "Write(%v, %v)", tt.args.ctx, tt.args.writeRequest)
 		})
 	}
 }
