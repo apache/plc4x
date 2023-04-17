@@ -22,6 +22,7 @@ package cbus
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
 
@@ -44,7 +45,12 @@ func TestNewCALGetStatusTag(t *testing.T) {
 		args args
 		want CALGetStatusTag
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just create it",
+			want: &calGetStatusTag{
+				tagType: 4,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -65,7 +71,12 @@ func TestNewCALIdentifyTag(t *testing.T) {
 		args args
 		want CALIdentifyTag
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just create it",
+			want: &calIdentifyTag{
+				tagType: 3,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -87,7 +98,12 @@ func TestNewCALRecallTag(t *testing.T) {
 		args args
 		want CALRecallTag
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just create it",
+			want: &calRecallTag{
+				tagType: 2,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -105,9 +121,14 @@ func TestNewMMIMonitorTag(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want SALMonitorTag
+		want MMIMonitorTag
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just create it",
+			want: &mmiMonitorTag{
+				tagType: 11,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -127,7 +148,12 @@ func TestNewSALMonitorTag(t *testing.T) {
 		args args
 		want SALMonitorTag
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just create it",
+			want: &salMonitorTag{
+				tagType: 0xa,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -148,7 +174,12 @@ func TestNewSALTag(t *testing.T) {
 		args args
 		want SALTag
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just create it",
+			want: &salTag{
+				tagType: 9,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -170,7 +201,12 @@ func TestNewStatusTag(t *testing.T) {
 		args args
 		want StatusTag
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just create it",
+			want: &statusTag{
+				tagType: 0,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -185,7 +221,10 @@ func TestStatusRequestType_String(t *testing.T) {
 		s    StatusRequestType
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get a string",
+			want: "StatusRequestTypeBinaryState",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -207,7 +246,10 @@ func Test_calGetStatusTag_GetAddressString(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get a string",
+			want: "cal/getstatus=UNKNOWN_01, 0",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -236,7 +278,12 @@ func Test_calGetStatusTag_GetArrayInfo(t *testing.T) {
 		fields fields
 		want   []apiModel.ArrayInfo
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get array info",
+			want: []apiModel.ArrayInfo{
+				model.DefaultArrayInfo{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -265,7 +312,9 @@ func Test_calGetStatusTag_GetCount(t *testing.T) {
 		fields fields
 		want   uint8
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get a count",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -294,7 +343,9 @@ func Test_calGetStatusTag_GetParameter(t *testing.T) {
 		fields fields
 		want   readWriteModel.Parameter
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get a parameter",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -323,7 +374,9 @@ func Test_calGetStatusTag_GetTagType(t *testing.T) {
 		fields fields
 		want   TagType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the type",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -352,7 +405,10 @@ func Test_calGetStatusTag_GetValueType(t *testing.T) {
 		fields fields
 		want   apiValues.PlcValueType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the value type",
+			want: 0x61,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -382,7 +438,11 @@ func Test_calGetStatusTag_Serialize(t *testing.T) {
 		want    []byte
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "get the value type",
+			want:    []byte{0, 0},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -420,7 +480,14 @@ func Test_calGetStatusTag_SerializeWithWriteBuffer(t *testing.T) {
 		args    args
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name: "serialize empty",
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -449,7 +516,15 @@ func Test_calGetStatusTag_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "default to string",
+			want: `
+╔═STATUS════════════════════╗
+║╔═Parameter═══════╗╔═count╗║
+║║0x00 0 UNKNOWN_01║║0x00 0║║
+║╚═════════════════╝╚══════╝║
+╚═══════════════════════════╝`[1:],
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -477,7 +552,15 @@ func Test_calIdentifyTag_GetAddressString(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the address string",
+			fields: fields{
+				calTag: calTag{
+					unitAddress: readWriteModel.NewUnitAddress(2),
+				},
+			},
+			want: "cal/2/identify=Manufacturer",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -504,7 +587,12 @@ func Test_calIdentifyTag_GetArrayInfo(t *testing.T) {
 		fields fields
 		want   []apiModel.ArrayInfo
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get empty array info",
+			want: []apiModel.ArrayInfo{
+				model.DefaultArrayInfo{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -531,7 +619,9 @@ func Test_calIdentifyTag_GetAttribute(t *testing.T) {
 		fields fields
 		want   readWriteModel.Attribute
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the attribute",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -558,7 +648,9 @@ func Test_calIdentifyTag_GetTagType(t *testing.T) {
 		fields fields
 		want   TagType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the tag type",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -585,7 +677,10 @@ func Test_calIdentifyTag_GetValueType(t *testing.T) {
 		fields fields
 		want   apiValues.PlcValueType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the value type",
+			want: 0x61,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -613,7 +708,11 @@ func Test_calIdentifyTag_Serialize(t *testing.T) {
 		want    []byte
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "serialize empty",
+			want:    []byte{0},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -649,7 +748,14 @@ func Test_calIdentifyTag_SerializeWithWriteBuffer(t *testing.T) {
 		args    args
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name: "serialize with write buffer",
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -676,7 +782,13 @@ func Test_calIdentifyTag_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "default to string",
+			want: `
+╔═STATUS/Attribute╗
+║0x00 0 Manufacturer║
+╚═════════════════╝`[1:],
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -704,7 +816,15 @@ func Test_calRecallTag_GetAddressString(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the address string",
+			fields: fields{
+				calTag: calTag{
+					unitAddress: readWriteModel.NewUnitAddress(24),
+				},
+			},
+			want: "cal/24/recall=UNKNOWN_01",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -733,7 +853,12 @@ func Test_calRecallTag_GetArrayInfo(t *testing.T) {
 		fields fields
 		want   []apiModel.ArrayInfo
 	}{
-		// TODO: Add test cases.
+		{
+			name: "empty array info",
+			want: []apiModel.ArrayInfo{
+				model.DefaultArrayInfo{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -762,7 +887,9 @@ func Test_calRecallTag_GetCount(t *testing.T) {
 		fields fields
 		want   uint8
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the count",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -791,7 +918,9 @@ func Test_calRecallTag_GetParameter(t *testing.T) {
 		fields fields
 		want   readWriteModel.Parameter
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the parameter",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -820,7 +949,9 @@ func Test_calRecallTag_GetTagType(t *testing.T) {
 		fields fields
 		want   TagType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the tag type",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -849,7 +980,10 @@ func Test_calRecallTag_GetValueType(t *testing.T) {
 		fields fields
 		want   apiValues.PlcValueType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the value type",
+			want: 0x61,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -879,7 +1013,11 @@ func Test_calRecallTag_Serialize(t *testing.T) {
 		want    []byte
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "serialize empty",
+			want:    []byte{0, 0},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -917,7 +1055,14 @@ func Test_calRecallTag_SerializeWithWriteBuffer(t *testing.T) {
 		args    args
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name: "serialize empty",
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -946,7 +1091,15 @@ func Test_calRecallTag_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "default to string",
+			want: `
+╔═STATUS════════════════════╗
+║╔═Parameter═══════╗╔═count╗║
+║║0x00 0 UNKNOWN_01║║0x00 0║║
+║╚═════════════════╝╚══════╝║
+╚═══════════════════════════╝`[1:],
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -972,7 +1125,9 @@ func Test_calTag_GetBridgeAddresses(t *testing.T) {
 		fields fields
 		want   []readWriteModel.BridgeAddress
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the bridge addresses",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -995,7 +1150,9 @@ func Test_calTag_GetUnitAddress(t *testing.T) {
 		fields fields
 		want   readWriteModel.UnitAddress
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the unit address",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1019,7 +1176,10 @@ func Test_calTag_Serialize(t *testing.T) {
 		want    []byte
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "serialize empty",
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1051,7 +1211,10 @@ func Test_calTag_SerializeWithWriteBuffer(t *testing.T) {
 		args    args
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "serialize empty",
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1074,7 +1237,10 @@ func Test_calTag_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "to string",
+			want: "<nil>",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1099,7 +1265,10 @@ func Test_mmiMonitorTag_GetAddressString(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get the address string",
+			want: "mmimonitor/*/*",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1126,7 +1295,9 @@ func Test_mmiMonitorTag_GetApplication(t *testing.T) {
 		fields fields
 		want   *readWriteModel.ApplicationIdContainer
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get application",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1153,7 +1324,12 @@ func Test_mmiMonitorTag_GetArrayInfo(t *testing.T) {
 		fields fields
 		want   []apiModel.ArrayInfo
 	}{
-		// TODO: Add test cases.
+		{
+			name: "mmi monitor tag",
+			want: []apiModel.ArrayInfo{
+				model.DefaultArrayInfo{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1180,7 +1356,9 @@ func Test_mmiMonitorTag_GetTagType(t *testing.T) {
 		fields fields
 		want   TagType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get tag type",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1207,7 +1385,9 @@ func Test_mmiMonitorTag_GetUnitAddress(t *testing.T) {
 		fields fields
 		want   readWriteModel.UnitAddress
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get unit address",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1234,7 +1414,10 @@ func Test_mmiMonitorTag_GetValueType(t *testing.T) {
 		fields fields
 		want   apiValues.PlcValueType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get value type",
+			want: 0x61,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1262,7 +1445,10 @@ func Test_mmiMonitorTag_Serialize(t *testing.T) {
 		want    []byte
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "serialize empty",
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1298,7 +1484,14 @@ func Test_mmiMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 		args    args
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name: "serialize empty",
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1325,7 +1518,10 @@ func Test_mmiMonitorTag_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "default to string",
+			want: "<nil>",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1352,7 +1548,10 @@ func Test_salMonitorTag_GetAddressString(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get address string",
+			want: "salmonitor/*/*",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1379,7 +1578,9 @@ func Test_salMonitorTag_GetApplication(t *testing.T) {
 		fields fields
 		want   *readWriteModel.ApplicationIdContainer
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get application",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1406,7 +1607,12 @@ func Test_salMonitorTag_GetArrayInfo(t *testing.T) {
 		fields fields
 		want   []apiModel.ArrayInfo
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get empty array info",
+			want: []apiModel.ArrayInfo{
+				model.DefaultArrayInfo{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1433,7 +1639,9 @@ func Test_salMonitorTag_GetTagType(t *testing.T) {
 		fields fields
 		want   TagType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get tag type",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1460,7 +1668,9 @@ func Test_salMonitorTag_GetUnitAddress(t *testing.T) {
 		fields fields
 		want   readWriteModel.UnitAddress
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get unit address",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1487,7 +1697,10 @@ func Test_salMonitorTag_GetValueType(t *testing.T) {
 		fields fields
 		want   apiValues.PlcValueType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get value type",
+			want: 0x61,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1515,7 +1728,10 @@ func Test_salMonitorTag_Serialize(t *testing.T) {
 		want    []byte
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "default serialize",
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1551,7 +1767,14 @@ func Test_salMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 		args    args
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name: "default serialize",
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1578,7 +1801,10 @@ func Test_salMonitorTag_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "default string",
+			want: "<nil>",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1606,7 +1832,10 @@ func Test_salTag_GetAddressString(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get address string",
+			want: "sal/RESERVED_00/",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1635,7 +1864,9 @@ func Test_salTag_GetApplication(t *testing.T) {
 		fields fields
 		want   readWriteModel.ApplicationIdContainer
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get application",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1664,7 +1895,12 @@ func Test_salTag_GetArrayInfo(t *testing.T) {
 		fields fields
 		want   []apiModel.ArrayInfo
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get empty array info",
+			want: []apiModel.ArrayInfo{
+				model.DefaultArrayInfo{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1693,7 +1929,9 @@ func Test_salTag_GetBridgeAddresses(t *testing.T) {
 		fields fields
 		want   []readWriteModel.BridgeAddress
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get bridge addresses",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1722,7 +1960,9 @@ func Test_salTag_GetSALCommand(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get sal command",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1751,7 +1991,9 @@ func Test_salTag_GetTagType(t *testing.T) {
 		fields fields
 		want   TagType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get tag type",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1780,7 +2022,10 @@ func Test_salTag_GetValueType(t *testing.T) {
 		fields fields
 		want   apiValues.PlcValueType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get value type",
+			want: 0x61,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1810,7 +2055,11 @@ func Test_salTag_Serialize(t *testing.T) {
 		want    []byte
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "serialize empty",
+			want:    []byte{0x0},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1848,7 +2097,14 @@ func Test_salTag_SerializeWithWriteBuffer(t *testing.T) {
 		args    args
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name: "serialize default",
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1877,7 +2133,13 @@ func Test_salTag_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "default to string",
+			want: `
+╔═STATUS/ApplicationIdContainer═════╗
+║        0x00 0 RESERVED_00         ║
+╚═══════════════════════════════════╝`[1:],
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1907,7 +2169,10 @@ func Test_statusTag_GetAddressString(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get address string",
+			want: "status/binary/RESERVED_00",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1938,7 +2203,9 @@ func Test_statusTag_GetApplication(t *testing.T) {
 		fields fields
 		want   readWriteModel.ApplicationIdContainer
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get application",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1969,7 +2236,12 @@ func Test_statusTag_GetArrayInfo(t *testing.T) {
 		fields fields
 		want   []apiModel.ArrayInfo
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get empty array info",
+			want: []apiModel.ArrayInfo{
+				model.DefaultArrayInfo{},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -2000,7 +2272,9 @@ func Test_statusTag_GetBridgeAddresses(t *testing.T) {
 		fields fields
 		want   []readWriteModel.BridgeAddress
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get bridge addresses",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -2031,7 +2305,9 @@ func Test_statusTag_GetStartingGroupAddressLabel(t *testing.T) {
 		fields fields
 		want   *byte
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get starting group address label",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -2062,7 +2338,9 @@ func Test_statusTag_GetStatusRequestType(t *testing.T) {
 		fields fields
 		want   StatusRequestType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get status request type",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -2093,7 +2371,9 @@ func Test_statusTag_GetTagType(t *testing.T) {
 		fields fields
 		want   TagType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get tag type",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -2124,7 +2404,9 @@ func Test_statusTag_GetValueType(t *testing.T) {
 		fields fields
 		want   apiValues.PlcValueType
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get value type",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -2156,7 +2438,11 @@ func Test_statusTag_Serialize(t *testing.T) {
 		want    []byte
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "serialize empty",
+			want:    []byte{0, 0},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -2196,7 +2482,14 @@ func Test_statusTag_SerializeWithWriteBuffer(t *testing.T) {
 		args    args
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		{
+			name: "serialize empty",
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -2227,7 +2520,15 @@ func Test_statusTag_String(t *testing.T) {
 		fields fields
 		want   string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "default to string",
+			want: `
+╔═STATUS══════════════════════════════════════════════════╗
+║╔═statusRequestType═════════════════╗╔═application══════╗║
+║║0x00 0 StatusRequestTypeBinaryState║║0x00 0 RESERVED_00║║
+║╚═══════════════════════════════════╝╚══════════════════╝║
+╚═════════════════════════════════════════════════════════╝`[1:],
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
