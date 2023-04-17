@@ -21,7 +21,8 @@ package cbus
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/internal/ads/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readwriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
 
@@ -34,7 +35,9 @@ func TestNewValueHandler(t *testing.T) {
 		name string
 		want ValueHandler
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create a new one",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -48,7 +51,7 @@ func TestValueHandler_NewPlcValue(t *testing.T) {
 		DefaultValueHandler spiValues.DefaultValueHandler
 	}
 	type args struct {
-		tag   model.PlcTag
+		tag   apiModel.PlcTag
 		value interface{}
 	}
 	tests := []struct {
@@ -58,7 +61,112 @@ func TestValueHandler_NewPlcValue(t *testing.T) {
 		want    apiValues.PlcValue
 		wantErr assert.ErrorAssertionFunc
 	}{
-		// TODO: Add test cases.
+		/*  TODO: add tests for that
+		CAL_WRITE,
+		CAL_IDENTIFY_REPLY,
+		CAL_STATUS,
+		CAL_STATUS_EXTENDED
+		*/
+		/*
+			TODO: add tests for that
+			SAL
+			ApplicationId_FREE_USAGE
+		*/
+		{
+			name: "sal temperature broadcast event",
+			args: args{
+				tag: &salTag{
+					tagType:     SAL,
+					application: readwriteModel.ApplicationIdContainer_TEMPERATURE_BROADCAST_19,
+					salCommand:  "BROADCAST_EVENT",
+					numElements: 2,
+				},
+				value: []string{
+					"1",
+					"2",
+				},
+			},
+			want: spiValues.NewPlcList([]apiValues.PlcValue{
+				spiValues.NewPlcBYTE(1),
+				spiValues.NewPlcBYTE(2),
+			}),
+			wantErr: assert.NoError,
+		},
+		/*
+			TODO: add tests for that
+			SAL
+			ApplicationId_ROOM_CONTROL_SYSTEM
+		*/
+		/*
+					note: those are all ApplicationId_LIGHTING based
+			ApplicationId_VENTILATION
+			ApplicationId_IRRIGATION_CONTROL
+			ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL
+			ApplicationId_HEATING
+			ApplicationId_AUDIO_AND_VIDEO
+			ApplicationId_HVAC_ACTUATOR
+		*/
+		{
+			name: "sal lighting OFF",
+			args: args{
+				tag: &salTag{
+					tagType:     SAL,
+					application: readwriteModel.ApplicationIdContainer_LIGHTING_3A,
+					salCommand:  "OFF",
+					numElements: 1,
+				},
+				value: "1",
+			},
+			want:    spiValues.NewPlcBYTE(1),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "sal lighting ON",
+			args: args{
+				tag: &salTag{
+					tagType:     SAL,
+					application: readwriteModel.ApplicationIdContainer_LIGHTING_3A,
+					salCommand:  "ON",
+					numElements: 1,
+				},
+				value: "1",
+			},
+			want:    spiValues.NewPlcBYTE(1),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "sal lighting RAMP_TO_LEVEL",
+			args: args{
+				tag: &salTag{
+					tagType:     SAL,
+					application: readwriteModel.ApplicationIdContainer_LIGHTING_3A,
+					salCommand:  "RAMP_TO_LEVEL",
+					numElements: 2,
+				},
+				value: []string{"1", "2"},
+			},
+			want: spiValues.NewPlcList([]apiValues.PlcValue{
+				spiValues.NewPlcBYTE(1),
+				spiValues.NewPlcBYTE(2),
+			}),
+			wantErr: assert.NoError,
+		},
+		{
+			name: "sal lighting TERMINATE_RAMP",
+			args: args{
+				tag: &salTag{
+					tagType:     SAL,
+					application: readwriteModel.ApplicationIdContainer_LIGHTING_3A,
+					salCommand:  "TERMINATE_RAMP",
+					numElements: 1,
+				},
+				value: "1",
+			},
+			want:    spiValues.NewPlcBYTE(1),
+			wantErr: assert.NoError,
+		},
+		// TODO: implement SAL LIGHTING LABEL
+		// TODO: implement remaining tests
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -66,7 +174,7 @@ func TestValueHandler_NewPlcValue(t *testing.T) {
 				DefaultValueHandler: tt.fields.DefaultValueHandler,
 			}
 			got, err := m.NewPlcValue(tt.args.tag, tt.args.value)
-			if !tt.wantErr(t, err, fmt.Sprintf("NewPlcValue(%v, %v)", tt.args.tag, tt.args.value)) {
+			if !tt.wantErr(t, err, fmt.Sprintf("NewPlcValue(\n%v, \n%v)", tt.args.tag, tt.args.value)) {
 				return
 			}
 			assert.Equalf(t, tt.want, got, "NewPlcValue(%v, %v)", tt.args.tag, tt.args.value)
