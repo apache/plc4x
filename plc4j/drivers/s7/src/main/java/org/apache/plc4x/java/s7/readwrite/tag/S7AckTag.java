@@ -24,10 +24,6 @@ import java.util.regex.Pattern;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
 
-/**
- *
- * @author cgarcia
- */
 public class S7AckTag implements PlcTag {
     
     private static final Pattern EVENT_ALARM_ACK_PATTERN = 

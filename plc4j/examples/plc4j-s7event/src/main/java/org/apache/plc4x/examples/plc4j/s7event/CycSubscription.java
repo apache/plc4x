@@ -117,7 +117,7 @@ public class CycSubscription {
                 
             System.out.println("Waiting for events");
 
-            Thread.sleep(120000000);
+            Thread.sleep(10000);
 
             System.out.println("Bye...");
 

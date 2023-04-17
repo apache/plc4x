@@ -1019,9 +1019,6 @@ public class StaticHelper {
                 for (int i = 1; i <= szl_n_dr; i++) {
                     JSONObject jo = new JSONObject();  
                     ByteBuf infobytes = data.readSlice(20);
-                    short al1 = data.readShort();
-                    short al2 = data.readShort();
-                    int al3 = data.readInt();
                     jo.put("INFO", ByteBufUtil.hexDump(infobytes));
                     jo.put("AL_1", data.readShort());
                     jo.put("AL_2", data.readShort());

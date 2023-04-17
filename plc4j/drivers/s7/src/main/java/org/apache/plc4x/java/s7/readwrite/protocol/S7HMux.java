@@ -20,10 +20,6 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import io.netty.channel.Channel;
 
-/**
- *
- * @author cgarcia
- */
 public interface S7HMux {
     
 public void setEmbededhannel(Channel embeded_channel);     

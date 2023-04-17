@@ -53,25 +53,25 @@ public class EventSubscription {
         try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.10.1.33?remote-rack=0&remote-slot=3&controller-type=S7_400")) {
             final PlcSubscriptionRequest.Builder subscription = connection.subscriptionRequestBuilder();
             
-//            subscription.addEventTagAddress("myMODE", "MODE");
+            subscription.addEventTagAddress("myMODE", "MODE");
 //            subscription.addEventTagAddress("mySYS", "SYS");
 //            subscription.addEventTagAddress("myUSR", "USR");
-            subscription.addEventTagAddress("myALM", "ALM");
+//            subscription.addEventTagAddress("myALM", "ALM");
 
             final PlcSubscriptionRequest sub = subscription.build();
             final PlcSubscriptionResponse subresponse = sub.execute().get();
 
             //Si todo va bien con la subscripción puedo
-//            subresponse
-//                .getSubscriptionHandle("myMODE")
-//                .register(msg -> {
-//                    System.out.println("******** S7ModeEvent ********");
-//                    Map<String, Object> map = ((S7ModeEvent) msg).getMap();
-//                    map.forEach((x, y) -> {
-//                        System.out.println(x + " : " + y);
-//                    });
-//                    System.out.println("****************************");
-//                });
+            subresponse
+                .getSubscriptionHandle("myMODE")
+                .register(msg -> {
+                    System.out.println("******** S7ModeEvent ********");
+                    Map<String, Object> map = ((S7ModeEvent) msg).getMap();
+                    map.forEach((x, y) -> {
+                        System.out.println(x + " : " + y);
+                    });
+                    System.out.println("****************************");
+                });
 //
 //            subresponse
 //                .getSubscriptionHandle("mySYS")
@@ -99,20 +99,20 @@ public class EventSubscription {
 //                    System.out.println("****************************");
 //                });
 
-            subresponse
-                .getSubscriptionHandle("myALM")
-                .register(msg -> {
-                    System.out.println("******** S7AlmEvent *********");
-                    Map<String, Object> map = ((S7AlarmEvent) msg).getMap();
-                    map.forEach((x, y) -> {
-                        System.out.println(x + " : " + y);
-                    });
-                    System.out.println("****************************");
-                });
+//            subresponse
+//                .getSubscriptionHandle("myALM")
+//                .register(msg -> {
+//                    System.out.println("******** S7AlmEvent *********");
+//                    Map<String, Object> map = ((S7AlarmEvent) msg).getMap();
+//                    map.forEach((x, y) -> {
+//                        System.out.println(x + " : " + y);
+//                    });
+//                    System.out.println("****************************");
+//                });
                 
             System.out.println("Waiting for events");
 
-            Thread.sleep(120000);
+            Thread.sleep(5000);
 
             System.out.println("Bye...");
 
