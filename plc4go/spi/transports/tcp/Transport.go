@@ -173,5 +173,9 @@ func (m *TransportInstance) GetReader() *bufio.Reader {
 }
 
 func (m *TransportInstance) String() string {
-	return fmt.Sprintf("tcp:%s->%s", m.LocalAddress, m.RemoteAddress)
+	localAddress := ""
+	if m.LocalAddress != nil {
+		localAddress = m.LocalAddress.String() + "->"
+	}
+	return fmt.Sprintf("tcp:%s%s", localAddress, m.RemoteAddress)
 }
