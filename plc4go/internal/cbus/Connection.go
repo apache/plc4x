@@ -217,6 +217,7 @@ func (c *Connection) startSubscriptionHandler() {
 				for _, subscriber := range c.subscribers {
 					if ok := subscriber.handleMonitoredSAL(monitoredSal); ok {
 						log.Debug().Msgf("%v handled\n%s", subscriber, monitoredSal)
+						continue
 					}
 				}
 			}
