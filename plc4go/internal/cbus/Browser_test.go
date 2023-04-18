@@ -23,11 +23,14 @@ import (
 	"context"
 	"fmt"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"net/url"
@@ -83,6 +86,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 						INTERFACE_OPTIONS_3
 						INTERFACE_OPTIONS_1_PUN
 						INTERFACE_OPTIONS_1
+						MANUFACTURER
 						DONE
 					)
 					currentState := atomic.Value{}
@@ -117,6 +121,10 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 							t.Log("Dispatching interface 1 echo and confirm???")
 							transportInstance.FillReadBuffer([]byte("@A3300079\r"))
 							transportInstance.FillReadBuffer([]byte("3230009E\r\n"))
+							currentState.Store(MANUFACTURER)
+						case MANUFACTURER:
+							t.Log("Dispatching manufacturer")
+							transportInstance.FillReadBuffer([]byte("g.890050435F434E49454422\r\n"))
 							currentState.Store(DONE)
 						case DONE:
 							t.Log("Dispatching 3 MMI segments")
@@ -143,12 +151,25 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 				sequenceCounter: 0,
 			},
 			args: args{
-				ctx:         context.Background(),
-				interceptor: nil,
-				queryName:   "testQuery",
-				query:       NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1),
+				ctx: context.Background(),
+				interceptor: func(result apiModel.PlcBrowseItem) bool {
+					// No-OP
+					return true
+				},
+				queryName: "testQuery",
+				query:     NewUnitInfoQuery(readWriteModel.NewUnitAddress(2), nil, 1),
 			},
 			want: apiModel.PlcResponseCode_OK,
+			want1: []apiModel.PlcBrowseItem{
+				&spiModel.DefaultPlcBrowseItem{
+					Tag:      NewCALIdentifyTag(readWriteModel.NewUnitAddress(2), nil, readWriteModel.Attribute_Manufacturer, 1),
+					Name:     "testQuery",
+					Readable: true,
+					Options: map[string]apiValues.PlcValue{
+						"CurrentValue": spiValues.NewPlcSTRING("PC_CNIED"),
+					},
+				},
+			},
 		},
 	}
 	for _, tt := range tests {
