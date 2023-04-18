@@ -190,7 +190,7 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 		// Keep on reading responses till the timeout is done.
 		// TODO: Make this configurable
 		timeout := time.NewTimer(time.Second * 1)
-		utils.CleanupTimer(timeout)
+		defer utils.CleanupTimer(timeout)
 		timeout.Stop()
 		for start := time.Now(); time.Since(start) < time.Second*5; {
 			timeout.Reset(time.Second * 1)
