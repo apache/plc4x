@@ -255,7 +255,7 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 				}
 				// Pass the event back to the callback
 				callback(discoveryEvent)
-				return
+				continue
 			case <-timeout.C:
 				timeout.Stop()
 				continue
