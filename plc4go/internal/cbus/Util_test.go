@@ -21,6 +21,7 @@ package cbus
 
 import (
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -34,7 +35,10 @@ func TestCreateRequestContext(t *testing.T) {
 		args args
 		want model.RequestContext
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just call it",
+			want: readWriteModel.NewRequestContext(false),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -53,7 +57,179 @@ func TestCreateRequestContextWithInfoCallback(t *testing.T) {
 		args args
 		want model.RequestContext
 	}{
-		// TODO: Add test cases.
+		{
+			name: "just call it",
+			want: readWriteModel.NewRequestContext(false),
+		},
+		{
+			name: "just call it with info callback",
+			args: args{
+				infoCallBack: func(_ string) {},
+			},
+			want: readWriteModel.NewRequestContext(false),
+		},
+		{
+			name: "request context server direct command access",
+			args: args{
+				cBusMessage: readWriteModel.NewCBusMessageToServer(
+					readWriteModel.NewRequestDirectCommandAccess(
+						nil,
+						nil,
+						0,
+						nil,
+						nil,
+						0,
+						nil,
+						nil,
+					),
+					nil,
+					nil,
+				),
+			},
+			want: readWriteModel.NewRequestContext(false),
+		},
+		{
+			name: "request context server direct command access identify",
+			args: args{
+				cBusMessage: readWriteModel.NewCBusMessageToServer(
+					readWriteModel.NewRequestDirectCommandAccess(
+						readWriteModel.NewCALDataIdentify(
+							0,
+							0,
+							nil,
+							nil,
+						),
+						nil,
+						0,
+						nil,
+						nil,
+						0,
+						nil,
+						nil,
+					),
+					nil,
+					nil,
+				),
+			},
+			want: readWriteModel.NewRequestContext(true),
+		},
+		{
+			name: "request context server command access",
+			args: args{
+				cBusMessage: readWriteModel.NewCBusMessageToServer(
+					readWriteModel.NewRequestCommand(
+						readWriteModel.NewCBusCommandPointToPoint(
+							readWriteModel.NewCBusPointToPointCommandDirect(
+								nil,
+								0,
+								nil,
+								nil,
+							),
+							nil,
+							nil,
+						),
+						nil,
+						nil,
+						0,
+						nil,
+						nil,
+						0,
+						nil,
+						nil,
+					),
+					nil,
+					nil,
+				),
+			},
+			want: readWriteModel.NewRequestContext(false),
+		},
+		{
+			name: "request context server command access identify",
+			args: args{
+				cBusMessage: readWriteModel.NewCBusMessageToServer(
+					readWriteModel.NewRequestCommand(
+						readWriteModel.NewCBusCommandPointToPoint(
+							readWriteModel.NewCBusPointToPointCommandDirect(
+								nil,
+								0,
+								readWriteModel.NewCALDataIdentify(
+									0,
+									0,
+									nil,
+									nil,
+								),
+								nil,
+							),
+							nil,
+							nil,
+						),
+						nil,
+						nil,
+						0,
+						nil,
+						nil,
+						0,
+						nil,
+						nil,
+					),
+					nil,
+					nil,
+				),
+			},
+			want: readWriteModel.NewRequestContext(true),
+		},
+		{
+			name: "request context server direct command access obsolete",
+			args: args{
+				cBusMessage: readWriteModel.NewCBusMessageToServer(
+					readWriteModel.NewRequestObsolete(
+						nil,
+						nil,
+						0,
+						nil,
+						nil,
+						0,
+						nil,
+						nil,
+					),
+					nil,
+					nil,
+				),
+			},
+			want: readWriteModel.NewRequestContext(false),
+		},
+		{
+			name: "request context server direct command access identify obsolete",
+			args: args{
+				cBusMessage: readWriteModel.NewCBusMessageToServer(
+					readWriteModel.NewRequestObsolete(
+						readWriteModel.NewCALDataIdentify(
+							0,
+							0,
+							nil,
+							nil,
+						),
+						nil,
+						0,
+						nil,
+						nil,
+						0,
+						nil,
+						nil,
+					),
+					nil,
+					nil,
+				),
+			},
+			want: readWriteModel.NewRequestContext(true),
+		},
+		{
+			name: "request context server direct command access identify obsolete",
+			args: args{
+				cBusMessage: readWriteModel.NewCBusMessageToClient(nil, nil, nil),
+			},
+			want: readWriteModel.NewRequestContext(false),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
