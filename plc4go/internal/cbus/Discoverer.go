@@ -143,6 +143,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 
 	go func() {
 		for transportInstance := range transportInstances {
+			log.Debug().Stringer("transportInstance", transportInstance).Msg("submitting device scan")
 			d.deviceScanningQueue.Submit(ctx, d.deviceScanningWorkItemId.Add(1), d.createDeviceScanDispatcher(transportInstance.(*tcp.TransportInstance), callback))
 		}
 	}()
