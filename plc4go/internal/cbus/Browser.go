@@ -54,36 +54,12 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 	var queryResults []apiModel.PlcBrowseItem
 	switch query := query.(type) {
 	case *unitInfoQuery:
-		allUnits := false
-		var units []readWriteModel.UnitAddress
-		allAttributes := false
-		var attributes []readWriteModel.Attribute
-		if unitAddress := query.unitAddress; unitAddress != nil {
-			units = append(units, unitAddress)
-		} else {
-			// TODO: check if we still want the option to brute force all addresses
-			installedUnitAddressBytes, err := m.getInstalledUnitAddressBytes(ctx)
-			if err != nil {
-				log.Warn().Err(err).Msg("Unable to get installed uints")
-				return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
-			}
-
-			allUnits = true
-			for i := 0; i <= 0xFF; i++ {
-				unitAddressByte := byte(i)
-				if _, ok := installedUnitAddressBytes[unitAddressByte]; ok {
-					units = append(units, readWriteModel.NewUnitAddress(unitAddressByte))
-				}
-			}
+		units, allUnits, err := m.extractUnits(ctx, query, m.getInstalledUnitAddressBytes)
+		if err != nil {
+			log.Error().Err(err).Msg("Error extracting units")
+			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
 		}
-		if attribute := query.attribute; attribute != nil {
-			attributes = append(attributes, *attribute)
-		} else {
-			allAttributes = true
-			for _, attribute := range readWriteModel.AttributeValues {
-				attributes = append(attributes, attribute)
-			}
-		}
+		attributes, allAttributes := m.extractAttributes(query)
 
 		if allUnits {
 			log.Info().Msg("Querying all (available) units")
@@ -151,6 +127,39 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 		return apiModel.PlcResponseCode_INVALID_ADDRESS, nil
 	}
 	return apiModel.PlcResponseCode_OK, queryResults
+}
+
+func (m Browser) extractUnits(ctx context.Context, query *unitInfoQuery, getInstalledUnitAddressBytes func(ctx context.Context) (map[byte]any, error)) ([]readWriteModel.UnitAddress, bool, error) {
+	if unitAddress := query.unitAddress; unitAddress != nil {
+		return []readWriteModel.UnitAddress{unitAddress}, false, nil
+	} else {
+		// TODO: check if we still want the option to brute force all addresses
+		installedUnitAddressBytes, err := getInstalledUnitAddressBytes(ctx)
+		if err != nil {
+			return nil, false, errors.New("Unable to get installed uints")
+		}
+
+		var units []readWriteModel.UnitAddress
+		for i := 0; i <= 0xFF; i++ {
+			unitAddressByte := byte(i)
+			if _, ok := installedUnitAddressBytes[unitAddressByte]; ok {
+				units = append(units, readWriteModel.NewUnitAddress(unitAddressByte))
+			}
+		}
+		return units, true, nil
+	}
+}
+
+func (m Browser) extractAttributes(query *unitInfoQuery) ([]readWriteModel.Attribute, bool) {
+	if attribute := query.attribute; attribute != nil {
+		return []readWriteModel.Attribute{*attribute}, false
+	} else {
+		var attributes []readWriteModel.Attribute
+		for _, attribute := range readWriteModel.AttributeValues {
+			attributes = append(attributes, attribute)
+		}
+		return attributes, true
+	}
 }
 
 func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any, error) {
