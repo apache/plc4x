@@ -209,18 +209,18 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 			// Remove this expectation from the list.
 			m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
 			// Call the error handler.
-			go func() {
+			go func(expectation spi.Expectation) {
 				if err := expectation.GetHandleError()(plcerrors.NewTimeoutError(now.Sub(expectation.GetExpiration()))); err != nil {
 					log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
-			}()
+			}(expectation)
 		}
 		if err := expectation.GetContext().Err(); err != nil {
-			go func() {
+			go func(expectation spi.Expectation) {
 				if err := expectation.GetHandleError()(err); err != nil {
 					log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
-			}()
+			}(expectation)
 		}
 	}
 }
