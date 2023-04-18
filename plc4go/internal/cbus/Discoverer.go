@@ -59,11 +59,7 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	d.transportInstanceCreationQueue.Start()
 	d.deviceScanningQueue.Start()
 
-	deviceNamesOptions := options.FilterDiscoveryOptionsDeviceName(discoveryOptions)
-	deviceNames := make([]string, len(deviceNamesOptions))
-	for i, option := range deviceNamesOptions {
-		deviceNames[i] = option.GetDeviceName()
-	}
+	deviceNames := d.extractDeviceNames(discoveryOptions...)
 	interfaces, err := addressProviderRetriever(deviceNames)
 	if err != nil {
 		return errors.Wrap(err, "error getting addresses")
@@ -262,6 +258,15 @@ func (d *Discoverer) createDeviceScanDispatcher(tcpTransportInstance *tcp.Transp
 			}
 		}
 	}
+}
+
+func (d *Discoverer) extractDeviceNames(discoveryOptions ...options.WithDiscoveryOption) []string {
+	deviceNamesOptions := options.FilterDiscoveryOptionsDeviceName(discoveryOptions)
+	deviceNames := make([]string, len(deviceNamesOptions))
+	for i, option := range deviceNamesOptions {
+		deviceNames[i] = option.GetDeviceName()
+	}
+	return deviceNames
 }
 
 // addressProvider is used to make discover testable

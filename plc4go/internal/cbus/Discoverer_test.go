@@ -37,6 +37,21 @@ import (
 	"time"
 )
 
+func TestNewDiscoverer(t *testing.T) {
+	tests := []struct {
+		name string
+	}{
+		{
+			name: "just create it",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.NotNilf(t, NewDiscoverer(), "NewDiscoverer()")
+		})
+	}
+}
+
 func TestDiscoverer_Discover(t *testing.T) {
 	type fields struct {
 		transportInstanceCreationQueue utils.Executor
@@ -285,17 +300,103 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 	}
 }
 
-func TestNewDiscoverer(t *testing.T) {
+func TestDiscoverer_extractDeviceNames(t *testing.T) {
+	type fields struct {
+		transportInstanceCreationQueue utils.Executor
+		deviceScanningQueue            utils.Executor
+	}
+	type args struct {
+		discoveryOptions []options.WithDiscoveryOption
+	}
 	tests := []struct {
-		name string
+		name   string
+		fields fields
+		args   args
+		want   []string
 	}{
 		{
-			name: "just create it",
+			name: "no options, no devices",
+			want: []string{},
+		},
+		{
+			name: "one device option",
+			args: args{
+				discoveryOptions: []options.WithDiscoveryOption{
+					options.WithDiscoveryOptionDeviceName("blub"),
+				},
+			},
+			want: []string{"blub"},
+		},
+		{
+			name: "two device option",
+			args: args{
+				discoveryOptions: []options.WithDiscoveryOption{
+					options.WithDiscoveryOptionDeviceName("blub"),
+					options.WithDiscoveryOptionDeviceName("blab"),
+				},
+			},
+			want: []string{"blub", "blab"},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.NotNilf(t, NewDiscoverer(), "NewDiscoverer()")
+			d := &Discoverer{
+				transportInstanceCreationQueue: tt.fields.transportInstanceCreationQueue,
+				deviceScanningQueue:            tt.fields.deviceScanningQueue,
+			}
+			assert.Equalf(t, tt.want, d.extractDeviceNames(tt.args.discoveryOptions...), "extractDeviceNames(%v)", tt.args.discoveryOptions)
+		})
+	}
+}
+
+func Test_wrappedInterface_containedInterface(t *testing.T) {
+	type fields struct {
+		Interface *net.Interface
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   net.Interface
+	}{
+		{
+			name: "get it",
+			fields: fields{
+				Interface: &net.Interface{},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &wrappedInterface{
+				Interface: tt.fields.Interface,
+			}
+			assert.Equalf(t, tt.want, w.containedInterface(), "containedInterface()")
+		})
+	}
+}
+
+func Test_wrappedInterface_name(t *testing.T) {
+	type fields struct {
+		Interface *net.Interface
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   string
+	}{
+		{
+			name: "get it",
+			fields: fields{
+				Interface: &net.Interface{},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			w := &wrappedInterface{
+				Interface: tt.fields.Interface,
+			}
+			assert.Equalf(t, tt.want, w.name(), "name()")
 		})
 	}
 }
