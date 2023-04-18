@@ -33,6 +33,17 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
+type testDriver struct {
+}
+
+func (testDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+	return nil
+}
+
+func (testDriver) DiscoverWithContext(callback context.Context, event func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
+	return nil
+}
+
 func TestNewDefaultDriver(t *testing.T) {
 	type args struct {
 		defaultDriverRequirements DefaultDriverRequirements
@@ -166,8 +177,11 @@ func Test_defaultDriver_Discover(t *testing.T) {
 		wantErr assert.ErrorAssertionFunc
 	}{
 		{
-			name:    "discover it",
-			wantErr: assert.Error,
+			name: "discover it",
+			fields: fields{
+				DefaultDriverRequirements: testDriver{},
+			},
+			wantErr: assert.NoError,
 		},
 	}
 	for _, tt := range tests {
@@ -220,16 +234,6 @@ func Test_defaultDriver_DiscoverWithContext(t *testing.T) {
 			tt.wantErr(t, d.DiscoverWithContext(tt.args.in0, tt.args.in1, tt.args.in2...), fmt.Sprintf("DiscoverWithContext(%v, func(), %v)", tt.args.in0, tt.args.in2))
 		})
 	}
-}
-
-type testDriver struct {
-}
-
-func (testDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	return nil
-}
-func (testDriver) DiscoverWithContext(callback context.Context, event func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return nil
 }
 
 func Test_defaultDriver_GetConnection(t *testing.T) {

@@ -27,6 +27,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/nettest"
 	"net"
@@ -222,6 +223,7 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 		tcpTransport       *tcp.Transport
 		transportInstances chan transports.TransportInstance
 		cBusPort           uint16
+		addressLogger      zerolog.Logger
 	}
 	tests := []struct {
 		name   string
@@ -284,7 +286,7 @@ func TestDiscoverer_createTransportInstanceDispatcher(t *testing.T) {
 				transportInstanceCreationQueue: tt.fields.transportInstanceCreationQueue,
 				deviceScanningQueue:            tt.fields.deviceScanningQueue,
 			}
-			dispatcher := d.createTransportInstanceDispatcher(tt.args.ctx, tt.args.wg, tt.args.ip, tt.args.tcpTransport, tt.args.transportInstances, tt.args.cBusPort)
+			dispatcher := d.createTransportInstanceDispatcher(tt.args.ctx, tt.args.wg, tt.args.ip, tt.args.tcpTransport, tt.args.transportInstances, tt.args.cBusPort, tt.args.addressLogger)
 			assert.NotNilf(t, dispatcher, "createTransportInstanceDispatcher(%v, %v, %v, %v, %v)", tt.args.ctx, tt.args.wg, tt.args.ip, tt.args.tcpTransport, tt.args.transportInstances)
 			dispatcher()
 			timeout := time.NewTimer(2 * time.Second)
