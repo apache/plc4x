@@ -64,6 +64,12 @@ func (d *Discoverer) Discover(ctx context.Context, callback func(event apiModel.
 	if err != nil {
 		return errors.Wrap(err, "error getting addresses")
 	}
+	if log.Debug().Enabled() {
+		for _, provider := range interfaces {
+			log.Debug().Msgf("Discover on %v", provider.name())
+			log.Debug().Msgf("Discover on %#v", provider.containedInterface())
+		}
+	}
 
 	transportInstances := make(chan transports.TransportInstance)
 	wg := &sync.WaitGroup{}
@@ -296,9 +302,11 @@ var allInterfaceRetriever = func() ([]addressProvider, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "could not retrieve all interfaces")
 	}
+	log.Debug().Msgf("Mapping %d interfaces", len(interfaces))
 	addressProviders := make([]addressProvider, len(interfaces))
 	for i, networkInterface := range interfaces {
-		addressProviders[i] = &wrappedInterface{&networkInterface}
+		var copyInterface = networkInterface
+		addressProviders[i] = &wrappedInterface{&copyInterface}
 	}
 	return addressProviders, nil
 }
@@ -313,11 +321,12 @@ var addressProviderRetriever = func(deviceNames []string) ([]addressProvider, er
 	// If no device is explicitly selected via option, simply use all of them
 	// However if a discovery option is present to select a device by name, only
 	// add those devices matching any of the given names.
-	var interfaces []addressProvider
 	if len(deviceNames) <= 0 {
-		return allInterfaceRetriever()
+		log.Info().Msgf("no devices selected, use all devices (%d)", len(allInterfaces))
+		return allInterfaces, nil
 	}
 
+	var interfaces []addressProvider
 	for _, curInterface := range allInterfaces {
 		for _, deviceName := range deviceNames {
 			if curInterface.name() == deviceName {
