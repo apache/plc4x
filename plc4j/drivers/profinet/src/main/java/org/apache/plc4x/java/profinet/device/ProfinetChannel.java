@@ -121,22 +121,29 @@ public class ProfinetChannel {
                                     if (discoverer != null) {
                                         discoverer.processPnDcp(pdu, ethernetPacket);
                                     }
-                                }  else if (pdu.getFrameId() == PnDcp_FrameId.Alarm_Low) {
+                                } else if (pdu.getFrameId() == PnDcp_FrameId.DCP_GetSet_PDU) {
                                     for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
                                         if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
-                                            PnDcp_Pdu_AlarmLow alarmPdu = (PnDcp_Pdu_AlarmLow) pdu;
-                                            device.getValue().handleAlarmResponse(alarmPdu);
+                                            PcDcp_GetSet_Pdu getSetPdu = (PcDcp_GetSet_Pdu) pdu;
+                                            device.getValue().handleSetIpAddressResponse(getSetPdu);
                                         }
                                     }
-                                }
-                                else if (pdu.getFrameId() == PnDcp_FrameId.RT_CLASS_1) {
-                                    for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
-                                        if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
-                                            PnDcp_Pdu_RealTimeCyclic cyclicPdu = (PnDcp_Pdu_RealTimeCyclic) pdu;
-                                            device.getValue().handleRealTimeResponse(cyclicPdu);
+                                } else if (pdu.getFrameId() == PnDcp_FrameId.Alarm_Low) {
+                                        for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
+                                            if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
+                                                PnDcp_Pdu_AlarmLow alarmPdu = (PnDcp_Pdu_AlarmLow) pdu;
+                                                device.getValue().handleAlarmResponse(alarmPdu);
+                                            }
                                         }
                                     }
-                                }
+                                    else if (pdu.getFrameId() == PnDcp_FrameId.RT_CLASS_1) {
+                                        for (Map.Entry<String, ProfinetDevice> device : devices.entrySet()) {
+                                            if (Arrays.equals(device.getValue().getDeviceContext().getMacAddress().getAddress(), ethernetFrame.getSource().getAddress())) {
+                                                PnDcp_Pdu_RealTimeCyclic cyclicPdu = (PnDcp_Pdu_RealTimeCyclic) pdu;
+                                                device.getValue().handleRealTimeResponse(cyclicPdu);
+                                            }
+                                        }
+                                    }
                             } else if (payload instanceof Ethernet_FramePayload_LLDP) {
                                 Lldp_Pdu pdu = ((Ethernet_FramePayload_LLDP) payload).getPdu();
                                 if (discoverer != null) {

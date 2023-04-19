@@ -437,6 +437,7 @@
     ['0x03'     WAITAPPLRDY]
     ['0x04'     APPLRDY]
     ['0x05'     CYCLICDATA]
+    ['0x06'     SET_IP]
     ['0xFF'     ABORT]
 ]
 

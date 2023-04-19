@@ -33,6 +33,7 @@ import org.apache.plc4x.java.spi.generation.*;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -226,16 +227,25 @@ public class ProfinetDeviceContext implements DriverContext, HasConfiguration<Pr
         this.ipAddress = ipAddress;
     }
 
-    public byte[] getIpAddressAsByteArray() {
-        return null;
+    public byte[] getIpAddressAsByteArray() throws UnknownHostException {
+        if (this.ipAddress != null) {
+            return InetAddress.getByName(this.ipAddress).getAddress();
+        }
+        return new byte[4];
     }
 
-    public byte[] getSubnetAsByteArray() {
-        return null;
+    public byte[] getSubnetAsByteArray() throws UnknownHostException {
+        if (this.ipAddress != null) {
+            return InetAddress.getByName("255.255.255.0").getAddress();
+        }
+        return new byte[4];
     }
 
-    public byte[] getGatewayAsByteArray() {
-        return null;
+    public byte[] getGatewayAsByteArray() throws UnknownHostException {
+        if (this.ipAddress != null) {
+            return InetAddress.getByName("0.0.0.0").getAddress();
+        }
+        return new byte[4];
     }
 
     public String getPortId() {

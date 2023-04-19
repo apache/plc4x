@@ -22,10 +22,10 @@ package org.apache.plc4x.java.profinet.gsdml;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.profinet.DummyMessageWrapper;
+import org.apache.plc4x.java.profinet.DummyNetworkInterface;
 import org.apache.plc4x.java.profinet.config.ConfigurationProfinetDevice;
 import org.apache.plc4x.java.profinet.config.ProfinetConfiguration;
-import org.apache.plc4x.java.profinet.device.ProfinetDevice;
-import org.apache.plc4x.java.profinet.device.ProfinetNetworkInterface;
+import org.apache.plc4x.java.profinet.device.*;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -332,6 +332,33 @@ public class ProfinetConfigurationTests {
         }
 
         assertEquals(devices.get("DEVICE NAME 1").getDeviceContext().getIpAddress(), "10.1.1.1");
+    }
+
+    @Test
+    public void sendIPSetRequest() {
+        String[] deviceNames = new String[] {"DEVICE NAME 1"};
+
+        ProfinetConfiguration configuration = new ConfigurationFactory().createConfiguration(
+            ProfinetConfiguration.class, "devices=[[device name 1, PLC4X 1, (PLC4X DUMMY MODULE, PLC4X DUMMY MODULE,,1), 10.1.1.1]]&gsddirectory=src/test/resources");
+
+        NetworkInterface networkInterface = new DummyNetworkInterface("10.1.1.2", "255.255.255.0", "0.0.0.0");
+        Map<String, ConfigurationProfinetDevice> configuredDevices = configuration.getDevices().getConfiguredDevices();
+        Map<String, ProfinetDevice> devices = new HashMap<>();
+        MessageWrapper wrapper = new DummyMessageWrapper();
+
+        for (Map.Entry<String, ConfigurationProfinetDevice> entry : configuredDevices.entrySet()) {
+            devices.put(entry.getKey(),
+                new ProfinetDevice(
+                    new DummyMessageWrapper(),
+                    entry.getValue().getDevicename(),
+                    entry.getValue().getDeviceaccess(),
+                    entry.getValue().getSubmodules(),
+                    entry.getValue().getGsdHandler()
+                )
+            );
+            devices.get(entry.getValue().getDevicename()).setIpAddress(entry.getValue().getIpaddress());
+            devices.get(entry.getValue().getDevicename()).setNetworkInterface(networkInterface);
+        }
 
     }
 

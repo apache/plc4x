@@ -27,6 +27,4 @@ public interface ProfinetCallable<T> {
     T create();
 
     long getId();
-
-    void setId(long id);
 }

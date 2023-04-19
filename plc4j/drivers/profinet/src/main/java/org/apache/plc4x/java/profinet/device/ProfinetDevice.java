@@ -169,6 +169,9 @@ public class ProfinetDevice implements PlcSubscriber {
     }
 
     public boolean onConnect() throws ExecutionException, InterruptedException, TimeoutException {
+        if (this.setIpAddress) {
+            deviceContext.setState(ProfinetDeviceState.SET_IP);
+        }
         start();
         return true;
     }
@@ -185,6 +188,11 @@ public class ProfinetDevice implements PlcSubscriber {
                 while (deviceContext.getState() != ProfinetDeviceState.ABORT) {
                     try {
                         switch (deviceContext.getState()) {
+                            case SET_IP:
+                                ProfinetMessageDcpIp setIpMessage = new ProfinetMessageDcpIp();
+                                this.messageWrapper.sendPnioMessage(setIpMessage, deviceContext);
+                                deviceContext.setState(ProfinetDeviceState.IDLE);
+                                break;
                             case IDLE:
                                 CreateConnection createConnection = new CreateConnection();
                                 recordIdAndSend(createConnection);
@@ -270,8 +278,10 @@ public class ProfinetDevice implements PlcSubscriber {
     }
 
     public void setIpAddress(String ipAddress) {
-        this.setIpAddress = true;
-        this.deviceContext.setIpAddress(ipAddress);
+        if (ipAddress != null) {
+            this.setIpAddress = true;
+            this.deviceContext.setIpAddress(ipAddress);
+        }
     }
 
     public void handleResponse(Ethernet_FramePayload_IPv4 packet) {
@@ -305,7 +315,7 @@ public class ProfinetDevice implements PlcSubscriber {
 
     public void handle(PlcDiscoveryItem item) {
         logger.debug("Received Discovered item at device");
-        if (item.getOptions().containsKey("ipAddress")) {
+        if (item.getOptions().containsKey("ipAddress") && !this.setIpAddress) {
             deviceContext.setIpAddress(item.getOptions().get("ipAddress"));
         }
         if (item.getOptions().containsKey("portId")) {
@@ -417,6 +427,10 @@ public class ProfinetDevice implements PlcSubscriber {
         deviceContext.setState(ProfinetDeviceState.IDLE);
     }
 
+    public void handleSetIpAddressResponse(PcDcp_GetSet_Pdu pdu) {
+        deviceContext.setState(ProfinetDeviceState.IDLE);
+    }
+
     public void setNetworkInterface(NetworkInterface networkInterface) {
         this.deviceContext.setNetworkInterface(networkInterface);
     }
@@ -428,7 +442,7 @@ public class ProfinetDevice implements PlcSubscriber {
     public class CreateConnection implements ProfinetCallable<DceRpc_Packet> {
 
         CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
-        private long id = getObjectId();
+        private final long id = getObjectId();
 
         public CompletableFuture<Boolean> getResponseHandled() {
             return responseHandled;
@@ -436,10 +450,6 @@ public class ProfinetDevice implements PlcSubscriber {
 
         public long getId() {
             return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
         }
 
         public DceRpc_Packet create() {
@@ -616,7 +626,7 @@ public class ProfinetDevice implements PlcSubscriber {
     public class WriteParameters implements ProfinetCallable<DceRpc_Packet> {
 
         CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
-        private long id = getObjectId();
+        private final long id = getObjectId();
 
         public CompletableFuture<Boolean> getResponseHandled() {
             return responseHandled;
@@ -624,10 +634,6 @@ public class ProfinetDevice implements PlcSubscriber {
 
         public long getId() {
             return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
         }
 
         public DceRpc_Packet create() {
@@ -759,7 +765,7 @@ public class ProfinetDevice implements PlcSubscriber {
     public class WriteParametersEnd implements ProfinetCallable<DceRpc_Packet> {
 
         CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
-        private long id = getObjectId();
+        private final long id = getObjectId();
 
         public CompletableFuture<Boolean> getResponseHandled() {
             return responseHandled;
@@ -767,10 +773,6 @@ public class ProfinetDevice implements PlcSubscriber {
 
         public long getId() {
             return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
         }
 
         public DceRpc_Packet create() {
@@ -831,7 +833,7 @@ public class ProfinetDevice implements PlcSubscriber {
     public class ApplicationReadyResponse implements ProfinetCallable<DceRpc_Packet> {
 
         private final DceRpc_ActivityUuid activityUuid;
-        private long id;
+        private final long id;
 
         public ApplicationReadyResponse(DceRpc_ActivityUuid activityUuid, long seqNumber) {
             this.activityUuid = activityUuid;
@@ -846,9 +848,6 @@ public class ProfinetDevice implements PlcSubscriber {
             return id;
         }
 
-        public void setId(long id) {
-            this.id = id;
-        }
 
         public DceRpc_Packet create() {
             return new DceRpc_Packet(
@@ -894,7 +893,7 @@ public class ProfinetDevice implements PlcSubscriber {
     public class DceRpcAck implements ProfinetCallable<DceRpc_Packet> {
 
         private final DceRpc_ActivityUuid activityUuid;
-        private long id;
+        private final long id;
 
         public DceRpcAck(DceRpc_ActivityUuid activityUuid, long seqNumber) {
             this.activityUuid = activityUuid;
@@ -907,10 +906,6 @@ public class ProfinetDevice implements PlcSubscriber {
 
         public long getId() {
             return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
         }
 
         public DceRpc_Packet create() {
@@ -941,7 +936,7 @@ public class ProfinetDevice implements PlcSubscriber {
     public class CyclicData implements ProfinetCallable<Ethernet_Frame> {
 
         private final long startTime;
-        private long id = getObjectId();
+        private final long id = getObjectId();
 
         public CyclicData(long startTime) {
             this.startTime = startTime;
@@ -949,10 +944,6 @@ public class ProfinetDevice implements PlcSubscriber {
 
         public long getId() {
             return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
         }
 
         public Ethernet_Frame create() {
@@ -1037,11 +1028,12 @@ public class ProfinetDevice implements PlcSubscriber {
         }
     }
 
-    public class DcpSetIpAddress implements ProfinetCallable<Ethernet_Frame> {
+    public class ProfinetMessageDcpIp implements ProfinetCallable<Ethernet_Frame> {
 
         private long id = getObjectId();
+        private CompletableFuture<Boolean> responseHandled = new CompletableFuture<>();
 
-        public DcpSetIpAddress() {
+        public ProfinetMessageDcpIp() {
         }
 
         public long getId() {
@@ -1052,43 +1044,51 @@ public class ProfinetDevice implements PlcSubscriber {
             this.id = id;
         }
 
-        public Ethernet_Frame create() {
+        public CompletableFuture<Boolean> getResponseHandled() {
+            return responseHandled;
+        }
 
-            Ethernet_Frame frame = new Ethernet_Frame(
-                deviceContext.getMacAddress(),
-                deviceContext.getLocalMacAddress(),
-                new Ethernet_FramePayload_VirtualLan(
-                    VirtualLanPriority.INTERNETWORK_CONTROL,
-                    false,
-                    0,
-                    new Ethernet_FramePayload_PnDcp(
-                        new PcDcp_GetSet_Pdu(
-                            PnDcp_FrameId.DCP_GetSet_PDU.getValue(),
-                            false,
-                            false,
-                            0x10000001L,
-                            Collections.singletonList(
-                                new PnDcp_Block_IpParameter(
-                                    false,
-                                    false,
-                                    true,
-                                    deviceContext.getIpAddressAsByteArray(),
-                                    deviceContext.getSubnetAsByteArray(),
-                                    deviceContext.getGatewayAsByteArray()
+        public Ethernet_Frame create() {
+            Ethernet_Frame frame = null;
+            try {
+                frame = new Ethernet_Frame(
+                    deviceContext.getMacAddress(),
+                    deviceContext.getLocalMacAddress(),
+                    new Ethernet_FramePayload_VirtualLan(
+                        VirtualLanPriority.INTERNETWORK_CONTROL,
+                        false,
+                        0,
+                        new Ethernet_FramePayload_PnDcp(
+                            new PcDcp_GetSet_Pdu(
+                                PnDcp_FrameId.DCP_GetSet_PDU.getValue(),
+                                false,
+                                false,
+                                0x10000001L,
+                                Collections.singletonList(
+                                    new PnDcp_Block_IpParameter(
+                                        false,
+                                        false,
+                                        true,
+                                        deviceContext.getIpAddressAsByteArray(),
+                                        deviceContext.getSubnetAsByteArray(),
+                                        deviceContext.getGatewayAsByteArray()
+                                    )
                                 )
                             )
                         )
                     )
-                )
-            );
-            return frame;
+                );
+            } catch (UnknownHostException e) {
+                logger.error("Error parsing IP Address for set ip address phase");
+                deviceContext.setState(ProfinetDeviceState.ABORT);
+            }
 
+            return frame;
         }
 
         @Override
-        public void handle(Ethernet_Frame packet) {
-            deviceContext.setState(ProfinetDeviceState.ABORT);
-            logger.error("Error Parsing set IP Address from device {}", deviceContext.getDeviceName());
+        public void handle(Ethernet_Frame ethernetFrame) {
+            logger.debug("Received a Set IP Address Response");
         }
     }
 }

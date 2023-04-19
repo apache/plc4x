@@ -59,7 +59,7 @@
             [simple   bit         response                                                         ]
             [simple   uint 32     xid                                                              ]
             [reserved uint 16      '0x0000'                                                        ]
-            [implicit uint 16     dcpDataLength                'lengthInBytes - 10'                ]
+            [implicit uint 16     dcpDataLength                'lengthInBytes - 12'                ]
             [array    PnDcp_Block blocks                        length              'dcpDataLength']
         ]
         ['PTCP_DelayReqPDU' PcDcp_Pdu_DelayReq

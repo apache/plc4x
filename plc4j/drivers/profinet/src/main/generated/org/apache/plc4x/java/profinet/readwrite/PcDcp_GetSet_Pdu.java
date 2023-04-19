@@ -144,7 +144,7 @@ public class PcDcp_GetSet_Pdu extends PnDcp_Pdu implements Message {
 
     // Implicit Field (dcpDataLength) (Used for parsing, but its value is not stored as it's
     // implicitly given by the objects content)
-    int dcpDataLength = (int) ((getLengthInBytes()) - (10));
+    int dcpDataLength = (int) ((getLengthInBytes()) - (12));
     writeImplicitField(
         "dcpDataLength",
         dcpDataLength,

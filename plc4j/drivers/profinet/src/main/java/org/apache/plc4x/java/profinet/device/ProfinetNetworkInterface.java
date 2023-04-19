@@ -21,7 +21,11 @@ package org.apache.plc4x.java.profinet.device;
 
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.pcap4j.core.PcapAddress;
+import org.pcap4j.core.PcapIpV4Address;
 import org.pcap4j.core.PcapNetworkInterface;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class ProfinetNetworkInterface implements NetworkInterface {
 
@@ -34,9 +38,15 @@ public class ProfinetNetworkInterface implements NetworkInterface {
             throw new PlcRuntimeException("No Inet4 Address assigned to interface");
         }
         for (PcapAddress address : networkInterface.getAddresses()) {
-            ipAddress = address.getAddress().toString();
-            subnet = address.getNetmask().toString();
-            gateway = address.getDestinationAddress().toString();
+            if (address instanceof PcapIpV4Address) {
+                ipAddress = address.getAddress().toString();
+                subnet = address.getNetmask().toString();
+                if (address.getDestinationAddress() != null) {
+                    gateway = address.getDestinationAddress().toString();
+                } else {
+                    gateway = "0.0.0.0";
+                }
+            }
         }
 
     }
@@ -57,15 +67,36 @@ public class ProfinetNetworkInterface implements NetworkInterface {
     }
 
     public byte[] getIpAddressAsByteArray() {
-        return null;
+        try {
+            if (this.ipAddress != null) {
+                return InetAddress.getByName(this.ipAddress.replace("/", "")).getAddress();
+            }
+            return new byte[4];
+        } catch (UnknownHostException e) {
+            return new byte[4];
+        }
     }
 
     public byte[] getSubnetAsByteArray() {
-        return null;
+        try {
+            if (this.subnet != null) {
+                return InetAddress.getByName(this.subnet).getAddress();
+            }
+            return new byte[4];
+        } catch (UnknownHostException e) {
+            return new byte[4];
+        }
     }
 
     public byte[] getGatewayAsByteArray() {
-        return null;
+        try {
+            if (this.gateway != null) {
+                return InetAddress.getByName(this.gateway).getAddress();
+            }
+            return new byte[4];
+        } catch (UnknownHostException e) {
+            return new byte[4];
+        }
     }
 
 }

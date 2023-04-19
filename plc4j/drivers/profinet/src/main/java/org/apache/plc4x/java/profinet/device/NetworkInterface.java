@@ -27,4 +27,5 @@ public interface NetworkInterface {
     byte[] getIpAddressAsByteArray();
     byte[] getSubnetAsByteArray();
     byte[] getGatewayAsByteArray();
+
 }
