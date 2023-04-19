@@ -27,7 +27,10 @@ import (
 	"time"
 )
 
+// TODO: replace with proper mock
 type testMessageCodec struct {
+	receive func() (spi.Message, error)
+	send    func(message spi.Message) error
 }
 
 func (t testMessageCodec) Connect() error {
@@ -51,6 +54,9 @@ func (t testMessageCodec) IsRunning() bool {
 }
 
 func (t testMessageCodec) Send(message spi.Message) error {
+	if t.send != nil {
+		return t.send(message)
+	}
 	// NO-OP
 	return nil
 }
@@ -72,4 +78,16 @@ func (t testMessageCodec) GetDefaultIncomingMessageChannel() chan spi.Message {
 
 func (t testMessageCodec) GetTransportInstance() transports.TransportInstance {
 	return testTransportInstance{}
+}
+
+func (t testMessageCodec) GetCodec() spi.MessageCodec {
+	return t
+}
+
+func (t testMessageCodec) Receive() (spi.Message, error) {
+	if t.receive != nil {
+		return t.receive()
+	}
+	// NO-OP
+	return nil, nil
 }

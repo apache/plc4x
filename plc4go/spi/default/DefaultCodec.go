@@ -22,6 +22,7 @@ package _default
 import (
 	"context"
 	"fmt"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"runtime/debug"
 	"time"
 
@@ -334,13 +335,11 @@ mainLoop:
 			timeout := time.NewTimer(time.Millisecond * 40)
 			select {
 			case m.defaultIncomingMessageChannel <- message:
-				if !timeout.Stop() {
-					<-timeout.C
-				}
 			case <-timeout.C:
 				timeout.Stop()
 				workerLog.Warn().Msgf("Message discarded\n%s", message)
 			}
+			utils.CleanupTimer(timeout)
 		}
 	}
 }

@@ -25,6 +25,7 @@ import (
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
+// TODO: replace with proper mock
 type testBrowser struct {
 	dispatcher func(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem)
 }

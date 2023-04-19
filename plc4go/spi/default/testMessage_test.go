@@ -19,16 +19,31 @@
 
 package _default
 
-import apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+import (
+	"context"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
 // TODO: replace with proper mock
-type testTagHandler struct {
+type testMessage struct {
 }
 
-func (testTagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
+func (testMessage) Serialize() ([]byte, error) {
+	// NO-OP
 	return nil, nil
 }
 
-func (testTagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
-	return nil, nil
+func (testMessage) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
+	// NO-OP
+	return nil
+}
+
+func (testMessage) GetLengthInBytes(ctx context.Context) uint16 {
+	// NO-OP
+	return 0
+}
+
+func (testMessage) GetLengthInBits(ctx context.Context) uint16 {
+	// NO-OP
+	return 0
 }

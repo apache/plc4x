@@ -24,7 +24,10 @@ import (
 	"context"
 )
 
+// TODO: replace with proper mock
 type testTransportInstance struct {
+	connected          bool
+	connectWithContext func(ctx context.Context) error
 }
 
 func (t testTransportInstance) String() string {
@@ -38,6 +41,9 @@ func (t testTransportInstance) Connect() error {
 }
 
 func (t testTransportInstance) ConnectWithContext(ctx context.Context) error {
+	if t.connectWithContext != nil {
+		return t.connectWithContext(ctx)
+	}
 	// NO-OP
 	return nil
 }
@@ -48,8 +54,7 @@ func (t testTransportInstance) Close() error {
 }
 
 func (t testTransportInstance) IsConnected() bool {
-	// NO-OP
-	return false
+	return t.connected
 }
 
 func (t testTransportInstance) FillBuffer(until func(pos uint, currentByte byte, reader *bufio.Reader) bool) error {

@@ -26,6 +26,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 )
 
+// TODO: replace with proper mock
 type testConnection struct {
 	testMessageCodec testMessageCodec
 	connected        bool

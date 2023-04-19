@@ -19,6 +19,7 @@
 
 package _default
 
+// TODO: replace with proper mock
 type testQuery struct {
 }
 
