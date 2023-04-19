@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -203,7 +202,7 @@ func (m *_BACnetConfirmedServiceRequestVTClose) SerializeWithWriteBuffer(ctx con
 		}
 		for _curItem, _element := range m.GetListOfRemoteVtSessionIdentifiers() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfRemoteVtSessionIdentifiers()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfRemoteVtSessionIdentifiers()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

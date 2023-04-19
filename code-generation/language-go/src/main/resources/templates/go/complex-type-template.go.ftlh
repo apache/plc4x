@@ -404,7 +404,6 @@ func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 		</#if>
 		<#list type.fields as field>
-            <#if helper.needsVariable(field, "_lastItem", true)><@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" /></#if>
 			<#switch field.typeName>
 				<#case "array">
 					<#assign arrayField = field.asArrayField().orElseThrow()>
@@ -421,7 +420,7 @@ func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 				<#else>
 				<#if arrayField.isCountArrayField()>
 		for _curItem, element := range m.${arrayField.name?cap_first} {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.${arrayField.name?cap_first}), _curItem)<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.${arrayField.name?cap_first}), _curItem)
 			<#-- TODO: find a way to do this nicer -->
 			_ = arrayCtx
 			_ = _curItem
@@ -594,7 +593,7 @@ func (m *_${type.name}) GetParentLengthInBits(ctx context.Context) uint16 {
 				<#else>
 					<#if arrayField.isCountArrayField()>
 		for _curItem, element := range m.${arrayField.name?cap_first} {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.${arrayField.name?cap_first}), _curItem)<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.${arrayField.name?cap_first}), _curItem)
             <#-- TODO: find a way to do this nicer -->
 			_ = arrayCtx
 			_ = _curItem
@@ -811,7 +810,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	{
 		_numItems := uint16(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
             <#-- TODO: find a way to do this nicer -->
 			_ = arrayCtx
 			_ = _curItem
@@ -1610,7 +1609,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", arrayField)}
 						<#else>
 						<#assign complexTypeReference = arrayElementType>
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Get${arrayField.name?cap_first}()), _curItem)<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.Get${arrayField.name?cap_first}()), _curItem)
         <#-- TODO: find a way to do this nicer -->
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)

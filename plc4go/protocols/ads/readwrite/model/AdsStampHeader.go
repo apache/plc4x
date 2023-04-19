@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -110,7 +109,7 @@ func (m *_AdsStampHeader) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.AdsNotificationSamples) > 0 {
 		for _curItem, element := range m.AdsNotificationSamples {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.AdsNotificationSamples), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.AdsNotificationSamples), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -164,7 +163,7 @@ func AdsStampHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	{
 		_numItems := uint16(samples)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := AdsNotificationSampleParseWithBuffer(arrayCtx, readBuffer)
@@ -225,7 +224,7 @@ func (m *_AdsStampHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	}
 	for _curItem, _element := range m.GetAdsNotificationSamples() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAdsNotificationSamples()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAdsNotificationSamples()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

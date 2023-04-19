@@ -1153,7 +1153,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private String toLastItemVariableExpression(TypeReference typeReference, boolean serialize, Tracer tracer) {
         tracer = tracer.dive("lastItem");
-        return tracer + "spiContext.GetLastItemFromContext(ctx)";
+        return tracer + "utils.GetLastItemFromContext(ctx)";
     }
 
     private String toLengthVariableExpression(Field field, VariableLiteral variableLiteral, boolean serialize, Tracer tracer) {

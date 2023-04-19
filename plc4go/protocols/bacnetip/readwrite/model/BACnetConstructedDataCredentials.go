@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataCredentials) SerializeWithWriteBuffer(ctx context
 		}
 		for _curItem, _element := range m.GetCredentials() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetCredentials()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetCredentials()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

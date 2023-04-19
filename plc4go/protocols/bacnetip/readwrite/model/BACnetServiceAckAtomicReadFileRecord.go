@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -139,7 +138,7 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) GetLengthInBits(ctx context.Cont
 	// Array field
 	if len(m.FileRecordData) > 0 {
 		for _curItem, element := range m.FileRecordData {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.FileRecordData), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.FileRecordData), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -205,7 +204,7 @@ func BACnetServiceAckAtomicReadFileRecordParseWithBuffer(ctx context.Context, re
 	{
 		_numItems := uint16(returnedRecordCount.GetPayload().GetActualValue())
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := BACnetApplicationTagParseWithBuffer(arrayCtx, readBuffer)
@@ -280,7 +279,7 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(ctx con
 		}
 		for _curItem, _element := range m.GetFileRecordData() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetFileRecordData()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFileRecordData()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

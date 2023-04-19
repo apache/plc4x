@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -294,7 +293,7 @@ func (m *_BACnetConstructedDataPriority) SerializeWithWriteBuffer(ctx context.Co
 		}
 		for _curItem, _element := range m.GetPriority() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetPriority()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPriority()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

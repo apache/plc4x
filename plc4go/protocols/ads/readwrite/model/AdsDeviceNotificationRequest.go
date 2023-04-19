@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -150,7 +149,7 @@ func (m *_AdsDeviceNotificationRequest) GetLengthInBits(ctx context.Context) uin
 	// Array field
 	if len(m.AdsStampHeaders) > 0 {
 		for _curItem, element := range m.AdsStampHeaders {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.AdsStampHeaders), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.AdsStampHeaders), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -204,7 +203,7 @@ func AdsDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer
 	{
 		_numItems := uint16(stamps)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := AdsStampHeaderParseWithBuffer(arrayCtx, readBuffer)
@@ -269,7 +268,7 @@ func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.Con
 		}
 		for _curItem, _element := range m.GetAdsStampHeaders() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAdsStampHeaders()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAdsStampHeaders()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

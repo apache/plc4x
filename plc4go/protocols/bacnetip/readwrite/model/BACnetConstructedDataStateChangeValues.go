@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -294,7 +293,7 @@ func (m *_BACnetConstructedDataStateChangeValues) SerializeWithWriteBuffer(ctx c
 		}
 		for _curItem, _element := range m.GetStateChangeValues() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetStateChangeValues()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetStateChangeValues()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

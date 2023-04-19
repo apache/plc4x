@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -220,7 +219,7 @@ func (m *_NLMUpdateKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.Set1Keys) > 0 {
 		for _curItem, element := range m.Set1Keys {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Set1Keys), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.Set1Keys), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -250,7 +249,7 @@ func (m *_NLMUpdateKeyUpdate) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.Set2Keys) > 0 {
 		for _curItem, element := range m.Set2Keys {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Set2Keys), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.Set2Keys), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -343,7 +342,7 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	{
 		_numItems := uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() interface{} { return uint16((*set1KeyCount)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(arrayCtx, readBuffer)
@@ -410,7 +409,7 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	{
 		_numItems := uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() interface{} { return uint16((*set1KeyCount)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(arrayCtx, readBuffer)
@@ -523,7 +522,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		for _curItem, _element := range m.GetSet1Keys() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetSet1Keys()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSet1Keys()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
@@ -580,7 +579,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		}
 		for _curItem, _element := range m.GetSet2Keys() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetSet2Keys()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSet2Keys()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {
