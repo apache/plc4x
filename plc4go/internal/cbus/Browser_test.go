@@ -181,7 +181,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 			}
 			got, got1 := m.BrowseQuery(tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
 			assert.Equalf(t, tt.want, got, "BrowseQuery(%v, func(), %v,\n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
-			assert.Equalf(t, tt.want1, got1, "BrowseQuery(%v, %v, %v, %v)", tt.args.ctx, tt.args.interceptor, tt.args.queryName, tt.args.query)
+			assert.Equalf(t, tt.want1, got1, "BrowseQuery(%v, func(), %v, \n%v\n)", tt.args.ctx, tt.args.queryName, tt.args.query)
 		})
 	}
 }

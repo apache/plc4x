@@ -262,50 +262,66 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		return nil, errors.Wrap(err, "Error getting the installation MMI")
 	}
 	readCtx, readCtxCancel := context.WithTimeout(ctx, time.Second*2)
-	readRequestResult := <-readRequest.ExecuteWithContext(readCtx)
-	readCtxCancel()
-	if err := readRequestResult.GetErr(); err != nil {
-		return nil, errors.Wrap(err, "Error reading the mmi")
-	}
-	if responseCode := readRequestResult.GetResponse().GetResponseCode("installationMMI"); responseCode == apiModel.PlcResponseCode_OK {
-		rootValue := readRequestResult.GetResponse().GetValue("installationMMI")
-		if !rootValue.IsStruct() {
-			return nil, errors.Errorf("%v should be a struct", rootValue)
+	go func() {
+		defer readCtxCancel()
+		readRequestResult := <-readRequest.ExecuteWithContext(readCtx)
+		if err := readRequestResult.GetErr(); err != nil {
+			log.Warn().Err(err).Msg("Error reading the mmi")
+			return
 		}
-		rootStruct := rootValue.GetStruct()
-		if applicationValue := rootStruct["application"]; applicationValue == nil || !applicationValue.IsString() || applicationValue.GetString() != "NETWORK_CONTROL" {
-			return nil, errors.Errorf("%v should contain a application tag of type string with value NETWORK_CONTROL", rootStruct)
-		}
-		var blockStart int
-		if blockStartValue := rootStruct["blockStart"]; blockStartValue == nil || !blockStartValue.IsByte() || blockStartValue.GetByte() != 0 {
-			return nil, errors.Errorf("%v should contain a blockStart tag of type byte with value 0", rootStruct)
-		} else {
-			blockStart = int(blockStartValue.GetByte())
-		}
+		if responseCode := readRequestResult.GetResponse().GetResponseCode("installationMMI"); responseCode == apiModel.PlcResponseCode_OK {
+			rootValue := readRequestResult.GetResponse().GetValue("installationMMI")
+			if !rootValue.IsStruct() {
+				log.Warn().Err(err).Msgf("%v should be a struct", rootValue)
+				return
+			}
+			rootStruct := rootValue.GetStruct()
+			if applicationValue := rootStruct["application"]; applicationValue == nil || !applicationValue.IsString() || applicationValue.GetString() != "NETWORK_CONTROL" {
+				log.Warn().Err(err).Msgf("%v should contain a application tag of type string with value NETWORK_CONTROL", rootStruct)
+				return
+			}
+			var blockStart int
+			if blockStartValue := rootStruct["blockStart"]; blockStartValue == nil || !blockStartValue.IsByte() || blockStartValue.GetByte() != 0 {
+				log.Warn().Err(err).Msgf("%v should contain a blockStart tag of type byte with value 0", rootStruct)
+				return
+			} else {
+				blockStart = int(blockStartValue.GetByte())
+			}
 
-		if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
-			return nil, errors.Errorf("%v should contain a values tag of type list", rootStruct)
-		} else {
-			for unitByteAddress, plcValue := range plcListValue.GetList() {
-				unitByteAddress = blockStart + unitByteAddress
-				if !plcValue.IsString() {
-					return nil, errors.Errorf("%v at %d should be a string", plcValue, unitByteAddress)
-				}
-				switch plcValue.GetString() {
-				case readWriteModel.GAVState_ON.PLC4XEnumName(), readWriteModel.GAVState_OFF.PLC4XEnumName():
-					log.Debug().Msgf("unit %d does exists", unitByteAddress)
-					result[byte(unitByteAddress)] = true
-				case readWriteModel.GAVState_DOES_NOT_EXIST.PLC4XEnumName():
-					log.Debug().Msgf("unit %d does not exists", unitByteAddress)
-				case readWriteModel.GAVState_ERROR.PLC4XEnumName():
-					log.Warn().Msgf("unit %d is in error state", unitByteAddress)
+			if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
+				log.Warn().Err(err).Msgf("%v should contain a values tag of type list", rootStruct)
+				return
+			} else {
+				for unitByteAddress, plcValue := range plcListValue.GetList() {
+					unitByteAddress = blockStart + unitByteAddress
+					if !plcValue.IsString() {
+						log.Warn().Err(err).Msgf("%v at %d should be a string", plcValue, unitByteAddress)
+						return
+					}
+					switch plcValue.GetString() {
+					case readWriteModel.GAVState_ON.PLC4XEnumName(), readWriteModel.GAVState_OFF.PLC4XEnumName():
+						log.Debug().Msgf("unit %d does exists", unitByteAddress)
+						result[byte(unitByteAddress)] = true
+					case readWriteModel.GAVState_DOES_NOT_EXIST.PLC4XEnumName():
+						log.Debug().Msgf("unit %d does not exists", unitByteAddress)
+					case readWriteModel.GAVState_ERROR.PLC4XEnumName():
+						log.Warn().Msgf("unit %d is in error state", unitByteAddress)
+					}
 				}
 			}
+			switch blockStart {
+			case 0:
+				blockOffset0Received = true
+			case 88:
+				blockOffset88Received = true
+			case 176:
+				blockOffset176Received = true
+			}
+
+		} else {
+			log.Warn().Msgf("We got %s as response code for installation mmi so we rely on getting it via subscription", responseCode)
 		}
-		blockOffset0Received = true
-	} else {
-		log.Warn().Msgf("We got %s as response code for installation mmi so we rely on getting it via subscription", responseCode)
-	}
+	}()
 
 	syncCtx, syncCtxCancel := context.WithTimeout(ctx, time.Second*2)
 	defer syncCtxCancel()
@@ -324,5 +340,6 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			return nil, errors.Wrap(err, "error waiting for other offsets")
 		}
 	}
+	readCtxCancel()
 	return result, nil
 }
