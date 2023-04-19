@@ -93,7 +93,6 @@ func buildDefaultCodec(defaultCodecRequirements DefaultCodecRequirements, transp
 		switch option.(type) {
 		case withCustomMessageHandler:
 			customMessageHandler = option.(withCustomMessageHandler).customMessageHandler
-			log.Debug()
 		}
 	}
 
@@ -203,11 +202,13 @@ func (m *defaultCodec) SendRequest(ctx context.Context, message spi.Message, acc
 }
 
 func (m *defaultCodec) TimeoutExpectations(now time.Time) {
-	for index, expectation := range m.expectations {
+	for i := 0; i < len(m.expectations); i++ {
+		expectation := m.expectations[i]
 		// Check if this expectation has expired.
 		if now.After(expectation.GetExpiration()) {
 			// Remove this expectation from the list.
-			m.expectations = append(m.expectations[:index], m.expectations[index+1:]...)
+			m.expectations = append(m.expectations[:i], m.expectations[i+1:]...)
+			i--
 			// Call the error handler.
 			go func(expectation spi.Expectation) {
 				if err := expectation.GetHandleError()(plcerrors.NewTimeoutError(now.Sub(expectation.GetExpiration()))); err != nil {
@@ -216,6 +217,9 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 			}(expectation)
 		}
 		if err := expectation.GetContext().Err(); err != nil {
+			// Remove this expectation from the list.
+			m.expectations = append(m.expectations[:i], m.expectations[i+1:]...)
+			i--
 			go func(expectation spi.Expectation) {
 				if err := expectation.GetHandleError()(err); err != nil {
 					log.Error().Err(err).Msg("Got an error handling error on expectation")
