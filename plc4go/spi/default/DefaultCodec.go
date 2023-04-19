@@ -215,6 +215,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 					log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 			}(expectation)
+			continue
 		}
 		if err := expectation.GetContext().Err(); err != nil {
 			// Remove this expectation from the list.
@@ -225,6 +226,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 					log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 			}(expectation)
+			continue
 		}
 	}
 }
