@@ -33,17 +33,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 )
 
-type testDriver struct {
-}
-
-func (testDriver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
-	return nil
-}
-
-func (testDriver) DiscoverWithContext(callback context.Context, event func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return nil
-}
-
 func TestNewDefaultDriver(t *testing.T) {
 	type args struct {
 		defaultDriverRequirements DefaultDriverRequirements
@@ -67,17 +56,6 @@ func TestNewDefaultDriver(t *testing.T) {
 			assert.Equalf(t, tt.want, NewDefaultDriver(tt.args.defaultDriverRequirements, tt.args.protocolCode, tt.args.protocolName, tt.args.defaultTransport, tt.args.plcTagHandler), "NewDefaultDriver(%v, %v, %v, %v, %v)", tt.args.defaultDriverRequirements, tt.args.protocolCode, tt.args.protocolName, tt.args.defaultTransport, tt.args.plcTagHandler)
 		})
 	}
-}
-
-type testTagHandler struct {
-}
-
-func (testTagHandler) ParseTag(tagAddress string) (apiModel.PlcTag, error) {
-	return nil, nil
-}
-
-func (testTagHandler) ParseQuery(query string) (apiModel.PlcQuery, error) {
-	return nil, nil
 }
 
 func Test_defaultDriver_CheckQuery(t *testing.T) {

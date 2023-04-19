@@ -23,14 +23,14 @@ import (
 	"context"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 )
 
 // DefaultConnectionRequirements defines the required at a implementing connection when using DefaultConnection

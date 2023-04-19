@@ -97,25 +97,6 @@ func Test_defaultBrowser_Browse(t *testing.T) {
 	}
 }
 
-type testQuery struct {
-}
-
-func (testQuery) GetQueryString() string {
-	return "blub"
-}
-
-type testBrowser struct {
-	dispatcher func(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem)
-}
-
-func (t testBrowser) BrowseQuery(ctx context.Context, interceptor func(result apiModel.PlcBrowseItem) bool, queryName string, query apiModel.PlcQuery) (apiModel.PlcResponseCode, []apiModel.PlcBrowseItem) {
-	if t.dispatcher != nil {
-		return t.dispatcher(ctx, interceptor, queryName, query)
-	}
-	interceptor(nil)
-	return apiModel.PlcResponseCode_OK, nil
-}
-
 func Test_defaultBrowser_BrowseWithInterceptor(t *testing.T) {
 	type fields struct {
 		DefaultBrowserRequirements DefaultBrowserRequirements
