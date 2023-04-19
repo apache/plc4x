@@ -278,7 +278,6 @@ var rootCommand = Command{
 			Name:        "browse-direct",
 			Description: "Builds a browse request with the supplied field",
 			action: func(c Command, connectionsStringAndFieldQuery string) error {
-				panic("asd")
 				split := strings.Split(connectionsStringAndFieldQuery, " ")
 				if len(split) != 2 {
 					return errors.Errorf("%s expects exactly three arguments [connection url] [fieldQuery]", c)
