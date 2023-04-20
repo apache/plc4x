@@ -132,7 +132,7 @@ func NewBACnetConstructedDataPriority(numberOfDataElements BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPriority(structType interface{}) BACnetConstructedDataPriority {
+func CastBACnetConstructedDataPriority(structType any) BACnetConstructedDataPriority {
 	if casted, ok := structType.(BACnetConstructedDataPriority); ok {
 		return casted
 	}

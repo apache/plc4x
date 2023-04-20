@@ -104,7 +104,7 @@ func NewModbusPDUReadCoilsResponse(value []byte) *_ModbusPDUReadCoilsResponse {
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadCoilsResponse(structType interface{}) ModbusPDUReadCoilsResponse {
+func CastModbusPDUReadCoilsResponse(structType any) ModbusPDUReadCoilsResponse {
 	if casted, ok := structType.(ModbusPDUReadCoilsResponse); ok {
 		return casted
 	}

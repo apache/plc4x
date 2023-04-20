@@ -96,7 +96,7 @@ func NewBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble(doubleValue BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble(structType interface{}) BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble {
+func CastBACnetFaultParameterFaultOutOfRangeMinNormalValueDouble(structType any) BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble {
 	if casted, ok := structType.(BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble); ok {
 		return casted
 	}

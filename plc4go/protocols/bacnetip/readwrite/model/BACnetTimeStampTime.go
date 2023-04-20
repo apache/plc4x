@@ -94,7 +94,7 @@ func NewBACnetTimeStampTime(timeValue BACnetContextTagTime, peekedTagHeader BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimeStampTime(structType interface{}) BACnetTimeStampTime {
+func CastBACnetTimeStampTime(structType any) BACnetTimeStampTime {
 	if casted, ok := structType.(BACnetTimeStampTime); ok {
 		return casted
 	}

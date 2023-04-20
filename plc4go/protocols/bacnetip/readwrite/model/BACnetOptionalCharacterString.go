@@ -107,7 +107,7 @@ func NewBACnetOptionalCharacterString(peekedTagHeader BACnetTagHeader) *_BACnetO
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalCharacterString(structType interface{}) BACnetOptionalCharacterString {
+func CastBACnetOptionalCharacterString(structType any) BACnetOptionalCharacterString {
 	if casted, ok := structType.(BACnetOptionalCharacterString); ok {
 		return casted
 	}
@@ -165,7 +165,7 @@ func BACnetOptionalCharacterStringParseWithBuffer(ctx context.Context, readBuffe
 		InitializeParent(BACnetOptionalCharacterString, BACnetTagHeader)
 		GetParent() BACnetOptionalCharacterString
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetOptionalCharacterStringChildSerializeRequirement
 	var typeSwitchError error
 	switch {

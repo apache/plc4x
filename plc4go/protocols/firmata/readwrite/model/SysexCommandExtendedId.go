@@ -100,7 +100,7 @@ func NewSysexCommandExtendedId(id []int8) *_SysexCommandExtendedId {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandExtendedId(structType interface{}) SysexCommandExtendedId {
+func CastSysexCommandExtendedId(structType any) SysexCommandExtendedId {
 	if casted, ok := structType.(SysexCommandExtendedId); ok {
 		return casted
 	}

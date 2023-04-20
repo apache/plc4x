@@ -100,7 +100,7 @@ func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry, bvlcP
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCReadForeignDeviceTableAck(structType interface{}) BVLCReadForeignDeviceTableAck {
+func CastBVLCReadForeignDeviceTableAck(structType any) BVLCReadForeignDeviceTableAck {
 	if casted, ok := structType.(BVLCReadForeignDeviceTableAck); ok {
 		return casted
 	}

@@ -115,7 +115,7 @@ func NewBACnetContextTagDouble(payload BACnetTagPayloadDouble, header BACnetTagH
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagDouble(structType interface{}) BACnetContextTagDouble {
+func CastBACnetContextTagDouble(structType any) BACnetContextTagDouble {
 	if casted, ok := structType.(BACnetContextTagDouble); ok {
 		return casted
 	}

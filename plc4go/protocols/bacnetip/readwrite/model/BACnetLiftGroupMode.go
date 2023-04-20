@@ -111,8 +111,8 @@ func BACnetLiftGroupModeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetLiftGroupMode(structType interface{}) BACnetLiftGroupMode {
-	castFunc := func(typ interface{}) BACnetLiftGroupMode {
+func CastBACnetLiftGroupMode(structType any) BACnetLiftGroupMode {
+	castFunc := func(typ any) BACnetLiftGroupMode {
 		if sBACnetLiftGroupMode, ok := typ.(BACnetLiftGroupMode); ok {
 			return sBACnetLiftGroupMode
 		}

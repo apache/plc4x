@@ -87,8 +87,8 @@ func EiPCommandKnows(value uint16) bool {
 	return false
 }
 
-func CastEiPCommand(structType interface{}) EiPCommand {
-	castFunc := func(typ interface{}) EiPCommand {
+func CastEiPCommand(structType any) EiPCommand {
+	castFunc := func(typ any) EiPCommand {
 		if sEiPCommand, ok := typ.(EiPCommand); ok {
 			return sEiPCommand
 		}

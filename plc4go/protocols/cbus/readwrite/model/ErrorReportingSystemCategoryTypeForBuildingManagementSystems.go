@@ -165,8 +165,8 @@ func ErrorReportingSystemCategoryTypeForBuildingManagementSystemsKnows(value uin
 	return false
 }
 
-func CastErrorReportingSystemCategoryTypeForBuildingManagementSystems(structType interface{}) ErrorReportingSystemCategoryTypeForBuildingManagementSystems {
-	castFunc := func(typ interface{}) ErrorReportingSystemCategoryTypeForBuildingManagementSystems {
+func CastErrorReportingSystemCategoryTypeForBuildingManagementSystems(structType any) ErrorReportingSystemCategoryTypeForBuildingManagementSystems {
+	castFunc := func(typ any) ErrorReportingSystemCategoryTypeForBuildingManagementSystems {
 		if sErrorReportingSystemCategoryTypeForBuildingManagementSystems, ok := typ.(ErrorReportingSystemCategoryTypeForBuildingManagementSystems); ok {
 			return sErrorReportingSystemCategoryTypeForBuildingManagementSystems
 		}

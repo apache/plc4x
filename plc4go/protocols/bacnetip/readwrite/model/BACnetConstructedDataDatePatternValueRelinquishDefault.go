@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDatePatternValueRelinquishDefault(relinquishDefault
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDatePatternValueRelinquishDefault(structType interface{}) BACnetConstructedDataDatePatternValueRelinquishDefault {
+func CastBACnetConstructedDataDatePatternValueRelinquishDefault(structType any) BACnetConstructedDataDatePatternValueRelinquishDefault {
 	if casted, ok := structType.(BACnetConstructedDataDatePatternValueRelinquishDefault); ok {
 		return casted
 	}

@@ -80,7 +80,7 @@ func NewBACnetNotifyTypeTagged(header BACnetTagHeader, value BACnetNotifyType, t
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotifyTypeTagged(structType interface{}) BACnetNotifyTypeTagged {
+func CastBACnetNotifyTypeTagged(structType any) BACnetNotifyTypeTagged {
 	if casted, ok := structType.(BACnetNotifyTypeTagged); ok {
 		return casted
 	}

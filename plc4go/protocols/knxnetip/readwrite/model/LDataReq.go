@@ -112,7 +112,7 @@ func NewLDataReq(additionalInformationLength uint8, additionalInformation []CEMI
 }
 
 // Deprecated: use the interface for direct cast
-func CastLDataReq(structType interface{}) LDataReq {
+func CastLDataReq(structType any) LDataReq {
 	if casted, ok := structType.(LDataReq); ok {
 		return casted
 	}

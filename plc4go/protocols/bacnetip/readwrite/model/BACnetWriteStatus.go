@@ -93,8 +93,8 @@ func BACnetWriteStatusKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetWriteStatus(structType interface{}) BACnetWriteStatus {
-	castFunc := func(typ interface{}) BACnetWriteStatus {
+func CastBACnetWriteStatus(structType any) BACnetWriteStatus {
+	castFunc := func(typ any) BACnetWriteStatus {
 		if sBACnetWriteStatus, ok := typ.(BACnetWriteStatus); ok {
 			return sBACnetWriteStatus
 		}

@@ -90,7 +90,7 @@ func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize Dat
 }
 
 // Deprecated: use the interface for direct cast
-func CastAssociatedValueType(structType interface{}) AssociatedValueType {
+func CastAssociatedValueType(structType any) AssociatedValueType {
 	if casted, ok := structType.(AssociatedValueType); ok {
 		return casted
 	}

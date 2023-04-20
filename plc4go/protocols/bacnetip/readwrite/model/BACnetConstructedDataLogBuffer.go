@@ -132,7 +132,7 @@ func NewBACnetConstructedDataLogBuffer(numberOfDataElements BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLogBuffer(structType interface{}) BACnetConstructedDataLogBuffer {
+func CastBACnetConstructedDataLogBuffer(structType any) BACnetConstructedDataLogBuffer {
 	if casted, ok := structType.(BACnetConstructedDataLogBuffer); ok {
 		return casted
 	}

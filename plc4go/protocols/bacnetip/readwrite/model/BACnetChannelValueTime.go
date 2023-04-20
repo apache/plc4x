@@ -94,7 +94,7 @@ func NewBACnetChannelValueTime(timeValue BACnetApplicationTagTime, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueTime(structType interface{}) BACnetChannelValueTime {
+func CastBACnetChannelValueTime(structType any) BACnetChannelValueTime {
 	if casted, ok := structType.(BACnetChannelValueTime); ok {
 		return casted
 	}

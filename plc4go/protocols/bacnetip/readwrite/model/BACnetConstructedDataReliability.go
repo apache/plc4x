@@ -121,7 +121,7 @@ func NewBACnetConstructedDataReliability(reliability BACnetReliabilityTagged, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataReliability(structType interface{}) BACnetConstructedDataReliability {
+func CastBACnetConstructedDataReliability(structType any) BACnetConstructedDataReliability {
 	if casted, ok := structType.(BACnetConstructedDataReliability); ok {
 		return casted
 	}

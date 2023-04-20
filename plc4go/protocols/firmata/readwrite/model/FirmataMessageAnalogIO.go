@@ -105,7 +105,7 @@ func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *_FirmataM
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataMessageAnalogIO(structType interface{}) FirmataMessageAnalogIO {
+func CastFirmataMessageAnalogIO(structType any) FirmataMessageAnalogIO {
 	if casted, ok := structType.(FirmataMessageAnalogIO); ok {
 		return casted
 	}

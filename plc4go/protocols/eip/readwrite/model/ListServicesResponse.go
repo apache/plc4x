@@ -109,7 +109,7 @@ func NewListServicesResponse(typeIds []TypeId, sessionHandle uint32, status uint
 }
 
 // Deprecated: use the interface for direct cast
-func CastListServicesResponse(structType interface{}) ListServicesResponse {
+func CastListServicesResponse(structType any) ListServicesResponse {
 	if casted, ok := structType.(ListServicesResponse); ok {
 		return casted
 	}

@@ -232,8 +232,8 @@ func ClockAndTimekeepingCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastClockAndTimekeepingCommandTypeContainer(structType interface{}) ClockAndTimekeepingCommandTypeContainer {
-	castFunc := func(typ interface{}) ClockAndTimekeepingCommandTypeContainer {
+func CastClockAndTimekeepingCommandTypeContainer(structType any) ClockAndTimekeepingCommandTypeContainer {
+	castFunc := func(typ any) ClockAndTimekeepingCommandTypeContainer {
 		if sClockAndTimekeepingCommandTypeContainer, ok := typ.(ClockAndTimekeepingCommandTypeContainer); ok {
 			return sClockAndTimekeepingCommandTypeContainer
 		}

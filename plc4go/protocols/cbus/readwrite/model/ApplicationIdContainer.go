@@ -3690,8 +3690,8 @@ func ApplicationIdContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastApplicationIdContainer(structType interface{}) ApplicationIdContainer {
-	castFunc := func(typ interface{}) ApplicationIdContainer {
+func CastApplicationIdContainer(structType any) ApplicationIdContainer {
+	castFunc := func(typ any) ApplicationIdContainer {
 		if sApplicationIdContainer, ok := typ.(ApplicationIdContainer); ok {
 			return sApplicationIdContainer
 		}

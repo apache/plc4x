@@ -129,8 +129,8 @@ func BACnetEscalatorFaultKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetEscalatorFault(structType interface{}) BACnetEscalatorFault {
-	castFunc := func(typ interface{}) BACnetEscalatorFault {
+func CastBACnetEscalatorFault(structType any) BACnetEscalatorFault {
+	castFunc := func(typ any) BACnetEscalatorFault {
 		if sBACnetEscalatorFault, ok := typ.(BACnetEscalatorFault); ok {
 			return sBACnetEscalatorFault
 		}

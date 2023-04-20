@@ -86,7 +86,7 @@ func NewBACnetGroupChannelValueList(openingTag BACnetOpeningTag, listOfEventSumm
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetGroupChannelValueList(structType interface{}) BACnetGroupChannelValueList {
+func CastBACnetGroupChannelValueList(structType any) BACnetGroupChannelValueList {
 	if casted, ok := structType.(BACnetGroupChannelValueList); ok {
 		return casted
 	}

@@ -86,7 +86,7 @@ func NewBACnetAssignedLandingCallsLandingCallsList(openingTag BACnetOpeningTag, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAssignedLandingCallsLandingCallsList(structType interface{}) BACnetAssignedLandingCallsLandingCallsList {
+func CastBACnetAssignedLandingCallsLandingCallsList(structType any) BACnetAssignedLandingCallsLandingCallsList {
 	if casted, ok := structType.(BACnetAssignedLandingCallsLandingCallsList); ok {
 		return casted
 	}

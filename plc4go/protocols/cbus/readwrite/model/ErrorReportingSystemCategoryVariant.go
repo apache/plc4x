@@ -93,8 +93,8 @@ func ErrorReportingSystemCategoryVariantKnows(value uint8) bool {
 	return false
 }
 
-func CastErrorReportingSystemCategoryVariant(structType interface{}) ErrorReportingSystemCategoryVariant {
-	castFunc := func(typ interface{}) ErrorReportingSystemCategoryVariant {
+func CastErrorReportingSystemCategoryVariant(structType any) ErrorReportingSystemCategoryVariant {
+	castFunc := func(typ any) ErrorReportingSystemCategoryVariant {
 		if sErrorReportingSystemCategoryVariant, ok := typ.(ErrorReportingSystemCategoryVariant); ok {
 			return sErrorReportingSystemCategoryVariant
 		}

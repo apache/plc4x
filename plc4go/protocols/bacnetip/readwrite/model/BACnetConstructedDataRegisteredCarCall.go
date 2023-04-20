@@ -132,7 +132,7 @@ func NewBACnetConstructedDataRegisteredCarCall(numberOfDataElements BACnetApplic
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRegisteredCarCall(structType interface{}) BACnetConstructedDataRegisteredCarCall {
+func CastBACnetConstructedDataRegisteredCarCall(structType any) BACnetConstructedDataRegisteredCarCall {
 	if casted, ok := structType.(BACnetConstructedDataRegisteredCarCall); ok {
 		return casted
 	}

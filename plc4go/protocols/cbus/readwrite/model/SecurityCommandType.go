@@ -117,8 +117,8 @@ func SecurityCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastSecurityCommandType(structType interface{}) SecurityCommandType {
-	castFunc := func(typ interface{}) SecurityCommandType {
+func CastSecurityCommandType(structType any) SecurityCommandType {
+	castFunc := func(typ any) SecurityCommandType {
 		if sSecurityCommandType, ok := typ.(SecurityCommandType); ok {
 			return sSecurityCommandType
 		}

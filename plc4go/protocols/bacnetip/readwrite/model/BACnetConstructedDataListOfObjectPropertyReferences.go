@@ -104,7 +104,7 @@ func NewBACnetConstructedDataListOfObjectPropertyReferences(references []BACnetD
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataListOfObjectPropertyReferences(structType interface{}) BACnetConstructedDataListOfObjectPropertyReferences {
+func CastBACnetConstructedDataListOfObjectPropertyReferences(structType any) BACnetConstructedDataListOfObjectPropertyReferences {
 	if casted, ok := structType.(BACnetConstructedDataListOfObjectPropertyReferences); ok {
 		return casted
 	}

@@ -97,7 +97,7 @@ func NewErrorReportingSystemCategoryTypeSupportUnits(categoryForType ErrorReport
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingSystemCategoryTypeSupportUnits(structType interface{}) ErrorReportingSystemCategoryTypeSupportUnits {
+func CastErrorReportingSystemCategoryTypeSupportUnits(structType any) ErrorReportingSystemCategoryTypeSupportUnits {
 	if casted, ok := structType.(ErrorReportingSystemCategoryTypeSupportUnits); ok {
 		return casted
 	}

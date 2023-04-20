@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesBoolean(booleanValue BACnetContextTagBoolean, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesBoolean(structType interface{}) BACnetPropertyStatesBoolean {
+func CastBACnetPropertyStatesBoolean(structType any) BACnetPropertyStatesBoolean {
 	if casted, ok := structType.(BACnetPropertyStatesBoolean); ok {
 		return casted
 	}

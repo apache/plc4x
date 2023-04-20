@@ -485,8 +485,8 @@ func CIPClassIDKnows(value uint16) bool {
 	return false
 }
 
-func CastCIPClassID(structType interface{}) CIPClassID {
-	castFunc := func(typ interface{}) CIPClassID {
+func CastCIPClassID(structType any) CIPClassID {
+	castFunc := func(typ any) CIPClassID {
 		if sCIPClassID, ok := typ.(CIPClassID); ok {
 			return sCIPClassID
 		}

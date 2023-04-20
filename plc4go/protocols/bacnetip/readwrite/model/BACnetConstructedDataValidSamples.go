@@ -121,7 +121,7 @@ func NewBACnetConstructedDataValidSamples(validSamples BACnetApplicationTagUnsig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataValidSamples(structType interface{}) BACnetConstructedDataValidSamples {
+func CastBACnetConstructedDataValidSamples(structType any) BACnetConstructedDataValidSamples {
 	if casted, ok := structType.(BACnetConstructedDataValidSamples); ok {
 		return casted
 	}

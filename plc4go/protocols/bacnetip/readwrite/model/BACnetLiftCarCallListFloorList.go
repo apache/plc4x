@@ -86,7 +86,7 @@ func NewBACnetLiftCarCallListFloorList(openingTag BACnetOpeningTag, floorNumbers
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLiftCarCallListFloorList(structType interface{}) BACnetLiftCarCallListFloorList {
+func CastBACnetLiftCarCallListFloorList(structType any) BACnetLiftCarCallListFloorList {
 	if casted, ok := structType.(BACnetLiftCarCallListFloorList); ok {
 		return casted
 	}

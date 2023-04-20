@@ -97,7 +97,7 @@ func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) *_Descriptio
 }
 
 // Deprecated: use the interface for direct cast
-func CastDescriptionRequest(structType interface{}) DescriptionRequest {
+func CastDescriptionRequest(structType any) DescriptionRequest {
 	if casted, ok := structType.(DescriptionRequest); ok {
 		return casted
 	}

@@ -100,7 +100,7 @@ func NewBACnetEventPriorities(openingTag BACnetOpeningTag, toOffnormal BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventPriorities(structType interface{}) BACnetEventPriorities {
+func CastBACnetEventPriorities(structType any) BACnetEventPriorities {
 	if casted, ok := structType.(BACnetEventPriorities); ok {
 		return casted
 	}

@@ -105,8 +105,8 @@ func DeviceDescriptorMediumTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastDeviceDescriptorMediumType(structType interface{}) DeviceDescriptorMediumType {
-	castFunc := func(typ interface{}) DeviceDescriptorMediumType {
+func CastDeviceDescriptorMediumType(structType any) DeviceDescriptorMediumType {
+	castFunc := func(typ any) DeviceDescriptorMediumType {
 		if sDeviceDescriptorMediumType, ok := typ.(DeviceDescriptorMediumType); ok {
 			return sDeviceDescriptorMediumType
 		}

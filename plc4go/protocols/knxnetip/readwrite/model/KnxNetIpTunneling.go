@@ -96,7 +96,7 @@ func NewKnxNetIpTunneling(version uint8) *_KnxNetIpTunneling {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetIpTunneling(structType interface{}) KnxNetIpTunneling {
+func CastKnxNetIpTunneling(structType any) KnxNetIpTunneling {
 	if casted, ok := structType.(KnxNetIpTunneling); ok {
 		return casted
 	}

@@ -139,7 +139,7 @@ func NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength ui
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsReadWriteRequest(structType interface{}) AdsReadWriteRequest {
+func CastAdsReadWriteRequest(structType any) AdsReadWriteRequest {
 	if casted, ok := structType.(AdsReadWriteRequest); ok {
 		return casted
 	}
@@ -236,13 +236,13 @@ func AdsReadWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(pullErr, "Error pulling for items")
 	}
 	// Count array
-	items := make([]AdsMultiRequestItem, utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	items := make([]AdsMultiRequestItem, utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return uint16(indexOffset) }, func() any { return uint16(uint16(0)) }).(uint16))
 	// This happens when the size is set conditional to 0
 	if len(items) == 0 {
 		items = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() interface{} { return uint16(indexOffset) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+		_numItems := uint16(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return uint16(indexOffset) }, func() any { return uint16(uint16(0)) }).(uint16))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -319,7 +319,7 @@ func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 		}
 
 		// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-		writeLength := uint32(uint32((uint32(uint32(len(m.GetItems()))) * uint32((utils.InlineIf((bool((m.GetIndexGroup()) == (61570))), func() interface{} { return uint32(uint32(16)) }, func() interface{} { return uint32(uint32(12)) }).(uint32))))) + uint32(uint32(len(m.GetData()))))
+		writeLength := uint32(uint32((uint32(uint32(len(m.GetItems()))) * uint32((utils.InlineIf((bool((m.GetIndexGroup()) == (61570))), func() any { return uint32(uint32(16)) }, func() any { return uint32(uint32(12)) }).(uint32))))) + uint32(uint32(len(m.GetData()))))
 		_writeLengthErr := writeBuffer.WriteUint32("writeLength", 32, (writeLength))
 		if _writeLengthErr != nil {
 			return errors.Wrap(_writeLengthErr, "Error serializing 'writeLength' field")

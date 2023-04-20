@@ -136,7 +136,7 @@ func NewBACnetNotificationParametersFloatingLimit(innerOpeningTag BACnetOpeningT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersFloatingLimit(structType interface{}) BACnetNotificationParametersFloatingLimit {
+func CastBACnetNotificationParametersFloatingLimit(structType any) BACnetNotificationParametersFloatingLimit {
 	if casted, ok := structType.(BACnetNotificationParametersFloatingLimit); ok {
 		return casted
 	}

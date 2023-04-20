@@ -37,8 +37,8 @@ import (
 
 type ManualTestCase struct {
 	Address           string
-	ExpectedReadValue interface{}
-	WriteValue        interface{}
+	ExpectedReadValue any
+	WriteValue        any
 	UnwrappedValue    bool
 }
 
@@ -57,7 +57,7 @@ func NewManualTestSuite(connectionString string, driverManager plc4go.PlcDriverM
 	}
 }
 
-func (m *ManualTestSuite) AddTestCase(address string, expectedReadValue interface{}, testCaseOptions ...WithTestCaseOption) {
+func (m *ManualTestSuite) AddTestCase(address string, expectedReadValue any, testCaseOptions ...WithTestCaseOption) {
 	testCase := ManualTestCase{Address: address, ExpectedReadValue: expectedReadValue, UnwrappedValue: true}
 	for _, testCaseOption := range testCaseOptions {
 		testCaseOption(testCase)

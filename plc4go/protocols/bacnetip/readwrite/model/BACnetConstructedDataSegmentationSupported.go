@@ -121,7 +121,7 @@ func NewBACnetConstructedDataSegmentationSupported(segmentationSupported BACnetS
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSegmentationSupported(structType interface{}) BACnetConstructedDataSegmentationSupported {
+func CastBACnetConstructedDataSegmentationSupported(structType any) BACnetConstructedDataSegmentationSupported {
 	if casted, ok := structType.(BACnetConstructedDataSegmentationSupported); ok {
 		return casted
 	}

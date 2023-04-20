@@ -100,7 +100,7 @@ func NewS7ParameterReadVarRequest(items []S7VarRequestParameterItem) *_S7Paramet
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterReadVarRequest(structType interface{}) S7ParameterReadVarRequest {
+func CastS7ParameterReadVarRequest(structType any) S7ParameterReadVarRequest {
 	if casted, ok := structType.(S7ParameterReadVarRequest); ok {
 		return casted
 	}

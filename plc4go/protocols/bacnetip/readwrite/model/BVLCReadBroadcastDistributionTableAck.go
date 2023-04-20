@@ -100,7 +100,7 @@ func NewBVLCReadBroadcastDistributionTableAck(table []BVLCBroadcastDistributionT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCReadBroadcastDistributionTableAck(structType interface{}) BVLCReadBroadcastDistributionTableAck {
+func CastBVLCReadBroadcastDistributionTableAck(structType any) BVLCReadBroadcastDistributionTableAck {
 	if casted, ok := structType.(BVLCReadBroadcastDistributionTableAck); ok {
 		return casted
 	}

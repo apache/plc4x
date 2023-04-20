@@ -32,7 +32,7 @@ import (
 )
 
 func TestModbusDriver(t *testing.T) {
-	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
+	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return modbusModel.ModbusTcpADUParseWithBuffer(context.Background(), readBufferByteBased, modbusModel.DriverType_MODBUS_TCP, false)
 	})}
 	testutils.RunDriverTestsuiteWithOptions(t, modbus.NewModbusTcpDriver(), "assets/testing/protocols/modbus/tcp/DriverTestsuite.xml", modbusIO.ModbusXmlParserHelper{}, options)

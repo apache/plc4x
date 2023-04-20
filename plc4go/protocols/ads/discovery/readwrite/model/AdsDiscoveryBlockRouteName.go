@@ -96,7 +96,7 @@ func NewAdsDiscoveryBlockRouteName(routeName AmsString) *_AdsDiscoveryBlockRoute
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockRouteName(structType interface{}) AdsDiscoveryBlockRouteName {
+func CastAdsDiscoveryBlockRouteName(structType any) AdsDiscoveryBlockRouteName {
 	if casted, ok := structType.(AdsDiscoveryBlockRouteName); ok {
 		return casted
 	}

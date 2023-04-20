@@ -94,7 +94,7 @@ func NewBACnetLogDataLogDataEntryUnsignedValue(unsignedValue BACnetContextTagUns
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryUnsignedValue(structType interface{}) BACnetLogDataLogDataEntryUnsignedValue {
+func CastBACnetLogDataLogDataEntryUnsignedValue(structType any) BACnetLogDataLogDataEntryUnsignedValue {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryUnsignedValue); ok {
 		return casted
 	}

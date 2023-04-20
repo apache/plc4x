@@ -104,7 +104,7 @@ func NewBACnetConstructedDataCredentials(credentials []BACnetDeviceObjectReferen
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCredentials(structType interface{}) BACnetConstructedDataCredentials {
+func CastBACnetConstructedDataCredentials(structType any) BACnetConstructedDataCredentials {
 	if casted, ok := structType.(BACnetConstructedDataCredentials); ok {
 		return casted
 	}

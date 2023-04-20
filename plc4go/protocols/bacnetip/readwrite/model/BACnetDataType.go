@@ -153,8 +153,8 @@ func BACnetDataTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetDataType(structType interface{}) BACnetDataType {
-	castFunc := func(typ interface{}) BACnetDataType {
+func CastBACnetDataType(structType any) BACnetDataType {
+	castFunc := func(typ any) BACnetDataType {
 		if sBACnetDataType, ok := typ.(BACnetDataType); ok {
 			return sBACnetDataType
 		}

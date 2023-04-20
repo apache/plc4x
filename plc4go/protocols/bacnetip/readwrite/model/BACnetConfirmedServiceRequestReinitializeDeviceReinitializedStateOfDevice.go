@@ -123,8 +123,8 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceKn
 	return false
 }
 
-func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(structType interface{}) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice {
+func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice(structType any) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice {
+	castFunc := func(typ any) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice {
 		if sBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, ok := typ.(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice); ok {
 			return sBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
 		}

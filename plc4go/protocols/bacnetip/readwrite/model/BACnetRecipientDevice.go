@@ -94,7 +94,7 @@ func NewBACnetRecipientDevice(deviceValue BACnetContextTagObjectIdentifier, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRecipientDevice(structType interface{}) BACnetRecipientDevice {
+func CastBACnetRecipientDevice(structType any) BACnetRecipientDevice {
 	if casted, ok := structType.(BACnetRecipientDevice); ok {
 		return casted
 	}

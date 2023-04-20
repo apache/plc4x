@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPassbackTimeout(passbackTimeout BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPassbackTimeout(structType interface{}) BACnetConstructedDataPassbackTimeout {
+func CastBACnetConstructedDataPassbackTimeout(structType any) BACnetConstructedDataPassbackTimeout {
 	if casted, ok := structType.(BACnetConstructedDataPassbackTimeout); ok {
 		return casted
 	}

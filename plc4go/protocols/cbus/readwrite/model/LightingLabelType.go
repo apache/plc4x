@@ -93,8 +93,8 @@ func LightingLabelTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastLightingLabelType(structType interface{}) LightingLabelType {
-	castFunc := func(typ interface{}) LightingLabelType {
+func CastLightingLabelType(structType any) LightingLabelType {
+	castFunc := func(typ any) LightingLabelType {
 		if sLightingLabelType, ok := typ.(LightingLabelType); ok {
 			return sLightingLabelType
 		}

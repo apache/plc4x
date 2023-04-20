@@ -1577,8 +1577,8 @@ func TransportSizeKnows(value uint8) bool {
 	return false
 }
 
-func CastTransportSize(structType interface{}) TransportSize {
-	castFunc := func(typ interface{}) TransportSize {
+func CastTransportSize(structType any) TransportSize {
+	castFunc := func(typ any) TransportSize {
 		if sTransportSize, ok := typ.(TransportSize); ok {
 			return sTransportSize
 		}

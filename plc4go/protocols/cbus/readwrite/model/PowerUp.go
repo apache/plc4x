@@ -74,7 +74,7 @@ func NewPowerUp() *_PowerUp {
 }
 
 // Deprecated: use the interface for direct cast
-func CastPowerUp(structType interface{}) PowerUp {
+func CastPowerUp(structType any) PowerUp {
 	if casted, ok := structType.(PowerUp); ok {
 		return casted
 	}

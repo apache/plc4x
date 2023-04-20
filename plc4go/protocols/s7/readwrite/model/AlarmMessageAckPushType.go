@@ -90,7 +90,7 @@ func NewAlarmMessageAckPushType(TimeStamp DateAndTime, functionId uint8, numberO
 }
 
 // Deprecated: use the interface for direct cast
-func CastAlarmMessageAckPushType(structType interface{}) AlarmMessageAckPushType {
+func CastAlarmMessageAckPushType(structType any) AlarmMessageAckPushType {
 	if casted, ok := structType.(AlarmMessageAckPushType); ok {
 		return casted
 	}

@@ -104,7 +104,7 @@ func NewBACnetConstructedDataMultiStateInputAlarmValues(alarmValues []BACnetAppl
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMultiStateInputAlarmValues(structType interface{}) BACnetConstructedDataMultiStateInputAlarmValues {
+func CastBACnetConstructedDataMultiStateInputAlarmValues(structType any) BACnetConstructedDataMultiStateInputAlarmValues {
 	if casted, ok := structType.(BACnetConstructedDataMultiStateInputAlarmValues); ok {
 		return casted
 	}

@@ -100,7 +100,7 @@ func NewBACnetConfirmedServiceRequestWritePropertyMultiple(data []BACnetWriteAcc
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestWritePropertyMultiple(structType interface{}) BACnetConfirmedServiceRequestWritePropertyMultiple {
+func CastBACnetConfirmedServiceRequestWritePropertyMultiple(structType any) BACnetConfirmedServiceRequestWritePropertyMultiple {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestWritePropertyMultiple); ok {
 		return casted
 	}

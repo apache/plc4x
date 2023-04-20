@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPulseRate(pulseRate BACnetApplicationTagUnsignedInt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPulseRate(structType interface{}) BACnetConstructedDataPulseRate {
+func CastBACnetConstructedDataPulseRate(structType any) BACnetConstructedDataPulseRate {
 	if casted, ok := structType.(BACnetConstructedDataPulseRate); ok {
 		return casted
 	}

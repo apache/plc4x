@@ -119,7 +119,7 @@ func NewMediaTransportControlDataSetTrack(trackMSB byte, trackMMSB byte, trackML
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataSetTrack(structType interface{}) MediaTransportControlDataSetTrack {
+func CastMediaTransportControlDataSetTrack(structType any) MediaTransportControlDataSetTrack {
 	if casted, ok := structType.(MediaTransportControlDataSetTrack); ok {
 		return casted
 	}

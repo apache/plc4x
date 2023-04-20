@@ -93,8 +93,8 @@ func GAVStateKnows(value uint8) bool {
 	return false
 }
 
-func CastGAVState(structType interface{}) GAVState {
-	castFunc := func(typ interface{}) GAVState {
+func CastGAVState(structType any) GAVState {
+	castFunc := func(typ any) GAVState {
 		if sGAVState, ok := typ.(GAVState); ok {
 			return sGAVState
 		}

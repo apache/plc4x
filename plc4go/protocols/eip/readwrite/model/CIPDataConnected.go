@@ -76,7 +76,7 @@ func NewCIPDataConnected(value uint32, tagStatus uint16) *_CIPDataConnected {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCIPDataConnected(structType interface{}) CIPDataConnected {
+func CastCIPDataConnected(structType any) CIPDataConnected {
 	if casted, ok := structType.(CIPDataConnected); ok {
 		return casted
 	}

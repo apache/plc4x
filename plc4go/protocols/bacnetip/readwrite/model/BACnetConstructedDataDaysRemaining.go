@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDaysRemaining(daysRemaining BACnetApplicationTagSig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDaysRemaining(structType interface{}) BACnetConstructedDataDaysRemaining {
+func CastBACnetConstructedDataDaysRemaining(structType any) BACnetConstructedDataDaysRemaining {
 	if casted, ok := structType.(BACnetConstructedDataDaysRemaining); ok {
 		return casted
 	}

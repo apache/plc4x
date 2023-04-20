@@ -132,7 +132,7 @@ func NewBACnetConstructedDataWeeklySchedule(numberOfDataElements BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataWeeklySchedule(structType interface{}) BACnetConstructedDataWeeklySchedule {
+func CastBACnetConstructedDataWeeklySchedule(structType any) BACnetConstructedDataWeeklySchedule {
 	if casted, ok := structType.(BACnetConstructedDataWeeklySchedule); ok {
 		return casted
 	}

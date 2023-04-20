@@ -86,7 +86,7 @@ func NewBACnetNameValueCollection(openingTag BACnetOpeningTag, members []BACnetN
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNameValueCollection(structType interface{}) BACnetNameValueCollection {
+func CastBACnetNameValueCollection(structType any) BACnetNameValueCollection {
 	if casted, ok := structType.(BACnetNameValueCollection); ok {
 		return casted
 	}

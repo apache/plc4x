@@ -78,7 +78,7 @@ func NewApduDataExtLinkRead(length uint8) *_ApduDataExtLinkRead {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtLinkRead(structType interface{}) ApduDataExtLinkRead {
+func CastApduDataExtLinkRead(structType any) ApduDataExtLinkRead {
 	if casted, ok := structType.(ApduDataExtLinkRead); ok {
 		return casted
 	}

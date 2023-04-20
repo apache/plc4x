@@ -86,7 +86,7 @@ func NewBACnetFaultParameterFaultExtendedParameters(openingTag BACnetOpeningTag,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultExtendedParameters(structType interface{}) BACnetFaultParameterFaultExtendedParameters {
+func CastBACnetFaultParameterFaultExtendedParameters(structType any) BACnetFaultParameterFaultExtendedParameters {
 	if casted, ok := structType.(BACnetFaultParameterFaultExtendedParameters); ok {
 		return casted
 	}

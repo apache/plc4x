@@ -122,7 +122,7 @@ func NewBACnetUnconfirmedServiceRequestWriteGroup(groupNumber BACnetContextTagUn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestWriteGroup(structType interface{}) BACnetUnconfirmedServiceRequestWriteGroup {
+func CastBACnetUnconfirmedServiceRequestWriteGroup(structType any) BACnetUnconfirmedServiceRequestWriteGroup {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestWriteGroup); ok {
 		return casted
 	}

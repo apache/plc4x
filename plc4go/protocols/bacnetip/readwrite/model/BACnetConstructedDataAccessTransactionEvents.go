@@ -104,7 +104,7 @@ func NewBACnetConstructedDataAccessTransactionEvents(accessTransactionEvents []B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccessTransactionEvents(structType interface{}) BACnetConstructedDataAccessTransactionEvents {
+func CastBACnetConstructedDataAccessTransactionEvents(structType any) BACnetConstructedDataAccessTransactionEvents {
 	if casted, ok := structType.(BACnetConstructedDataAccessTransactionEvents); ok {
 		return casted
 	}

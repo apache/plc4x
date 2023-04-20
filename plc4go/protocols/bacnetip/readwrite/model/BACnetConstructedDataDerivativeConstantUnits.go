@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDerivativeConstantUnits(units BACnetEngineeringUnit
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDerivativeConstantUnits(structType interface{}) BACnetConstructedDataDerivativeConstantUnits {
+func CastBACnetConstructedDataDerivativeConstantUnits(structType any) BACnetConstructedDataDerivativeConstantUnits {
 	if casted, ok := structType.(BACnetConstructedDataDerivativeConstantUnits); ok {
 		return casted
 	}

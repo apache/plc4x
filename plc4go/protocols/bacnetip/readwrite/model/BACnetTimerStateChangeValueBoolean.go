@@ -94,7 +94,7 @@ func NewBACnetTimerStateChangeValueBoolean(booleanValue BACnetApplicationTagBool
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueBoolean(structType interface{}) BACnetTimerStateChangeValueBoolean {
+func CastBACnetTimerStateChangeValueBoolean(structType any) BACnetTimerStateChangeValueBoolean {
 	if casted, ok := structType.(BACnetTimerStateChangeValueBoolean); ok {
 		return casted
 	}

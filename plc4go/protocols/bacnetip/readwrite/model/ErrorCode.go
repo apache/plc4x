@@ -849,8 +849,8 @@ func ErrorCodeKnows(value uint16) bool {
 	return false
 }
 
-func CastErrorCode(structType interface{}) ErrorCode {
-	castFunc := func(typ interface{}) ErrorCode {
+func CastErrorCode(structType any) ErrorCode {
+	castFunc := func(typ any) ErrorCode {
 		if sErrorCode, ok := typ.(ErrorCode); ok {
 			return sErrorCode
 		}

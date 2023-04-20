@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDoorOpenTooLongTime(doorOpenTooLongTime BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDoorOpenTooLongTime(structType interface{}) BACnetConstructedDataDoorOpenTooLongTime {
+func CastBACnetConstructedDataDoorOpenTooLongTime(structType any) BACnetConstructedDataDoorOpenTooLongTime {
 	if casted, ok := structType.(BACnetConstructedDataDoorOpenTooLongTime); ok {
 		return casted
 	}

@@ -104,7 +104,7 @@ func NewBACnetConstructedDataTimerAlarmValues(alarmValues []BACnetTimerStateTagg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimerAlarmValues(structType interface{}) BACnetConstructedDataTimerAlarmValues {
+func CastBACnetConstructedDataTimerAlarmValues(structType any) BACnetConstructedDataTimerAlarmValues {
 	if casted, ok := structType.(BACnetConstructedDataTimerAlarmValues); ok {
 		return casted
 	}

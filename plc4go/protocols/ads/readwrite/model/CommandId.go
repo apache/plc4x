@@ -129,8 +129,8 @@ func CommandIdKnows(value uint16) bool {
 	return false
 }
 
-func CastCommandId(structType interface{}) CommandId {
-	castFunc := func(typ interface{}) CommandId {
+func CastCommandId(structType any) CommandId {
+	castFunc := func(typ any) CommandId {
 		if sCommandId, ok := typ.(CommandId); ok {
 			return sCommandId
 		}

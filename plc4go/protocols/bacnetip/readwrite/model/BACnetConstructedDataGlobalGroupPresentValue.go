@@ -132,7 +132,7 @@ func NewBACnetConstructedDataGlobalGroupPresentValue(numberOfDataElements BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataGlobalGroupPresentValue(structType interface{}) BACnetConstructedDataGlobalGroupPresentValue {
+func CastBACnetConstructedDataGlobalGroupPresentValue(structType any) BACnetConstructedDataGlobalGroupPresentValue {
 	if casted, ok := structType.(BACnetConstructedDataGlobalGroupPresentValue); ok {
 		return casted
 	}

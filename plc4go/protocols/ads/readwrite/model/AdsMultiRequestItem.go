@@ -75,7 +75,7 @@ func NewAdsMultiRequestItem() *_AdsMultiRequestItem {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsMultiRequestItem(structType interface{}) AdsMultiRequestItem {
+func CastAdsMultiRequestItem(structType any) AdsMultiRequestItem {
 	if casted, ok := structType.(AdsMultiRequestItem); ok {
 		return casted
 	}
@@ -118,7 +118,7 @@ func AdsMultiRequestItemParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		InitializeParent(AdsMultiRequestItem)
 		GetParent() AdsMultiRequestItem
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child AdsMultiRequestItemChildSerializeRequirement
 	var typeSwitchError error
 	switch {

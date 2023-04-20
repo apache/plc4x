@@ -97,7 +97,7 @@ func NewErrorReportingSystemCategoryTypeBuildingManagementSystems(categoryForTyp
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingSystemCategoryTypeBuildingManagementSystems(structType interface{}) ErrorReportingSystemCategoryTypeBuildingManagementSystems {
+func CastErrorReportingSystemCategoryTypeBuildingManagementSystems(structType any) ErrorReportingSystemCategoryTypeBuildingManagementSystems {
 	if casted, ok := structType.(ErrorReportingSystemCategoryTypeBuildingManagementSystems); ok {
 		return casted
 	}

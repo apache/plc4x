@@ -121,7 +121,7 @@ func NewBACnetConstructedDataExtendedTimeEnable(extendedTimeEnable BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataExtendedTimeEnable(structType interface{}) BACnetConstructedDataExtendedTimeEnable {
+func CastBACnetConstructedDataExtendedTimeEnable(structType any) BACnetConstructedDataExtendedTimeEnable {
 	if casted, ok := structType.(BACnetConstructedDataExtendedTimeEnable); ok {
 		return casted
 	}

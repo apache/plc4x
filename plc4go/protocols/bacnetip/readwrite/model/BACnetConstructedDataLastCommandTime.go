@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLastCommandTime(lastCommandTime BACnetTimeStamp, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastCommandTime(structType interface{}) BACnetConstructedDataLastCommandTime {
+func CastBACnetConstructedDataLastCommandTime(structType any) BACnetConstructedDataLastCommandTime {
 	if casted, ok := structType.(BACnetConstructedDataLastCommandTime); ok {
 		return casted
 	}

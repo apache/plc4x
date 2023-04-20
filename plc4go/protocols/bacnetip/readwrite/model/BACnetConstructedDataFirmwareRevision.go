@@ -121,7 +121,7 @@ func NewBACnetConstructedDataFirmwareRevision(firmwareRevision BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFirmwareRevision(structType interface{}) BACnetConstructedDataFirmwareRevision {
+func CastBACnetConstructedDataFirmwareRevision(structType any) BACnetConstructedDataFirmwareRevision {
 	if casted, ok := structType.(BACnetConstructedDataFirmwareRevision); ok {
 		return casted
 	}

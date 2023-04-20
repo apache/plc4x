@@ -121,7 +121,7 @@ func NewBACnetConstructedDataProportionalConstant(proportionalConstant BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProportionalConstant(structType interface{}) BACnetConstructedDataProportionalConstant {
+func CastBACnetConstructedDataProportionalConstant(structType any) BACnetConstructedDataProportionalConstant {
 	if casted, ok := structType.(BACnetConstructedDataProportionalConstant); ok {
 		return casted
 	}

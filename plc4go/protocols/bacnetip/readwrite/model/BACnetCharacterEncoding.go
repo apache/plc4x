@@ -105,8 +105,8 @@ func BACnetCharacterEncodingKnows(value byte) bool {
 	return false
 }
 
-func CastBACnetCharacterEncoding(structType interface{}) BACnetCharacterEncoding {
-	castFunc := func(typ interface{}) BACnetCharacterEncoding {
+func CastBACnetCharacterEncoding(structType any) BACnetCharacterEncoding {
+	castFunc := func(typ any) BACnetCharacterEncoding {
 		if sBACnetCharacterEncoding, ok := typ.(BACnetCharacterEncoding); ok {
 			return sBACnetCharacterEncoding
 		}

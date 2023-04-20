@@ -89,7 +89,7 @@ func NewBACnetTagPayloadBoolean(actualLength uint32) *_BACnetTagPayloadBoolean {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTagPayloadBoolean(structType interface{}) BACnetTagPayloadBoolean {
+func CastBACnetTagPayloadBoolean(structType any) BACnetTagPayloadBoolean {
 	if casted, ok := structType.(BACnetTagPayloadBoolean); ok {
 		return casted
 	}

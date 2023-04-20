@@ -104,7 +104,7 @@ func NewInstanceID(format uint8, instance uint8) *_InstanceID {
 }
 
 // Deprecated: use the interface for direct cast
-func CastInstanceID(structType interface{}) InstanceID {
+func CastInstanceID(structType any) InstanceID {
 	if casted, ok := structType.(InstanceID); ok {
 		return casted
 	}

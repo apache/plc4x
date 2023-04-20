@@ -113,7 +113,7 @@ func NewAlarmMessageQueryType(functionId uint8, numberOfObjects uint8, returnCod
 }
 
 // Deprecated: use the interface for direct cast
-func CastAlarmMessageQueryType(structType interface{}) AlarmMessageQueryType {
+func CastAlarmMessageQueryType(structType any) AlarmMessageQueryType {
 	if casted, ok := structType.(AlarmMessageQueryType); ok {
 		return casted
 	}

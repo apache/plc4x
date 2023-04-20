@@ -104,7 +104,7 @@ func NewBACnetConstructedDataActiveVTSessions(activeVTSession []BACnetVTSession,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataActiveVTSessions(structType interface{}) BACnetConstructedDataActiveVTSessions {
+func CastBACnetConstructedDataActiveVTSessions(structType any) BACnetConstructedDataActiveVTSessions {
 	if casted, ok := structType.(BACnetConstructedDataActiveVTSessions); ok {
 		return casted
 	}

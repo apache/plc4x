@@ -132,7 +132,7 @@ func NewBACnetConstructedDataIPv6DNSServer(numberOfDataElements BACnetApplicatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPv6DNSServer(structType interface{}) BACnetConstructedDataIPv6DNSServer {
+func CastBACnetConstructedDataIPv6DNSServer(structType any) BACnetConstructedDataIPv6DNSServer {
 	if casted, ok := structType.(BACnetConstructedDataIPv6DNSServer); ok {
 		return casted
 	}

@@ -104,7 +104,7 @@ func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(activeCOVMultipleSub
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataActiveCOVMultipleSubscriptions(structType interface{}) BACnetConstructedDataActiveCOVMultipleSubscriptions {
+func CastBACnetConstructedDataActiveCOVMultipleSubscriptions(structType any) BACnetConstructedDataActiveCOVMultipleSubscriptions {
 	if casted, ok := structType.(BACnetConstructedDataActiveCOVMultipleSubscriptions); ok {
 		return casted
 	}

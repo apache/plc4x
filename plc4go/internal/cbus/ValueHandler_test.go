@@ -52,7 +52,7 @@ func TestValueHandler_NewPlcValue(t *testing.T) {
 	}
 	type args struct {
 		tag   apiModel.PlcTag
-		value interface{}
+		value any
 	}
 	tests := []struct {
 		name    string

@@ -78,7 +78,7 @@ func NewApduDataExtFileStreamInfoReport(length uint8) *_ApduDataExtFileStreamInf
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtFileStreamInfoReport(structType interface{}) ApduDataExtFileStreamInfoReport {
+func CastApduDataExtFileStreamInfoReport(structType any) ApduDataExtFileStreamInfoReport {
 	if casted, ok := structType.(ApduDataExtFileStreamInfoReport); ok {
 		return casted
 	}

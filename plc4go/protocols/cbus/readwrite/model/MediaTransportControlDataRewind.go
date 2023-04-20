@@ -168,7 +168,7 @@ func NewMediaTransportControlDataRewind(operation byte, commandTypeContainer Med
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataRewind(structType interface{}) MediaTransportControlDataRewind {
+func CastMediaTransportControlDataRewind(structType any) MediaTransportControlDataRewind {
 	if casted, ok := structType.(MediaTransportControlDataRewind); ok {
 		return casted
 	}

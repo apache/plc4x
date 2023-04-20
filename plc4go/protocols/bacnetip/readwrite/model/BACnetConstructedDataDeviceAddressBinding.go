@@ -104,7 +104,7 @@ func NewBACnetConstructedDataDeviceAddressBinding(deviceAddressBinding []BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDeviceAddressBinding(structType interface{}) BACnetConstructedDataDeviceAddressBinding {
+func CastBACnetConstructedDataDeviceAddressBinding(structType any) BACnetConstructedDataDeviceAddressBinding {
 	if casted, ok := structType.(BACnetConstructedDataDeviceAddressBinding); ok {
 		return casted
 	}

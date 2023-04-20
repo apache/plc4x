@@ -75,12 +75,12 @@ type Stack struct {
 	list.List
 }
 
-func (s *Stack) Push(value interface{}) interface{} {
+func (s *Stack) Push(value any) any {
 	s.PushBack(value)
 	return value
 }
 
-func (s *Stack) Pop() interface{} {
+func (s *Stack) Pop() any {
 	if s.Len() <= 0 {
 		return nil
 	}
@@ -92,7 +92,7 @@ func (s *Stack) Pop() interface{} {
 	return element.Value
 }
 
-func (s *Stack) Peek() interface{} {
+func (s *Stack) Peek() any {
 	back := s.Back()
 	if back == nil {
 		return nil

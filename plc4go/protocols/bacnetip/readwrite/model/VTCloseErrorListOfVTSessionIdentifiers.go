@@ -86,7 +86,7 @@ func NewVTCloseErrorListOfVTSessionIdentifiers(openingTag BACnetOpeningTag, list
 }
 
 // Deprecated: use the interface for direct cast
-func CastVTCloseErrorListOfVTSessionIdentifiers(structType interface{}) VTCloseErrorListOfVTSessionIdentifiers {
+func CastVTCloseErrorListOfVTSessionIdentifiers(structType any) VTCloseErrorListOfVTSessionIdentifiers {
 	if casted, ok := structType.(VTCloseErrorListOfVTSessionIdentifiers); ok {
 		return casted
 	}

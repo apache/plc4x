@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesNetworkNumberQuality(networkNumberQuality BACnetNetw
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesNetworkNumberQuality(structType interface{}) BACnetPropertyStatesNetworkNumberQuality {
+func CastBACnetPropertyStatesNetworkNumberQuality(structType any) BACnetPropertyStatesNetworkNumberQuality {
 	if casted, ok := structType.(BACnetPropertyStatesNetworkNumberQuality); ok {
 		return casted
 	}

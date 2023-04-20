@@ -618,8 +618,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             Term c = ternaryTerm.getC();
             String castExpressionForTypeReference = getCastExpressionForTypeReference(fieldType);
             String inlineIf = "utils.InlineIf(" + toExpression(field, new DefaultBooleanTypeReference(), a, parserArguments, serializerArguments, serialize, false) + ", " +
-                "func() interface{} {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
-                "func() interface{} {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
+                "func() any {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, b, parserArguments, serializerArguments, serialize, false) + ")}, " +
+                "func() any {return " + castExpressionForTypeReference + "(" + toExpression(field, fieldType, c, parserArguments, serializerArguments, serialize, false) + ")})";
             if (fieldType != null) {
                 if (fieldType instanceof ByteOrderTypeReference) {
                     return tracer.dive("byteordertypereference") + "(" + inlineIf + ").(binary.ByteOrder)";

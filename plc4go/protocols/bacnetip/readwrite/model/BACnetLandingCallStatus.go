@@ -84,7 +84,7 @@ func NewBACnetLandingCallStatus(floorNumber BACnetContextTagUnsignedInteger, com
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLandingCallStatus(structType interface{}) BACnetLandingCallStatus {
+func CastBACnetLandingCallStatus(structType any) BACnetLandingCallStatus {
 	if casted, ok := structType.(BACnetLandingCallStatus); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAlarmValue(binaryPv BACnetBinaryPVTagged, openingTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAlarmValue(structType interface{}) BACnetConstructedDataAlarmValue {
+func CastBACnetConstructedDataAlarmValue(structType any) BACnetConstructedDataAlarmValue {
 	if casted, ok := structType.(BACnetConstructedDataAlarmValue); ok {
 		return casted
 	}

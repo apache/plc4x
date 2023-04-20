@@ -125,7 +125,7 @@ func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus D
 }
 
 // Deprecated: use the interface for direct cast
-func CastDIBDeviceInfo(structType interface{}) DIBDeviceInfo {
+func CastDIBDeviceInfo(structType any) DIBDeviceInfo {
 	if casted, ok := structType.(DIBDeviceInfo); ok {
 		return casted
 	}

@@ -117,8 +117,8 @@ func OperationKnows(value uint32) bool {
 	return false
 }
 
-func CastOperation(structType interface{}) Operation {
-	castFunc := func(typ interface{}) Operation {
+func CastOperation(structType any) Operation {
+	castFunc := func(typ any) Operation {
 		if sOperation, ok := typ.(Operation); ok {
 			return sOperation
 		}

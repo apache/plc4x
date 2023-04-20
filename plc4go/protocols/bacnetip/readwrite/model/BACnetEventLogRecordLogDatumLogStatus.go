@@ -96,7 +96,7 @@ func NewBACnetEventLogRecordLogDatumLogStatus(logStatus BACnetLogStatusTagged, o
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventLogRecordLogDatumLogStatus(structType interface{}) BACnetEventLogRecordLogDatumLogStatus {
+func CastBACnetEventLogRecordLogDatumLogStatus(structType any) BACnetEventLogRecordLogDatumLogStatus {
 	if casted, ok := structType.(BACnetEventLogRecordLogDatumLogStatus); ok {
 		return casted
 	}

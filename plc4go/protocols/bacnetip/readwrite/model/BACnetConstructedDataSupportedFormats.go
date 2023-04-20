@@ -132,7 +132,7 @@ func NewBACnetConstructedDataSupportedFormats(numberOfDataElements BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSupportedFormats(structType interface{}) BACnetConstructedDataSupportedFormats {
+func CastBACnetConstructedDataSupportedFormats(structType any) BACnetConstructedDataSupportedFormats {
 	if casted, ok := structType.(BACnetConstructedDataSupportedFormats); ok {
 		return casted
 	}

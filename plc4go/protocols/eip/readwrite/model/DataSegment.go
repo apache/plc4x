@@ -96,7 +96,7 @@ func NewDataSegment(segmentType DataSegmentType) *_DataSegment {
 }
 
 // Deprecated: use the interface for direct cast
-func CastDataSegment(structType interface{}) DataSegment {
+func CastDataSegment(structType any) DataSegment {
 	if casted, ok := structType.(DataSegment); ok {
 		return casted
 	}

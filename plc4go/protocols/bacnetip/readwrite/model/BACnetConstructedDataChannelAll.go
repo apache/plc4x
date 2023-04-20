@@ -86,7 +86,7 @@ func NewBACnetConstructedDataChannelAll(openingTag BACnetOpeningTag, peekedTagHe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataChannelAll(structType interface{}) BACnetConstructedDataChannelAll {
+func CastBACnetConstructedDataChannelAll(structType any) BACnetConstructedDataChannelAll {
 	if casted, ok := structType.(BACnetConstructedDataChannelAll); ok {
 		return casted
 	}

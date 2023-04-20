@@ -83,7 +83,7 @@ func NewBACnetDailySchedule(openingTag BACnetOpeningTag, daySchedule []BACnetTim
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetDailySchedule(structType interface{}) BACnetDailySchedule {
+func CastBACnetDailySchedule(structType any) BACnetDailySchedule {
 	if casted, ok := structType.(BACnetDailySchedule); ok {
 		return casted
 	}

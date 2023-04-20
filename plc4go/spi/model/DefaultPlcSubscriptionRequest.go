@@ -208,7 +208,7 @@ func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Con
 	}
 	for name, elem := range d.intervals {
 
-		var elem interface{} = elem
+		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err

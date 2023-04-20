@@ -94,7 +94,7 @@ func NewBACnetLogDataLogDataEntryBooleanValue(booleanValue BACnetContextTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryBooleanValue(structType interface{}) BACnetLogDataLogDataEntryBooleanValue {
+func CastBACnetLogDataLogDataEntryBooleanValue(structType any) BACnetLogDataLogDataEntryBooleanValue {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryBooleanValue); ok {
 		return casted
 	}

@@ -123,7 +123,7 @@ func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeade
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDeviceNotificationRequest(structType interface{}) AdsDeviceNotificationRequest {
+func CastAdsDeviceNotificationRequest(structType any) AdsDeviceNotificationRequest {
 	if casted, ok := structType.(AdsDeviceNotificationRequest); ok {
 		return casted
 	}

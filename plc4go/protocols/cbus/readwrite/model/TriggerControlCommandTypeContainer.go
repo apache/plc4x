@@ -820,8 +820,8 @@ func TriggerControlCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastTriggerControlCommandTypeContainer(structType interface{}) TriggerControlCommandTypeContainer {
-	castFunc := func(typ interface{}) TriggerControlCommandTypeContainer {
+func CastTriggerControlCommandTypeContainer(structType any) TriggerControlCommandTypeContainer {
+	castFunc := func(typ any) TriggerControlCommandTypeContainer {
 		if sTriggerControlCommandTypeContainer, ok := typ.(TriggerControlCommandTypeContainer); ok {
 			return sTriggerControlCommandTypeContainer
 		}

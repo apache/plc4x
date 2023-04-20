@@ -103,7 +103,7 @@ func NewCALDataIdentifyReply(attribute Attribute, identifyReplyCommand IdentifyR
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataIdentifyReply(structType interface{}) CALDataIdentifyReply {
+func CastCALDataIdentifyReply(structType any) CALDataIdentifyReply {
 	if casted, ok := structType.(CALDataIdentifyReply); ok {
 		return casted
 	}

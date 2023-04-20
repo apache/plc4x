@@ -111,7 +111,7 @@ func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRout
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusPointToPointCommandIndirect(structType interface{}) CBusPointToPointCommandIndirect {
+func CastCBusPointToPointCommandIndirect(structType any) CBusPointToPointCommandIndirect {
 	if casted, ok := structType.(CBusPointToPointCommandIndirect); ok {
 		return casted
 	}

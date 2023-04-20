@@ -100,7 +100,7 @@ func NewBACnetConfirmedServiceRequestVTClose(listOfRemoteVtSessionIdentifiers []
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestVTClose(structType interface{}) BACnetConfirmedServiceRequestVTClose {
+func CastBACnetConfirmedServiceRequestVTClose(structType any) BACnetConfirmedServiceRequestVTClose {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestVTClose); ok {
 		return casted
 	}

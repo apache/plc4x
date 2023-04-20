@@ -121,7 +121,7 @@ func NewBACnetConstructedDataSecurityPDUTimeout(securityPduTimeout BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSecurityPDUTimeout(structType interface{}) BACnetConstructedDataSecurityPDUTimeout {
+func CastBACnetConstructedDataSecurityPDUTimeout(structType any) BACnetConstructedDataSecurityPDUTimeout {
 	if casted, ok := structType.(BACnetConstructedDataSecurityPDUTimeout); ok {
 		return casted
 	}

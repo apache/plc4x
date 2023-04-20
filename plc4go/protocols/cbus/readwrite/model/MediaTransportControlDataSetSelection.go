@@ -103,7 +103,7 @@ func NewMediaTransportControlDataSetSelection(selectionHi byte, selectionLo byte
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataSetSelection(structType interface{}) MediaTransportControlDataSetSelection {
+func CastMediaTransportControlDataSetSelection(structType any) MediaTransportControlDataSetSelection {
 	if casted, ok := structType.(MediaTransportControlDataSetSelection); ok {
 		return casted
 	}

@@ -82,7 +82,7 @@ func NewS7MessageUserData(tpduReference uint16, parameter S7Parameter, payload S
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7MessageUserData(structType interface{}) S7MessageUserData {
+func CastS7MessageUserData(structType any) S7MessageUserData {
 	if casted, ok := structType.(S7MessageUserData); ok {
 		return casted
 	}

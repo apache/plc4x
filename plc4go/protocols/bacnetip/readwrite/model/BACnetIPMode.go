@@ -87,8 +87,8 @@ func BACnetIPModeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetIPMode(structType interface{}) BACnetIPMode {
-	castFunc := func(typ interface{}) BACnetIPMode {
+func CastBACnetIPMode(structType any) BACnetIPMode {
+	castFunc := func(typ any) BACnetIPMode {
 		if sBACnetIPMode, ok := typ.(BACnetIPMode); ok {
 			return sBACnetIPMode
 		}

@@ -95,7 +95,7 @@ func NewTelephonyDataDialInFailure(reason DialInFailureReason, commandTypeContai
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataDialInFailure(structType interface{}) TelephonyDataDialInFailure {
+func CastTelephonyDataDialInFailure(structType any) TelephonyDataDialInFailure {
 	if casted, ok := structType.(TelephonyDataDialInFailure); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLastNotifyRecord(lastNotifyRecord BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastNotifyRecord(structType interface{}) BACnetConstructedDataLastNotifyRecord {
+func CastBACnetConstructedDataLastNotifyRecord(structType any) BACnetConstructedDataLastNotifyRecord {
 	if casted, ok := structType.(BACnetConstructedDataLastNotifyRecord); ok {
 		return casted
 	}

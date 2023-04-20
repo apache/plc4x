@@ -7862,8 +7862,8 @@ func ParameterKnows(value uint8) bool {
 	return false
 }
 
-func CastParameter(structType interface{}) Parameter {
-	castFunc := func(typ interface{}) Parameter {
+func CastParameter(structType any) Parameter {
+	castFunc := func(typ any) Parameter {
 		if sParameter, ok := typ.(Parameter); ok {
 			return sParameter
 		}

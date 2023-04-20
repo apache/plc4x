@@ -96,7 +96,7 @@ func NewBACnetLogDataLogStatus(logStatus BACnetLogStatusTagged, openingTag BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogStatus(structType interface{}) BACnetLogDataLogStatus {
+func CastBACnetLogDataLogStatus(structType any) BACnetLogDataLogStatus {
 	if casted, ok := structType.(BACnetLogDataLogStatus); ok {
 		return casted
 	}

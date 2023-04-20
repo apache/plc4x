@@ -135,8 +135,8 @@ func BACnetLiftCarDriveStatusKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetLiftCarDriveStatus(structType interface{}) BACnetLiftCarDriveStatus {
-	castFunc := func(typ interface{}) BACnetLiftCarDriveStatus {
+func CastBACnetLiftCarDriveStatus(structType any) BACnetLiftCarDriveStatus {
+	castFunc := func(typ any) BACnetLiftCarDriveStatus {
 		if sBACnetLiftCarDriveStatus, ok := typ.(BACnetLiftCarDriveStatus); ok {
 			return sBACnetLiftCarDriveStatus
 		}

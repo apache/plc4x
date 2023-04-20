@@ -83,7 +83,7 @@ func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsNotificationSample(structType interface{}) AdsNotificationSample {
+func CastAdsNotificationSample(structType any) AdsNotificationSample {
 	if casted, ok := structType.(AdsNotificationSample); ok {
 		return casted
 	}

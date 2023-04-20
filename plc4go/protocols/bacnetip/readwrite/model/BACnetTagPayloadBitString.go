@@ -86,7 +86,7 @@ func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTagPayloadBitString(structType interface{}) BACnetTagPayloadBitString {
+func CastBACnetTagPayloadBitString(structType any) BACnetTagPayloadBitString {
 	if casted, ok := structType.(BACnetTagPayloadBitString); ok {
 		return casted
 	}

@@ -183,8 +183,8 @@ func SzlSublistKnows(value uint8) bool {
 	return false
 }
 
-func CastSzlSublist(structType interface{}) SzlSublist {
-	castFunc := func(typ interface{}) SzlSublist {
+func CastSzlSublist(structType any) SzlSublist {
+	castFunc := func(typ any) SzlSublist {
 		if sSzlSublist, ok := typ.(SzlSublist); ok {
 			return sSzlSublist
 		}

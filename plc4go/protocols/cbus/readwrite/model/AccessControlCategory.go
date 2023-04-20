@@ -81,8 +81,8 @@ func AccessControlCategoryKnows(value uint8) bool {
 	return false
 }
 
-func CastAccessControlCategory(structType interface{}) AccessControlCategory {
-	castFunc := func(typ interface{}) AccessControlCategory {
+func CastAccessControlCategory(structType any) AccessControlCategory {
+	castFunc := func(typ any) AccessControlCategory {
 		if sAccessControlCategory, ok := typ.(AccessControlCategory); ok {
 			return sAccessControlCategory
 		}

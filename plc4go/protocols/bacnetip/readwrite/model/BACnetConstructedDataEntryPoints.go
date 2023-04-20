@@ -104,7 +104,7 @@ func NewBACnetConstructedDataEntryPoints(entryPoints []BACnetDeviceObjectReferen
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEntryPoints(structType interface{}) BACnetConstructedDataEntryPoints {
+func CastBACnetConstructedDataEntryPoints(structType any) BACnetConstructedDataEntryPoints {
 	if casted, ok := structType.(BACnetConstructedDataEntryPoints); ok {
 		return casted
 	}

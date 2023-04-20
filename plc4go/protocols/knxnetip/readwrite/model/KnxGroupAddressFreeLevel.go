@@ -96,7 +96,7 @@ func NewKnxGroupAddressFreeLevel(subGroup uint16) *_KnxGroupAddressFreeLevel {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxGroupAddressFreeLevel(structType interface{}) KnxGroupAddressFreeLevel {
+func CastKnxGroupAddressFreeLevel(structType any) KnxGroupAddressFreeLevel {
 	if casted, ok := structType.(KnxGroupAddressFreeLevel); ok {
 		return casted
 	}

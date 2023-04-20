@@ -99,8 +99,8 @@ func BACnetLightingInProgressKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetLightingInProgress(structType interface{}) BACnetLightingInProgress {
-	castFunc := func(typ interface{}) BACnetLightingInProgress {
+func CastBACnetLightingInProgress(structType any) BACnetLightingInProgress {
+	castFunc := func(typ any) BACnetLightingInProgress {
 		if sBACnetLightingInProgress, ok := typ.(BACnetLightingInProgress); ok {
 			return sBACnetLightingInProgress
 		}

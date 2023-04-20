@@ -97,7 +97,7 @@ func NewS7DataAlarmMessage() *_S7DataAlarmMessage {
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7DataAlarmMessage(structType interface{}) S7DataAlarmMessage {
+func CastS7DataAlarmMessage(structType any) S7DataAlarmMessage {
 	if casted, ok := structType.(S7DataAlarmMessage); ok {
 		return casted
 	}
@@ -164,7 +164,7 @@ func S7DataAlarmMessageParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		InitializeParent(S7DataAlarmMessage)
 		GetParent() S7DataAlarmMessage
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child S7DataAlarmMessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {

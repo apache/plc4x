@@ -46,7 +46,7 @@ type _TestBoxAnythingTestBoxerAnything struct {
 func TestBoxAnything(t *testing.T) {
 	type args struct {
 		name      string
-		anything  interface{}
+		anything  any
 		charWidth int
 	}
 	tests := []struct {
@@ -316,7 +316,7 @@ func TestBoxedDump(t *testing.T) {
 
 func TestDumpAnything(t *testing.T) {
 	type args struct {
-		anything interface{}
+		anything any
 	}
 	tests := []struct {
 		name string
@@ -417,7 +417,7 @@ func TestBoxedDumpFixedWidth(t *testing.T) {
 func TestBoxedDumpAnything(t *testing.T) {
 	type args struct {
 		name     string
-		anything interface{}
+		anything any
 	}
 	tests := []struct {
 		name string
@@ -444,7 +444,7 @@ func TestBoxedDumpAnything(t *testing.T) {
 func TestBoxedDumpAnythingFixedWidth(t *testing.T) {
 	type args struct {
 		name      string
-		anything  interface{}
+		anything  any
 		charWidth int
 	}
 	tests := []struct {
@@ -471,7 +471,7 @@ func TestBoxedDumpAnythingFixedWidth(t *testing.T) {
 
 func TestDumpAnythingFixedWidth(t *testing.T) {
 	type args struct {
-		anything  interface{}
+		anything  any
 		charWidth int
 	}
 	tests := []struct {

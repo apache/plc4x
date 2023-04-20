@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMaxSegmentsAccepted(maxSegmentsAccepted BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaxSegmentsAccepted(structType interface{}) BACnetConstructedDataMaxSegmentsAccepted {
+func CastBACnetConstructedDataMaxSegmentsAccepted(structType any) BACnetConstructedDataMaxSegmentsAccepted {
 	if casted, ok := structType.(BACnetConstructedDataMaxSegmentsAccepted); ok {
 		return casted
 	}

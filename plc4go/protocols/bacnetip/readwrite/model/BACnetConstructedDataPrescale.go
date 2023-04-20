@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPrescale(prescale BACnetPrescale, openingTag BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPrescale(structType interface{}) BACnetConstructedDataPrescale {
+func CastBACnetConstructedDataPrescale(structType any) BACnetConstructedDataPrescale {
 	if casted, ok := structType.(BACnetConstructedDataPrescale); ok {
 		return casted
 	}

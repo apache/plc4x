@@ -94,7 +94,7 @@ func NewBACnetLogDataLogDataEntryNullValue(nullValue BACnetContextTagNull, peeke
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryNullValue(structType interface{}) BACnetLogDataLogDataEntryNullValue {
+func CastBACnetLogDataLogDataEntryNullValue(structType any) BACnetLogDataLogDataEntryNullValue {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryNullValue); ok {
 		return casted
 	}

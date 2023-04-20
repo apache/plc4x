@@ -34,7 +34,7 @@ type PlcLDATE struct {
 	value time.Time
 }
 
-func NewPlcLDATE(value interface{}) PlcLDATE {
+func NewPlcLDATE(value any) PlcLDATE {
 	var timeValue time.Time
 	switch value.(type) {
 	case time.Time:

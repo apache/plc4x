@@ -100,7 +100,7 @@ func NewUnknownMessage(unknownData []byte, totalLength uint16) *_UnknownMessage 
 }
 
 // Deprecated: use the interface for direct cast
-func CastUnknownMessage(structType interface{}) UnknownMessage {
+func CastUnknownMessage(structType any) UnknownMessage {
 	if casted, ok := structType.(UnknownMessage); ok {
 		return casted
 	}

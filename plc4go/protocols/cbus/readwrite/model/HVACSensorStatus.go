@@ -93,8 +93,8 @@ func HVACSensorStatusKnows(value uint8) bool {
 	return false
 }
 
-func CastHVACSensorStatus(structType interface{}) HVACSensorStatus {
-	castFunc := func(typ interface{}) HVACSensorStatus {
+func CastHVACSensorStatus(structType any) HVACSensorStatus {
+	castFunc := func(typ any) HVACSensorStatus {
 		if sHVACSensorStatus, ok := typ.(HVACSensorStatus); ok {
 			return sHVACSensorStatus
 		}

@@ -87,19 +87,19 @@ func (m *_BACnetLogStatusTagged) GetPayload() BACnetTagPayloadBitString {
 func (m *_BACnetLogStatusTagged) GetLogDisabled() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() interface{} { return bool(m.GetPayload().GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (0))), func() any { return bool(m.GetPayload().GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetLogStatusTagged) GetBufferPurged() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() interface{} { return bool(m.GetPayload().GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (1))), func() any { return bool(m.GetPayload().GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 func (m *_BACnetLogStatusTagged) GetLogInterrupted() bool {
 	ctx := context.Background()
 	_ = ctx
-	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() interface{} { return bool(m.GetPayload().GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool))
+	return bool(utils.InlineIf((bool((len(m.GetPayload().GetData())) > (2))), func() any { return bool(m.GetPayload().GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 }
 
 ///////////////////////
@@ -113,7 +113,7 @@ func NewBACnetLogStatusTagged(header BACnetTagHeader, payload BACnetTagPayloadBi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogStatusTagged(structType interface{}) BACnetLogStatusTagged {
+func CastBACnetLogStatusTagged(structType any) BACnetLogStatusTagged {
 	if casted, ok := structType.(BACnetLogStatusTagged); ok {
 		return casted
 	}
@@ -199,17 +199,17 @@ func BACnetLogStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Virtual field
-	_logDisabled := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() interface{} { return bool(payload.GetData()[0]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_logDisabled := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
 	logDisabled := bool(_logDisabled)
 	_ = logDisabled
 
 	// Virtual field
-	_bufferPurged := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() interface{} { return bool(payload.GetData()[1]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_bufferPurged := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
 	bufferPurged := bool(_bufferPurged)
 	_ = bufferPurged
 
 	// Virtual field
-	_logInterrupted := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() interface{} { return bool(payload.GetData()[2]) }, func() interface{} { return bool(bool(false)) }).(bool)
+	_logInterrupted := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
 	logInterrupted := bool(_logInterrupted)
 	_ = logInterrupted
 

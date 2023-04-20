@@ -132,7 +132,7 @@ func NewBACnetConstructedDataLinkSpeeds(numberOfDataElements BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLinkSpeeds(structType interface{}) BACnetConstructedDataLinkSpeeds {
+func CastBACnetConstructedDataLinkSpeeds(structType any) BACnetConstructedDataLinkSpeeds {
 	if casted, ok := structType.(BACnetConstructedDataLinkSpeeds); ok {
 		return casted
 	}

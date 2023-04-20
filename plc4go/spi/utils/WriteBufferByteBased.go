@@ -271,7 +271,7 @@ func (wb *byteWriteBuffer) WriteString(_ string, bitLength uint32, encoding stri
 	return wb.writer.TryError
 }
 
-func (wb *byteWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value interface{}, writerArgs ...WithWriterArgs) error {
+func (wb *byteWriteBuffer) WriteVirtual(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs) error {
 	// NO-OP
 	return nil
 }

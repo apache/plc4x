@@ -87,8 +87,8 @@ func BACnetTimerStateKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetTimerState(structType interface{}) BACnetTimerState {
-	castFunc := func(typ interface{}) BACnetTimerState {
+func CastBACnetTimerState(structType any) BACnetTimerState {
+	castFunc := func(typ any) BACnetTimerState {
 		if sBACnetTimerState, ok := typ.(BACnetTimerState); ok {
 			return sBACnetTimerState
 		}

@@ -132,7 +132,7 @@ func NewBACnetConstructedDataAssignedAccessRights(numberOfDataElements BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAssignedAccessRights(structType interface{}) BACnetConstructedDataAssignedAccessRights {
+func CastBACnetConstructedDataAssignedAccessRights(structType any) BACnetConstructedDataAssignedAccessRights {
 	if casted, ok := structType.(BACnetConstructedDataAssignedAccessRights); ok {
 		return casted
 	}

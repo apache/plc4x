@@ -99,7 +99,7 @@ func (d *DefaultPlcConsumerRegistration) SerializeWithWriteBuffer(ctx context.Co
 		return err
 	}
 	for _, elem := range d.handles {
-		var elem interface{} = elem
+		var elem any = elem
 
 		if elem != nil {
 			if serializableField, ok := elem.(utils.Serializable); ok {

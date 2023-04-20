@@ -121,7 +121,7 @@ func NewBACnetConstructedDataUpdateKeySetTimeout(updateKeySetTimeout BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUpdateKeySetTimeout(structType interface{}) BACnetConstructedDataUpdateKeySetTimeout {
+func CastBACnetConstructedDataUpdateKeySetTimeout(structType any) BACnetConstructedDataUpdateKeySetTimeout {
 	if casted, ok := structType.(BACnetConstructedDataUpdateKeySetTimeout); ok {
 		return casted
 	}

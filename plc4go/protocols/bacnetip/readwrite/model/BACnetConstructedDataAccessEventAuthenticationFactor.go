@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAccessEventAuthenticationFactor(accessEventAuthenti
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccessEventAuthenticationFactor(structType interface{}) BACnetConstructedDataAccessEventAuthenticationFactor {
+func CastBACnetConstructedDataAccessEventAuthenticationFactor(structType any) BACnetConstructedDataAccessEventAuthenticationFactor {
 	if casted, ok := structType.(BACnetConstructedDataAccessEventAuthenticationFactor); ok {
 		return casted
 	}

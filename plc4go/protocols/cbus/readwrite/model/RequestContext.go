@@ -69,7 +69,7 @@ func NewRequestContext(sendIdentifyRequestBefore bool) *_RequestContext {
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestContext(structType interface{}) RequestContext {
+func CastRequestContext(structType any) RequestContext {
 	if casted, ok := structType.(RequestContext); ok {
 		return casted
 	}

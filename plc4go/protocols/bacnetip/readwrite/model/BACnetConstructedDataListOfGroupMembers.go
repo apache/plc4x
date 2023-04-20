@@ -104,7 +104,7 @@ func NewBACnetConstructedDataListOfGroupMembers(listOfGroupMembers []BACnetReadA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataListOfGroupMembers(structType interface{}) BACnetConstructedDataListOfGroupMembers {
+func CastBACnetConstructedDataListOfGroupMembers(structType any) BACnetConstructedDataListOfGroupMembers {
 	if casted, ok := structType.(BACnetConstructedDataListOfGroupMembers); ok {
 		return casted
 	}

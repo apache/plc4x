@@ -87,7 +87,7 @@ func NewBACnetPropertyValues(innerOpeningTag BACnetOpeningTag, data []BACnetProp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyValues(structType interface{}) BACnetPropertyValues {
+func CastBACnetPropertyValues(structType any) BACnetPropertyValues {
 	if casted, ok := structType.(BACnetPropertyValues); ok {
 		return casted
 	}

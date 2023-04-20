@@ -75,8 +75,8 @@ func CIPStructTypeCodeKnows(value uint16) bool {
 	return false
 }
 
-func CastCIPStructTypeCode(structType interface{}) CIPStructTypeCode {
-	castFunc := func(typ interface{}) CIPStructTypeCode {
+func CastCIPStructTypeCode(structType any) CIPStructTypeCode {
+	castFunc := func(typ any) CIPStructTypeCode {
 		if sCIPStructTypeCode, ok := typ.(CIPStructTypeCode); ok {
 			return sCIPStructTypeCode
 		}

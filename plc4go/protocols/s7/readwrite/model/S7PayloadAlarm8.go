@@ -107,7 +107,7 @@ func NewS7PayloadAlarm8(alarmMessage AlarmMessagePushType, returnCode DataTransp
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadAlarm8(structType interface{}) S7PayloadAlarm8 {
+func CastS7PayloadAlarm8(structType any) S7PayloadAlarm8 {
 	if casted, ok := structType.(S7PayloadAlarm8); ok {
 		return casted
 	}

@@ -116,7 +116,7 @@ func NewSysexCommandReportFirmwareResponse(majorVersion uint8, minorVersion uint
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandReportFirmwareResponse(structType interface{}) SysexCommandReportFirmwareResponse {
+func CastSysexCommandReportFirmwareResponse(structType any) SysexCommandReportFirmwareResponse {
 	if casted, ok := structType.(SysexCommandReportFirmwareResponse); ok {
 		return casted
 	}

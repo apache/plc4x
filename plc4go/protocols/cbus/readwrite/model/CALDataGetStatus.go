@@ -103,7 +103,7 @@ func NewCALDataGetStatus(paramNo Parameter, count uint8, commandTypeContainer CA
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataGetStatus(structType interface{}) CALDataGetStatus {
+func CastCALDataGetStatus(structType any) CALDataGetStatus {
 	if casted, ok := structType.(CALDataGetStatus); ok {
 		return casted
 	}

@@ -76,7 +76,7 @@ func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []ServiceId) *_DIBS
 }
 
 // Deprecated: use the interface for direct cast
-func CastDIBSuppSvcFamilies(structType interface{}) DIBSuppSvcFamilies {
+func CastDIBSuppSvcFamilies(structType any) DIBSuppSvcFamilies {
 	if casted, ok := structType.(DIBSuppSvcFamilies); ok {
 		return casted
 	}

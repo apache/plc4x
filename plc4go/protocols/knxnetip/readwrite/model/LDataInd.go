@@ -112,7 +112,7 @@ func NewLDataInd(additionalInformationLength uint8, additionalInformation []CEMI
 }
 
 // Deprecated: use the interface for direct cast
-func CastLDataInd(structType interface{}) LDataInd {
+func CastLDataInd(structType any) LDataInd {
 	if casted, ok := structType.(LDataInd); ok {
 		return casted
 	}

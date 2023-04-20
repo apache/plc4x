@@ -83,7 +83,7 @@ func NewAdsStampHeader(timestamp uint64, samples uint32, adsNotificationSamples 
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsStampHeader(structType interface{}) AdsStampHeader {
+func CastAdsStampHeader(structType any) AdsStampHeader {
 	if casted, ok := structType.(AdsStampHeader); ok {
 		return casted
 	}

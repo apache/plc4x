@@ -87,8 +87,8 @@ func QueryTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastQueryType(structType interface{}) QueryType {
-	castFunc := func(typ interface{}) QueryType {
+func CastQueryType(structType any) QueryType {
+	castFunc := func(typ any) QueryType {
 		if sQueryType, ok := typ.(QueryType); ok {
 			return sQueryType
 		}

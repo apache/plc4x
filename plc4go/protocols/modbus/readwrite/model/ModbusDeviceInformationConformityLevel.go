@@ -87,8 +87,8 @@ func ModbusDeviceInformationConformityLevelKnows(value uint8) bool {
 	return false
 }
 
-func CastModbusDeviceInformationConformityLevel(structType interface{}) ModbusDeviceInformationConformityLevel {
-	castFunc := func(typ interface{}) ModbusDeviceInformationConformityLevel {
+func CastModbusDeviceInformationConformityLevel(structType any) ModbusDeviceInformationConformityLevel {
+	castFunc := func(typ any) ModbusDeviceInformationConformityLevel {
 		if sModbusDeviceInformationConformityLevel, ok := typ.(ModbusDeviceInformationConformityLevel); ok {
 			return sModbusDeviceInformationConformityLevel
 		}

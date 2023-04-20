@@ -138,7 +138,7 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummary(acknowledgmentFilter B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestGetEnrollmentSummary(structType interface{}) BACnetConfirmedServiceRequestGetEnrollmentSummary {
+func CastBACnetConfirmedServiceRequestGetEnrollmentSummary(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummary {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestGetEnrollmentSummary); ok {
 		return casted
 	}

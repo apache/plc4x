@@ -104,7 +104,7 @@ func NewBACnetConstructedDataAuthorizationExemptions(authorizationExemption []BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAuthorizationExemptions(structType interface{}) BACnetConstructedDataAuthorizationExemptions {
+func CastBACnetConstructedDataAuthorizationExemptions(structType any) BACnetConstructedDataAuthorizationExemptions {
 	if casted, ok := structType.(BACnetConstructedDataAuthorizationExemptions); ok {
 		return casted
 	}

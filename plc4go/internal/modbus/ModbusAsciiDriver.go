@@ -69,7 +69,7 @@ func (m ModbusAsciiDriver) GetConnectionWithContext(ctx context.Context, transpo
 
 	// Create a new codec for taking care of encoding/decoding of messages
 	// TODO: the code below looks strange: where is defaultChanel being used?
-	defaultChanel := make(chan interface{})
+	defaultChanel := make(chan any)
 	go func() {
 		for {
 			msg := <-defaultChanel

@@ -218,8 +218,8 @@ func MeteringCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastMeteringCommandTypeContainer(structType interface{}) MeteringCommandTypeContainer {
-	castFunc := func(typ interface{}) MeteringCommandTypeContainer {
+func CastMeteringCommandTypeContainer(structType any) MeteringCommandTypeContainer {
+	castFunc := func(typ any) MeteringCommandTypeContainer {
 		if sMeteringCommandTypeContainer, ok := typ.(MeteringCommandTypeContainer); ok {
 			return sMeteringCommandTypeContainer
 		}

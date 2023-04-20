@@ -87,8 +87,8 @@ func BACnetDoorSecuredStatusKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetDoorSecuredStatus(structType interface{}) BACnetDoorSecuredStatus {
-	castFunc := func(typ interface{}) BACnetDoorSecuredStatus {
+func CastBACnetDoorSecuredStatus(structType any) BACnetDoorSecuredStatus {
+	castFunc := func(typ any) BACnetDoorSecuredStatus {
 		if sBACnetDoorSecuredStatus, ok := typ.(BACnetDoorSecuredStatus); ok {
 			return sBACnetDoorSecuredStatus
 		}

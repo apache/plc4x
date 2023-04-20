@@ -104,7 +104,7 @@ func NewAmsSerialResetFrame(magicCookie uint16, transmitterAddress int8, receive
 }
 
 // Deprecated: use the interface for direct cast
-func CastAmsSerialResetFrame(structType interface{}) AmsSerialResetFrame {
+func CastAmsSerialResetFrame(structType any) AmsSerialResetFrame {
 	if casted, ok := structType.(AmsSerialResetFrame); ok {
 		return casted
 	}

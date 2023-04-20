@@ -18847,8 +18847,8 @@ func ComObjectTableAddressesKnows(value uint16) bool {
 	return false
 }
 
-func CastComObjectTableAddresses(structType interface{}) ComObjectTableAddresses {
-	castFunc := func(typ interface{}) ComObjectTableAddresses {
+func CastComObjectTableAddresses(structType any) ComObjectTableAddresses {
+	castFunc := func(typ any) ComObjectTableAddresses {
 		if sComObjectTableAddresses, ok := typ.(ComObjectTableAddresses); ok {
 			return sComObjectTableAddresses
 		}

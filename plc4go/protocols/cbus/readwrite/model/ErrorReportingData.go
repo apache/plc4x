@@ -107,7 +107,7 @@ func NewErrorReportingData(commandTypeContainer ErrorReportingCommandTypeContain
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingData(structType interface{}) ErrorReportingData {
+func CastErrorReportingData(structType any) ErrorReportingData {
 	if casted, ok := structType.(ErrorReportingData); ok {
 		return casted
 	}
@@ -178,7 +178,7 @@ func ErrorReportingDataParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		InitializeParent(ErrorReportingData, ErrorReportingCommandTypeContainer)
 		GetParent() ErrorReportingData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ErrorReportingDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

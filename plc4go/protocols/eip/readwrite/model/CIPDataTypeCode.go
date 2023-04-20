@@ -381,8 +381,8 @@ func CIPDataTypeCodeKnows(value uint16) bool {
 	return false
 }
 
-func CastCIPDataTypeCode(structType interface{}) CIPDataTypeCode {
-	castFunc := func(typ interface{}) CIPDataTypeCode {
+func CastCIPDataTypeCode(structType any) CIPDataTypeCode {
+	castFunc := func(typ any) CIPDataTypeCode {
 		if sCIPDataTypeCode, ok := typ.(CIPDataTypeCode); ok {
 			return sCIPDataTypeCode
 		}

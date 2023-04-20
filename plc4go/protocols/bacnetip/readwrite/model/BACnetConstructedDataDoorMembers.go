@@ -132,7 +132,7 @@ func NewBACnetConstructedDataDoorMembers(numberOfDataElements BACnetApplicationT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDoorMembers(structType interface{}) BACnetConstructedDataDoorMembers {
+func CastBACnetConstructedDataDoorMembers(structType any) BACnetConstructedDataDoorMembers {
 	if casted, ok := structType.(BACnetConstructedDataDoorMembers); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetUnconfirmedServiceRequestIAm(deviceIdentifier BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestIAm(structType interface{}) BACnetUnconfirmedServiceRequestIAm {
+func CastBACnetUnconfirmedServiceRequestIAm(structType any) BACnetUnconfirmedServiceRequestIAm {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestIAm); ok {
 		return casted
 	}

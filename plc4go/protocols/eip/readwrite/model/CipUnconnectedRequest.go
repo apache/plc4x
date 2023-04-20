@@ -154,7 +154,7 @@ func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegm
 }
 
 // Deprecated: use the interface for direct cast
-func CastCipUnconnectedRequest(structType interface{}) CipUnconnectedRequest {
+func CastCipUnconnectedRequest(structType any) CipUnconnectedRequest {
 	if casted, ok := structType.(CipUnconnectedRequest); ok {
 		return casted
 	}
@@ -259,7 +259,7 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipUnconnectedRequest")
 		}
 		if reserved != uint16(0x9D05) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x9D05),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -382,7 +382,7 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 		{
 			var reserved uint16 = uint16(0x9D05)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint16(0x9D05),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

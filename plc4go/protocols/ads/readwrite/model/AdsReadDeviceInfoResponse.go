@@ -139,7 +139,7 @@ func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVe
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsReadDeviceInfoResponse(structType interface{}) AdsReadDeviceInfoResponse {
+func CastAdsReadDeviceInfoResponse(structType any) AdsReadDeviceInfoResponse {
 	if casted, ok := structType.(AdsReadDeviceInfoResponse); ok {
 		return casted
 	}

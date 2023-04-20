@@ -84,7 +84,7 @@ func NewCipService(serviceLen uint16) *_CipService {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCipService(structType interface{}) CipService {
+func CastCipService(structType any) CipService {
 	if casted, ok := structType.(CipService); ok {
 		return casted
 	}
@@ -143,7 +143,7 @@ func CipServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 		InitializeParent(CipService)
 		GetParent() CipService
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CipServiceChildSerializeRequirement
 	var typeSwitchError error
 	switch {

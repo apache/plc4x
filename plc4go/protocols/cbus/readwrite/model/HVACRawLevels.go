@@ -86,7 +86,7 @@ func NewHVACRawLevels(rawValue int16) *_HVACRawLevels {
 }
 
 // Deprecated: use the interface for direct cast
-func CastHVACRawLevels(structType interface{}) HVACRawLevels {
+func CastHVACRawLevels(structType any) HVACRawLevels {
 	if casted, ok := structType.(HVACRawLevels); ok {
 		return casted
 	}

@@ -93,8 +93,8 @@ func CEMIPriorityKnows(value uint8) bool {
 	return false
 }
 
-func CastCEMIPriority(structType interface{}) CEMIPriority {
-	castFunc := func(typ interface{}) CEMIPriority {
+func CastCEMIPriority(structType any) CEMIPriority {
+	castFunc := func(typ any) CEMIPriority {
 		if sCEMIPriority, ok := typ.(CEMIPriority); ok {
 			return sCEMIPriority
 		}

@@ -98,7 +98,7 @@ func NewSALDataLighting(lightingData LightingData, salData SALData) *_SALDataLig
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataLighting(structType interface{}) SALDataLighting {
+func CastSALDataLighting(structType any) SALDataLighting {
 	if casted, ok := structType.(SALDataLighting); ok {
 		return casted
 	}

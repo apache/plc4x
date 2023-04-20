@@ -87,8 +87,8 @@ func DriverTypeKnows(value uint32) bool {
 	return false
 }
 
-func CastDriverType(structType interface{}) DriverType {
-	castFunc := func(typ interface{}) DriverType {
+func CastDriverType(structType any) DriverType {
+	castFunc := func(typ any) DriverType {
 		if sDriverType, ok := typ.(DriverType); ok {
 			return sDriverType
 		}

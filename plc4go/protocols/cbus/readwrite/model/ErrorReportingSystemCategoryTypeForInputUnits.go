@@ -165,8 +165,8 @@ func ErrorReportingSystemCategoryTypeForInputUnitsKnows(value uint8) bool {
 	return false
 }
 
-func CastErrorReportingSystemCategoryTypeForInputUnits(structType interface{}) ErrorReportingSystemCategoryTypeForInputUnits {
-	castFunc := func(typ interface{}) ErrorReportingSystemCategoryTypeForInputUnits {
+func CastErrorReportingSystemCategoryTypeForInputUnits(structType any) ErrorReportingSystemCategoryTypeForInputUnits {
+	castFunc := func(typ any) ErrorReportingSystemCategoryTypeForInputUnits {
 		if sErrorReportingSystemCategoryTypeForInputUnits, ok := typ.(ErrorReportingSystemCategoryTypeForInputUnits); ok {
 			return sErrorReportingSystemCategoryTypeForInputUnits
 		}

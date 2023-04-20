@@ -95,7 +95,7 @@ func NewSecurityDataOn(data []byte, commandTypeContainer SecurityCommandTypeCont
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataOn(structType interface{}) SecurityDataOn {
+func CastSecurityDataOn(structType any) SecurityDataOn {
 	if casted, ok := structType.(SecurityDataOn); ok {
 		return casted
 	}

@@ -98,7 +98,7 @@ func NewBACnetConfirmedServiceRequestGetEventInformation(lastReceivedObjectIdent
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestGetEventInformation(structType interface{}) BACnetConfirmedServiceRequestGetEventInformation {
+func CastBACnetConfirmedServiceRequestGetEventInformation(structType any) BACnetConfirmedServiceRequestGetEventInformation {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestGetEventInformation); ok {
 		return casted
 	}

@@ -77,7 +77,7 @@ func NewSecurityDataArmFailedRaised(commandTypeContainer SecurityCommandTypeCont
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataArmFailedRaised(structType interface{}) SecurityDataArmFailedRaised {
+func CastSecurityDataArmFailedRaised(structType any) SecurityDataArmFailedRaised {
 	if casted, ok := structType.(SecurityDataArmFailedRaised); ok {
 		return casted
 	}

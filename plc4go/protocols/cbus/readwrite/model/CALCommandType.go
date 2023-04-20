@@ -123,8 +123,8 @@ func CALCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastCALCommandType(structType interface{}) CALCommandType {
-	castFunc := func(typ interface{}) CALCommandType {
+func CastCALCommandType(structType any) CALCommandType {
+	castFunc := func(typ any) CALCommandType {
 		if sCALCommandType, ok := typ.(CALCommandType); ok {
 			return sCALCommandType
 		}

@@ -94,7 +94,7 @@ func NewBACnetTimerStateChangeValueObjectidentifier(objectidentifierValue BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueObjectidentifier(structType interface{}) BACnetTimerStateChangeValueObjectidentifier {
+func CastBACnetTimerStateChangeValueObjectidentifier(structType any) BACnetTimerStateChangeValueObjectidentifier {
 	if casted, ok := structType.(BACnetTimerStateChangeValueObjectidentifier); ok {
 		return casted
 	}

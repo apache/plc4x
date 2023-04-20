@@ -104,7 +104,7 @@ func NewBACnetConstructedDataMultiStateInputFaultValues(faultValues []BACnetAppl
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMultiStateInputFaultValues(structType interface{}) BACnetConstructedDataMultiStateInputFaultValues {
+func CastBACnetConstructedDataMultiStateInputFaultValues(structType any) BACnetConstructedDataMultiStateInputFaultValues {
 	if casted, ok := structType.(BACnetConstructedDataMultiStateInputFaultValues); ok {
 		return casted
 	}

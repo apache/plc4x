@@ -124,7 +124,7 @@ func NewLPollData(sourceAddress KnxAddress, targetAddress []byte, numberExpected
 }
 
 // Deprecated: use the interface for direct cast
-func CastLPollData(structType interface{}) LPollData {
+func CastLPollData(structType any) LPollData {
 	if casted, ok := structType.(LPollData); ok {
 		return casted
 	}
@@ -202,7 +202,7 @@ func LPollDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LPollData")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -272,7 +272,7 @@ func (m *_LPollData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

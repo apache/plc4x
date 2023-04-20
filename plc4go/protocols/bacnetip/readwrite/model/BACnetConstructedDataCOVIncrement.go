@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCOVIncrement(covIncrement BACnetApplicationTagReal,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCOVIncrement(structType interface{}) BACnetConstructedDataCOVIncrement {
+func CastBACnetConstructedDataCOVIncrement(structType any) BACnetConstructedDataCOVIncrement {
 	if casted, ok := structType.(BACnetConstructedDataCOVIncrement); ok {
 		return casted
 	}

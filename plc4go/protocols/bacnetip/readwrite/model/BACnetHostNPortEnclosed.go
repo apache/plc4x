@@ -86,7 +86,7 @@ func NewBACnetHostNPortEnclosed(openingTag BACnetOpeningTag, bacnetHostNPort BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetHostNPortEnclosed(structType interface{}) BACnetHostNPortEnclosed {
+func CastBACnetHostNPortEnclosed(structType any) BACnetHostNPortEnclosed {
 	if casted, ok := structType.(BACnetHostNPortEnclosed); ok {
 		return casted
 	}

@@ -68,8 +68,8 @@ func TestDiscoverer_Discover(t *testing.T) {
 		fields   fields
 		args     args
 		wantErr  assert.ErrorAssertionFunc
-		setup    func() (params []interface{})
-		teardown func(params []interface{})
+		setup    func() (params []any)
+		teardown func(params []any)
 	}{
 		{
 			name: "discover unknown device",
@@ -102,7 +102,7 @@ func TestDiscoverer_Discover(t *testing.T) {
 				},
 			},
 			wantErr: assert.NoError,
-			setup: func() (params []interface{}) {
+			setup: func() (params []any) {
 				oldaddressProviderRetriever := addressProviderRetriever
 				addressProviderRetriever = func(_ []string) ([]addressProvider, error) {
 					loopbackInterface, err := nettest.LoopbackInterface()
@@ -111,9 +111,9 @@ func TestDiscoverer_Discover(t *testing.T) {
 					}
 					return []addressProvider{&wrappedInterface{loopbackInterface}}, nil
 				}
-				return []interface{}{oldaddressProviderRetriever}
+				return []any{oldaddressProviderRetriever}
 			},
-			teardown: func(params []interface{}) {
+			teardown: func(params []any) {
 				addressProviderRetriever = params[0].(func(deviceNames []string) ([]addressProvider, error))
 			},
 		},
@@ -124,7 +124,7 @@ func TestDiscoverer_Discover(t *testing.T) {
 				transportInstanceCreationQueue: tt.fields.transportInstanceCreationQueue,
 				deviceScanningQueue:            tt.fields.deviceScanningQueue,
 			}
-			var params []interface{}
+			var params []any
 			if tt.setup != nil {
 				params = tt.setup()
 			}

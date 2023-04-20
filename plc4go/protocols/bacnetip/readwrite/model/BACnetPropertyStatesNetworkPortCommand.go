@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesNetworkPortCommand(networkPortCommand BACnetNetworkP
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesNetworkPortCommand(structType interface{}) BACnetPropertyStatesNetworkPortCommand {
+func CastBACnetPropertyStatesNetworkPortCommand(structType any) BACnetPropertyStatesNetworkPortCommand {
 	if casted, ok := structType.(BACnetPropertyStatesNetworkPortCommand); ok {
 		return casted
 	}

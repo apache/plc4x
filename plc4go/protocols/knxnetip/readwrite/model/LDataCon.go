@@ -112,7 +112,7 @@ func NewLDataCon(additionalInformationLength uint8, additionalInformation []CEMI
 }
 
 // Deprecated: use the interface for direct cast
-func CastLDataCon(structType interface{}) LDataCon {
+func CastLDataCon(structType any) LDataCon {
 	if casted, ok := structType.(LDataCon); ok {
 		return casted
 	}

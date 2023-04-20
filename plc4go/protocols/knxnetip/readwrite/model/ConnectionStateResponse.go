@@ -105,7 +105,7 @@ func NewConnectionStateResponse(communicationChannelId uint8, status Status) *_C
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionStateResponse(structType interface{}) ConnectionStateResponse {
+func CastConnectionStateResponse(structType any) ConnectionStateResponse {
 	if casted, ok := structType.(ConnectionStateResponse); ok {
 		return casted
 	}

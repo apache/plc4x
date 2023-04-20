@@ -115,7 +115,7 @@ func NewBACnetContextTagCharacterString(payload BACnetTagPayloadCharacterString,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagCharacterString(structType interface{}) BACnetContextTagCharacterString {
+func CastBACnetContextTagCharacterString(structType any) BACnetContextTagCharacterString {
 	if casted, ok := structType.(BACnetContextTagCharacterString); ok {
 		return casted
 	}

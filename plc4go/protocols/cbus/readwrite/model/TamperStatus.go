@@ -102,7 +102,7 @@ func NewTamperStatus(status uint8) *_TamperStatus {
 }
 
 // Deprecated: use the interface for direct cast
-func CastTamperStatus(structType interface{}) TamperStatus {
+func CastTamperStatus(structType any) TamperStatus {
 	if casted, ok := structType.(TamperStatus); ok {
 		return casted
 	}

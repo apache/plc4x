@@ -137,7 +137,7 @@ type Generator struct {
 	pkg *Package     // Package we are scanning.
 }
 
-func (g *Generator) Printf(format string, args ...interface{}) {
+func (g *Generator) Printf(format string, args ...any) {
 	fmt.Fprintf(&g.buf, format, args...)
 }
 
@@ -252,7 +252,7 @@ func (g *Generator) generate(typeName string) {
 			g.Printf("for _, elem := range d.%s {", field.name)
 			switch eltType := fieldType.Elt.(type) {
 			case *ast.SelectorExpr:
-				g.Printf("\n\t\tvar elem interface{} = elem\n")
+				g.Printf("\n\t\tvar elem any = elem\n")
 				g.Printf(serializableFieldTemplate, "elem", "\"value\"")
 			case *ast.Ident:
 				switch eltType.Name {
@@ -279,7 +279,7 @@ func (g *Generator) generate(typeName string) {
 			g.Printf("for name, elem := range d.%s {\n", fieldName)
 			switch eltType := fieldType.Value.(type) {
 			case *ast.SelectorExpr:
-				g.Printf("\n\t\tvar elem interface{} = elem\n")
+				g.Printf("\n\t\tvar elem any = elem\n")
 				g.Printf("\t\tif serializable, ok := elem.(utils.Serializable); ok {\n")
 				g.Printf("\t\t\tif err := writeBuffer.PushContext(name); err != nil {\n")
 				g.Printf("\t\t\t\treturn err\n")

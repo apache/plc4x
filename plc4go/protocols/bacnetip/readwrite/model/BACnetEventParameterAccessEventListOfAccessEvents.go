@@ -86,7 +86,7 @@ func NewBACnetEventParameterAccessEventListOfAccessEvents(openingTag BACnetOpeni
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterAccessEventListOfAccessEvents(structType interface{}) BACnetEventParameterAccessEventListOfAccessEvents {
+func CastBACnetEventParameterAccessEventListOfAccessEvents(structType any) BACnetEventParameterAccessEventListOfAccessEvents {
 	if casted, ok := structType.(BACnetEventParameterAccessEventListOfAccessEvents); ok {
 		return casted
 	}

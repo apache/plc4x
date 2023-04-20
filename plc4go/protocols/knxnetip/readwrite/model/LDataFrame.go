@@ -123,7 +123,7 @@ func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, ackn
 }
 
 // Deprecated: use the interface for direct cast
-func CastLDataFrame(structType interface{}) LDataFrame {
+func CastLDataFrame(structType any) LDataFrame {
 	if casted, ok := structType.(LDataFrame); ok {
 		return casted
 	}
@@ -238,7 +238,7 @@ func LDataFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		InitializeParent(LDataFrame, bool, bool, CEMIPriority, bool, bool)
 		GetParent() LDataFrame
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child LDataFrameChildSerializeRequirement
 	var typeSwitchError error
 	switch {

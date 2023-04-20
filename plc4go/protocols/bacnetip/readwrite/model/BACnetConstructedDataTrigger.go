@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTrigger(trigger BACnetApplicationTagBoolean, openin
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTrigger(structType interface{}) BACnetConstructedDataTrigger {
+func CastBACnetConstructedDataTrigger(structType any) BACnetConstructedDataTrigger {
 	if casted, ok := structType.(BACnetConstructedDataTrigger); ok {
 		return casted
 	}

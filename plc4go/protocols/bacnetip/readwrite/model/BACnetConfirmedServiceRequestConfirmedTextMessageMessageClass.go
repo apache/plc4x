@@ -124,7 +124,7 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(structType interface{}) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
+func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass); ok {
 		return casted
 	}
@@ -201,7 +201,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffe
 		InitializeParent(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildSerializeRequirement
 	var typeSwitchError error
 	switch {

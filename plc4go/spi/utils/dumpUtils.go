@@ -38,22 +38,22 @@ func BoxedDumpFixedWidth(name string, data []byte, charWidth int) AsciiBox {
 }
 
 // BoxedDumpAnything dumps anything as hex into a beautiful box
-func BoxedDumpAnything(name string, anything interface{}) AsciiBox {
+func BoxedDumpAnything(name string, anything any) AsciiBox {
 	return AsciiBoxWriterDefault.BoxString(name, DumpAnything(anything), 0)
 }
 
 // BoxedDumpAnythingFixedWidth dumps anything as hex into a beautiful box with a given width
-func BoxedDumpAnythingFixedWidth(name string, anything interface{}, charWidth int) AsciiBox {
+func BoxedDumpAnythingFixedWidth(name string, anything any, charWidth int) AsciiBox {
 	return AsciiBoxWriterDefault.BoxString(name, DumpAnythingFixedWidth(anything, charWidth), 0)
 }
 
 // DumpAnything dumps anything as hex
-func DumpAnything(anything interface{}) string {
+func DumpAnything(anything any) string {
 	return DumpAnythingFixedWidth(anything, DefaultWidth)
 }
 
 // DumpAnythingFixedWidth dumps anything as hex
-func DumpAnythingFixedWidth(anything interface{}, charWidth int) string {
+func DumpAnythingFixedWidth(anything any, charWidth int) string {
 	convertedBytes, err := toBytes(anything)
 	if err != nil {
 		if DebugHex {

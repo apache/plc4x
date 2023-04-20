@@ -153,7 +153,7 @@ func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFla
 }
 
 // Deprecated: use the interface for direct cast
-func CastCEMIAdditionalInformationBusmonitorInfo(structType interface{}) CEMIAdditionalInformationBusmonitorInfo {
+func CastCEMIAdditionalInformationBusmonitorInfo(structType any) CEMIAdditionalInformationBusmonitorInfo {
 	if casted, ok := structType.(CEMIAdditionalInformationBusmonitorInfo); ok {
 		return casted
 	}

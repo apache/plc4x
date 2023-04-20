@@ -164,7 +164,7 @@ func (m *_NPDU) GetDestinationLengthAddon() uint16 {
 	_ = nlm
 	apdu := m.Apdu
 	_ = apdu
-	return uint16(utils.InlineIf(m.GetControl().GetDestinationSpecified(), func() interface{} { return uint16((uint16(uint16(3)) + uint16((*m.GetDestinationLength())))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	return uint16(utils.InlineIf(m.GetControl().GetDestinationSpecified(), func() any { return uint16((uint16(uint16(3)) + uint16((*m.GetDestinationLength())))) }, func() any { return uint16(uint16(0)) }).(uint16))
 }
 
 func (m *_NPDU) GetSourceLengthAddon() uint16 {
@@ -184,7 +184,7 @@ func (m *_NPDU) GetSourceLengthAddon() uint16 {
 	_ = nlm
 	apdu := m.Apdu
 	_ = apdu
-	return uint16(utils.InlineIf(m.GetControl().GetSourceSpecified(), func() interface{} { return uint16((uint16(uint16(3)) + uint16((*m.GetSourceLength())))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	return uint16(utils.InlineIf(m.GetControl().GetSourceSpecified(), func() any { return uint16((uint16(uint16(3)) + uint16((*m.GetSourceLength())))) }, func() any { return uint16(uint16(0)) }).(uint16))
 }
 
 func (m *_NPDU) GetPayloadSubtraction() uint16 {
@@ -204,7 +204,7 @@ func (m *_NPDU) GetPayloadSubtraction() uint16 {
 	_ = nlm
 	apdu := m.Apdu
 	_ = apdu
-	return uint16(uint16(uint16(2)) + uint16((uint16(uint16(m.GetSourceLengthAddon())+uint16(m.GetDestinationLengthAddon())) + uint16((utils.InlineIf((m.GetControl().GetDestinationSpecified()), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))))
+	return uint16(uint16(uint16(2)) + uint16((uint16(uint16(m.GetSourceLengthAddon())+uint16(m.GetDestinationLengthAddon())) + uint16((utils.InlineIf((m.GetControl().GetDestinationSpecified()), func() any { return uint16(uint16(1)) }, func() any { return uint16(uint16(0)) }).(uint16))))))
 }
 
 ///////////////////////
@@ -218,7 +218,7 @@ func NewNPDU(protocolVersionNumber uint8, control NPDUControl, destinationNetwor
 }
 
 // Deprecated: use the interface for direct cast
-func CastNPDU(structType interface{}) NPDU {
+func CastNPDU(structType any) NPDU {
 	if casted, ok := structType.(NPDU); ok {
 		return casted
 	}
@@ -357,13 +357,13 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 		return nil, errors.Wrap(pullErr, "Error pulling for destinationAddress")
 	}
 	// Count array
-	destinationAddress := make([]uint8, utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	destinationAddress := make([]uint8, utils.InlineIf(control.GetDestinationSpecified(), func() any { return uint16((*destinationLength)) }, func() any { return uint16(uint16(0)) }).(uint16))
 	// This happens when the size is set conditional to 0
 	if len(destinationAddress) == 0 {
 		destinationAddress = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((*destinationLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+		_numItems := uint16(utils.InlineIf(control.GetDestinationSpecified(), func() any { return uint16((*destinationLength)) }, func() any { return uint16(uint16(0)) }).(uint16))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -380,7 +380,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	}
 
 	// Virtual field
-	_destinationLengthAddon := utils.InlineIf(control.GetDestinationSpecified(), func() interface{} { return uint16((uint16(uint16(3)) + uint16((*destinationLength)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
+	_destinationLengthAddon := utils.InlineIf(control.GetDestinationSpecified(), func() any { return uint16((uint16(uint16(3)) + uint16((*destinationLength)))) }, func() any { return uint16(uint16(0)) }).(uint16)
 	destinationLengthAddon := uint16(_destinationLengthAddon)
 	_ = destinationLengthAddon
 
@@ -409,13 +409,13 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
 	}
 	// Count array
-	sourceAddress := make([]uint8, utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	sourceAddress := make([]uint8, utils.InlineIf(control.GetSourceSpecified(), func() any { return uint16((*sourceLength)) }, func() any { return uint16(uint16(0)) }).(uint16))
 	// This happens when the size is set conditional to 0
 	if len(sourceAddress) == 0 {
 		sourceAddress = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((*sourceLength)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+		_numItems := uint16(utils.InlineIf(control.GetSourceSpecified(), func() any { return uint16((*sourceLength)) }, func() any { return uint16(uint16(0)) }).(uint16))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -432,7 +432,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	}
 
 	// Virtual field
-	_sourceLengthAddon := utils.InlineIf(control.GetSourceSpecified(), func() interface{} { return uint16((uint16(uint16(3)) + uint16((*sourceLength)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)
+	_sourceLengthAddon := utils.InlineIf(control.GetSourceSpecified(), func() any { return uint16((uint16(uint16(3)) + uint16((*sourceLength)))) }, func() any { return uint16(uint16(0)) }).(uint16)
 	sourceLengthAddon := uint16(_sourceLengthAddon)
 	_ = sourceLengthAddon
 
@@ -447,7 +447,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	}
 
 	// Virtual field
-	_payloadSubtraction := uint16(uint16(2)) + uint16((uint16(uint16(sourceLengthAddon)+uint16(destinationLengthAddon)) + uint16((utils.InlineIf((control.GetDestinationSpecified()), func() interface{} { return uint16(uint16(1)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))))
+	_payloadSubtraction := uint16(uint16(2)) + uint16((uint16(uint16(sourceLengthAddon)+uint16(destinationLengthAddon)) + uint16((utils.InlineIf((control.GetDestinationSpecified()), func() any { return uint16(uint16(1)) }, func() any { return uint16(uint16(0)) }).(uint16)))))
 	payloadSubtraction := uint16(_payloadSubtraction)
 	_ = payloadSubtraction
 

@@ -104,7 +104,7 @@ func NewBACnetConstructedDataMemberOf(zones []BACnetDeviceObjectReference, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMemberOf(structType interface{}) BACnetConstructedDataMemberOf {
+func CastBACnetConstructedDataMemberOf(structType any) BACnetConstructedDataMemberOf {
 	if casted, ok := structType.(BACnetConstructedDataMemberOf); ok {
 		return casted
 	}

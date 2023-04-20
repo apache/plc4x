@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCredentialDataInputUpdateTime(updateTime BACnetTime
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCredentialDataInputUpdateTime(structType interface{}) BACnetConstructedDataCredentialDataInputUpdateTime {
+func CastBACnetConstructedDataCredentialDataInputUpdateTime(structType any) BACnetConstructedDataCredentialDataInputUpdateTime {
 	if casted, ok := structType.(BACnetConstructedDataCredentialDataInputUpdateTime); ok {
 		return casted
 	}

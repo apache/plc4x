@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMaximumOutput(maximumOutput BACnetApplicationTagRea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaximumOutput(structType interface{}) BACnetConstructedDataMaximumOutput {
+func CastBACnetConstructedDataMaximumOutput(structType any) BACnetConstructedDataMaximumOutput {
 	if casted, ok := structType.(BACnetConstructedDataMaximumOutput); ok {
 		return casted
 	}

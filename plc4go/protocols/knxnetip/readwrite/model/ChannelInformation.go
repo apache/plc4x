@@ -76,7 +76,7 @@ func NewChannelInformation(numChannels uint8, channelCode uint16) *_ChannelInfor
 }
 
 // Deprecated: use the interface for direct cast
-func CastChannelInformation(structType interface{}) ChannelInformation {
+func CastChannelInformation(structType any) ChannelInformation {
 	if casted, ok := structType.(ChannelInformation); ok {
 		return casted
 	}

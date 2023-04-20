@@ -87,8 +87,8 @@ func ChannelStatusKnows(value uint8) bool {
 	return false
 }
 
-func CastChannelStatus(structType interface{}) ChannelStatus {
-	castFunc := func(typ interface{}) ChannelStatus {
+func CastChannelStatus(structType any) ChannelStatus {
+	castFunc := func(typ any) ChannelStatus {
 		if sChannelStatus, ok := typ.(ChannelStatus); ok {
 			return sChannelStatus
 		}

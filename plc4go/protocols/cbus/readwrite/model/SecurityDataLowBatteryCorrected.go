@@ -77,7 +77,7 @@ func NewSecurityDataLowBatteryCorrected(commandTypeContainer SecurityCommandType
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataLowBatteryCorrected(structType interface{}) SecurityDataLowBatteryCorrected {
+func CastSecurityDataLowBatteryCorrected(structType any) SecurityDataLowBatteryCorrected {
 	if casted, ok := structType.(SecurityDataLowBatteryCorrected); ok {
 		return casted
 	}

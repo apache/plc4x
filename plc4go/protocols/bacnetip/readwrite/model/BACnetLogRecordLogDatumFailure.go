@@ -96,7 +96,7 @@ func NewBACnetLogRecordLogDatumFailure(failure ErrorEnclosed, openingTag BACnetO
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecordLogDatumFailure(structType interface{}) BACnetLogRecordLogDatumFailure {
+func CastBACnetLogRecordLogDatumFailure(structType any) BACnetLogRecordLogDatumFailure {
 	if casted, ok := structType.(BACnetLogRecordLogDatumFailure); ok {
 		return casted
 	}

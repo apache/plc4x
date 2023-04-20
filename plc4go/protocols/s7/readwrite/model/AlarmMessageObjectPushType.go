@@ -141,7 +141,7 @@ func NewAlarmMessageObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numb
 }
 
 // Deprecated: use the interface for direct cast
-func CastAlarmMessageObjectPushType(structType interface{}) AlarmMessageObjectPushType {
+func CastAlarmMessageObjectPushType(structType any) AlarmMessageObjectPushType {
 	if casted, ok := structType.(AlarmMessageObjectPushType); ok {
 		return casted
 	}

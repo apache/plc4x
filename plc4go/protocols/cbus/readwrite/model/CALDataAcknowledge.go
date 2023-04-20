@@ -103,7 +103,7 @@ func NewCALDataAcknowledge(paramNo Parameter, code uint8, commandTypeContainer C
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataAcknowledge(structType interface{}) CALDataAcknowledge {
+func CastCALDataAcknowledge(structType any) CALDataAcknowledge {
 	if casted, ok := structType.(CALDataAcknowledge); ok {
 		return casted
 	}

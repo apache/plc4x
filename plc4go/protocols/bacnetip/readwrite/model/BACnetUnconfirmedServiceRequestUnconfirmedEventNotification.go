@@ -194,7 +194,7 @@ func NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(processIdent
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(structType interface{}) BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
+func CastBACnetUnconfirmedServiceRequestUnconfirmedEventNotification(structType any) BACnetUnconfirmedServiceRequestUnconfirmedEventNotification {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestUnconfirmedEventNotification); ok {
 		return casted
 	}

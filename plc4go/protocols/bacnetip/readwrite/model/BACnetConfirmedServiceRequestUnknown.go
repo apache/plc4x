@@ -100,7 +100,7 @@ func NewBACnetConfirmedServiceRequestUnknown(unknownBytes []byte, serviceRequest
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestUnknown(structType interface{}) BACnetConfirmedServiceRequestUnknown {
+func CastBACnetConfirmedServiceRequestUnknown(structType any) BACnetConfirmedServiceRequestUnknown {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestUnknown); ok {
 		return casted
 	}

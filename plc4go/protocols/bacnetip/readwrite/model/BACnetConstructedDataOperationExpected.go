@@ -121,7 +121,7 @@ func NewBACnetConstructedDataOperationExpected(lifeSafetyOperations BACnetLifeSa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOperationExpected(structType interface{}) BACnetConstructedDataOperationExpected {
+func CastBACnetConstructedDataOperationExpected(structType any) BACnetConstructedDataOperationExpected {
 	if casted, ok := structType.(BACnetConstructedDataOperationExpected); ok {
 		return casted
 	}

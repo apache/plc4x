@@ -86,7 +86,7 @@ func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorEnclosed(structType interface{}) ErrorEnclosed {
+func CastErrorEnclosed(structType any) ErrorEnclosed {
 	if casted, ok := structType.(ErrorEnclosed); ok {
 		return casted
 	}

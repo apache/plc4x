@@ -93,8 +93,8 @@ func BACnetProtocolLevelKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetProtocolLevel(structType interface{}) BACnetProtocolLevel {
-	castFunc := func(typ interface{}) BACnetProtocolLevel {
+func CastBACnetProtocolLevel(structType any) BACnetProtocolLevel {
+	castFunc := func(typ any) BACnetProtocolLevel {
 		if sBACnetProtocolLevel, ok := typ.(BACnetProtocolLevel); ok {
 			return sBACnetProtocolLevel
 		}

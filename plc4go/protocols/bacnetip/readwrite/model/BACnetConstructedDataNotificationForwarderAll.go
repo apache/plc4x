@@ -86,7 +86,7 @@ func NewBACnetConstructedDataNotificationForwarderAll(openingTag BACnetOpeningTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNotificationForwarderAll(structType interface{}) BACnetConstructedDataNotificationForwarderAll {
+func CastBACnetConstructedDataNotificationForwarderAll(structType any) BACnetConstructedDataNotificationForwarderAll {
 	if casted, ok := structType.(BACnetConstructedDataNotificationForwarderAll); ok {
 		return casted
 	}

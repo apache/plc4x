@@ -111,8 +111,8 @@ func BACnetEscalatorOperationDirectionKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetEscalatorOperationDirection(structType interface{}) BACnetEscalatorOperationDirection {
-	castFunc := func(typ interface{}) BACnetEscalatorOperationDirection {
+func CastBACnetEscalatorOperationDirection(structType any) BACnetEscalatorOperationDirection {
+	castFunc := func(typ any) BACnetEscalatorOperationDirection {
 		if sBACnetEscalatorOperationDirection, ok := typ.(BACnetEscalatorOperationDirection); ok {
 			return sBACnetEscalatorOperationDirection
 		}

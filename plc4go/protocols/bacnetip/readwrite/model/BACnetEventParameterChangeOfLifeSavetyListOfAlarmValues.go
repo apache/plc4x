@@ -86,7 +86,7 @@ func NewBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(openingTag BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(structType interface{}) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
+func CastBACnetEventParameterChangeOfLifeSavetyListOfAlarmValues(structType any) BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues {
 	if casted, ok := structType.(BACnetEventParameterChangeOfLifeSavetyListOfAlarmValues); ok {
 		return casted
 	}

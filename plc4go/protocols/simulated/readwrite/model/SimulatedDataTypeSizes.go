@@ -357,8 +357,8 @@ func SimulatedDataTypeSizesKnows(value uint8) bool {
 	return false
 }
 
-func CastSimulatedDataTypeSizes(structType interface{}) SimulatedDataTypeSizes {
-	castFunc := func(typ interface{}) SimulatedDataTypeSizes {
+func CastSimulatedDataTypeSizes(structType any) SimulatedDataTypeSizes {
+	castFunc := func(typ any) SimulatedDataTypeSizes {
 		if sSimulatedDataTypeSizes, ok := typ.(SimulatedDataTypeSizes); ok {
 			return sSimulatedDataTypeSizes
 		}

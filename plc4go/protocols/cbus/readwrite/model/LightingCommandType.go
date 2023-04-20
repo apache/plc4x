@@ -137,8 +137,8 @@ func LightingCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastLightingCommandType(structType interface{}) LightingCommandType {
-	castFunc := func(typ interface{}) LightingCommandType {
+func CastLightingCommandType(structType any) LightingCommandType {
+	castFunc := func(typ any) LightingCommandType {
 		if sLightingCommandType, ok := typ.(LightingCommandType); ok {
 			return sLightingCommandType
 		}

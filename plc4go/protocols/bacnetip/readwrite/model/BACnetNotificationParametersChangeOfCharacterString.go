@@ -128,7 +128,7 @@ func NewBACnetNotificationParametersChangeOfCharacterString(innerOpeningTag BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersChangeOfCharacterString(structType interface{}) BACnetNotificationParametersChangeOfCharacterString {
+func CastBACnetNotificationParametersChangeOfCharacterString(structType any) BACnetNotificationParametersChangeOfCharacterString {
 	if casted, ok := structType.(BACnetNotificationParametersChangeOfCharacterString); ok {
 		return casted
 	}

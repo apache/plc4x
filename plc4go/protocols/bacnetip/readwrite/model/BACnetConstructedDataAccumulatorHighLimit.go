@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAccumulatorHighLimit(highLimit BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccumulatorHighLimit(structType interface{}) BACnetConstructedDataAccumulatorHighLimit {
+func CastBACnetConstructedDataAccumulatorHighLimit(structType any) BACnetConstructedDataAccumulatorHighLimit {
 	if casted, ok := structType.(BACnetConstructedDataAccumulatorHighLimit); ok {
 		return casted
 	}

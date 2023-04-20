@@ -118,7 +118,7 @@ func NewLightingDataLabel(group byte, labelOptions LightingLabelOptions, languag
 }
 
 // Deprecated: use the interface for direct cast
-func CastLightingDataLabel(structType interface{}) LightingDataLabel {
+func CastLightingDataLabel(structType any) LightingDataLabel {
 	if casted, ok := structType.(LightingDataLabel); ok {
 		return casted
 	}
@@ -207,7 +207,7 @@ func LightingDataLabelParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		}
 	}
 	// Byte Array field (data)
-	numberOfBytesdata := int((uint16(commandTypeContainer.NumBytes()) - uint16((utils.InlineIf((bool((labelOptions.GetLabelType()) != (LightingLabelType_LOAD_DYNAMIC_ICON))), func() interface{} { return uint16((uint16(3))) }, func() interface{} { return uint16((uint16(2))) }).(uint16)))))
+	numberOfBytesdata := int((uint16(commandTypeContainer.NumBytes()) - uint16((utils.InlineIf((bool((labelOptions.GetLabelType()) != (LightingLabelType_LOAD_DYNAMIC_ICON))), func() any { return uint16((uint16(3))) }, func() any { return uint16((uint16(2))) }).(uint16)))))
 	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of LightingDataLabel")

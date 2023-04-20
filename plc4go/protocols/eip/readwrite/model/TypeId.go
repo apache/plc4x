@@ -75,7 +75,7 @@ func NewTypeId() *_TypeId {
 }
 
 // Deprecated: use the interface for direct cast
-func CastTypeId(structType interface{}) TypeId {
+func CastTypeId(structType any) TypeId {
 	if casted, ok := structType.(TypeId); ok {
 		return casted
 	}
@@ -126,7 +126,7 @@ func TypeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Ty
 		InitializeParent(TypeId)
 		GetParent() TypeId
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child TypeIdChildSerializeRequirement
 	var typeSwitchError error
 	switch {

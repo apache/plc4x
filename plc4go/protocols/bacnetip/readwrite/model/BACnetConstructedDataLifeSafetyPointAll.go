@@ -86,7 +86,7 @@ func NewBACnetConstructedDataLifeSafetyPointAll(openingTag BACnetOpeningTag, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLifeSafetyPointAll(structType interface{}) BACnetConstructedDataLifeSafetyPointAll {
+func CastBACnetConstructedDataLifeSafetyPointAll(structType any) BACnetConstructedDataLifeSafetyPointAll {
 	if casted, ok := structType.(BACnetConstructedDataLifeSafetyPointAll); ok {
 		return casted
 	}

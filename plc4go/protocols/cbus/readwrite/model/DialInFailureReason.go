@@ -75,8 +75,8 @@ func DialInFailureReasonKnows(value uint8) bool {
 	return false
 }
 
-func CastDialInFailureReason(structType interface{}) DialInFailureReason {
-	castFunc := func(typ interface{}) DialInFailureReason {
+func CastDialInFailureReason(structType any) DialInFailureReason {
+	castFunc := func(typ any) DialInFailureReason {
 		if sDialInFailureReason, ok := typ.(DialInFailureReason); ok {
 			return sDialInFailureReason
 		}

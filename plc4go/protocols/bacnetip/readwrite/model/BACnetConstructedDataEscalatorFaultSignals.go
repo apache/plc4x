@@ -104,7 +104,7 @@ func NewBACnetConstructedDataEscalatorFaultSignals(faultSignals []BACnetEscalato
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEscalatorFaultSignals(structType interface{}) BACnetConstructedDataEscalatorFaultSignals {
+func CastBACnetConstructedDataEscalatorFaultSignals(structType any) BACnetConstructedDataEscalatorFaultSignals {
 	if casted, ok := structType.(BACnetConstructedDataEscalatorFaultSignals); ok {
 		return casted
 	}

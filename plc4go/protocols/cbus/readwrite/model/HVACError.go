@@ -909,8 +909,8 @@ func HVACErrorKnows(value uint8) bool {
 	return false
 }
 
-func CastHVACError(structType interface{}) HVACError {
-	castFunc := func(typ interface{}) HVACError {
+func CastHVACError(structType any) HVACError {
+	castFunc := func(typ any) HVACError {
 		if sHVACError, ok := typ.(HVACError); ok {
 			return sHVACError
 		}

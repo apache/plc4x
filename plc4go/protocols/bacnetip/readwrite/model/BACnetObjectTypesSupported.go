@@ -429,8 +429,8 @@ func BACnetObjectTypesSupportedKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetObjectTypesSupported(structType interface{}) BACnetObjectTypesSupported {
-	castFunc := func(typ interface{}) BACnetObjectTypesSupported {
+func CastBACnetObjectTypesSupported(structType any) BACnetObjectTypesSupported {
+	castFunc := func(typ any) BACnetObjectTypesSupported {
 		if sBACnetObjectTypesSupported, ok := typ.(BACnetObjectTypesSupported); ok {
 			return sBACnetObjectTypesSupported
 		}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBBMDAcceptFDRegistrations(bbmdAcceptFDRegistrations
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBBMDAcceptFDRegistrations(structType interface{}) BACnetConstructedDataBBMDAcceptFDRegistrations {
+func CastBACnetConstructedDataBBMDAcceptFDRegistrations(structType any) BACnetConstructedDataBBMDAcceptFDRegistrations {
 	if casted, ok := structType.(BACnetConstructedDataBBMDAcceptFDRegistrations); ok {
 		return casted
 	}

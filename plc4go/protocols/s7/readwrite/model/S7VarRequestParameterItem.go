@@ -75,7 +75,7 @@ func NewS7VarRequestParameterItem() *_S7VarRequestParameterItem {
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7VarRequestParameterItem(structType interface{}) S7VarRequestParameterItem {
+func CastS7VarRequestParameterItem(structType any) S7VarRequestParameterItem {
 	if casted, ok := structType.(S7VarRequestParameterItem); ok {
 		return casted
 	}
@@ -126,7 +126,7 @@ func S7VarRequestParameterItemParseWithBuffer(ctx context.Context, readBuffer ut
 		InitializeParent(S7VarRequestParameterItem)
 		GetParent() S7VarRequestParameterItem
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child S7VarRequestParameterItemChildSerializeRequirement
 	var typeSwitchError error
 	switch {

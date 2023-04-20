@@ -25,7 +25,7 @@ import (
 )
 
 // InlineIf is basically a inline if like construct for golang
-func InlineIf(test bool, a func() interface{}, b func() interface{}) interface{} {
+func InlineIf(test bool, a func() any, b func() any) any {
 	if test {
 		return a()
 	} else {

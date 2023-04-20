@@ -93,8 +93,8 @@ func CpuSubscribeEventsKnows(value uint8) bool {
 	return false
 }
 
-func CastCpuSubscribeEvents(structType interface{}) CpuSubscribeEvents {
-	castFunc := func(typ interface{}) CpuSubscribeEvents {
+func CastCpuSubscribeEvents(structType any) CpuSubscribeEvents {
+	castFunc := func(typ any) CpuSubscribeEvents {
 		if sCpuSubscribeEvents, ok := typ.(CpuSubscribeEvents); ok {
 			return sCpuSubscribeEvents
 		}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPacketReorderTime(packetReorderTime BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPacketReorderTime(structType interface{}) BACnetConstructedDataPacketReorderTime {
+func CastBACnetConstructedDataPacketReorderTime(structType any) BACnetConstructedDataPacketReorderTime {
 	if casted, ok := structType.(BACnetConstructedDataPacketReorderTime); ok {
 		return casted
 	}

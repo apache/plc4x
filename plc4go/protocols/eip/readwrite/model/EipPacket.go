@@ -119,7 +119,7 @@ func NewEipPacket(sessionHandle uint32, status uint32, senderContext []byte, opt
 }
 
 // Deprecated: use the interface for direct cast
-func CastEipPacket(structType interface{}) EipPacket {
+func CastEipPacket(structType any) EipPacket {
 	if casted, ok := structType.(EipPacket); ok {
 		return casted
 	}
@@ -221,7 +221,7 @@ func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		InitializeParent(EipPacket, uint32, uint32, []byte, uint32)
 		GetParent() EipPacket
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child EipPacketChildSerializeRequirement
 	var typeSwitchError error
 	switch {

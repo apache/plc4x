@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesSystemStatus(systemStatus BACnetDeviceStatusTagged, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesSystemStatus(structType interface{}) BACnetPropertyStatesSystemStatus {
+func CastBACnetPropertyStatesSystemStatus(structType any) BACnetPropertyStatesSystemStatus {
 	if casted, ok := structType.(BACnetPropertyStatesSystemStatus); ok {
 		return casted
 	}

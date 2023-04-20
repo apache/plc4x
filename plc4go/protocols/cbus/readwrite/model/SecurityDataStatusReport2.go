@@ -95,7 +95,7 @@ func NewSecurityDataStatusReport2(zoneStatus []ZoneStatus, commandTypeContainer 
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataStatusReport2(structType interface{}) SecurityDataStatusReport2 {
+func CastSecurityDataStatusReport2(structType any) SecurityDataStatusReport2 {
 	if casted, ok := structType.(SecurityDataStatusReport2); ok {
 		return casted
 	}

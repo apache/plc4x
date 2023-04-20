@@ -115,7 +115,7 @@ func NewCOTPPacketConnectionRequest(destinationReference uint16, sourceReference
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPPacketConnectionRequest(structType interface{}) COTPPacketConnectionRequest {
+func CastCOTPPacketConnectionRequest(structType any) COTPPacketConnectionRequest {
 	if casted, ok := structType.(COTPPacketConnectionRequest); ok {
 		return casted
 	}

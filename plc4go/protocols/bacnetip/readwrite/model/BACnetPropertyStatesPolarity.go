@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesPolarity(polarity BACnetPolarityTagged, peekedTagHea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesPolarity(structType interface{}) BACnetPropertyStatesPolarity {
+func CastBACnetPropertyStatesPolarity(structType any) BACnetPropertyStatesPolarity {
 	if casted, ok := structType.(BACnetPropertyStatesPolarity); ok {
 		return casted
 	}

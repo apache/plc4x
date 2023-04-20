@@ -172,7 +172,7 @@ func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAd
 }
 
 // Deprecated: use the interface for direct cast
-func CastMonitoredSALLongFormSmartMode(structType interface{}) MonitoredSALLongFormSmartMode {
+func CastMonitoredSALLongFormSmartMode(structType any) MonitoredSALLongFormSmartMode {
 	if casted, ok := structType.(MonitoredSALLongFormSmartMode); ok {
 		return casted
 	}
@@ -250,7 +250,7 @@ func MonitoredSALLongFormSmartModeParseWithBuffer(ctx context.Context, readBuffe
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of MonitoredSALLongFormSmartMode")
 		}
 		if reserved != byte(0x05) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": byte(0x05),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -431,7 +431,7 @@ func (m *_MonitoredSALLongFormSmartMode) SerializeWithWriteBuffer(ctx context.Co
 		{
 			var reserved byte = byte(0x05)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": byte(0x05),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

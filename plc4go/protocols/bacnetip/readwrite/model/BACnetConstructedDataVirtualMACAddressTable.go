@@ -104,7 +104,7 @@ func NewBACnetConstructedDataVirtualMACAddressTable(virtualMacAddressTable []BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataVirtualMACAddressTable(structType interface{}) BACnetConstructedDataVirtualMACAddressTable {
+func CastBACnetConstructedDataVirtualMACAddressTable(structType any) BACnetConstructedDataVirtualMACAddressTable {
 	if casted, ok := structType.(BACnetConstructedDataVirtualMACAddressTable); ok {
 		return casted
 	}

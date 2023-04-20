@@ -132,7 +132,7 @@ func NewBACnetConstructedDataCommandTimeArray(numberOfDataElements BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCommandTimeArray(structType interface{}) BACnetConstructedDataCommandTimeArray {
+func CastBACnetConstructedDataCommandTimeArray(structType any) BACnetConstructedDataCommandTimeArray {
 	if casted, ok := structType.(BACnetConstructedDataCommandTimeArray); ok {
 		return casted
 	}

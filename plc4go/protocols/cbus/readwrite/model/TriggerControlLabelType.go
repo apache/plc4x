@@ -93,8 +93,8 @@ func TriggerControlLabelTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastTriggerControlLabelType(structType interface{}) TriggerControlLabelType {
-	castFunc := func(typ interface{}) TriggerControlLabelType {
+func CastTriggerControlLabelType(structType any) TriggerControlLabelType {
+	castFunc := func(typ any) TriggerControlLabelType {
 		if sTriggerControlLabelType, ok := typ.(TriggerControlLabelType); ok {
 			return sTriggerControlLabelType
 		}

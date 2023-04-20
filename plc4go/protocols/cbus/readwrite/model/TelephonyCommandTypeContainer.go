@@ -568,8 +568,8 @@ func TelephonyCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastTelephonyCommandTypeContainer(structType interface{}) TelephonyCommandTypeContainer {
-	castFunc := func(typ interface{}) TelephonyCommandTypeContainer {
+func CastTelephonyCommandTypeContainer(structType any) TelephonyCommandTypeContainer {
+	castFunc := func(typ any) TelephonyCommandTypeContainer {
 		if sTelephonyCommandTypeContainer, ok := typ.(TelephonyCommandTypeContainer); ok {
 			return sTelephonyCommandTypeContainer
 		}

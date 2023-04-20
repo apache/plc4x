@@ -116,7 +116,7 @@ func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCForwardedNPDU(structType interface{}) BVLCForwardedNPDU {
+func CastBVLCForwardedNPDU(structType any) BVLCForwardedNPDU {
 	if casted, ok := structType.(BVLCForwardedNPDU); ok {
 		return casted
 	}

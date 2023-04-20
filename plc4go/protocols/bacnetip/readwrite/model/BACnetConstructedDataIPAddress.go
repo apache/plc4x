@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIPAddress(ipAddress BACnetApplicationTagOctetString
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPAddress(structType interface{}) BACnetConstructedDataIPAddress {
+func CastBACnetConstructedDataIPAddress(structType any) BACnetConstructedDataIPAddress {
 	if casted, ok := structType.(BACnetConstructedDataIPAddress); ok {
 		return casted
 	}

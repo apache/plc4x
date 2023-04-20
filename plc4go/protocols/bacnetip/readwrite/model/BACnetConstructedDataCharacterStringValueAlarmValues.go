@@ -132,7 +132,7 @@ func NewBACnetConstructedDataCharacterStringValueAlarmValues(numberOfDataElement
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCharacterStringValueAlarmValues(structType interface{}) BACnetConstructedDataCharacterStringValueAlarmValues {
+func CastBACnetConstructedDataCharacterStringValueAlarmValues(structType any) BACnetConstructedDataCharacterStringValueAlarmValues {
 	if casted, ok := structType.(BACnetConstructedDataCharacterStringValueAlarmValues); ok {
 		return casted
 	}

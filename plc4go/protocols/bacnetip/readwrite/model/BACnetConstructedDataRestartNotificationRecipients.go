@@ -104,7 +104,7 @@ func NewBACnetConstructedDataRestartNotificationRecipients(restartNotificationRe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRestartNotificationRecipients(structType interface{}) BACnetConstructedDataRestartNotificationRecipients {
+func CastBACnetConstructedDataRestartNotificationRecipients(structType any) BACnetConstructedDataRestartNotificationRecipients {
 	if casted, ok := structType.(BACnetConstructedDataRestartNotificationRecipients); ok {
 		return casted
 	}

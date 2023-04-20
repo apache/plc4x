@@ -117,8 +117,8 @@ func BACnetAccessZoneOccupancyStateKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetAccessZoneOccupancyState(structType interface{}) BACnetAccessZoneOccupancyState {
-	castFunc := func(typ interface{}) BACnetAccessZoneOccupancyState {
+func CastBACnetAccessZoneOccupancyState(structType any) BACnetAccessZoneOccupancyState {
+	castFunc := func(typ any) BACnetAccessZoneOccupancyState {
 		if sBACnetAccessZoneOccupancyState, ok := typ.(BACnetAccessZoneOccupancyState); ok {
 			return sBACnetAccessZoneOccupancyState
 		}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAllowGroupDelayInhibit(allowGroupDelayInhibit BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAllowGroupDelayInhibit(structType interface{}) BACnetConstructedDataAllowGroupDelayInhibit {
+func CastBACnetConstructedDataAllowGroupDelayInhibit(structType any) BACnetConstructedDataAllowGroupDelayInhibit {
 	if casted, ok := structType.(BACnetConstructedDataAllowGroupDelayInhibit); ok {
 		return casted
 	}

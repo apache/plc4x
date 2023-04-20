@@ -132,7 +132,7 @@ func NewBACnetConstructedDataConfigurationFiles(numberOfDataElements BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataConfigurationFiles(structType interface{}) BACnetConstructedDataConfigurationFiles {
+func CastBACnetConstructedDataConfigurationFiles(structType any) BACnetConstructedDataConfigurationFiles {
 	if casted, ok := structType.(BACnetConstructedDataConfigurationFiles); ok {
 		return casted
 	}

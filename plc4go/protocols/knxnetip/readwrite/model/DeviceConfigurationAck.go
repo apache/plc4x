@@ -97,7 +97,7 @@ func NewDeviceConfigurationAck(deviceConfigurationAckDataBlock DeviceConfigurati
 }
 
 // Deprecated: use the interface for direct cast
-func CastDeviceConfigurationAck(structType interface{}) DeviceConfigurationAck {
+func CastDeviceConfigurationAck(structType any) DeviceConfigurationAck {
 	if casted, ok := structType.(DeviceConfigurationAck); ok {
 		return casted
 	}

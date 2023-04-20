@@ -107,7 +107,7 @@ func NewBACnetShedLevel(peekedTagHeader BACnetTagHeader) *_BACnetShedLevel {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetShedLevel(structType interface{}) BACnetShedLevel {
+func CastBACnetShedLevel(structType any) BACnetShedLevel {
 	if casted, ok := structType.(BACnetShedLevel); ok {
 		return casted
 	}
@@ -165,7 +165,7 @@ func BACnetShedLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		InitializeParent(BACnetShedLevel, BACnetTagHeader)
 		GetParent() BACnetShedLevel
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetShedLevelChildSerializeRequirement
 	var typeSwitchError error
 	switch {

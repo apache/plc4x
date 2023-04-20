@@ -100,7 +100,7 @@ func NewS7ParameterUserData(items []S7ParameterUserDataItem) *_S7ParameterUserDa
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterUserData(structType interface{}) S7ParameterUserData {
+func CastS7ParameterUserData(structType any) S7ParameterUserData {
 	if casted, ok := structType.(S7ParameterUserData); ok {
 		return casted
 	}

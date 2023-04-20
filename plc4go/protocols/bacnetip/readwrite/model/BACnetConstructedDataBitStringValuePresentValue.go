@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBitStringValuePresentValue(presentValue BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBitStringValuePresentValue(structType interface{}) BACnetConstructedDataBitStringValuePresentValue {
+func CastBACnetConstructedDataBitStringValuePresentValue(structType any) BACnetConstructedDataBitStringValuePresentValue {
 	if casted, ok := structType.(BACnetConstructedDataBitStringValuePresentValue); ok {
 		return casted
 	}

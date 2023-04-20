@@ -83,7 +83,7 @@ func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList Sz
 }
 
 // Deprecated: use the interface for direct cast
-func CastSzlId(structType interface{}) SzlId {
+func CastSzlId(structType any) SzlId {
 	if casted, ok := structType.(SzlId); ok {
 		return casted
 	}

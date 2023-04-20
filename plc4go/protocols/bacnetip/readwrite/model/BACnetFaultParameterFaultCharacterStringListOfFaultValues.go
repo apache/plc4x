@@ -86,7 +86,7 @@ func NewBACnetFaultParameterFaultCharacterStringListOfFaultValues(openingTag BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultCharacterStringListOfFaultValues(structType interface{}) BACnetFaultParameterFaultCharacterStringListOfFaultValues {
+func CastBACnetFaultParameterFaultCharacterStringListOfFaultValues(structType any) BACnetFaultParameterFaultCharacterStringListOfFaultValues {
 	if casted, ok := structType.(BACnetFaultParameterFaultCharacterStringListOfFaultValues); ok {
 		return casted
 	}

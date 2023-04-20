@@ -161,7 +161,7 @@ func NewBACnetConstructedDataElement(peekedTagHeader BACnetTagHeader, applicatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataElement(structType interface{}) BACnetConstructedDataElement {
+func CastBACnetConstructedDataElement(structType any) BACnetConstructedDataElement {
 	if casted, ok := structType.(BACnetConstructedDataElement); ok {
 		return casted
 	}

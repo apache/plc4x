@@ -83,7 +83,7 @@ func NewAlarmMessageAckType(functionId uint8, numberOfObjects uint8, messageObje
 }
 
 // Deprecated: use the interface for direct cast
-func CastAlarmMessageAckType(structType interface{}) AlarmMessageAckType {
+func CastAlarmMessageAckType(structType any) AlarmMessageAckType {
 	if casted, ok := structType.(AlarmMessageAckType); ok {
 		return casted
 	}

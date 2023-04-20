@@ -133,7 +133,7 @@ func NewSendUnitData(timeout uint16, typeIds []TypeId, sessionHandle uint32, sta
 }
 
 // Deprecated: use the interface for direct cast
-func CastSendUnitData(structType interface{}) SendUnitData {
+func CastSendUnitData(structType any) SendUnitData {
 	if casted, ok := structType.(SendUnitData); ok {
 		return casted
 	}

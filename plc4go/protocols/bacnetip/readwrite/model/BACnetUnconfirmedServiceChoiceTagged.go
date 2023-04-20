@@ -80,7 +80,7 @@ func NewBACnetUnconfirmedServiceChoiceTagged(header BACnetTagHeader, value BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceChoiceTagged(structType interface{}) BACnetUnconfirmedServiceChoiceTagged {
+func CastBACnetUnconfirmedServiceChoiceTagged(structType any) BACnetUnconfirmedServiceChoiceTagged {
 	if casted, ok := structType.(BACnetUnconfirmedServiceChoiceTagged); ok {
 		return casted
 	}

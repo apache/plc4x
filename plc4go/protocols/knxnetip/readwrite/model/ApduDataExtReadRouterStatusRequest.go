@@ -78,7 +78,7 @@ func NewApduDataExtReadRouterStatusRequest(length uint8) *_ApduDataExtReadRouter
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtReadRouterStatusRequest(structType interface{}) ApduDataExtReadRouterStatusRequest {
+func CastApduDataExtReadRouterStatusRequest(structType any) ApduDataExtReadRouterStatusRequest {
 	if casted, ok := structType.(ApduDataExtReadRouterStatusRequest); ok {
 		return casted
 	}

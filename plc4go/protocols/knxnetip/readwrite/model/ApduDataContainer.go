@@ -99,7 +99,7 @@ func NewApduDataContainer(dataApdu ApduData, numbered bool, counter uint8, dataL
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataContainer(structType interface{}) ApduDataContainer {
+func CastApduDataContainer(structType any) ApduDataContainer {
 	if casted, ok := structType.(ApduDataContainer); ok {
 		return casted
 	}

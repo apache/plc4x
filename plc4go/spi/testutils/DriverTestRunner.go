@@ -50,14 +50,14 @@ type DriverTestsuite struct {
 	driverParameters map[string]string
 	byteOrder        binary.ByteOrder
 	parser           XmlParser
-	rootTypeParser   func(utils.ReadBufferByteBased) (interface{}, error)
+	rootTypeParser   func(utils.ReadBufferByteBased) (any, error)
 	setupSteps       []TestStep
 	teardownSteps    []TestStep
 	testcases        []Testcase
 }
 
 type XmlParser interface {
-	Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error)
+	Parse(typeName string, xmlString string, parserArguments ...string) (any, error)
 }
 
 type WithOption interface {
@@ -72,7 +72,7 @@ func (_ option) isOption() bool {
 }
 
 // WithRootTypeParser Can be used to output the root type of a protocol for better debugging
-func WithRootTypeParser(rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)) WithOption {
+func WithRootTypeParser(rootTypeParser func(utils.ReadBufferByteBased) (any, error)) WithOption {
 	return withRootTypeParser{rootTypeParser: rootTypeParser}
 }
 
@@ -85,7 +85,7 @@ type TestTransportInstance interface {
 
 type withRootTypeParser struct {
 	option
-	rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)
+	rootTypeParser func(utils.ReadBufferByteBased) (any, error)
 }
 
 func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Testcase) error {
@@ -418,7 +418,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 	return nil
 }
 
-func (m DriverTestsuite) parseMessage(typeName string, payloadString string, step TestStep) (interface{}, error) {
+func (m DriverTestsuite) parseMessage(typeName string, payloadString string, step TestStep) (any, error) {
 	if m.parser == nil {
 		return nil, errors.Errorf("Protocol name %s has no mapped parser", m.protocolName)
 	}
@@ -479,7 +479,7 @@ func RunDriverTestsuiteWithOptions(t *testing.T, driver plc4go.PlcDriver, testPa
 		return
 	}
 
-	var rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)
+	var rootTypeParser func(utils.ReadBufferByteBased) (any, error)
 	for _, withOption := range options {
 		switch withOption.(type) {
 		case withRootTypeParser:
@@ -572,7 +572,7 @@ func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
 	return node, nil
 }
 
-func ParseDriverTestsuite(node xmldom.Node, parser XmlParser, rootTypeParser func(utils.ReadBufferByteBased) (interface{}, error)) (*DriverTestsuite, error) {
+func ParseDriverTestsuite(node xmldom.Node, parser XmlParser, rootTypeParser func(utils.ReadBufferByteBased) (any, error)) (*DriverTestsuite, error) {
 	if node.Name != "driver-testsuite" {
 		return nil, errors.New("invalid document structure")
 	}

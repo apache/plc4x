@@ -132,7 +132,7 @@ func NewBACnetConstructedDataAuthenticationPolicyNames(numberOfDataElements BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAuthenticationPolicyNames(structType interface{}) BACnetConstructedDataAuthenticationPolicyNames {
+func CastBACnetConstructedDataAuthenticationPolicyNames(structType any) BACnetConstructedDataAuthenticationPolicyNames {
 	if casted, ok := structType.(BACnetConstructedDataAuthenticationPolicyNames); ok {
 		return casted
 	}

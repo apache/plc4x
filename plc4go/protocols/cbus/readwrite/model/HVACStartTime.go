@@ -118,7 +118,7 @@ func NewHVACStartTime(minutesSinceSunday12AM uint16) *_HVACStartTime {
 }
 
 // Deprecated: use the interface for direct cast
-func CastHVACStartTime(structType interface{}) HVACStartTime {
+func CastHVACStartTime(structType any) HVACStartTime {
 	if casted, ok := structType.(HVACStartTime); ok {
 		return casted
 	}

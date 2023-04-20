@@ -104,7 +104,7 @@ func NewModbusPDUReadFifoQueueResponse(fifoValue []uint16) *_ModbusPDUReadFifoQu
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadFifoQueueResponse(structType interface{}) ModbusPDUReadFifoQueueResponse {
+func CastModbusPDUReadFifoQueueResponse(structType any) ModbusPDUReadFifoQueueResponse {
 	if casted, ok := structType.(ModbusPDUReadFifoQueueResponse); ok {
 		return casted
 	}

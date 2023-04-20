@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDoorExtendedPulseTime(doorExtendedPulseTime BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDoorExtendedPulseTime(structType interface{}) BACnetConstructedDataDoorExtendedPulseTime {
+func CastBACnetConstructedDataDoorExtendedPulseTime(structType any) BACnetConstructedDataDoorExtendedPulseTime {
 	if casted, ok := structType.(BACnetConstructedDataDoorExtendedPulseTime); ok {
 		return casted
 	}

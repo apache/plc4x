@@ -90,7 +90,7 @@ func NewBACnetWriteAccessSpecification(objectIdentifier BACnetContextTagObjectId
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetWriteAccessSpecification(structType interface{}) BACnetWriteAccessSpecification {
+func CastBACnetWriteAccessSpecification(structType any) BACnetWriteAccessSpecification {
 	if casted, ok := structType.(BACnetWriteAccessSpecification); ok {
 		return casted
 	}

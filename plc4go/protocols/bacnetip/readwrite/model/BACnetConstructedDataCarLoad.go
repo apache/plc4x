@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCarLoad(carLoad BACnetApplicationTagReal, openingTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCarLoad(structType interface{}) BACnetConstructedDataCarLoad {
+func CastBACnetConstructedDataCarLoad(structType any) BACnetConstructedDataCarLoad {
 	if casted, ok := structType.(BACnetConstructedDataCarLoad); ok {
 		return casted
 	}

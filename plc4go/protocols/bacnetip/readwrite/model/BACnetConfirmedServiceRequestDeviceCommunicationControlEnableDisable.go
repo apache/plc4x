@@ -87,8 +87,8 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableKnows(v
 	return false
 }
 
-func CastBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable(structType interface{}) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable {
+func CastBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable(structType any) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable {
+	castFunc := func(typ any) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable {
 		if sBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, ok := typ.(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable); ok {
 			return sBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable
 		}

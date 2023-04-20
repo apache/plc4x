@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAccessZoneAdjustValue(adjustValue BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccessZoneAdjustValue(structType interface{}) BACnetConstructedDataAccessZoneAdjustValue {
+func CastBACnetConstructedDataAccessZoneAdjustValue(structType any) BACnetConstructedDataAccessZoneAdjustValue {
 	if casted, ok := structType.(BACnetConstructedDataAccessZoneAdjustValue); ok {
 		return casted
 	}

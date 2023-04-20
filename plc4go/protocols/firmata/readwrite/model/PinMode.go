@@ -141,8 +141,8 @@ func PinModeKnows(value uint8) bool {
 	return false
 }
 
-func CastPinMode(structType interface{}) PinMode {
-	castFunc := func(typ interface{}) PinMode {
+func CastPinMode(structType any) PinMode {
+	castFunc := func(typ any) PinMode {
 		if sPinMode, ok := typ.(PinMode); ok {
 			return sPinMode
 		}

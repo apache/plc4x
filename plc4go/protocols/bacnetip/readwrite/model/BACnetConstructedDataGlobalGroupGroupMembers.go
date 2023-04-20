@@ -132,7 +132,7 @@ func NewBACnetConstructedDataGlobalGroupGroupMembers(numberOfDataElements BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataGlobalGroupGroupMembers(structType interface{}) BACnetConstructedDataGlobalGroupGroupMembers {
+func CastBACnetConstructedDataGlobalGroupGroupMembers(structType any) BACnetConstructedDataGlobalGroupGroupMembers {
 	if casted, ok := structType.(BACnetConstructedDataGlobalGroupGroupMembers); ok {
 		return casted
 	}

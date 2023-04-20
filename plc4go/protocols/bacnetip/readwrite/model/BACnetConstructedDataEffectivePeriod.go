@@ -121,7 +121,7 @@ func NewBACnetConstructedDataEffectivePeriod(dateRange BACnetDateRange, openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEffectivePeriod(structType interface{}) BACnetConstructedDataEffectivePeriod {
+func CastBACnetConstructedDataEffectivePeriod(structType any) BACnetConstructedDataEffectivePeriod {
 	if casted, ok := structType.(BACnetConstructedDataEffectivePeriod); ok {
 		return casted
 	}

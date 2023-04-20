@@ -96,7 +96,7 @@ func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandLogicalAssignment(structType interface{}) IdentifyReplyCommandLogicalAssignment {
+func CastIdentifyReplyCommandLogicalAssignment(structType any) IdentifyReplyCommandLogicalAssignment {
 	if casted, ok := structType.(IdentifyReplyCommandLogicalAssignment); ok {
 		return casted
 	}

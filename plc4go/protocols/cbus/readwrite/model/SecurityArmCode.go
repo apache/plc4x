@@ -118,7 +118,7 @@ func NewSecurityArmCode(code uint8) *_SecurityArmCode {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityArmCode(structType interface{}) SecurityArmCode {
+func CastSecurityArmCode(structType any) SecurityArmCode {
 	if casted, ok := structType.(SecurityArmCode); ok {
 		return casted
 	}

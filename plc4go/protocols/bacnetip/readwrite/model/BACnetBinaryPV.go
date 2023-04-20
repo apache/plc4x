@@ -81,8 +81,8 @@ func BACnetBinaryPVKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetBinaryPV(structType interface{}) BACnetBinaryPV {
-	castFunc := func(typ interface{}) BACnetBinaryPV {
+func CastBACnetBinaryPV(structType any) BACnetBinaryPV {
+	castFunc := func(typ any) BACnetBinaryPV {
 		if sBACnetBinaryPV, ok := typ.(BACnetBinaryPV); ok {
 			return sBACnetBinaryPV
 		}

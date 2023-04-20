@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesLiftCarMode(liftCarMode BACnetLiftCarModeTagged, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesLiftCarMode(structType interface{}) BACnetPropertyStatesLiftCarMode {
+func CastBACnetPropertyStatesLiftCarMode(structType any) BACnetPropertyStatesLiftCarMode {
 	if casted, ok := structType.(BACnetPropertyStatesLiftCarMode); ok {
 		return casted
 	}

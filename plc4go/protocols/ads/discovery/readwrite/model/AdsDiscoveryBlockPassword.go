@@ -96,7 +96,7 @@ func NewAdsDiscoveryBlockPassword(password AmsString) *_AdsDiscoveryBlockPasswor
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockPassword(structType interface{}) AdsDiscoveryBlockPassword {
+func CastAdsDiscoveryBlockPassword(structType any) AdsDiscoveryBlockPassword {
 	if casted, ok := structType.(AdsDiscoveryBlockPassword); ok {
 		return casted
 	}

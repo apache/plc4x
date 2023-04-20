@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAuthenticationStatus(authenticationStatus BACnetAut
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAuthenticationStatus(structType interface{}) BACnetConstructedDataAuthenticationStatus {
+func CastBACnetConstructedDataAuthenticationStatus(structType any) BACnetConstructedDataAuthenticationStatus {
 	if casted, ok := structType.(BACnetConstructedDataAuthenticationStatus); ok {
 		return casted
 	}

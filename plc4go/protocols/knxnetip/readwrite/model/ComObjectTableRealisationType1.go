@@ -112,7 +112,7 @@ func NewComObjectTableRealisationType1(numEntries uint8, ramFlagsTablePointer ui
 }
 
 // Deprecated: use the interface for direct cast
-func CastComObjectTableRealisationType1(structType interface{}) ComObjectTableRealisationType1 {
+func CastComObjectTableRealisationType1(structType any) ComObjectTableRealisationType1 {
 	if casted, ok := structType.(ComObjectTableRealisationType1); ok {
 		return casted
 	}

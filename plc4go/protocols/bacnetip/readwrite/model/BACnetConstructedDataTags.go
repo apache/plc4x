@@ -132,7 +132,7 @@ func NewBACnetConstructedDataTags(numberOfDataElements BACnetApplicationTagUnsig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTags(structType interface{}) BACnetConstructedDataTags {
+func CastBACnetConstructedDataTags(structType any) BACnetConstructedDataTags {
 	if casted, ok := structType.(BACnetConstructedDataTags); ok {
 		return casted
 	}

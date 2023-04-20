@@ -112,7 +112,7 @@ func NewBACnetLogDataLogData(innerOpeningTag BACnetOpeningTag, logData []BACnetL
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogData(structType interface{}) BACnetLogDataLogData {
+func CastBACnetLogDataLogData(structType any) BACnetLogDataLogData {
 	if casted, ok := structType.(BACnetLogDataLogData); ok {
 		return casted
 	}

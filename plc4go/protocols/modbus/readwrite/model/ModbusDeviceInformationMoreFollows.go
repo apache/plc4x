@@ -81,8 +81,8 @@ func ModbusDeviceInformationMoreFollowsKnows(value uint8) bool {
 	return false
 }
 
-func CastModbusDeviceInformationMoreFollows(structType interface{}) ModbusDeviceInformationMoreFollows {
-	castFunc := func(typ interface{}) ModbusDeviceInformationMoreFollows {
+func CastModbusDeviceInformationMoreFollows(structType any) ModbusDeviceInformationMoreFollows {
+	castFunc := func(typ any) ModbusDeviceInformationMoreFollows {
 		if sModbusDeviceInformationMoreFollows, ok := typ.(ModbusDeviceInformationMoreFollows); ok {
 			return sModbusDeviceInformationMoreFollows
 		}

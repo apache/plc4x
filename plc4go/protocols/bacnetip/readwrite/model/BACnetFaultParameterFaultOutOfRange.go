@@ -118,7 +118,7 @@ func NewBACnetFaultParameterFaultOutOfRange(openingTag BACnetOpeningTag, minNorm
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultOutOfRange(structType interface{}) BACnetFaultParameterFaultOutOfRange {
+func CastBACnetFaultParameterFaultOutOfRange(structType any) BACnetFaultParameterFaultOutOfRange {
 	if casted, ok := structType.(BACnetFaultParameterFaultOutOfRange); ok {
 		return casted
 	}

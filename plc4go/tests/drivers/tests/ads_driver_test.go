@@ -33,7 +33,7 @@ import (
 
 func TestAdsDriver(t *testing.T) {
 	t.Skip("I have to port the commands for reading the symbol-table first")
-	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (interface{}, error) {
+	options := []testutils.WithOption{testutils.WithRootTypeParser(func(readBufferByteBased utils.ReadBufferByteBased) (any, error) {
 		return adsModel.AmsTCPPacketParseWithBuffer(context.Background(), readBufferByteBased)
 	})}
 	testutils.RunDriverTestsuiteWithOptions(t, ads.NewDriver(), "assets/testing/protocols/ads/DriverTestsuite.xml", adsIO.AdsXmlParserHelper{}, options)

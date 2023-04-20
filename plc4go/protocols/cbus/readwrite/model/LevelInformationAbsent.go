@@ -78,7 +78,7 @@ func NewLevelInformationAbsent(raw uint16) *_LevelInformationAbsent {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLevelInformationAbsent(structType interface{}) LevelInformationAbsent {
+func CastLevelInformationAbsent(structType any) LevelInformationAbsent {
 	if casted, ok := structType.(LevelInformationAbsent); ok {
 		return casted
 	}
@@ -126,7 +126,7 @@ func LevelInformationAbsentParseWithBuffer(ctx context.Context, readBuffer utils
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LevelInformationAbsent")
 		}
 		if reserved != uint16(0x0000) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint16(0x0000),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -168,7 +168,7 @@ func (m *_LevelInformationAbsent) SerializeWithWriteBuffer(ctx context.Context, 
 		{
 			var reserved uint16 = uint16(0x0000)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint16(0x0000),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

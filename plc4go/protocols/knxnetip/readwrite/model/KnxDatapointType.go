@@ -6443,8 +6443,8 @@ func KnxDatapointTypeKnows(value uint32) bool {
 	return false
 }
 
-func CastKnxDatapointType(structType interface{}) KnxDatapointType {
-	castFunc := func(typ interface{}) KnxDatapointType {
+func CastKnxDatapointType(structType any) KnxDatapointType {
+	castFunc := func(typ any) KnxDatapointType {
 		if sKnxDatapointType, ok := typ.(KnxDatapointType); ok {
 			return sKnxDatapointType
 		}

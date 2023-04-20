@@ -104,7 +104,7 @@ func NewBACnetConstructedDataFailedAttemptEvents(failedAttemptEvents []BACnetAcc
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFailedAttemptEvents(structType interface{}) BACnetConstructedDataFailedAttemptEvents {
+func CastBACnetConstructedDataFailedAttemptEvents(structType any) BACnetConstructedDataFailedAttemptEvents {
 	if casted, ok := structType.(BACnetConstructedDataFailedAttemptEvents); ok {
 		return casted
 	}

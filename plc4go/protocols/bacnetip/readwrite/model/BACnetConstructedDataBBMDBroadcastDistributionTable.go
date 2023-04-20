@@ -104,7 +104,7 @@ func NewBACnetConstructedDataBBMDBroadcastDistributionTable(bbmdBroadcastDistrib
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBBMDBroadcastDistributionTable(structType interface{}) BACnetConstructedDataBBMDBroadcastDistributionTable {
+func CastBACnetConstructedDataBBMDBroadcastDistributionTable(structType any) BACnetConstructedDataBBMDBroadcastDistributionTable {
 	if casted, ok := structType.(BACnetConstructedDataBBMDBroadcastDistributionTable); ok {
 		return casted
 	}

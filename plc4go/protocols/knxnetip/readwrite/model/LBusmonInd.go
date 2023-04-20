@@ -120,7 +120,7 @@ func NewLBusmonInd(additionalInformationLength uint8, additionalInformation []CE
 }
 
 // Deprecated: use the interface for direct cast
-func CastLBusmonInd(structType interface{}) LBusmonInd {
+func CastLBusmonInd(structType any) LBusmonInd {
 	if casted, ok := structType.(LBusmonInd); ok {
 		return casted
 	}

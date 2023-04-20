@@ -456,8 +456,8 @@ func KnxInterfaceObjectTypeKnows(value uint16) bool {
 	return false
 }
 
-func CastKnxInterfaceObjectType(structType interface{}) KnxInterfaceObjectType {
-	castFunc := func(typ interface{}) KnxInterfaceObjectType {
+func CastKnxInterfaceObjectType(structType any) KnxInterfaceObjectType {
+	castFunc := func(typ any) KnxInterfaceObjectType {
 		if sKnxInterfaceObjectType, ok := typ.(KnxInterfaceObjectType); ok {
 			return sKnxInterfaceObjectType
 		}

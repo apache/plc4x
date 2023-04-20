@@ -114,7 +114,7 @@ func NewAdsDiscovery(requestId uint32, operation Operation, amsNetId AmsNetId, p
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscovery(structType interface{}) AdsDiscovery {
+func CastAdsDiscovery(structType any) AdsDiscovery {
 	if casted, ok := structType.(AdsDiscovery); ok {
 		return casted
 	}

@@ -104,7 +104,7 @@ func NewBACnetConstructedDataManualSlaveAddressBinding(manualSlaveAddressBinding
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataManualSlaveAddressBinding(structType interface{}) BACnetConstructedDataManualSlaveAddressBinding {
+func CastBACnetConstructedDataManualSlaveAddressBinding(structType any) BACnetConstructedDataManualSlaveAddressBinding {
 	if casted, ok := structType.(BACnetConstructedDataManualSlaveAddressBinding); ok {
 		return casted
 	}

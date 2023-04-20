@@ -109,7 +109,7 @@ func NewBACnetAddress(networkNumber BACnetApplicationTagUnsignedInteger, macAddr
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAddress(structType interface{}) BACnetAddress {
+func CastBACnetAddress(structType any) BACnetAddress {
 	if casted, ok := structType.(BACnetAddress); ok {
 		return casted
 	}

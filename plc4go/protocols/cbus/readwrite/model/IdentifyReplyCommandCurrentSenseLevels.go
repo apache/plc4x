@@ -96,7 +96,7 @@ func NewIdentifyReplyCommandCurrentSenseLevels(currentSenseLevels []byte, numByt
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandCurrentSenseLevels(structType interface{}) IdentifyReplyCommandCurrentSenseLevels {
+func CastIdentifyReplyCommandCurrentSenseLevels(structType any) IdentifyReplyCommandCurrentSenseLevels {
 	if casted, ok := structType.(IdentifyReplyCommandCurrentSenseLevels); ok {
 		return casted
 	}

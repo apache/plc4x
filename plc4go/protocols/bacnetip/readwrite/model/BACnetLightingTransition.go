@@ -93,8 +93,8 @@ func BACnetLightingTransitionKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetLightingTransition(structType interface{}) BACnetLightingTransition {
-	castFunc := func(typ interface{}) BACnetLightingTransition {
+func CastBACnetLightingTransition(structType any) BACnetLightingTransition {
+	castFunc := func(typ any) BACnetLightingTransition {
 		if sBACnetLightingTransition, ok := typ.(BACnetLightingTransition); ok {
 			return sBACnetLightingTransition
 		}

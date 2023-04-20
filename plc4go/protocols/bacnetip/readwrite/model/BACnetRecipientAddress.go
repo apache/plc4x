@@ -94,7 +94,7 @@ func NewBACnetRecipientAddress(addressValue BACnetAddressEnclosed, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRecipientAddress(structType interface{}) BACnetRecipientAddress {
+func CastBACnetRecipientAddress(structType any) BACnetRecipientAddress {
 	if casted, ok := structType.(BACnetRecipientAddress); ok {
 		return casted
 	}

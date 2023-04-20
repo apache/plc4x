@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMaxFailedAttempts(maxFailedAttempts BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaxFailedAttempts(structType interface{}) BACnetConstructedDataMaxFailedAttempts {
+func CastBACnetConstructedDataMaxFailedAttempts(structType any) BACnetConstructedDataMaxFailedAttempts {
 	if casted, ok := structType.(BACnetConstructedDataMaxFailedAttempts); ok {
 		return casted
 	}

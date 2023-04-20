@@ -98,7 +98,7 @@ func NewSALDataClockAndTimekeeping(clockAndTimekeepingData ClockAndTimekeepingDa
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataClockAndTimekeeping(structType interface{}) SALDataClockAndTimekeeping {
+func CastSALDataClockAndTimekeeping(structType any) SALDataClockAndTimekeeping {
 	if casted, ok := structType.(SALDataClockAndTimekeeping); ok {
 		return casted
 	}

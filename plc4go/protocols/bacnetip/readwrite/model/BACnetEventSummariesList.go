@@ -86,7 +86,7 @@ func NewBACnetEventSummariesList(openingTag BACnetOpeningTag, listOfEventSummari
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventSummariesList(structType interface{}) BACnetEventSummariesList {
+func CastBACnetEventSummariesList(structType any) BACnetEventSummariesList {
 	if casted, ok := structType.(BACnetEventSummariesList); ok {
 		return casted
 	}

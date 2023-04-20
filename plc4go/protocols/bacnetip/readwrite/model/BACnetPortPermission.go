@@ -77,7 +77,7 @@ func NewBACnetPortPermission(port BACnetContextTagUnsignedInteger, enable BACnet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPortPermission(structType interface{}) BACnetPortPermission {
+func CastBACnetPortPermission(structType any) BACnetPortPermission {
 	if casted, ok := structType.(BACnetPortPermission); ok {
 		return casted
 	}

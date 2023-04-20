@@ -52,7 +52,7 @@ func NewGroupObjectDescriptorRealisationType6() *_GroupObjectDescriptorRealisati
 }
 
 // Deprecated: use the interface for direct cast
-func CastGroupObjectDescriptorRealisationType6(structType interface{}) GroupObjectDescriptorRealisationType6 {
+func CastGroupObjectDescriptorRealisationType6(structType any) GroupObjectDescriptorRealisationType6 {
 	if casted, ok := structType.(GroupObjectDescriptorRealisationType6); ok {
 		return casted
 	}

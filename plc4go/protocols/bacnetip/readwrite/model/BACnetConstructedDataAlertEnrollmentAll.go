@@ -86,7 +86,7 @@ func NewBACnetConstructedDataAlertEnrollmentAll(openingTag BACnetOpeningTag, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAlertEnrollmentAll(structType interface{}) BACnetConstructedDataAlertEnrollmentAll {
+func CastBACnetConstructedDataAlertEnrollmentAll(structType any) BACnetConstructedDataAlertEnrollmentAll {
 	if casted, ok := structType.(BACnetConstructedDataAlertEnrollmentAll); ok {
 		return casted
 	}

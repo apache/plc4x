@@ -241,8 +241,8 @@ func MediaTransportControlCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastMediaTransportControlCommandType(structType interface{}) MediaTransportControlCommandType {
-	castFunc := func(typ interface{}) MediaTransportControlCommandType {
+func CastMediaTransportControlCommandType(structType any) MediaTransportControlCommandType {
+	castFunc := func(typ any) MediaTransportControlCommandType {
 		if sMediaTransportControlCommandType, ok := typ.(MediaTransportControlCommandType); ok {
 			return sMediaTransportControlCommandType
 		}

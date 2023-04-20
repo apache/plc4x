@@ -125,7 +125,7 @@ func NewCipRRData(interfaceHandle uint32, timeout uint16, typeIds []TypeId, sess
 }
 
 // Deprecated: use the interface for direct cast
-func CastCipRRData(structType interface{}) CipRRData {
+func CastCipRRData(structType any) CipRRData {
 	if casted, ok := structType.(CipRRData); ok {
 		return casted
 	}

@@ -104,7 +104,7 @@ func NewBACnetConfirmedServiceRequestReadRangeRangeByPosition(referenceIndex BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadRangeRangeByPosition(structType interface{}) BACnetConfirmedServiceRequestReadRangeRangeByPosition {
+func CastBACnetConfirmedServiceRequestReadRangeRangeByPosition(structType any) BACnetConfirmedServiceRequestReadRangeRangeByPosition {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadRangeRangeByPosition); ok {
 		return casted
 	}

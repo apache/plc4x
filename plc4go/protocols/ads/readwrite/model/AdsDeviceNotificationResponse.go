@@ -89,7 +89,7 @@ func NewAdsDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDeviceNotificationResponse(structType interface{}) AdsDeviceNotificationResponse {
+func CastAdsDeviceNotificationResponse(structType any) AdsDeviceNotificationResponse {
 	if casted, ok := structType.(AdsDeviceNotificationResponse); ok {
 		return casted
 	}

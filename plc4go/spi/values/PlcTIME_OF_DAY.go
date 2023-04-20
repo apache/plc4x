@@ -34,7 +34,7 @@ type PlcTIME_OF_DAY struct {
 	value time.Time
 }
 
-func NewPlcTIME_OF_DAY(value interface{}) PlcTIME_OF_DAY {
+func NewPlcTIME_OF_DAY(value any) PlcTIME_OF_DAY {
 	var safeValue time.Time
 	switch value.(type) {
 	case time.Time:

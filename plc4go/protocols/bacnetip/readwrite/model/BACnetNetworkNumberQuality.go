@@ -93,8 +93,8 @@ func BACnetNetworkNumberQualityKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetNetworkNumberQuality(structType interface{}) BACnetNetworkNumberQuality {
-	castFunc := func(typ interface{}) BACnetNetworkNumberQuality {
+func CastBACnetNetworkNumberQuality(structType any) BACnetNetworkNumberQuality {
+	castFunc := func(typ any) BACnetNetworkNumberQuality {
 		if sBACnetNetworkNumberQuality, ok := typ.(BACnetNetworkNumberQuality); ok {
 			return sBACnetNetworkNumberQuality
 		}

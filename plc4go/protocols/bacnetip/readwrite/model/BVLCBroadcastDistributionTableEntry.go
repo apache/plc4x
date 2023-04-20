@@ -83,7 +83,7 @@ func NewBVLCBroadcastDistributionTableEntry(ip []uint8, port uint16, broadcastDi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCBroadcastDistributionTableEntry(structType interface{}) BVLCBroadcastDistributionTableEntry {
+func CastBVLCBroadcastDistributionTableEntry(structType any) BVLCBroadcastDistributionTableEntry {
 	if casted, ok := structType.(BVLCBroadcastDistributionTableEntry); ok {
 		return casted
 	}

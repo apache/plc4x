@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPulseConverterPresentValue(presentValue BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPulseConverterPresentValue(structType interface{}) BACnetConstructedDataPulseConverterPresentValue {
+func CastBACnetConstructedDataPulseConverterPresentValue(structType any) BACnetConstructedDataPulseConverterPresentValue {
 	if casted, ok := structType.(BACnetConstructedDataPulseConverterPresentValue); ok {
 		return casted
 	}

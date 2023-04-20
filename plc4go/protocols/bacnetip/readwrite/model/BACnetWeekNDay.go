@@ -52,7 +52,7 @@ func NewBACnetWeekNDay() *_BACnetWeekNDay {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetWeekNDay(structType interface{}) BACnetWeekNDay {
+func CastBACnetWeekNDay(structType any) BACnetWeekNDay {
 	if casted, ok := structType.(BACnetWeekNDay); ok {
 		return casted
 	}

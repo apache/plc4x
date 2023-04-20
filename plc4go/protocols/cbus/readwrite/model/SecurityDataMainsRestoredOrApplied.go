@@ -77,7 +77,7 @@ func NewSecurityDataMainsRestoredOrApplied(commandTypeContainer SecurityCommandT
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataMainsRestoredOrApplied(structType interface{}) SecurityDataMainsRestoredOrApplied {
+func CastSecurityDataMainsRestoredOrApplied(structType any) SecurityDataMainsRestoredOrApplied {
 	if casted, ok := structType.(SecurityDataMainsRestoredOrApplied); ok {
 		return casted
 	}

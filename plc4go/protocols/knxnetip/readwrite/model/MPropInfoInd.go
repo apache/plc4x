@@ -78,7 +78,7 @@ func NewMPropInfoInd(size uint16) *_MPropInfoInd {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMPropInfoInd(structType interface{}) MPropInfoInd {
+func CastMPropInfoInd(structType any) MPropInfoInd {
 	if casted, ok := structType.(MPropInfoInd); ok {
 		return casted
 	}

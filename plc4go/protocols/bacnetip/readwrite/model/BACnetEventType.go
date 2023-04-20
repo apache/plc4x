@@ -195,8 +195,8 @@ func BACnetEventTypeKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetEventType(structType interface{}) BACnetEventType {
-	castFunc := func(typ interface{}) BACnetEventType {
+func CastBACnetEventType(structType any) BACnetEventType {
+	castFunc := func(typ any) BACnetEventType {
 		if sBACnetEventType, ok := typ.(BACnetEventType); ok {
 			return sBACnetEventType
 		}

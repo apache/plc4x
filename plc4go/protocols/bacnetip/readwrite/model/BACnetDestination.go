@@ -111,7 +111,7 @@ func NewBACnetDestination(validDays BACnetDaysOfWeekTagged, fromTime BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetDestination(structType interface{}) BACnetDestination {
+func CastBACnetDestination(structType any) BACnetDestination {
 	if casted, ok := structType.(BACnetDestination); ok {
 		return casted
 	}

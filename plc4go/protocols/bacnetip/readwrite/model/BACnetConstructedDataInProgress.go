@@ -121,7 +121,7 @@ func NewBACnetConstructedDataInProgress(inProgress BACnetLightingInProgressTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataInProgress(structType interface{}) BACnetConstructedDataInProgress {
+func CastBACnetConstructedDataInProgress(structType any) BACnetConstructedDataInProgress {
 	if casted, ok := structType.(BACnetConstructedDataInProgress); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAverageValue(averageValue BACnetApplicationTagReal,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAverageValue(structType interface{}) BACnetConstructedDataAverageValue {
+func CastBACnetConstructedDataAverageValue(structType any) BACnetConstructedDataAverageValue {
 	if casted, ok := structType.(BACnetConstructedDataAverageValue); ok {
 		return casted
 	}

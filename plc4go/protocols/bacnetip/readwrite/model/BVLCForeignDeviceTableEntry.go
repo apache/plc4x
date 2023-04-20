@@ -90,7 +90,7 @@ func NewBVLCForeignDeviceTableEntry(ip []uint8, port uint16, ttl uint16, secondR
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCForeignDeviceTableEntry(structType interface{}) BVLCForeignDeviceTableEntry {
+func CastBVLCForeignDeviceTableEntry(structType any) BVLCForeignDeviceTableEntry {
 	if casted, ok := structType.(BVLCForeignDeviceTableEntry); ok {
 		return casted
 	}

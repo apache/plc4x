@@ -90,7 +90,7 @@ func NewListOfCovNotifications(monitoredObjectIdentifier BACnetContextTagObjectI
 }
 
 // Deprecated: use the interface for direct cast
-func CastListOfCovNotifications(structType interface{}) ListOfCovNotifications {
+func CastListOfCovNotifications(structType any) ListOfCovNotifications {
 	if casted, ok := structType.(ListOfCovNotifications); ok {
 		return casted
 	}

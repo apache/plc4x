@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCountBeforeChange(countBeforeChange BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCountBeforeChange(structType interface{}) BACnetConstructedDataCountBeforeChange {
+func CastBACnetConstructedDataCountBeforeChange(structType any) BACnetConstructedDataCountBeforeChange {
 	if casted, ok := structType.(BACnetConstructedDataCountBeforeChange); ok {
 		return casted
 	}

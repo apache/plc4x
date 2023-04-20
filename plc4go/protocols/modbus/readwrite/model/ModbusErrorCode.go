@@ -129,8 +129,8 @@ func ModbusErrorCodeKnows(value uint8) bool {
 	return false
 }
 
-func CastModbusErrorCode(structType interface{}) ModbusErrorCode {
-	castFunc := func(typ interface{}) ModbusErrorCode {
+func CastModbusErrorCode(structType any) ModbusErrorCode {
+	castFunc := func(typ any) ModbusErrorCode {
 		if sModbusErrorCode, ok := typ.(ModbusErrorCode); ok {
 			return sModbusErrorCode
 		}

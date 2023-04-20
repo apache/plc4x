@@ -132,7 +132,7 @@ func NewBACnetConstructedDataUnspecified(numberOfDataElements BACnetApplicationT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUnspecified(structType interface{}) BACnetConstructedDataUnspecified {
+func CastBACnetConstructedDataUnspecified(structType any) BACnetConstructedDataUnspecified {
 	if casted, ok := structType.(BACnetConstructedDataUnspecified); ok {
 		return casted
 	}

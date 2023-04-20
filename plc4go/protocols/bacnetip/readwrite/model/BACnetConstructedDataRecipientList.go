@@ -104,7 +104,7 @@ func NewBACnetConstructedDataRecipientList(recipientList []BACnetDestination, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRecipientList(structType interface{}) BACnetConstructedDataRecipientList {
+func CastBACnetConstructedDataRecipientList(structType any) BACnetConstructedDataRecipientList {
 	if casted, ok := structType.(BACnetConstructedDataRecipientList); ok {
 		return casted
 	}

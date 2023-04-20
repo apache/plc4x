@@ -77,7 +77,7 @@ func NewBACnetReadAccessResult(objectIdentifier BACnetContextTagObjectIdentifier
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetReadAccessResult(structType interface{}) BACnetReadAccessResult {
+func CastBACnetReadAccessResult(structType any) BACnetReadAccessResult {
 	if casted, ok := structType.(BACnetReadAccessResult); ok {
 		return casted
 	}

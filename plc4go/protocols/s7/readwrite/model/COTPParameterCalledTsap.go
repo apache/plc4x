@@ -96,7 +96,7 @@ func NewCOTPParameterCalledTsap(tsapId uint16, rest uint8) *_COTPParameterCalled
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPParameterCalledTsap(structType interface{}) COTPParameterCalledTsap {
+func CastCOTPParameterCalledTsap(structType any) COTPParameterCalledTsap {
 	if casted, ok := structType.(COTPParameterCalledTsap); ok {
 		return casted
 	}

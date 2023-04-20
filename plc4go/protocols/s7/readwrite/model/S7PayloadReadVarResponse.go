@@ -100,7 +100,7 @@ func NewS7PayloadReadVarResponse(items []S7VarPayloadDataItem, parameter S7Param
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadReadVarResponse(structType interface{}) S7PayloadReadVarResponse {
+func CastS7PayloadReadVarResponse(structType any) S7PayloadReadVarResponse {
 	if casted, ok := structType.(S7PayloadReadVarResponse); ok {
 		return casted
 	}

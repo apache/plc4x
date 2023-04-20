@@ -81,8 +81,8 @@ func HostProtocolCodeKnows(value uint8) bool {
 	return false
 }
 
-func CastHostProtocolCode(structType interface{}) HostProtocolCode {
-	castFunc := func(typ interface{}) HostProtocolCode {
+func CastHostProtocolCode(structType any) HostProtocolCode {
+	castFunc := func(typ any) HostProtocolCode {
 		if sHostProtocolCode, ok := typ.(HostProtocolCode); ok {
 			return sHostProtocolCode
 		}

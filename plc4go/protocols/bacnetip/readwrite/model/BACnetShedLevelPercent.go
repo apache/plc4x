@@ -94,7 +94,7 @@ func NewBACnetShedLevelPercent(percent BACnetContextTagUnsignedInteger, peekedTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetShedLevelPercent(structType interface{}) BACnetShedLevelPercent {
+func CastBACnetShedLevelPercent(structType any) BACnetShedLevelPercent {
 	if casted, ok := structType.(BACnetShedLevelPercent); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataOccupancyState(occupancyState BACnetAccessZoneOccup
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOccupancyState(structType interface{}) BACnetConstructedDataOccupancyState {
+func CastBACnetConstructedDataOccupancyState(structType any) BACnetConstructedDataOccupancyState {
 	if casted, ok := structType.(BACnetConstructedDataOccupancyState); ok {
 		return casted
 	}

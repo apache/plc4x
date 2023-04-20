@@ -172,7 +172,7 @@ func NewHVACHumidityModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastHVACHumidityModeAndFlags(structType interface{}) HVACHumidityModeAndFlags {
+func CastHVACHumidityModeAndFlags(structType any) HVACHumidityModeAndFlags {
 	if casted, ok := structType.(HVACHumidityModeAndFlags); ok {
 		return casted
 	}
@@ -251,7 +251,7 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of HVACHumidityModeAndFlags")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -375,7 +375,7 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 	{
 		var reserved bool = bool(false)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

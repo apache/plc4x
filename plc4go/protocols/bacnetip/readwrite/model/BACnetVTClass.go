@@ -117,8 +117,8 @@ func BACnetVTClassKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetVTClass(structType interface{}) BACnetVTClass {
-	castFunc := func(typ interface{}) BACnetVTClass {
+func CastBACnetVTClass(structType any) BACnetVTClass {
+	castFunc := func(typ any) BACnetVTClass {
 		if sBACnetVTClass, ok := typ.(BACnetVTClass); ok {
 			return sBACnetVTClass
 		}

@@ -110,7 +110,7 @@ type IOCB struct {
 	ioCallback     []func()
 	ioQueue        []_IOCB
 	ioTimeout      *time.Timer
-	ioTimoutCancel chan interface{}
+	ioTimoutCancel chan any
 	priority       int
 }
 
@@ -241,7 +241,7 @@ func (i *IOCB) SetTimeout(delay time.Duration) {
 	} else {
 		now := time.Now()
 		i.ioTimeout = time.NewTimer(delay)
-		i.ioTimoutCancel = make(chan interface{})
+		i.ioTimoutCancel = make(chan any)
 		go func() {
 			select {
 			case timeout := <-i.ioTimeout.C:
@@ -379,7 +379,7 @@ func (i *IOQueue) Get(block bool, delay *time.Duration) (_IOCB, error) {
 	// wait for something to be in the queue
 	if len(i.queue) == 0 {
 		if delay != nil {
-			gotSomething := make(chan interface{})
+			gotSomething := make(chan any)
 			go func() {
 				i.notEmpty.Wait()
 				close(gotSomething)

@@ -78,7 +78,7 @@ func NewMPropWriteReq(size uint16) *_MPropWriteReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMPropWriteReq(structType interface{}) MPropWriteReq {
+func CastMPropWriteReq(structType any) MPropWriteReq {
 	if casted, ok := structType.(MPropWriteReq); ok {
 		return casted
 	}

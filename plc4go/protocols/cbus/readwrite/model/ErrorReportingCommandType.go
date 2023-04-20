@@ -127,8 +127,8 @@ func ErrorReportingCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastErrorReportingCommandType(structType interface{}) ErrorReportingCommandType {
-	castFunc := func(typ interface{}) ErrorReportingCommandType {
+func CastErrorReportingCommandType(structType any) ErrorReportingCommandType {
+	castFunc := func(typ any) ErrorReportingCommandType {
 		if sErrorReportingCommandType, ok := typ.(ErrorReportingCommandType); ok {
 			return sErrorReportingCommandType
 		}

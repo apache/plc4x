@@ -97,7 +97,7 @@ func NewErrorReportingSystemCategoryTypeReserved(reservedValue uint8) *_ErrorRep
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingSystemCategoryTypeReserved(structType interface{}) ErrorReportingSystemCategoryTypeReserved {
+func CastErrorReportingSystemCategoryTypeReserved(structType any) ErrorReportingSystemCategoryTypeReserved {
 	if casted, ok := structType.(ErrorReportingSystemCategoryTypeReserved); ok {
 		return casted
 	}

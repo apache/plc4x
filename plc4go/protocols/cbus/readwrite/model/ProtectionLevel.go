@@ -127,8 +127,8 @@ func ProtectionLevelKnows(value uint8) bool {
 	return false
 }
 
-func CastProtectionLevel(structType interface{}) ProtectionLevel {
-	castFunc := func(typ interface{}) ProtectionLevel {
+func CastProtectionLevel(structType any) ProtectionLevel {
+	castFunc := func(typ any) ProtectionLevel {
 		if sProtectionLevel, ok := typ.(ProtectionLevel); ok {
 			return sProtectionLevel
 		}

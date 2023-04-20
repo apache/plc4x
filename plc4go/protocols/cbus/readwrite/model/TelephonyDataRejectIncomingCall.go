@@ -77,7 +77,7 @@ func NewTelephonyDataRejectIncomingCall(commandTypeContainer TelephonyCommandTyp
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataRejectIncomingCall(structType interface{}) TelephonyDataRejectIncomingCall {
+func CastTelephonyDataRejectIncomingCall(structType any) TelephonyDataRejectIncomingCall {
 	if casted, ok := structType.(TelephonyDataRejectIncomingCall); ok {
 		return casted
 	}

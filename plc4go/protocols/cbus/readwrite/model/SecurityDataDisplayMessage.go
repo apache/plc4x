@@ -95,7 +95,7 @@ func NewSecurityDataDisplayMessage(message string, commandTypeContainer Security
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataDisplayMessage(structType interface{}) SecurityDataDisplayMessage {
+func CastSecurityDataDisplayMessage(structType any) SecurityDataDisplayMessage {
 	if casted, ok := structType.(SecurityDataDisplayMessage); ok {
 		return casted
 	}

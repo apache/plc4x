@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAnalogValueMaxPresValue(maxPresValue BACnetApplicat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAnalogValueMaxPresValue(structType interface{}) BACnetConstructedDataAnalogValueMaxPresValue {
+func CastBACnetConstructedDataAnalogValueMaxPresValue(structType any) BACnetConstructedDataAnalogValueMaxPresValue {
 	if casted, ok := structType.(BACnetConstructedDataAnalogValueMaxPresValue); ok {
 		return casted
 	}

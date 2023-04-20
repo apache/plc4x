@@ -87,8 +87,8 @@ func BACnetRouterEntryStatusKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetRouterEntryStatus(structType interface{}) BACnetRouterEntryStatus {
-	castFunc := func(typ interface{}) BACnetRouterEntryStatus {
+func CastBACnetRouterEntryStatus(structType any) BACnetRouterEntryStatus {
+	castFunc := func(typ any) BACnetRouterEntryStatus {
 		if sBACnetRouterEntryStatus, ok := typ.(BACnetRouterEntryStatus); ok {
 			return sBACnetRouterEntryStatus
 		}

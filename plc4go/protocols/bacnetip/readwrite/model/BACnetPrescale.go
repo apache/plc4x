@@ -76,7 +76,7 @@ func NewBACnetPrescale(multiplier BACnetContextTagUnsignedInteger, moduloDivide 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPrescale(structType interface{}) BACnetPrescale {
+func CastBACnetPrescale(structType any) BACnetPrescale {
 	if casted, ok := structType.(BACnetPrescale); ok {
 		return casted
 	}

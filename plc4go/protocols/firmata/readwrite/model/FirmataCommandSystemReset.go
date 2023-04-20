@@ -78,7 +78,7 @@ func NewFirmataCommandSystemReset(response bool) *_FirmataCommandSystemReset {
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataCommandSystemReset(structType interface{}) FirmataCommandSystemReset {
+func CastFirmataCommandSystemReset(structType any) FirmataCommandSystemReset {
 	if casted, ok := structType.(FirmataCommandSystemReset); ok {
 		return casted
 	}

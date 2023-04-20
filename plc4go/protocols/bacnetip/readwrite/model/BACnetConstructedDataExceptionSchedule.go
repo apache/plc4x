@@ -132,7 +132,7 @@ func NewBACnetConstructedDataExceptionSchedule(numberOfDataElements BACnetApplic
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataExceptionSchedule(structType interface{}) BACnetConstructedDataExceptionSchedule {
+func CastBACnetConstructedDataExceptionSchedule(structType any) BACnetConstructedDataExceptionSchedule {
 	if casted, ok := structType.(BACnetConstructedDataExceptionSchedule); ok {
 		return casted
 	}

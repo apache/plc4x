@@ -75,7 +75,7 @@ func NewPathSegment() *_PathSegment {
 }
 
 // Deprecated: use the interface for direct cast
-func CastPathSegment(structType interface{}) PathSegment {
+func CastPathSegment(structType any) PathSegment {
 	if casted, ok := structType.(PathSegment); ok {
 		return casted
 	}
@@ -126,7 +126,7 @@ func PathSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(PathSegment)
 		GetParent() PathSegment
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child PathSegmentChildSerializeRequirement
 	var typeSwitchError error
 	switch {

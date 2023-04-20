@@ -98,7 +98,7 @@ func NewSALDataAccessControl(accessControlData AccessControlData, salData SALDat
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataAccessControl(structType interface{}) SALDataAccessControl {
+func CastSALDataAccessControl(structType any) SALDataAccessControl {
 	if casted, ok := structType.(SALDataAccessControl); ok {
 		return casted
 	}

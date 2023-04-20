@@ -92,7 +92,7 @@ func (d *DefaultPlcWriteResponse) SerializeWithWriteBuffer(ctx context.Context, 
 		return err
 	}
 	for name, elem := range d.responseCodes {
-		var elem interface{} = elem
+		var elem any = elem
 		elemAsString := fmt.Sprintf("%v", elem)
 		if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
 			return err

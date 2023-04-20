@@ -93,8 +93,8 @@ func HVACHumidityTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastHVACHumidityType(structType interface{}) HVACHumidityType {
-	castFunc := func(typ interface{}) HVACHumidityType {
+func CastHVACHumidityType(structType any) HVACHumidityType {
+	castFunc := func(typ any) HVACHumidityType {
 		if sHVACHumidityType, ok := typ.(HVACHumidityType); ok {
 			return sHVACHumidityType
 		}

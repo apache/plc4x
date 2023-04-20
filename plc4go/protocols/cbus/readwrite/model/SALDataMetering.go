@@ -98,7 +98,7 @@ func NewSALDataMetering(meteringData MeteringData, salData SALData) *_SALDataMet
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataMetering(structType interface{}) SALDataMetering {
+func CastSALDataMetering(structType any) SALDataMetering {
 	if casted, ok := structType.(SALDataMetering); ok {
 		return casted
 	}

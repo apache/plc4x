@@ -95,7 +95,7 @@ func NewMeteringDataGasConsumption(mJ uint32, commandTypeContainer MeteringComma
 }
 
 // Deprecated: use the interface for direct cast
-func CastMeteringDataGasConsumption(structType interface{}) MeteringDataGasConsumption {
+func CastMeteringDataGasConsumption(structType any) MeteringDataGasConsumption {
 	if casted, ok := structType.(MeteringDataGasConsumption); ok {
 		return casted
 	}

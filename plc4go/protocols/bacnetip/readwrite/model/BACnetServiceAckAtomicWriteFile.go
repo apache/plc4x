@@ -96,7 +96,7 @@ func NewBACnetServiceAckAtomicWriteFile(fileStartPosition BACnetContextTagSigned
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckAtomicWriteFile(structType interface{}) BACnetServiceAckAtomicWriteFile {
+func CastBACnetServiceAckAtomicWriteFile(structType any) BACnetServiceAckAtomicWriteFile {
 	if casted, ok := structType.(BACnetServiceAckAtomicWriteFile); ok {
 		return casted
 	}

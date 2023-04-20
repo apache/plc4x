@@ -291,8 +291,8 @@ func ReservedIndexGroupsKnows(value uint32) bool {
 	return false
 }
 
-func CastReservedIndexGroups(structType interface{}) ReservedIndexGroups {
-	castFunc := func(typ interface{}) ReservedIndexGroups {
+func CastReservedIndexGroups(structType any) ReservedIndexGroups {
+	castFunc := func(typ any) ReservedIndexGroups {
 		if sReservedIndexGroups, ok := typ.(ReservedIndexGroups); ok {
 			return sReservedIndexGroups
 		}

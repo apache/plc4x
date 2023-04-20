@@ -255,8 +255,8 @@ func BACnetRelationshipKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetRelationship(structType interface{}) BACnetRelationship {
-	castFunc := func(typ interface{}) BACnetRelationship {
+func CastBACnetRelationship(structType any) BACnetRelationship {
+	castFunc := func(typ any) BACnetRelationship {
 		if sBACnetRelationship, ok := typ.(BACnetRelationship); ok {
 			return sBACnetRelationship
 		}

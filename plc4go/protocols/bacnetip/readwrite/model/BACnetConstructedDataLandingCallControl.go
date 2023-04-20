@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLandingCallControl(landingCallControl BACnetLanding
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLandingCallControl(structType interface{}) BACnetConstructedDataLandingCallControl {
+func CastBACnetConstructedDataLandingCallControl(structType any) BACnetConstructedDataLandingCallControl {
 	if casted, ok := structType.(BACnetConstructedDataLandingCallControl); ok {
 		return casted
 	}

@@ -100,7 +100,7 @@ func NewBACnetConfirmedServiceRequestReadPropertyMultiple(data []BACnetReadAcces
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadPropertyMultiple(structType interface{}) BACnetConfirmedServiceRequestReadPropertyMultiple {
+func CastBACnetConfirmedServiceRequestReadPropertyMultiple(structType any) BACnetConfirmedServiceRequestReadPropertyMultiple {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadPropertyMultiple); ok {
 		return casted
 	}

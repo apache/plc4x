@@ -100,7 +100,7 @@ func NewS7PayloadWriteVarRequest(items []S7VarPayloadDataItem, parameter S7Param
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadWriteVarRequest(structType interface{}) S7PayloadWriteVarRequest {
+func CastS7PayloadWriteVarRequest(structType any) S7PayloadWriteVarRequest {
 	if casted, ok := structType.(S7PayloadWriteVarRequest); ok {
 		return casted
 	}

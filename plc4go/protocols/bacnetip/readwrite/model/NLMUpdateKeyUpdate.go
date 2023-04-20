@@ -176,7 +176,7 @@ func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyR
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMUpdateKeyUpdate(structType interface{}) NLMUpdateKeyUpdate {
+func CastNLMUpdateKeyUpdate(structType any) NLMUpdateKeyUpdate {
 	if casted, ok := structType.(NLMUpdateKeyUpdate); ok {
 		return casted
 	}
@@ -334,13 +334,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(pullErr, "Error pulling for set1Keys")
 	}
 	// Count array
-	set1Keys := make([]NLMUpdateKeyUpdateKeyEntry, utils.InlineIf(bool((set1KeyCount) != (nil)), func() interface{} { return uint16((*set1KeyCount)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	set1Keys := make([]NLMUpdateKeyUpdateKeyEntry, utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16))
 	// This happens when the size is set conditional to 0
 	if len(set1Keys) == 0 {
 		set1Keys = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() interface{} { return uint16((*set1KeyCount)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+		_numItems := uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
@@ -401,13 +401,13 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(pullErr, "Error pulling for set2Keys")
 	}
 	// Count array
-	set2Keys := make([]NLMUpdateKeyUpdateKeyEntry, utils.InlineIf(bool((set1KeyCount) != (nil)), func() interface{} { return uint16((*set1KeyCount)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	set2Keys := make([]NLMUpdateKeyUpdateKeyEntry, utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16))
 	// This happens when the size is set conditional to 0
 	if len(set2Keys) == 0 {
 		set2Keys = nil
 	}
 	{
-		_numItems := uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() interface{} { return uint16((*set1KeyCount)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+		_numItems := uint16(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx

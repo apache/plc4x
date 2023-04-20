@@ -165,8 +165,8 @@ func BACnetLifeSafetyModeKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetLifeSafetyMode(structType interface{}) BACnetLifeSafetyMode {
-	castFunc := func(typ interface{}) BACnetLifeSafetyMode {
+func CastBACnetLifeSafetyMode(structType any) BACnetLifeSafetyMode {
+	castFunc := func(typ any) BACnetLifeSafetyMode {
 		if sBACnetLifeSafetyMode, ok := typ.(BACnetLifeSafetyMode); ok {
 			return sBACnetLifeSafetyMode
 		}

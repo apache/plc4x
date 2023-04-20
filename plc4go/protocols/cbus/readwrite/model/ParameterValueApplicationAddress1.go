@@ -104,7 +104,7 @@ func NewParameterValueApplicationAddress1(value ApplicationAddress1, data []byte
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueApplicationAddress1(structType interface{}) ParameterValueApplicationAddress1 {
+func CastParameterValueApplicationAddress1(structType any) ParameterValueApplicationAddress1 {
 	if casted, ok := structType.(ParameterValueApplicationAddress1); ok {
 		return casted
 	}

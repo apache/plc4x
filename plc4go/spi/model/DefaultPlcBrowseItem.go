@@ -128,7 +128,7 @@ func (d *DefaultPlcBrowseItem) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	for name, elem := range d.Children {
 
-		var elem interface{} = elem
+		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err
@@ -154,7 +154,7 @@ func (d *DefaultPlcBrowseItem) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	for name, elem := range d.Options {
 
-		var elem interface{} = elem
+		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err

@@ -86,7 +86,7 @@ func NewBACnetSecurityKeySetKeyIds(openingTag BACnetOpeningTag, keyIds []BACnetK
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetSecurityKeySetKeyIds(structType interface{}) BACnetSecurityKeySetKeyIds {
+func CastBACnetSecurityKeySetKeyIds(structType any) BACnetSecurityKeySetKeyIds {
 	if casted, ok := structType.(BACnetSecurityKeySetKeyIds); ok {
 		return casted
 	}

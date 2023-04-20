@@ -104,7 +104,7 @@ func NewBACnetConstructedDataDateList(dateList []BACnetCalendarEntry, openingTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDateList(structType interface{}) BACnetConstructedDataDateList {
+func CastBACnetConstructedDataDateList(structType any) BACnetConstructedDataDateList {
 	if casted, ok := structType.(BACnetConstructedDataDateList); ok {
 		return casted
 	}

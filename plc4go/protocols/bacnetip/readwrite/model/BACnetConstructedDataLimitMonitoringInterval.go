@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLimitMonitoringInterval(limitMonitoringInterval BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLimitMonitoringInterval(structType interface{}) BACnetConstructedDataLimitMonitoringInterval {
+func CastBACnetConstructedDataLimitMonitoringInterval(structType any) BACnetConstructedDataLimitMonitoringInterval {
 	if casted, ok := structType.(BACnetConstructedDataLimitMonitoringInterval); ok {
 		return casted
 	}

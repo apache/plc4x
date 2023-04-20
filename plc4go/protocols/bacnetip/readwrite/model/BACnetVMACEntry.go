@@ -77,7 +77,7 @@ func NewBACnetVMACEntry(virtualMacAddress BACnetContextTagOctetString, nativeMac
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetVMACEntry(structType interface{}) BACnetVMACEntry {
+func CastBACnetVMACEntry(structType any) BACnetVMACEntry {
 	if casted, ok := structType.(BACnetVMACEntry); ok {
 		return casted
 	}

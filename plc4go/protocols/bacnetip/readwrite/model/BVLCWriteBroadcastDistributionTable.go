@@ -100,7 +100,7 @@ func NewBVLCWriteBroadcastDistributionTable(table []BVLCBroadcastDistributionTab
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCWriteBroadcastDistributionTable(structType interface{}) BVLCWriteBroadcastDistributionTable {
+func CastBVLCWriteBroadcastDistributionTable(structType any) BVLCWriteBroadcastDistributionTable {
 	if casted, ok := structType.(BVLCWriteBroadcastDistributionTable); ok {
 		return casted
 	}

@@ -104,7 +104,7 @@ func NewBACnetConstructedDataVTClassesSupported(vtClassesSupported []BACnetVTCla
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataVTClassesSupported(structType interface{}) BACnetConstructedDataVTClassesSupported {
+func CastBACnetConstructedDataVTClassesSupported(structType any) BACnetConstructedDataVTClassesSupported {
 	if casted, ok := structType.(BACnetConstructedDataVTClassesSupported); ok {
 		return casted
 	}

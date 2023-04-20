@@ -104,7 +104,7 @@ func NewBACnetConstructedDataUTCTimeSynchronizationRecipients(utcTimeSynchroniza
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUTCTimeSynchronizationRecipients(structType interface{}) BACnetConstructedDataUTCTimeSynchronizationRecipients {
+func CastBACnetConstructedDataUTCTimeSynchronizationRecipients(structType any) BACnetConstructedDataUTCTimeSynchronizationRecipients {
 	if casted, ok := structType.(BACnetConstructedDataUTCTimeSynchronizationRecipients); ok {
 		return casted
 	}

@@ -104,7 +104,7 @@ func NewBACnetConstructedDataAccessAlarmEvents(accessAlarmEvents []BACnetAccessE
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccessAlarmEvents(structType interface{}) BACnetConstructedDataAccessAlarmEvents {
+func CastBACnetConstructedDataAccessAlarmEvents(structType any) BACnetConstructedDataAccessAlarmEvents {
 	if casted, ok := structType.(BACnetConstructedDataAccessAlarmEvents); ok {
 		return casted
 	}

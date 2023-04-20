@@ -90,7 +90,7 @@ func NewStatusRequest(statusType byte) *_StatusRequest {
 }
 
 // Deprecated: use the interface for direct cast
-func CastStatusRequest(structType interface{}) StatusRequest {
+func CastStatusRequest(structType any) StatusRequest {
 	if casted, ok := structType.(StatusRequest); ok {
 		return casted
 	}
@@ -142,7 +142,7 @@ func StatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		InitializeParent(StatusRequest, byte)
 		GetParent() StatusRequest
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child StatusRequestChildSerializeRequirement
 	var typeSwitchError error
 	switch {

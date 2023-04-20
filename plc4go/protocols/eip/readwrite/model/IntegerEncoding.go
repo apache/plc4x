@@ -78,8 +78,8 @@ func IntegerEncodingKnows(value uint8) bool {
 	return false
 }
 
-func CastIntegerEncoding(structType interface{}) IntegerEncoding {
-	castFunc := func(typ interface{}) IntegerEncoding {
+func CastIntegerEncoding(structType any) IntegerEncoding {
+	castFunc := func(typ any) IntegerEncoding {
 		if sIntegerEncoding, ok := typ.(IntegerEncoding); ok {
 			return sIntegerEncoding
 		}

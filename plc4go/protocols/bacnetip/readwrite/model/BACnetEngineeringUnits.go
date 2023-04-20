@@ -1581,8 +1581,8 @@ func BACnetEngineeringUnitsKnows(value uint32) bool {
 	return false
 }
 
-func CastBACnetEngineeringUnits(structType interface{}) BACnetEngineeringUnits {
-	castFunc := func(typ interface{}) BACnetEngineeringUnits {
+func CastBACnetEngineeringUnits(structType any) BACnetEngineeringUnits {
+	castFunc := func(typ any) BACnetEngineeringUnits {
 		if sBACnetEngineeringUnits, ok := typ.(BACnetEngineeringUnits); ok {
 			return sBACnetEngineeringUnits
 		}

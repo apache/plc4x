@@ -8898,8 +8898,8 @@ func KnxManufacturerKnows(value uint16) bool {
 	return false
 }
 
-func CastKnxManufacturer(structType interface{}) KnxManufacturer {
-	castFunc := func(typ interface{}) KnxManufacturer {
+func CastKnxManufacturer(structType any) KnxManufacturer {
+	castFunc := func(typ any) KnxManufacturer {
 		if sKnxManufacturer, ok := typ.(KnxManufacturer); ok {
 			return sKnxManufacturer
 		}

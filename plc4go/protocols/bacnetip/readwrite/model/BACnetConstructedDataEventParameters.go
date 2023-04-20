@@ -121,7 +121,7 @@ func NewBACnetConstructedDataEventParameters(eventParameter BACnetEventParameter
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEventParameters(structType interface{}) BACnetConstructedDataEventParameters {
+func CastBACnetConstructedDataEventParameters(structType any) BACnetConstructedDataEventParameters {
 	if casted, ok := structType.(BACnetConstructedDataEventParameters); ok {
 		return casted
 	}

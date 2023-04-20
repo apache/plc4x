@@ -115,7 +115,7 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmAckResponse(functionId uint8, messa
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(structType interface{}) S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
+func CastS7PayloadUserDataItemCpuFunctionAlarmAckResponse(structType any) S7PayloadUserDataItemCpuFunctionAlarmAckResponse {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionAlarmAckResponse); ok {
 		return casted
 	}

@@ -80,7 +80,7 @@ func NewSALDataTesting(salData SALData) *_SALDataTesting {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataTesting(structType interface{}) SALDataTesting {
+func CastSALDataTesting(structType any) SALDataTesting {
 	if casted, ok := structType.(SALDataTesting); ok {
 		return casted
 	}

@@ -112,7 +112,7 @@ func NewBACnetEventLogRecordLogDatumNotification(innerOpeningTag BACnetOpeningTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventLogRecordLogDatumNotification(structType interface{}) BACnetEventLogRecordLogDatumNotification {
+func CastBACnetEventLogRecordLogDatumNotification(structType any) BACnetEventLogRecordLogDatumNotification {
 	if casted, ok := structType.(BACnetEventLogRecordLogDatumNotification); ok {
 		return casted
 	}

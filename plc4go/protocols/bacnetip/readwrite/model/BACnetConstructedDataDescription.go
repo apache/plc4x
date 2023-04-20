@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDescription(description BACnetApplicationTagCharact
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDescription(structType interface{}) BACnetConstructedDataDescription {
+func CastBACnetConstructedDataDescription(structType any) BACnetConstructedDataDescription {
 	if casted, ok := structType.(BACnetConstructedDataDescription); ok {
 		return casted
 	}

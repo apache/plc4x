@@ -93,8 +93,8 @@ func BACnetSegmentationKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetSegmentation(structType interface{}) BACnetSegmentation {
-	castFunc := func(typ interface{}) BACnetSegmentation {
+func CastBACnetSegmentation(structType any) BACnetSegmentation {
+	castFunc := func(typ any) BACnetSegmentation {
 		if sBACnetSegmentation, ok := typ.(BACnetSegmentation); ok {
 			return sBACnetSegmentation
 		}

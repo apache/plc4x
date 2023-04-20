@@ -111,8 +111,8 @@ func BACnetAccessAuthenticationFactorDisableKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetAccessAuthenticationFactorDisable(structType interface{}) BACnetAccessAuthenticationFactorDisable {
-	castFunc := func(typ interface{}) BACnetAccessAuthenticationFactorDisable {
+func CastBACnetAccessAuthenticationFactorDisable(structType any) BACnetAccessAuthenticationFactorDisable {
+	castFunc := func(typ any) BACnetAccessAuthenticationFactorDisable {
 		if sBACnetAccessAuthenticationFactorDisable, ok := typ.(BACnetAccessAuthenticationFactorDisable); ok {
 			return sBACnetAccessAuthenticationFactorDisable
 		}

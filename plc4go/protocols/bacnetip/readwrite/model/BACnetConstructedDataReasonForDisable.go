@@ -104,7 +104,7 @@ func NewBACnetConstructedDataReasonForDisable(reasonForDisable []BACnetAccessCre
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataReasonForDisable(structType interface{}) BACnetConstructedDataReasonForDisable {
+func CastBACnetConstructedDataReasonForDisable(structType any) BACnetConstructedDataReasonForDisable {
 	if casted, ok := structType.(BACnetConstructedDataReasonForDisable); ok {
 		return casted
 	}

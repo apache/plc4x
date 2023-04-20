@@ -165,8 +165,8 @@ func FirmwareTypeKnows(value uint16) bool {
 	return false
 }
 
-func CastFirmwareType(structType interface{}) FirmwareType {
-	castFunc := func(typ interface{}) FirmwareType {
+func CastFirmwareType(structType any) FirmwareType {
+	castFunc := func(typ any) FirmwareType {
 		if sFirmwareType, ok := typ.(FirmwareType); ok {
 			return sFirmwareType
 		}

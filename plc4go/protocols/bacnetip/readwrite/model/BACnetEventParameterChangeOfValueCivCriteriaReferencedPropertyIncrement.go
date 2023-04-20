@@ -96,7 +96,7 @@ func NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(structType interface{}) BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
+func CastBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement(structType any) BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement {
 	if casted, ok := structType.(BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement); ok {
 		return casted
 	}

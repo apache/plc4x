@@ -97,8 +97,8 @@ func TemperatureBroadcastCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastTemperatureBroadcastCommandType(structType interface{}) TemperatureBroadcastCommandType {
-	castFunc := func(typ interface{}) TemperatureBroadcastCommandType {
+func CastTemperatureBroadcastCommandType(structType any) TemperatureBroadcastCommandType {
+	castFunc := func(typ any) TemperatureBroadcastCommandType {
 		if sTemperatureBroadcastCommandType, ok := typ.(TemperatureBroadcastCommandType); ok {
 			return sTemperatureBroadcastCommandType
 		}

@@ -132,7 +132,7 @@ func NewBACnetConstructedDataShedLevels(numberOfDataElements BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataShedLevels(structType interface{}) BACnetConstructedDataShedLevels {
+func CastBACnetConstructedDataShedLevels(structType any) BACnetConstructedDataShedLevels {
 	if casted, ok := structType.(BACnetConstructedDataShedLevels); ok {
 		return casted
 	}

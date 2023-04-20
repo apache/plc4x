@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMachineRoomID(machineRoomId BACnetApplicationTagObj
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMachineRoomID(structType interface{}) BACnetConstructedDataMachineRoomID {
+func CastBACnetConstructedDataMachineRoomID(structType any) BACnetConstructedDataMachineRoomID {
 	if casted, ok := structType.(BACnetConstructedDataMachineRoomID); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLargeAnalogValueHighLimit(highLimit BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLargeAnalogValueHighLimit(structType interface{}) BACnetConstructedDataLargeAnalogValueHighLimit {
+func CastBACnetConstructedDataLargeAnalogValueHighLimit(structType any) BACnetConstructedDataLargeAnalogValueHighLimit {
 	if casted, ok := structType.(BACnetConstructedDataLargeAnalogValueHighLimit); ok {
 		return casted
 	}

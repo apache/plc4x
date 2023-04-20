@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPositiveIntegerValueDeadband(deadband BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPositiveIntegerValueDeadband(structType interface{}) BACnetConstructedDataPositiveIntegerValueDeadband {
+func CastBACnetConstructedDataPositiveIntegerValueDeadband(structType any) BACnetConstructedDataPositiveIntegerValueDeadband {
 	if casted, ok := structType.(BACnetConstructedDataPositiveIntegerValueDeadband); ok {
 		return casted
 	}

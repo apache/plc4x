@@ -94,7 +94,7 @@ func NewBACnetTimerStateChangeValueBitString(bitStringValue BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueBitString(structType interface{}) BACnetTimerStateChangeValueBitString {
+func CastBACnetTimerStateChangeValueBitString(structType any) BACnetTimerStateChangeValueBitString {
 	if casted, ok := structType.(BACnetTimerStateChangeValueBitString); ok {
 		return casted
 	}

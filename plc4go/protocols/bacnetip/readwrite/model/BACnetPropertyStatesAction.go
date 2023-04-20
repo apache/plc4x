@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesAction(action BACnetActionTagged, peekedTagHeader BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesAction(structType interface{}) BACnetPropertyStatesAction {
+func CastBACnetPropertyStatesAction(structType any) BACnetPropertyStatesAction {
 	if casted, ok := structType.(BACnetPropertyStatesAction); ok {
 		return casted
 	}

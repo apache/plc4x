@@ -225,8 +225,8 @@ func SecurityResponseCodeKnows(value uint8) bool {
 	return false
 }
 
-func CastSecurityResponseCode(structType interface{}) SecurityResponseCode {
-	castFunc := func(typ interface{}) SecurityResponseCode {
+func CastSecurityResponseCode(structType any) SecurityResponseCode {
+	castFunc := func(typ any) SecurityResponseCode {
 		if sSecurityResponseCode, ok := typ.(SecurityResponseCode); ok {
 			return sSecurityResponseCode
 		}

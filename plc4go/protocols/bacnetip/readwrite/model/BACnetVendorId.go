@@ -19818,8 +19818,8 @@ func BACnetVendorIdKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetVendorId(structType interface{}) BACnetVendorId {
-	castFunc := func(typ interface{}) BACnetVendorId {
+func CastBACnetVendorId(structType any) BACnetVendorId {
+	castFunc := func(typ any) BACnetVendorId {
 		if sBACnetVendorId, ok := typ.(BACnetVendorId); ok {
 			return sBACnetVendorId
 		}

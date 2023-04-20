@@ -104,7 +104,7 @@ func NewBACnetConstructedDataActiveCOVSubscriptions(activeCOVSubscriptions []BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataActiveCOVSubscriptions(structType interface{}) BACnetConstructedDataActiveCOVSubscriptions {
+func CastBACnetConstructedDataActiveCOVSubscriptions(structType any) BACnetConstructedDataActiveCOVSubscriptions {
 	if casted, ok := structType.(BACnetConstructedDataActiveCOVSubscriptions); ok {
 		return casted
 	}

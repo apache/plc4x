@@ -100,7 +100,7 @@ func NewBACnetConfirmedServiceRequestReadPropertyConditional(bytesOfRemovedServi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadPropertyConditional(structType interface{}) BACnetConfirmedServiceRequestReadPropertyConditional {
+func CastBACnetConfirmedServiceRequestReadPropertyConditional(structType any) BACnetConfirmedServiceRequestReadPropertyConditional {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadPropertyConditional); ok {
 		return casted
 	}

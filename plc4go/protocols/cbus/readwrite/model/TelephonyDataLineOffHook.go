@@ -103,7 +103,7 @@ func NewTelephonyDataLineOffHook(reason LineOffHookReason, number string, comman
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataLineOffHook(structType interface{}) TelephonyDataLineOffHook {
+func CastTelephonyDataLineOffHook(structType any) TelephonyDataLineOffHook {
 	if casted, ok := structType.(TelephonyDataLineOffHook); ok {
 		return casted
 	}

@@ -168,7 +168,7 @@ func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatu
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandDSIStatus(structType interface{}) IdentifyReplyCommandDSIStatus {
+func CastIdentifyReplyCommandDSIStatus(structType any) IdentifyReplyCommandDSIStatus {
 	if casted, ok := structType.(IdentifyReplyCommandDSIStatus); ok {
 		return casted
 	}

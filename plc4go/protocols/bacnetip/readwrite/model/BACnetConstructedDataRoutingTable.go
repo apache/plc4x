@@ -104,7 +104,7 @@ func NewBACnetConstructedDataRoutingTable(routingTable []BACnetRouterEntry, open
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRoutingTable(structType interface{}) BACnetConstructedDataRoutingTable {
+func CastBACnetConstructedDataRoutingTable(structType any) BACnetConstructedDataRoutingTable {
 	if casted, ok := structType.(BACnetConstructedDataRoutingTable); ok {
 		return casted
 	}

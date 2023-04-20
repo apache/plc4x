@@ -139,7 +139,7 @@ func NewS7PayloadUserDataItemCpuFunctionReadSzlResponse(szlId SzlId, szlIndex ui
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(structType interface{}) S7PayloadUserDataItemCpuFunctionReadSzlResponse {
+func CastS7PayloadUserDataItemCpuFunctionReadSzlResponse(structType any) S7PayloadUserDataItemCpuFunctionReadSzlResponse {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionReadSzlResponse); ok {
 		return casted
 	}

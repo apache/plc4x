@@ -104,7 +104,7 @@ func NewBACnetConstructedDataLifeSafetyPointFaultValues(faultValues []BACnetLife
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLifeSafetyPointFaultValues(structType interface{}) BACnetConstructedDataLifeSafetyPointFaultValues {
+func CastBACnetConstructedDataLifeSafetyPointFaultValues(structType any) BACnetConstructedDataLifeSafetyPointFaultValues {
 	if casted, ok := structType.(BACnetConstructedDataLifeSafetyPointFaultValues); ok {
 		return casted
 	}

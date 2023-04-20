@@ -130,7 +130,7 @@ func (m *_BACnetTagHeader) GetActualTagNumber() uint8 {
 	_ = extExtLength
 	extExtExtLength := m.ExtExtExtLength
 	_ = extExtExtLength
-	return uint8(utils.InlineIf(bool((m.GetTagNumber()) < (15)), func() interface{} { return uint8(m.GetTagNumber()) }, func() interface{} { return uint8((*m.GetExtTagNumber())) }).(uint8))
+	return uint8(utils.InlineIf(bool((m.GetTagNumber()) < (15)), func() any { return uint8(m.GetTagNumber()) }, func() any { return uint8((*m.GetExtTagNumber())) }).(uint8))
 }
 
 func (m *_BACnetTagHeader) GetIsBoolean() bool {
@@ -186,9 +186,9 @@ func (m *_BACnetTagHeader) GetActualLength() uint32 {
 	_ = extExtLength
 	extExtExtLength := m.ExtExtExtLength
 	_ = extExtExtLength
-	return uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (255))), func() interface{} { return uint32((*m.GetExtExtExtLength())) }, func() interface{} {
-		return uint32((utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (254))), func() interface{} { return uint32((*m.GetExtExtLength())) }, func() interface{} {
-			return uint32((utils.InlineIf(bool((m.GetLengthValueType()) == (5)), func() interface{} { return uint32((*m.GetExtLength())) }, func() interface{} { return uint32(m.GetLengthValueType()) }).(uint32)))
+	return uint32(utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (255))), func() any { return uint32((*m.GetExtExtExtLength())) }, func() any {
+		return uint32((utils.InlineIf(bool(bool((m.GetLengthValueType()) == (5))) && bool(bool((*m.GetExtLength()) == (254))), func() any { return uint32((*m.GetExtExtLength())) }, func() any {
+			return uint32((utils.InlineIf(bool((m.GetLengthValueType()) == (5)), func() any { return uint32((*m.GetExtLength())) }, func() any { return uint32(m.GetLengthValueType()) }).(uint32)))
 		}).(uint32)))
 	}).(uint32))
 }
@@ -204,7 +204,7 @@ func NewBACnetTagHeader(tagNumber uint8, tagClass TagClass, lengthValueType uint
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTagHeader(structType interface{}) BACnetTagHeader {
+func CastBACnetTagHeader(structType any) BACnetTagHeader {
 	if casted, ok := structType.(BACnetTagHeader); ok {
 		return casted
 	}
@@ -318,7 +318,7 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Virtual field
-	_actualTagNumber := utils.InlineIf(bool((tagNumber) < (15)), func() interface{} { return uint8(tagNumber) }, func() interface{} { return uint8((*extTagNumber)) }).(uint8)
+	_actualTagNumber := utils.InlineIf(bool((tagNumber) < (15)), func() any { return uint8(tagNumber) }, func() any { return uint8((*extTagNumber)) }).(uint8)
 	actualTagNumber := uint8(_actualTagNumber)
 	_ = actualTagNumber
 
@@ -368,9 +368,9 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Virtual field
-	_actualLength := utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (255))), func() interface{} { return uint32((*extExtExtLength)) }, func() interface{} {
-		return uint32((utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (254))), func() interface{} { return uint32((*extExtLength)) }, func() interface{} {
-			return uint32((utils.InlineIf(bool((lengthValueType) == (5)), func() interface{} { return uint32((*extLength)) }, func() interface{} { return uint32(lengthValueType) }).(uint32)))
+	_actualLength := utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (255))), func() any { return uint32((*extExtExtLength)) }, func() any {
+		return uint32((utils.InlineIf(bool(bool((lengthValueType) == (5))) && bool(bool((*extLength) == (254))), func() any { return uint32((*extExtLength)) }, func() any {
+			return uint32((utils.InlineIf(bool((lengthValueType) == (5)), func() any { return uint32((*extLength)) }, func() any { return uint32(lengthValueType) }).(uint32)))
 		}).(uint32)))
 	}).(uint32)
 	actualLength := uint32(_actualLength)

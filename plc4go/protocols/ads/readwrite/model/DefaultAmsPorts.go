@@ -399,8 +399,8 @@ func DefaultAmsPortsKnows(value uint16) bool {
 	return false
 }
 
-func CastDefaultAmsPorts(structType interface{}) DefaultAmsPorts {
-	castFunc := func(typ interface{}) DefaultAmsPorts {
+func CastDefaultAmsPorts(structType any) DefaultAmsPorts {
+	castFunc := func(typ any) DefaultAmsPorts {
 		if sDefaultAmsPorts, ok := typ.(DefaultAmsPorts); ok {
 			return sDefaultAmsPorts
 		}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLightingCommandDefaultPriority(lightingCommandDefau
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLightingCommandDefaultPriority(structType interface{}) BACnetConstructedDataLightingCommandDefaultPriority {
+func CastBACnetConstructedDataLightingCommandDefaultPriority(structType any) BACnetConstructedDataLightingCommandDefaultPriority {
 	if casted, ok := structType.(BACnetConstructedDataLightingCommandDefaultPriority); ok {
 		return casted
 	}

@@ -107,7 +107,7 @@ func NewBACnetValueSource(peekedTagHeader BACnetTagHeader) *_BACnetValueSource {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetValueSource(structType interface{}) BACnetValueSource {
+func CastBACnetValueSource(structType any) BACnetValueSource {
 	if casted, ok := structType.(BACnetValueSource); ok {
 		return casted
 	}
@@ -165,7 +165,7 @@ func BACnetValueSourceParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		InitializeParent(BACnetValueSource, BACnetTagHeader)
 		GetParent() BACnetValueSource
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetValueSourceChildSerializeRequirement
 	var typeSwitchError error
 	switch {

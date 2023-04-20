@@ -111,7 +111,7 @@ func NewEncodedReply(peekedByte byte, cBusOptions CBusOptions, requestContext Re
 }
 
 // Deprecated: use the interface for direct cast
-func CastEncodedReply(structType interface{}) EncodedReply {
+func CastEncodedReply(structType any) EncodedReply {
 	if casted, ok := structType.(EncodedReply); ok {
 		return casted
 	}
@@ -170,7 +170,7 @@ func EncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		InitializeParent(EncodedReply, byte)
 		GetParent() EncodedReply
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child EncodedReplyChildSerializeRequirement
 	var typeSwitchError error
 	switch {

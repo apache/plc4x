@@ -107,7 +107,7 @@ func NewDF1UnprotectedReadRequest(address uint16, size uint8, status uint8, tran
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1UnprotectedReadRequest(structType interface{}) DF1UnprotectedReadRequest {
+func CastDF1UnprotectedReadRequest(structType any) DF1UnprotectedReadRequest {
 	if casted, ok := structType.(DF1UnprotectedReadRequest); ok {
 		return casted
 	}

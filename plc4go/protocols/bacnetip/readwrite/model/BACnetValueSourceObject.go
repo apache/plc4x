@@ -94,7 +94,7 @@ func NewBACnetValueSourceObject(object BACnetDeviceObjectReferenceEnclosed, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetValueSourceObject(structType interface{}) BACnetValueSourceObject {
+func CastBACnetValueSourceObject(structType any) BACnetValueSourceObject {
 	if casted, ok := structType.(BACnetValueSourceObject); ok {
 		return casted
 	}

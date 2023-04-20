@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLoadControlPresentValue(presentValue BACnetShedStat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLoadControlPresentValue(structType interface{}) BACnetConstructedDataLoadControlPresentValue {
+func CastBACnetConstructedDataLoadControlPresentValue(structType any) BACnetConstructedDataLoadControlPresentValue {
 	if casted, ok := structType.(BACnetConstructedDataLoadControlPresentValue); ok {
 		return casted
 	}

@@ -435,8 +435,8 @@ func BACnetObjectTypeKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetObjectType(structType interface{}) BACnetObjectType {
-	castFunc := func(typ interface{}) BACnetObjectType {
+func CastBACnetObjectType(structType any) BACnetObjectType {
+	castFunc := func(typ any) BACnetObjectType {
 		if sBACnetObjectType, ok := typ.(BACnetObjectType); ok {
 			return sBACnetObjectType
 		}

@@ -94,7 +94,7 @@ func NewBACnetPriorityValueOctetString(octetStringValue BACnetApplicationTagOcte
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueOctetString(structType interface{}) BACnetPriorityValueOctetString {
+func CastBACnetPriorityValueOctetString(structType any) BACnetPriorityValueOctetString {
 	if casted, ok := structType.(BACnetPriorityValueOctetString); ok {
 		return casted
 	}

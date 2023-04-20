@@ -104,7 +104,7 @@ func NewBACnetConstructedDataLifeSafetyAlarmValues(alarmValues []BACnetLifeSafet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLifeSafetyAlarmValues(structType interface{}) BACnetConstructedDataLifeSafetyAlarmValues {
+func CastBACnetConstructedDataLifeSafetyAlarmValues(structType any) BACnetConstructedDataLifeSafetyAlarmValues {
 	if casted, ok := structType.(BACnetConstructedDataLifeSafetyAlarmValues); ok {
 		return casted
 	}

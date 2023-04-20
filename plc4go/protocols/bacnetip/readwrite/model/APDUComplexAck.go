@@ -156,7 +156,7 @@ func (m *_APDUComplexAck) GetApduHeaderReduction() uint16 {
 	_ = serviceAck
 	segmentServiceChoice := m.SegmentServiceChoice
 	_ = segmentServiceChoice
-	return uint16(uint16(uint16(2)) + uint16((utils.InlineIf(m.GetSegmentedMessage(), func() interface{} { return uint16(uint16(2)) }, func() interface{} { return uint16(uint16(0)) }).(uint16))))
+	return uint16(uint16(uint16(2)) + uint16((utils.InlineIf(m.GetSegmentedMessage(), func() any { return uint16(uint16(2)) }, func() any { return uint16(uint16(0)) }).(uint16))))
 }
 
 func (m *_APDUComplexAck) GetSegmentReduction() uint16 {
@@ -170,7 +170,7 @@ func (m *_APDUComplexAck) GetSegmentReduction() uint16 {
 	_ = serviceAck
 	segmentServiceChoice := m.SegmentServiceChoice
 	_ = segmentServiceChoice
-	return uint16(utils.InlineIf((bool((m.GetSegmentServiceChoice()) != (nil))), func() interface{} { return uint16((uint16(m.GetApduHeaderReduction()) + uint16(uint16(1)))) }, func() interface{} { return uint16(m.GetApduHeaderReduction()) }).(uint16))
+	return uint16(utils.InlineIf((bool((m.GetSegmentServiceChoice()) != (nil))), func() any { return uint16((uint16(m.GetApduHeaderReduction()) + uint16(uint16(1)))) }, func() any { return uint16(m.GetApduHeaderReduction()) }).(uint16))
 }
 
 ///////////////////////
@@ -196,7 +196,7 @@ func NewAPDUComplexAck(segmentedMessage bool, moreFollows bool, originalInvokeId
 }
 
 // Deprecated: use the interface for direct cast
-func CastAPDUComplexAck(structType interface{}) APDUComplexAck {
+func CastAPDUComplexAck(structType any) APDUComplexAck {
 	if casted, ok := structType.(APDUComplexAck); ok {
 		return casted
 	}
@@ -296,7 +296,7 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUComplexAck")
 		}
 		if reserved != uint8(0) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -333,7 +333,7 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 
 	// Virtual field
-	_apduHeaderReduction := uint16(uint16(2)) + uint16((utils.InlineIf(segmentedMessage, func() interface{} { return uint16(uint16(2)) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))
+	_apduHeaderReduction := uint16(uint16(2)) + uint16((utils.InlineIf(segmentedMessage, func() any { return uint16(uint16(2)) }, func() any { return uint16(uint16(0)) }).(uint16)))
 	apduHeaderReduction := uint16(_apduHeaderReduction)
 	_ = apduHeaderReduction
 
@@ -381,13 +381,13 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 
 	// Virtual field
-	_segmentReduction := utils.InlineIf((bool((segmentServiceChoice) != (nil))), func() interface{} { return uint16((uint16(apduHeaderReduction) + uint16(uint16(1)))) }, func() interface{} { return uint16(apduHeaderReduction) }).(uint16)
+	_segmentReduction := utils.InlineIf((bool((segmentServiceChoice) != (nil))), func() any { return uint16((uint16(apduHeaderReduction) + uint16(uint16(1)))) }, func() any { return uint16(apduHeaderReduction) }).(uint16)
 	segmentReduction := uint16(_segmentReduction)
 	_ = segmentReduction
 	// Byte Array field (segment)
-	numberOfBytessegment := int(utils.InlineIf(segmentedMessage, func() interface{} {
-		return uint16((utils.InlineIf((bool((apduLength) > (0))), func() interface{} { return uint16((uint16(apduLength) - uint16(segmentReduction))) }, func() interface{} { return uint16(uint16(0)) }).(uint16)))
-	}, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytessegment := int(utils.InlineIf(segmentedMessage, func() any {
+		return uint16((utils.InlineIf((bool((apduLength) > (0))), func() any { return uint16((uint16(apduLength) - uint16(segmentReduction))) }, func() any { return uint16(uint16(0)) }).(uint16)))
+	}, func() any { return uint16(uint16(0)) }).(uint16))
 	segment, _readArrayErr := readBuffer.ReadByteArray("segment", numberOfBytessegment)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'segment' field of APDUComplexAck")
@@ -450,7 +450,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		{
 			var reserved uint8 = uint8(0)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

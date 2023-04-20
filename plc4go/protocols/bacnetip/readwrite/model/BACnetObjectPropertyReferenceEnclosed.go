@@ -86,7 +86,7 @@ func NewBACnetObjectPropertyReferenceEnclosed(openingTag BACnetOpeningTag, objec
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetObjectPropertyReferenceEnclosed(structType interface{}) BACnetObjectPropertyReferenceEnclosed {
+func CastBACnetObjectPropertyReferenceEnclosed(structType any) BACnetObjectPropertyReferenceEnclosed {
 	if casted, ok := structType.(BACnetObjectPropertyReferenceEnclosed); ok {
 		return casted
 	}

@@ -100,7 +100,7 @@ func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, se
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestRequestKey(structType interface{}) BACnetConfirmedServiceRequestRequestKey {
+func CastBACnetConfirmedServiceRequestRequestKey(structType any) BACnetConfirmedServiceRequestRequestKey {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestRequestKey); ok {
 		return casted
 	}

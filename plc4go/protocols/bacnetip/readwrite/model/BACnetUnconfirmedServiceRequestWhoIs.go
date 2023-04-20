@@ -106,7 +106,7 @@ func NewBACnetUnconfirmedServiceRequestWhoIs(deviceInstanceRangeLowLimit BACnetC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetUnconfirmedServiceRequestWhoIs(structType interface{}) BACnetUnconfirmedServiceRequestWhoIs {
+func CastBACnetUnconfirmedServiceRequestWhoIs(structType any) BACnetUnconfirmedServiceRequestWhoIs {
 	if casted, ok := structType.(BACnetUnconfirmedServiceRequestWhoIs); ok {
 		return casted
 	}

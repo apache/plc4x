@@ -154,7 +154,7 @@ func (d *DefaultPlcBrowseRequest) SerializeWithWriteBuffer(ctx context.Context, 
 	}
 	for name, elem := range d.queries {
 
-		var elem interface{} = elem
+		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err

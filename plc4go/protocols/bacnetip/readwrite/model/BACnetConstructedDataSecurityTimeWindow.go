@@ -121,7 +121,7 @@ func NewBACnetConstructedDataSecurityTimeWindow(securityTimeWindow BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSecurityTimeWindow(structType interface{}) BACnetConstructedDataSecurityTimeWindow {
+func CastBACnetConstructedDataSecurityTimeWindow(structType any) BACnetConstructedDataSecurityTimeWindow {
 	if casted, ok := structType.(BACnetConstructedDataSecurityTimeWindow); ok {
 		return casted
 	}

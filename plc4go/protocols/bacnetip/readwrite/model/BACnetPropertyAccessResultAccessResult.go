@@ -112,7 +112,7 @@ func NewBACnetPropertyAccessResultAccessResult(peekedTagHeader BACnetTagHeader, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyAccessResultAccessResult(structType interface{}) BACnetPropertyAccessResultAccessResult {
+func CastBACnetPropertyAccessResultAccessResult(structType any) BACnetPropertyAccessResultAccessResult {
 	if casted, ok := structType.(BACnetPropertyAccessResultAccessResult); ok {
 		return casted
 	}
@@ -170,7 +170,7 @@ func BACnetPropertyAccessResultAccessResultParseWithBuffer(ctx context.Context, 
 		InitializeParent(BACnetPropertyAccessResultAccessResult, BACnetTagHeader)
 		GetParent() BACnetPropertyAccessResultAccessResult
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetPropertyAccessResultAccessResultChildSerializeRequirement
 	var typeSwitchError error
 	switch {

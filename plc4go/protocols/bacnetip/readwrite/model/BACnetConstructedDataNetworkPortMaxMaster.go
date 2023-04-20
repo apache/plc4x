@@ -121,7 +121,7 @@ func NewBACnetConstructedDataNetworkPortMaxMaster(maxMaster BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNetworkPortMaxMaster(structType interface{}) BACnetConstructedDataNetworkPortMaxMaster {
+func CastBACnetConstructedDataNetworkPortMaxMaster(structType any) BACnetConstructedDataNetworkPortMaxMaster {
 	if casted, ok := structType.(BACnetConstructedDataNetworkPortMaxMaster); ok {
 		return casted
 	}

@@ -78,7 +78,7 @@ func NewApduDataExtDomainAddressSerialNumberRead(length uint8) *_ApduDataExtDoma
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtDomainAddressSerialNumberRead(structType interface{}) ApduDataExtDomainAddressSerialNumberRead {
+func CastApduDataExtDomainAddressSerialNumberRead(structType any) ApduDataExtDomainAddressSerialNumberRead {
 	if casted, ok := structType.(ApduDataExtDomainAddressSerialNumberRead); ok {
 		return casted
 	}

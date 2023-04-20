@@ -132,7 +132,7 @@ func NewBACnetConstructedDataPortFilter(numberOfDataElements BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPortFilter(structType interface{}) BACnetConstructedDataPortFilter {
+func CastBACnetConstructedDataPortFilter(structType any) BACnetConstructedDataPortFilter {
 	if casted, ok := structType.(BACnetConstructedDataPortFilter); ok {
 		return casted
 	}

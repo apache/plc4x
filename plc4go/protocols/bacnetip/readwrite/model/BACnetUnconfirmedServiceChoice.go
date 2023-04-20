@@ -141,8 +141,8 @@ func BACnetUnconfirmedServiceChoiceKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetUnconfirmedServiceChoice(structType interface{}) BACnetUnconfirmedServiceChoice {
-	castFunc := func(typ interface{}) BACnetUnconfirmedServiceChoice {
+func CastBACnetUnconfirmedServiceChoice(structType any) BACnetUnconfirmedServiceChoice {
+	castFunc := func(typ any) BACnetUnconfirmedServiceChoice {
 		if sBACnetUnconfirmedServiceChoice, ok := typ.(BACnetUnconfirmedServiceChoice); ok {
 			return sBACnetUnconfirmedServiceChoice
 		}

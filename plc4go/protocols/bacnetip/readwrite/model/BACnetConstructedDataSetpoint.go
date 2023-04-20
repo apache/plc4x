@@ -121,7 +121,7 @@ func NewBACnetConstructedDataSetpoint(setpoint BACnetApplicationTagReal, opening
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSetpoint(structType interface{}) BACnetConstructedDataSetpoint {
+func CastBACnetConstructedDataSetpoint(structType any) BACnetConstructedDataSetpoint {
 	if casted, ok := structType.(BACnetConstructedDataSetpoint); ok {
 		return casted
 	}

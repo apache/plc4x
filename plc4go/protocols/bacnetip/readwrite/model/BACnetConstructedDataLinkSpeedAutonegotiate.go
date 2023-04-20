@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLinkSpeedAutonegotiate(linkSpeedAutonegotiate BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLinkSpeedAutonegotiate(structType interface{}) BACnetConstructedDataLinkSpeedAutonegotiate {
+func CastBACnetConstructedDataLinkSpeedAutonegotiate(structType any) BACnetConstructedDataLinkSpeedAutonegotiate {
 	if casted, ok := structType.(BACnetConstructedDataLinkSpeedAutonegotiate); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataNetworkNumberQuality(networkNumberQuality BACnetNet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNetworkNumberQuality(structType interface{}) BACnetConstructedDataNetworkNumberQuality {
+func CastBACnetConstructedDataNetworkNumberQuality(structType any) BACnetConstructedDataNetworkNumberQuality {
 	if casted, ok := structType.(BACnetConstructedDataNetworkNumberQuality); ok {
 		return casted
 	}

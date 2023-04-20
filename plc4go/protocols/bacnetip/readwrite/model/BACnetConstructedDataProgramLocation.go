@@ -121,7 +121,7 @@ func NewBACnetConstructedDataProgramLocation(programLocation BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProgramLocation(structType interface{}) BACnetConstructedDataProgramLocation {
+func CastBACnetConstructedDataProgramLocation(structType any) BACnetConstructedDataProgramLocation {
 	if casted, ok := structType.(BACnetConstructedDataProgramLocation); ok {
 		return casted
 	}

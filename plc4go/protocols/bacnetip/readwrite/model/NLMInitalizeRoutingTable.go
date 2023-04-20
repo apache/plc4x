@@ -104,7 +104,7 @@ func NewNLMInitalizeRoutingTable(numberOfPorts uint8, portMappings []NLMInitaliz
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMInitalizeRoutingTable(structType interface{}) NLMInitalizeRoutingTable {
+func CastNLMInitalizeRoutingTable(structType any) NLMInitalizeRoutingTable {
 	if casted, ok := structType.(NLMInitalizeRoutingTable); ok {
 		return casted
 	}

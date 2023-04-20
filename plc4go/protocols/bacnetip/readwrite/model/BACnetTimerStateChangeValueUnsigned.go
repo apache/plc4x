@@ -94,7 +94,7 @@ func NewBACnetTimerStateChangeValueUnsigned(unsignedValue BACnetApplicationTagUn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueUnsigned(structType interface{}) BACnetTimerStateChangeValueUnsigned {
+func CastBACnetTimerStateChangeValueUnsigned(structType any) BACnetTimerStateChangeValueUnsigned {
 	if casted, ok := structType.(BACnetTimerStateChangeValueUnsigned); ok {
 		return casted
 	}

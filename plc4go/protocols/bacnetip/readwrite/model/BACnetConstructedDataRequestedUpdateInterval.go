@@ -121,7 +121,7 @@ func NewBACnetConstructedDataRequestedUpdateInterval(requestedUpdateInterval BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRequestedUpdateInterval(structType interface{}) BACnetConstructedDataRequestedUpdateInterval {
+func CastBACnetConstructedDataRequestedUpdateInterval(structType any) BACnetConstructedDataRequestedUpdateInterval {
 	if casted, ok := structType.(BACnetConstructedDataRequestedUpdateInterval); ok {
 		return casted
 	}

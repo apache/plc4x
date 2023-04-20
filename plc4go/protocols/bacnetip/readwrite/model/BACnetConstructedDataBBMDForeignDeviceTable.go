@@ -104,7 +104,7 @@ func NewBACnetConstructedDataBBMDForeignDeviceTable(bbmdForeignDeviceTable []BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBBMDForeignDeviceTable(structType interface{}) BACnetConstructedDataBBMDForeignDeviceTable {
+func CastBACnetConstructedDataBBMDForeignDeviceTable(structType any) BACnetConstructedDataBBMDForeignDeviceTable {
 	if casted, ok := structType.(BACnetConstructedDataBBMDForeignDeviceTable); ok {
 		return casted
 	}

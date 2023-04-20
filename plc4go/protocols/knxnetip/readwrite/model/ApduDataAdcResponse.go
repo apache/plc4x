@@ -78,7 +78,7 @@ func NewApduDataAdcResponse(dataLength uint8) *_ApduDataAdcResponse {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataAdcResponse(structType interface{}) ApduDataAdcResponse {
+func CastApduDataAdcResponse(structType any) ApduDataAdcResponse {
 	if casted, ok := structType.(ApduDataAdcResponse); ok {
 		return casted
 	}

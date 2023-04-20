@@ -93,8 +93,8 @@ func BACnetLoggingTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetLoggingType(structType interface{}) BACnetLoggingType {
-	castFunc := func(typ interface{}) BACnetLoggingType {
+func CastBACnetLoggingType(structType any) BACnetLoggingType {
+	castFunc := func(typ any) BACnetLoggingType {
 		if sBACnetLoggingType, ok := typ.(BACnetLoggingType); ok {
 			return sBACnetLoggingType
 		}

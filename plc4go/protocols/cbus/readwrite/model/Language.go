@@ -483,8 +483,8 @@ func LanguageKnows(value uint8) bool {
 	return false
 }
 
-func CastLanguage(structType interface{}) Language {
-	castFunc := func(typ interface{}) Language {
+func CastLanguage(structType any) Language {
+	castFunc := func(typ any) Language {
 		if sLanguage, ok := typ.(Language); ok {
 			return sLanguage
 		}

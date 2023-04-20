@@ -93,8 +93,8 @@ func ZoneStatusTempKnows(value uint8) bool {
 	return false
 }
 
-func CastZoneStatusTemp(structType interface{}) ZoneStatusTemp {
-	castFunc := func(typ interface{}) ZoneStatusTemp {
+func CastZoneStatusTemp(structType any) ZoneStatusTemp {
+	castFunc := func(typ any) ZoneStatusTemp {
 		if sZoneStatusTemp, ok := typ.(ZoneStatusTemp); ok {
 			return sZoneStatusTemp
 		}

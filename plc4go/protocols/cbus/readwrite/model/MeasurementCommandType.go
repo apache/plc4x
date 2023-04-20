@@ -97,8 +97,8 @@ func MeasurementCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastMeasurementCommandType(structType interface{}) MeasurementCommandType {
-	castFunc := func(typ interface{}) MeasurementCommandType {
+func CastMeasurementCommandType(structType any) MeasurementCommandType {
+	castFunc := func(typ any) MeasurementCommandType {
 		if sMeasurementCommandType, ok := typ.(MeasurementCommandType); ok {
 			return sMeasurementCommandType
 		}

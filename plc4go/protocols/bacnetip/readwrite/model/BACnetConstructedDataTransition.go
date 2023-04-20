@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTransition(transition BACnetLightingTransitionTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTransition(structType interface{}) BACnetConstructedDataTransition {
+func CastBACnetConstructedDataTransition(structType any) BACnetConstructedDataTransition {
 	if casted, ok := structType.(BACnetConstructedDataTransition); ok {
 		return casted
 	}

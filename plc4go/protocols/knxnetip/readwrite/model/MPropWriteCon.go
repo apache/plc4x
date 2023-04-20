@@ -78,7 +78,7 @@ func NewMPropWriteCon(size uint16) *_MPropWriteCon {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMPropWriteCon(structType interface{}) MPropWriteCon {
+func CastMPropWriteCon(structType any) MPropWriteCon {
 	if casted, ok := structType.(MPropWriteCon); ok {
 		return casted
 	}

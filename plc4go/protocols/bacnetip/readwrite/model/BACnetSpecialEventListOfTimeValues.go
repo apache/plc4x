@@ -86,7 +86,7 @@ func NewBACnetSpecialEventListOfTimeValues(openingTag BACnetOpeningTag, listOfTi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetSpecialEventListOfTimeValues(structType interface{}) BACnetSpecialEventListOfTimeValues {
+func CastBACnetSpecialEventListOfTimeValues(structType any) BACnetSpecialEventListOfTimeValues {
 	if casted, ok := structType.(BACnetSpecialEventListOfTimeValues); ok {
 		return casted
 	}

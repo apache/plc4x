@@ -104,7 +104,7 @@ func NewBACnetConstructedDataEventLogLogBuffer(floorText []BACnetEventLogRecord,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEventLogLogBuffer(structType interface{}) BACnetConstructedDataEventLogLogBuffer {
+func CastBACnetConstructedDataEventLogLogBuffer(structType any) BACnetConstructedDataEventLogLogBuffer {
 	if casted, ok := structType.(BACnetConstructedDataEventLogLogBuffer); ok {
 		return casted
 	}

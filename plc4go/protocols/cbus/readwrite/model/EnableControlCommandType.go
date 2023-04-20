@@ -97,8 +97,8 @@ func EnableControlCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastEnableControlCommandType(structType interface{}) EnableControlCommandType {
-	castFunc := func(typ interface{}) EnableControlCommandType {
+func CastEnableControlCommandType(structType any) EnableControlCommandType {
+	castFunc := func(typ any) EnableControlCommandType {
 		if sEnableControlCommandType, ok := typ.(EnableControlCommandType); ok {
 			return sEnableControlCommandType
 		}

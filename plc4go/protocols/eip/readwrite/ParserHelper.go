@@ -32,7 +32,7 @@ import (
 type EipParserHelper struct {
 }
 
-func (m EipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m EipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "PathSegment":
 		return model.PathSegmentParseWithBuffer(context.Background(), io)

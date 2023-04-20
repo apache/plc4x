@@ -86,7 +86,7 @@ func NewHVACTemperature(temperatureValue int16) *_HVACTemperature {
 }
 
 // Deprecated: use the interface for direct cast
-func CastHVACTemperature(structType interface{}) HVACTemperature {
+func CastHVACTemperature(structType any) HVACTemperature {
 	if casted, ok := structType.(HVACTemperature); ok {
 		return casted
 	}

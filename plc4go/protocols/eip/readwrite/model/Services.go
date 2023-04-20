@@ -79,7 +79,7 @@ func NewServices(offsets []uint16, services []CipService, servicesLen uint16) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastServices(structType interface{}) Services {
+func CastServices(structType any) Services {
 	if casted, ok := structType.(Services); ok {
 		return casted
 	}

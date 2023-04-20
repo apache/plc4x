@@ -1702,8 +1702,8 @@ func MediaTransportControlCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastMediaTransportControlCommandTypeContainer(structType interface{}) MediaTransportControlCommandTypeContainer {
-	castFunc := func(typ interface{}) MediaTransportControlCommandTypeContainer {
+func CastMediaTransportControlCommandTypeContainer(structType any) MediaTransportControlCommandTypeContainer {
+	castFunc := func(typ any) MediaTransportControlCommandTypeContainer {
 		if sMediaTransportControlCommandTypeContainer, ok := typ.(MediaTransportControlCommandTypeContainer); ok {
 			return sMediaTransportControlCommandTypeContainer
 		}

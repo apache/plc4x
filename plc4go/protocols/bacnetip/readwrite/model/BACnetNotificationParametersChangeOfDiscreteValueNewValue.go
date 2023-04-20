@@ -133,7 +133,7 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersChangeOfDiscreteValueNewValue(structType interface{}) BACnetNotificationParametersChangeOfDiscreteValueNewValue {
+func CastBACnetNotificationParametersChangeOfDiscreteValueNewValue(structType any) BACnetNotificationParametersChangeOfDiscreteValueNewValue {
 	if casted, ok := structType.(BACnetNotificationParametersChangeOfDiscreteValueNewValue); ok {
 		return casted
 	}
@@ -222,7 +222,7 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueParseWithBuffer(ct
 		InitializeParent(BACnetNotificationParametersChangeOfDiscreteValueNewValue, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetNotificationParametersChangeOfDiscreteValueNewValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataVendorName(vendorName BACnetApplicationTagCharacter
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataVendorName(structType interface{}) BACnetConstructedDataVendorName {
+func CastBACnetConstructedDataVendorName(structType any) BACnetConstructedDataVendorName {
 	if casted, ok := structType.(BACnetConstructedDataVendorName); ok {
 		return casted
 	}

@@ -198,7 +198,7 @@ func (x *xmlWriteBuffer) WriteString(logicalName string, bitLength uint32, encod
 	return x.encodeElement(logicalName, cleanedUpString, attr, writerArgs...)
 }
 
-func (x *xmlWriteBuffer) WriteVirtual(_ context.Context, _ string, _ interface{}, _ ...WithWriterArgs) error {
+func (x *xmlWriteBuffer) WriteVirtual(_ context.Context, _ string, _ any, _ ...WithWriterArgs) error {
 	// NO-OP
 	return nil
 }
@@ -221,7 +221,7 @@ func (x *xmlWriteBuffer) GetXmlString() string {
 	return x.xmlString.String()
 }
 
-func (x *xmlWriteBuffer) encodeElement(logicalName string, value interface{}, attr []xml.Attr, _ ...WithWriterArgs) error {
+func (x *xmlWriteBuffer) encodeElement(logicalName string, value any, attr []xml.Attr, _ ...WithWriterArgs) error {
 	return x.EncodeElement(value, xml.StartElement{
 		Name: xml.Name{Local: x.SanitizeLogicalName(logicalName)},
 		Attr: attr,

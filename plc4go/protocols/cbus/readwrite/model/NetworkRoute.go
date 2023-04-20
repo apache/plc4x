@@ -76,7 +76,7 @@ func NewNetworkRoute(networkPCI NetworkProtocolControlInformation, additionalBri
 }
 
 // Deprecated: use the interface for direct cast
-func CastNetworkRoute(structType interface{}) NetworkRoute {
+func CastNetworkRoute(structType any) NetworkRoute {
 	if casted, ok := structType.(NetworkRoute); ok {
 		return casted
 	}

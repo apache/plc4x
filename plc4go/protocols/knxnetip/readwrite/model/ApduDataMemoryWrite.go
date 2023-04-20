@@ -78,7 +78,7 @@ func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataMemoryWrite(structType interface{}) ApduDataMemoryWrite {
+func CastApduDataMemoryWrite(structType any) ApduDataMemoryWrite {
 	if casted, ok := structType.(ApduDataMemoryWrite); ok {
 		return casted
 	}

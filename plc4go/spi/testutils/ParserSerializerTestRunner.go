@@ -137,7 +137,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 
 				// Parse the input according to the settings of the testcase
 				var helper interface {
-					Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error)
+					Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error)
 				}
 				switch protocolName {
 				case "abeth":

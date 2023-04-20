@@ -112,7 +112,7 @@ func NewGetAttributeAllRequest(classSegment PathSegment, instanceSegment PathSeg
 }
 
 // Deprecated: use the interface for direct cast
-func CastGetAttributeAllRequest(structType interface{}) GetAttributeAllRequest {
+func CastGetAttributeAllRequest(structType any) GetAttributeAllRequest {
 	if casted, ok := structType.(GetAttributeAllRequest); ok {
 		return casted
 	}

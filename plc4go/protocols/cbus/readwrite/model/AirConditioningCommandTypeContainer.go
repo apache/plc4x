@@ -372,8 +372,8 @@ func AirConditioningCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastAirConditioningCommandTypeContainer(structType interface{}) AirConditioningCommandTypeContainer {
-	castFunc := func(typ interface{}) AirConditioningCommandTypeContainer {
+func CastAirConditioningCommandTypeContainer(structType any) AirConditioningCommandTypeContainer {
+	castFunc := func(typ any) AirConditioningCommandTypeContainer {
 		if sAirConditioningCommandTypeContainer, ok := typ.(AirConditioningCommandTypeContainer); ok {
 			return sAirConditioningCommandTypeContainer
 		}

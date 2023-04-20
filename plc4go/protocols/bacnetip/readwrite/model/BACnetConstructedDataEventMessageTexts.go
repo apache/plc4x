@@ -126,7 +126,7 @@ func (m *_BACnetConstructedDataEventMessageTexts) GetToOffnormalText() BACnetOpt
 	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
-	return CastBACnetOptionalCharacterString(CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(m.GetEventMessageTexts())) == (3)), func() interface{} { return CastBACnetOptionalCharacterString(m.GetEventMessageTexts()[0]) }, func() interface{} { return CastBACnetOptionalCharacterString(nil) })))
+	return CastBACnetOptionalCharacterString(CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(m.GetEventMessageTexts())) == (3)), func() any { return CastBACnetOptionalCharacterString(m.GetEventMessageTexts()[0]) }, func() any { return CastBACnetOptionalCharacterString(nil) })))
 }
 
 func (m *_BACnetConstructedDataEventMessageTexts) GetToFaultText() BACnetOptionalCharacterString {
@@ -134,7 +134,7 @@ func (m *_BACnetConstructedDataEventMessageTexts) GetToFaultText() BACnetOptiona
 	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
-	return CastBACnetOptionalCharacterString(CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(m.GetEventMessageTexts())) == (3)), func() interface{} { return CastBACnetOptionalCharacterString(m.GetEventMessageTexts()[1]) }, func() interface{} { return CastBACnetOptionalCharacterString(nil) })))
+	return CastBACnetOptionalCharacterString(CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(m.GetEventMessageTexts())) == (3)), func() any { return CastBACnetOptionalCharacterString(m.GetEventMessageTexts()[1]) }, func() any { return CastBACnetOptionalCharacterString(nil) })))
 }
 
 func (m *_BACnetConstructedDataEventMessageTexts) GetToNormalText() BACnetOptionalCharacterString {
@@ -142,7 +142,7 @@ func (m *_BACnetConstructedDataEventMessageTexts) GetToNormalText() BACnetOption
 	_ = ctx
 	numberOfDataElements := m.NumberOfDataElements
 	_ = numberOfDataElements
-	return CastBACnetOptionalCharacterString(CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(m.GetEventMessageTexts())) == (3)), func() interface{} { return CastBACnetOptionalCharacterString(m.GetEventMessageTexts()[2]) }, func() interface{} { return CastBACnetOptionalCharacterString(nil) })))
+	return CastBACnetOptionalCharacterString(CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(m.GetEventMessageTexts())) == (3)), func() any { return CastBACnetOptionalCharacterString(m.GetEventMessageTexts()[2]) }, func() any { return CastBACnetOptionalCharacterString(nil) })))
 }
 
 ///////////////////////
@@ -162,7 +162,7 @@ func NewBACnetConstructedDataEventMessageTexts(numberOfDataElements BACnetApplic
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEventMessageTexts(structType interface{}) BACnetConstructedDataEventMessageTexts {
+func CastBACnetConstructedDataEventMessageTexts(structType any) BACnetConstructedDataEventMessageTexts {
 	if casted, ok := structType.(BACnetConstructedDataEventMessageTexts); ok {
 		return casted
 	}
@@ -266,17 +266,17 @@ func BACnetConstructedDataEventMessageTextsParseWithBuffer(ctx context.Context, 
 	}
 
 	// Virtual field
-	_toOffnormalText := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTexts)) == (3)), func() interface{} { return CastBACnetOptionalCharacterString(eventMessageTexts[0]) }, func() interface{} { return CastBACnetOptionalCharacterString(nil) }))
+	_toOffnormalText := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTexts)) == (3)), func() any { return CastBACnetOptionalCharacterString(eventMessageTexts[0]) }, func() any { return CastBACnetOptionalCharacterString(nil) }))
 	toOffnormalText := _toOffnormalText
 	_ = toOffnormalText
 
 	// Virtual field
-	_toFaultText := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTexts)) == (3)), func() interface{} { return CastBACnetOptionalCharacterString(eventMessageTexts[1]) }, func() interface{} { return CastBACnetOptionalCharacterString(nil) }))
+	_toFaultText := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTexts)) == (3)), func() any { return CastBACnetOptionalCharacterString(eventMessageTexts[1]) }, func() any { return CastBACnetOptionalCharacterString(nil) }))
 	toFaultText := _toFaultText
 	_ = toFaultText
 
 	// Virtual field
-	_toNormalText := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTexts)) == (3)), func() interface{} { return CastBACnetOptionalCharacterString(eventMessageTexts[2]) }, func() interface{} { return CastBACnetOptionalCharacterString(nil) }))
+	_toNormalText := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTexts)) == (3)), func() any { return CastBACnetOptionalCharacterString(eventMessageTexts[2]) }, func() any { return CastBACnetOptionalCharacterString(nil) }))
 	toNormalText := _toNormalText
 	_ = toNormalText
 

@@ -141,8 +141,8 @@ func HVACTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastHVACType(structType interface{}) HVACType {
-	castFunc := func(typ interface{}) HVACType {
+func CastHVACType(structType any) HVACType {
+	castFunc := func(typ any) HVACType {
 		if sHVACType, ok := typ.(HVACType); ok {
 			return sHVACType
 		}

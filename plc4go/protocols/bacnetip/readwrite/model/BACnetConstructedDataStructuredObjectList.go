@@ -132,7 +132,7 @@ func NewBACnetConstructedDataStructuredObjectList(numberOfDataElements BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataStructuredObjectList(structType interface{}) BACnetConstructedDataStructuredObjectList {
+func CastBACnetConstructedDataStructuredObjectList(structType any) BACnetConstructedDataStructuredObjectList {
 	if casted, ok := structType.(BACnetConstructedDataStructuredObjectList); ok {
 		return casted
 	}

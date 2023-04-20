@@ -78,7 +78,7 @@ func NewDeviceConfigurationRequestDataBlock(communicationChannelId uint8, sequen
 }
 
 // Deprecated: use the interface for direct cast
-func CastDeviceConfigurationRequestDataBlock(structType interface{}) DeviceConfigurationRequestDataBlock {
+func CastDeviceConfigurationRequestDataBlock(structType any) DeviceConfigurationRequestDataBlock {
 	if casted, ok := structType.(DeviceConfigurationRequestDataBlock); ok {
 		return casted
 	}
@@ -156,7 +156,7 @@ func DeviceConfigurationRequestDataBlockParseWithBuffer(ctx context.Context, rea
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DeviceConfigurationRequestDataBlock")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -217,7 +217,7 @@ func (m *_DeviceConfigurationRequestDataBlock) SerializeWithWriteBuffer(ctx cont
 	{
 		var reserved uint8 = uint8(0x00)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

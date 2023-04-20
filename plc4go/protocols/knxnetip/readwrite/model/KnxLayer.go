@@ -87,8 +87,8 @@ func KnxLayerKnows(value uint8) bool {
 	return false
 }
 
-func CastKnxLayer(structType interface{}) KnxLayer {
-	castFunc := func(typ interface{}) KnxLayer {
+func CastKnxLayer(structType any) KnxLayer {
+	castFunc := func(typ any) KnxLayer {
 		if sKnxLayer, ok := typ.(KnxLayer); ok {
 			return sKnxLayer
 		}

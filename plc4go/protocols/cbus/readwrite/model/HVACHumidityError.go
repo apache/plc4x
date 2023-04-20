@@ -909,8 +909,8 @@ func HVACHumidityErrorKnows(value uint8) bool {
 	return false
 }
 
-func CastHVACHumidityError(structType interface{}) HVACHumidityError {
-	castFunc := func(typ interface{}) HVACHumidityError {
+func CastHVACHumidityError(structType any) HVACHumidityError {
+	castFunc := func(typ any) HVACHumidityError {
 		if sHVACHumidityError, ok := typ.(HVACHumidityError); ok {
 			return sHVACHumidityError
 		}

@@ -147,8 +147,8 @@ func AdsPortNumbersKnows(value uint16) bool {
 	return false
 }
 
-func CastAdsPortNumbers(structType interface{}) AdsPortNumbers {
-	castFunc := func(typ interface{}) AdsPortNumbers {
+func CastAdsPortNumbers(structType any) AdsPortNumbers {
+	castFunc := func(typ any) AdsPortNumbers {
 		if sAdsPortNumbers, ok := typ.(AdsPortNumbers); ok {
 			return sAdsPortNumbers
 		}

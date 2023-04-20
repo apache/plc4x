@@ -40,7 +40,7 @@ type DefaultPlcWriteRequestBuilder struct {
 	tagNames                []string
 	tagAddresses            map[string]string
 	tags                    map[string]model.PlcTag
-	values                  map[string]interface{}
+	values                  map[string]any
 	writeRequestInterceptor interceptors.WriteRequestInterceptor
 }
 
@@ -52,7 +52,7 @@ func NewDefaultPlcWriteRequestBuilder(tagHandler spi.PlcTagHandler, valueHandler
 		tagNames:     make([]string, 0),
 		tagAddresses: map[string]string{},
 		tags:         map[string]model.PlcTag{},
-		values:       map[string]interface{}{},
+		values:       map[string]any{},
 	}
 }
 
@@ -64,7 +64,7 @@ func NewDefaultPlcWriteRequestBuilderWithInterceptor(tagHandler spi.PlcTagHandle
 		tagNames:                make([]string, 0),
 		tagAddresses:            map[string]string{},
 		tags:                    map[string]model.PlcTag{},
-		values:                  map[string]interface{}{},
+		values:                  map[string]any{},
 		writeRequestInterceptor: writeRequestInterceptor,
 	}
 }
@@ -77,14 +77,14 @@ func (m *DefaultPlcWriteRequestBuilder) GetWriteRequestInterceptor() interceptor
 	return m.writeRequestInterceptor
 }
 
-func (m *DefaultPlcWriteRequestBuilder) AddTagAddress(name string, tagAddress string, value interface{}) model.PlcWriteRequestBuilder {
+func (m *DefaultPlcWriteRequestBuilder) AddTagAddress(name string, tagAddress string, value any) model.PlcWriteRequestBuilder {
 	m.tagNames = append(m.tagNames, name)
 	m.tagAddresses[name] = tagAddress
 	m.values[name] = value
 	return m
 }
 
-func (m *DefaultPlcWriteRequestBuilder) AddTag(name string, tag model.PlcTag, value interface{}) model.PlcWriteRequestBuilder {
+func (m *DefaultPlcWriteRequestBuilder) AddTag(name string, tag model.PlcTag, value any) model.PlcWriteRequestBuilder {
 	m.tagNames = append(m.tagNames, name)
 	m.tags[name] = tag
 	m.values[name] = value
@@ -206,7 +206,7 @@ func (d *DefaultPlcWriteRequest) SerializeWithWriteBuffer(ctx context.Context, w
 		return err
 	}
 	for name, elem := range d.tags {
-		var elem interface{} = elem
+		var elem any = elem
 		if serializable, ok := elem.(utils.Serializable); ok {
 			if err := writeBuffer.PushContext(name); err != nil {
 				return err
@@ -214,7 +214,7 @@ func (d *DefaultPlcWriteRequest) SerializeWithWriteBuffer(ctx context.Context, w
 			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 				return err
 			}
-			var value interface{} = d.values[name]
+			var value any = d.values[name]
 			if err := value.(utils.Serializable).SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 				return err
 			}

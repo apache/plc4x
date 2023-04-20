@@ -105,7 +105,7 @@ func NewBVLCDeleteForeignDeviceTableEntry(ip []uint8, port uint16) *_BVLCDeleteF
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCDeleteForeignDeviceTableEntry(structType interface{}) BVLCDeleteForeignDeviceTableEntry {
+func CastBVLCDeleteForeignDeviceTableEntry(structType any) BVLCDeleteForeignDeviceTableEntry {
 	if casted, ok := structType.(BVLCDeleteForeignDeviceTableEntry); ok {
 		return casted
 	}

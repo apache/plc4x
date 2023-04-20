@@ -159,7 +159,7 @@ func NewMeasurementDataChannelMeasurementData(deviceId uint8, channel uint8, uni
 }
 
 // Deprecated: use the interface for direct cast
-func CastMeasurementDataChannelMeasurementData(structType interface{}) MeasurementDataChannelMeasurementData {
+func CastMeasurementDataChannelMeasurementData(structType any) MeasurementDataChannelMeasurementData {
 	if casted, ok := structType.(MeasurementDataChannelMeasurementData); ok {
 		return casted
 	}

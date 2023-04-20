@@ -60,7 +60,7 @@ import (
 type ${helper.getSanitizedProtocolName()?cap_first}ParserHelper struct {
 }
 
-func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m ${helper.getSanitizedProtocolName()?cap_first}ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 <#list helper.getComplexTypeRootDefinitions() as typeDefinition>
 	case "${typeDefinition.name}":

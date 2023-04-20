@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMaximumValueTimestamp(maximumValueTimestamp BACnetD
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaximumValueTimestamp(structType interface{}) BACnetConstructedDataMaximumValueTimestamp {
+func CastBACnetConstructedDataMaximumValueTimestamp(structType any) BACnetConstructedDataMaximumValueTimestamp {
 	if casted, ok := structType.(BACnetConstructedDataMaximumValueTimestamp); ok {
 		return casted
 	}

@@ -98,7 +98,7 @@ func NewBACnetContextTagBitString(payload BACnetTagPayloadBitString, header BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagBitString(structType interface{}) BACnetContextTagBitString {
+func CastBACnetContextTagBitString(structType any) BACnetContextTagBitString {
 	if casted, ok := structType.(BACnetContextTagBitString); ok {
 		return casted
 	}

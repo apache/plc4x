@@ -78,7 +78,7 @@ func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMFuncPropStateReadReq(structType interface{}) MFuncPropStateReadReq {
+func CastMFuncPropStateReadReq(structType any) MFuncPropStateReadReq {
 	if casted, ok := structType.(MFuncPropStateReadReq); ok {
 		return casted
 	}

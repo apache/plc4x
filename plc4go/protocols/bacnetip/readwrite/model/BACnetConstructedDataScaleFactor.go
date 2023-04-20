@@ -121,7 +121,7 @@ func NewBACnetConstructedDataScaleFactor(scaleFactor BACnetApplicationTagReal, o
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataScaleFactor(structType interface{}) BACnetConstructedDataScaleFactor {
+func CastBACnetConstructedDataScaleFactor(structType any) BACnetConstructedDataScaleFactor {
 	if casted, ok := structType.(BACnetConstructedDataScaleFactor); ok {
 		return casted
 	}

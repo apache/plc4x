@@ -80,7 +80,7 @@ func NewBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged(structType interface{}) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged {
+func CastBACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged(structType any) BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged); ok {
 		return casted
 	}

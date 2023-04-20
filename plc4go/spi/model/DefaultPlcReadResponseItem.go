@@ -70,7 +70,7 @@ func (d *DefaultPlcReadResponseItem) SerializeWithWriteBuffer(ctx context.Contex
 	}
 
 	if d.value != nil {
-		var elem interface{} = d.value
+		var elem any = d.value
 		if err := elem.(utils.Serializable).SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 			return err
 		}

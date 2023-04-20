@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDefaultSubordinateRelationship(defaultSubordinateRe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDefaultSubordinateRelationship(structType interface{}) BACnetConstructedDataDefaultSubordinateRelationship {
+func CastBACnetConstructedDataDefaultSubordinateRelationship(structType any) BACnetConstructedDataDefaultSubordinateRelationship {
 	if casted, ok := structType.(BACnetConstructedDataDefaultSubordinateRelationship); ok {
 		return casted
 	}

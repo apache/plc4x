@@ -128,7 +128,7 @@ func NewModbusPDUReadDeviceIdentificationRequest(level ModbusDeviceInformationLe
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadDeviceIdentificationRequest(structType interface{}) ModbusPDUReadDeviceIdentificationRequest {
+func CastModbusPDUReadDeviceIdentificationRequest(structType any) ModbusPDUReadDeviceIdentificationRequest {
 	if casted, ok := structType.(ModbusPDUReadDeviceIdentificationRequest); ok {
 		return casted
 	}

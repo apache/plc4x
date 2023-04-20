@@ -81,8 +81,8 @@ func TagClassKnows(value uint8) bool {
 	return false
 }
 
-func CastTagClass(structType interface{}) TagClass {
-	castFunc := func(typ interface{}) TagClass {
+func CastTagClass(structType any) TagClass {
+	castFunc := func(typ any) TagClass {
 		if sTagClass, ok := typ.(TagClass); ok {
 			return sTagClass
 		}

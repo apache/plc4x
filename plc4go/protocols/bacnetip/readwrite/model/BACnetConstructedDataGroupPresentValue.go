@@ -104,7 +104,7 @@ func NewBACnetConstructedDataGroupPresentValue(presentValue []BACnetReadAccessRe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataGroupPresentValue(structType interface{}) BACnetConstructedDataGroupPresentValue {
+func CastBACnetConstructedDataGroupPresentValue(structType any) BACnetConstructedDataGroupPresentValue {
 	if casted, ok := structType.(BACnetConstructedDataGroupPresentValue); ok {
 		return casted
 	}

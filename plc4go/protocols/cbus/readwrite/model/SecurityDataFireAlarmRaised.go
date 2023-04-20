@@ -77,7 +77,7 @@ func NewSecurityDataFireAlarmRaised(commandTypeContainer SecurityCommandTypeCont
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataFireAlarmRaised(structType interface{}) SecurityDataFireAlarmRaised {
+func CastSecurityDataFireAlarmRaised(structType any) SecurityDataFireAlarmRaised {
 	if casted, ok := structType.(SecurityDataFireAlarmRaised); ok {
 		return casted
 	}

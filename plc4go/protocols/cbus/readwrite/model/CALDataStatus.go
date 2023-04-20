@@ -111,7 +111,7 @@ func NewCALDataStatus(application ApplicationIdContainer, blockStart uint8, stat
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataStatus(structType interface{}) CALDataStatus {
+func CastCALDataStatus(structType any) CALDataStatus {
 	if casted, ok := structType.(CALDataStatus); ok {
 		return casted
 	}

@@ -128,7 +128,7 @@ func NewBACnetNotificationParametersExtended(innerOpeningTag BACnetOpeningTag, v
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersExtended(structType interface{}) BACnetNotificationParametersExtended {
+func CastBACnetNotificationParametersExtended(structType any) BACnetNotificationParametersExtended {
 	if casted, ok := structType.(BACnetNotificationParametersExtended); ok {
 		return casted
 	}

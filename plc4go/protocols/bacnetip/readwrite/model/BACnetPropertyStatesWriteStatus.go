@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesWriteStatus(writeStatus BACnetWriteStatusTagged, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesWriteStatus(structType interface{}) BACnetPropertyStatesWriteStatus {
+func CastBACnetPropertyStatesWriteStatus(structType any) BACnetPropertyStatesWriteStatus {
 	if casted, ok := structType.(BACnetPropertyStatesWriteStatus); ok {
 		return casted
 	}

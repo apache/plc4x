@@ -80,7 +80,7 @@ func NewBACnetAccumulatorRecordAccumulatorStatusTagged(header BACnetTagHeader, v
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccumulatorRecordAccumulatorStatusTagged(structType interface{}) BACnetAccumulatorRecordAccumulatorStatusTagged {
+func CastBACnetAccumulatorRecordAccumulatorStatusTagged(structType any) BACnetAccumulatorRecordAccumulatorStatusTagged {
 	if casted, ok := structType.(BACnetAccumulatorRecordAccumulatorStatusTagged); ok {
 		return casted
 	}

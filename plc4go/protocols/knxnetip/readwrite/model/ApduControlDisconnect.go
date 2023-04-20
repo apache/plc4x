@@ -78,7 +78,7 @@ func NewApduControlDisconnect() *_ApduControlDisconnect {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduControlDisconnect(structType interface{}) ApduControlDisconnect {
+func CastApduControlDisconnect(structType any) ApduControlDisconnect {
 	if casted, ok := structType.(ApduControlDisconnect); ok {
 		return casted
 	}

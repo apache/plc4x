@@ -86,7 +86,7 @@ func NewBACnetConstructedDataAccessRightsAll(openingTag BACnetOpeningTag, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccessRightsAll(structType interface{}) BACnetConstructedDataAccessRightsAll {
+func CastBACnetConstructedDataAccessRightsAll(structType any) BACnetConstructedDataAccessRightsAll {
 	if casted, ok := structType.(BACnetConstructedDataAccessRightsAll); ok {
 		return casted
 	}

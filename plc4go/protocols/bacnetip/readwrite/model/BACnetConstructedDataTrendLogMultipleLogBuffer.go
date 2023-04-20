@@ -104,7 +104,7 @@ func NewBACnetConstructedDataTrendLogMultipleLogBuffer(floorText []BACnetLogMult
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTrendLogMultipleLogBuffer(structType interface{}) BACnetConstructedDataTrendLogMultipleLogBuffer {
+func CastBACnetConstructedDataTrendLogMultipleLogBuffer(structType any) BACnetConstructedDataTrendLogMultipleLogBuffer {
 	if casted, ok := structType.(BACnetConstructedDataTrendLogMultipleLogBuffer); ok {
 		return casted
 	}

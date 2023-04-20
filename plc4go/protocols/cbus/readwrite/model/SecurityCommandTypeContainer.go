@@ -1786,8 +1786,8 @@ func SecurityCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastSecurityCommandTypeContainer(structType interface{}) SecurityCommandTypeContainer {
-	castFunc := func(typ interface{}) SecurityCommandTypeContainer {
+func CastSecurityCommandTypeContainer(structType any) SecurityCommandTypeContainer {
+	castFunc := func(typ any) SecurityCommandTypeContainer {
 		if sSecurityCommandTypeContainer, ok := typ.(SecurityCommandTypeContainer); ok {
 			return sSecurityCommandTypeContainer
 		}

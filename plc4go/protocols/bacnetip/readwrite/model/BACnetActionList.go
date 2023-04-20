@@ -83,7 +83,7 @@ func NewBACnetActionList(innerOpeningTag BACnetOpeningTag, action []BACnetAction
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetActionList(structType interface{}) BACnetActionList {
+func CastBACnetActionList(structType any) BACnetActionList {
 	if casted, ok := structType.(BACnetActionList); ok {
 		return casted
 	}

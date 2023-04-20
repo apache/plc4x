@@ -86,7 +86,7 @@ func NewListOfCovNotificationsList(openingTag BACnetOpeningTag, specifications [
 }
 
 // Deprecated: use the interface for direct cast
-func CastListOfCovNotificationsList(structType interface{}) ListOfCovNotificationsList {
+func CastListOfCovNotificationsList(structType any) ListOfCovNotificationsList {
 	if casted, ok := structType.(ListOfCovNotificationsList); ok {
 		return casted
 	}

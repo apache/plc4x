@@ -104,7 +104,7 @@ func NewWritePropertyMultipleError(errorType ErrorEnclosed, firstFailedWriteAtte
 }
 
 // Deprecated: use the interface for direct cast
-func CastWritePropertyMultipleError(structType interface{}) WritePropertyMultipleError {
+func CastWritePropertyMultipleError(structType any) WritePropertyMultipleError {
 	if casted, ok := structType.(WritePropertyMultipleError); ok {
 		return casted
 	}

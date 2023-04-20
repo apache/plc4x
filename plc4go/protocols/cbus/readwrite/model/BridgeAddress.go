@@ -69,7 +69,7 @@ func NewBridgeAddress(address byte) *_BridgeAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBridgeAddress(structType interface{}) BridgeAddress {
+func CastBridgeAddress(structType any) BridgeAddress {
 	if casted, ok := structType.(BridgeAddress); ok {
 		return casted
 	}

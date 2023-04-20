@@ -99,7 +99,7 @@ func NewBACnetServiceAckReadPropertyMultiple(data []BACnetReadAccessResult, serv
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckReadPropertyMultiple(structType interface{}) BACnetServiceAckReadPropertyMultiple {
+func CastBACnetServiceAckReadPropertyMultiple(structType any) BACnetServiceAckReadPropertyMultiple {
 	if casted, ok := structType.(BACnetServiceAckReadPropertyMultiple); ok {
 		return casted
 	}

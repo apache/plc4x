@@ -78,7 +78,7 @@ func NewApduDataExtGroupPropertyValueWrite(length uint8) *_ApduDataExtGroupPrope
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtGroupPropertyValueWrite(structType interface{}) ApduDataExtGroupPropertyValueWrite {
+func CastApduDataExtGroupPropertyValueWrite(structType any) ApduDataExtGroupPropertyValueWrite {
 	if casted, ok := structType.(ApduDataExtGroupPropertyValueWrite); ok {
 		return casted
 	}

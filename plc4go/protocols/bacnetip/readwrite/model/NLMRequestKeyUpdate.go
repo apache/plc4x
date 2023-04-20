@@ -144,7 +144,7 @@ func NewNLMRequestKeyUpdate(set1KeyRevision byte, set1ActivationTime uint32, set
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMRequestKeyUpdate(structType interface{}) NLMRequestKeyUpdate {
+func CastNLMRequestKeyUpdate(structType any) NLMRequestKeyUpdate {
 	if casted, ok := structType.(NLMRequestKeyUpdate); ok {
 		return casted
 	}

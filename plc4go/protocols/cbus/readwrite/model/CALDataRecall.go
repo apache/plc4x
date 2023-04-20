@@ -103,7 +103,7 @@ func NewCALDataRecall(paramNo Parameter, count uint8, commandTypeContainer CALCo
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataRecall(structType interface{}) CALDataRecall {
+func CastCALDataRecall(structType any) CALDataRecall {
 	if casted, ok := structType.(CALDataRecall); ok {
 		return casted
 	}

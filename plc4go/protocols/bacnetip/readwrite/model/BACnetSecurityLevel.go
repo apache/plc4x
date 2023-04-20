@@ -105,8 +105,8 @@ func BACnetSecurityLevelKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetSecurityLevel(structType interface{}) BACnetSecurityLevel {
-	castFunc := func(typ interface{}) BACnetSecurityLevel {
+func CastBACnetSecurityLevel(structType any) BACnetSecurityLevel {
+	castFunc := func(typ any) BACnetSecurityLevel {
 		if sBACnetSecurityLevel, ok := typ.(BACnetSecurityLevel); ok {
 			return sBACnetSecurityLevel
 		}

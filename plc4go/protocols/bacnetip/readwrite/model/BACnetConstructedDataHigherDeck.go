@@ -121,7 +121,7 @@ func NewBACnetConstructedDataHigherDeck(higherDeck BACnetApplicationTagObjectIde
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataHigherDeck(structType interface{}) BACnetConstructedDataHigherDeck {
+func CastBACnetConstructedDataHigherDeck(structType any) BACnetConstructedDataHigherDeck {
 	if casted, ok := structType.(BACnetConstructedDataHigherDeck); ok {
 		return casted
 	}

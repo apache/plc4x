@@ -167,8 +167,8 @@ func AccessControlCommandTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastAccessControlCommandType(structType interface{}) AccessControlCommandType {
-	castFunc := func(typ interface{}) AccessControlCommandType {
+func CastAccessControlCommandType(structType any) AccessControlCommandType {
+	castFunc := func(typ any) AccessControlCommandType {
 		if sAccessControlCommandType, ok := typ.(AccessControlCommandType); ok {
 			return sAccessControlCommandType
 		}

@@ -184,7 +184,7 @@ func NewAmsPacket(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId 
 }
 
 // Deprecated: use the interface for direct cast
-func CastAmsPacket(structType interface{}) AmsPacket {
+func CastAmsPacket(structType any) AmsPacket {
 	if casted, ok := structType.(AmsPacket); ok {
 		return casted
 	}
@@ -412,7 +412,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AmsPacket")
 		}
 		if reserved != int8(0x0) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": int8(0x0),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -448,7 +448,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		InitializeParent(AmsPacket, AmsNetId, uint16, AmsNetId, uint16, uint32, uint32)
 		GetParent() AmsPacket
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child AmsPacketChildSerializeRequirement
 	var typeSwitchError error
 	switch {
@@ -634,7 +634,7 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	{
 		var reserved int8 = int8(0x0)
 		if pm.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": int8(0x0),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

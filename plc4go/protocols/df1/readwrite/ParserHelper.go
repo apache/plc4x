@@ -32,7 +32,7 @@ import (
 type Df1ParserHelper struct {
 }
 
-func (m Df1ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m Df1ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "DF1Symbol":
 		return model.DF1SymbolParseWithBuffer(context.Background(), io)

@@ -93,7 +93,7 @@ func NewCIPAttributes(classId []uint16, numberAvailable uint16, numberActive uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastCIPAttributes(structType interface{}) CIPAttributes {
+func CastCIPAttributes(structType any) CIPAttributes {
 	if casted, ok := structType.(CIPAttributes); ok {
 		return casted
 	}

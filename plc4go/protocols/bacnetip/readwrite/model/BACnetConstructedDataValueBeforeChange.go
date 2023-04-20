@@ -121,7 +121,7 @@ func NewBACnetConstructedDataValueBeforeChange(valuesBeforeChange BACnetApplicat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataValueBeforeChange(structType interface{}) BACnetConstructedDataValueBeforeChange {
+func CastBACnetConstructedDataValueBeforeChange(structType any) BACnetConstructedDataValueBeforeChange {
 	if casted, ok := structType.(BACnetConstructedDataValueBeforeChange); ok {
 		return casted
 	}

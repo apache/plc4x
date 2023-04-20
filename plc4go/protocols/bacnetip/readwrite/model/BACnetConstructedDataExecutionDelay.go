@@ -132,7 +132,7 @@ func NewBACnetConstructedDataExecutionDelay(numberOfDataElements BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataExecutionDelay(structType interface{}) BACnetConstructedDataExecutionDelay {
+func CastBACnetConstructedDataExecutionDelay(structType any) BACnetConstructedDataExecutionDelay {
 	if casted, ok := structType.(BACnetConstructedDataExecutionDelay); ok {
 		return casted
 	}

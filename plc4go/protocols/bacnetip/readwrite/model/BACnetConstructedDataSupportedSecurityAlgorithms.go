@@ -104,7 +104,7 @@ func NewBACnetConstructedDataSupportedSecurityAlgorithms(supportedSecurityAlgori
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSupportedSecurityAlgorithms(structType interface{}) BACnetConstructedDataSupportedSecurityAlgorithms {
+func CastBACnetConstructedDataSupportedSecurityAlgorithms(structType any) BACnetConstructedDataSupportedSecurityAlgorithms {
 	if casted, ok := structType.(BACnetConstructedDataSupportedSecurityAlgorithms); ok {
 		return casted
 	}

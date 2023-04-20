@@ -105,7 +105,7 @@ func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *_Fi
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataMessageDigitalIO(structType interface{}) FirmataMessageDigitalIO {
+func CastFirmataMessageDigitalIO(structType any) FirmataMessageDigitalIO {
 	if casted, ok := structType.(FirmataMessageDigitalIO); ok {
 		return casted
 	}

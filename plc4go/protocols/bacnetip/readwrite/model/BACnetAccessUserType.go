@@ -93,8 +93,8 @@ func BACnetAccessUserTypeKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetAccessUserType(structType interface{}) BACnetAccessUserType {
-	castFunc := func(typ interface{}) BACnetAccessUserType {
+func CastBACnetAccessUserType(structType any) BACnetAccessUserType {
+	castFunc := func(typ any) BACnetAccessUserType {
 		if sBACnetAccessUserType, ok := typ.(BACnetAccessUserType); ok {
 			return sBACnetAccessUserType
 		}

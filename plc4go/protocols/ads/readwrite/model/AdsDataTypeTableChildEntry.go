@@ -201,7 +201,7 @@ func NewAdsDataTypeTableChildEntry(entryLength uint32, version uint32, hashValue
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDataTypeTableChildEntry(structType interface{}) AdsDataTypeTableChildEntry {
+func CastAdsDataTypeTableChildEntry(structType any) AdsDataTypeTableChildEntry {
 	if casted, ok := structType.(AdsDataTypeTableChildEntry); ok {
 		return casted
 	}

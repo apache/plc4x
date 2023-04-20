@@ -96,7 +96,7 @@ func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(c
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(structType interface{}) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
+func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter); ok {
 		return casted
 	}

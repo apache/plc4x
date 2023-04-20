@@ -75,7 +75,7 @@ func NewConnectionRequestInformation() *_ConnectionRequestInformation {
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionRequestInformation(structType interface{}) ConnectionRequestInformation {
+func CastConnectionRequestInformation(structType any) ConnectionRequestInformation {
 	if casted, ok := structType.(ConnectionRequestInformation); ok {
 		return casted
 	}
@@ -136,7 +136,7 @@ func ConnectionRequestInformationParseWithBuffer(ctx context.Context, readBuffer
 		InitializeParent(ConnectionRequestInformation)
 		GetParent() ConnectionRequestInformation
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ConnectionRequestInformationChildSerializeRequirement
 	var typeSwitchError error
 	switch {

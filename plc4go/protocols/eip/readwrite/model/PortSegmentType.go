@@ -75,7 +75,7 @@ func NewPortSegmentType() *_PortSegmentType {
 }
 
 // Deprecated: use the interface for direct cast
-func CastPortSegmentType(structType interface{}) PortSegmentType {
+func CastPortSegmentType(structType any) PortSegmentType {
 	if casted, ok := structType.(PortSegmentType); ok {
 		return casted
 	}
@@ -126,7 +126,7 @@ func PortSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		InitializeParent(PortSegmentType)
 		GetParent() PortSegmentType
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child PortSegmentTypeChildSerializeRequirement
 	var typeSwitchError error
 	switch {

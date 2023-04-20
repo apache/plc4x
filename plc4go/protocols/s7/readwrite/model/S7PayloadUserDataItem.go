@@ -105,7 +105,7 @@ func NewS7PayloadUserDataItem(returnCode DataTransportErrorCode, transportSize D
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItem(structType interface{}) S7PayloadUserDataItem {
+func CastS7PayloadUserDataItem(structType any) S7PayloadUserDataItem {
 	if casted, ok := structType.(S7PayloadUserDataItem); ok {
 		return casted
 	}
@@ -190,7 +190,7 @@ func S7PayloadUserDataItemParseWithBuffer(ctx context.Context, readBuffer utils.
 		InitializeParent(S7PayloadUserDataItem, DataTransportErrorCode, DataTransportSize)
 		GetParent() S7PayloadUserDataItem
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child S7PayloadUserDataItemChildSerializeRequirement
 	var typeSwitchError error
 	switch {

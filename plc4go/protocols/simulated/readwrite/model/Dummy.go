@@ -70,7 +70,7 @@ func NewDummy(dummy uint16) *_Dummy {
 }
 
 // Deprecated: use the interface for direct cast
-func CastDummy(structType interface{}) Dummy {
+func CastDummy(structType any) Dummy {
 	if casted, ok := structType.(Dummy); ok {
 		return casted
 	}

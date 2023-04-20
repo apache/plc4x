@@ -94,7 +94,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryBitString(bitStringValue
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultExtendedParametersEntryBitString(structType interface{}) BACnetFaultParameterFaultExtendedParametersEntryBitString {
+func CastBACnetFaultParameterFaultExtendedParametersEntryBitString(structType any) BACnetFaultParameterFaultExtendedParametersEntryBitString {
 	if casted, ok := structType.(BACnetFaultParameterFaultExtendedParametersEntryBitString); ok {
 		return casted
 	}

@@ -165,8 +165,8 @@ func ApduTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastApduType(structType interface{}) ApduType {
-	castFunc := func(typ interface{}) ApduType {
+func CastApduType(structType any) ApduType {
+	castFunc := func(typ any) ApduType {
 		if sApduType, ok := typ.(ApduType); ok {
 			return sApduType
 		}

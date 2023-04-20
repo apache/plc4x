@@ -119,7 +119,7 @@ func NewSecurityDataStatusReport1(armCodeType SecurityArmCode, tamperStatus Tamp
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataStatusReport1(structType interface{}) SecurityDataStatusReport1 {
+func CastSecurityDataStatusReport1(structType any) SecurityDataStatusReport1 {
 	if casted, ok := structType.(SecurityDataStatusReport1); ok {
 		return casted
 	}

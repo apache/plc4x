@@ -78,7 +78,7 @@ func NewApduDataExtMemoryBitWrite(length uint8) *_ApduDataExtMemoryBitWrite {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtMemoryBitWrite(structType interface{}) ApduDataExtMemoryBitWrite {
+func CastApduDataExtMemoryBitWrite(structType any) ApduDataExtMemoryBitWrite {
 	if casted, ok := structType.(ApduDataExtMemoryBitWrite); ok {
 		return casted
 	}

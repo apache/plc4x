@@ -86,7 +86,7 @@ func NewSetAttributeSingleRequest(serviceLen uint16) *_SetAttributeSingleRequest
 }
 
 // Deprecated: use the interface for direct cast
-func CastSetAttributeSingleRequest(structType interface{}) SetAttributeSingleRequest {
+func CastSetAttributeSingleRequest(structType any) SetAttributeSingleRequest {
 	if casted, ok := structType.(SetAttributeSingleRequest); ok {
 		return casted
 	}

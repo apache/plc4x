@@ -105,8 +105,8 @@ func KnxMediumKnows(value uint8) bool {
 	return false
 }
 
-func CastKnxMedium(structType interface{}) KnxMedium {
-	castFunc := func(typ interface{}) KnxMedium {
+func CastKnxMedium(structType any) KnxMedium {
+	castFunc := func(typ any) KnxMedium {
 		if sKnxMedium, ok := typ.(KnxMedium); ok {
 			return sKnxMedium
 		}

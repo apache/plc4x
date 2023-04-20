@@ -104,7 +104,7 @@ func NewBACnetConstructedDataAcceptedModes(acceptedModes []BACnetLifeSafetyModeT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAcceptedModes(structType interface{}) BACnetConstructedDataAcceptedModes {
+func CastBACnetConstructedDataAcceptedModes(structType any) BACnetConstructedDataAcceptedModes {
 	if casted, ok := structType.(BACnetConstructedDataAcceptedModes); ok {
 		return casted
 	}

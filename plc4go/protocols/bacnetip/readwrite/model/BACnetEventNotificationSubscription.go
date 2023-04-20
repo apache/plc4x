@@ -91,7 +91,7 @@ func NewBACnetEventNotificationSubscription(recipient BACnetRecipientEnclosed, p
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventNotificationSubscription(structType interface{}) BACnetEventNotificationSubscription {
+func CastBACnetEventNotificationSubscription(structType any) BACnetEventNotificationSubscription {
 	if casted, ok := structType.(BACnetEventNotificationSubscription); ok {
 		return casted
 	}

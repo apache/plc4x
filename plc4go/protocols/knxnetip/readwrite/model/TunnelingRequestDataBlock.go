@@ -78,7 +78,7 @@ func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter 
 }
 
 // Deprecated: use the interface for direct cast
-func CastTunnelingRequestDataBlock(structType interface{}) TunnelingRequestDataBlock {
+func CastTunnelingRequestDataBlock(structType any) TunnelingRequestDataBlock {
 	if casted, ok := structType.(TunnelingRequestDataBlock); ok {
 		return casted
 	}
@@ -156,7 +156,7 @@ func TunnelingRequestDataBlockParseWithBuffer(ctx context.Context, readBuffer ut
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TunnelingRequestDataBlock")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -217,7 +217,7 @@ func (m *_TunnelingRequestDataBlock) SerializeWithWriteBuffer(ctx context.Contex
 	{
 		var reserved uint8 = uint8(0x00)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

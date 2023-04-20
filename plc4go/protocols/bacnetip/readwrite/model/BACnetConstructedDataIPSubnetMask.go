@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIPSubnetMask(ipSubnetMask BACnetApplicationTagOctet
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPSubnetMask(structType interface{}) BACnetConstructedDataIPSubnetMask {
+func CastBACnetConstructedDataIPSubnetMask(structType any) BACnetConstructedDataIPSubnetMask {
 	if casted, ok := structType.(BACnetConstructedDataIPSubnetMask); ok {
 		return casted
 	}

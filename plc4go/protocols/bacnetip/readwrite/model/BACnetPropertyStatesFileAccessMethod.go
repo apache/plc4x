@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesFileAccessMethod(fileAccessMethod BACnetFileAccessMe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesFileAccessMethod(structType interface{}) BACnetPropertyStatesFileAccessMethod {
+func CastBACnetPropertyStatesFileAccessMethod(structType any) BACnetPropertyStatesFileAccessMethod {
 	if casted, ok := structType.(BACnetPropertyStatesFileAccessMethod); ok {
 		return casted
 	}

@@ -237,8 +237,8 @@ func ComObjectValueTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastComObjectValueType(structType interface{}) ComObjectValueType {
-	castFunc := func(typ interface{}) ComObjectValueType {
+func CastComObjectValueType(structType any) ComObjectValueType {
+	castFunc := func(typ any) ComObjectValueType {
 		if sComObjectValueType, ok := typ.(ComObjectValueType); ok {
 			return sComObjectValueType
 		}

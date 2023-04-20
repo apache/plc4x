@@ -108,7 +108,7 @@ func NewTunnelingRequest(tunnelingRequestDataBlock TunnelingRequestDataBlock, ce
 }
 
 // Deprecated: use the interface for direct cast
-func CastTunnelingRequest(structType interface{}) TunnelingRequest {
+func CastTunnelingRequest(structType any) TunnelingRequest {
 	if casted, ok := structType.(TunnelingRequest); ok {
 		return casted
 	}

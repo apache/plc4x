@@ -121,7 +121,7 @@ func NewBACnetConstructedDataEventAlgorithmInhibitRef(eventAlgorithmInhibitRef B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEventAlgorithmInhibitRef(structType interface{}) BACnetConstructedDataEventAlgorithmInhibitRef {
+func CastBACnetConstructedDataEventAlgorithmInhibitRef(structType any) BACnetConstructedDataEventAlgorithmInhibitRef {
 	if casted, ok := structType.(BACnetConstructedDataEventAlgorithmInhibitRef); ok {
 		return casted
 	}

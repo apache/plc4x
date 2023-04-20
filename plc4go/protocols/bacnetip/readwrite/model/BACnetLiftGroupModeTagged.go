@@ -80,7 +80,7 @@ func NewBACnetLiftGroupModeTagged(header BACnetTagHeader, value BACnetLiftGroupM
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLiftGroupModeTagged(structType interface{}) BACnetLiftGroupModeTagged {
+func CastBACnetLiftGroupModeTagged(structType any) BACnetLiftGroupModeTagged {
 	if casted, ok := structType.(BACnetLiftGroupModeTagged); ok {
 		return casted
 	}

@@ -69,7 +69,7 @@ func NewChecksum(value byte) *_Checksum {
 }
 
 // Deprecated: use the interface for direct cast
-func CastChecksum(structType interface{}) Checksum {
+func CastChecksum(structType any) Checksum {
 	if casted, ok := structType.(Checksum); ok {
 		return casted
 	}

@@ -96,7 +96,7 @@ func NewParameterValueRaw(data []byte, numBytes uint8) *_ParameterValueRaw {
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueRaw(structType interface{}) ParameterValueRaw {
+func CastParameterValueRaw(structType any) ParameterValueRaw {
 	if casted, ok := structType.(ParameterValueRaw); ok {
 		return casted
 	}

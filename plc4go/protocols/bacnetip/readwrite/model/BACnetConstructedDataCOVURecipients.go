@@ -104,7 +104,7 @@ func NewBACnetConstructedDataCOVURecipients(covuRecipients []BACnetRecipient, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCOVURecipients(structType interface{}) BACnetConstructedDataCOVURecipients {
+func CastBACnetConstructedDataCOVURecipients(structType any) BACnetConstructedDataCOVURecipients {
 	if casted, ok := structType.(BACnetConstructedDataCOVURecipients); ok {
 		return casted
 	}

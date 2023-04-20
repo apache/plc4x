@@ -132,7 +132,7 @@ func NewBACnetConstructedDataNegativeAccessRules(numberOfDataElements BACnetAppl
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNegativeAccessRules(structType interface{}) BACnetConstructedDataNegativeAccessRules {
+func CastBACnetConstructedDataNegativeAccessRules(structType any) BACnetConstructedDataNegativeAccessRules {
 	if casted, ok := structType.(BACnetConstructedDataNegativeAccessRules); ok {
 		return casted
 	}

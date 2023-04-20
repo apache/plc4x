@@ -112,7 +112,7 @@ func NewAdsMultiRequestItemRead(itemIndexGroup uint32, itemIndexOffset uint32, i
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsMultiRequestItemRead(structType interface{}) AdsMultiRequestItemRead {
+func CastAdsMultiRequestItemRead(structType any) AdsMultiRequestItemRead {
 	if casted, ok := structType.(AdsMultiRequestItemRead); ok {
 		return casted
 	}

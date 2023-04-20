@@ -80,7 +80,7 @@ func NewBACnetLiftCarDoorCommandTagged(header BACnetTagHeader, value BACnetLiftC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLiftCarDoorCommandTagged(structType interface{}) BACnetLiftCarDoorCommandTagged {
+func CastBACnetLiftCarDoorCommandTagged(structType any) BACnetLiftCarDoorCommandTagged {
 	if casted, ok := structType.(BACnetLiftCarDoorCommandTagged); ok {
 		return casted
 	}

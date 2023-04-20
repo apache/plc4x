@@ -104,7 +104,7 @@ func NewBACnetConstructedDataLandingCalls(landingCallStatus []BACnetLandingCallS
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLandingCalls(structType interface{}) BACnetConstructedDataLandingCalls {
+func CastBACnetConstructedDataLandingCalls(structType any) BACnetConstructedDataLandingCalls {
 	if casted, ok := structType.(BACnetConstructedDataLandingCalls); ok {
 		return casted
 	}

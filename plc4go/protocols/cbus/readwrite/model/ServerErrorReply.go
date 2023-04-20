@@ -93,7 +93,7 @@ func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContex
 }
 
 // Deprecated: use the interface for direct cast
-func CastServerErrorReply(structType interface{}) ServerErrorReply {
+func CastServerErrorReply(structType any) ServerErrorReply {
 	if casted, ok := structType.(ServerErrorReply); ok {
 		return casted
 	}

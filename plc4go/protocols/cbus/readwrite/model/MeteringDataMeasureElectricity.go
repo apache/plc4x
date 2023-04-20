@@ -77,7 +77,7 @@ func NewMeteringDataMeasureElectricity(commandTypeContainer MeteringCommandTypeC
 }
 
 // Deprecated: use the interface for direct cast
-func CastMeteringDataMeasureElectricity(structType interface{}) MeteringDataMeasureElectricity {
+func CastMeteringDataMeasureElectricity(structType any) MeteringDataMeasureElectricity {
 	if casted, ok := structType.(MeteringDataMeasureElectricity); ok {
 		return casted
 	}

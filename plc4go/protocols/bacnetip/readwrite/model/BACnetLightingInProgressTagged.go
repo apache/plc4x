@@ -80,7 +80,7 @@ func NewBACnetLightingInProgressTagged(header BACnetTagHeader, value BACnetLight
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLightingInProgressTagged(structType interface{}) BACnetLightingInProgressTagged {
+func CastBACnetLightingInProgressTagged(structType any) BACnetLightingInProgressTagged {
 	if casted, ok := structType.(BACnetLightingInProgressTagged); ok {
 		return casted
 	}

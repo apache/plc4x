@@ -247,8 +247,8 @@ func MaxApduLengthAcceptedKnows(value uint8) bool {
 	return false
 }
 
-func CastMaxApduLengthAccepted(structType interface{}) MaxApduLengthAccepted {
-	castFunc := func(typ interface{}) MaxApduLengthAccepted {
+func CastMaxApduLengthAccepted(structType any) MaxApduLengthAccepted {
+	castFunc := func(typ any) MaxApduLengthAccepted {
 		if sMaxApduLengthAccepted, ok := typ.(MaxApduLengthAccepted); ok {
 			return sMaxApduLengthAccepted
 		}

@@ -111,8 +111,8 @@ func BACnetAuthenticationStatusKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetAuthenticationStatus(structType interface{}) BACnetAuthenticationStatus {
-	castFunc := func(typ interface{}) BACnetAuthenticationStatus {
+func CastBACnetAuthenticationStatus(structType any) BACnetAuthenticationStatus {
+	castFunc := func(typ any) BACnetAuthenticationStatus {
 		if sBACnetAuthenticationStatus, ok := typ.(BACnetAuthenticationStatus); ok {
 			return sBACnetAuthenticationStatus
 		}

@@ -111,8 +111,8 @@ func BACnetDaysOfWeekKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetDaysOfWeek(structType interface{}) BACnetDaysOfWeek {
-	castFunc := func(typ interface{}) BACnetDaysOfWeek {
+func CastBACnetDaysOfWeek(structType any) BACnetDaysOfWeek {
+	castFunc := func(typ any) BACnetDaysOfWeek {
 		if sBACnetDaysOfWeek, ok := typ.(BACnetDaysOfWeek); ok {
 			return sBACnetDaysOfWeek
 		}

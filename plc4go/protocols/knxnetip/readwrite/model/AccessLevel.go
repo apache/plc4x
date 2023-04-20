@@ -176,8 +176,8 @@ func AccessLevelKnows(value uint8) bool {
 	return false
 }
 
-func CastAccessLevel(structType interface{}) AccessLevel {
-	castFunc := func(typ interface{}) AccessLevel {
+func CastAccessLevel(structType any) AccessLevel {
+	castFunc := func(typ any) AccessLevel {
 		if sAccessLevel, ok := typ.(AccessLevel); ok {
 			return sAccessLevel
 		}

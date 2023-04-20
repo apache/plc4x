@@ -302,7 +302,7 @@ func NewBACnetNotificationParametersExtendedParameters(openingTag BACnetOpeningT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersExtendedParameters(structType interface{}) BACnetNotificationParametersExtendedParameters {
+func CastBACnetNotificationParametersExtendedParameters(structType any) BACnetNotificationParametersExtendedParameters {
 	if casted, ok := structType.(BACnetNotificationParametersExtendedParameters); ok {
 		return casted
 	}

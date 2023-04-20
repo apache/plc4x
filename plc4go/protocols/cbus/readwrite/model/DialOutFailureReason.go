@@ -105,8 +105,8 @@ func DialOutFailureReasonKnows(value uint8) bool {
 	return false
 }
 
-func CastDialOutFailureReason(structType interface{}) DialOutFailureReason {
-	castFunc := func(typ interface{}) DialOutFailureReason {
+func CastDialOutFailureReason(structType any) DialOutFailureReason {
+	castFunc := func(typ any) DialOutFailureReason {
 		if sDialOutFailureReason, ok := typ.(DialOutFailureReason); ok {
 			return sDialOutFailureReason
 		}

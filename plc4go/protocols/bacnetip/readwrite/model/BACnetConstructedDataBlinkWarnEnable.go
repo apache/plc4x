@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBlinkWarnEnable(blinkWarnEnable BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBlinkWarnEnable(structType interface{}) BACnetConstructedDataBlinkWarnEnable {
+func CastBACnetConstructedDataBlinkWarnEnable(structType any) BACnetConstructedDataBlinkWarnEnable {
 	if casted, ok := structType.(BACnetConstructedDataBlinkWarnEnable); ok {
 		return casted
 	}

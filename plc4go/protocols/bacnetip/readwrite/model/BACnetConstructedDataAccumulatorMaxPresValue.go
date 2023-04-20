@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAccumulatorMaxPresValue(maxPresValue BACnetApplicat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccumulatorMaxPresValue(structType interface{}) BACnetConstructedDataAccumulatorMaxPresValue {
+func CastBACnetConstructedDataAccumulatorMaxPresValue(structType any) BACnetConstructedDataAccumulatorMaxPresValue {
 	if casted, ok := structType.(BACnetConstructedDataAccumulatorMaxPresValue); ok {
 		return casted
 	}

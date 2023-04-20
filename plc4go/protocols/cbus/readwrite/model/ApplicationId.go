@@ -219,8 +219,8 @@ func ApplicationIdKnows(value uint8) bool {
 	return false
 }
 
-func CastApplicationId(structType interface{}) ApplicationId {
-	castFunc := func(typ interface{}) ApplicationId {
+func CastApplicationId(structType any) ApplicationId {
+	castFunc := func(typ any) ApplicationId {
 		if sApplicationId, ok := typ.(ApplicationId); ok {
 			return sApplicationId
 		}

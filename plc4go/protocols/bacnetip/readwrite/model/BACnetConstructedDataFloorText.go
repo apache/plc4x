@@ -132,7 +132,7 @@ func NewBACnetConstructedDataFloorText(numberOfDataElements BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFloorText(structType interface{}) BACnetConstructedDataFloorText {
+func CastBACnetConstructedDataFloorText(structType any) BACnetConstructedDataFloorText {
 	if casted, ok := structType.(BACnetConstructedDataFloorText); ok {
 		return casted
 	}

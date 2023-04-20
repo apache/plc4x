@@ -87,8 +87,8 @@ func DeviceGroupKnows(value uint8) bool {
 	return false
 }
 
-func CastDeviceGroup(structType interface{}) DeviceGroup {
-	castFunc := func(typ interface{}) DeviceGroup {
+func CastDeviceGroup(structType any) DeviceGroup {
+	castFunc := func(typ any) DeviceGroup {
 		if sDeviceGroup, ok := typ.(DeviceGroup); ok {
 			return sDeviceGroup
 		}

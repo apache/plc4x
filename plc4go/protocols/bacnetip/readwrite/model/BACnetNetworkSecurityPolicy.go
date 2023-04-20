@@ -76,7 +76,7 @@ func NewBACnetNetworkSecurityPolicy(portId BACnetContextTagUnsignedInteger, secu
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNetworkSecurityPolicy(structType interface{}) BACnetNetworkSecurityPolicy {
+func CastBACnetNetworkSecurityPolicy(structType any) BACnetNetworkSecurityPolicy {
 	if casted, ok := structType.(BACnetNetworkSecurityPolicy); ok {
 		return casted
 	}

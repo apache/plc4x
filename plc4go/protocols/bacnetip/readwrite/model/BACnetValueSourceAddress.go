@@ -94,7 +94,7 @@ func NewBACnetValueSourceAddress(address BACnetAddressEnclosed, peekedTagHeader 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetValueSourceAddress(structType interface{}) BACnetValueSourceAddress {
+func CastBACnetValueSourceAddress(structType any) BACnetValueSourceAddress {
 	if casted, ok := structType.(BACnetValueSourceAddress); ok {
 		return casted
 	}

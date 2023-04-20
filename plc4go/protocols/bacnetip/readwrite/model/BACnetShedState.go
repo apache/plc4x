@@ -93,8 +93,8 @@ func BACnetShedStateKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetShedState(structType interface{}) BACnetShedState {
-	castFunc := func(typ interface{}) BACnetShedState {
+func CastBACnetShedState(structType any) BACnetShedState {
+	castFunc := func(typ any) BACnetShedState {
 		if sBACnetShedState, ok := typ.(BACnetShedState); ok {
 			return sBACnetShedState
 		}

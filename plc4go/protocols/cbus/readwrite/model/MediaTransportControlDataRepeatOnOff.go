@@ -128,7 +128,7 @@ func NewMediaTransportControlDataRepeatOnOff(repeatType byte, commandTypeContain
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataRepeatOnOff(structType interface{}) MediaTransportControlDataRepeatOnOff {
+func CastMediaTransportControlDataRepeatOnOff(structType any) MediaTransportControlDataRepeatOnOff {
 	if casted, ok := structType.(MediaTransportControlDataRepeatOnOff); ok {
 		return casted
 	}

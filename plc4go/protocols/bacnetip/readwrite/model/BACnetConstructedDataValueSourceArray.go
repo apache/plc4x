@@ -132,7 +132,7 @@ func NewBACnetConstructedDataValueSourceArray(numberOfDataElements BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataValueSourceArray(structType interface{}) BACnetConstructedDataValueSourceArray {
+func CastBACnetConstructedDataValueSourceArray(structType any) BACnetConstructedDataValueSourceArray {
 	if casted, ok := structType.(BACnetConstructedDataValueSourceArray); ok {
 		return casted
 	}

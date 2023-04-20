@@ -78,7 +78,7 @@ func NewApduDataExtNetworkParameterWrite(length uint8) *_ApduDataExtNetworkParam
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtNetworkParameterWrite(structType interface{}) ApduDataExtNetworkParameterWrite {
+func CastApduDataExtNetworkParameterWrite(structType any) ApduDataExtNetworkParameterWrite {
 	if casted, ok := structType.(ApduDataExtNetworkParameterWrite); ok {
 		return casted
 	}

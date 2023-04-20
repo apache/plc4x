@@ -112,7 +112,7 @@ func NewModbusPDUGetComEventCounterResponse(status uint16, eventCount uint16) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUGetComEventCounterResponse(structType interface{}) ModbusPDUGetComEventCounterResponse {
+func CastModbusPDUGetComEventCounterResponse(structType any) ModbusPDUGetComEventCounterResponse {
 	if casted, ok := structType.(ModbusPDUGetComEventCounterResponse); ok {
 		return casted
 	}

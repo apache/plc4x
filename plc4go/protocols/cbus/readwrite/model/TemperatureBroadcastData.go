@@ -108,7 +108,7 @@ func NewTemperatureBroadcastData(commandTypeContainer TemperatureBroadcastComman
 }
 
 // Deprecated: use the interface for direct cast
-func CastTemperatureBroadcastData(structType interface{}) TemperatureBroadcastData {
+func CastTemperatureBroadcastData(structType any) TemperatureBroadcastData {
 	if casted, ok := structType.(TemperatureBroadcastData); ok {
 		return casted
 	}
