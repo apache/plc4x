@@ -82,7 +82,7 @@ func TestBoxAnything(t *testing.T) {
 				anything:  true,
 				charWidth: 0,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═exampleBool╗
 ║  b1 true   ║
 ╚════════════╝`[1:]),
@@ -94,7 +94,7 @@ func TestBoxAnything(t *testing.T) {
 				anything:  1,
 				charWidth: 0,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═exampleInt═════════╗
 ║0x0000000000000001 1║
 ╚════════════════════╝`[1:]),
@@ -106,7 +106,7 @@ func TestBoxAnything(t *testing.T) {
 				anything:  123123123,
 				charWidth: 0,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═exampleInt═════════════════╗
 ║0x000000000756b5b3 123123123║
 ╚════════════════════════════╝`[1:]),
@@ -118,7 +118,7 @@ func TestBoxAnything(t *testing.T) {
 				anything:  []byte{1, 2, 3},
 				charWidth: 0,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═example byte[]╗
 ║   0|01 '.'    ║
 ║   1|02 '.'    ║
@@ -132,7 +132,7 @@ func TestBoxAnything(t *testing.T) {
 				anything:  "asdasdasdasdasd",
 				charWidth: 0,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═example string╗
 ║asdasdasdasdasd║
 ╚═══════════════╝`[1:]),
@@ -144,7 +144,7 @@ func TestBoxAnything(t *testing.T) {
 				anything:  _TestBoxAnythingTestBoxerStringer{},
 				charWidth: 0,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═example stringer╗
 ║    i did it     ║
 ╚═════════════════╝`[1:]),
@@ -159,7 +159,7 @@ func TestBoxAnything(t *testing.T) {
 				},
 				charWidth: 0,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═any struct═══════════╗
 ║{a field value 234243}║
 ╚══════════════════════╝`[1:]),
@@ -174,7 +174,7 @@ func TestBoxAnything(t *testing.T) {
 				},
 				charWidth: 0,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═any struct═══════════╗
 ║{a field value 234243}║
 ╚══════════════════════╝`[1:]),
@@ -189,7 +189,7 @@ func TestBoxAnything(t *testing.T) {
 				}(),
 				charWidth: 0,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═int pointer═════════╗
 ║0x000000000000000d 13║
 ╚═════════════════════╝`[1:]),
@@ -207,7 +207,7 @@ func TestBoxAnything(t *testing.T) {
 				}},
 				charWidth: 0,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═array══════════════════╗
 ║╔════════════════════╗  ║
 ║║0x0000000000000001 1║  ║
@@ -239,7 +239,7 @@ func TestBoxAnything(t *testing.T) {
 				}}[:],
 				charWidth: 0,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═array══════════════════╗
 ║╔════════════════════╗  ║
 ║║0x0000000000000001 1║  ║
@@ -284,7 +284,7 @@ func TestBoxedDump(t *testing.T) {
 				name: "super nice data",
 				data: []byte("1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aa1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aab"),
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═super nice data══════════════════════════════╗
 ║000|31 32 33 34 35 36 37 38 39 30 '1234567890'║
 ║010|61 62 63 64 65 66 67 68 69 6a 'abcdefghij'║
@@ -393,7 +393,7 @@ func TestBoxedDumpFixedWidth(t *testing.T) {
 				data:      []byte("1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aa1234567890abcdefghijklmnopqrstuvwxyz\3231234567890abcdefghijklmnopqrstuvwxyz\323aab"),
 				charWidth: 110,
 			},
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔═super nice data════════════════════════════════════════════════════════════════════════════════════════════╗
 ║ 000|31 32 33 34 35 36 37 38 39 30 61 62 63 64 65 66 67 68 69 6a 6b 6c 6d 6e 6f '1234567890abcdefghijklmno' ║
 ║ 025|70 71 72 73 74 75 76 77 78 79 7a d3 31 32 33 34 35 36 37 38 39 30 61 62 63 'pqrstuvwxyz.1234567890abc' ║
@@ -426,7 +426,7 @@ func TestBoxedDumpAnything(t *testing.T) {
 	}{
 		{
 			name: "dump it",
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔════════════╗
 ║<undumpable>║
 ╚════════════╝`[1:]),
@@ -454,7 +454,7 @@ func TestBoxedDumpAnythingFixedWidth(t *testing.T) {
 	}{
 		{
 			name: "dump it",
-			want: asciiBox(`
+			want: asciiBoxForTest(`
 ╔════════════╗
 ║<undumpable>║
 ╚════════════╝`[1:]),
