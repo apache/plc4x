@@ -21,6 +21,7 @@ package utils
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
 )
@@ -69,7 +70,7 @@ func TestAsciiBox_GetBoxName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.args.box.GetBoxName(); got != tt.want {
+			if got := tt.args.box.GetBoxName(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("AsciiBox_GetBoxName() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -113,8 +114,7 @@ func TestAsciiBox_ChangeBoxName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.want = trimBox(tt.want)
-			if got := tt.args.box.ChangeBoxName(tt.args.newName); got != tt.want {
+			if got := tt.args.box.ChangeBoxName(tt.args.newName); !assert.Equal(t, tt.want, got) {
 				t.Errorf("BoxSideBySide() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -161,7 +161,7 @@ func TestAsciiBox_IsEmpty(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.args.box.IsEmpty(); got != tt.want {
+			if got := tt.args.box.IsEmpty(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("AsciiBox_IsEmpty() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -186,8 +186,7 @@ func TestBoxSideBySide(t *testing.T) {
 008 0x: 39  30  61  62  63  64  65  66  '90abcdef'
 016 0x: 67  68  69  6a  6b  6c  6d  6e  'ghijklmn'
 024 0x: 6f  70  71  72  73  74  75  76  'opqrstuv'
-032 0x: 77  78  79  7a                  'wxyz    '
-`),
+032 0x: 77  78  79  7a                  'wxyz    '`[1:]),
 				box2: asciiBox(`
 ╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║  000 0x: 31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  '1234567890abcdefghijklmn'  ║
@@ -197,8 +196,7 @@ func TestBoxSideBySide(t *testing.T) {
 ║  096 0x: 6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  'klmnopqrstuvwxyz.1234567'  ║
 ║  120 0x: 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║
 ║  144 0x: 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-`),
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:]),
 			},
 			want: asciiBox(`
 000 0x: 31  32  33  34  35  36  37  38  '12345678'╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
@@ -209,8 +207,7 @@ func TestBoxSideBySide(t *testing.T) {
                                                   ║  096 0x: 6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  'klmnopqrstuvwxyz.1234567'  ║
                                                   ║  120 0x: 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║
                                                   ║  144 0x: 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║
-                                                  ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-`),
+                                                  ╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:]),
 		},
 		{
 			name: "another 2 boxes",
@@ -218,19 +215,16 @@ func TestBoxSideBySide(t *testing.T) {
 				box1: asciiBox(`
 ╔═exampleInt╗
 ║     4     ║
-╚═══════════╝
-`),
+╚═══════════╝`[1:]),
 				box2: asciiBox(`
 ╔═exampleInt╗
 ║     7     ║
-╚═══════════╝
-`),
+╚═══════════╝`[1:]),
 			},
 			want: asciiBox(`
 ╔═exampleInt╗╔═exampleInt╗
 ║     4     ║║     7     ║
-╚═══════════╝╚═══════════╝
-`),
+╚═══════════╝╚═══════════╝`[1:]),
 		},
 		{
 			name: "size difference first box",
@@ -239,20 +233,17 @@ func TestBoxSideBySide(t *testing.T) {
 ╔═exampleInt╗
 ║     4     ║
 ║     4     ║
-╚═══════════╝
-`),
+╚═══════════╝`[1:]),
 				box2: asciiBox(`
 ╔═exampleInt╗
 ║     7     ║
-╚═══════════╝
-`),
+╚═══════════╝`[1:]),
 			},
 			want: asciiBox(`
 ╔═exampleInt╗╔═exampleInt╗
 ║     4     ║║     7     ║
 ║     4     ║╚═══════════╝
-╚═══════════╝             
-`),
+╚═══════════╝             `[1:]),
 		},
 		{
 			name: "size difference second box",
@@ -260,27 +251,23 @@ func TestBoxSideBySide(t *testing.T) {
 				box1: asciiBox(`
 ╔═exampleInt╗
 ║     4     ║
-╚═══════════╝
-`),
+╚═══════════╝`[1:]),
 				box2: asciiBox(`
 ╔═exampleInt╗
 ║     7     ║
 ║     7     ║
-╚═══════════╝
-`),
+╚═══════════╝`[1:]),
 			},
 			want: asciiBox(`
 ╔═exampleInt╗╔═exampleInt╗
 ║     4     ║║     7     ║
 ╚═══════════╝║     7     ║
-             ╚═══════════╝
-`),
+             ╚═══════════╝`[1:]),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.want = trimBox(tt.want)
-			if got := AsciiBoxWriterDefault.BoxSideBySide(trimBox(tt.args.box1), trimBox(tt.args.box2)); got != tt.want {
+			if got := AsciiBoxWriterDefault.BoxSideBySide(tt.args.box1, tt.args.box2); !assert.Equal(t, tt.want, got) {
 				t.Errorf("BoxSideBySide() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -317,8 +304,7 @@ func TestBoxBelowBox(t *testing.T) {
 008 39  30  61  62  63  64  65  66  '90abcdef'
 016 67  68  69  6a  6b  6c  6d  6e  'ghijklmn'
 024 6f  70  71  72  73  74  75  76  'opqrstuv'
-032 77  78  79  7a                  'wxyz    '
-`),
+032 77  78  79  7a                  'wxyz    '`[1:]),
 				box2: asciiBox(`
 ╔═super nice data══════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
 ║  000 31  32  33  34  35  36  37  38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  '1234567890abcdefghijklmn'  ║
@@ -328,8 +314,7 @@ func TestBoxBelowBox(t *testing.T) {
 ║  096 6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  'klmnopqrstuvwxyz.1234567'  ║
 ║  120 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║
 ║  144 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-`),
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:]),
 			},
 			want: asciiBox(`
 000 31  32  33  34  35  36  37  38  '12345678'                                                                                      
@@ -345,8 +330,7 @@ func TestBoxBelowBox(t *testing.T) {
 ║  096 6b  6c  6d  6e  6f  70  71  72  73  74  75  76  77  78  79  7a  d3  31  32  33  34  35  36  37  'klmnopqrstuvwxyz.1234567'  ║
 ║  120 38  39  30  61  62  63  64  65  66  67  68  69  6a  6b  6c  6d  6e  6f  70  71  72  73  74  75  '890abcdefghijklmnopqrstu'  ║
 ║  144 76  77  78  79  7a  d3  61  61  62                                                              'vwxyz.aab               '  ║
-╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
-`),
+╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝`[1:]),
 		},
 		{
 			name: "different sized boxes",
@@ -354,13 +338,11 @@ func TestBoxBelowBox(t *testing.T) {
 				box1: asciiBox(`
 ╔═sampleField════════════╗
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 				box2: asciiBox(`
 ╔═sampleField╗
 ║123123123123║
-╚════════════╝
-`),
+╚════════════╝`[1:]),
 			},
 			want: asciiBox(`
 ╔═sampleField════════════╗
@@ -368,14 +350,12 @@ func TestBoxBelowBox(t *testing.T) {
 ╚════════════════════════╝
 ╔═sampleField╗            
 ║123123123123║            
-╚════════════╝            
-`),
+╚════════════╝            `[1:]),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.want = trimBox(tt.want)
-			if got := AsciiBoxWriterDefault.BoxBelowBox(trimBox(tt.args.box1), trimBox(tt.args.box2)); got != tt.want {
+			if got := AsciiBoxWriterDefault.BoxBelowBox(tt.args.box1, tt.args.box2); !assert.Equal(t, tt.want, got) {
 				t.Errorf("BoxSideBySide() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -403,8 +383,7 @@ func TestBoxString(t *testing.T) {
 			want: asciiBox(`
 ╔═sampleField╗
 ║123123123123║
-╚════════════╝
-`),
+╚════════════╝`[1:]),
 		},
 		{
 			name: "simplebox-unamed",
@@ -416,8 +395,7 @@ func TestBoxString(t *testing.T) {
 			want: asciiBox(`
 ╔════════════╗
 ║123123123123║
-╚════════════╝
-`),
+╚════════════╝`[1:]),
 		},
 		{
 			name: "simplebox 2",
@@ -430,8 +408,7 @@ func TestBoxString(t *testing.T) {
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 		},
 		{
 			name: "simplebox with too long name",
@@ -444,14 +421,12 @@ func TestBoxString(t *testing.T) {
 ╔═sampleFieldsampleFieldsampleFieldsampleField╗
 ║                123123123123                 ║
 ║          123123123123123123123123           ║
-╚═════════════════════════════════════════════╝
-`),
+╚═════════════════════════════════════════════╝`[1:]),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.want = trimBox(tt.want)
-			if got := AsciiBoxWriterDefault.BoxString(tt.args.name, tt.args.data, tt.args.charWidth); got != tt.want {
+			if got := AsciiBoxWriterDefault.BoxString(tt.args.name, tt.args.data, tt.args.charWidth); !assert.Equal(t, tt.want, got) {
 				t.Errorf("BoxString() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -487,14 +462,12 @@ func TestAlignBoxes(t *testing.T) {
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 				},
 				desiredWith: 1000,
 			},
@@ -502,8 +475,7 @@ func TestAlignBoxes(t *testing.T) {
 ╔═sampleField════════════╗╔═sampleField════════════╗
 ║      123123123123      ║║      123123123123      ║
 ║123123ABABABABABAB123123║║123123123123123123123123║
-╚════════════════════════╝╚════════════════════════╝
-`),
+╚════════════════════════╝╚════════════════════════╝`[1:]),
 		},
 		{
 			name: "not enough space",
@@ -513,14 +485,12 @@ func TestAlignBoxes(t *testing.T) {
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 				},
 				desiredWith: 0,
 			},
@@ -532,8 +502,7 @@ func TestAlignBoxes(t *testing.T) {
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 		},
 		{
 			name: "not enough space should result in multiple rows",
@@ -543,50 +512,42 @@ func TestAlignBoxes(t *testing.T) {
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 				},
 				desiredWith: 65,
 			},
@@ -606,8 +567,7 @@ func TestAlignBoxes(t *testing.T) {
 ╔═sampleField════════════╗╔═sampleField════════════╗
 ║      123123123123      ║║      123123123123      ║
 ║123123ABABABABABAB123123║║123123123123123123123123║
-╚════════════════════════╝╚════════════════════════╝
-`),
+╚════════════════════════╝╚════════════════════════╝`[1:]),
 		},
 		{
 			name: "not enough space should result in multiple rows (3 columns)",
@@ -617,50 +577,42 @@ func TestAlignBoxes(t *testing.T) {
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123ABABABABABAB123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 					asciiBox(`
 ╔═sampleField════════════╗
 ║      123123123123      ║
 ║123123123123123123123123║
-╚════════════════════════╝
-`),
+╚════════════════════════╝`[1:]),
 				},
 				desiredWith: 78,
 			},
@@ -676,17 +628,12 @@ func TestAlignBoxes(t *testing.T) {
 ╔═sampleField════════════╗╔═sampleField════════════╗                          
 ║      123123123123      ║║      123123123123      ║                          
 ║123123ABABABABABAB123123║║123123123123123123123123║                          
-╚════════════════════════╝╚════════════════════════╝                          
-`),
+╚════════════════════════╝╚════════════════════════╝                          `[1:]),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			for i, box := range tt.args.boxes {
-				tt.args.boxes[i] = trimBox(box)
-			}
-			tt.want = trimBox(tt.want)
-			if got := AsciiBoxWriterDefault.AlignBoxes(tt.args.boxes, tt.args.desiredWith); got != tt.want {
+			if got := AsciiBoxWriterDefault.AlignBoxes(tt.args.boxes, tt.args.desiredWith); !assert.Equal(t, tt.want, got) {
 				t.Errorf("AlignBoxes() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -704,8 +651,7 @@ func TestAsciiBox_width(t *testing.T) {
 			m: asciiBox(`
 123123123123123
 123123123123123
-123123123123123
-`),
+123123123123123`[1:]),
 			want: 15,
 		},
 		{
@@ -713,14 +659,13 @@ func TestAsciiBox_width(t *testing.T) {
 			m: asciiBox(`
 123123123123123
 123123123123123123123123123123
-123123123123123
-`),
+123123123123123`[1:]),
 			want: 30,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.m.Width(); got != tt.want {
+			if got := tt.m.Width(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("width() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -743,25 +688,21 @@ func Test_mergeHorizontal(t *testing.T) {
 					asciiBox(`
 123123123
 123123123
-123123123
-`),
+123123123`[1:]),
 					asciiBox(`
 abcabcabc
 abcabcabc
-abcabcabc
-`),
+abcabcabc`[1:]),
 					asciiBox(`
 zxyzxyzxy
 zxyzxyzxy
-zxyzxyzxy
-`),
+zxyzxyzxy`[1:]),
 				},
 			},
 			want: asciiBox(`
 123123123abcabcabczxyzxyzxy
 123123123abcabcabczxyzxyzxy
-123123123abcabcabczxyzxyzxy
-`),
+123123123abcabcabczxyzxyzxy`[1:]),
 		},
 		{
 			name: "3 different",
@@ -770,34 +711,26 @@ zxyzxyzxy
 					asciiBox(`
 123123123
 123123123
-123123123
-`),
+123123123`[1:]),
 					asciiBox(`
 abcabcabc
 abcabcabcabcabcabcabcabcabc
-abcabcabc
-`),
+abcabcabc`[1:]),
 					asciiBox(`
 zxyzxyzxy
 zxyzxyzxy
-zxyzxyzxy
-`),
+zxyzxyzxy`[1:]),
 				},
 			},
 			want: asciiBox(`
 123123123abcabcabc                  zxyzxyzxy
 123123123abcabcabcabcabcabcabcabcabczxyzxyzxy
-123123123abcabcabc                  zxyzxyzxy
-`),
+123123123abcabcabc                  zxyzxyzxy`[1:]),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			for i, box := range tt.args.boxes {
-				tt.args.boxes[i] = trimBox(box)
-			}
-			tt.want = trimBox(tt.want)
-			if got := AsciiBoxWriterDefault.(*asciiBoxWriter).mergeHorizontal(tt.args.boxes); got != tt.want {
+			if got := AsciiBoxWriterDefault.(*asciiBoxWriter).mergeHorizontal(tt.args.boxes); !assert.Equal(t, tt.want, got) {
 				t.Errorf("mergeHorizontal() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -820,15 +753,13 @@ func TestExpandBox(t *testing.T) {
 				box: asciiBox(`
 123123123
 123123123
-123123123
-`),
+123123123`[1:]),
 				width: 100,
 			},
 			want: asciiBox(`
 123123123                                                                                           
 123123123                                                                                           
-123123123                                                                                           
-`),
+123123123                                                                                           `[1:]),
 		},
 		{
 			name: "Big expand",
@@ -836,22 +767,18 @@ func TestExpandBox(t *testing.T) {
 				box: asciiBox(`
 123123123
 123123123
-123123123
-`),
+123123123`[1:]),
 				width: 10000,
 			},
 			want: asciiBox(fmt.Sprintf(`
 123123123%[1]s
 123123123%[1]s
-123123123%[1]s
-`, strings.Repeat(" ", 10000-9))),
+123123123%[1]s`[1:], strings.Repeat(" ", 10000-9))),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.args.box = trimBox(tt.args.box)
-			tt.want = trimBox(tt.want)
-			if got := AsciiBoxWriterDefault.(*asciiBoxWriter).expandBox(tt.args.box, tt.args.width); got != tt.want {
+			if got := AsciiBoxWriterDefault.(*asciiBoxWriter).expandBox(tt.args.box, tt.args.width); !assert.Equal(t, tt.want, got) {
 				t.Errorf("mergeHorizontal() = '\n%v\n', want '\n%v\n'", got, tt.want)
 			}
 		})
@@ -868,10 +795,6 @@ func BenchmarkExpandBox(b *testing.B) {
 		AsciiBoxWriterDefault.(*asciiBoxWriter).expandBox(box, 10000)
 	}
 	DebugAsciiBox = oldSetting
-}
-
-func trimBox(box AsciiBox) AsciiBox {
-	return AsciiBox{strings.Trim(box.String(), "\n"), AsciiBoxWriterDefault.(*asciiBoxWriter), AsciiBoxWriterDefault.(*asciiBoxWriter).compressBoxSet()}
 }
 
 func asciiBox(value string) AsciiBox {
