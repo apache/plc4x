@@ -210,6 +210,7 @@ public class ProfinetDevice implements PlcSubscriber {
                                 break;
                             case WAITAPPLRDY:
                                 Thread.sleep(cycleTime);
+                                break;
                             case APPLRDY:
                                 ApplicationReadyResponse applicationReadyResponse = new ApplicationReadyResponse(deviceContext.getActivityUuid(), deviceContext.getSequenceNumber());
                                 recordIdAndSend(applicationReadyResponse);
@@ -591,7 +592,7 @@ public class ProfinetDevice implements PlcSubscriber {
                 if (dceRpc_packet.getPayload().getPacketType() == DceRpc_PacketType.RESPONSE) {
                     final PnIoCm_Packet_Res connectResponse = (PnIoCm_Packet_Res) dceRpc_packet.getPayload();
                     if (connectResponse.getErrorCode() == 0) {
-                        deviceContext.setState(ProfinetDeviceState.STARTUP);
+                        deviceContext.setState(ProfinetDeviceState.PREMED);
                         responseHandled.complete(true);
                         for (PnIoCm_Block module : connectResponse.getBlocks()) {
                             if (module.getBlockType() == PnIoCm_BlockType.MODULE_DIFF_BLOCK) {

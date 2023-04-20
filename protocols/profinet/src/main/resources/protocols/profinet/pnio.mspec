@@ -292,7 +292,7 @@
             [implicit      uint 16          blockLength      'lengthInBytes - 4']
             [simple        uint 8           blockVersionHigh                    ]
             [simple        uint 8           blockVersionLow                     ]
-            [simple   PascalString                    stationName                                   ]
+            [simple   PascalString16BitLength            stationName            ]
             [padding  uint 8      pad '0x00'          '20 - 6 - (stationName.stringLength)'              ]
         ]
     ]
