@@ -24,6 +24,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"github.com/pkg/errors"
 	"os"
 	"runtime/debug"
 	"strconv"
@@ -56,101 +57,108 @@ type ParserSerializerTestcase struct {
 }
 
 func (p *ParserSerializerTestsuite) Run(t *testing.T, testcase ParserSerializerTestcase) error {
-	t.Run(testcase.name, func(t *testing.T) {
-		t.Logf("running testsuite: %s test: %s", p.name, testcase.name)
+	t.Logf("running testsuite: %s test: %s", p.name, testcase.name)
 
-		// Get the raw input by decoding the hex-encoded binary input
-		rawInput, err := hex.DecodeString(testcase.rawInputText)
-		if err != nil {
-			t.Errorf("Error decoding test input")
-			return
-		}
-		var readBuffer utils.ReadBuffer
-		if p.byteOrder == binary.LittleEndian {
-			readBuffer = utils.NewReadBufferByteBased(rawInput, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		} else {
-			readBuffer = utils.NewReadBufferByteBased(rawInput)
-		}
+	// Get the raw input by decoding the hex-encoded binary input
+	t.Log("decoding input")
+	rawInput, err := hex.DecodeString(testcase.rawInputText)
+	if err != nil {
+		return errors.Wrap(err, "Error decoding test input")
+	}
 
-		// Parse the input according to the settings of the testcase
-		msg, err := p.parser.Parse(testcase.rootType, testcase.parserArguments, readBuffer)
-		if err != nil {
-			t.Error("Error parsing input data: ", err)
-			return
-		}
+	// Create the right read buffer
+	t.Log("creating read buffer")
+	var readBuffer utils.ReadBuffer
+	if p.byteOrder == binary.LittleEndian {
+		readBuffer = utils.NewReadBufferByteBased(rawInput, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
+	} else {
+		readBuffer = utils.NewReadBufferByteBased(rawInput)
+	}
 
-		{
-			// First try to use the native xml writer
-			serializable := msg.(utils.Serializable)
-			buffer := utils.NewXmlWriteBuffer()
-			if err := serializable.SerializeWithWriteBuffer(context.Background(), buffer); err == nil {
-				actualXml := buffer.GetXmlString()
-				if err := CompareResults(t, []byte(actualXml), []byte(testcase.referenceXml)); err != nil {
-					border := strings.Repeat("=", 100)
-					fmt.Printf(
-						"\n"+
-							// Border
-							"%[1]s\n"+
-							// Testcase name
-							"%[4]s\n"+
-							// diff detected message
-							"Diff detected\n"+
-							// Border
-							"%[1]s\n"+
-							// xml
-							"%[2]s\n"+
-							// Border
-							"%[1]s\n%[1]s\n"+
-							// Text
-							"Differences were found after parsing (Use the above xml in the testsuite to disable this warning).\n"+
-							// Diff
-							"%[3]s\n"+
-							// Double Border
-							"%[1]s\n%[1]s\n",
-						border,
-						actualXml,
-						err,
-						testcase.name)
-					assert.Equal(t, testcase.referenceXml, actualXml)
-					t.Error("Error comparing the results: " + err.Error())
-					return
-				}
+	// Parse the input according to the settings of the testcase
+	t.Log("parsing input")
+	msg, err := p.parser.Parse(testcase.rootType, testcase.parserArguments, readBuffer)
+	if err != nil {
+		return errors.Wrap(err, "Error parsing input data")
+	}
+
+	t.Log("Try serializing")
+	{
+		// First try to use the native xml writer
+		serializable := msg.(utils.Serializable)
+		buffer := utils.NewXmlWriteBuffer()
+		if err := serializable.SerializeWithWriteBuffer(context.Background(), buffer); err == nil {
+			actualXml := buffer.GetXmlString()
+			if err := CompareResults(t, []byte(actualXml), []byte(testcase.referenceXml)); err != nil {
+				border := strings.Repeat("=", 100)
+				fmt.Printf(
+					"\n"+
+						// Border
+						"%[1]s\n"+
+						// Testcase name
+						"%[4]s\n"+
+						// diff detected message
+						"Diff detected\n"+
+						// Border
+						"%[1]s\n"+
+						// xml
+						"%[2]s\n"+
+						// Border
+						"%[1]s\n%[1]s\n"+
+						// Text
+						"Differences were found after parsing (Use the above xml in the testsuite to disable this warning).\n"+
+						// Diff
+						"%[3]s\n"+
+						// Double Border
+						"%[1]s\n%[1]s\n",
+					border,
+					actualXml,
+					err,
+					testcase.name)
+				assert.Equal(t, testcase.referenceXml, actualXml)
+				return errors.Wrap(err, "Error comparing the results")
 			}
 		}
+	}
 
-		// If all was ok, serialize the object again
-		s, ok := msg.(utils.Serializable)
-		if !ok {
-			t.Error("Couldn't cast message to Serializable")
-			return
-		}
-		var writeBuffer utils.WriteBufferByteBased
-		if p.byteOrder == binary.LittleEndian {
-			writeBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-		} else {
-			writeBuffer = utils.NewWriteBufferByteBased()
-		}
-		err = s.SerializeWithWriteBuffer(context.Background(), writeBuffer)
-		if !ok {
-			t.Error("Couldn't serialize message back to byte array")
-			return
-		}
+	// If all was ok, serialize the object again
+	s, ok := msg.(utils.Serializable)
+	if !ok {
+		return errors.New("Couldn't cast message to Serializable")
+	}
+	t.Log("Serializing went ok")
 
-		// Check if the output matches in size and content
-		rawOutput := writeBuffer.GetBytes()
-		if len(rawInput) != len(rawOutput) {
-			t.Errorf("Missmatched number of bytes expected ->%d != %d<-actual\nexpected:\t%x\nactual:\t\t%x", len(rawInput), len(rawOutput), rawInput, rawOutput)
+	// Create the write buffer
+	t.Log("creating write buffer")
+	var writeBuffer utils.WriteBufferByteBased
+	if p.byteOrder == binary.LittleEndian {
+		writeBuffer = utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
+	} else {
+		writeBuffer = utils.NewWriteBufferByteBased()
+	}
+
+	// Serialize the message
+	t.Log("Serialize message")
+	err = s.SerializeWithWriteBuffer(context.Background(), writeBuffer)
+	if !ok {
+		return errors.New("Couldn't serialize message back to byte array")
+	}
+
+	// Check if the output matches in size and content
+	t.Log("comparing output")
+	rawOutput := writeBuffer.GetBytes()
+	if len(rawInput) != len(rawOutput) {
+		t.Errorf("Missmatched number of bytes expected ->%d != %d<-actual\nexpected:\t%x\nactual:\t\t%x", len(rawInput), len(rawOutput), rawInput, rawOutput)
+		t.Errorf("Hexdumps:\n%s", utils.DiffHex(rawInput, rawOutput))
+		return errors.New("length doesn't match")
+	}
+	for i, val := range rawInput {
+		if rawOutput[i] != val {
+			t.Error("Raw output doesn't match input at position: " + strconv.Itoa(i))
 			t.Errorf("Hexdumps:\n%s", utils.DiffHex(rawInput, rawOutput))
-			return
+			return errors.New("index mismatch")
 		}
-		for i, val := range rawInput {
-			if rawOutput[i] != val {
-				t.Error("Raw output doesn't match input at position: " + strconv.Itoa(i))
-				t.Errorf("Hexdumps:\n%s", utils.DiffHex(rawInput, rawOutput))
-				return
-			}
-		}
-	})
+	}
 	return nil
 }
 
