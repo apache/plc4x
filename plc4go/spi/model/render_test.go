@@ -28,27 +28,32 @@ import (
 
 func TestNonPanickingStrings(t *testing.T) {
 	suts := []fmt.Stringer{
+		&DefaultArrayInfo{},
+		&DefaultPlcBrowseEvent{},
+		&DefaultPlcBrowseItem{},
+		&DefaultPlcBrowseRequest{},
+		&DefaultPlcBrowseRequestResult{},
 		&DefaultPlcBrowseResponse{},
+		&DefaultPlcBrowseResponseItem{},
 		&DefaultPlcConsumerRegistration{},
 		&DefaultPlcDiscoveryItem{},
 		&DefaultPlcReadRequest{},
 		&DefaultPlcReadRequestResult{},
 		&DefaultPlcReadResponse{},
 		&DefaultPlcSubscriptionEvent{},
+		&DefaultPlcSubscriptionEventItem{},
 		&DefaultPlcSubscriptionHandle{},
 		&DefaultPlcSubscriptionRequest{},
 		&DefaultPlcSubscriptionRequestResult{},
 		&DefaultPlcSubscriptionResponse{},
+		&DefaultPlcSubscriptionResponseItem{},
+		&DefaultPlcTagRequest{},
 		//&DefaultPlcUnsubscriptionRequest{}, //TODO: empty file
 		&DefaultPlcUnsubscriptionRequestResult{},
 		//&DefaultPlcUnsubscriptionResponse{}, //TODO: empty file
 		&DefaultPlcWriteRequest{},
 		&DefaultPlcWriteRequestResult{},
 		&DefaultPlcWriteResponse{},
-		&DefaultPlcBrowseRequestResult{},
-		&DefaultPlcBrowseRequest{},
-		&DefaultPlcBrowseItem{},
-		&DefaultPlcBrowseEvent{},
 	}
 	for _, sut := range suts {
 		t.Run(fmt.Sprintf("%T", sut), func(t *testing.T) {

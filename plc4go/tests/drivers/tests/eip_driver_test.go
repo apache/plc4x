@@ -29,12 +29,6 @@ import (
 )
 
 func TestEIPDriver(t *testing.T) {
-	/*log.Logger = log.
-		With().Caller().Logger().
-		Output(zerolog.ConsoleWriter{Out: os.Stderr}).
-		Level(zerolog.DebugLevel)
-	config.TraceTransactionManagerWorkers = true
-	config.TraceTransactionManagerTransactions = true
-	config.TraceDefaultMessageCodecWorker = true*/
+	/*initializetest.GoFullDebug()*/
 	testutils.RunDriverTestsuite(t, eip.NewDriver(), "assets/testing/protocols/eip/DriverTestsuite.xml", eipIO.EipXmlParserHelper{})
 }
