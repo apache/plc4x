@@ -19,20 +19,24 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionRequestResult
 type DefaultPlcSubscriptionRequestResult struct {
-	Request  model.PlcSubscriptionRequest
-	Response model.PlcSubscriptionResponse
+	Request  apiModel.PlcSubscriptionRequest
+	Response apiModel.PlcSubscriptionResponse
 	Err      error
 }
 
-func (d *DefaultPlcSubscriptionRequestResult) GetRequest() model.PlcSubscriptionRequest {
+func NewDefaultPlcSubscriptionRequestResult(Request apiModel.PlcSubscriptionRequest, Response apiModel.PlcSubscriptionResponse, Err error) apiModel.PlcSubscriptionRequestResult {
+	return &DefaultPlcSubscriptionRequestResult{Request, Response, Err}
+}
+
+func (d *DefaultPlcSubscriptionRequestResult) GetRequest() apiModel.PlcSubscriptionRequest {
 	return d.Request
 }
 
-func (d *DefaultPlcSubscriptionRequestResult) GetResponse() model.PlcSubscriptionResponse {
+func (d *DefaultPlcSubscriptionRequestResult) GetResponse() apiModel.PlcSubscriptionResponse {
 	return d.Response
 }
 

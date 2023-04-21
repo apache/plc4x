@@ -20,17 +20,17 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadResponse
 type DefaultPlcReadResponse struct {
-	request model.PlcReadRequest
+	request apiModel.PlcReadRequest
 	values  map[string]*ResponseItem
 }
 
-func NewDefaultPlcReadResponse(request model.PlcReadRequest, responseCodes map[string]model.PlcResponseCode, values map[string]values.PlcValue) model.PlcReadResponse {
+func NewDefaultPlcReadResponse(request apiModel.PlcReadRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]values.PlcValue) apiModel.PlcReadResponse {
 	valueMap := map[string]*ResponseItem{}
 	for name, code := range responseCodes {
 		value := values[name]
@@ -61,11 +61,11 @@ func (d *DefaultPlcReadResponse) GetTagNames() []string {
 	return tagNames
 }
 
-func (d *DefaultPlcReadResponse) GetRequest() model.PlcReadRequest {
+func (d *DefaultPlcReadResponse) GetRequest() apiModel.PlcReadRequest {
 	return d.request
 }
 
-func (d *DefaultPlcReadResponse) GetResponseCode(name string) model.PlcResponseCode {
+func (d *DefaultPlcReadResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
 	return d.values[name].GetCode()
 }
 

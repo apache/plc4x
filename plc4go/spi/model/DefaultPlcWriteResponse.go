@@ -20,16 +20,16 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcWriteResponse
 type DefaultPlcWriteResponse struct {
-	request       model.PlcWriteRequest
-	responseCodes map[string]model.PlcResponseCode
+	request       apiModel.PlcWriteRequest
+	responseCodes map[string]apiModel.PlcResponseCode
 }
 
-func NewDefaultPlcWriteResponse(request model.PlcWriteRequest, responseCodes map[string]model.PlcResponseCode) model.PlcWriteResponse {
+func NewDefaultPlcWriteResponse(request apiModel.PlcWriteRequest, responseCodes map[string]apiModel.PlcResponseCode) apiModel.PlcWriteResponse {
 	return &DefaultPlcWriteResponse{
 		request:       request,
 		responseCodes: responseCodes,
@@ -55,10 +55,10 @@ func (d *DefaultPlcWriteResponse) GetTagNames() []string {
 	return tagNames
 }
 
-func (d *DefaultPlcWriteResponse) GetRequest() model.PlcWriteRequest {
+func (d *DefaultPlcWriteResponse) GetRequest() apiModel.PlcWriteRequest {
 	return d.request
 }
 
-func (d *DefaultPlcWriteResponse) GetResponseCode(name string) model.PlcResponseCode {
+func (d *DefaultPlcWriteResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
 	return d.responseCodes[name]
 }

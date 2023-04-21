@@ -20,7 +20,7 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"math/rand"
 )
@@ -28,12 +28,12 @@ import (
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcConsumerRegistration
 type DefaultPlcConsumerRegistration struct {
 	consumerId    int
-	consumer      model.PlcSubscriptionEventConsumer `ignore:"true"` // Function not renderable
+	consumer      apiModel.PlcSubscriptionEventConsumer `ignore:"true"` // Function not renderable
 	plcSubscriber spi.PlcSubscriber
-	handles       []model.PlcSubscriptionHandle
+	handles       []apiModel.PlcSubscriptionHandle
 }
 
-func NewDefaultPlcConsumerRegistration(plcSubscriber spi.PlcSubscriber, consumer model.PlcSubscriptionEventConsumer, handles ...model.PlcSubscriptionHandle) *DefaultPlcConsumerRegistration {
+func NewDefaultPlcConsumerRegistration(plcSubscriber spi.PlcSubscriber, consumer apiModel.PlcSubscriptionEventConsumer, handles ...apiModel.PlcSubscriptionHandle) apiModel.PlcConsumerRegistration {
 	return &DefaultPlcConsumerRegistration{
 		// TODO: we need a way to hash the consumer
 		consumerId:    rand.Int(),
@@ -47,7 +47,7 @@ func (d *DefaultPlcConsumerRegistration) GetConsumerId() int {
 	return d.consumerId
 }
 
-func (d *DefaultPlcConsumerRegistration) GetSubscriptionHandles() []model.PlcSubscriptionHandle {
+func (d *DefaultPlcConsumerRegistration) GetSubscriptionHandles() []apiModel.PlcSubscriptionHandle {
 	return d.handles
 }
 

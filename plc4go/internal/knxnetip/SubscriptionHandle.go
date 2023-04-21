@@ -34,8 +34,9 @@ type SubscriptionHandle struct {
 }
 
 func NewSubscriptionHandle(subscriber *Subscriber, tagName string, tag Tag, tagType spiModel.SubscriptionType, interval time.Duration) *SubscriptionHandle {
+	handle := spiModel.NewDefaultPlcSubscriptionHandle(subscriber)
 	s := &SubscriptionHandle{
-		DefaultPlcSubscriptionHandle: spiModel.NewDefaultPlcSubscriptionHandle(subscriber),
+		DefaultPlcSubscriptionHandle: handle.(*spiModel.DefaultPlcSubscriptionHandle),
 		tagName:                      tagName,
 		tag:                          tag,
 		tagType:                      tagType,

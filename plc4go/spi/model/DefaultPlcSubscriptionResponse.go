@@ -20,21 +20,22 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/pkg/errors"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionResponse
 type DefaultPlcSubscriptionResponse struct {
-	request model.PlcSubscriptionRequest
+	request apiModel.PlcSubscriptionRequest
 	values  map[string]*DefaultPlcSubscriptionResponseItem
 }
 
-func NewDefaultPlcSubscriptionResponse(request model.PlcSubscriptionRequest, responseCodes map[string]model.PlcResponseCode, values map[string]model.PlcSubscriptionHandle) *DefaultPlcSubscriptionResponse {
+func NewDefaultPlcSubscriptionResponse(request apiModel.PlcSubscriptionRequest, responseCodes map[string]apiModel.PlcResponseCode, values map[string]apiModel.PlcSubscriptionHandle) apiModel.PlcSubscriptionResponse {
 	valueMap := map[string]*DefaultPlcSubscriptionResponseItem{}
 	for name, code := range responseCodes {
 		value := values[name]
-		valueMap[name] = NewSubscriptionResponseItem(code, value)
+		valueMap[name] = NewDefaultPlcSubscriptionResponseItem(code, value)
 	}
 	plcSubscriptionResponse := DefaultPlcSubscriptionResponse{
 		request: request,
@@ -56,7 +57,7 @@ func (d *DefaultPlcSubscriptionResponse) IsAPlcMessage() bool {
 	return true
 }
 
-func (d *DefaultPlcSubscriptionResponse) GetRequest() model.PlcSubscriptionRequest {
+func (d *DefaultPlcSubscriptionResponse) GetRequest() apiModel.PlcSubscriptionRequest {
 	return d.request
 }
 
@@ -75,19 +76,19 @@ func (d *DefaultPlcSubscriptionResponse) GetTagNames() []string {
 	return tagNames
 }
 
-func (d *DefaultPlcSubscriptionResponse) GetResponseCode(name string) model.PlcResponseCode {
+func (d *DefaultPlcSubscriptionResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
 	return d.values[name].GetCode()
 }
 
-func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandle(name string) (model.PlcSubscriptionHandle, error) {
-	if d.values[name].GetCode() != model.PlcResponseCode_OK {
+func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandle(name string) (apiModel.PlcSubscriptionHandle, error) {
+	if d.values[name].GetCode() != apiModel.PlcResponseCode_OK {
 		return nil, errors.Errorf("%s failed to subscribe", name)
 	}
 	return d.values[name].GetSubscriptionHandle(), nil
 }
 
-func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandles() []model.PlcSubscriptionHandle {
-	result := make([]model.PlcSubscriptionHandle, 0, len(d.values))
+func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandles() []apiModel.PlcSubscriptionHandle {
+	result := make([]apiModel.PlcSubscriptionHandle, 0, len(d.values))
 	for _, value := range d.values {
 		result = append(result, value.GetSubscriptionHandle())
 	}

@@ -384,7 +384,7 @@ func (m *Subscriber) offerSAL(sal readWriteModel.MonitoredSAL, subscriptionHandl
 
 func (m *Subscriber) Register(consumer apiModel.PlcSubscriptionEventConsumer, handles []apiModel.PlcSubscriptionHandle) apiModel.PlcConsumerRegistration {
 	consumerRegistration := spiModel.NewDefaultPlcConsumerRegistration(m, consumer, handles...)
-	m.consumers[consumerRegistration] = consumer
+	m.consumers[consumerRegistration.(*spiModel.DefaultPlcConsumerRegistration)] = consumer
 	return consumerRegistration
 }
 

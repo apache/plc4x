@@ -20,17 +20,17 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseResponse
 type DefaultPlcBrowseResponse struct {
-	request      model.PlcBrowseRequest
-	responseCode model.PlcResponseCode `stringer:"true"`
+	request      apiModel.PlcBrowseRequest
+	responseCode apiModel.PlcResponseCode `stringer:"true"`
 	results      map[string]*DefaultPlcBrowseResponseItem
 }
 
-func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseItem, responseCodes map[string]model.PlcResponseCode) *DefaultPlcBrowseResponse {
+func NewDefaultPlcBrowseResponse(request apiModel.PlcBrowseRequest, results map[string][]apiModel.PlcBrowseItem, responseCodes map[string]apiModel.PlcResponseCode) apiModel.PlcBrowseResponse {
 	res := map[string]*DefaultPlcBrowseResponseItem{}
 	for name, code := range responseCodes {
 		value := results[name]
@@ -46,7 +46,7 @@ func (d *DefaultPlcBrowseResponse) IsAPlcMessage() bool {
 	return true
 }
 
-func (d *DefaultPlcBrowseResponse) GetRequest() model.PlcBrowseRequest {
+func (d *DefaultPlcBrowseResponse) GetRequest() apiModel.PlcBrowseRequest {
 	return d.request
 }
 
@@ -58,10 +58,10 @@ func (d *DefaultPlcBrowseResponse) GetQueryNames() []string {
 	return queryNames
 }
 
-func (d *DefaultPlcBrowseResponse) GetResponseCode(name string) model.PlcResponseCode {
+func (d *DefaultPlcBrowseResponse) GetResponseCode(name string) apiModel.PlcResponseCode {
 	return d.results[name].GetCode()
 }
 
-func (d *DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseItem {
+func (d *DefaultPlcBrowseResponse) GetQueryResults(queryName string) []apiModel.PlcBrowseItem {
 	return d.results[queryName].GetResults()
 }

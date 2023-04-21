@@ -28,7 +28,7 @@ import (
 )
 
 type SubscriptionEvent struct {
-	spiModel.DefaultPlcSubscriptionEvent
+	*spiModel.DefaultPlcSubscriptionEvent
 	address map[string]string
 	sources map[string]string
 }
@@ -45,7 +45,8 @@ func NewSubscriptionEvent(
 		address: address,
 		sources: sources,
 	}
-	subscriptionEvent.DefaultPlcSubscriptionEvent = spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
+	event := spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, tags, types, intervals, responseCodes, values)
+	subscriptionEvent.DefaultPlcSubscriptionEvent = event.(*spiModel.DefaultPlcSubscriptionEvent)
 	return subscriptionEvent
 }
 

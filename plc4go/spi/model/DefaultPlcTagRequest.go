@@ -20,28 +20,28 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcTagRequest
 type DefaultPlcTagRequest struct {
-	tags     map[string]model.PlcTag
+	tags     map[string]apiModel.PlcTag
 	tagNames []string `ignore:"true"`
+}
+
+func NewDefaultPlcTagRequest(tags map[string]apiModel.PlcTag, tagNames []string) *DefaultPlcTagRequest {
+	return &DefaultPlcTagRequest{tags: tags, tagNames: tagNames}
 }
 
 func (d *DefaultPlcTagRequest) IsAPlcMessage() bool {
 	return true
 }
 
-func NewDefaultPlcTagRequest(tags map[string]model.PlcTag, tagNames []string) DefaultPlcTagRequest {
-	return DefaultPlcTagRequest{tags: tags, tagNames: tagNames}
-}
-
 func (d *DefaultPlcTagRequest) GetTagNames() []string {
 	return d.tagNames
 }
 
-func (d *DefaultPlcTagRequest) GetTag(name string) model.PlcTag {
+func (d *DefaultPlcTagRequest) GetTag(name string) apiModel.PlcTag {
 	if tag, ok := d.tags[name]; ok {
 		return tag
 	}

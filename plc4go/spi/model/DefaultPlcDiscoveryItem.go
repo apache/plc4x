@@ -20,7 +20,8 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"net/url"
 )
 
@@ -31,7 +32,25 @@ type DefaultPlcDiscoveryItem struct {
 	TransportUrl  url.URL `ignore:"true"` // TODO: find a way to render this as string (e.g. stringer annotation or something)
 	Options       map[string][]string
 	Name          string
-	Attributes    map[string]values.PlcValue
+	Attributes    map[string]apiValues.PlcValue
+}
+
+func NewDefaultPlcDiscoveryItem(
+	ProtocolCode string,
+	TransportCode string,
+	TransportUrl url.URL,
+	Options map[string][]string,
+	Name string,
+	Attributes map[string]apiValues.PlcValue,
+) apiModel.PlcDiscoveryItem {
+	return &DefaultPlcDiscoveryItem{
+		ProtocolCode,
+		TransportCode,
+		TransportUrl,
+		Options,
+		Name,
+		Attributes,
+	}
 }
 
 func (d *DefaultPlcDiscoveryItem) GetProtocolCode() string {
@@ -54,7 +73,7 @@ func (d *DefaultPlcDiscoveryItem) GetName() string {
 	return d.Name
 }
 
-func (d *DefaultPlcDiscoveryItem) GetAttributes() map[string]values.PlcValue {
+func (d *DefaultPlcDiscoveryItem) GetAttributes() map[string]apiValues.PlcValue {
 	return d.Attributes
 }
 

@@ -19,4 +19,34 @@
 
 package model
 
-// TODO: what is this?
+import (
+	"context"
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
+)
+
+type DefaultPlcUnsubscriptionRequest struct {
+	// TODO: implement
+}
+
+func NewDefaultPlcUnsubscriptionRequest() *DefaultPlcUnsubscriptionRequest {
+	return &DefaultPlcUnsubscriptionRequest{}
+}
+
+func (d DefaultPlcUnsubscriptionRequest) Execute() <-chan model.PlcUnsubscriptionRequestResult {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (d DefaultPlcUnsubscriptionRequest) ExecuteWithContext(ctx context.Context) <-chan model.PlcUnsubscriptionRequestResult {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (d DefaultPlcUnsubscriptionRequest) String() string {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (d DefaultPlcUnsubscriptionRequest) IsAPlcMessage() bool {
+	return true
+}

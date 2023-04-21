@@ -19,20 +19,24 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseRequestResult
 type DefaultPlcBrowseRequestResult struct {
-	Request  model.PlcBrowseRequest
-	Response model.PlcBrowseResponse
+	Request  apiModel.PlcBrowseRequest
+	Response apiModel.PlcBrowseResponse
 	Err      error
 }
 
-func (d *DefaultPlcBrowseRequestResult) GetRequest() model.PlcBrowseRequest {
+func NewDefaultPlcBrowseRequestResult(Request apiModel.PlcBrowseRequest, Response apiModel.PlcBrowseResponse, Err error) apiModel.PlcBrowseRequestResult {
+	return &DefaultPlcBrowseRequestResult{Request, Response, Err}
+}
+
+func (d *DefaultPlcBrowseRequestResult) GetRequest() apiModel.PlcBrowseRequest {
 	return d.Request
 }
 
-func (d *DefaultPlcBrowseRequestResult) GetResponse() model.PlcBrowseResponse {
+func (d *DefaultPlcBrowseRequestResult) GetResponse() apiModel.PlcBrowseResponse {
 	return d.Response
 }
 

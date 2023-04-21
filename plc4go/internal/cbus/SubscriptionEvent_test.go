@@ -48,7 +48,8 @@ func TestNewSubscriptionEvent(t *testing.T) {
 			name: "empty",
 			want: func() SubscriptionEvent {
 				subscriptionEvent := SubscriptionEvent{}
-				subscriptionEvent.DefaultPlcSubscriptionEvent = spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, nil, nil, nil, nil, nil)
+				event := spiModel.NewDefaultPlcSubscriptionEvent(&subscriptionEvent, nil, nil, nil, nil, nil)
+				subscriptionEvent.DefaultPlcSubscriptionEvent = event.(*spiModel.DefaultPlcSubscriptionEvent)
 				return subscriptionEvent
 			}(),
 		},
@@ -62,7 +63,7 @@ func TestNewSubscriptionEvent(t *testing.T) {
 
 func TestSubscriptionEvent_GetAddress(t *testing.T) {
 	type fields struct {
-		DefaultPlcSubscriptionEvent spiModel.DefaultPlcSubscriptionEvent
+		DefaultPlcSubscriptionEvent *spiModel.DefaultPlcSubscriptionEvent
 		address                     map[string]string
 		sources                     map[string]string
 	}
@@ -93,7 +94,7 @@ func TestSubscriptionEvent_GetAddress(t *testing.T) {
 
 func TestSubscriptionEvent_GetSource(t *testing.T) {
 	type fields struct {
-		DefaultPlcSubscriptionEvent spiModel.DefaultPlcSubscriptionEvent
+		DefaultPlcSubscriptionEvent *spiModel.DefaultPlcSubscriptionEvent
 		address                     map[string]string
 		sources                     map[string]string
 	}

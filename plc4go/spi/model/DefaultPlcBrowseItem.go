@@ -20,23 +20,36 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseItem
 type DefaultPlcBrowseItem struct {
-	Tag          model.PlcTag
+	Tag          apiModel.PlcTag
 	Name         string
 	DataTypeName string
 	Readable     bool
 	Writable     bool
 	Subscribable bool
-	Children     map[string]model.PlcBrowseItem
-	Options      map[string]values.PlcValue
+	Children     map[string]apiModel.PlcBrowseItem
+	Options      map[string]apiValues.PlcValue
 }
 
-func (d *DefaultPlcBrowseItem) GetTag() model.PlcTag {
+func NewDefaultPlcBrowseItem(Tag apiModel.PlcTag, Name string, DataTypeName string, Readable bool, Writable bool, Subscribable bool, Children map[string]apiModel.PlcBrowseItem, Options map[string]apiValues.PlcValue) apiModel.PlcBrowseItem {
+	return &DefaultPlcBrowseItem{
+		Tag:          Tag,
+		Name:         Name,
+		DataTypeName: DataTypeName,
+		Readable:     Readable,
+		Writable:     Writable,
+		Subscribable: Subscribable,
+		Children:     Children,
+		Options:      Options,
+	}
+}
+
+func (d *DefaultPlcBrowseItem) GetTag() apiModel.PlcTag {
 	return d.Tag
 }
 
@@ -60,10 +73,10 @@ func (d *DefaultPlcBrowseItem) IsSubscribable() bool {
 	return d.Subscribable
 }
 
-func (d *DefaultPlcBrowseItem) GetChildren() map[string]model.PlcBrowseItem {
+func (d *DefaultPlcBrowseItem) GetChildren() map[string]apiModel.PlcBrowseItem {
 	return d.Children
 }
 
-func (d *DefaultPlcBrowseItem) GetOptions() map[string]values.PlcValue {
+func (d *DefaultPlcBrowseItem) GetOptions() map[string]apiValues.PlcValue {
 	return d.Options
 }

@@ -19,20 +19,28 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcUnsubscriptionRequestResult
 type DefaultPlcUnsubscriptionRequestResult struct {
-	Request  model.PlcUnsubscriptionRequest
-	Response model.PlcUnsubscriptionResponse
+	Request  apiModel.PlcUnsubscriptionRequest
+	Response apiModel.PlcUnsubscriptionResponse
 	Err      error
 }
 
-func (d *DefaultPlcUnsubscriptionRequestResult) GetRequest() model.PlcUnsubscriptionRequest {
+func NewDefaultPlcUnsubscriptionRequestResult(
+	Request apiModel.PlcUnsubscriptionRequest,
+	Response apiModel.PlcUnsubscriptionResponse,
+	Err error,
+) apiModel.PlcUnsubscriptionRequestResult {
+	return &DefaultPlcUnsubscriptionRequestResult{Request, Response, Err}
+}
+
+func (d *DefaultPlcUnsubscriptionRequestResult) GetRequest() apiModel.PlcUnsubscriptionRequest {
 	return d.Request
 }
 
-func (d *DefaultPlcUnsubscriptionRequestResult) GetResponse() model.PlcUnsubscriptionResponse {
+func (d *DefaultPlcUnsubscriptionRequestResult) GetResponse() apiModel.PlcUnsubscriptionResponse {
 	return d.Response
 }
 

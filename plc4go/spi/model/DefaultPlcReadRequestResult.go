@@ -19,20 +19,24 @@
 
 package model
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequestResult
 type DefaultPlcReadRequestResult struct {
-	Request  model.PlcReadRequest
-	Response model.PlcReadResponse
+	Request  apiModel.PlcReadRequest
+	Response apiModel.PlcReadResponse
 	Err      error
 }
 
-func (d *DefaultPlcReadRequestResult) GetRequest() model.PlcReadRequest {
+func NewDefaultPlcReadRequestResult(Request apiModel.PlcReadRequest, Response apiModel.PlcReadResponse, Err error) apiModel.PlcReadRequestResult {
+	return &DefaultPlcReadRequestResult{Request, Response, Err}
+}
+
+func (d *DefaultPlcReadRequestResult) GetRequest() apiModel.PlcReadRequest {
 	return d.Request
 }
 
-func (d *DefaultPlcReadRequestResult) GetResponse() model.PlcReadResponse {
+func (d *DefaultPlcReadRequestResult) GetResponse() apiModel.PlcReadResponse {
 	return d.Response
 }
 

@@ -154,9 +154,12 @@ func TestSubscriber_handleMonitoredMMI(t *testing.T) {
 			name: "handle the MMI short with consumer",
 			fields: fields{
 				consumers: map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer{
-					spiModel.NewDefaultPlcConsumerRegistration(nil, nil, []apiModel.PlcSubscriptionHandle{
-						&SubscriptionHandle{},
-					}...): nil,
+					func() *spiModel.DefaultPlcConsumerRegistration {
+						registration := spiModel.NewDefaultPlcConsumerRegistration(nil, nil, []apiModel.PlcSubscriptionHandle{
+							&SubscriptionHandle{},
+						}...)
+						return registration.(*spiModel.DefaultPlcConsumerRegistration)
+					}(): nil,
 				},
 			},
 			args: args{
@@ -284,9 +287,12 @@ func TestSubscriber_handleMonitoredSAL(t *testing.T) {
 			name: "handle the SAL short with consumer",
 			fields: fields{
 				consumers: map[*spiModel.DefaultPlcConsumerRegistration]apiModel.PlcSubscriptionEventConsumer{
-					spiModel.NewDefaultPlcConsumerRegistration(nil, nil, []apiModel.PlcSubscriptionHandle{
-						&SubscriptionHandle{},
-					}...): nil,
+					func() *spiModel.DefaultPlcConsumerRegistration {
+						registration := spiModel.NewDefaultPlcConsumerRegistration(nil, nil, []apiModel.PlcSubscriptionHandle{
+							&SubscriptionHandle{},
+						}...)
+						return registration.(*spiModel.DefaultPlcConsumerRegistration)
+					}(): nil,
 				},
 			},
 			args: args{

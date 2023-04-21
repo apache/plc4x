@@ -20,26 +20,26 @@
 package model
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionResponseItem
 type DefaultPlcSubscriptionResponseItem struct {
-	code               model.PlcResponseCode `stringer:"true"`
-	subscriptionHandle model.PlcSubscriptionHandle
+	code               apiModel.PlcResponseCode `stringer:"true"`
+	subscriptionHandle apiModel.PlcSubscriptionHandle
 }
 
-func NewSubscriptionResponseItem(code model.PlcResponseCode, subscriptionHandle model.PlcSubscriptionHandle) *DefaultPlcSubscriptionResponseItem {
+func NewDefaultPlcSubscriptionResponseItem(code apiModel.PlcResponseCode, subscriptionHandle apiModel.PlcSubscriptionHandle) *DefaultPlcSubscriptionResponseItem {
 	return &DefaultPlcSubscriptionResponseItem{
 		code:               code,
 		subscriptionHandle: subscriptionHandle,
 	}
 }
 
-func (d *DefaultPlcSubscriptionResponseItem) GetCode() model.PlcResponseCode {
+func (d *DefaultPlcSubscriptionResponseItem) GetCode() apiModel.PlcResponseCode {
 	return d.code
 }
 
-func (d *DefaultPlcSubscriptionResponseItem) GetSubscriptionHandle() model.PlcSubscriptionHandle {
+func (d *DefaultPlcSubscriptionResponseItem) GetSubscriptionHandle() apiModel.PlcSubscriptionHandle {
 	return d.subscriptionHandle
 }

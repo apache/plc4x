@@ -21,11 +21,16 @@ package model
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"net/url"
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	"github.com/apache/plc4x/plc4go/spi/utils"
+	spiValue "github.com/apache/plc4x/plc4go/spi/values"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,7 +41,6 @@ func TestRenderTest(t *testing.T) {
 		utils.Serializable
 	}{
 		&DefaultArrayInfo{},
-		&DefaultPlcBrowseEvent{},
 		&DefaultPlcBrowseItem{},
 		&DefaultPlcBrowseRequest{},
 		&DefaultPlcBrowseRequestResult{},
@@ -44,13 +48,13 @@ func TestRenderTest(t *testing.T) {
 		&DefaultPlcBrowseResponseItem{},
 		&DefaultPlcConsumerRegistration{},
 		&DefaultPlcDiscoveryItem{},
-		&DefaultPlcReadRequest{},
+		&DefaultPlcReadRequest{DefaultPlcTagRequest: NewDefaultPlcTagRequest(nil, nil)},
 		&DefaultPlcReadRequestResult{},
 		&DefaultPlcReadResponse{},
 		&DefaultPlcSubscriptionEvent{},
 		&DefaultPlcSubscriptionEventItem{},
 		&DefaultPlcSubscriptionHandle{},
-		&DefaultPlcSubscriptionRequest{},
+		&DefaultPlcSubscriptionRequest{DefaultPlcTagRequest: NewDefaultPlcTagRequest(nil, nil)},
 		&DefaultPlcSubscriptionRequestResult{},
 		&DefaultPlcSubscriptionResponse{},
 		&DefaultPlcSubscriptionResponseItem{},
@@ -58,7 +62,7 @@ func TestRenderTest(t *testing.T) {
 		//&DefaultPlcUnsubscriptionRequest{}, //TODO: empty file
 		&DefaultPlcUnsubscriptionRequestResult{},
 		//&DefaultPlcUnsubscriptionResponse{}, //TODO: empty file
-		&DefaultPlcWriteRequest{},
+		&DefaultPlcWriteRequest{DefaultPlcTagRequest: NewDefaultPlcTagRequest(nil, nil)},
 		&DefaultPlcWriteRequestResult{},
 		&DefaultPlcWriteResponse{},
 	}
@@ -87,6 +91,337 @@ func TestRenderTest(t *testing.T) {
 				assert.NoError(t, err)
 				_ = serialize
 			})
+		})
+	}
+}
+
+type _TestRenderTestCustomPlcTag struct {
+}
+
+func (_ _TestRenderTestCustomPlcTag) GetAddressString() string {
+	return "address string"
+}
+
+func (_ _TestRenderTestCustomPlcTag) GetValueType() apiValues.PlcValueType {
+	return 1
+}
+
+func (_ _TestRenderTestCustomPlcTag) GetArrayInfo() []apiModel.ArrayInfo {
+	return nil
+}
+
+type _TestRenderTestCustomPlcBrowseItem struct {
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem) GetTag() apiModel.PlcTag {
+	return _TestRenderTestCustomPlcTag{}
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem) GetName() string {
+	return "tagid"
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem) IsReadable() bool {
+	return true
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem) IsWritable() bool {
+	return true
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem) IsSubscribable() bool {
+	return true
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem) GetChildren() map[string]apiModel.PlcBrowseItem {
+	return nil // TODO: maybe we return something here... or not
+}
+
+func (_ _TestRenderTestCustomPlcBrowseItem) GetOptions() map[string]apiValues.PlcValue {
+	return nil // TODO: maybe we return something here... or not
+}
+
+// TestRenderTestCustom test some custom objects
+func TestRenderTestCustom(t *testing.T) {
+	tests := []struct {
+		name string
+		sut  interface {
+			fmt.Stringer
+			utils.Serializable
+		}
+		extraCall func(t *testing.T, _sut any)
+	}{
+		{
+			sut: NewDefaultPlcBrowseItem(
+				_TestRenderTestCustomPlcTag{},
+				"some name",
+				"some datatype",
+				true,
+				true,
+				true,
+				map[string]apiModel.PlcBrowseItem{
+					"tagid": _TestRenderTestCustomPlcBrowseItem{},
+				},
+				map[string]apiValues.PlcValue{
+					"tagid": spiValue.PlcNull{},
+				},
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+		{
+			sut: NewDefaultPlcBrowseRequest(
+				map[string]apiModel.PlcQuery{
+					"tagid": nil,
+				},
+				[]string{
+					"tagid",
+				},
+				nil,
+			),
+			extraCall: func(t *testing.T, _sut any) {
+				sut := _sut.(*DefaultPlcBrowseRequest)
+				// TODO: add browser calls
+				sut.GetQuery("tagid")
+			},
+		},
+		{
+			sut: NewDefaultPlcBrowseResponse(
+				NewDefaultPlcBrowseRequest(nil, nil, nil),
+				map[string][]apiModel.PlcBrowseItem{
+					"tagid": nil,
+				},
+				map[string]apiModel.PlcResponseCode{
+					"tagid": 0,
+				},
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+			extraCall: func(t *testing.T, _sut any) {
+				sut := _sut.(*DefaultPlcBrowseResponse)
+				// TODO: add assertions
+				sut.GetResponseCode("tagid")
+				sut.GetQueryResults("tagid")
+			},
+		},
+		{
+			sut: NewDefaultPlcBrowseResponseItem(0, nil),
+		},
+		{
+			// TODO: we need a mock here for improvement
+			sut: NewDefaultPlcConsumerRegistration(nil, nil, nil).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+		{
+			sut: NewDefaultPlcDiscoveryItem(
+				"something",
+				"something",
+				url.URL{},
+				nil,
+				"something",
+				nil,
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+		{
+			sut: NewDefaultPlcReadRequest(
+				map[string]apiModel.PlcTag{
+					"tagid": nil,
+				},
+				[]string{
+					"tagid",
+				},
+				nil,
+				nil,
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+		{
+			sut: NewDefaultPlcReadResponse(
+				NewDefaultPlcReadRequest(nil, nil, nil, nil),
+				map[string]apiModel.PlcResponseCode{
+					"tagid": 0,
+				},
+				map[string]apiValues.PlcValue{
+					"tagid": nil,
+				},
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+		{
+			sut: NewDefaultPlcSubscriptionEvent(
+				nil,
+				map[string]apiModel.PlcTag{
+					"tagid": nil,
+				},
+				map[string]SubscriptionType{
+					"tagid": 0,
+				},
+				map[string]time.Duration{
+					"tagid": 0,
+				},
+				map[string]apiModel.PlcResponseCode{
+					"tagid": 0,
+				},
+				map[string]apiValues.PlcValue{
+					"tagid": nil,
+				},
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+		{
+			sut: NewDefaultPlcSubscriptionEventItem(
+				0,
+				nil,
+				0,
+				0,
+				nil,
+			),
+		},
+		{
+			sut: NewDefaultPlcSubscriptionHandle(
+				nil,
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+		{
+			sut: NewDefaultPlcSubscriptionRequest(
+				nil,
+				[]string{"tagid"},
+				map[string]apiModel.PlcTag{
+					"tagid": nil,
+				},
+				map[string]SubscriptionType{
+					"tagid": 0,
+				},
+				map[string]time.Duration{
+					"tagid": 0,
+				},
+				map[string][]apiModel.PlcSubscriptionEventConsumer{
+					"tagd": nil,
+				},
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+		{
+			sut: NewDefaultPlcSubscriptionResponse(
+				NewDefaultPlcSubscriptionRequest(nil, nil, nil, nil, nil, nil),
+				map[string]apiModel.PlcResponseCode{
+					"tagid": 0,
+				},
+				map[string]apiModel.PlcSubscriptionHandle{
+					"tagid": nil,
+				},
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+		{
+			sut: NewDefaultPlcSubscriptionResponseItem(
+				0,
+				NewDefaultPlcSubscriptionHandle(nil),
+			),
+		},
+		{
+			sut: NewDefaultPlcTagRequest(
+				map[string]apiModel.PlcTag{
+					"tagid": nil,
+				},
+				[]string{"tagid"},
+			),
+		},
+		{
+			sut: NewDefaultPlcUnsubscriptionRequestResult(
+				NewDefaultPlcUnsubscriptionRequest(),
+				NewDefaultPlcUnsubscriptionResponse(),
+				nil,
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+		{
+			sut: NewDefaultPlcWriteRequest(
+				map[string]apiModel.PlcTag{
+					"tagid": nil,
+				},
+				[]string{"tagid"},
+				map[string]apiValues.PlcValue{
+					"tageid": nil,
+				},
+				nil,
+				nil,
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+		{
+			sut: NewDefaultPlcWriteResponse(
+				NewDefaultPlcWriteRequest(nil, nil, nil, nil, nil),
+				map[string]apiModel.PlcResponseCode{
+					"tagid": 0,
+				},
+			).(interface { // TODO: workaround
+				fmt.Stringer
+				utils.Serializable
+			}),
+		},
+	}
+	for _, tt := range tests {
+		sut := tt.sut
+		testName := fmt.Sprintf("%T", sut)
+		if tt.name != "" {
+			testName += " - " + tt.name
+		}
+		testName += fmt.Sprintf("%T", sut)
+		t.Run(testName, func(t *testing.T) {
+			t.Run("String", func(t *testing.T) {
+				assert.NotEmptyf(t, sut.String(), "string should at least return type informations")
+			})
+			t.Run("Get*/IsÜ*", func(t *testing.T) {
+				valueOf := reflect.ValueOf(sut)
+				for i := 0; i < valueOf.NumMethod(); i++ {
+					method := valueOf.Method(i)
+					methodName := valueOf.Type().Method(i).Name
+					if strings.HasPrefix(methodName, "Get") || strings.HasPrefix(methodName, "Is") {
+						t.Run(methodName, func(t *testing.T) {
+							// TODO: if it is 1 arg and a string it is probably the get tags something: maybe we hardcode it here
+							if na := method.Type().NumIn(); na != 0 {
+								t.Skipf("skipping because to many argument: %d", na)
+							}
+							method.Call(nil)
+						})
+					}
+				}
+			})
+			t.Run("Serialize", func(t *testing.T) {
+				serialize, err := sut.Serialize()
+				assert.NoError(t, err)
+				_ = serialize
+			})
+			if tt.extraCall != nil {
+				t.Run("extra call", func(t *testing.T) {
+					tt.extraCall(t, sut)
+				})
+			}
 		})
 	}
 }

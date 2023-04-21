@@ -35,7 +35,7 @@ type DefaultPlcSubscriptionEventItem struct {
 	value            values.PlcValue
 }
 
-func NewSubscriptionEventItem(code model.PlcResponseCode, tag model.PlcTag, subscriptionType SubscriptionType, interval time.Duration, value values.PlcValue) *DefaultPlcSubscriptionEventItem {
+func NewDefaultPlcSubscriptionEventItem(code model.PlcResponseCode, tag model.PlcTag, subscriptionType SubscriptionType, interval time.Duration, value values.PlcValue) *DefaultPlcSubscriptionEventItem {
 	return &DefaultPlcSubscriptionEventItem{
 		code:             code,
 		tag:              tag,
