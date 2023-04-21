@@ -1447,6 +1447,9 @@ const (
 	BACnetVendorId_WATTSENSE                                                                    BACnetVendorId = 1413
 	BACnetVendorId_EMERSON_AUTOMATION_SOLUTIONS                                                 BACnetVendorId = 1414
 	BACnetVendorId_GROWLINK                                                                     BACnetVendorId = 1415
+	BACnetVendorId_OLYMPIA_ELECTRONICS                                                          BACnetVendorId = 1416
+	BACnetVendorId_NORMAL_SOFTWARE_INC                                                          BACnetVendorId = 1417
+	BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC                                                   BACnetVendorId = 1418
 	BACnetVendorId_UNKNOWN_VENDOR                                                               BACnetVendorId = 0xFFFF
 )
 
@@ -2862,6 +2865,9 @@ func init() {
 		BACnetVendorId_WATTSENSE,
 		BACnetVendorId_EMERSON_AUTOMATION_SOLUTIONS,
 		BACnetVendorId_GROWLINK,
+		BACnetVendorId_OLYMPIA_ELECTRONICS,
+		BACnetVendorId_NORMAL_SOFTWARE_INC,
+		BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC,
 		BACnetVendorId_UNKNOWN_VENDOR,
 	}
 }
@@ -4719,6 +4725,18 @@ func (e BACnetVendorId) VendorId() uint16 {
 	case 1415:
 		{ /* '1415' */
 			return 1415
+		}
+	case 1416:
+		{ /* '1416' */
+			return 1416
+		}
+	case 1417:
+		{ /* '1417' */
+			return 1417
+		}
+	case 1418:
+		{ /* '1418' */
+			return 1418
 		}
 	case 142:
 		{ /* '142' */
@@ -10370,6 +10388,18 @@ func (e BACnetVendorId) VendorName() string {
 		{ /* '1415' */
 			return "Growlink"
 		}
+	case 1416:
+		{ /* '1416' */
+			return "Olympia Electronics"
+		}
+	case 1417:
+		{ /* '1417' */
+			return "Normal Software, Inc."
+		}
+	case 1418:
+		{ /* '1418' */
+			return "ST Engineering Solution JSC"
+		}
 	case 142:
 		{ /* '142' */
 			return "DEOS control systems GmbH"
@@ -15093,6 +15123,12 @@ func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_EMERSON_AUTOMATION_SOLUTIONS, true
 	case 1415:
 		return BACnetVendorId_GROWLINK, true
+	case 1416:
+		return BACnetVendorId_OLYMPIA_ELECTRONICS, true
+	case 1417:
+		return BACnetVendorId_NORMAL_SOFTWARE_INC, true
+	case 1418:
+		return BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC, true
 	case 142:
 		return BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH, true
 	case 143:
@@ -17915,6 +17951,12 @@ func BACnetVendorIdByName(value string) (enum BACnetVendorId, ok bool) {
 		return BACnetVendorId_EMERSON_AUTOMATION_SOLUTIONS, true
 	case "GROWLINK":
 		return BACnetVendorId_GROWLINK, true
+	case "OLYMPIA_ELECTRONICS":
+		return BACnetVendorId_OLYMPIA_ELECTRONICS, true
+	case "NORMAL_SOFTWARE_INC":
+		return BACnetVendorId_NORMAL_SOFTWARE_INC, true
+	case "ST_ENGINEERING_SOLUTIONJSC":
+		return BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC, true
 	case "DEO_SCONTROLSYSTEMS_GMBH":
 		return BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH, true
 	case "DIGITALE_MESSUND_STEUERSYSTEMEAG":
@@ -20794,6 +20836,12 @@ func (e BACnetVendorId) PLC4XEnumName() string {
 		return "EMERSON_AUTOMATION_SOLUTIONS"
 	case BACnetVendorId_GROWLINK:
 		return "GROWLINK"
+	case BACnetVendorId_OLYMPIA_ELECTRONICS:
+		return "OLYMPIA_ELECTRONICS"
+	case BACnetVendorId_NORMAL_SOFTWARE_INC:
+		return "NORMAL_SOFTWARE_INC"
+	case BACnetVendorId_ST_ENGINEERING_SOLUTIONJSC:
+		return "ST_ENGINEERING_SOLUTIONJSC"
 	case BACnetVendorId_DEO_SCONTROLSYSTEMS_GMBH:
 		return "DEO_SCONTROLSYSTEMS_GMBH"
 	case BACnetVendorId_DIGITALE_MESSUND_STEUERSYSTEMEAG:
