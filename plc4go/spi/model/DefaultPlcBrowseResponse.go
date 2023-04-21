@@ -30,7 +30,6 @@ import (
 
 // TODO: use generator once we figured out how to render results with ast
 type DefaultPlcBrowseResponse struct {
-	DefaultResponse
 	request      model.PlcBrowseRequest
 	responseCode model.PlcResponseCode
 	results      map[string]*DefaultPlcBrowseResponseItem
@@ -46,6 +45,10 @@ func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[str
 		request: request,
 		results: res,
 	}
+}
+
+func (d DefaultPlcBrowseResponse) IsAPlcMessage() bool {
+	return true
 }
 
 func (d DefaultPlcBrowseResponse) GetRequest() model.PlcBrowseRequest {

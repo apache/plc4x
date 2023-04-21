@@ -20,9 +20,6 @@
 package model
 
 import (
-	"context"
-	"encoding/binary"
-	"fmt"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -30,8 +27,8 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionEvent
 type DefaultPlcSubscriptionEvent struct {
-	DefaultResponse
 	DefaultPlcSubscriptionEventRequirements `ignore:"true"` // Avoid recursion
 	values                                  map[string]*DefaultPlcSubscriptionEventItem
 }
@@ -58,6 +55,10 @@ func NewDefaultPlcSubscriptionEvent(defaultPlcSubscriptionEventRequirements Defa
 		DefaultPlcSubscriptionEventRequirements: defaultPlcSubscriptionEventRequirements,
 		values:                                  valueMap,
 	}
+}
+
+func (d *DefaultPlcSubscriptionEvent) IsAPlcMessage() bool {
+	return true
 }
 
 func (d *DefaultPlcSubscriptionEvent) GetTagNames() []string {
@@ -94,43 +95,4 @@ func (d *DefaultPlcSubscriptionEvent) GetAddress(name string) string {
 
 func (d *DefaultPlcSubscriptionEvent) GetSource(name string) string {
 	return d.GetAddress(name)
-}
-
-func (d *DefaultPlcSubscriptionEvent) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
-		return nil, err
-	}
-	return wb.GetBytes(), nil
-}
-
-func (d *DefaultPlcSubscriptionEvent) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcSubscriptionEvent"); err != nil {
-		return err
-	}
-	if err := writeBuffer.PushContext("values", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for name, elem := range d.values {
-		_value := fmt.Sprintf("%v", elem)
-
-		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("values", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("PlcSubscriptionEvent"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d *DefaultPlcSubscriptionEvent) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
 }

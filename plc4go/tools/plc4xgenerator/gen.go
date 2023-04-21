@@ -231,11 +231,17 @@ func (g *Generator) generate(typeName string) {
 		}
 		fieldName := field.name
 		fieldNameUntitled := "\"" + unTitle(fieldName) + "\""
+		if field.isStringer {
+			g.Printf(stringFieldSerialize, "d."+field.name+".String()", fieldNameUntitled)
+			continue
+		}
 		switch fieldType := field.fieldType.(type) {
 		case *ast.SelectorExpr:
 			g.Printf(serializableFieldTemplate, "d."+field.name, fieldNameUntitled)
 		case *ast.Ident:
 			switch fieldType.Name {
+			case "uint32":
+				g.Printf(uint32FieldSerialize, "d."+field.name, fieldNameUntitled)
 			case "bool":
 				g.Printf(boolFieldSerialize, "d."+field.name, fieldNameUntitled)
 			case "string":
@@ -256,6 +262,8 @@ func (g *Generator) generate(typeName string) {
 				g.Printf(serializableFieldTemplate, "elem", "\"value\"")
 			case *ast.Ident:
 				switch eltType.Name {
+				case "uint32":
+					g.Printf(uint32FieldSerialize, "d."+field.name, fieldNameUntitled)
 				case "bool":
 					g.Printf(boolFieldSerialize, "elem", "\"\"")
 				case "string":
@@ -278,7 +286,7 @@ func (g *Generator) generate(typeName string) {
 			// TODO: we use serializable or strings as we don't want to over-complex this
 			g.Printf("for name, elem := range d.%s {\n", fieldName)
 			switch eltType := fieldType.Value.(type) {
-			case *ast.SelectorExpr:
+			case *ast.StarExpr, *ast.SelectorExpr:
 				g.Printf("\n\t\tvar elem any = elem\n")
 				g.Printf("\t\tif serializable, ok := elem.(utils.Serializable); ok {\n")
 				g.Printf("\t\t\tif err := writeBuffer.PushContext(name); err != nil {\n")
@@ -347,6 +355,7 @@ type Field struct {
 	name       string
 	fieldType  ast.Expr
 	isDelegate bool
+	isStringer bool
 }
 
 func (f *Field) String() string {
@@ -381,12 +390,17 @@ func (f *File) genDecl(node ast.Node) bool {
 				fmt.Printf("\t ignoring field %s %v\n", name, field.Type)
 				continue
 			}
+			isStringer := false
+			if field.Tag != nil && field.Tag.Value == "`stringer:\"true\"`" { // TODO: Check if we do that a bit smarter
+				isStringer = true
+			}
 			if len(field.Names) == 0 {
 				fmt.Printf("\t adding delegate\n")
 				if _, ok := field.Type.(*ast.Ident); ok {
 					f.fields = append(f.fields, Field{
 						fieldType:  field.Type,
 						isDelegate: true,
+						isStringer: isStringer,
 					})
 					continue
 				} else {
@@ -395,8 +409,9 @@ func (f *File) genDecl(node ast.Node) bool {
 			}
 			fmt.Printf("\t adding field %s %v\n", field.Names[0].Name, field.Type)
 			f.fields = append(f.fields, Field{
-				name:      field.Names[0].Name,
-				fieldType: field.Type,
+				name:       field.Names[0].Name,
+				fieldType:  field.Type,
+				isStringer: isStringer,
 			})
 		}
 	}
@@ -452,6 +467,12 @@ var serializableFieldTemplate = `
 				return err
 			}
 		}
+	}
+`
+
+var uint32FieldSerialize = `
+	if err := writeBuffer.WriteUint32(%[2]s, 32, %[1]s); err != nil {
+		return err
 	}
 `
 

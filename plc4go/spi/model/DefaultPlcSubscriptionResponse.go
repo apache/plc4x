@@ -20,17 +20,12 @@
 package model
 
 import (
-	"context"
-	"encoding/binary"
-	"fmt"
-
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionResponse
 type DefaultPlcSubscriptionResponse struct {
-	DefaultResponse
 	request model.PlcSubscriptionRequest
 	values  map[string]*DefaultPlcSubscriptionResponseItem
 }
@@ -55,6 +50,10 @@ func NewDefaultPlcSubscriptionResponse(request model.PlcSubscriptionRequest, res
 		}
 	}
 	return &plcSubscriptionResponse
+}
+
+func (d *DefaultPlcSubscriptionResponse) IsAPlcMessage() bool {
+	return true
 }
 
 func (d *DefaultPlcSubscriptionResponse) GetRequest() model.PlcSubscriptionRequest {
@@ -89,62 +88,4 @@ func (d *DefaultPlcSubscriptionResponse) GetSubscriptionHandles() []model.PlcSub
 		result = append(result, value.GetSubscriptionHandle())
 	}
 	return result
-}
-
-func (d *DefaultPlcSubscriptionResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
-		return nil, err
-	}
-	return wb.GetBytes(), nil
-}
-
-func (d *DefaultPlcSubscriptionResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcSubscriptionResponse"); err != nil {
-		return err
-	}
-
-	if d.request != nil {
-		if serializableField, ok := d.request.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext("request"); err != nil {
-				return err
-			}
-			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext("request"); err != nil {
-				return err
-			}
-		} else {
-			stringValue := fmt.Sprintf("%v", d.request)
-			if err := writeBuffer.WriteString("request", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
-				return err
-			}
-		}
-	}
-	if err := writeBuffer.PushContext("values", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	for name, elem := range d.values {
-		_value := fmt.Sprintf("%v", elem)
-
-		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("values", utils.WithRenderAsList(true)); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("PlcSubscriptionResponse"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d *DefaultPlcSubscriptionResponse) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
 }

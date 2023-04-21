@@ -88,7 +88,7 @@ type withRootTypeParser struct {
 	rootTypeParser func(utils.ReadBufferByteBased) (any, error)
 }
 
-func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Testcase) error {
+func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager, testcase Testcase) error {
 	var options []string
 	for key, value := range m.driverParameters {
 		options = append(options, fmt.Sprintf("%s=%s", key, value))
@@ -111,7 +111,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	// Run the setup steps
 	log.Info().Msgf("\n-------------------------------------------------------\nPerforming setup for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.setupSteps {
-		err := m.ExecuteStep(connection, &testcase, testStep)
+		err := m.ExecuteStep(t, connection, &testcase, testStep)
 		if err != nil {
 			return errors.Wrap(err, "error in setup step "+testStep.name)
 		}
@@ -122,7 +122,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	// Run the actual scenario steps
 	log.Info().Msgf("\n-------------------------------------------------------\nRunning testcases for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range testcase.steps {
-		err := m.ExecuteStep(connection, &testcase, testStep)
+		err := m.ExecuteStep(t, connection, &testcase, testStep)
 		if err != nil {
 			return errors.Wrap(err, "error in step "+testStep.name)
 		}
@@ -132,7 +132,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	// Run the teardown steps
 	log.Info().Msgf("\n-------------------------------------------------------\nPerforming teardown for: %s \n-------------------------------------------------------\n", testcase.name)
 	for _, testStep := range m.teardownSteps {
-		err := m.ExecuteStep(connection, &testcase, testStep)
+		err := m.ExecuteStep(t, connection, &testcase, testStep)
 		if err != nil {
 			return errors.Wrap(err, "error in teardown step "+testStep.name)
 		}
@@ -143,7 +143,7 @@ func (m DriverTestsuite) Run(driverManager plc4go.PlcDriverManager, testcase Tes
 	return nil
 }
 
-func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *Testcase, step TestStep) error {
+func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnection, testcase *Testcase, step TestStep) error {
 	mc, ok := connection.(spi.TransportInstanceExposer)
 	if !ok {
 		return errors.New("couldn't access connections transport instance")
@@ -237,7 +237,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			// Get the reference XML
 			referenceSerialized := step.payload.XMLPretty()
 			// Compare the results
-			err = CompareResults([]byte(actualResponse), []byte(referenceSerialized))
+			err = CompareResults(t, []byte(actualResponse), []byte(referenceSerialized))
 			if err != nil {
 				return errors.Wrap(err, "Error comparing the results")
 			}
@@ -262,7 +262,7 @@ func (m DriverTestsuite) ExecuteStep(connection plc4go.PlcConnection, testcase *
 			// Get the reference XML
 			referenceSerialized := step.payload.XMLPretty()
 			// Compare the results
-			err = CompareResults([]byte(actualResponse), []byte(referenceSerialized))
+			err = CompareResults(t, []byte(actualResponse), []byte(referenceSerialized))
 			if err != nil {
 				return errors.Wrap(err, "Error comparing the results")
 			}
@@ -526,7 +526,7 @@ func RunDriverTestsuiteWithOptions(t *testing.T, driver plc4go.PlcDriver, testPa
 				return
 			}
 			log.Info().Msgf("Running testcase %s", testcase.name)
-			if err := testsuite.Run(driverManager, testcase); err != nil {
+			if err := testsuite.Run(t, driverManager, testcase); err != nil {
 				log.Error().Err(err).Msgf("\n-------------------------------------------------------\nFailure\n%+v\n-------------------------------------------------------\n\n", err)
 				t.Fail()
 			}

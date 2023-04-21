@@ -45,8 +45,6 @@ func TestNonPanickingStrings(t *testing.T) {
 		&DefaultPlcWriteRequest{},
 		&DefaultPlcWriteRequestResult{},
 		&DefaultPlcWriteResponse{},
-		&DefaultPlcRequest{},
-		&DefaultResponse{},
 		&DefaultPlcBrowseRequestResult{},
 		&DefaultPlcBrowseRequest{},
 		&DefaultPlcBrowseItem{},

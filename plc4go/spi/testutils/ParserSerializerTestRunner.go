@@ -175,7 +175,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 					buffer := utils.NewXmlWriteBuffer()
 					if err := serializable.SerializeWithWriteBuffer(context.Background(), buffer); err == nil {
 						actualXml := buffer.GetXmlString()
-						if err := CompareResults([]byte(actualXml), []byte(referenceSerialized)); err != nil {
+						if err := CompareResults(t, []byte(actualXml), []byte(referenceSerialized)); err != nil {
 							border := strings.Repeat("=", 100)
 							fmt.Printf(
 								"\n"+

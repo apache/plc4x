@@ -28,6 +28,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
+// TODO: add generator once we support enums
 type DefaultPlcBrowseResponseItem struct {
 	code    model.PlcResponseCode
 	results []model.PlcBrowseItem
@@ -40,12 +41,12 @@ func NewBrowseResponseItem(code model.PlcResponseCode, results []model.PlcBrowse
 	}
 }
 
-func (r *DefaultPlcBrowseResponseItem) GetCode() model.PlcResponseCode {
-	return r.code
+func (d *DefaultPlcBrowseResponseItem) GetCode() model.PlcResponseCode {
+	return d.code
 }
 
-func (r *DefaultPlcBrowseResponseItem) GetResults() []model.PlcBrowseItem {
-	return r.results
+func (d *DefaultPlcBrowseResponseItem) GetResults() []model.PlcBrowseItem {
+	return d.results
 }
 
 func (d *DefaultPlcBrowseResponseItem) Serialize() ([]byte, error) {

@@ -21,16 +21,15 @@ package model
 
 import (
 	"context"
-	"encoding/binary"
 	"time"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequestBuilder
 type DefaultPlcReadRequestBuilder struct {
 	reader                 spi.PlcReader
 	tagHandler             spi.PlcTagHandler
@@ -83,10 +82,11 @@ func (d *DefaultPlcReadRequestBuilder) Build() (model.PlcReadRequest, error) {
 	return NewDefaultPlcReadRequest(d.tags, d.tagNames, d.reader, d.readRequestInterceptor), nil
 }
 
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcReadRequest
 type DefaultPlcReadRequest struct {
 	DefaultPlcTagRequest
-	reader                 spi.PlcReader
-	readRequestInterceptor interceptors.ReadRequestInterceptor
+	reader                 spi.PlcReader                       `ignore:"true"`
+	readRequestInterceptor interceptors.ReadRequestInterceptor `ignore:"true"`
 }
 
 func NewDefaultPlcReadRequest(tags map[string]model.PlcTag, tagNames []string, reader spi.PlcReader, readRequestInterceptor interceptors.ReadRequestInterceptor) model.PlcReadRequest {
@@ -151,33 +151,4 @@ func (d *DefaultPlcReadRequest) ExecuteWithContext(ctx context.Context) <-chan m
 	}()
 
 	return resultChannel
-}
-
-func (d *DefaultPlcReadRequest) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
-		return nil, err
-	}
-	return wb.GetBytes(), nil
-}
-
-func (d *DefaultPlcReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcReadRequest"); err != nil {
-		return err
-	}
-	if err := d.DefaultPlcTagRequest.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("PlcReadRequest"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d *DefaultPlcReadRequest) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
 }
