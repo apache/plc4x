@@ -51,9 +51,9 @@ type DriverTestsuite struct {
 	byteOrder        binary.ByteOrder
 	parser           XmlParser
 	rootTypeParser   func(utils.ReadBufferByteBased) (any, error)
-	setupSteps       []TestStep
-	teardownSteps    []TestStep
-	testcases        []Testcase
+	setupSteps       []DriverTestStep
+	teardownSteps    []DriverTestStep
+	testcases        []DriverTestcase
 }
 
 type XmlParser interface {
@@ -98,7 +98,7 @@ type TestTransportInstance interface {
 	DrainWriteBuffer(numBytes uint32) []byte
 }
 
-func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager, testcase Testcase) error {
+func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager, testcase DriverTestcase) error {
 	var options []string
 	for key, value := range m.driverParameters {
 		options = append(options, fmt.Sprintf("%s=%s", key, value))
@@ -153,7 +153,7 @@ func (m DriverTestsuite) Run(t *testing.T, driverManager plc4go.PlcDriverManager
 	return nil
 }
 
-func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnection, testcase *Testcase, step TestStep) error {
+func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnection, testcase *DriverTestcase, step DriverTestStep) error {
 	mc, ok := connection.(spi.TransportInstanceExposer)
 	if !ok {
 		return errors.New("couldn't access connections transport instance")
@@ -428,7 +428,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 	return nil
 }
 
-func (m DriverTestsuite) parseMessage(typeName string, payloadString string, step TestStep) (any, error) {
+func (m DriverTestsuite) parseMessage(typeName string, payloadString string, step DriverTestStep) (any, error) {
 	if m.parser == nil {
 		return nil, errors.Errorf("Protocol name %s has no mapped parser", m.protocolName)
 	}
@@ -439,19 +439,14 @@ func (m DriverTestsuite) parseMessage(typeName string, payloadString string, ste
 	return parse, err
 }
 
-func (m DriverTestsuite) ParseXml(referenceXml *xmldom.Node, parserArguments []string) {
-	normalizeXml(referenceXml)
-	//referenceSerialized := referenceXml.FirstChild().XMLPretty()
-}
-
-type Testcase struct {
+type DriverTestcase struct {
 	name                      string
-	steps                     []TestStep
+	steps                     []DriverTestStep
 	readRequestResultChannel  <-chan apiModel.PlcReadRequestResult
 	writeRequestResultChannel <-chan apiModel.PlcWriteRequestResult
 }
 
-type TestStep struct {
+type DriverTestStep struct {
 	name            string
 	stepType        StepType
 	parserArguments []string
@@ -490,17 +485,10 @@ func RunDriverTestsuite(t *testing.T, driver plc4go.PlcDriver, testPath string, 
 		}
 	}
 	// Read the test-specification as XML file
-	rootNode, err := ParseDriverTestsuiteXml(testPath)
-	if err != nil {
-		t.Fatal(err)
-	}
+	rootNode := ParseDriverTestsuiteXml(t, testPath)
 
 	// Parse the contents of the test-specification
-	testsuite, err := ParseDriverTestsuite(t, *rootNode, parser, rootTypeParser)
-	if err != nil {
-		t.Fatal(err)
-		return
-	}
+	testsuite := ParseDriverTestsuite(t, *rootNode, parser, rootTypeParser)
 
 	// We don't want to await completion of connection initialization
 	if connectionConnectAwaiter, ok := driver.(ConnectionConnectAwaiter); ok {
@@ -544,11 +532,11 @@ type ConnectionConnectAwaiter interface {
 	SetAwaitDisconnectComplete(awaitComplete bool)
 }
 
-func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
+func ParseDriverTestsuiteXml(t *testing.T, testPath string) *xmldom.Node {
 	// Get the current working directory
 	path, err := os.Getwd()
 	if err != nil {
-		return nil, err
+		t.Fatal(err)
 	}
 
 	// Check if the test-file is available
@@ -556,26 +544,29 @@ func ParseDriverTestsuiteXml(testPath string) (*xmldom.Node, error) {
 	testSuitePath := path + pathOffset + testPath
 	info, err := os.Stat(testSuitePath)
 	if os.IsNotExist(err) {
-		return nil, errors.Wrap(err, "test-File doesn't exist")
+		t.Logf("Test-File %s doesn't exist", testSuitePath)
+		t.Fatal(err)
 	}
 	if info.IsDir() {
-		return nil, errors.New("test-file refers to a directory")
+		t.Logf("Test-File %s refers to a directory", testSuitePath)
+		t.Fatal(err)
 	}
 
 	// Open a reader for this file
 	dat, err := os.Open(testSuitePath)
 	if err != nil {
-		return nil, errors.Wrap(err, "error opening file")
+		t.Log("error opening file")
+		t.Fatal(err)
 	}
 
 	// Read the xml
 	node := xmldom.Must(xmldom.Parse(dat)).Root
-	return node, nil
+	return node
 }
 
-func ParseDriverTestsuite(t *testing.T, node xmldom.Node, parser XmlParser, rootTypeParser func(utils.ReadBufferByteBased) (any, error)) (*DriverTestsuite, error) {
+func ParseDriverTestsuite(t *testing.T, node xmldom.Node, parser XmlParser, rootTypeParser func(utils.ReadBufferByteBased) (any, error)) *DriverTestsuite {
 	if node.Name != "driver-testsuite" {
-		return nil, errors.New("invalid document structure")
+		t.Fatal("invalid document structure")
 	}
 	var byteOrder binary.ByteOrder
 	if node.GetAttributeValue("byteOrder") != "LITTLE_ENDIAN" {
@@ -588,60 +579,64 @@ func ParseDriverTestsuite(t *testing.T, node xmldom.Node, parser XmlParser, root
 	var outputFlavor string
 	var driverName string
 	driverParameters := make(map[string]string)
-	var setupSteps []TestStep
-	var teardownSteps []TestStep
-	var testcases []Testcase
+	var setupSteps []DriverTestStep
+	var teardownSteps []DriverTestStep
+	var testcases []DriverTestcase
 	for _, childPtr := range node.Children {
 		child := *childPtr
-		if child.Name == "name" {
+		switch child.Name {
+		case "name":
 			testsuiteName = child.Text
-		} else if child.Name == "protocolName" {
+		case "protocolName":
 			protocolName = child.Text
-		} else if child.Name == "outputFlavor" {
+		case "outputFlavor":
 			outputFlavor = child.Text
-		} else if child.Name == "driver-name" {
+		case "driver-name":
 			driverName = child.Text
-		} else if child.Name == "driver-parameters" {
+		case "driver-parameters":
 			parameterList := child.FindByName("parameter")
 			for _, parameter := range parameterList {
 				nameElement := parameter.FindOneByName("name")
 				valueElement := parameter.FindOneByName("value")
 				if nameElement == nil || valueElement == nil {
-					return nil, errors.New("invalid parameter found: no present")
+					t.Fatal("invalid parameter found: no present")
 				}
 				name := nameElement.Text
 				value := valueElement.Text
 				if name == "" || value == "" {
-					return nil, errors.New("invalid parameter found: empty")
+					t.Fatal("invalid parameter found: empty")
 				}
 				driverParameters[name] = value
 			}
-		} else if child.Name == "setup" {
+		case "setup":
 			steps, err := ParseDriverTestsuiteSteps(t, child)
 			if err != nil {
-				return nil, errors.Wrap(err, "error parsing setup steps")
+				t.Error("error parsing setup steps")
+				t.Fatal(err)
 			}
 			setupSteps = steps
-		} else if child.Name == "teardown" {
+		case "teardown":
 			steps, err := ParseDriverTestsuiteSteps(t, child)
 			if err != nil {
-				return nil, errors.Wrap(err, "error teardown setup steps")
+				t.Error("error parsing teardown steps")
+				t.Fatal(err)
 			}
 			teardownSteps = steps
-		} else if child.Name == "testcase" {
+		case "testcase":
 			testcaseName := child.FindOneByName("name").Text
 			stepsNode := child.FindOneByName("steps")
 			steps, err := ParseDriverTestsuiteSteps(t, *stepsNode)
 			if err != nil {
-				return nil, errors.Wrap(err, "error parsing testcase "+testcaseName)
+				t.Errorf("error parsing testcase %s", testcaseName)
+				t.Fatal(err)
 			}
-			testcase := Testcase{
+			testcase := DriverTestcase{
 				name:  testcaseName,
 				steps: steps,
 			}
 			testcases = append(testcases, testcase)
-		} else {
-			return nil, errors.New("invalid document structure. Unhandled element " + child.Name)
+		default:
+			t.Fatalf("invalid document structure. Unhandled element %s", child.Name)
 		}
 	}
 	t.Logf("Parsed testsuite name: %s, driver name: %s", testsuiteName, driverName)
@@ -658,12 +653,12 @@ func ParseDriverTestsuite(t *testing.T, node xmldom.Node, parser XmlParser, root
 		setupSteps:       setupSteps,
 		teardownSteps:    teardownSteps,
 		testcases:        testcases,
-	}, nil
+	}
 }
 
-func ParseDriverTestsuiteSteps(t *testing.T, node xmldom.Node) ([]TestStep, error) {
+func ParseDriverTestsuiteSteps(t *testing.T, node xmldom.Node) ([]DriverTestStep, error) {
 	t.Logf("Parsing driver testsuite steps (rootElement %s)", node.Name)
-	var testSteps []TestStep
+	var testSteps []DriverTestStep
 	for _, step := range node.Children {
 		name := step.GetAttributeValue("name")
 		t.Logf("Parsing step (name: %s, rootElement %s)", name, node.Name)
@@ -709,7 +704,7 @@ func ParseDriverTestsuiteSteps(t *testing.T, node xmldom.Node) ([]TestStep, erro
 		if payload == nil {
 			return nil, errors.New("missing payload element")
 		}
-		testSteps = append(testSteps, TestStep{
+		testSteps = append(testSteps, DriverTestStep{
 			name:            name,
 			stepType:        stepType,
 			parserArguments: parserArguments,

@@ -20,11 +20,12 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/internal/knxnetip"
 	firmataIO "github.com/apache/plc4x/plc4go/protocols/firmata/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestFirmataDriver(t *testing.T) {

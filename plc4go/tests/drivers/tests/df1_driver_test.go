@@ -20,11 +20,12 @@
 package tests
 
 import (
+	"testing"
+
 	"github.com/apache/plc4x/plc4go/internal/ads"
 	df1IO "github.com/apache/plc4x/plc4go/protocols/df1/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestDf1Driver(t *testing.T) {
