@@ -31,7 +31,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi/values"
-	"github.com/rs/zerolog/log"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -74,7 +74,7 @@ func WithUnwrappedValue(unwrap bool) WithTestCaseOption {
 	}
 }
 
-func (m *ManualTestSuite) Run() plc4go.PlcConnection {
+func (m *ManualTestSuite) Run(t *testing.T) plc4go.PlcConnection {
 	connectionResult := <-m.DriverManager.GetConnection(m.ConnectionString)
 	if err := connectionResult.GetErr(); err != nil {
 		tracer, ok := errors.Cause(err).(interface{ StackTrace() errors.StackTrace })
@@ -92,7 +92,7 @@ func (m *ManualTestSuite) Run() plc4go.PlcConnection {
 	m.t.Cleanup(func() {
 		connection.Close()
 	})
-	log.Info().Msg("Reading all types in separate requests")
+	t.Log("Reading all types in separate requests")
 	// Run all entries separately:
 	for _, testCase := range m.TestCases {
 		tagName := testCase.Address
@@ -155,9 +155,9 @@ func (m *ManualTestSuite) runSingleTest(t *testing.T, connection plc4go.PlcConne
 func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnection) {
 	// Read all items in one big request.
 	// Shuffle the list of test cases and run the test 10 times.
-	log.Info().Msg("Reading all items together in random order")
+	t.Log("Reading all items together in random order")
 	for i := 0; i < 100; i++ {
-		log.Info().Msgf(" - run number %d of %d", i, 100)
+		t.Logf(" - run number %d of %d", i, 100)
 		shuffledTestcases := append(make([]ManualTestCase, 0), m.TestCases...)
 		rand.Seed(time.Now().UnixNano())
 		rand.Shuffle(len(shuffledTestcases), func(i, j int) {
@@ -169,7 +169,7 @@ func (m *ManualTestSuite) runBurstTest(t *testing.T, connection plc4go.PlcConnec
 			sb.WriteString(testCase.Address)
 			sb.WriteString(", ")
 		}
-		log.Info().Msgf("       using order: %s", sb.String())
+		t.Logf("       using order: %s", sb.String())
 
 		builder := connection.ReadRequestBuilder()
 		for _, testCase := range shuffledTestcases {

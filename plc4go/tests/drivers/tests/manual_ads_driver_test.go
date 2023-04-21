@@ -109,5 +109,5 @@ func TestManualAds(t *testing.T) {
 	test.AddTestCase("main.hurz_TOD:TOD", "16:17:18.123")
 	test.AddTestCase("main.hurz_DATE_AND_TIME:DATE_AND_TIME", "1996-05-06T15:36:30")
 	test.AddTestCase("main.hurz_DT:DT", "1972-03-29T00:00")
-	test.Run()
+	test.Run(t)
 }

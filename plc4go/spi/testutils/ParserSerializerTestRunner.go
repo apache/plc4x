@@ -39,7 +39,7 @@ import (
 	modbusModel "github.com/apache/plc4x/plc4go/protocols/modbus/readwrite"
 	s7Model "github.com/apache/plc4x/plc4go/protocols/s7/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/rs/zerolog/log"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/subchen/go-xmldom"
 )
@@ -104,7 +104,7 @@ func RunParserSerializerTestsuite(t *testing.T, testPath string, skippedTestCase
 			testCaseName := child.FindOneByName("name").Text
 			t.Run(testCaseName, func(t *testing.T) {
 				if skippedTestCasesMap[testCaseName] {
-					log.Warn().Msgf("Testcase %s skipped", testCaseName)
+					t.Logf("Testcase %s skipped", testCaseName)
 					t.Skipf("Testcase %s skipped", testCaseName)
 					return
 				}

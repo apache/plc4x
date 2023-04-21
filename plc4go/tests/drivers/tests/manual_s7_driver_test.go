@@ -108,5 +108,5 @@ func TestManualS7Driver(t *testing.T) {
 	test.AddTestCase("%DB4:140:STRING(10)", "hurz")
 	test.AddTestCase("%DB4:396:WSTRING(10)", "wolf")
 
-	test.Run()
+	test.Run(t)
 }
