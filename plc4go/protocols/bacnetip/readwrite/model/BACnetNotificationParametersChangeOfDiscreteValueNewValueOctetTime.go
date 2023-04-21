@@ -96,7 +96,7 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime(timeV
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime(structType interface{}) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime {
+func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime(structType any) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime {
 	if casted, ok := structType.(BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime); ok {
 		return casted
 	}

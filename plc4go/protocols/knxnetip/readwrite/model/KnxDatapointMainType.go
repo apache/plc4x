@@ -33,6 +33,7 @@ type KnxDatapointMainType uint16
 
 type IKnxDatapointMainType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	Number() uint16
 	Name() string
@@ -1222,8 +1223,8 @@ func KnxDatapointMainTypeKnows(value uint16) bool {
 	return false
 }
 
-func CastKnxDatapointMainType(structType interface{}) KnxDatapointMainType {
-	castFunc := func(typ interface{}) KnxDatapointMainType {
+func CastKnxDatapointMainType(structType any) KnxDatapointMainType {
+	castFunc := func(typ any) KnxDatapointMainType {
 		if sKnxDatapointMainType, ok := typ.(KnxDatapointMainType); ok {
 			return sKnxDatapointMainType
 		}

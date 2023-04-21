@@ -103,7 +103,7 @@ func NewReplyOrConfirmationConfirmation(confirmation Confirmation, embeddedReply
 }
 
 // Deprecated: use the interface for direct cast
-func CastReplyOrConfirmationConfirmation(structType interface{}) ReplyOrConfirmationConfirmation {
+func CastReplyOrConfirmationConfirmation(structType any) ReplyOrConfirmationConfirmation {
 	if casted, ok := structType.(ReplyOrConfirmationConfirmation); ok {
 		return casted
 	}

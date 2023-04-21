@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPower(power BACnetApplicationTagReal, openingTag BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPower(structType interface{}) BACnetConstructedDataPower {
+func CastBACnetConstructedDataPower(structType any) BACnetConstructedDataPower {
 	if casted, ok := structType.(BACnetConstructedDataPower); ok {
 		return casted
 	}

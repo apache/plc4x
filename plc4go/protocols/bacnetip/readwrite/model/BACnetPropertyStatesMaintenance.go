@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesMaintenance(maintenance BACnetMaintenanceTagged, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesMaintenance(structType interface{}) BACnetPropertyStatesMaintenance {
+func CastBACnetPropertyStatesMaintenance(structType any) BACnetPropertyStatesMaintenance {
 	if casted, ok := structType.(BACnetPropertyStatesMaintenance); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTimerState(timerState BACnetTimerStateTagged, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimerState(structType interface{}) BACnetConstructedDataTimerState {
+func CastBACnetConstructedDataTimerState(structType any) BACnetConstructedDataTimerState {
 	if casted, ok := structType.(BACnetConstructedDataTimerState); ok {
 		return casted
 	}

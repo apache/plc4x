@@ -77,7 +77,7 @@ func NewTelephonyDataClearDiversion(commandTypeContainer TelephonyCommandTypeCon
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataClearDiversion(structType interface{}) TelephonyDataClearDiversion {
+func CastTelephonyDataClearDiversion(structType any) TelephonyDataClearDiversion {
 	if casted, ok := structType.(TelephonyDataClearDiversion); ok {
 		return casted
 	}

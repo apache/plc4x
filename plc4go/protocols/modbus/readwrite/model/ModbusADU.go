@@ -79,7 +79,7 @@ func NewModbusADU(response bool) *_ModbusADU {
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusADU(structType interface{}) ModbusADU {
+func CastModbusADU(structType any) ModbusADU {
 	if casted, ok := structType.(ModbusADU); ok {
 		return casted
 	}
@@ -122,7 +122,7 @@ func ModbusADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		InitializeParent(ModbusADU)
 		GetParent() ModbusADU
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ModbusADUChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -115,7 +115,7 @@ func NewBACnetContextTagUnsignedInteger(payload BACnetTagPayloadUnsignedInteger,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagUnsignedInteger(structType interface{}) BACnetContextTagUnsignedInteger {
+func CastBACnetContextTagUnsignedInteger(structType any) BACnetContextTagUnsignedInteger {
 	if casted, ok := structType.(BACnetContextTagUnsignedInteger); ok {
 		return casted
 	}

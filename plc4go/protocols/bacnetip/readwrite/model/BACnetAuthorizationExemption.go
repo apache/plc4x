@@ -33,6 +33,7 @@ type BACnetAuthorizationExemption uint8
 
 type IBACnetAuthorizationExemption interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -116,8 +117,8 @@ func BACnetAuthorizationExemptionKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetAuthorizationExemption(structType interface{}) BACnetAuthorizationExemption {
-	castFunc := func(typ interface{}) BACnetAuthorizationExemption {
+func CastBACnetAuthorizationExemption(structType any) BACnetAuthorizationExemption {
+	castFunc := func(typ any) BACnetAuthorizationExemption {
 		if sBACnetAuthorizationExemption, ok := typ.(BACnetAuthorizationExemption); ok {
 			return sBACnetAuthorizationExemption
 		}

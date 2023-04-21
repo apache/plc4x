@@ -121,7 +121,7 @@ func NewBACnetConstructedDataClientCOVIncrement(covIncrement BACnetClientCOV, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataClientCOVIncrement(structType interface{}) BACnetConstructedDataClientCOVIncrement {
+func CastBACnetConstructedDataClientCOVIncrement(structType any) BACnetConstructedDataClientCOVIncrement {
 	if casted, ok := structType.(BACnetConstructedDataClientCOVIncrement); ok {
 		return casted
 	}

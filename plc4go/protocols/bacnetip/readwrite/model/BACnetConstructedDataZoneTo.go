@@ -121,7 +121,7 @@ func NewBACnetConstructedDataZoneTo(zoneTo BACnetDeviceObjectReference, openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataZoneTo(structType interface{}) BACnetConstructedDataZoneTo {
+func CastBACnetConstructedDataZoneTo(structType any) BACnetConstructedDataZoneTo {
 	if casted, ok := structType.(BACnetConstructedDataZoneTo); ok {
 		return casted
 	}

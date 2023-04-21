@@ -83,7 +83,7 @@ func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCo
 }
 
 // Deprecated: use the interface for direct cast
-func CastDeviceConfigurationAckDataBlock(structType interface{}) DeviceConfigurationAckDataBlock {
+func CastDeviceConfigurationAckDataBlock(structType any) DeviceConfigurationAckDataBlock {
 	if casted, ok := structType.(DeviceConfigurationAckDataBlock); ok {
 		return casted
 	}

@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -77,7 +76,7 @@ func NewNetworkRoute(networkPCI NetworkProtocolControlInformation, additionalBri
 }
 
 // Deprecated: use the interface for direct cast
-func CastNetworkRoute(structType interface{}) NetworkRoute {
+func CastNetworkRoute(structType any) NetworkRoute {
 	if casted, ok := structType.(NetworkRoute); ok {
 		return casted
 	}
@@ -100,7 +99,7 @@ func (m *_NetworkRoute) GetLengthInBits(ctx context.Context) uint16 {
 	// Array field
 	if len(m.AdditionalBridgeAddresses) > 0 {
 		for _curItem, element := range m.AdditionalBridgeAddresses {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.AdditionalBridgeAddresses), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.AdditionalBridgeAddresses), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -153,7 +152,7 @@ func NetworkRouteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	{
 		_numItems := uint16(uint16(networkPCI.GetStackDepth()) - uint16(uint16(1)))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := BridgeAddressParseWithBuffer(arrayCtx, readBuffer)
@@ -211,7 +210,7 @@ func (m *_NetworkRoute) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 	for _curItem, _element := range m.GetAdditionalBridgeAddresses() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetAdditionalBridgeAddresses()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAdditionalBridgeAddresses()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

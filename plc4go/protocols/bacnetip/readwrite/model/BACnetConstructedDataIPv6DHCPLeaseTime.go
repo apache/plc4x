@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIPv6DHCPLeaseTime(ipv6DhcpLeaseTime BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPv6DHCPLeaseTime(structType interface{}) BACnetConstructedDataIPv6DHCPLeaseTime {
+func CastBACnetConstructedDataIPv6DHCPLeaseTime(structType any) BACnetConstructedDataIPv6DHCPLeaseTime {
 	if casted, ok := structType.(BACnetConstructedDataIPv6DHCPLeaseTime); ok {
 		return casted
 	}

@@ -119,7 +119,7 @@ func NewCBusCommand(header CBusHeader, cBusOptions CBusOptions) *_CBusCommand {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusCommand(structType interface{}) CBusCommand {
+func CastCBusCommand(structType any) CBusCommand {
 	if casted, ok := structType.(CBusCommand); ok {
 		return casted
 	}
@@ -192,7 +192,7 @@ func CBusCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(CBusCommand, CBusHeader)
 		GetParent() CBusCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CBusCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

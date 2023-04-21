@@ -425,7 +425,7 @@ func Test_future_AwaitCompletion(t *testing.T) {
 				time.Sleep(time.Millisecond * 300)
 				f.Cancel(true, nil)
 			},
-			wantErr: func(t assert.TestingT, err error, i ...interface{}) bool {
+			wantErr: func(t assert.TestingT, err error, i ...any) bool {
 				assert.Same(t, Canceled, err)
 				return true
 			},
@@ -437,7 +437,7 @@ func Test_future_AwaitCompletion(t *testing.T) {
 				time.Sleep(time.Millisecond * 300)
 				f.Cancel(true, errors.New("Uh oh"))
 			},
-			wantErr: func(t assert.TestingT, err error, i ...interface{}) bool {
+			wantErr: func(t assert.TestingT, err error, i ...any) bool {
 				assert.Equal(t, "Uh oh", err.Error())
 				return true
 			},

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataNotificationThreshold(notificationThreshold BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNotificationThreshold(structType interface{}) BACnetConstructedDataNotificationThreshold {
+func CastBACnetConstructedDataNotificationThreshold(structType any) BACnetConstructedDataNotificationThreshold {
 	if casted, ok := structType.(BACnetConstructedDataNotificationThreshold); ok {
 		return casted
 	}

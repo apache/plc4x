@@ -114,7 +114,7 @@ func NewBACnetConfirmedServiceRequestDeviceCommunicationControl(timeDuration BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType interface{}) BACnetConfirmedServiceRequestDeviceCommunicationControl {
+func CastBACnetConfirmedServiceRequestDeviceCommunicationControl(structType any) BACnetConfirmedServiceRequestDeviceCommunicationControl {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestDeviceCommunicationControl); ok {
 		return casted
 	}

@@ -86,7 +86,7 @@ func NewBACnetConstructedDataAveragingAll(openingTag BACnetOpeningTag, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAveragingAll(structType interface{}) BACnetConstructedDataAveragingAll {
+func CastBACnetConstructedDataAveragingAll(structType any) BACnetConstructedDataAveragingAll {
 	if casted, ok := structType.(BACnetConstructedDataAveragingAll); ok {
 		return casted
 	}

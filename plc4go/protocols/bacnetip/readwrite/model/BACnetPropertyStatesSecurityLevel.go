@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesSecurityLevel(securityLevel BACnetSecurityLevelTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesSecurityLevel(structType interface{}) BACnetPropertyStatesSecurityLevel {
+func CastBACnetPropertyStatesSecurityLevel(structType any) BACnetPropertyStatesSecurityLevel {
 	if casted, ok := structType.(BACnetPropertyStatesSecurityLevel); ok {
 		return casted
 	}

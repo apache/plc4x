@@ -107,7 +107,7 @@ func NewDisconnectRequest(communicationChannelId uint8, hpaiControlEndpoint HPAI
 }
 
 // Deprecated: use the interface for direct cast
-func CastDisconnectRequest(structType interface{}) DisconnectRequest {
+func CastDisconnectRequest(structType any) DisconnectRequest {
 	if casted, ok := structType.(DisconnectRequest); ok {
 		return casted
 	}
@@ -168,7 +168,7 @@ func DisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DisconnectRequest")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -232,7 +232,7 @@ func (m *_DisconnectRequest) SerializeWithWriteBuffer(ctx context.Context, write
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

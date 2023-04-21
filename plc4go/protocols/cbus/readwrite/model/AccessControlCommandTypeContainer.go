@@ -33,6 +33,7 @@ type AccessControlCommandTypeContainer uint8
 
 type IAccessControlCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() AccessControlCommandType
@@ -1384,8 +1385,8 @@ func AccessControlCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastAccessControlCommandTypeContainer(structType interface{}) AccessControlCommandTypeContainer {
-	castFunc := func(typ interface{}) AccessControlCommandTypeContainer {
+func CastAccessControlCommandTypeContainer(structType any) AccessControlCommandTypeContainer {
+	castFunc := func(typ any) AccessControlCommandTypeContainer {
 		if sAccessControlCommandTypeContainer, ok := typ.(AccessControlCommandTypeContainer); ok {
 			return sAccessControlCommandTypeContainer
 		}

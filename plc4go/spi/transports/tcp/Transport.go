@@ -154,7 +154,7 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.tcpConn != nil
 }
 
-func (m *TransportInstance) Write(data []uint8) error {
+func (m *TransportInstance) Write(data []byte) error {
 	if m.tcpConn == nil {
 		return errors.New("error writing to transport. No writer available")
 	}
@@ -173,5 +173,9 @@ func (m *TransportInstance) GetReader() *bufio.Reader {
 }
 
 func (m *TransportInstance) String() string {
-	return fmt.Sprintf("tcp:%s->%s", m.LocalAddress, m.RemoteAddress)
+	localAddress := ""
+	if m.LocalAddress != nil {
+		localAddress = m.LocalAddress.String() + "->"
+	}
+	return fmt.Sprintf("tcp:%s%s", localAddress, m.RemoteAddress)
 }

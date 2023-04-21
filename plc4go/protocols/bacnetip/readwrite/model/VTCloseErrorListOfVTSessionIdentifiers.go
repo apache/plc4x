@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -87,7 +86,7 @@ func NewVTCloseErrorListOfVTSessionIdentifiers(openingTag BACnetOpeningTag, list
 }
 
 // Deprecated: use the interface for direct cast
-func CastVTCloseErrorListOfVTSessionIdentifiers(structType interface{}) VTCloseErrorListOfVTSessionIdentifiers {
+func CastVTCloseErrorListOfVTSessionIdentifiers(structType any) VTCloseErrorListOfVTSessionIdentifiers {
 	if casted, ok := structType.(VTCloseErrorListOfVTSessionIdentifiers); ok {
 		return casted
 	}
@@ -228,7 +227,7 @@ func (m *_VTCloseErrorListOfVTSessionIdentifiers) SerializeWithWriteBuffer(ctx c
 	}
 	for _curItem, _element := range m.GetListOfVtSessionIdentifiers() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetListOfVtSessionIdentifiers()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfVtSessionIdentifiers()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

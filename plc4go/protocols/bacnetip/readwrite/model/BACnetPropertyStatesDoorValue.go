@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesDoorValue(doorValue BACnetDoorValueTagged, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesDoorValue(structType interface{}) BACnetPropertyStatesDoorValue {
+func CastBACnetPropertyStatesDoorValue(structType any) BACnetPropertyStatesDoorValue {
 	if casted, ok := structType.(BACnetPropertyStatesDoorValue); ok {
 		return casted
 	}

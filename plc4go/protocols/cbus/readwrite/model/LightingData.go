@@ -107,7 +107,7 @@ func NewLightingData(commandTypeContainer LightingCommandTypeContainer) *_Lighti
 }
 
 // Deprecated: use the interface for direct cast
-func CastLightingData(structType interface{}) LightingData {
+func CastLightingData(structType any) LightingData {
 	if casted, ok := structType.(LightingData); ok {
 		return casted
 	}
@@ -178,7 +178,7 @@ func LightingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		InitializeParent(LightingData, LightingCommandTypeContainer)
 		GetParent() LightingData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child LightingDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

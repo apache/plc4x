@@ -33,6 +33,7 @@ type BACnetResultFlags uint8
 
 type IBACnetResultFlags interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -86,8 +87,8 @@ func BACnetResultFlagsKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetResultFlags(structType interface{}) BACnetResultFlags {
-	castFunc := func(typ interface{}) BACnetResultFlags {
+func CastBACnetResultFlags(structType any) BACnetResultFlags {
+	castFunc := func(typ any) BACnetResultFlags {
 		if sBACnetResultFlags, ok := typ.(BACnetResultFlags); ok {
 			return sBACnetResultFlags
 		}

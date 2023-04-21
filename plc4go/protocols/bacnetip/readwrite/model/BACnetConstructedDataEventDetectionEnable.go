@@ -121,7 +121,7 @@ func NewBACnetConstructedDataEventDetectionEnable(eventDetectionEnable BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEventDetectionEnable(structType interface{}) BACnetConstructedDataEventDetectionEnable {
+func CastBACnetConstructedDataEventDetectionEnable(structType any) BACnetConstructedDataEventDetectionEnable {
 	if casted, ok := structType.(BACnetConstructedDataEventDetectionEnable); ok {
 		return casted
 	}

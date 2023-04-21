@@ -104,7 +104,7 @@ func NewFirmataCommandProtocolVersion(majorVersion uint8, minorVersion uint8, re
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataCommandProtocolVersion(structType interface{}) FirmataCommandProtocolVersion {
+func CastFirmataCommandProtocolVersion(structType any) FirmataCommandProtocolVersion {
 	if casted, ok := structType.(FirmataCommandProtocolVersion); ok {
 		return casted
 	}

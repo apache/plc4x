@@ -139,7 +139,7 @@ func NewBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(openingTag BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(structType interface{}) BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
+func CastBACnetConfirmedServiceRequestCreateObjectObjectSpecifier(structType any) BACnetConfirmedServiceRequestCreateObjectObjectSpecifier {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestCreateObjectObjectSpecifier); ok {
 		return casted
 	}

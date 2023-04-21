@@ -94,7 +94,7 @@ func NewAirConditioningDataRefresh(zoneGroup byte, commandTypeContainer AirCondi
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningDataRefresh(structType interface{}) AirConditioningDataRefresh {
+func CastAirConditioningDataRefresh(structType any) AirConditioningDataRefresh {
 	if casted, ok := structType.(AirConditioningDataRefresh); ok {
 		return casted
 	}

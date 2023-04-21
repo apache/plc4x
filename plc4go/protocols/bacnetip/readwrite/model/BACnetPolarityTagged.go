@@ -80,7 +80,7 @@ func NewBACnetPolarityTagged(header BACnetTagHeader, value BACnetPolarity, tagNu
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPolarityTagged(structType interface{}) BACnetPolarityTagged {
+func CastBACnetPolarityTagged(structType any) BACnetPolarityTagged {
 	if casted, ok := structType.(BACnetPolarityTagged); ok {
 		return casted
 	}

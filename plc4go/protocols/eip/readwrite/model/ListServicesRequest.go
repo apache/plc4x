@@ -91,7 +91,7 @@ func NewListServicesRequest(sessionHandle uint32, status uint32, senderContext [
 }
 
 // Deprecated: use the interface for direct cast
-func CastListServicesRequest(structType interface{}) ListServicesRequest {
+func CastListServicesRequest(structType any) ListServicesRequest {
 	if casted, ok := structType.(ListServicesRequest); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBackupFailureTimeout(backupFailureTimeout BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBackupFailureTimeout(structType interface{}) BACnetConstructedDataBackupFailureTimeout {
+func CastBACnetConstructedDataBackupFailureTimeout(structType any) BACnetConstructedDataBackupFailureTimeout {
 	if casted, ok := structType.(BACnetConstructedDataBackupFailureTimeout); ok {
 		return casted
 	}

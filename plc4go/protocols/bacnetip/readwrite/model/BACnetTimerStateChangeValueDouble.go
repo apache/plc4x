@@ -94,7 +94,7 @@ func NewBACnetTimerStateChangeValueDouble(doubleValue BACnetApplicationTagDouble
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueDouble(structType interface{}) BACnetTimerStateChangeValueDouble {
+func CastBACnetTimerStateChangeValueDouble(structType any) BACnetTimerStateChangeValueDouble {
 	if casted, ok := structType.(BACnetTimerStateChangeValueDouble); ok {
 		return casted
 	}

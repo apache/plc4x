@@ -96,7 +96,7 @@ func NewUnConnectedDataItem(service CipService) *_UnConnectedDataItem {
 }
 
 // Deprecated: use the interface for direct cast
-func CastUnConnectedDataItem(structType interface{}) UnConnectedDataItem {
+func CastUnConnectedDataItem(structType any) UnConnectedDataItem {
 	if casted, ok := structType.(UnConnectedDataItem); ok {
 		return casted
 	}

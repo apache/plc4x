@@ -142,7 +142,7 @@ func NewBACnetEventParameterFloatingLimit(openingTag BACnetOpeningTag, timeDelay
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterFloatingLimit(structType interface{}) BACnetEventParameterFloatingLimit {
+func CastBACnetEventParameterFloatingLimit(structType any) BACnetEventParameterFloatingLimit {
 	if casted, ok := structType.(BACnetEventParameterFloatingLimit); ok {
 		return casted
 	}

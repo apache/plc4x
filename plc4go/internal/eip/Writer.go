@@ -36,13 +36,13 @@ import (
 
 type Writer struct {
 	messageCodec  spi.MessageCodec
-	tm            *spi.RequestTransactionManager
+	tm            spi.RequestTransactionManager
 	configuration Configuration
 	sessionHandle *uint32
 	senderContext *[]uint8
 }
 
-func NewWriter(messageCodec spi.MessageCodec, tm *spi.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, senderContext *[]uint8) Writer {
+func NewWriter(messageCodec spi.MessageCodec, tm spi.RequestTransactionManager, configuration Configuration, sessionHandle *uint32, senderContext *[]uint8) Writer {
 	return Writer{
 		messageCodec:  messageCodec,
 		tm:            tm,

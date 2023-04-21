@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMaxActualValue(maxActualValue BACnetApplicationTagR
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaxActualValue(structType interface{}) BACnetConstructedDataMaxActualValue {
+func CastBACnetConstructedDataMaxActualValue(structType any) BACnetConstructedDataMaxActualValue {
 	if casted, ok := structType.(BACnetConstructedDataMaxActualValue); ok {
 		return casted
 	}

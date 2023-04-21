@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDoorAlarmState(doorAlarmState BACnetDoorAlarmStateT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDoorAlarmState(structType interface{}) BACnetConstructedDataDoorAlarmState {
+func CastBACnetConstructedDataDoorAlarmState(structType any) BACnetConstructedDataDoorAlarmState {
 	if casted, ok := structType.(BACnetConstructedDataDoorAlarmState); ok {
 		return casted
 	}

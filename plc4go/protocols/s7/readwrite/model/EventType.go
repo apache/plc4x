@@ -33,6 +33,7 @@ type EventType uint8
 
 type IEventType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -92,8 +93,8 @@ func EventTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastEventType(structType interface{}) EventType {
-	castFunc := func(typ interface{}) EventType {
+func CastEventType(structType any) EventType {
+	castFunc := func(typ any) EventType {
 		if sEventType, ok := typ.(EventType); ok {
 			return sEventType
 		}

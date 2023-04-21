@@ -121,7 +121,7 @@ func NewBACnetConstructedDataInstantaneousPower(instantaneousPower BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataInstantaneousPower(structType interface{}) BACnetConstructedDataInstantaneousPower {
+func CastBACnetConstructedDataInstantaneousPower(structType any) BACnetConstructedDataInstantaneousPower {
 	if casted, ok := structType.(BACnetConstructedDataInstantaneousPower); ok {
 		return casted
 	}

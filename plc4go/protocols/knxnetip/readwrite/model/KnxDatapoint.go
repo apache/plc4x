@@ -7306,6 +7306,11 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
 		// Simple Field (maskcw)
 		maskcw, _maskcwErr := readBuffer.ReadBit("maskcw")
 		if _maskcwErr != nil {
@@ -7409,11 +7414,6 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(_stepCodeColourRedErr, "Error parsing 'stepCodeColourRed' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(stepCodeColourRed)
-
-		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing reserved field")
-		}
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_Relative_Control_RGB: // Struct
@@ -7422,6 +7422,11 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 		// Reserved Field (Just skip the bytes)
 		if _, _err := readBuffer.ReadUint8("reserved", 8); _err != nil {
+			return nil, errors.Wrap(_err, "Error parsing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
+		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
@@ -7476,11 +7481,6 @@ func KnxDatapointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(_stepCodeColourRedErr, "Error parsing 'stepCodeColourRed' field")
 		}
 		_map["Struct"] = values.NewPlcUSINT(stepCodeColourRed)
-
-		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing reserved field")
-		}
 		readBuffer.CloseContext("KnxDatapoint")
 		return values.NewPlcStruct(_map), nil
 	case datapointType == KnxDatapointType_DPT_GeographicalLocation: // Struct
@@ -12921,6 +12921,11 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
 		// Simple Field (maskcw)
 		if _err := writeBuffer.WriteBit("maskcw", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'maskcw' field")
@@ -13000,14 +13005,14 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		if _err := writeBuffer.WriteUint8("stepCodeColourRed", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepCodeColourRed' field")
 		}
-
-		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
-			return errors.Wrap(_err, "Error serializing reserved field")
-		}
 	case datapointType == KnxDatapointType_DPT_Relative_Control_RGB: // Struct
 		// Reserved Field (Just skip the bytes)
 		if _err := writeBuffer.WriteUint8("reserved", 8, uint8(0x00)); _err != nil {
+			return errors.Wrap(_err, "Error serializing reserved field")
+		}
+
+		// Reserved Field (Just skip the bytes)
+		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
@@ -13049,11 +13054,6 @@ func KnxDatapointSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 		// Simple Field (stepCodeColourRed)
 		if _err := writeBuffer.WriteUint8("stepCodeColourRed", 3, value.GetUint8()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'stepCodeColourRed' field")
-		}
-
-		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(0x00)); _err != nil {
-			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case datapointType == KnxDatapointType_DPT_GeographicalLocation: // Struct
 		// Reserved Field (Just skip the bytes)

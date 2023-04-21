@@ -96,7 +96,7 @@ func NewKnxNetIpRouting(version uint8) *_KnxNetIpRouting {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetIpRouting(structType interface{}) KnxNetIpRouting {
+func CastKnxNetIpRouting(structType any) KnxNetIpRouting {
 	if casted, ok := structType.(KnxNetIpRouting); ok {
 		return casted
 	}

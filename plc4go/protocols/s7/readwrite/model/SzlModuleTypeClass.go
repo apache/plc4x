@@ -33,6 +33,7 @@ type SzlModuleTypeClass uint8
 
 type ISzlModuleTypeClass interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -92,8 +93,8 @@ func SzlModuleTypeClassKnows(value uint8) bool {
 	return false
 }
 
-func CastSzlModuleTypeClass(structType interface{}) SzlModuleTypeClass {
-	castFunc := func(typ interface{}) SzlModuleTypeClass {
+func CastSzlModuleTypeClass(structType any) SzlModuleTypeClass {
+	castFunc := func(typ any) SzlModuleTypeClass {
 		if sSzlModuleTypeClass, ok := typ.(SzlModuleTypeClass); ok {
 			return sSzlModuleTypeClass
 		}

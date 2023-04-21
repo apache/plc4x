@@ -80,7 +80,7 @@ func NewBACnetProtocolLevelTagged(header BACnetTagHeader, value BACnetProtocolLe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetProtocolLevelTagged(structType interface{}) BACnetProtocolLevelTagged {
+func CastBACnetProtocolLevelTagged(structType any) BACnetProtocolLevelTagged {
 	if casted, ok := structType.(BACnetProtocolLevelTagged); ok {
 		return casted
 	}

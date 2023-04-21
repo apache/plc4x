@@ -121,7 +121,7 @@ func NewBACnetConstructedDataShedDuration(shedDuration BACnetApplicationTagUnsig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataShedDuration(structType interface{}) BACnetConstructedDataShedDuration {
+func CastBACnetConstructedDataShedDuration(structType any) BACnetConstructedDataShedDuration {
 	if casted, ok := structType.(BACnetConstructedDataShedDuration); ok {
 		return casted
 	}

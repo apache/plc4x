@@ -42,7 +42,7 @@ func init() {
 	_ = utils.Dump
 }
 
-func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+func (m KnxnetipXmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (any, error) {
 	switch typeName {
 	case "KnxProperty":
 		propertyType, _ := model.KnxPropertyDataTypeByName(parserArguments[0])

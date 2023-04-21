@@ -116,7 +116,15 @@ func (b boxSet) compressBoxSet() string {
 
 func (b boxSet) contributeToCompressedBoxSet(box AsciiBox) string {
 	actualSet := b.compressBoxSet()
-	if strings.ContainsAny(box.compressedBoxSet, actualSet) {
+	if box.compressedBoxSet == "" {
+		// they have nothing to contribute
+		return actualSet
+	}
+	if actualSet == "" {
+		// I have nothing to contribute
+		return box.compressedBoxSet
+	}
+	if strings.Contains(box.compressedBoxSet, actualSet) {
 		// we have nothing to add
 		return box.compressedBoxSet
 	}

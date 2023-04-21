@@ -121,7 +121,7 @@ func NewBACnetConstructedDataModelName(modelName BACnetApplicationTagCharacterSt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataModelName(structType interface{}) BACnetConstructedDataModelName {
+func CastBACnetConstructedDataModelName(structType any) BACnetConstructedDataModelName {
 	if casted, ok := structType.(BACnetConstructedDataModelName); ok {
 		return casted
 	}

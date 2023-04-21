@@ -96,7 +96,7 @@ func NewNLMIAmRouterToNetwork(destinationNetworkAddresses []uint16, apduLength u
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMIAmRouterToNetwork(structType interface{}) NLMIAmRouterToNetwork {
+func CastNLMIAmRouterToNetwork(structType any) NLMIAmRouterToNetwork {
 	if casted, ok := structType.(NLMIAmRouterToNetwork); ok {
 		return casted
 	}

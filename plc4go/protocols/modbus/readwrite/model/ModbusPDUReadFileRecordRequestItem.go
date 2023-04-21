@@ -90,7 +90,7 @@ func NewModbusPDUReadFileRecordRequestItem(referenceType uint8, fileNumber uint1
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadFileRecordRequestItem(structType interface{}) ModbusPDUReadFileRecordRequestItem {
+func CastModbusPDUReadFileRecordRequestItem(structType any) ModbusPDUReadFileRecordRequestItem {
 	if casted, ok := structType.(ModbusPDUReadFileRecordRequestItem); ok {
 		return casted
 	}

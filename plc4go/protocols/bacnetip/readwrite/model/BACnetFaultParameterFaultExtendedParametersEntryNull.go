@@ -94,7 +94,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryNull(nullValue BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultExtendedParametersEntryNull(structType interface{}) BACnetFaultParameterFaultExtendedParametersEntryNull {
+func CastBACnetFaultParameterFaultExtendedParametersEntryNull(structType any) BACnetFaultParameterFaultExtendedParametersEntryNull {
 	if casted, ok := structType.(BACnetFaultParameterFaultExtendedParametersEntryNull); ok {
 		return casted
 	}

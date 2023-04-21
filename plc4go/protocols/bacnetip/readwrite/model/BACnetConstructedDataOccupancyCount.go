@@ -121,7 +121,7 @@ func NewBACnetConstructedDataOccupancyCount(occupancyCount BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOccupancyCount(structType interface{}) BACnetConstructedDataOccupancyCount {
+func CastBACnetConstructedDataOccupancyCount(structType any) BACnetConstructedDataOccupancyCount {
 	if casted, ok := structType.(BACnetConstructedDataOccupancyCount); ok {
 		return casted
 	}

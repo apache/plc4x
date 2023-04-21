@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLoopPresentValue(presentValue BACnetApplicationTagR
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLoopPresentValue(structType interface{}) BACnetConstructedDataLoopPresentValue {
+func CastBACnetConstructedDataLoopPresentValue(structType any) BACnetConstructedDataLoopPresentValue {
 	if casted, ok := structType.(BACnetConstructedDataLoopPresentValue); ok {
 		return casted
 	}

@@ -116,7 +116,7 @@ func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandPinStateResponse(structType interface{}) SysexCommandPinStateResponse {
+func CastSysexCommandPinStateResponse(structType any) SysexCommandPinStateResponse {
 	if casted, ok := structType.(SysexCommandPinStateResponse); ok {
 		return casted
 	}

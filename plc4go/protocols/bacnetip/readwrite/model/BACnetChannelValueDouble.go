@@ -94,7 +94,7 @@ func NewBACnetChannelValueDouble(doubleValue BACnetApplicationTagDouble, peekedT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueDouble(structType interface{}) BACnetChannelValueDouble {
+func CastBACnetChannelValueDouble(structType any) BACnetChannelValueDouble {
 	if casted, ok := structType.(BACnetChannelValueDouble); ok {
 		return casted
 	}

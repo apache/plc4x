@@ -20,11 +20,13 @@
 package tests
 
 import (
+	"testing"
+
+	s7IO "github.com/apache/plc4x/plc4go/protocols/s7/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestS7ParserSerializer(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/s7/ParserSerializerTestsuite.xml")
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/s7/ParserSerializerTestsuite.xml", s7IO.S7ParserHelper{})
 }

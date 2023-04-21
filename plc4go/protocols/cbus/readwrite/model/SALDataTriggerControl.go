@@ -98,7 +98,7 @@ func NewSALDataTriggerControl(triggerControlData TriggerControlData, salData SAL
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataTriggerControl(structType interface{}) SALDataTriggerControl {
+func CastSALDataTriggerControl(structType any) SALDataTriggerControl {
 	if casted, ok := structType.(SALDataTriggerControl); ok {
 		return casted
 	}

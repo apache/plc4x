@@ -96,7 +96,7 @@ func NewCOTPParameterDisconnectAdditionalInformation(data []byte, rest uint8) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPParameterDisconnectAdditionalInformation(structType interface{}) COTPParameterDisconnectAdditionalInformation {
+func CastCOTPParameterDisconnectAdditionalInformation(structType any) COTPParameterDisconnectAdditionalInformation {
 	if casted, ok := structType.(COTPParameterDisconnectAdditionalInformation); ok {
 		return casted
 	}

@@ -32,7 +32,7 @@ import (
 type BacnetipParserHelper struct {
 }
 
-func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m BacnetipParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "BACnetAuthenticationStatusTagged":
 		tagNumber, err := utils.StrToUint8(arguments[0])

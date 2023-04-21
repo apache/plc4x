@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDoorUnlockDelayTime(doorUnlockDelayTime BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDoorUnlockDelayTime(structType interface{}) BACnetConstructedDataDoorUnlockDelayTime {
+func CastBACnetConstructedDataDoorUnlockDelayTime(structType any) BACnetConstructedDataDoorUnlockDelayTime {
 	if casted, ok := structType.(BACnetConstructedDataDoorUnlockDelayTime); ok {
 		return casted
 	}

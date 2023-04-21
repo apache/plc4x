@@ -46,6 +46,9 @@ type PlcDriver interface {
 	// GetConnection Establishes a connection to a given PLC using the information in the connectionString
 	// FIXME: this leaks spi in the signature move to spi driver or create interfaces. Can also be done by moving spi in a proper module
 	GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan PlcConnectionConnectResult
+	// GetConnectionWithContext Establishes a connection to a given PLC using the information in the connectionString
+	// FIXME: this leaks spi in the signature move to spi driver or create interfaces. Can also be done by moving spi in a proper module
+	GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan PlcConnectionConnectResult
 
 	// SupportsDiscovery returns true if this driver supports discovery
 	SupportsDiscovery() bool

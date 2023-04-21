@@ -157,7 +157,7 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmQuery(syntaxId SyntaxIdType, queryT
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionAlarmQuery(structType interface{}) S7PayloadUserDataItemCpuFunctionAlarmQuery {
+func CastS7PayloadUserDataItemCpuFunctionAlarmQuery(structType any) S7PayloadUserDataItemCpuFunctionAlarmQuery {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionAlarmQuery); ok {
 		return casted
 	}
@@ -278,7 +278,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParseWithBuffer(ctx context.Conte
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7PayloadUserDataItemCpuFunctionAlarmQuery")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -308,7 +308,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryParseWithBuffer(ctx context.Conte
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7PayloadUserDataItemCpuFunctionAlarmQuery")
 		}
 		if reserved != uint8(0x34) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x34),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -403,7 +403,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) SerializeWithWriteBuffer(c
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")
@@ -431,7 +431,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQuery) SerializeWithWriteBuffer(c
 		{
 			var reserved uint8 = uint8(0x34)
 			if m.reservedField1 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x34),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

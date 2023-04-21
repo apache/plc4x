@@ -94,7 +94,7 @@ func NewBACnetLogDataLogDataEntryRealValue(realValue BACnetContextTagReal, peeke
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryRealValue(structType interface{}) BACnetLogDataLogDataEntryRealValue {
+func CastBACnetLogDataLogDataEntryRealValue(structType any) BACnetLogDataLogDataEntryRealValue {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryRealValue); ok {
 		return casted
 	}

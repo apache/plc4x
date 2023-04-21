@@ -33,6 +33,7 @@ type BACnetProgramError uint16
 
 type IBACnetProgramError interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -104,8 +105,8 @@ func BACnetProgramErrorKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetProgramError(structType interface{}) BACnetProgramError {
-	castFunc := func(typ interface{}) BACnetProgramError {
+func CastBACnetProgramError(structType any) BACnetProgramError {
+	castFunc := func(typ any) BACnetProgramError {
 		if sBACnetProgramError, ok := typ.(BACnetProgramError); ok {
 			return sBACnetProgramError
 		}

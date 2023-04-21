@@ -119,7 +119,7 @@ func NewBACnetApplicationTagObjectIdentifier(payload BACnetTagPayloadObjectIdent
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetApplicationTagObjectIdentifier(structType interface{}) BACnetApplicationTagObjectIdentifier {
+func CastBACnetApplicationTagObjectIdentifier(structType any) BACnetApplicationTagObjectIdentifier {
 	if casted, ok := structType.(BACnetApplicationTagObjectIdentifier); ok {
 		return casted
 	}

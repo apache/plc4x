@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDescriptionOfHalt(descriptionForHalt BACnetApplicat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDescriptionOfHalt(structType interface{}) BACnetConstructedDataDescriptionOfHalt {
+func CastBACnetConstructedDataDescriptionOfHalt(structType any) BACnetConstructedDataDescriptionOfHalt {
 	if casted, ok := structType.(BACnetConstructedDataDescriptionOfHalt); ok {
 		return casted
 	}

@@ -144,7 +144,7 @@ func NewMediaTransportControlDataEnumerateCategoriesSelectionTracks(enumerateTyp
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataEnumerateCategoriesSelectionTracks(structType interface{}) MediaTransportControlDataEnumerateCategoriesSelectionTracks {
+func CastMediaTransportControlDataEnumerateCategoriesSelectionTracks(structType any) MediaTransportControlDataEnumerateCategoriesSelectionTracks {
 	if casted, ok := structType.(MediaTransportControlDataEnumerateCategoriesSelectionTracks); ok {
 		return casted
 	}

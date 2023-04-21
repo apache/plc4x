@@ -42,7 +42,7 @@ func init() {
 	_ = utils.Dump
 }
 
-func (m Df1XmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (interface{}, error) {
+func (m Df1XmlParserHelper) Parse(typeName string, xmlString string, parserArguments ...string) (any, error) {
 	switch typeName {
 	case "DF1Symbol":
 		return model.DF1SymbolParseWithBuffer(context.Background(), utils.NewXmlReadBuffer(strings.NewReader(xmlString)))

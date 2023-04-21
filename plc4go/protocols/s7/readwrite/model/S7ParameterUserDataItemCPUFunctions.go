@@ -152,7 +152,7 @@ func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8,
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterUserDataItemCPUFunctions(structType interface{}) S7ParameterUserDataItemCPUFunctions {
+func CastS7ParameterUserDataItemCPUFunctions(structType any) S7ParameterUserDataItemCPUFunctions {
 	if casted, ok := structType.(S7ParameterUserDataItemCPUFunctions); ok {
 		return casted
 	}

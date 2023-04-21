@@ -79,7 +79,7 @@ func NewConnectionResponseDataBlockDeviceManagement() *_ConnectionResponseDataBl
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionResponseDataBlockDeviceManagement(structType interface{}) ConnectionResponseDataBlockDeviceManagement {
+func CastConnectionResponseDataBlockDeviceManagement(structType any) ConnectionResponseDataBlockDeviceManagement {
 	if casted, ok := structType.(ConnectionResponseDataBlockDeviceManagement); ok {
 		return casted
 	}

@@ -25,6 +25,7 @@ import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WithWriterArgs;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.utils.Serializable;
 import org.apache.plc4x.java.spi.values.PlcList;
@@ -38,6 +39,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+
+import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithRenderAsList;
 
 public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
 
@@ -643,10 +646,13 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcReadResponse");
 
+        writeBuffer.pushContext("request");
         if(request instanceof Serializable) {
             ((Serializable) request).serialize(writeBuffer);
         }
-        writeBuffer.pushContext("values");
+        writeBuffer.popContext("request");
+
+        writeBuffer.pushContext("values", WithRenderAsList(true));
         for (Map.Entry<String, ResponseItem<PlcValue>> valueEntry : values.entrySet()) {
             String tagName = valueEntry.getKey();
             writeBuffer.pushContext(tagName);

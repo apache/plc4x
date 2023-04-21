@@ -96,7 +96,7 @@ func NewKnxNetObjectServer(version uint8) *_KnxNetObjectServer {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetObjectServer(structType interface{}) KnxNetObjectServer {
+func CastKnxNetObjectServer(structType any) KnxNetObjectServer {
 	if casted, ok := structType.(KnxNetObjectServer); ok {
 		return casted
 	}

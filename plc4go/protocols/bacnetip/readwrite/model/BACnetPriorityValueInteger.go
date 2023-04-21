@@ -94,7 +94,7 @@ func NewBACnetPriorityValueInteger(integerValue BACnetApplicationTagSignedIntege
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueInteger(structType interface{}) BACnetPriorityValueInteger {
+func CastBACnetPriorityValueInteger(structType any) BACnetPriorityValueInteger {
 	if casted, ok := structType.(BACnetPriorityValueInteger); ok {
 		return casted
 	}

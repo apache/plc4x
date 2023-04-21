@@ -94,7 +94,7 @@ func NewBACnetChannelValueLightingCommand(ligthingCommandValue BACnetLightingCom
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetChannelValueLightingCommand(structType interface{}) BACnetChannelValueLightingCommand {
+func CastBACnetChannelValueLightingCommand(structType any) BACnetChannelValueLightingCommand {
 	if casted, ok := structType.(BACnetChannelValueLightingCommand); ok {
 		return casted
 	}

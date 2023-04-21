@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesTimerState(timerState BACnetTimerStateTagged, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesTimerState(structType interface{}) BACnetPropertyStatesTimerState {
+func CastBACnetPropertyStatesTimerState(structType any) BACnetPropertyStatesTimerState {
 	if casted, ok := structType.(BACnetPropertyStatesTimerState); ok {
 		return casted
 	}

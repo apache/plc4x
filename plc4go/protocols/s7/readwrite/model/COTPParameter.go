@@ -78,7 +78,7 @@ func NewCOTPParameter(rest uint8) *_COTPParameter {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPParameter(structType interface{}) COTPParameter {
+func CastCOTPParameter(structType any) COTPParameter {
 	if casted, ok := structType.(COTPParameter); ok {
 		return casted
 	}
@@ -139,7 +139,7 @@ func COTPParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		InitializeParent(COTPParameter)
 		GetParent() COTPParameter
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child COTPParameterChildSerializeRequirement
 	var typeSwitchError error
 	switch {

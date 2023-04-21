@@ -96,7 +96,7 @@ func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOthe
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataOther(structType interface{}) ApduDataOther {
+func CastApduDataOther(structType any) ApduDataOther {
 	if casted, ok := structType.(ApduDataOther); ok {
 		return casted
 	}

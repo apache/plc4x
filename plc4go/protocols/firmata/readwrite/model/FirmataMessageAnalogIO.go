@@ -23,7 +23,6 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -106,7 +105,7 @@ func NewFirmataMessageAnalogIO(pin uint8, data []int8, response bool) *_FirmataM
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataMessageAnalogIO(structType interface{}) FirmataMessageAnalogIO {
+func CastFirmataMessageAnalogIO(structType any) FirmataMessageAnalogIO {
 	if casted, ok := structType.(FirmataMessageAnalogIO); ok {
 		return casted
 	}
@@ -171,7 +170,7 @@ func FirmataMessageAnalogIOParseWithBuffer(ctx context.Context, readBuffer utils
 	{
 		_numItems := uint16(uint16(2))
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := readBuffer.ReadInt8("", 8)

@@ -96,7 +96,7 @@ func NewBACnetAbortReasonTagged(value BACnetAbortReason, proprietaryValue uint32
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAbortReasonTagged(structType interface{}) BACnetAbortReasonTagged {
+func CastBACnetAbortReasonTagged(structType any) BACnetAbortReasonTagged {
 	if casted, ok := structType.(BACnetAbortReasonTagged); ok {
 		return casted
 	}
@@ -114,12 +114,12 @@ func (m *_BACnetAbortReasonTagged) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.ActualLength) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.ActualLength) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32((int32(m.ActualLength) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.ActualLength) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }

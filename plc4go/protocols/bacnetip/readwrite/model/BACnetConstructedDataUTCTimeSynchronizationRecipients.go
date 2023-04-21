@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewBACnetConstructedDataUTCTimeSynchronizationRecipients(utcTimeSynchroniza
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUTCTimeSynchronizationRecipients(structType interface{}) BACnetConstructedDataUTCTimeSynchronizationRecipients {
+func CastBACnetConstructedDataUTCTimeSynchronizationRecipients(structType any) BACnetConstructedDataUTCTimeSynchronizationRecipients {
 	if casted, ok := structType.(BACnetConstructedDataUTCTimeSynchronizationRecipients); ok {
 		return casted
 	}
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) SerializeWithWr
 		}
 		for _curItem, _element := range m.GetUtcTimeSynchronizationRecipients() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetUtcTimeSynchronizationRecipients()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetUtcTimeSynchronizationRecipients()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

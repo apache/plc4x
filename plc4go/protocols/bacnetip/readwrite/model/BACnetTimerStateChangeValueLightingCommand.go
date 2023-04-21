@@ -94,7 +94,7 @@ func NewBACnetTimerStateChangeValueLightingCommand(ligthingCommandValue BACnetLi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueLightingCommand(structType interface{}) BACnetTimerStateChangeValueLightingCommand {
+func CastBACnetTimerStateChangeValueLightingCommand(structType any) BACnetTimerStateChangeValueLightingCommand {
 	if casted, ok := structType.(BACnetTimerStateChangeValueLightingCommand); ok {
 		return casted
 	}

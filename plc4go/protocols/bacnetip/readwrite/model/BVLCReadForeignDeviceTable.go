@@ -79,7 +79,7 @@ func NewBVLCReadForeignDeviceTable() *_BVLCReadForeignDeviceTable {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCReadForeignDeviceTable(structType interface{}) BVLCReadForeignDeviceTable {
+func CastBVLCReadForeignDeviceTable(structType any) BVLCReadForeignDeviceTable {
 	if casted, ok := structType.(BVLCReadForeignDeviceTable); ok {
 		return casted
 	}

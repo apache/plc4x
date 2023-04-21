@@ -33,6 +33,7 @@ type BACnetLiftFault uint16
 
 type IBACnetLiftFault interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -176,8 +177,8 @@ func BACnetLiftFaultKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetLiftFault(structType interface{}) BACnetLiftFault {
-	castFunc := func(typ interface{}) BACnetLiftFault {
+func CastBACnetLiftFault(structType any) BACnetLiftFault {
+	castFunc := func(typ any) BACnetLiftFault {
 		if sBACnetLiftFault, ok := typ.(BACnetLiftFault); ok {
 			return sBACnetLiftFault
 		}

@@ -77,7 +77,7 @@ func NewSecurityDataGasAlarmCleared(commandTypeContainer SecurityCommandTypeCont
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataGasAlarmCleared(structType interface{}) SecurityDataGasAlarmCleared {
+func CastSecurityDataGasAlarmCleared(structType any) SecurityDataGasAlarmCleared {
 	if casted, ok := structType.(SecurityDataGasAlarmCleared); ok {
 		return casted
 	}

@@ -94,7 +94,7 @@ func NewBACnetPriorityValueConstructedValue(constructedValue BACnetConstructedDa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueConstructedValue(structType interface{}) BACnetPriorityValueConstructedValue {
+func CastBACnetPriorityValueConstructedValue(structType any) BACnetPriorityValueConstructedValue {
 	if casted, ok := structType.(BACnetPriorityValueConstructedValue); ok {
 		return casted
 	}

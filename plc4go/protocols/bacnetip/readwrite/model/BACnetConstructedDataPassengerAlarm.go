@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPassengerAlarm(passengerAlarm BACnetApplicationTagB
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPassengerAlarm(structType interface{}) BACnetConstructedDataPassengerAlarm {
+func CastBACnetConstructedDataPassengerAlarm(structType any) BACnetConstructedDataPassengerAlarm {
 	if casted, ok := structType.(BACnetConstructedDataPassengerAlarm); ok {
 		return casted
 	}

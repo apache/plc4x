@@ -94,7 +94,7 @@ func NewBACnetProcessIdSelectionNull(nullValue BACnetApplicationTagNull, peekedT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetProcessIdSelectionNull(structType interface{}) BACnetProcessIdSelectionNull {
+func CastBACnetProcessIdSelectionNull(structType any) BACnetProcessIdSelectionNull {
 	if casted, ok := structType.(BACnetProcessIdSelectionNull); ok {
 		return casted
 	}

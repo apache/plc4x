@@ -86,7 +86,7 @@ func NewBACnetConstructedDataScheduleAll(openingTag BACnetOpeningTag, peekedTagH
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataScheduleAll(structType interface{}) BACnetConstructedDataScheduleAll {
+func CastBACnetConstructedDataScheduleAll(structType any) BACnetConstructedDataScheduleAll {
 	if casted, ok := structType.(BACnetConstructedDataScheduleAll); ok {
 		return casted
 	}

@@ -96,7 +96,7 @@ func NewAdsDiscoveryBlockOsData(osData []byte) *_AdsDiscoveryBlockOsData {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlockOsData(structType interface{}) AdsDiscoveryBlockOsData {
+func CastAdsDiscoveryBlockOsData(structType any) AdsDiscoveryBlockOsData {
 	if casted, ok := structType.(AdsDiscoveryBlockOsData); ok {
 		return casted
 	}

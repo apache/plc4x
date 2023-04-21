@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesBacnetIpMode(bacnetIpMode BACnetIPModeTagged, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesBacnetIpMode(structType interface{}) BACnetPropertyStatesBacnetIpMode {
+func CastBACnetPropertyStatesBacnetIpMode(structType any) BACnetPropertyStatesBacnetIpMode {
 	if casted, ok := structType.(BACnetPropertyStatesBacnetIpMode); ok {
 		return casted
 	}

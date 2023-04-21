@@ -146,7 +146,7 @@ func NewLDataExtended(groupAddress bool, hopCount uint8, extendedFrameFormat uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastLDataExtended(structType interface{}) LDataExtended {
+func CastLDataExtended(structType any) LDataExtended {
 	if casted, ok := structType.(LDataExtended); ok {
 		return casted
 	}

@@ -78,7 +78,7 @@ func NewAccessControlDataLockAccessPoint(commandTypeContainer AccessControlComma
 }
 
 // Deprecated: use the interface for direct cast
-func CastAccessControlDataLockAccessPoint(structType interface{}) AccessControlDataLockAccessPoint {
+func CastAccessControlDataLockAccessPoint(structType any) AccessControlDataLockAccessPoint {
 	if casted, ok := structType.(AccessControlDataLockAccessPoint); ok {
 		return casted
 	}

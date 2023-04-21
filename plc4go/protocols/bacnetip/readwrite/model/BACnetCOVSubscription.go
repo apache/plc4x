@@ -98,7 +98,7 @@ func NewBACnetCOVSubscription(recipient BACnetRecipientProcessEnclosed, monitore
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCOVSubscription(structType interface{}) BACnetCOVSubscription {
+func CastBACnetCOVSubscription(structType any) BACnetCOVSubscription {
 	if casted, ok := structType.(BACnetCOVSubscription); ok {
 		return casted
 	}

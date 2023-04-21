@@ -77,7 +77,7 @@ func NewTelephonyDataLineOnHook(commandTypeContainer TelephonyCommandTypeContain
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataLineOnHook(structType interface{}) TelephonyDataLineOnHook {
+func CastTelephonyDataLineOnHook(structType any) TelephonyDataLineOnHook {
 	if casted, ok := structType.(TelephonyDataLineOnHook); ok {
 		return casted
 	}

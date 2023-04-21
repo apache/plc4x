@@ -302,7 +302,7 @@ func NewBACnetEventParameterExtendedParameters(openingTag BACnetOpeningTag, peek
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterExtendedParameters(structType interface{}) BACnetEventParameterExtendedParameters {
+func CastBACnetEventParameterExtendedParameters(structType any) BACnetEventParameterExtendedParameters {
 	if casted, ok := structType.(BACnetEventParameterExtendedParameters); ok {
 		return casted
 	}

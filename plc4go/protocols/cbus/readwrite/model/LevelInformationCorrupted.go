@@ -118,7 +118,7 @@ func NewLevelInformationCorrupted(corruptedNibble1 uint8, corruptedNibble2 uint8
 }
 
 // Deprecated: use the interface for direct cast
-func CastLevelInformationCorrupted(structType interface{}) LevelInformationCorrupted {
+func CastLevelInformationCorrupted(structType any) LevelInformationCorrupted {
 	if casted, ok := structType.(LevelInformationCorrupted); ok {
 		return casted
 	}

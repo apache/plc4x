@@ -75,7 +75,7 @@ func NewAdsDiscoveryBlock() *_AdsDiscoveryBlock {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDiscoveryBlock(structType interface{}) AdsDiscoveryBlock {
+func CastAdsDiscoveryBlock(structType any) AdsDiscoveryBlock {
 	if casted, ok := structType.(AdsDiscoveryBlock); ok {
 		return casted
 	}
@@ -133,7 +133,7 @@ func AdsDiscoveryBlockParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		InitializeParent(AdsDiscoveryBlock)
 		GetParent() AdsDiscoveryBlock
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child AdsDiscoveryBlockChildSerializeRequirement
 	var typeSwitchError error
 	switch {

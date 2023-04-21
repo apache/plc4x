@@ -33,6 +33,7 @@ type DataTransportSize uint8
 
 type IDataTransportSize interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	SizeInBits() bool
 }
@@ -156,8 +157,8 @@ func DataTransportSizeKnows(value uint8) bool {
 	return false
 }
 
-func CastDataTransportSize(structType interface{}) DataTransportSize {
-	castFunc := func(typ interface{}) DataTransportSize {
+func CastDataTransportSize(structType any) DataTransportSize {
+	castFunc := func(typ any) DataTransportSize {
 		if sDataTransportSize, ok := typ.(DataTransportSize); ok {
 			return sDataTransportSize
 		}

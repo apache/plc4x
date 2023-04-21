@@ -121,7 +121,7 @@ func NewBACnetConstructedDataCarAssignedDirection(assignedDirection BACnetLiftCa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataCarAssignedDirection(structType interface{}) BACnetConstructedDataCarAssignedDirection {
+func CastBACnetConstructedDataCarAssignedDirection(structType any) BACnetConstructedDataCarAssignedDirection {
 	if casted, ok := structType.(BACnetConstructedDataCarAssignedDirection); ok {
 		return casted
 	}

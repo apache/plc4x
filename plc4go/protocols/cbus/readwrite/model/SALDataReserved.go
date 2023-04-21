@@ -80,7 +80,7 @@ func NewSALDataReserved(salData SALData) *_SALDataReserved {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataReserved(structType interface{}) SALDataReserved {
+func CastSALDataReserved(structType any) SALDataReserved {
 	if casted, ok := structType.(SALDataReserved); ok {
 		return casted
 	}

@@ -153,7 +153,7 @@ func NewBACnetNotificationParametersChangeOfTimer(innerOpeningTag BACnetOpeningT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersChangeOfTimer(structType interface{}) BACnetNotificationParametersChangeOfTimer {
+func CastBACnetNotificationParametersChangeOfTimer(structType any) BACnetNotificationParametersChangeOfTimer {
 	if casted, ok := structType.(BACnetNotificationParametersChangeOfTimer); ok {
 		return casted
 	}

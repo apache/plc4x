@@ -103,7 +103,7 @@ func NewCALDataReply(paramNo Parameter, parameterValue ParameterValue, commandTy
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataReply(structType interface{}) CALDataReply {
+func CastCALDataReply(structType any) CALDataReply {
 	if casted, ok := structType.(CALDataReply); ok {
 		return casted
 	}

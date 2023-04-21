@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTimeDelay(timeDelay BACnetApplicationTagUnsignedInt
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimeDelay(structType interface{}) BACnetConstructedDataTimeDelay {
+func CastBACnetConstructedDataTimeDelay(structType any) BACnetConstructedDataTimeDelay {
 	if casted, ok := structType.(BACnetConstructedDataTimeDelay); ok {
 		return casted
 	}

@@ -69,7 +69,7 @@ func NewMACAddress(addr []byte) *_MACAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMACAddress(structType interface{}) MACAddress {
+func CastMACAddress(structType any) MACAddress {
 	if casted, ok := structType.(MACAddress); ok {
 		return casted
 	}

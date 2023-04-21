@@ -121,7 +121,7 @@ func NewBACnetConstructedDataControlledVariableValue(controlledVariableValue BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataControlledVariableValue(structType interface{}) BACnetConstructedDataControlledVariableValue {
+func CastBACnetConstructedDataControlledVariableValue(structType any) BACnetConstructedDataControlledVariableValue {
 	if casted, ok := structType.(BACnetConstructedDataControlledVariableValue); ok {
 		return casted
 	}

@@ -33,6 +33,7 @@ type BACnetNodeType uint8
 
 type IBACnetNodeType interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -200,8 +201,8 @@ func BACnetNodeTypeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetNodeType(structType interface{}) BACnetNodeType {
-	castFunc := func(typ interface{}) BACnetNodeType {
+func CastBACnetNodeType(structType any) BACnetNodeType {
+	castFunc := func(typ any) BACnetNodeType {
 		if sBACnetNodeType, ok := typ.(BACnetNodeType); ok {
 			return sBACnetNodeType
 		}

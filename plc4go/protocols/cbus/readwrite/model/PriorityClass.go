@@ -33,6 +33,7 @@ type PriorityClass uint8
 
 type IPriorityClass interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -92,8 +93,8 @@ func PriorityClassKnows(value uint8) bool {
 	return false
 }
 
-func CastPriorityClass(structType interface{}) PriorityClass {
-	castFunc := func(typ interface{}) PriorityClass {
+func CastPriorityClass(structType any) PriorityClass {
+	castFunc := func(typ any) PriorityClass {
 		if sPriorityClass, ok := typ.(PriorityClass); ok {
 			return sPriorityClass
 		}

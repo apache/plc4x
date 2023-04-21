@@ -82,7 +82,7 @@ func NewSysexCommandExtendedAnalog() *_SysexCommandExtendedAnalog {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandExtendedAnalog(structType interface{}) SysexCommandExtendedAnalog {
+func CastSysexCommandExtendedAnalog(structType any) SysexCommandExtendedAnalog {
 	if casted, ok := structType.(SysexCommandExtendedAnalog); ok {
 		return casted
 	}

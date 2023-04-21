@@ -33,6 +33,7 @@ type BACnetMaintenance uint8
 
 type IBACnetMaintenance interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -98,8 +99,8 @@ func BACnetMaintenanceKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetMaintenance(structType interface{}) BACnetMaintenance {
-	castFunc := func(typ interface{}) BACnetMaintenance {
+func CastBACnetMaintenance(structType any) BACnetMaintenance {
+	castFunc := func(typ any) BACnetMaintenance {
 		if sBACnetMaintenance, ok := typ.(BACnetMaintenance); ok {
 			return sBACnetMaintenance
 		}

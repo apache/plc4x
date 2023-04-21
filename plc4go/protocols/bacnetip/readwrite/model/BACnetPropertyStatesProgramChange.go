@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesProgramChange(programState BACnetProgramStateTagged,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesProgramChange(structType interface{}) BACnetPropertyStatesProgramChange {
+func CastBACnetPropertyStatesProgramChange(structType any) BACnetPropertyStatesProgramChange {
 	if casted, ok := structType.(BACnetPropertyStatesProgramChange); ok {
 		return casted
 	}

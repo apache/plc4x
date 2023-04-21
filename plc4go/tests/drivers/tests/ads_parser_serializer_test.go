@@ -20,11 +20,13 @@
 package tests
 
 import (
+	"testing"
+
+	adsIO "github.com/apache/plc4x/plc4go/protocols/ads/readwrite"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 	_ "github.com/apache/plc4x/plc4go/tests/initializetest"
-	"testing"
 )
 
 func TestAdsParserSerializer(t *testing.T) {
-	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/ads/ParserSerializerTestsuite.xml")
+	testutils.RunParserSerializerTestsuite(t, "assets/testing/protocols/ads/ParserSerializerTestsuite.xml", adsIO.AdsParserHelper{})
 }

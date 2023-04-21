@@ -107,7 +107,7 @@ func NewCOTPPacketTpduError(destinationReference uint16, rejectCause uint8, para
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPPacketTpduError(structType interface{}) COTPPacketTpduError {
+func CastCOTPPacketTpduError(structType any) COTPPacketTpduError {
 	if casted, ok := structType.(COTPPacketTpduError); ok {
 		return casted
 	}

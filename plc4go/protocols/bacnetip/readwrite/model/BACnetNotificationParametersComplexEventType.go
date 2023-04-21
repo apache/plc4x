@@ -96,7 +96,7 @@ func NewBACnetNotificationParametersComplexEventType(listOfValues BACnetProperty
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersComplexEventType(structType interface{}) BACnetNotificationParametersComplexEventType {
+func CastBACnetNotificationParametersComplexEventType(structType any) BACnetNotificationParametersComplexEventType {
 	if casted, ok := structType.(BACnetNotificationParametersComplexEventType); ok {
 		return casted
 	}

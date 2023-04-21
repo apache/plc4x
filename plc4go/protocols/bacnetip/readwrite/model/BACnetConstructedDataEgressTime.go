@@ -121,7 +121,7 @@ func NewBACnetConstructedDataEgressTime(egressTime BACnetApplicationTagUnsignedI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEgressTime(structType interface{}) BACnetConstructedDataEgressTime {
+func CastBACnetConstructedDataEgressTime(structType any) BACnetConstructedDataEgressTime {
 	if casted, ok := structType.(BACnetConstructedDataEgressTime); ok {
 		return casted
 	}

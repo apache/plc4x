@@ -94,7 +94,7 @@ func NewBACnetPriorityValueCharacterString(characterStringValue BACnetApplicatio
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueCharacterString(structType interface{}) BACnetPriorityValueCharacterString {
+func CastBACnetPriorityValueCharacterString(structType any) BACnetPriorityValueCharacterString {
 	if casted, ok := structType.(BACnetPriorityValueCharacterString); ok {
 		return casted
 	}

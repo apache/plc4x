@@ -33,6 +33,7 @@ type LevelInformationNibblePair uint8
 
 type ILevelInformationNibblePair interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NibbleValue() uint8
 }
@@ -246,8 +247,8 @@ func LevelInformationNibblePairKnows(value uint8) bool {
 	return false
 }
 
-func CastLevelInformationNibblePair(structType interface{}) LevelInformationNibblePair {
-	castFunc := func(typ interface{}) LevelInformationNibblePair {
+func CastLevelInformationNibblePair(structType any) LevelInformationNibblePair {
+	castFunc := func(typ any) LevelInformationNibblePair {
 		if sLevelInformationNibblePair, ok := typ.(LevelInformationNibblePair); ok {
 			return sLevelInformationNibblePair
 		}

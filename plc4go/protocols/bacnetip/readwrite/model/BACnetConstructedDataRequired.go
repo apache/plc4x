@@ -86,7 +86,7 @@ func NewBACnetConstructedDataRequired(openingTag BACnetOpeningTag, peekedTagHead
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRequired(structType interface{}) BACnetConstructedDataRequired {
+func CastBACnetConstructedDataRequired(structType any) BACnetConstructedDataRequired {
 	if casted, ok := structType.(BACnetConstructedDataRequired); ok {
 		return casted
 	}

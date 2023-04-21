@@ -79,7 +79,7 @@ func NewFirmataMessage(response bool) *_FirmataMessage {
 }
 
 // Deprecated: use the interface for direct cast
-func CastFirmataMessage(structType interface{}) FirmataMessage {
+func CastFirmataMessage(structType any) FirmataMessage {
 	if casted, ok := structType.(FirmataMessage); ok {
 		return casted
 	}
@@ -130,7 +130,7 @@ func FirmataMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		InitializeParent(FirmataMessage)
 		GetParent() FirmataMessage
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child FirmataMessageChildSerializeRequirement
 	var typeSwitchError error
 	switch {

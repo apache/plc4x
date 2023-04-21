@@ -93,7 +93,7 @@ func NewDF1Symbol() *_DF1Symbol {
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1Symbol(structType interface{}) DF1Symbol {
+func CastDF1Symbol(structType any) DF1Symbol {
 	if casted, ok := structType.(DF1Symbol); ok {
 		return casted
 	}
@@ -156,7 +156,7 @@ func DF1SymbolParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		InitializeParent(DF1Symbol)
 		GetParent() DF1Symbol
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child DF1SymbolChildSerializeRequirement
 	var typeSwitchError error
 	switch {

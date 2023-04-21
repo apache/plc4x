@@ -82,7 +82,7 @@ func NewSysexCommandSamplingInterval() *_SysexCommandSamplingInterval {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandSamplingInterval(structType interface{}) SysexCommandSamplingInterval {
+func CastSysexCommandSamplingInterval(structType any) SysexCommandSamplingInterval {
 	if casted, ok := structType.(SysexCommandSamplingInterval); ok {
 		return casted
 	}

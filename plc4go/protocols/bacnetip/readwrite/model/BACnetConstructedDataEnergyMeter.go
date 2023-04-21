@@ -121,7 +121,7 @@ func NewBACnetConstructedDataEnergyMeter(energyMeter BACnetApplicationTagReal, o
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEnergyMeter(structType interface{}) BACnetConstructedDataEnergyMeter {
+func CastBACnetConstructedDataEnergyMeter(structType any) BACnetConstructedDataEnergyMeter {
 	if casted, ok := structType.(BACnetConstructedDataEnergyMeter); ok {
 		return casted
 	}

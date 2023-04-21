@@ -121,7 +121,7 @@ func NewBACnetConstructedDataOperationDirection(operationDirection BACnetEscalat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataOperationDirection(structType interface{}) BACnetConstructedDataOperationDirection {
+func CastBACnetConstructedDataOperationDirection(structType any) BACnetConstructedDataOperationDirection {
 	if casted, ok := structType.(BACnetConstructedDataOperationDirection); ok {
 		return casted
 	}

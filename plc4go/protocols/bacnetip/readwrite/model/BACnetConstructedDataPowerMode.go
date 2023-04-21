@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPowerMode(powerMode BACnetApplicationTagBoolean, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPowerMode(structType interface{}) BACnetConstructedDataPowerMode {
+func CastBACnetConstructedDataPowerMode(structType any) BACnetConstructedDataPowerMode {
 	if casted, ok := structType.(BACnetConstructedDataPowerMode); ok {
 		return casted
 	}

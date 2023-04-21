@@ -154,7 +154,7 @@ func NewConfirmedEventNotificationRequest(processIdentifier BACnetContextTagUnsi
 }
 
 // Deprecated: use the interface for direct cast
-func CastConfirmedEventNotificationRequest(structType interface{}) ConfirmedEventNotificationRequest {
+func CastConfirmedEventNotificationRequest(structType any) ConfirmedEventNotificationRequest {
 	if casted, ok := structType.(ConfirmedEventNotificationRequest); ok {
 		return casted
 	}

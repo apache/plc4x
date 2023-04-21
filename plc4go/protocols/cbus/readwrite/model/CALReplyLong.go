@@ -163,7 +163,7 @@ func NewCALReplyLong(terminatingByte uint32, unitAddress UnitAddress, bridgeAddr
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALReplyLong(structType interface{}) CALReplyLong {
+func CastCALReplyLong(structType any) CALReplyLong {
 	if casted, ok := structType.(CALReplyLong); ok {
 		return casted
 	}
@@ -236,7 +236,7 @@ func CALReplyLongParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CALReplyLong")
 		}
 		if reserved != byte(0x86) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": byte(0x86),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -395,7 +395,7 @@ func (m *_CALReplyLong) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		{
 			var reserved byte = byte(0x86)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": byte(0x86),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

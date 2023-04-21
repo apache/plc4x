@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTraceFlag(traceFlag BACnetApplicationTagBoolean, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTraceFlag(structType interface{}) BACnetConstructedDataTraceFlag {
+func CastBACnetConstructedDataTraceFlag(structType any) BACnetConstructedDataTraceFlag {
 	if casted, ok := structType.(BACnetConstructedDataTraceFlag); ok {
 		return casted
 	}

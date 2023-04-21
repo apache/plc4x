@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -101,7 +100,7 @@ func NewS7ParameterReadVarRequest(items []S7VarRequestParameterItem) *_S7Paramet
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterReadVarRequest(structType interface{}) S7ParameterReadVarRequest {
+func CastS7ParameterReadVarRequest(structType any) S7ParameterReadVarRequest {
 	if casted, ok := structType.(S7ParameterReadVarRequest); ok {
 		return casted
 	}
@@ -124,7 +123,7 @@ func (m *_S7ParameterReadVarRequest) GetLengthInBits(ctx context.Context) uint16
 	// Array field
 	if len(m.Items) > 0 {
 		for _curItem, element := range m.Items {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Items), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.Items), _curItem)
 			_ = arrayCtx
 			_ = _curItem
 			lengthInBits += element.(interface{ GetLengthInBits(context.Context) uint16 }).GetLengthInBits(arrayCtx)
@@ -171,7 +170,7 @@ func S7ParameterReadVarRequestParseWithBuffer(ctx context.Context, readBuffer ut
 	{
 		_numItems := uint16(numItems)
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
 			_item, _err := S7VarRequestParameterItemParseWithBuffer(arrayCtx, readBuffer)
@@ -227,7 +226,7 @@ func (m *_S7ParameterReadVarRequest) SerializeWithWriteBuffer(ctx context.Contex
 		}
 		for _curItem, _element := range m.GetItems() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItems()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

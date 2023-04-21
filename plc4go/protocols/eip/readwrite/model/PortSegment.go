@@ -96,7 +96,7 @@ func NewPortSegment(segmentType PortSegmentType) *_PortSegment {
 }
 
 // Deprecated: use the interface for direct cast
-func CastPortSegment(structType interface{}) PortSegment {
+func CastPortSegment(structType any) PortSegment {
 	if casted, ok := structType.(PortSegment); ok {
 		return casted
 	}

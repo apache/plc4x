@@ -22,29 +22,28 @@ package cbus
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/pkg/api/values"
-	"github.com/apache/plc4x/plc4go/spi/model"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
 
 type Browser struct {
 	_default.DefaultBrowser
-	connection      *Connection
-	messageCodec    spi.MessageCodec
+	connection      spi.PlcConnection
 	sequenceCounter uint8
 }
 
-func NewBrowser(connection *Connection, messageCodec spi.MessageCodec) *Browser {
+func NewBrowser(connection spi.PlcConnection) *Browser {
 	browser := Browser{
 		connection:      connection,
-		messageCodec:    messageCodec,
 		sequenceCounter: 0,
 	}
 	browser.DefaultBrowser = _default.NewDefaultBrowser(browser)
@@ -55,36 +54,12 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 	var queryResults []apiModel.PlcBrowseItem
 	switch query := query.(type) {
 	case *unitInfoQuery:
-		allUnits := false
-		var units []readWriteModel.UnitAddress
-		allAttributes := false
-		var attributes []readWriteModel.Attribute
-		if unitAddress := query.unitAddress; unitAddress != nil {
-			units = append(units, unitAddress)
-		} else {
-			// TODO: check if we still want the option to brute force all addresses
-			installedUnitAddressBytes, err := m.getInstalledUnitAddressBytes(ctx)
-			if err != nil {
-				log.Warn().Err(err).Msg("Unable to get installed uints")
-				return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
-			}
-
-			allUnits = true
-			for i := 0; i <= 0xFF; i++ {
-				unitAddressByte := byte(i)
-				if _, ok := installedUnitAddressBytes[unitAddressByte]; ok {
-					units = append(units, readWriteModel.NewUnitAddress(unitAddressByte))
-				}
-			}
+		units, allUnits, err := m.extractUnits(ctx, query, m.getInstalledUnitAddressBytes)
+		if err != nil {
+			log.Error().Err(err).Msg("Error extracting units")
+			return apiModel.PlcResponseCode_INTERNAL_ERROR, nil
 		}
-		if attribute := query.attribute; attribute != nil {
-			attributes = append(attributes, *attribute)
-		} else {
-			allAttributes = true
-			for _, attribute := range readWriteModel.AttributeValues {
-				attributes = append(attributes, attribute)
-			}
-		}
+		attributes, allAttributes := m.extractAttributes(query)
 
 		if allUnits {
 			log.Info().Msg("Querying all (available) units")
@@ -132,7 +107,7 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 					event.Msgf("unit %d: error reading tag %s. Code %s", unitAddress, attribute, code)
 					continue unitLoop
 				}
-				queryResult := &model.DefaultPlcBrowseItem{
+				queryResult := &spiModel.DefaultPlcBrowseItem{
 					Tag:          NewCALIdentifyTag(unit, nil /*TODO: add bridge support*/, attribute, 1),
 					Name:         queryName,
 					Readable:     true,
@@ -154,8 +129,41 @@ func (m Browser) BrowseQuery(ctx context.Context, interceptor func(result apiMod
 	return apiModel.PlcResponseCode_OK, queryResults
 }
 
+func (m Browser) extractUnits(ctx context.Context, query *unitInfoQuery, getInstalledUnitAddressBytes func(ctx context.Context) (map[byte]any, error)) ([]readWriteModel.UnitAddress, bool, error) {
+	if unitAddress := query.unitAddress; unitAddress != nil {
+		return []readWriteModel.UnitAddress{unitAddress}, false, nil
+	} else {
+		// TODO: check if we still want the option to brute force all addresses
+		installedUnitAddressBytes, err := getInstalledUnitAddressBytes(ctx)
+		if err != nil {
+			return nil, false, errors.New("Unable to get installed uints")
+		}
+
+		var units []readWriteModel.UnitAddress
+		for i := 0; i <= 0xFF; i++ {
+			unitAddressByte := byte(i)
+			if _, ok := installedUnitAddressBytes[unitAddressByte]; ok {
+				units = append(units, readWriteModel.NewUnitAddress(unitAddressByte))
+			}
+		}
+		return units, true, nil
+	}
+}
+
+func (m Browser) extractAttributes(query *unitInfoQuery) ([]readWriteModel.Attribute, bool) {
+	if attribute := query.attribute; attribute != nil {
+		return []readWriteModel.Attribute{*attribute}, false
+	} else {
+		var attributes []readWriteModel.Attribute
+		for _, attribute := range readWriteModel.AttributeValues {
+			attributes = append(attributes, attribute)
+		}
+		return attributes, true
+	}
+}
+
 func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any, error) {
-	// We need to presubscribe to catch the 2 followup responses
+	// We need to pre-subscribe to catch the 2 followup responses
 	subscriptionRequest, err := m.connection.SubscriptionRequestBuilder().
 		AddEventTagAddress("installationMMIMonitor", "mmimonitor/*/NETWORK_CONTROL").
 		Build()
@@ -254,50 +262,66 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		return nil, errors.Wrap(err, "Error getting the installation MMI")
 	}
 	readCtx, readCtxCancel := context.WithTimeout(ctx, time.Second*2)
-	readRequestResult := <-readRequest.ExecuteWithContext(readCtx)
-	readCtxCancel()
-	if err := readRequestResult.GetErr(); err != nil {
-		return nil, errors.Wrap(err, "Error reading the mmi")
-	}
-	if responseCode := readRequestResult.GetResponse().GetResponseCode("installationMMI"); responseCode == apiModel.PlcResponseCode_OK {
-		rootValue := readRequestResult.GetResponse().GetValue("installationMMI")
-		if !rootValue.IsStruct() {
-			return nil, errors.Errorf("%v should be a struct", rootValue)
+	go func() {
+		defer readCtxCancel()
+		readRequestResult := <-readRequest.ExecuteWithContext(readCtx)
+		if err := readRequestResult.GetErr(); err != nil {
+			log.Warn().Err(err).Msg("Error reading the mmi")
+			return
 		}
-		rootStruct := rootValue.GetStruct()
-		if applicationValue := rootStruct["application"]; applicationValue == nil || !applicationValue.IsString() || applicationValue.GetString() != "NETWORK_CONTROL" {
-			return nil, errors.Errorf("%v should contain a application tag of type string with value NETWORK_CONTROL", rootStruct)
-		}
-		var blockStart int
-		if blockStartValue := rootStruct["blockStart"]; blockStartValue == nil || !blockStartValue.IsByte() || blockStartValue.GetByte() != 0 {
-			return nil, errors.Errorf("%v should contain a blockStart tag of type byte with value 0", rootStruct)
-		} else {
-			blockStart = int(blockStartValue.GetByte())
-		}
+		if responseCode := readRequestResult.GetResponse().GetResponseCode("installationMMI"); responseCode == apiModel.PlcResponseCode_OK {
+			rootValue := readRequestResult.GetResponse().GetValue("installationMMI")
+			if !rootValue.IsStruct() {
+				log.Warn().Err(err).Msgf("%v should be a struct", rootValue)
+				return
+			}
+			rootStruct := rootValue.GetStruct()
+			if applicationValue := rootStruct["application"]; applicationValue == nil || !applicationValue.IsString() || applicationValue.GetString() != "NETWORK_CONTROL" {
+				log.Warn().Err(err).Msgf("%v should contain a application tag of type string with value NETWORK_CONTROL", rootStruct)
+				return
+			}
+			var blockStart int
+			if blockStartValue := rootStruct["blockStart"]; blockStartValue == nil || !blockStartValue.IsByte() || blockStartValue.GetByte() != 0 {
+				log.Warn().Err(err).Msgf("%v should contain a blockStart tag of type byte with value 0", rootStruct)
+				return
+			} else {
+				blockStart = int(blockStartValue.GetByte())
+			}
 
-		if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
-			return nil, errors.Errorf("%v should contain a values tag of type list", rootStruct)
-		} else {
-			for unitByteAddress, plcValue := range plcListValue.GetList() {
-				unitByteAddress = blockStart + unitByteAddress
-				if !plcValue.IsString() {
-					return nil, errors.Errorf("%v at %d should be a string", plcValue, unitByteAddress)
-				}
-				switch plcValue.GetString() {
-				case readWriteModel.GAVState_ON.PLC4XEnumName(), readWriteModel.GAVState_OFF.PLC4XEnumName():
-					log.Debug().Msgf("unit %d does exists", unitByteAddress)
-					result[byte(unitByteAddress)] = true
-				case readWriteModel.GAVState_DOES_NOT_EXIST.PLC4XEnumName():
-					log.Debug().Msgf("unit %d does not exists", unitByteAddress)
-				case readWriteModel.GAVState_ERROR.PLC4XEnumName():
-					log.Warn().Msgf("unit %d is in error state", unitByteAddress)
+			if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
+				log.Warn().Err(err).Msgf("%v should contain a values tag of type list", rootStruct)
+				return
+			} else {
+				for unitByteAddress, plcValue := range plcListValue.GetList() {
+					unitByteAddress = blockStart + unitByteAddress
+					if !plcValue.IsString() {
+						log.Warn().Err(err).Msgf("%v at %d should be a string", plcValue, unitByteAddress)
+						return
+					}
+					switch plcValue.GetString() {
+					case readWriteModel.GAVState_ON.PLC4XEnumName(), readWriteModel.GAVState_OFF.PLC4XEnumName():
+						log.Debug().Msgf("unit %d does exists", unitByteAddress)
+						result[byte(unitByteAddress)] = true
+					case readWriteModel.GAVState_DOES_NOT_EXIST.PLC4XEnumName():
+						log.Debug().Msgf("unit %d does not exists", unitByteAddress)
+					case readWriteModel.GAVState_ERROR.PLC4XEnumName():
+						log.Warn().Msgf("unit %d is in error state", unitByteAddress)
+					}
 				}
 			}
+			switch blockStart {
+			case 0:
+				blockOffset0Received = true
+			case 88:
+				blockOffset88Received = true
+			case 176:
+				blockOffset176Received = true
+			}
+
+		} else {
+			log.Warn().Msgf("We got %s as response code for installation mmi so we rely on getting it via subscription", responseCode)
 		}
-		blockOffset0Received = true
-	} else {
-		log.Warn().Msgf("We got %s as response code for installation mmi so we rely on getting it via subscription", responseCode)
-	}
+	}()
 
 	syncCtx, syncCtxCancel := context.WithTimeout(ctx, time.Second*2)
 	defer syncCtxCancel()
@@ -316,5 +340,6 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 			return nil, errors.Wrap(err, "error waiting for other offsets")
 		}
 	}
+	readCtxCancel()
 	return result, nil
 }

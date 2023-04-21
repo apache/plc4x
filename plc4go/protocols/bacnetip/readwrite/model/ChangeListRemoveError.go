@@ -104,7 +104,7 @@ func NewChangeListRemoveError(errorType ErrorEnclosed, firstFailedElementNumber 
 }
 
 // Deprecated: use the interface for direct cast
-func CastChangeListRemoveError(structType interface{}) ChangeListRemoveError {
+func CastChangeListRemoveError(structType any) ChangeListRemoveError {
 	if casted, ok := structType.(ChangeListRemoveError); ok {
 		return casted
 	}

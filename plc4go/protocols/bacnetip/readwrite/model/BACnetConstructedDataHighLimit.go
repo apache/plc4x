@@ -121,7 +121,7 @@ func NewBACnetConstructedDataHighLimit(highLimit BACnetApplicationTagReal, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataHighLimit(structType interface{}) BACnetConstructedDataHighLimit {
+func CastBACnetConstructedDataHighLimit(structType any) BACnetConstructedDataHighLimit {
 	if casted, ok := structType.(BACnetConstructedDataHighLimit); ok {
 		return casted
 	}

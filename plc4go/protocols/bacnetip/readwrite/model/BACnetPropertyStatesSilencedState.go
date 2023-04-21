@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesSilencedState(silencedState BACnetSilencedStateTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesSilencedState(structType interface{}) BACnetPropertyStatesSilencedState {
+func CastBACnetPropertyStatesSilencedState(structType any) BACnetPropertyStatesSilencedState {
 	if casted, ok := structType.(BACnetPropertyStatesSilencedState); ok {
 		return casted
 	}

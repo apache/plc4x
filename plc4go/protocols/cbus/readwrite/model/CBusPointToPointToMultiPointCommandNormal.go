@@ -104,7 +104,7 @@ func NewCBusPointToPointToMultiPointCommandNormal(application ApplicationIdConta
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusPointToPointToMultiPointCommandNormal(structType interface{}) CBusPointToPointToMultiPointCommandNormal {
+func CastCBusPointToPointToMultiPointCommandNormal(structType any) CBusPointToPointToMultiPointCommandNormal {
 	if casted, ok := structType.(CBusPointToPointToMultiPointCommandNormal); ok {
 		return casted
 	}

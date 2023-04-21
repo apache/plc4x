@@ -100,7 +100,7 @@ func NewBVLCDistributeBroadcastToNetwork(npdu NPDU, bvlcPayloadLength uint16) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastBVLCDistributeBroadcastToNetwork(structType interface{}) BVLCDistributeBroadcastToNetwork {
+func CastBVLCDistributeBroadcastToNetwork(structType any) BVLCDistributeBroadcastToNetwork {
 	if casted, ok := structType.(BVLCDistributeBroadcastToNetwork); ok {
 		return casted
 	}

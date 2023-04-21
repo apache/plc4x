@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBACnetIPNATTraversal(bacnetIPNATTraversal BACnetApp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBACnetIPNATTraversal(structType interface{}) BACnetConstructedDataBACnetIPNATTraversal {
+func CastBACnetConstructedDataBACnetIPNATTraversal(structType any) BACnetConstructedDataBACnetIPNATTraversal {
 	if casted, ok := structType.(BACnetConstructedDataBACnetIPNATTraversal); ok {
 		return casted
 	}

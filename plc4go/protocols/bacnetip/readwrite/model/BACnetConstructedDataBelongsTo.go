@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBelongsTo(belongsTo BACnetDeviceObjectReference, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBelongsTo(structType interface{}) BACnetConstructedDataBelongsTo {
+func CastBACnetConstructedDataBelongsTo(structType any) BACnetConstructedDataBelongsTo {
 	if casted, ok := structType.(BACnetConstructedDataBelongsTo); ok {
 		return casted
 	}

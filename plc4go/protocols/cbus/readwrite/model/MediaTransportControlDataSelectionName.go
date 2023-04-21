@@ -95,7 +95,7 @@ func NewMediaTransportControlDataSelectionName(selectionName string, commandType
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataSelectionName(structType interface{}) MediaTransportControlDataSelectionName {
+func CastMediaTransportControlDataSelectionName(structType any) MediaTransportControlDataSelectionName {
 	if casted, ok := structType.(MediaTransportControlDataSelectionName); ok {
 		return casted
 	}

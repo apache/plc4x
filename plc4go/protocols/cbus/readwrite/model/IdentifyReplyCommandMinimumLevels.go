@@ -96,7 +96,7 @@ func NewIdentifyReplyCommandMinimumLevels(minimumLevels []byte, numBytes uint8) 
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandMinimumLevels(structType interface{}) IdentifyReplyCommandMinimumLevels {
+func CastIdentifyReplyCommandMinimumLevels(structType any) IdentifyReplyCommandMinimumLevels {
 	if casted, ok := structType.(IdentifyReplyCommandMinimumLevels); ok {
 		return casted
 	}

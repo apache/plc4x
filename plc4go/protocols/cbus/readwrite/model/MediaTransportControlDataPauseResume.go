@@ -120,7 +120,7 @@ func NewMediaTransportControlDataPauseResume(operation byte, commandTypeContaine
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataPauseResume(structType interface{}) MediaTransportControlDataPauseResume {
+func CastMediaTransportControlDataPauseResume(structType any) MediaTransportControlDataPauseResume {
 	if casted, ok := structType.(MediaTransportControlDataPauseResume); ok {
 		return casted
 	}

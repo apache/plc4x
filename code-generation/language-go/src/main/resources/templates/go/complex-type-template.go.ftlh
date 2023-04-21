@@ -382,7 +382,7 @@ func New${type.name}(
 }
 
 // Deprecated: use the interface for direct cast
-func Cast${type.name}(structType interface{}) ${type.name} {
+func Cast${type.name}(structType any) ${type.name} {
     if casted, ok := structType.(${type.name}); ok {
 		return casted
 	}
@@ -404,7 +404,6 @@ func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 	lengthInBits := uint16(0)
 		</#if>
 		<#list type.fields as field>
-            <#if helper.needsVariable(field, "_lastItem", true)><@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" /></#if>
 			<#switch field.typeName>
 				<#case "array">
 					<#assign arrayField = field.asArrayField().orElseThrow()>
@@ -421,7 +420,7 @@ func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
 				<#else>
 				<#if arrayField.isCountArrayField()>
 		for _curItem, element := range m.${arrayField.name?cap_first} {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.${arrayField.name?cap_first}), _curItem)<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.${arrayField.name?cap_first}), _curItem)
 			<#-- TODO: find a way to do this nicer -->
 			_ = arrayCtx
 			_ = _curItem
@@ -594,7 +593,7 @@ func (m *_${type.name}) GetParentLengthInBits(ctx context.Context) uint16 {
 				<#else>
 					<#if arrayField.isCountArrayField()>
 		for _curItem, element := range m.${arrayField.name?cap_first} {
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.${arrayField.name?cap_first}), _curItem)<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.${arrayField.name?cap_first}), _curItem)
             <#-- TODO: find a way to do this nicer -->
 			_ = arrayCtx
 			_ = _curItem
@@ -811,7 +810,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	{
 		_numItems := uint16(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)})
 		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := spiContext.CreateArrayContext(ctx, int(_numItems), int(_curItem))<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
             <#-- TODO: find a way to do this nicer -->
 			_ = arrayCtx
 			_ = _curItem
@@ -1265,7 +1264,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 		}
 		if ${helper.toTypeSafeCompare(reservedField)} {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": ${helper.getReservedValue(reservedField)},
 				"got value": reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -1338,7 +1337,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		InitializeParent(${type.name}<#if type.propertyFields?has_content>, </#if> <#list type.propertyFields as field><#if helper.needsPointerAccess(field)>*</#if>${helper.getLanguageTypeNameForField(field)}<#sep>, </#sep></#list>)
 		GetParent() ${type.name}
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ${type.name}ChildSerializeRequirement
 	var typeSwitchError error
 	switch {
@@ -1610,7 +1609,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", arrayField)}
 						<#else>
 						<#assign complexTypeReference = arrayElementType>
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.Get${arrayField.name?cap_first}()), _curItem)<@emitImportWithAlias alias="spiContext" import="github.com/apache/plc4x/plc4go/spi/context" />
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.Get${arrayField.name?cap_first}()), _curItem)
         <#-- TODO: find a way to do this nicer -->
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
@@ -1802,7 +1801,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	{
 		var reserved ${helper.getLanguageTypeNameForTypeReference(simpleTypeReference)} = ${helper.getReservedValue(reservedField)}
 		if <#if type.isAbstract()>p</#if>m.reservedField${reservedFieldIndex} != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": ${helper.getReservedValue(reservedField)},
 				"got value": reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewBACnetConstructedDataLiftFaultSignals(faultSignals []BACnetLiftFaultTagg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLiftFaultSignals(structType interface{}) BACnetConstructedDataLiftFaultSignals {
+func CastBACnetConstructedDataLiftFaultSignals(structType any) BACnetConstructedDataLiftFaultSignals {
 	if casted, ok := structType.(BACnetConstructedDataLiftFaultSignals); ok {
 		return casted
 	}
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataLiftFaultSignals) SerializeWithWriteBuffer(ctx co
 		}
 		for _curItem, _element := range m.GetFaultSignals() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetFaultSignals()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFaultSignals()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

@@ -107,7 +107,7 @@ func NewMeasurementData(commandTypeContainer MeasurementCommandTypeContainer) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastMeasurementData(structType interface{}) MeasurementData {
+func CastMeasurementData(structType any) MeasurementData {
 	if casted, ok := structType.(MeasurementData); ok {
 		return casted
 	}
@@ -178,7 +178,7 @@ func MeasurementDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		InitializeParent(MeasurementData, MeasurementCommandTypeContainer)
 		GetParent() MeasurementData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child MeasurementDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

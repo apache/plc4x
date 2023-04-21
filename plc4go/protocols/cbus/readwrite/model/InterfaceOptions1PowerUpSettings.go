@@ -69,7 +69,7 @@ func NewInterfaceOptions1PowerUpSettings(interfaceOptions1 InterfaceOptions1) *_
 }
 
 // Deprecated: use the interface for direct cast
-func CastInterfaceOptions1PowerUpSettings(structType interface{}) InterfaceOptions1PowerUpSettings {
+func CastInterfaceOptions1PowerUpSettings(structType any) InterfaceOptions1PowerUpSettings {
 	if casted, ok := structType.(InterfaceOptions1PowerUpSettings); ok {
 		return casted
 	}

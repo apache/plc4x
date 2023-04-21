@@ -100,7 +100,7 @@ func NewS7ParameterWriteVarResponse(numItems uint8) *_S7ParameterWriteVarRespons
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterWriteVarResponse(structType interface{}) S7ParameterWriteVarResponse {
+func CastS7ParameterWriteVarResponse(structType any) S7ParameterWriteVarResponse {
 	if casted, ok := structType.(S7ParameterWriteVarResponse); ok {
 		return casted
 	}

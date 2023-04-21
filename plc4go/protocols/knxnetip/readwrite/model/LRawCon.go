@@ -78,7 +78,7 @@ func NewLRawCon(size uint16) *_LRawCon {
 }
 
 // Deprecated: use the interface for direct cast
-func CastLRawCon(structType interface{}) LRawCon {
+func CastLRawCon(structType any) LRawCon {
 	if casted, ok := structType.(LRawCon); ok {
 		return casted
 	}

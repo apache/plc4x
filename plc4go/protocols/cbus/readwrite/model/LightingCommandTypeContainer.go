@@ -33,6 +33,7 @@ type LightingCommandTypeContainer uint8
 
 type ILightingCommandTypeContainer interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	NumBytes() uint8
 	CommandType() LightingCommandType
@@ -819,8 +820,8 @@ func LightingCommandTypeContainerKnows(value uint8) bool {
 	return false
 }
 
-func CastLightingCommandTypeContainer(structType interface{}) LightingCommandTypeContainer {
-	castFunc := func(typ interface{}) LightingCommandTypeContainer {
+func CastLightingCommandTypeContainer(structType any) LightingCommandTypeContainer {
+	castFunc := func(typ any) LightingCommandTypeContainer {
 		if sLightingCommandTypeContainer, ok := typ.(LightingCommandTypeContainer); ok {
 			return sLightingCommandTypeContainer
 		}

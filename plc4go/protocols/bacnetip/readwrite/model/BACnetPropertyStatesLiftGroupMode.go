@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesLiftGroupMode(liftGroupMode BACnetLiftGroupModeTagge
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesLiftGroupMode(structType interface{}) BACnetPropertyStatesLiftGroupMode {
+func CastBACnetPropertyStatesLiftGroupMode(structType any) BACnetPropertyStatesLiftGroupMode {
 	if casted, ok := structType.(BACnetPropertyStatesLiftGroupMode); ok {
 		return casted
 	}

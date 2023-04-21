@@ -94,7 +94,7 @@ func NewBACnetEventParameterNone(none BACnetContextTagNull, peekedTagHeader BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterNone(structType interface{}) BACnetEventParameterNone {
+func CastBACnetEventParameterNone(structType any) BACnetEventParameterNone {
 	if casted, ok := structType.(BACnetEventParameterNone); ok {
 		return casted
 	}

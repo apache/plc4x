@@ -87,7 +87,7 @@ func NewBACnetReadAccessProperty(propertyIdentifier BACnetPropertyIdentifierTagg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetReadAccessProperty(structType interface{}) BACnetReadAccessProperty {
+func CastBACnetReadAccessProperty(structType any) BACnetReadAccessProperty {
 	if casted, ok := structType.(BACnetReadAccessProperty); ok {
 		return casted
 	}
@@ -179,7 +179,7 @@ func BACnetReadAccessPropertyParseWithBuffer(ctx context.Context, readBuffer uti
 		if pullErr := readBuffer.PullContext("readResult"); pullErr != nil {
 			return nil, errors.Wrap(pullErr, "Error pulling for readResult")
 		}
-		_val, _err := BACnetReadAccessPropertyReadResultParseWithBuffer(ctx, readBuffer, objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() interface{} { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() interface{} { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
+		_val, _err := BACnetReadAccessPropertyReadResultParseWithBuffer(ctx, readBuffer, objectTypeArgument, propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			Plc4xModelLog.Debug().Err(_err).Msg("Resetting position because optional threw an error")

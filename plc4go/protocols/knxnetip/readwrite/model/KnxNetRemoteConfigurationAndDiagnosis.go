@@ -96,7 +96,7 @@ func NewKnxNetRemoteConfigurationAndDiagnosis(version uint8) *_KnxNetRemoteConfi
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxNetRemoteConfigurationAndDiagnosis(structType interface{}) KnxNetRemoteConfigurationAndDiagnosis {
+func CastKnxNetRemoteConfigurationAndDiagnosis(structType any) KnxNetRemoteConfigurationAndDiagnosis {
 	if casted, ok := structType.(KnxNetRemoteConfigurationAndDiagnosis); ok {
 		return casted
 	}

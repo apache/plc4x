@@ -113,7 +113,7 @@ func NewBACnetServiceAckConfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckConfirmedPrivateTransfer(structType interface{}) BACnetServiceAckConfirmedPrivateTransfer {
+func CastBACnetServiceAckConfirmedPrivateTransfer(structType any) BACnetServiceAckConfirmedPrivateTransfer {
 	if casted, ok := structType.(BACnetServiceAckConfirmedPrivateTransfer); ok {
 		return casted
 	}

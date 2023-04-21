@@ -54,7 +54,8 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          ®<tags>
+          ®
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz</name>
               <address>00004040/00000008:BOOL</address>
@@ -177,22 +178,26 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <tags>
-              <hurz>
-                <DirectAdsField>
-                  <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
-                  <indexOffset dataType="uint" bitLength="32">8</indexOffset>
-                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                </DirectAdsField>
-              </hurz>
-            </tags>
+            <PlcTagRequest>
+              <tags isList="true">
+                <hurz>
+                  <DirectAdsField>
+                    <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
+                    <indexOffset dataType="uint" bitLength="32">8</indexOffset>
+                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
+                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                  </DirectAdsField>
+                </hurz>
+              </tags>
+            </PlcTagRequest>
           </PlcReadRequest>
-          <values>
+          <values isList="true">
             <hurz>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                </value>
               </ResponseItem>
             </hurz>
           </values>
@@ -211,7 +216,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>00004040/00000008:BOOL</address>
@@ -339,36 +344,42 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <tags>
-              <hurz1>
-                <DirectAdsField>
-                  <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
-                  <indexOffset dataType="uint" bitLength="32">8</indexOffset>
-                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                </DirectAdsField>
-              </hurz1>
-              <hurz2>
-                <DirectAdsField>
-                  <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
-                  <indexOffset dataType="uint" bitLength="32">12</indexOffset>
-                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                </DirectAdsField>
-              </hurz2>
-            </tags>
+            <PlcTagRequest>
+              <tags isList="true">
+                <hurz1>
+                  <DirectAdsField>
+                    <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
+                    <indexOffset dataType="uint" bitLength="32">8</indexOffset>
+                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
+                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                  </DirectAdsField>
+                </hurz1>
+                <hurz2>
+                  <DirectAdsField>
+                    <indexGroup dataType="uint" bitLength="32">4040</indexGroup>
+                    <indexOffset dataType="uint" bitLength="32">12</indexOffset>
+                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
+                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                  </DirectAdsField>
+                </hurz2>
+              </tags>
+            </PlcTagRequest>
           </PlcReadRequest>
-          <values>
+          <values isList="true">
             <hurz1>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                </value>
               </ResponseItem>
             </hurz1>
             <hurz2>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBOOL dataType="bit" bitLength="1">true</PlcBOOL>
+                </value>
               </ResponseItem>
             </hurz2>
           </values>
@@ -388,7 +399,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
@@ -627,21 +638,26 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <tags>
-              <hurz1>
-                <SymbolicAdsField>
-                  <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
-                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                </SymbolicAdsField>
-              </hurz1>
-            </tags>
+            <PlcTagRequest>
+              <tags isList="true">
+                <hurz1>
+                  <SymbolicAdsField>
+                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M
+                    </symbolicAddress>
+                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
+                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                  </SymbolicAdsField>
+                </hurz1>
+              </tags>
+            </PlcTagRequest>
           </PlcReadRequest>
-          <values>
+          <values isList="true">
             <hurz1>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
+                </value>
               </ResponseItem>
             </hurz1>
           </values>
@@ -660,7 +676,7 @@
     <steps>
       <api-request name="Receive Read Request from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
@@ -901,21 +917,26 @@
       <api-response name="Report Read Response to application">
         <PlcReadResponse>
           <PlcReadRequest>
-            <tags>
-              <hurz1>
-                <SymbolicAdsField>
-                  <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
-                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                </SymbolicAdsField>
-              </hurz1>
-            </tags>
+            <PlcTagRequest>
+              <tags isList="true">
+                <hurz1>
+                  <SymbolicAdsField>
+                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M
+                    </symbolicAddress>
+                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
+                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                  </SymbolicAdsField>
+                </hurz1>
+              </tags>
+            </PlcTagRequest>
           </PlcReadRequest>
-          <values>
+          <values isList="true">
             <hurz1>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
+                </value>
               </ResponseItem>
             </hurz1>
           </values>
@@ -924,7 +945,7 @@
       <delay>500</delay>
       <api-request name="Receive a second Read Request for the same resource from application">
         <TestReadRequest>
-          <tags>
+          <tags isList="true">
             <tag className="org.apache.plc4x.test.driver.internal.api.TestTag">
               <name>hurz1</name>
               <address>main.f_trigDateiGelesen.M:BOOL</address>
@@ -1051,21 +1072,26 @@
       <api-response name="Report Read Response to application again">
         <PlcReadResponse>
           <PlcReadRequest>
-            <tags>
-              <hurz1>
-                <SymbolicAdsField>
-                  <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M</symbolicAddress>
-                  <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
-                  <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
-                </SymbolicAdsField>
-              </hurz1>
-            </tags>
+            <PlcTagRequest>
+              <tags isList="true">
+                <hurz1>
+                  <SymbolicAdsField>
+                    <symbolicAddress dataType="string" bitLength="200" encoding="UTF-8">main.f_trigDateiGelesen.M
+                    </symbolicAddress>
+                    <numberOfElements dataType="uint" bitLength="32">1</numberOfElements>
+                    <dataType dataType="string" bitLength="32" encoding="UTF-8">BOOL</dataType>
+                  </SymbolicAdsField>
+                </hurz1>
+              </tags>
+            </PlcTagRequest>
           </PlcReadRequest>
-          <values>
+          <values isList="true">
             <hurz1>
               <ResponseItem>
-                <result dataType="string" bitLength="16" encoding="UTF-8">OK</result>
-                <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
+                <code dataType="string" bitLength="16" encoding="UTF-8">OK</code>
+                <value>
+                  <PlcBOOL dataType="bit" bitLength="1">false</PlcBOOL>
+                </value>
               </ResponseItem>
             </hurz1>
           </values>

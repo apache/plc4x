@@ -86,7 +86,7 @@ func NewBACnetConstructedDataBinaryValueAll(openingTag BACnetOpeningTag, peekedT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBinaryValueAll(structType interface{}) BACnetConstructedDataBinaryValueAll {
+func CastBACnetConstructedDataBinaryValueAll(structType any) BACnetConstructedDataBinaryValueAll {
 	if casted, ok := structType.(BACnetConstructedDataBinaryValueAll); ok {
 		return casted
 	}

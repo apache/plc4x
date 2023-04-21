@@ -107,7 +107,7 @@ func NewConnectionStateRequest(communicationChannelId uint8, hpaiControlEndpoint
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionStateRequest(structType interface{}) ConnectionStateRequest {
+func CastConnectionStateRequest(structType any) ConnectionStateRequest {
 	if casted, ok := structType.(ConnectionStateRequest); ok {
 		return casted
 	}
@@ -168,7 +168,7 @@ func ConnectionStateRequestParseWithBuffer(ctx context.Context, readBuffer utils
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ConnectionStateRequest")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -232,7 +232,7 @@ func (m *_ConnectionStateRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

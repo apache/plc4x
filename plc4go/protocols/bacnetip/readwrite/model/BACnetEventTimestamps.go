@@ -83,7 +83,7 @@ func NewBACnetEventTimestamps(toOffnormal BACnetTimeStamp, toFault BACnetTimeSta
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventTimestamps(structType interface{}) BACnetEventTimestamps {
+func CastBACnetEventTimestamps(structType any) BACnetEventTimestamps {
 	if casted, ok := structType.(BACnetEventTimestamps); ok {
 		return casted
 	}

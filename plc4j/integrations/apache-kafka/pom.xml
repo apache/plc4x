@@ -121,7 +121,7 @@
                         <componentType>source</componentType>
                     </componentTypes>
 
-                    <tags>
+                    <tags isList="true">
                         <tag>PLC4X</tag>
                         <tag>PLC</tag>
                         <tag>iot</tag>

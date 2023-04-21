@@ -104,7 +104,7 @@ func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, s
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusPointToMultiPointCommandNormal(structType interface{}) CBusPointToMultiPointCommandNormal {
+func CastCBusPointToMultiPointCommandNormal(structType any) CBusPointToMultiPointCommandNormal {
 	if casted, ok := structType.(CBusPointToMultiPointCommandNormal); ok {
 		return casted
 	}
@@ -171,7 +171,7 @@ func CBusPointToMultiPointCommandNormalParseWithBuffer(ctx context.Context, read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CBusPointToMultiPointCommandNormal")
 		}
 		if reserved != byte(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": byte(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -242,7 +242,7 @@ func (m *_CBusPointToMultiPointCommandNormal) SerializeWithWriteBuffer(ctx conte
 		{
 			var reserved byte = byte(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": byte(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

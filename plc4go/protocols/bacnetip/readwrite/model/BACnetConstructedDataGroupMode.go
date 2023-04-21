@@ -121,7 +121,7 @@ func NewBACnetConstructedDataGroupMode(groupMode BACnetLiftGroupModeTagged, open
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataGroupMode(structType interface{}) BACnetConstructedDataGroupMode {
+func CastBACnetConstructedDataGroupMode(structType any) BACnetConstructedDataGroupMode {
 	if casted, ok := structType.(BACnetConstructedDataGroupMode); ok {
 		return casted
 	}

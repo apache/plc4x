@@ -115,7 +115,7 @@ func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(result uint8,
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(structType interface{}) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
+func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(structType any) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse); ok {
 		return casted
 	}

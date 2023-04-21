@@ -941,7 +941,7 @@ func Test_byteWriteBuffer_WriteVirtual(t *testing.T) {
 	}
 	type args struct {
 		logicalName string
-		value       interface{}
+		value       any
 		writerArgs  []WithWriterArgs
 	}
 	tests := []struct {

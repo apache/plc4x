@@ -107,7 +107,7 @@ func NewAdsDeleteDeviceNotificationResponse(result ReturnCode, targetAmsNetId Am
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsDeleteDeviceNotificationResponse(structType interface{}) AdsDeleteDeviceNotificationResponse {
+func CastAdsDeleteDeviceNotificationResponse(structType any) AdsDeleteDeviceNotificationResponse {
 	if casted, ok := structType.(AdsDeleteDeviceNotificationResponse); ok {
 		return casted
 	}

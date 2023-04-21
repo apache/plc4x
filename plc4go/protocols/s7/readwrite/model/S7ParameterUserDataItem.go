@@ -75,7 +75,7 @@ func NewS7ParameterUserDataItem() *_S7ParameterUserDataItem {
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7ParameterUserDataItem(structType interface{}) S7ParameterUserDataItem {
+func CastS7ParameterUserDataItem(structType any) S7ParameterUserDataItem {
 	if casted, ok := structType.(S7ParameterUserDataItem); ok {
 		return casted
 	}
@@ -126,7 +126,7 @@ func S7ParameterUserDataItemParseWithBuffer(ctx context.Context, readBuffer util
 		InitializeParent(S7ParameterUserDataItem)
 		GetParent() S7ParameterUserDataItem
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child S7ParameterUserDataItemChildSerializeRequirement
 	var typeSwitchError error
 	switch {

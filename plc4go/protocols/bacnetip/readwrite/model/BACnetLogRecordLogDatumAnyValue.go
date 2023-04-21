@@ -97,7 +97,7 @@ func NewBACnetLogRecordLogDatumAnyValue(anyValue BACnetConstructedData, openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecordLogDatumAnyValue(structType interface{}) BACnetLogRecordLogDatumAnyValue {
+func CastBACnetLogRecordLogDatumAnyValue(structType any) BACnetLogRecordLogDatumAnyValue {
 	if casted, ok := structType.(BACnetLogRecordLogDatumAnyValue); ok {
 		return casted
 	}

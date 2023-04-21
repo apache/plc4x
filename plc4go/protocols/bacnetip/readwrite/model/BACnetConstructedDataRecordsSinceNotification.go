@@ -121,7 +121,7 @@ func NewBACnetConstructedDataRecordsSinceNotification(recordsSinceNotifications 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRecordsSinceNotification(structType interface{}) BACnetConstructedDataRecordsSinceNotification {
+func CastBACnetConstructedDataRecordsSinceNotification(structType any) BACnetConstructedDataRecordsSinceNotification {
 	if casted, ok := structType.(BACnetConstructedDataRecordsSinceNotification); ok {
 		return casted
 	}

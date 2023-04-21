@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPriorityArray(priorityArray BACnetPriorityArray, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPriorityArray(structType interface{}) BACnetConstructedDataPriorityArray {
+func CastBACnetConstructedDataPriorityArray(structType any) BACnetConstructedDataPriorityArray {
 	if casted, ok := structType.(BACnetConstructedDataPriorityArray); ok {
 		return casted
 	}

@@ -104,7 +104,7 @@ func NewIdentifyReplyCommandDelays(terminalLevels []byte, reStrikeDelay byte, nu
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandDelays(structType interface{}) IdentifyReplyCommandDelays {
+func CastIdentifyReplyCommandDelays(structType any) IdentifyReplyCommandDelays {
 	if casted, ok := structType.(IdentifyReplyCommandDelays); ok {
 		return casted
 	}

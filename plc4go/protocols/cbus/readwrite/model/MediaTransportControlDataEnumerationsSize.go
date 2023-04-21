@@ -152,7 +152,7 @@ func NewMediaTransportControlDataEnumerationsSize(sizeType byte, start uint8, si
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataEnumerationsSize(structType interface{}) MediaTransportControlDataEnumerationsSize {
+func CastMediaTransportControlDataEnumerationsSize(structType any) MediaTransportControlDataEnumerationsSize {
 	if casted, ok := structType.(MediaTransportControlDataEnumerationsSize); ok {
 		return casted
 	}

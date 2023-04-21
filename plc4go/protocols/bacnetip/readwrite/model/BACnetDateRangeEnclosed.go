@@ -86,7 +86,7 @@ func NewBACnetDateRangeEnclosed(openingTag BACnetOpeningTag, dateRange BACnetDat
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetDateRangeEnclosed(structType interface{}) BACnetDateRangeEnclosed {
+func CastBACnetDateRangeEnclosed(structType any) BACnetDateRangeEnclosed {
 	if casted, ok := structType.(BACnetDateRangeEnclosed); ok {
 		return casted
 	}

@@ -80,7 +80,7 @@ func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode 
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestEmpty(structType interface{}) RequestEmpty {
+func CastRequestEmpty(structType any) RequestEmpty {
 	if casted, ok := structType.(RequestEmpty); ok {
 		return casted
 	}

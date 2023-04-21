@@ -121,7 +121,7 @@ func NewBACnetConstructedDataGlobalIdentifier(globalIdentifier BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataGlobalIdentifier(structType interface{}) BACnetConstructedDataGlobalIdentifier {
+func CastBACnetConstructedDataGlobalIdentifier(structType any) BACnetConstructedDataGlobalIdentifier {
 	if casted, ok := structType.(BACnetConstructedDataGlobalIdentifier); ok {
 		return casted
 	}

@@ -69,7 +69,7 @@ func NewAlpha(character byte) *_Alpha {
 }
 
 // Deprecated: use the interface for direct cast
-func CastAlpha(structType interface{}) Alpha {
+func CastAlpha(structType any) Alpha {
 	if casted, ok := structType.(Alpha); ok {
 		return casted
 	}

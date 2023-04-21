@@ -76,7 +76,7 @@ func (m *defaultBrowser) BrowseWithInterceptor(ctx context.Context, browseReques
 		browseResponse := model.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
 		result <- &model.DefaultPlcBrowseRequestResult{
 			Request:  browseRequest,
-			Response: &browseResponse,
+			Response: browseResponse,
 			Err:      nil,
 		}
 	}()

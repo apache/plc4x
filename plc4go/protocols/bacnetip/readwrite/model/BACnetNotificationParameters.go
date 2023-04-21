@@ -125,7 +125,7 @@ func NewBACnetNotificationParameters(openingTag BACnetOpeningTag, peekedTagHeade
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParameters(structType interface{}) BACnetNotificationParameters {
+func CastBACnetNotificationParameters(structType any) BACnetNotificationParameters {
 	if casted, ok := structType.(BACnetNotificationParameters); ok {
 		return casted
 	}
@@ -202,7 +202,7 @@ func BACnetNotificationParametersParseWithBuffer(ctx context.Context, readBuffer
 		InitializeParent(BACnetNotificationParameters, BACnetOpeningTag, BACnetTagHeader, BACnetClosingTag)
 		GetParent() BACnetNotificationParameters
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetNotificationParametersChildSerializeRequirement
 	var typeSwitchError error
 	switch {

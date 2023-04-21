@@ -78,7 +78,7 @@ func NewIdentifyReplyCommand(numBytes uint8) *_IdentifyReplyCommand {
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommand(structType interface{}) IdentifyReplyCommand {
+func CastIdentifyReplyCommand(structType any) IdentifyReplyCommand {
 	if casted, ok := structType.(IdentifyReplyCommand); ok {
 		return casted
 	}
@@ -121,7 +121,7 @@ func IdentifyReplyCommandParseWithBuffer(ctx context.Context, readBuffer utils.R
 		InitializeParent(IdentifyReplyCommand)
 		GetParent() IdentifyReplyCommand
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child IdentifyReplyCommandChildSerializeRequirement
 	var typeSwitchError error
 	switch {

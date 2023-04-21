@@ -121,7 +121,7 @@ func NewBACnetConstructedDataModificationDate(modificationDate BACnetDateTime, o
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataModificationDate(structType interface{}) BACnetConstructedDataModificationDate {
+func CastBACnetConstructedDataModificationDate(structType any) BACnetConstructedDataModificationDate {
 	if casted, ok := structType.(BACnetConstructedDataModificationDate); ok {
 		return casted
 	}

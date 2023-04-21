@@ -69,7 +69,7 @@ func NewBACnetAccessThreatLevel(threatLevel BACnetApplicationTagUnsignedInteger)
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccessThreatLevel(structType interface{}) BACnetAccessThreatLevel {
+func CastBACnetAccessThreatLevel(structType any) BACnetAccessThreatLevel {
 	if casted, ok := structType.(BACnetAccessThreatLevel); ok {
 		return casted
 	}

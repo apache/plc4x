@@ -155,7 +155,7 @@ func NewS7PayloadDiagnosticMessage(EventId uint16, PriorityClass uint8, ObNumber
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadDiagnosticMessage(structType interface{}) S7PayloadDiagnosticMessage {
+func CastS7PayloadDiagnosticMessage(structType any) S7PayloadDiagnosticMessage {
 	if casted, ok := structType.(S7PayloadDiagnosticMessage); ok {
 		return casted
 	}

@@ -95,7 +95,7 @@ func NewBACnetLogDataLogDataEntryAnyValue(anyValue BACnetConstructedData, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryAnyValue(structType interface{}) BACnetLogDataLogDataEntryAnyValue {
+func CastBACnetLogDataLogDataEntryAnyValue(structType any) BACnetLogDataLogDataEntryAnyValue {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryAnyValue); ok {
 		return casted
 	}

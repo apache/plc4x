@@ -121,7 +121,7 @@ func NewBACnetConstructedDataPriorityForWriting(priorityForWriting BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataPriorityForWriting(structType interface{}) BACnetConstructedDataPriorityForWriting {
+func CastBACnetConstructedDataPriorityForWriting(structType any) BACnetConstructedDataPriorityForWriting {
 	if casted, ok := structType.(BACnetConstructedDataPriorityForWriting); ok {
 		return casted
 	}

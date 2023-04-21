@@ -97,7 +97,7 @@ func NewNLM(apduLength uint16) *_NLM {
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLM(structType interface{}) NLM {
+func CastNLM(structType any) NLM {
 	if casted, ok := structType.(NLM); ok {
 		return casted
 	}
@@ -155,7 +155,7 @@ func NLMParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLe
 		InitializeParent(NLM)
 		GetParent() NLM
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child NLMChildSerializeRequirement
 	var typeSwitchError error
 	switch {

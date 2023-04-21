@@ -86,7 +86,7 @@ func NewBACnetConstructedDataEventLogAll(openingTag BACnetOpeningTag, peekedTagH
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEventLogAll(structType interface{}) BACnetConstructedDataEventLogAll {
+func CastBACnetConstructedDataEventLogAll(structType any) BACnetConstructedDataEventLogAll {
 	if casted, ok := structType.(BACnetConstructedDataEventLogAll); ok {
 		return casted
 	}

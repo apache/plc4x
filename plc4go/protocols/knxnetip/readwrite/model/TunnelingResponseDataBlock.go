@@ -83,7 +83,7 @@ func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter
 }
 
 // Deprecated: use the interface for direct cast
-func CastTunnelingResponseDataBlock(structType interface{}) TunnelingResponseDataBlock {
+func CastTunnelingResponseDataBlock(structType any) TunnelingResponseDataBlock {
 	if casted, ok := structType.(TunnelingResponseDataBlock); ok {
 		return casted
 	}

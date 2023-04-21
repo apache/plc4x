@@ -90,7 +90,7 @@ func NewBACnetAccumulatorRecord(timestamp BACnetDateTimeEnclosed, presentValue B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccumulatorRecord(structType interface{}) BACnetAccumulatorRecord {
+func CastBACnetAccumulatorRecord(structType any) BACnetAccumulatorRecord {
 	if casted, ok := structType.(BACnetAccumulatorRecord); ok {
 		return casted
 	}

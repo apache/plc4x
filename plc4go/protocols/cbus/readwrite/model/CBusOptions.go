@@ -125,7 +125,7 @@ func NewCBusOptions(connect bool, smart bool, idmon bool, exstat bool, monitor b
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusOptions(structType interface{}) CBusOptions {
+func CastCBusOptions(structType any) CBusOptions {
 	if casted, ok := structType.(CBusOptions); ok {
 		return casted
 	}

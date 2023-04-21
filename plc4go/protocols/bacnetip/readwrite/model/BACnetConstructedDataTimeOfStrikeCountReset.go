@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTimeOfStrikeCountReset(timeOfStrikeCountReset BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimeOfStrikeCountReset(structType interface{}) BACnetConstructedDataTimeOfStrikeCountReset {
+func CastBACnetConstructedDataTimeOfStrikeCountReset(structType any) BACnetConstructedDataTimeOfStrikeCountReset {
 	if casted, ok := structType.(BACnetConstructedDataTimeOfStrikeCountReset); ok {
 		return casted
 	}

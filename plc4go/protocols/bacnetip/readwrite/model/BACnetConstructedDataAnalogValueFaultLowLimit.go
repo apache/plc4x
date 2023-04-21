@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAnalogValueFaultLowLimit(faultLowLimit BACnetApplic
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAnalogValueFaultLowLimit(structType interface{}) BACnetConstructedDataAnalogValueFaultLowLimit {
+func CastBACnetConstructedDataAnalogValueFaultLowLimit(structType any) BACnetConstructedDataAnalogValueFaultLowLimit {
 	if casted, ok := structType.(BACnetConstructedDataAnalogValueFaultLowLimit); ok {
 		return casted
 	}

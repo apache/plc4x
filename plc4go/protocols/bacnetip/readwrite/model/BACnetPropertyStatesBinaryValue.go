@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesBinaryValue(binaryValue BACnetBinaryPVTagged, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesBinaryValue(structType interface{}) BACnetPropertyStatesBinaryValue {
+func CastBACnetPropertyStatesBinaryValue(structType any) BACnetPropertyStatesBinaryValue {
 	if casted, ok := structType.(BACnetPropertyStatesBinaryValue); ok {
 		return casted
 	}

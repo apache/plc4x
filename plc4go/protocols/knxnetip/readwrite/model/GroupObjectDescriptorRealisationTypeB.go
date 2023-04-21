@@ -118,7 +118,7 @@ func NewGroupObjectDescriptorRealisationTypeB(updateEnable bool, transmitEnable 
 }
 
 // Deprecated: use the interface for direct cast
-func CastGroupObjectDescriptorRealisationTypeB(structType interface{}) GroupObjectDescriptorRealisationTypeB {
+func CastGroupObjectDescriptorRealisationTypeB(structType any) GroupObjectDescriptorRealisationTypeB {
 	if casted, ok := structType.(GroupObjectDescriptorRealisationTypeB); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIPv6AutoAddressingEnable(autoAddressingEnable BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPv6AutoAddressingEnable(structType interface{}) BACnetConstructedDataIPv6AutoAddressingEnable {
+func CastBACnetConstructedDataIPv6AutoAddressingEnable(structType any) BACnetConstructedDataIPv6AutoAddressingEnable {
 	if casted, ok := structType.(BACnetConstructedDataIPv6AutoAddressingEnable); ok {
 		return casted
 	}

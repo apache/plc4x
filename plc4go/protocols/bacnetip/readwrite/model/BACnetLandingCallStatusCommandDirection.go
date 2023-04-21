@@ -94,7 +94,7 @@ func NewBACnetLandingCallStatusCommandDirection(direction BACnetLiftCarDirection
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLandingCallStatusCommandDirection(structType interface{}) BACnetLandingCallStatusCommandDirection {
+func CastBACnetLandingCallStatusCommandDirection(structType any) BACnetLandingCallStatusCommandDirection {
 	if casted, ok := structType.(BACnetLandingCallStatusCommandDirection); ok {
 		return casted
 	}

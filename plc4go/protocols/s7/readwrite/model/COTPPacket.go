@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -104,7 +103,7 @@ func NewCOTPPacket(parameters []COTPParameter, payload S7Message, cotpLen uint16
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPPacket(structType interface{}) COTPPacket {
+func CastCOTPPacket(structType any) COTPPacket {
 	if casted, ok := structType.(COTPPacket); ok {
 		return casted
 	}
@@ -179,7 +178,7 @@ func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 		InitializeParent(COTPPacket, []COTPParameter, S7Message)
 		GetParent() COTPPacket
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child COTPPacketChildSerializeRequirement
 	var typeSwitchError error
 	switch {
@@ -266,7 +265,7 @@ func (pm *_COTPPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 	}
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
-	headerLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8((uint8((utils.InlineIf((bool((m.GetPayload()) != (nil))), func() interface{} { return uint8((m.GetPayload()).GetLengthInBytes(ctx)) }, func() interface{} { return uint8(uint8(0)) }).(uint8))) + uint8(uint8(1)))))
+	headerLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8((uint8((utils.InlineIf((bool((m.GetPayload()) != (nil))), func() any { return uint8((m.GetPayload()).GetLengthInBytes(ctx)) }, func() any { return uint8(uint8(0)) }).(uint8))) + uint8(uint8(1)))))
 	_headerLengthErr := writeBuffer.WriteUint8("headerLength", 8, (headerLength))
 	if _headerLengthErr != nil {
 		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
@@ -291,7 +290,7 @@ func (pm *_COTPPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 	}
 	for _curItem, _element := range m.GetParameters() {
 		_ = _curItem
-		arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetParameters()), _curItem)
+		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetParameters()), _curItem)
 		_ = arrayCtx
 		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 		if _elementErr != nil {

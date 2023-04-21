@@ -100,7 +100,7 @@ func NewSubscribeCOVPropertyMultipleErrorFirstFailedSubscription(openingTag BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastSubscribeCOVPropertyMultipleErrorFirstFailedSubscription(structType interface{}) SubscribeCOVPropertyMultipleErrorFirstFailedSubscription {
+func CastSubscribeCOVPropertyMultipleErrorFirstFailedSubscription(structType any) SubscribeCOVPropertyMultipleErrorFirstFailedSubscription {
 	if casted, ok := structType.(SubscribeCOVPropertyMultipleErrorFirstFailedSubscription); ok {
 		return casted
 	}

@@ -20,6 +20,7 @@
 package plc4go
 
 import (
+	"context"
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
@@ -40,6 +41,8 @@ type PlcConnectionPingResult interface {
 type PlcConnection interface {
 	// Connect Initiate the connection to the PLC
 	Connect() <-chan PlcConnectionConnectResult
+	// ConnectWithContext connects connection codec with the supplied context
+	ConnectWithContext(ctx context.Context) <-chan PlcConnectionConnectResult
 	// BlockingClose Blocking variant of Close (for usage in "defer" statements)
 	BlockingClose()
 	// Close the connection to the PLC (gracefully)

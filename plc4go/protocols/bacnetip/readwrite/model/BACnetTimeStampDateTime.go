@@ -94,7 +94,7 @@ func NewBACnetTimeStampDateTime(dateTimeValue BACnetDateTimeEnclosed, peekedTagH
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimeStampDateTime(structType interface{}) BACnetTimeStampDateTime {
+func CastBACnetTimeStampDateTime(structType any) BACnetTimeStampDateTime {
 	if casted, ok := structType.(BACnetTimeStampDateTime); ok {
 		return casted
 	}

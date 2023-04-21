@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewBACnetConstructedDataActiveCOVMultipleSubscriptions(activeCOVMultipleSub
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataActiveCOVMultipleSubscriptions(structType interface{}) BACnetConstructedDataActiveCOVMultipleSubscriptions {
+func CastBACnetConstructedDataActiveCOVMultipleSubscriptions(structType any) BACnetConstructedDataActiveCOVMultipleSubscriptions {
 	if casted, ok := structType.(BACnetConstructedDataActiveCOVMultipleSubscriptions); ok {
 		return casted
 	}
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataActiveCOVMultipleSubscriptions) SerializeWithWrit
 		}
 		for _curItem, _element := range m.GetActiveCOVMultipleSubscriptions() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetActiveCOVMultipleSubscriptions()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetActiveCOVMultipleSubscriptions()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

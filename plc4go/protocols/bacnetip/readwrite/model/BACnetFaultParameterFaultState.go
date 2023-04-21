@@ -110,7 +110,7 @@ func NewBACnetFaultParameterFaultState(openingTag BACnetOpeningTag, listOfFaultV
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultState(structType interface{}) BACnetFaultParameterFaultState {
+func CastBACnetFaultParameterFaultState(structType any) BACnetFaultParameterFaultState {
 	if casted, ok := structType.(BACnetFaultParameterFaultState); ok {
 		return casted
 	}

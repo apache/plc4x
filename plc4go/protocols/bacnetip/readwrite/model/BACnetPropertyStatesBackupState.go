@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesBackupState(backupState BACnetBackupStateTagged, pee
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesBackupState(structType interface{}) BACnetPropertyStatesBackupState {
+func CastBACnetPropertyStatesBackupState(structType any) BACnetPropertyStatesBackupState {
 	if casted, ok := structType.(BACnetPropertyStatesBackupState); ok {
 		return casted
 	}

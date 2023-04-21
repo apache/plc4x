@@ -121,7 +121,7 @@ func NewBACnetConstructedDataControlledVariableReference(controlledVariableRefer
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataControlledVariableReference(structType interface{}) BACnetConstructedDataControlledVariableReference {
+func CastBACnetConstructedDataControlledVariableReference(structType any) BACnetConstructedDataControlledVariableReference {
 	if casted, ok := structType.(BACnetConstructedDataControlledVariableReference); ok {
 		return casted
 	}

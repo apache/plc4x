@@ -136,7 +136,7 @@ func NewModbusPDUReadWriteMultipleHoldingRegistersRequest(readStartingAddress ui
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadWriteMultipleHoldingRegistersRequest(structType interface{}) ModbusPDUReadWriteMultipleHoldingRegistersRequest {
+func CastModbusPDUReadWriteMultipleHoldingRegistersRequest(structType any) ModbusPDUReadWriteMultipleHoldingRegistersRequest {
 	if casted, ok := structType.(ModbusPDUReadWriteMultipleHoldingRegistersRequest); ok {
 		return casted
 	}

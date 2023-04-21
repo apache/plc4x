@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTimerMaxPresValue(maxPresValue BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimerMaxPresValue(structType interface{}) BACnetConstructedDataTimerMaxPresValue {
+func CastBACnetConstructedDataTimerMaxPresValue(structType any) BACnetConstructedDataTimerMaxPresValue {
 	if casted, ok := structType.(BACnetConstructedDataTimerMaxPresValue); ok {
 		return casted
 	}

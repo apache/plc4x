@@ -96,7 +96,7 @@ func NewBACnetLogRecordLogDatumEnumeratedValue(enumeratedValue BACnetContextTagE
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecordLogDatumEnumeratedValue(structType interface{}) BACnetLogRecordLogDatumEnumeratedValue {
+func CastBACnetLogRecordLogDatumEnumeratedValue(structType any) BACnetLogRecordLogDatumEnumeratedValue {
 	if casted, ok := structType.(BACnetLogRecordLogDatumEnumeratedValue); ok {
 		return casted
 	}

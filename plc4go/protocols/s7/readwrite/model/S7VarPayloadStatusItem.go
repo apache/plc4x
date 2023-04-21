@@ -69,7 +69,7 @@ func NewS7VarPayloadStatusItem(returnCode DataTransportErrorCode) *_S7VarPayload
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7VarPayloadStatusItem(structType interface{}) S7VarPayloadStatusItem {
+func CastS7VarPayloadStatusItem(structType any) S7VarPayloadStatusItem {
 	if casted, ok := structType.(S7VarPayloadStatusItem); ok {
 		return casted
 	}

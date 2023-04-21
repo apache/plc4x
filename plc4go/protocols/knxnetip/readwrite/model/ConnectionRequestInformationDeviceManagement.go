@@ -79,7 +79,7 @@ func NewConnectionRequestInformationDeviceManagement() *_ConnectionRequestInform
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionRequestInformationDeviceManagement(structType interface{}) ConnectionRequestInformationDeviceManagement {
+func CastConnectionRequestInformationDeviceManagement(structType any) ConnectionRequestInformationDeviceManagement {
 	if casted, ok := structType.(ConnectionRequestInformationDeviceManagement); ok {
 		return casted
 	}

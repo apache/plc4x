@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTimerMinPresValue(minPresValue BACnetApplicationTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimerMinPresValue(structType interface{}) BACnetConstructedDataTimerMinPresValue {
+func CastBACnetConstructedDataTimerMinPresValue(structType any) BACnetConstructedDataTimerMinPresValue {
 	if casted, ok := structType.(BACnetConstructedDataTimerMinPresValue); ok {
 		return casted
 	}

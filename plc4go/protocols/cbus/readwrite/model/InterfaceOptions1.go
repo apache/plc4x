@@ -107,7 +107,7 @@ func NewInterfaceOptions1(idmon bool, monitor bool, smart bool, srchk bool, xonX
 }
 
 // Deprecated: use the interface for direct cast
-func CastInterfaceOptions1(structType interface{}) InterfaceOptions1 {
+func CastInterfaceOptions1(structType any) InterfaceOptions1 {
 	if casted, ok := structType.(InterfaceOptions1); ok {
 		return casted
 	}
@@ -176,7 +176,7 @@ func InterfaceOptions1ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions1")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -228,7 +228,7 @@ func InterfaceOptions1ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions1")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -280,7 +280,7 @@ func (m *_InterfaceOptions1) SerializeWithWriteBuffer(ctx context.Context, write
 	{
 		var reserved bool = bool(false)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")
@@ -331,7 +331,7 @@ func (m *_InterfaceOptions1) SerializeWithWriteBuffer(ctx context.Context, write
 	{
 		var reserved bool = bool(false)
 		if m.reservedField1 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

@@ -63,7 +63,10 @@ func (m *MessageCodec) GetCodec() spi.MessageCodec {
 func (m *MessageCodec) Send(message spi.Message) error {
 	log.Trace().Msg("Sending message")
 	// Cast the message to the correct type of struct
-	cbusMessage := message.(readWriteModel.CBusMessage)
+	cbusMessage, ok := message.(readWriteModel.CBusMessage)
+	if !ok {
+		return errors.Errorf("Invalid message type %T", message)
+	}
 
 	// Set the right request context
 	m.requestContext = CreateRequestContext(cbusMessage)
@@ -260,6 +263,7 @@ lookingForTheEnd:
 
 	var rawInput []byte
 	{
+		log.Trace().Msgf("Read packet length %d", packetLength)
 		read, err := ti.Read(uint32(packetLength))
 		if err != nil {
 			panic("Invalid state... If we have peeked that before we should be able to read that now")

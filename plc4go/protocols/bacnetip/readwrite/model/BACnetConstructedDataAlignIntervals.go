@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAlignIntervals(alignIntervals BACnetApplicationTagB
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAlignIntervals(structType interface{}) BACnetConstructedDataAlignIntervals {
+func CastBACnetConstructedDataAlignIntervals(structType any) BACnetConstructedDataAlignIntervals {
 	if casted, ok := structType.(BACnetConstructedDataAlignIntervals); ok {
 		return casted
 	}

@@ -113,7 +113,7 @@ func NewSearchResponse(hpaiControlEndpoint HPAIControlEndpoint, dibDeviceInfo DI
 }
 
 // Deprecated: use the interface for direct cast
-func CastSearchResponse(structType interface{}) SearchResponse {
+func CastSearchResponse(structType any) SearchResponse {
 	if casted, ok := structType.(SearchResponse); ok {
 		return casted
 	}

@@ -118,7 +118,7 @@ func NewCBusCommandDeviceManagement(paramNo Parameter, parameterValue byte, head
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusCommandDeviceManagement(structType interface{}) CBusCommandDeviceManagement {
+func CastCBusCommandDeviceManagement(structType any) CBusCommandDeviceManagement {
 	if casted, ok := structType.(CBusCommandDeviceManagement); ok {
 		return casted
 	}

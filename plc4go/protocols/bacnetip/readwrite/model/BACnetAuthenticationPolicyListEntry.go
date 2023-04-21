@@ -76,7 +76,7 @@ func NewBACnetAuthenticationPolicyListEntry(credentialDataInput BACnetDeviceObje
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAuthenticationPolicyListEntry(structType interface{}) BACnetAuthenticationPolicyListEntry {
+func CastBACnetAuthenticationPolicyListEntry(structType any) BACnetAuthenticationPolicyListEntry {
 	if casted, ok := structType.(BACnetAuthenticationPolicyListEntry); ok {
 		return casted
 	}

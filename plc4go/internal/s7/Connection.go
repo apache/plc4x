@@ -60,13 +60,13 @@ type Connection struct {
 	messageCodec  spi.MessageCodec
 	configuration Configuration
 	driverContext DriverContext
-	tm            *spi.RequestTransactionManager
+	tm            spi.RequestTransactionManager
 
 	connectionId string
 	tracer       *spi.Tracer
 }
 
-func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm *spi.RequestTransactionManager, options map[string][]string) *Connection {
+func NewConnection(messageCodec spi.MessageCodec, configuration Configuration, driverContext DriverContext, tagHandler spi.PlcTagHandler, tm spi.RequestTransactionManager, options map[string][]string) *Connection {
 	connection := &Connection{
 		tpduGenerator: TpduGenerator{currentTpduId: 10},
 		messageCodec:  messageCodec,
@@ -106,9 +106,7 @@ func (m *Connection) GetMessageCodec() spi.MessageCodec {
 	return m.messageCodec
 }
 
-func (m *Connection) Connect() <-chan plc4go.PlcConnectionConnectResult {
-	// TODO: use proper context
-	ctx := context.TODO()
+func (m *Connection) ConnectWithContext(ctx context.Context) <-chan plc4go.PlcConnectionConnectResult {
 	log.Trace().Msg("Connecting")
 	ch := make(chan plc4go.PlcConnectionConnectResult)
 	go func() {

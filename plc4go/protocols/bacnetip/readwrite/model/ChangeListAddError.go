@@ -104,7 +104,7 @@ func NewChangeListAddError(errorType ErrorEnclosed, firstFailedElementNumber BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastChangeListAddError(structType interface{}) ChangeListAddError {
+func CastChangeListAddError(structType any) ChangeListAddError {
 	if casted, ok := structType.(ChangeListAddError); ok {
 		return casted
 	}

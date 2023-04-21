@@ -121,7 +121,7 @@ func NewBACnetConstructedDataValueSource(valueSource BACnetValueSource, openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataValueSource(structType interface{}) BACnetConstructedDataValueSource {
+func CastBACnetConstructedDataValueSource(structType any) BACnetConstructedDataValueSource {
 	if casted, ok := structType.(BACnetConstructedDataValueSource); ok {
 		return casted
 	}

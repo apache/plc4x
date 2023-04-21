@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIPv6PrefixLength(ipv6PrefixLength BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPv6PrefixLength(structType interface{}) BACnetConstructedDataIPv6PrefixLength {
+func CastBACnetConstructedDataIPv6PrefixLength(structType any) BACnetConstructedDataIPv6PrefixLength {
 	if casted, ok := structType.(BACnetConstructedDataIPv6PrefixLength); ok {
 		return casted
 	}

@@ -127,7 +127,7 @@ func NewClockAndTimekeepingDataUpdateDate(yearHigh byte, yearLow byte, month uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastClockAndTimekeepingDataUpdateDate(structType interface{}) ClockAndTimekeepingDataUpdateDate {
+func CastClockAndTimekeepingDataUpdateDate(structType any) ClockAndTimekeepingDataUpdateDate {
 	if casted, ok := structType.(ClockAndTimekeepingDataUpdateDate); ok {
 		return casted
 	}

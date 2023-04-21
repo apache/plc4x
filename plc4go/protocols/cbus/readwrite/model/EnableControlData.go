@@ -100,7 +100,7 @@ func NewEnableControlData(commandTypeContainer EnableControlCommandTypeContainer
 }
 
 // Deprecated: use the interface for direct cast
-func CastEnableControlData(structType interface{}) EnableControlData {
+func CastEnableControlData(structType any) EnableControlData {
 	if casted, ok := structType.(EnableControlData); ok {
 		return casted
 	}

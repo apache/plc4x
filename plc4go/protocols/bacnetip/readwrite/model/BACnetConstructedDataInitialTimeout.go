@@ -121,7 +121,7 @@ func NewBACnetConstructedDataInitialTimeout(initialTimeout BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataInitialTimeout(structType interface{}) BACnetConstructedDataInitialTimeout {
+func CastBACnetConstructedDataInitialTimeout(structType any) BACnetConstructedDataInitialTimeout {
 	if casted, ok := structType.(BACnetConstructedDataInitialTimeout); ok {
 		return casted
 	}

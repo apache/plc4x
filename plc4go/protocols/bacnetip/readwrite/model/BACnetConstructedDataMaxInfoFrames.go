@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMaxInfoFrames(maxInfoFrames BACnetApplicationTagUns
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaxInfoFrames(structType interface{}) BACnetConstructedDataMaxInfoFrames {
+func CastBACnetConstructedDataMaxInfoFrames(structType any) BACnetConstructedDataMaxInfoFrames {
 	if casted, ok := structType.(BACnetConstructedDataMaxInfoFrames); ok {
 		return casted
 	}

@@ -33,6 +33,7 @@ type BACnetAccessPassbackMode uint8
 
 type IBACnetAccessPassbackMode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -86,8 +87,8 @@ func BACnetAccessPassbackModeKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetAccessPassbackMode(structType interface{}) BACnetAccessPassbackMode {
-	castFunc := func(typ interface{}) BACnetAccessPassbackMode {
+func CastBACnetAccessPassbackMode(structType any) BACnetAccessPassbackMode {
+	castFunc := func(typ any) BACnetAccessPassbackMode {
 		if sBACnetAccessPassbackMode, ok := typ.(BACnetAccessPassbackMode); ok {
 			return sBACnetAccessPassbackMode
 		}

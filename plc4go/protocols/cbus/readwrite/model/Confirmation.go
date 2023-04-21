@@ -103,7 +103,7 @@ func NewConfirmation(alpha Alpha, secondAlpha Alpha, confirmationType Confirmati
 }
 
 // Deprecated: use the interface for direct cast
-func CastConfirmation(structType interface{}) Confirmation {
+func CastConfirmation(structType any) Confirmation {
 	if casted, ok := structType.(Confirmation); ok {
 		return casted
 	}

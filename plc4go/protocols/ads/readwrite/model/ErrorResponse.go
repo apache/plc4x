@@ -89,7 +89,7 @@ func NewErrorResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNe
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorResponse(structType interface{}) ErrorResponse {
+func CastErrorResponse(structType any) ErrorResponse {
 	if casted, ok := structType.(ErrorResponse); ok {
 		return casted
 	}

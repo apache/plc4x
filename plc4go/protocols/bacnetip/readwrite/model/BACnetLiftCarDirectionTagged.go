@@ -104,7 +104,7 @@ func NewBACnetLiftCarDirectionTagged(header BACnetTagHeader, value BACnetLiftCar
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLiftCarDirectionTagged(structType interface{}) BACnetLiftCarDirectionTagged {
+func CastBACnetLiftCarDirectionTagged(structType any) BACnetLiftCarDirectionTagged {
 	if casted, ok := structType.(BACnetLiftCarDirectionTagged); ok {
 		return casted
 	}
@@ -125,12 +125,12 @@ func (m *_BACnetLiftCarDirectionTagged) GetLengthInBits(ctx context.Context) uin
 	lengthInBits += m.Header.GetLengthInBits(ctx)
 
 	// Manual Field (value)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32(int32(0)) }, func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32(int32(0)) }, func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }).(int32))
 
 	// A virtual field doesn't have any in- or output.
 
 	// Manual Field (proprietaryValue)
-	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() interface{} { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() interface{} { return int32(int32(0)) }).(int32))
+	lengthInBits += uint16(utils.InlineIf(m.GetIsProprietary(), func() any { return int32((int32(m.GetHeader().GetActualLength()) * int32(int32(8)))) }, func() any { return int32(int32(0)) }).(int32))
 
 	return lengthInBits
 }

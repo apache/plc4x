@@ -79,7 +79,7 @@ func NewDF1SymbolMessageFrameNAK() *_DF1SymbolMessageFrameNAK {
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1SymbolMessageFrameNAK(structType interface{}) DF1SymbolMessageFrameNAK {
+func CastDF1SymbolMessageFrameNAK(structType any) DF1SymbolMessageFrameNAK {
 	if casted, ok := structType.(DF1SymbolMessageFrameNAK); ok {
 		return casted
 	}

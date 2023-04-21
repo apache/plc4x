@@ -91,7 +91,7 @@ func NewNullCommandRequest(sessionHandle uint32, status uint32, senderContext []
 }
 
 // Deprecated: use the interface for direct cast
-func CastNullCommandRequest(structType interface{}) NullCommandRequest {
+func CastNullCommandRequest(structType any) NullCommandRequest {
 	if casted, ok := structType.(NullCommandRequest); ok {
 		return casted
 	}

@@ -72,7 +72,7 @@ func NewCustomManufacturer(customString string, numBytes uint8) *_CustomManufact
 }
 
 // Deprecated: use the interface for direct cast
-func CastCustomManufacturer(structType interface{}) CustomManufacturer {
+func CastCustomManufacturer(structType any) CustomManufacturer {
 	if casted, ok := structType.(CustomManufacturer); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataAPDUSegmentTimeout(apduSegmentTimeout BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAPDUSegmentTimeout(structType interface{}) BACnetConstructedDataAPDUSegmentTimeout {
+func CastBACnetConstructedDataAPDUSegmentTimeout(structType any) BACnetConstructedDataAPDUSegmentTimeout {
 	if casted, ok := structType.(BACnetConstructedDataAPDUSegmentTimeout); ok {
 		return casted
 	}

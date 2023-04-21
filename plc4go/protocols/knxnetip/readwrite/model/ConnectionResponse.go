@@ -122,7 +122,7 @@ func NewConnectionResponse(communicationChannelId uint8, status Status, hpaiData
 }
 
 // Deprecated: use the interface for direct cast
-func CastConnectionResponse(structType interface{}) ConnectionResponse {
+func CastConnectionResponse(structType any) ConnectionResponse {
 	if casted, ok := structType.(ConnectionResponse); ok {
 		return casted
 	}

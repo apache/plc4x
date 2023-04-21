@@ -121,7 +121,7 @@ func NewBACnetConstructedDataIPv6DefaultGateway(ipv6DefaultGateway BACnetApplica
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataIPv6DefaultGateway(structType interface{}) BACnetConstructedDataIPv6DefaultGateway {
+func CastBACnetConstructedDataIPv6DefaultGateway(structType any) BACnetConstructedDataIPv6DefaultGateway {
 	if casted, ok := structType.(BACnetConstructedDataIPv6DefaultGateway); ok {
 		return casted
 	}

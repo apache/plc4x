@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTimeDelayNormal(timeDelayNormal BACnetApplicationTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTimeDelayNormal(structType interface{}) BACnetConstructedDataTimeDelayNormal {
+func CastBACnetConstructedDataTimeDelayNormal(structType any) BACnetConstructedDataTimeDelayNormal {
 	if casted, ok := structType.(BACnetConstructedDataTimeDelayNormal); ok {
 		return casted
 	}

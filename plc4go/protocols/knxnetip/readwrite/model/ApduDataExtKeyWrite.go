@@ -78,7 +78,7 @@ func NewApduDataExtKeyWrite(length uint8) *_ApduDataExtKeyWrite {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtKeyWrite(structType interface{}) ApduDataExtKeyWrite {
+func CastApduDataExtKeyWrite(structType any) ApduDataExtKeyWrite {
 	if casted, ok := structType.(ApduDataExtKeyWrite); ok {
 		return casted
 	}

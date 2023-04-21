@@ -121,7 +121,7 @@ func NewBACnetConstructedDataWindowInterval(windowInterval BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataWindowInterval(structType interface{}) BACnetConstructedDataWindowInterval {
+func CastBACnetConstructedDataWindowInterval(structType any) BACnetConstructedDataWindowInterval {
 	if casted, ok := structType.(BACnetConstructedDataWindowInterval); ok {
 		return casted
 	}

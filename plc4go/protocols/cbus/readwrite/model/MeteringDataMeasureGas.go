@@ -77,7 +77,7 @@ func NewMeteringDataMeasureGas(commandTypeContainer MeteringCommandTypeContainer
 }
 
 // Deprecated: use the interface for direct cast
-func CastMeteringDataMeasureGas(structType interface{}) MeteringDataMeasureGas {
+func CastMeteringDataMeasureGas(structType any) MeteringDataMeasureGas {
 	if casted, ok := structType.(MeteringDataMeasureGas); ok {
 		return casted
 	}

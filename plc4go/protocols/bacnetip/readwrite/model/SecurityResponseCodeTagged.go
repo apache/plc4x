@@ -80,7 +80,7 @@ func NewSecurityResponseCodeTagged(header BACnetTagHeader, value SecurityRespons
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityResponseCodeTagged(structType interface{}) SecurityResponseCodeTagged {
+func CastSecurityResponseCodeTagged(structType any) SecurityResponseCodeTagged {
 	if casted, ok := structType.(SecurityResponseCodeTagged); ok {
 		return casted
 	}

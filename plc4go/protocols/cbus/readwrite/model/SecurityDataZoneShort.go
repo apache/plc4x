@@ -95,7 +95,7 @@ func NewSecurityDataZoneShort(zoneNumber uint8, commandTypeContainer SecurityCom
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataZoneShort(structType interface{}) SecurityDataZoneShort {
+func CastSecurityDataZoneShort(structType any) SecurityDataZoneShort {
 	if casted, ok := structType.(SecurityDataZoneShort); ok {
 		return casted
 	}

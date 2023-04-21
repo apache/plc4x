@@ -77,7 +77,7 @@ func NewCALDataReset(commandTypeContainer CALCommandTypeContainer, additionalDat
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataReset(structType interface{}) CALDataReset {
+func CastCALDataReset(structType any) CALDataReset {
 	if casted, ok := structType.(CALDataReset); ok {
 		return casted
 	}

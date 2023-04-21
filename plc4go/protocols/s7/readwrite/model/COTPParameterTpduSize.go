@@ -96,7 +96,7 @@ func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *_COTPParameter
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPParameterTpduSize(structType interface{}) COTPParameterTpduSize {
+func CastCOTPParameterTpduSize(structType any) COTPParameterTpduSize {
 	if casted, ok := structType.(COTPParameterTpduSize); ok {
 		return casted
 	}

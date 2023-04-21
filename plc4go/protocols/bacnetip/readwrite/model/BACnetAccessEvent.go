@@ -33,6 +33,7 @@ type BACnetAccessEvent uint16
 
 type IBACnetAccessEvent interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -398,8 +399,8 @@ func BACnetAccessEventKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetAccessEvent(structType interface{}) BACnetAccessEvent {
-	castFunc := func(typ interface{}) BACnetAccessEvent {
+func CastBACnetAccessEvent(structType any) BACnetAccessEvent {
+	castFunc := func(typ any) BACnetAccessEvent {
 		if sBACnetAccessEvent, ok := typ.(BACnetAccessEvent); ok {
 			return sBACnetAccessEvent
 		}

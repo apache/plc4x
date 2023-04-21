@@ -95,7 +95,7 @@ func NewSecurityDataZoneUnsealed(zoneNumber uint8, commandTypeContainer Security
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataZoneUnsealed(structType interface{}) SecurityDataZoneUnsealed {
+func CastSecurityDataZoneUnsealed(structType any) SecurityDataZoneUnsealed {
 	if casted, ok := structType.(SecurityDataZoneUnsealed); ok {
 		return casted
 	}

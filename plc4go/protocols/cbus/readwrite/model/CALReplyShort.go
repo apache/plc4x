@@ -77,7 +77,7 @@ func NewCALReplyShort(calType byte, calData CALData, cBusOptions CBusOptions, re
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALReplyShort(structType interface{}) CALReplyShort {
+func CastCALReplyShort(structType any) CALReplyShort {
 	if casted, ok := structType.(CALReplyShort); ok {
 		return casted
 	}

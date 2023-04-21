@@ -107,7 +107,7 @@ func NewCOTPPacketData(eot bool, tpduRef uint8, parameters []COTPParameter, payl
 }
 
 // Deprecated: use the interface for direct cast
-func CastCOTPPacketData(structType interface{}) COTPPacketData {
+func CastCOTPPacketData(structType any) COTPPacketData {
 	if casted, ok := structType.(COTPPacketData); ok {
 		return casted
 	}

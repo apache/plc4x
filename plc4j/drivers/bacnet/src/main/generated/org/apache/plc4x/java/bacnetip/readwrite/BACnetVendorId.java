@@ -1622,6 +1622,12 @@ public enum BACnetVendorId {
   CALIBRATION_TECHNOLOGIES_INC((int) 1410, (int) 1410, (String) "Calibration Technologies, Inc."),
   ALLORADO((int) 1411, (int) 1411, (String) "Allorado"),
   VERKADA((int) 1412, (int) 1412, (String) "Verkada"),
+  WATTSENSE((int) 1413, (int) 1413, (String) "Wattsense"),
+  EMERSON_AUTOMATION_SOLUTIONS((int) 1414, (int) 1414, (String) "Emerson Automation Solutions"),
+  GROWLINK((int) 1415, (int) 1415, (String) "Growlink"),
+  OLYMPIA_ELECTRONICS((int) 1416, (int) 1416, (String) "Olympia Electronics"),
+  NORMAL_SOFTWARE_INC((int) 1417, (int) 1417, (String) "Normal Software, Inc."),
+  ST_ENGINEERING_SOLUTIONJSC((int) 1418, (int) 1418, (String) "ST Engineering Solution JSC"),
   UNKNOWN_VENDOR((int) 0xFFFF, (int) 0xFFFF, (String) "Unknown");
   private static final Map<Integer, BACnetVendorId> map;
 

@@ -78,7 +78,7 @@ func NewApduDataIndividualAddressRead(dataLength uint8) *_ApduDataIndividualAddr
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataIndividualAddressRead(structType interface{}) ApduDataIndividualAddressRead {
+func CastApduDataIndividualAddressRead(structType any) ApduDataIndividualAddressRead {
 	if casted, ok := structType.(ApduDataIndividualAddressRead); ok {
 		return casted
 	}

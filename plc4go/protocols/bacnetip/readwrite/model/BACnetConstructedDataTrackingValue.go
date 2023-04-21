@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTrackingValue(trackingValue BACnetLifeSafetyStateTa
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTrackingValue(structType interface{}) BACnetConstructedDataTrackingValue {
+func CastBACnetConstructedDataTrackingValue(structType any) BACnetConstructedDataTrackingValue {
 	if casted, ok := structType.(BACnetConstructedDataTrackingValue); ok {
 		return casted
 	}

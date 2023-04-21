@@ -33,6 +33,7 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter uint
 
 type IBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -86,8 +87,8 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterKnows
 	return false
 }
 
-func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter(structType interface{}) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter {
-	castFunc := func(typ interface{}) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter {
+func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter {
+	castFunc := func(typ any) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter {
 		if sBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, ok := typ.(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter); ok {
 			return sBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 		}

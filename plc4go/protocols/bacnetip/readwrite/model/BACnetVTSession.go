@@ -83,7 +83,7 @@ func NewBACnetVTSession(localVtSessionId BACnetApplicationTagUnsignedInteger, re
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetVTSession(structType interface{}) BACnetVTSession {
+func CastBACnetVTSession(structType any) BACnetVTSession {
 	if casted, ok := structType.(BACnetVTSession); ok {
 		return casted
 	}

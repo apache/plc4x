@@ -80,7 +80,7 @@ func NewNPDUNetworkPriorityTagged(header BACnetTagHeader, value NPDUNetworkPrior
 }
 
 // Deprecated: use the interface for direct cast
-func CastNPDUNetworkPriorityTagged(structType interface{}) NPDUNetworkPriorityTagged {
+func CastNPDUNetworkPriorityTagged(structType any) NPDUNetworkPriorityTagged {
 	if casted, ok := structType.(NPDUNetworkPriorityTagged); ok {
 		return casted
 	}

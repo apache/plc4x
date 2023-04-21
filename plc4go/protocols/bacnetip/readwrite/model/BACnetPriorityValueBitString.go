@@ -94,7 +94,7 @@ func NewBACnetPriorityValueBitString(bitStringValue BACnetApplicationTagBitStrin
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueBitString(structType interface{}) BACnetPriorityValueBitString {
+func CastBACnetPriorityValueBitString(structType any) BACnetPriorityValueBitString {
 	if casted, ok := structType.(BACnetPriorityValueBitString); ok {
 		return casted
 	}

@@ -94,7 +94,7 @@ func NewBACnetPriorityValueDateTime(dateTimeValue BACnetDateTimeEnclosed, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPriorityValueDateTime(structType interface{}) BACnetPriorityValueDateTime {
+func CastBACnetPriorityValueDateTime(structType any) BACnetPriorityValueDateTime {
 	if casted, ok := structType.(BACnetPriorityValueDateTime); ok {
 		return casted
 	}

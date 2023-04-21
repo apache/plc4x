@@ -33,6 +33,7 @@ type BACnetAccessCredentialDisableReason uint16
 
 type IBACnetAccessCredentialDisableReason interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -134,8 +135,8 @@ func BACnetAccessCredentialDisableReasonKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetAccessCredentialDisableReason(structType interface{}) BACnetAccessCredentialDisableReason {
-	castFunc := func(typ interface{}) BACnetAccessCredentialDisableReason {
+func CastBACnetAccessCredentialDisableReason(structType any) BACnetAccessCredentialDisableReason {
+	castFunc := func(typ any) BACnetAccessCredentialDisableReason {
 		if sBACnetAccessCredentialDisableReason, ok := typ.(BACnetAccessCredentialDisableReason); ok {
 			return sBACnetAccessCredentialDisableReason
 		}

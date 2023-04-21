@@ -121,7 +121,7 @@ func NewBACnetConstructedDataProgramState(programState BACnetProgramStateTagged,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProgramState(structType interface{}) BACnetConstructedDataProgramState {
+func CastBACnetConstructedDataProgramState(structType any) BACnetConstructedDataProgramState {
 	if casted, ok := structType.(BACnetConstructedDataProgramState); ok {
 		return casted
 	}

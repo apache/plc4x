@@ -508,12 +508,12 @@ type option func(specificOptions *protocolSpecificOptions) error
 
 func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOption) (*protocolSpecificOptions, error) {
 	var collectedOptions []option
-	filteredOptionMap := make(map[string][]interface{})
+	filteredOptionMap := make(map[string][]any)
 	for _, protocolSpecificOption := range options.FilterDiscoveryOptionProtocolSpecific(discoveryOptions) {
 		key := protocolSpecificOption.GetKey()
 		value := protocolSpecificOption.GetValue()
 		if _, ok := filteredOptionMap[key]; !ok {
-			filteredOptionMap[key] = make([]interface{}, 0)
+			filteredOptionMap[key] = make([]any, 0)
 		}
 		filteredOptionMap[key] = append(filteredOptionMap[key], value)
 	}
@@ -619,7 +619,7 @@ func extractProtocolSpecificOptions(discoveryOptions []options.WithDiscoveryOpti
 	return NewProtocolSpecificOptions(collectedOptions...)
 }
 
-func exactlyOneInt(filteredOptionMap map[string][]interface{}, key string) (int, error) {
+func exactlyOneInt(filteredOptionMap map[string][]any, key string) (int, error) {
 	value, err := exactlyOne(filteredOptionMap, key)
 	if err != nil {
 		return 0, err
@@ -631,7 +631,7 @@ func exactlyOneInt(filteredOptionMap map[string][]interface{}, key string) (int,
 	return int(parsedInt), nil
 }
 
-func exactlyOneUint(filteredOptionMap map[string][]interface{}, key string) (uint, error) {
+func exactlyOneUint(filteredOptionMap map[string][]any, key string) (uint, error) {
 	value, err := exactlyOne(filteredOptionMap, key)
 	if err != nil {
 		return 0, err
@@ -642,7 +642,7 @@ func exactlyOneUint(filteredOptionMap map[string][]interface{}, key string) (uin
 	}
 	return uint(parsedInt), nil
 }
-func exactlyOneString(filteredOptionMap map[string][]interface{}, key string) (string, error) {
+func exactlyOneString(filteredOptionMap map[string][]any, key string) (string, error) {
 	value, err := exactlyOne(filteredOptionMap, key)
 	if err != nil {
 		return "", err
@@ -650,7 +650,7 @@ func exactlyOneString(filteredOptionMap map[string][]interface{}, key string) (s
 	return fmt.Sprintf("%v", value), nil
 }
 
-func exactlyOne(filteredOptionMap map[string][]interface{}, key string) (interface{}, error) {
+func exactlyOne(filteredOptionMap map[string][]any, key string) (any, error) {
 	values := filteredOptionMap[key]
 	if len(values) != 1 {
 		return nil, errors.Errorf("%s expects only one value", key)

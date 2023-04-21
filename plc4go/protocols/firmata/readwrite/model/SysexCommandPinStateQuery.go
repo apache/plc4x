@@ -100,7 +100,7 @@ func NewSysexCommandPinStateQuery(pin uint8) *_SysexCommandPinStateQuery {
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandPinStateQuery(structType interface{}) SysexCommandPinStateQuery {
+func CastSysexCommandPinStateQuery(structType any) SysexCommandPinStateQuery {
 	if casted, ok := structType.(SysexCommandPinStateQuery); ok {
 		return casted
 	}

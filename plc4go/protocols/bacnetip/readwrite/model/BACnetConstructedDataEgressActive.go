@@ -121,7 +121,7 @@ func NewBACnetConstructedDataEgressActive(egressActive BACnetApplicationTagBoole
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEgressActive(structType interface{}) BACnetConstructedDataEgressActive {
+func CastBACnetConstructedDataEgressActive(structType any) BACnetConstructedDataEgressActive {
 	if casted, ok := structType.(BACnetConstructedDataEgressActive); ok {
 		return casted
 	}

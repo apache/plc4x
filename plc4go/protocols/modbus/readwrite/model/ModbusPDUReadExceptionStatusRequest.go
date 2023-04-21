@@ -86,7 +86,7 @@ func NewModbusPDUReadExceptionStatusRequest() *_ModbusPDUReadExceptionStatusRequ
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadExceptionStatusRequest(structType interface{}) ModbusPDUReadExceptionStatusRequest {
+func CastModbusPDUReadExceptionStatusRequest(structType any) ModbusPDUReadExceptionStatusRequest {
 	if casted, ok := structType.(ModbusPDUReadExceptionStatusRequest); ok {
 		return casted
 	}

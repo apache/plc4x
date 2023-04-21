@@ -23,26 +23,23 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
-import org.apache.plc4x.java.spi.codegen.WithOption;
-import org.apache.plc4x.java.spi.generation.SerializationException;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
-import org.apache.plc4x.java.spi.utils.Serializable;
-import org.apache.plc4x.java.spi.values.PlcList;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
+import org.apache.plc4x.java.spi.generation.SerializationException;
+import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
+import org.apache.plc4x.java.spi.utils.Serializable;
+import org.apache.plc4x.java.spi.values.PlcList;
 
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import static org.apache.plc4x.java.spi.generation.WithReaderWriterArgs.WithRenderAsList;
 
 public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
@@ -108,7 +105,8 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
     public void serialize(WriteBuffer writeBuffer) throws SerializationException {
         writeBuffer.pushContext("PlcWriteRequest");
 
-        writeBuffer.pushContext("tags");
+        writeBuffer.pushContext("PlcTagRequest");
+        writeBuffer.pushContext("tags", WithRenderAsList(true));
         for (Map.Entry<String, TagValueItem> tagEntry : tags.entrySet()) {
             TagValueItem tagValueItem = tagEntry.getValue();
             String tagName = tagEntry.getKey();
@@ -118,17 +116,29 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
                 throw new RuntimeException("Error serializing. Tag doesn't implement Serializable");
             }
             ((Serializable) tag).serialize(writeBuffer);
-            final PlcValue value = tagValueItem.getValue();
-            serializePlcValue(value, writeBuffer);
             writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("tags");
+        writeBuffer.popContext("PlcTagRequest");
+
+        writeBuffer.pushContext("values", WithRenderAsList(true));
+        for (Map.Entry<String, TagValueItem> tagEntry : tags.entrySet()) {
+            TagValueItem tagValueItem = tagEntry.getValue();
+            String tagName = tagEntry.getKey();
+            writeBuffer.pushContext(tagName);
+            final PlcValue value = tagValueItem.getValue();
+            if (value != null) {
+                serializePlcValue(value, writeBuffer);
+            }
+            writeBuffer.popContext(tagName);
+        }
+        writeBuffer.popContext("values");
 
         writeBuffer.popContext("PlcWriteRequest");
     }
 
     protected void serializePlcValue(PlcValue plcValue, WriteBuffer writeBuffer) throws SerializationException {
-        if(plcValue instanceof Serializable) {
+        if (plcValue instanceof Serializable) {
             Serializable serializable = (Serializable) plcValue;
             serializable.serialize(writeBuffer);
         } else {

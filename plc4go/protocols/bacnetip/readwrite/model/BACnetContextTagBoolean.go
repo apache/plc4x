@@ -123,7 +123,7 @@ func NewBACnetContextTagBoolean(value uint8, payload BACnetTagPayloadBoolean, he
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagBoolean(structType interface{}) BACnetContextTagBoolean {
+func CastBACnetContextTagBoolean(structType any) BACnetContextTagBoolean {
 	if casted, ok := structType.(BACnetContextTagBoolean); ok {
 		return casted
 	}

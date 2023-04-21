@@ -129,7 +129,7 @@ func NewBACnetServiceAckGetEnrollmentSummary(objectIdentifier BACnetApplicationT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckGetEnrollmentSummary(structType interface{}) BACnetServiceAckGetEnrollmentSummary {
+func CastBACnetServiceAckGetEnrollmentSummary(structType any) BACnetServiceAckGetEnrollmentSummary {
 	if casted, ok := structType.(BACnetServiceAckGetEnrollmentSummary); ok {
 		return casted
 	}

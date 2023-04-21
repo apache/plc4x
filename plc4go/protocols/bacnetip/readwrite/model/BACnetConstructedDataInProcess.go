@@ -121,7 +121,7 @@ func NewBACnetConstructedDataInProcess(inProcess BACnetApplicationTagBoolean, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataInProcess(structType interface{}) BACnetConstructedDataInProcess {
+func CastBACnetConstructedDataInProcess(structType any) BACnetConstructedDataInProcess {
 	if casted, ok := structType.(BACnetConstructedDataInProcess); ok {
 		return casted
 	}

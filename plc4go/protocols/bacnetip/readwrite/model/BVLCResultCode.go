@@ -33,6 +33,7 @@ type BVLCResultCode uint16
 
 type IBVLCResultCode interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -110,8 +111,8 @@ func BVLCResultCodeKnows(value uint16) bool {
 	return false
 }
 
-func CastBVLCResultCode(structType interface{}) BVLCResultCode {
-	castFunc := func(typ interface{}) BVLCResultCode {
+func CastBVLCResultCode(structType any) BVLCResultCode {
+	castFunc := func(typ any) BVLCResultCode {
 		if sBVLCResultCode, ok := typ.(BVLCResultCode); ok {
 			return sBVLCResultCode
 		}

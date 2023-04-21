@@ -34,7 +34,7 @@ import (
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/transports/pcap"
-	"github.com/rs/zerolog/log"
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -73,10 +73,10 @@ func TestBacnetDriverWithPcap(t *testing.T) {
 	if requestResult.GetErr() != nil {
 		panic(requestResult.GetErr())
 	}
-	log.Info().Msgf("got response %v", requestResult.GetResponse())
+	t.Logf("got response %v", requestResult.GetResponse())
 
 	for connection.IsConnected() {
-		log.Debug().Msg("Still sleeping")
+		t.Log("Still sleeping")
 		time.Sleep(time.Second)
 	}
 }

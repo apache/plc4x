@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLastCredentialRemoved(lastCredentialRemoved BACnetD
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastCredentialRemoved(structType interface{}) BACnetConstructedDataLastCredentialRemoved {
+func CastBACnetConstructedDataLastCredentialRemoved(structType any) BACnetConstructedDataLastCredentialRemoved {
 	if casted, ok := structType.(BACnetConstructedDataLastCredentialRemoved); ok {
 		return casted
 	}

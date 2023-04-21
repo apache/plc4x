@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBaseDeviceSecurityPolicy(baseDeviceSecurityPolicy B
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBaseDeviceSecurityPolicy(structType interface{}) BACnetConstructedDataBaseDeviceSecurityPolicy {
+func CastBACnetConstructedDataBaseDeviceSecurityPolicy(structType any) BACnetConstructedDataBaseDeviceSecurityPolicy {
 	if casted, ok := structType.(BACnetConstructedDataBaseDeviceSecurityPolicy); ok {
 		return casted
 	}

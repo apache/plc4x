@@ -86,7 +86,7 @@ func NewBACnetConstructedDataTrendLogMultipleAll(openingTag BACnetOpeningTag, pe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTrendLogMultipleAll(structType interface{}) BACnetConstructedDataTrendLogMultipleAll {
+func CastBACnetConstructedDataTrendLogMultipleAll(structType any) BACnetConstructedDataTrendLogMultipleAll {
 	if casted, ok := structType.(BACnetConstructedDataTrendLogMultipleAll); ok {
 		return casted
 	}

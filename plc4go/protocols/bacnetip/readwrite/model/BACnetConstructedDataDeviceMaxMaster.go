@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDeviceMaxMaster(maxMaster BACnetApplicationTagUnsig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDeviceMaxMaster(structType interface{}) BACnetConstructedDataDeviceMaxMaster {
+func CastBACnetConstructedDataDeviceMaxMaster(structType any) BACnetConstructedDataDeviceMaxMaster {
 	if casted, ok := structType.(BACnetConstructedDataDeviceMaxMaster); ok {
 		return casted
 	}

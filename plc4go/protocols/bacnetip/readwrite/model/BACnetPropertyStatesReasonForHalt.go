@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesReasonForHalt(reasonForHalt BACnetProgramErrorTagged
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesReasonForHalt(structType interface{}) BACnetPropertyStatesReasonForHalt {
+func CastBACnetPropertyStatesReasonForHalt(structType any) BACnetPropertyStatesReasonForHalt {
 	if casted, ok := structType.(BACnetPropertyStatesReasonForHalt); ok {
 		return casted
 	}

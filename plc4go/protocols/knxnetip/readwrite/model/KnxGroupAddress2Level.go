@@ -104,7 +104,7 @@ func NewKnxGroupAddress2Level(mainGroup uint8, subGroup uint16) *_KnxGroupAddres
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxGroupAddress2Level(structType interface{}) KnxGroupAddress2Level {
+func CastKnxGroupAddress2Level(structType any) KnxGroupAddress2Level {
 	if casted, ok := structType.(KnxGroupAddress2Level); ok {
 		return casted
 	}

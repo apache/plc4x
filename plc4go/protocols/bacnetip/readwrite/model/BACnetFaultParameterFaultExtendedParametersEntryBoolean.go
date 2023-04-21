@@ -94,7 +94,7 @@ func NewBACnetFaultParameterFaultExtendedParametersEntryBoolean(booleanValue BAC
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameterFaultExtendedParametersEntryBoolean(structType interface{}) BACnetFaultParameterFaultExtendedParametersEntryBoolean {
+func CastBACnetFaultParameterFaultExtendedParametersEntryBoolean(structType any) BACnetFaultParameterFaultExtendedParametersEntryBoolean {
 	if casted, ok := structType.(BACnetFaultParameterFaultExtendedParametersEntryBoolean); ok {
 		return casted
 	}

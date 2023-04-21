@@ -138,7 +138,7 @@ func NewHVACStatusFlags(expansion bool, error bool, busy bool, damperState bool,
 }
 
 // Deprecated: use the interface for direct cast
-func CastHVACStatusFlags(structType interface{}) HVACStatusFlags {
+func CastHVACStatusFlags(structType any) HVACStatusFlags {
 	if casted, ok := structType.(HVACStatusFlags); ok {
 		return casted
 	}
@@ -232,7 +232,7 @@ func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of HVACStatusFlags")
 		}
 		if reserved != bool(false) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -336,7 +336,7 @@ func (m *_HVACStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	{
 		var reserved bool = bool(false)
 		if m.reservedField0 != nil {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": bool(false),
 				"got value":      reserved,
 			}).Msg("Overriding reserved field with unexpected value.")

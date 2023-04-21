@@ -77,7 +77,7 @@ func NewSecurityDataDropTamper(commandTypeContainer SecurityCommandTypeContainer
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataDropTamper(structType interface{}) SecurityDataDropTamper {
+func CastSecurityDataDropTamper(structType any) SecurityDataDropTamper {
 	if casted, ok := structType.(SecurityDataDropTamper); ok {
 		return casted
 	}

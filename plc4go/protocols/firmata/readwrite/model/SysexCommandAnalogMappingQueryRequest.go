@@ -82,7 +82,7 @@ func NewSysexCommandAnalogMappingQueryRequest() *_SysexCommandAnalogMappingQuery
 }
 
 // Deprecated: use the interface for direct cast
-func CastSysexCommandAnalogMappingQueryRequest(structType interface{}) SysexCommandAnalogMappingQueryRequest {
+func CastSysexCommandAnalogMappingQueryRequest(structType any) SysexCommandAnalogMappingQueryRequest {
 	if casted, ok := structType.(SysexCommandAnalogMappingQueryRequest); ok {
 		return casted
 	}

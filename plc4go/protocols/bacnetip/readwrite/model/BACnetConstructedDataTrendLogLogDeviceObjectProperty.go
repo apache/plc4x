@@ -121,7 +121,7 @@ func NewBACnetConstructedDataTrendLogLogDeviceObjectProperty(logDeviceObjectProp
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataTrendLogLogDeviceObjectProperty(structType interface{}) BACnetConstructedDataTrendLogLogDeviceObjectProperty {
+func CastBACnetConstructedDataTrendLogLogDeviceObjectProperty(structType any) BACnetConstructedDataTrendLogLogDeviceObjectProperty {
 	if casted, ok := structType.(BACnetConstructedDataTrendLogLogDeviceObjectProperty); ok {
 		return casted
 	}

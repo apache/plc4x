@@ -98,7 +98,7 @@ func NewSALDataErrorReporting(errorReportingData ErrorReportingData, salData SAL
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataErrorReporting(structType interface{}) SALDataErrorReporting {
+func CastSALDataErrorReporting(structType any) SALDataErrorReporting {
 	if casted, ok := structType.(SALDataErrorReporting); ok {
 		return casted
 	}

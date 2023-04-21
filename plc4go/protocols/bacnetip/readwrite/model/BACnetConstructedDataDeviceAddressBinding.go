@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewBACnetConstructedDataDeviceAddressBinding(deviceAddressBinding []BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDeviceAddressBinding(structType interface{}) BACnetConstructedDataDeviceAddressBinding {
+func CastBACnetConstructedDataDeviceAddressBinding(structType any) BACnetConstructedDataDeviceAddressBinding {
 	if casted, ok := structType.(BACnetConstructedDataDeviceAddressBinding); ok {
 		return casted
 	}
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataDeviceAddressBinding) SerializeWithWriteBuffer(ct
 		}
 		for _curItem, _element := range m.GetDeviceAddressBinding() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetDeviceAddressBinding()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDeviceAddressBinding()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

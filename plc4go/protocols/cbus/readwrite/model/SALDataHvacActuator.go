@@ -98,7 +98,7 @@ func NewSALDataHvacActuator(hvacActuatorData LightingData, salData SALData) *_SA
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataHvacActuator(structType interface{}) SALDataHvacActuator {
+func CastSALDataHvacActuator(structType any) SALDataHvacActuator {
 	if casted, ok := structType.(SALDataHvacActuator); ok {
 		return casted
 	}

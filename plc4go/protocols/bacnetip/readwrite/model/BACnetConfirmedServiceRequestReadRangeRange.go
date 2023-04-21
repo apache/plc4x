@@ -121,7 +121,7 @@ func NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader BACnetTagHea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestReadRangeRange(structType interface{}) BACnetConfirmedServiceRequestReadRangeRange {
+func CastBACnetConfirmedServiceRequestReadRangeRange(structType any) BACnetConfirmedServiceRequestReadRangeRange {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestReadRangeRange); ok {
 		return casted
 	}
@@ -198,7 +198,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(ctx context.Cont
 		InitializeParent(BACnetConfirmedServiceRequestReadRangeRange, BACnetTagHeader, BACnetOpeningTag, BACnetClosingTag)
 		GetParent() BACnetConfirmedServiceRequestReadRangeRange
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetConfirmedServiceRequestReadRangeRangeChildSerializeRequirement
 	var typeSwitchError error
 	switch {

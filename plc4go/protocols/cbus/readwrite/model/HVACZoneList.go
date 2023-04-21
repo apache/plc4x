@@ -135,7 +135,7 @@ func NewHVACZoneList(expansion bool, zone6 bool, zone5 bool, zone4 bool, zone3 b
 }
 
 // Deprecated: use the interface for direct cast
-func CastHVACZoneList(structType interface{}) HVACZoneList {
+func CastHVACZoneList(structType any) HVACZoneList {
 	if casted, ok := structType.(HVACZoneList); ok {
 		return casted
 	}

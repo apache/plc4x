@@ -191,7 +191,7 @@ func (m *TransportInstance) IsConnected() bool {
 	return m.connected
 }
 
-func (m *TransportInstance) Write(_ []uint8) error {
+func (m *TransportInstance) Write(_ []byte) error {
 	panic("Write to pcap not supported")
 }
 

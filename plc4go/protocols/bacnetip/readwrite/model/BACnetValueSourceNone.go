@@ -94,7 +94,7 @@ func NewBACnetValueSourceNone(none BACnetContextTagNull, peekedTagHeader BACnetT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetValueSourceNone(structType interface{}) BACnetValueSourceNone {
+func CastBACnetValueSourceNone(structType any) BACnetValueSourceNone {
 	if casted, ok := structType.(BACnetValueSourceNone); ok {
 		return casted
 	}

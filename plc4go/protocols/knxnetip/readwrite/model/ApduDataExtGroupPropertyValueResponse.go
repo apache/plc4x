@@ -78,7 +78,7 @@ func NewApduDataExtGroupPropertyValueResponse(length uint8) *_ApduDataExtGroupPr
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExtGroupPropertyValueResponse(structType interface{}) ApduDataExtGroupPropertyValueResponse {
+func CastApduDataExtGroupPropertyValueResponse(structType any) ApduDataExtGroupPropertyValueResponse {
 	if casted, ok := structType.(ApduDataExtGroupPropertyValueResponse); ok {
 		return casted
 	}

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataNotifyType(notifyType BACnetNotifyTypeTagged, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNotifyType(structType interface{}) BACnetConstructedDataNotifyType {
+func CastBACnetConstructedDataNotifyType(structType any) BACnetConstructedDataNotifyType {
 	if casted, ok := structType.(BACnetConstructedDataNotifyType); ok {
 		return casted
 	}

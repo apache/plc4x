@@ -32,7 +32,7 @@ import (
 type S7ParserHelper struct {
 }
 
-func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (interface{}, error) {
+func (m S7ParserHelper) Parse(typeName string, arguments []string, io utils.ReadBuffer) (any, error) {
 	switch typeName {
 	case "DataItem":
 		dataProtocolId, err := utils.StrToString(arguments[0])

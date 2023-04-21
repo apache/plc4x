@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDaylightSavingsStatus(daylightSavingsStatus BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDaylightSavingsStatus(structType interface{}) BACnetConstructedDataDaylightSavingsStatus {
+func CastBACnetConstructedDataDaylightSavingsStatus(structType any) BACnetConstructedDataDaylightSavingsStatus {
 	if casted, ok := structType.(BACnetConstructedDataDaylightSavingsStatus); ok {
 		return casted
 	}

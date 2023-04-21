@@ -112,7 +112,7 @@ func NewModbusPDUReadInputRegistersRequest(startingAddress uint16, quantity uint
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUReadInputRegistersRequest(structType interface{}) ModbusPDUReadInputRegistersRequest {
+func CastModbusPDUReadInputRegistersRequest(structType any) ModbusPDUReadInputRegistersRequest {
 	if casted, ok := structType.(ModbusPDUReadInputRegistersRequest); ok {
 		return casted
 	}

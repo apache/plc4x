@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBACnetIPUDPPort(ipUdpPort BACnetApplicationTagUnsig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBACnetIPUDPPort(structType interface{}) BACnetConstructedDataBACnetIPUDPPort {
+func CastBACnetConstructedDataBACnetIPUDPPort(structType any) BACnetConstructedDataBACnetIPUDPPort {
 	if casted, ok := structType.(BACnetConstructedDataBACnetIPUDPPort); ok {
 		return casted
 	}

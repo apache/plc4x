@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesAccessCredentialDisable(accessCredentialDisable BACn
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesAccessCredentialDisable(structType interface{}) BACnetPropertyStatesAccessCredentialDisable {
+func CastBACnetPropertyStatesAccessCredentialDisable(structType any) BACnetPropertyStatesAccessCredentialDisable {
 	if casted, ok := structType.(BACnetPropertyStatesAccessCredentialDisable); ok {
 		return casted
 	}

@@ -107,7 +107,7 @@ func NewBACnetFaultParameter(peekedTagHeader BACnetTagHeader) *_BACnetFaultParam
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFaultParameter(structType interface{}) BACnetFaultParameter {
+func CastBACnetFaultParameter(structType any) BACnetFaultParameter {
 	if casted, ok := structType.(BACnetFaultParameter); ok {
 		return casted
 	}
@@ -165,7 +165,7 @@ func BACnetFaultParameterParseWithBuffer(ctx context.Context, readBuffer utils.R
 		InitializeParent(BACnetFaultParameter, BACnetTagHeader)
 		GetParent() BACnetFaultParameter
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetFaultParameterChildSerializeRequirement
 	var typeSwitchError error
 	switch {

@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMultiStateOutputRelinquishDefault(relinquishDefault
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMultiStateOutputRelinquishDefault(structType interface{}) BACnetConstructedDataMultiStateOutputRelinquishDefault {
+func CastBACnetConstructedDataMultiStateOutputRelinquishDefault(structType any) BACnetConstructedDataMultiStateOutputRelinquishDefault {
 	if casted, ok := structType.(BACnetConstructedDataMultiStateOutputRelinquishDefault); ok {
 		return casted
 	}

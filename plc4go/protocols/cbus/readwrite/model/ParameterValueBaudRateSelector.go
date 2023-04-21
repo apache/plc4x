@@ -104,7 +104,7 @@ func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numB
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValueBaudRateSelector(structType interface{}) ParameterValueBaudRateSelector {
+func CastParameterValueBaudRateSelector(structType any) ParameterValueBaudRateSelector {
 	if casted, ok := structType.(ParameterValueBaudRateSelector); ok {
 		return casted
 	}

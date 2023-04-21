@@ -107,7 +107,7 @@ func NewBACnetTimeStamp(peekedTagHeader BACnetTagHeader) *_BACnetTimeStamp {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimeStamp(structType interface{}) BACnetTimeStamp {
+func CastBACnetTimeStamp(structType any) BACnetTimeStamp {
 	if casted, ok := structType.(BACnetTimeStamp); ok {
 		return casted
 	}
@@ -165,7 +165,7 @@ func BACnetTimeStampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		InitializeParent(BACnetTimeStamp, BACnetTagHeader)
 		GetParent() BACnetTimeStamp
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetTimeStampChildSerializeRequirement
 	var typeSwitchError error
 	switch {

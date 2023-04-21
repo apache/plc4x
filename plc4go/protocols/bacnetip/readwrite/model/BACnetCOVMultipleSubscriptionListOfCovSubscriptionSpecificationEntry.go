@@ -76,7 +76,7 @@ func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry(mon
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry(structType interface{}) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry {
+func CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry(structType any) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry {
 	if casted, ok := structType.(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry); ok {
 		return casted
 	}

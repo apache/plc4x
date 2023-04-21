@@ -80,7 +80,7 @@ func NewBACnetAccessPassbackModeTagged(header BACnetTagHeader, value BACnetAcces
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccessPassbackModeTagged(structType interface{}) BACnetAccessPassbackModeTagged {
+func CastBACnetAccessPassbackModeTagged(structType any) BACnetAccessPassbackModeTagged {
 	if casted, ok := structType.(BACnetAccessPassbackModeTagged); ok {
 		return casted
 	}

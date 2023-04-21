@@ -25,5 +25,5 @@ import (
 )
 
 type PlcValueHandler interface {
-	NewPlcValue(tag model.PlcTag, value interface{}) (values.PlcValue, error)
+	NewPlcValue(tag model.PlcTag, value any) (values.PlcValue, error)
 }

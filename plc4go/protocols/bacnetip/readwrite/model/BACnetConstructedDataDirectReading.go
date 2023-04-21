@@ -121,7 +121,7 @@ func NewBACnetConstructedDataDirectReading(directReading BACnetApplicationTagRea
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataDirectReading(structType interface{}) BACnetConstructedDataDirectReading {
+func CastBACnetConstructedDataDirectReading(structType any) BACnetConstructedDataDirectReading {
 	if casted, ok := structType.(BACnetConstructedDataDirectReading); ok {
 		return casted
 	}

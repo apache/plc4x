@@ -91,7 +91,7 @@ func NewNullEipConnectionResponse(sessionHandle uint32, status uint32, senderCon
 }
 
 // Deprecated: use the interface for direct cast
-func CastNullEipConnectionResponse(structType interface{}) NullEipConnectionResponse {
+func CastNullEipConnectionResponse(structType any) NullEipConnectionResponse {
 	if casted, ok := structType.(NullEipConnectionResponse); ok {
 		return casted
 	}

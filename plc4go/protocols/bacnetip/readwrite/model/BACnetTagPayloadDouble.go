@@ -69,7 +69,7 @@ func NewBACnetTagPayloadDouble(value float64) *_BACnetTagPayloadDouble {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTagPayloadDouble(structType interface{}) BACnetTagPayloadDouble {
+func CastBACnetTagPayloadDouble(structType any) BACnetTagPayloadDouble {
 	if casted, ok := structType.(BACnetTagPayloadDouble); ok {
 		return casted
 	}

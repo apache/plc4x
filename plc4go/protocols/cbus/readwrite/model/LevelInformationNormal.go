@@ -127,7 +127,7 @@ func NewLevelInformationNormal(pair1 LevelInformationNibblePair, pair2 LevelInfo
 }
 
 // Deprecated: use the interface for direct cast
-func CastLevelInformationNormal(structType interface{}) LevelInformationNormal {
+func CastLevelInformationNormal(structType any) LevelInformationNormal {
 	if casted, ok := structType.(LevelInformationNormal); ok {
 		return casted
 	}

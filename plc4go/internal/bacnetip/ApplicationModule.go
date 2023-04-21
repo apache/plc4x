@@ -208,7 +208,7 @@ type Application struct {
 	objectIdentifier map[string]*LocalDeviceObject
 	localDevice      *LocalDeviceObject
 	deviceInfoCache  *DeviceInfoCache
-	controllers      map[string]interface{}
+	controllers      map[string]any
 	helpers          map[string]func(pdu _PDU) error
 
 	_startupDisabled bool
@@ -246,7 +246,7 @@ func NewApplication(localDevice *LocalDeviceObject, deviceInfoCache *DeviceInfoC
 	a.deviceInfoCache = deviceInfoCache
 
 	// controllers for managing confirmed requests as a client
-	a.controllers = map[string]interface{}{}
+	a.controllers = map[string]any{}
 
 	// now set up the rest of the capabilities
 	a.Collector = Collector{}

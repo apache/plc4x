@@ -96,7 +96,7 @@ func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(enum
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(structType interface{}) BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated {
+func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated(structType any) BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated {
 	if casted, ok := structType.(BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated); ok {
 		return casted
 	}

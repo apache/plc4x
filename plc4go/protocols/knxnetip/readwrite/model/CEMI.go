@@ -78,7 +78,7 @@ func NewCEMI(size uint16) *_CEMI {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCEMI(structType interface{}) CEMI {
+func CastCEMI(structType any) CEMI {
 	if casted, ok := structType.(CEMI); ok {
 		return casted
 	}
@@ -129,7 +129,7 @@ func CEMIParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size 
 		InitializeParent(CEMI)
 		GetParent() CEMI
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child CEMIChildSerializeRequirement
 	var typeSwitchError error
 	switch {

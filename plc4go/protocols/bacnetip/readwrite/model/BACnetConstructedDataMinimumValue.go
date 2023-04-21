@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMinimumValue(minimumValue BACnetApplicationTagReal,
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMinimumValue(structType interface{}) BACnetConstructedDataMinimumValue {
+func CastBACnetConstructedDataMinimumValue(structType any) BACnetConstructedDataMinimumValue {
 	if casted, ok := structType.(BACnetConstructedDataMinimumValue); ok {
 		return casted
 	}

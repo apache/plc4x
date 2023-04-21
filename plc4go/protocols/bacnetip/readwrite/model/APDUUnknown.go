@@ -104,7 +104,7 @@ func NewAPDUUnknown(unknownTypeRest uint8, unknownBytes []byte, apduLength uint1
 }
 
 // Deprecated: use the interface for direct cast
-func CastAPDUUnknown(structType interface{}) APDUUnknown {
+func CastAPDUUnknown(structType any) APDUUnknown {
 	if casted, ok := structType.(APDUUnknown); ok {
 		return casted
 	}
@@ -156,7 +156,7 @@ func APDUUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	unknownTypeRest := _unknownTypeRest
 	// Byte Array field (unknownBytes)
-	numberOfBytesunknownBytes := int(utils.InlineIf((bool((apduLength) > (0))), func() interface{} { return uint16(apduLength) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytesunknownBytes := int(utils.InlineIf((bool((apduLength) > (0))), func() any { return uint16(apduLength) }, func() any { return uint16(uint16(0)) }).(uint16))
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field of APDUUnknown")

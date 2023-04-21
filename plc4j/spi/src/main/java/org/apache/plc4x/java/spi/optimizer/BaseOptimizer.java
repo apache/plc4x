@@ -47,8 +47,7 @@ public abstract class BaseOptimizer {
                 if (readResponse.isLeft()) {
                     PlcReadResponse subReadResponse = (PlcReadResponse) readResponse.getLeft();
                     PlcResponseCode responseCode = subReadResponse.getResponseCode(tagName);
-                    PlcValue value = (responseCode == PlcResponseCode.OK) ?
-                        subReadResponse.getAsPlcValue().getValue(tagName) : null;
+                    PlcValue value = subReadResponse.getAsPlcValue().getValue(tagName);
                     tags.put(tagName, new ResponseItem<>(responseCode, value));
                 } else {
                     tags.put(tagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));

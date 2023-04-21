@@ -70,7 +70,7 @@ func NewBACnetSetpointReference(setPointReference BACnetObjectPropertyReferenceE
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetSetpointReference(structType interface{}) BACnetSetpointReference {
+func CastBACnetSetpointReference(structType any) BACnetSetpointReference {
 	if casted, ok := structType.(BACnetSetpointReference); ok {
 		return casted
 	}

@@ -80,7 +80,7 @@ func NewBACnetFileAccessMethodTagged(header BACnetTagHeader, value BACnetFileAcc
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetFileAccessMethodTagged(structType interface{}) BACnetFileAccessMethodTagged {
+func CastBACnetFileAccessMethodTagged(structType any) BACnetFileAccessMethodTagged {
 	if casted, ok := structType.(BACnetFileAccessMethodTagged); ok {
 		return casted
 	}

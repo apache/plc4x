@@ -121,7 +121,7 @@ func NewBACnetConstructedDataLastPriority(lastPriority BACnetApplicationTagUnsig
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLastPriority(structType interface{}) BACnetConstructedDataLastPriority {
+func CastBACnetConstructedDataLastPriority(structType any) BACnetConstructedDataLastPriority {
 	if casted, ok := structType.(BACnetConstructedDataLastPriority); ok {
 		return casted
 	}

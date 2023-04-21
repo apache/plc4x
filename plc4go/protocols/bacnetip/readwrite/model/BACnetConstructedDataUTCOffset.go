@@ -121,7 +121,7 @@ func NewBACnetConstructedDataUTCOffset(utcOffset BACnetApplicationTagSignedInteg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataUTCOffset(structType interface{}) BACnetConstructedDataUTCOffset {
+func CastBACnetConstructedDataUTCOffset(structType any) BACnetConstructedDataUTCOffset {
 	if casted, ok := structType.(BACnetConstructedDataUTCOffset); ok {
 		return casted
 	}

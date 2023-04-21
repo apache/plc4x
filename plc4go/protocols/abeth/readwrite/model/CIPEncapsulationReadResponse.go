@@ -105,7 +105,7 @@ func NewCIPEncapsulationReadResponse(response DF1ResponseMessage, sessionHandle 
 }
 
 // Deprecated: use the interface for direct cast
-func CastCIPEncapsulationReadResponse(structType interface{}) CIPEncapsulationReadResponse {
+func CastCIPEncapsulationReadResponse(structType any) CIPEncapsulationReadResponse {
 	if casted, ok := structType.(CIPEncapsulationReadResponse); ok {
 		return casted
 	}

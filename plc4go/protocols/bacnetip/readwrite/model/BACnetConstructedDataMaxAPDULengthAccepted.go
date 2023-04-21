@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMaxAPDULengthAccepted(maxApduLengthAccepted BACnetA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMaxAPDULengthAccepted(structType interface{}) BACnetConstructedDataMaxAPDULengthAccepted {
+func CastBACnetConstructedDataMaxAPDULengthAccepted(structType any) BACnetConstructedDataMaxAPDULengthAccepted {
 	if casted, ok := structType.(BACnetConstructedDataMaxAPDULengthAccepted); ok {
 		return casted
 	}

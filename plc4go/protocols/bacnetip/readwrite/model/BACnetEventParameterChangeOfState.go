@@ -118,7 +118,7 @@ func NewBACnetEventParameterChangeOfState(openingTag BACnetOpeningTag, timeDelay
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetEventParameterChangeOfState(structType interface{}) BACnetEventParameterChangeOfState {
+func CastBACnetEventParameterChangeOfState(structType any) BACnetEventParameterChangeOfState {
 	if casted, ok := structType.(BACnetEventParameterChangeOfState); ok {
 		return casted
 	}

@@ -120,7 +120,7 @@ func NewTelephonyDataIsolateSecondaryOutlet(isolateStatus byte, commandTypeConta
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataIsolateSecondaryOutlet(structType interface{}) TelephonyDataIsolateSecondaryOutlet {
+func CastTelephonyDataIsolateSecondaryOutlet(structType any) TelephonyDataIsolateSecondaryOutlet {
 	if casted, ok := structType.(TelephonyDataIsolateSecondaryOutlet); ok {
 		return casted
 	}

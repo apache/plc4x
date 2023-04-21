@@ -22,13 +22,16 @@ package testutils
 import (
 	"github.com/ajankovic/xdiff"
 	"github.com/ajankovic/xdiff/parser"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
 	"os"
 	"strings"
+	"testing"
 )
 
-func CompareResults(actualString []byte, referenceString []byte) error {
+func CompareResults(t *testing.T, actualString []byte, referenceString []byte) error {
 	// Now parse the xml strings of the actual and the reference in xdiff's dom
 	p := parser.New()
 	actual, err := p.ParseBytes(actualString)
@@ -83,6 +86,12 @@ func CompareResults(actualString []byte, referenceString []byte) error {
 			log.Warn().Msg("We only found non relevant changes")
 			return nil
 		} else {
+			assert.Equal(t, string(referenceString), string(actualString))
+			asciiBoxWriter := utils.NewAsciiBoxWriter()
+			expectedBox := asciiBoxWriter.BoxString("expected", string(referenceString), 0)
+			gotBox := asciiBoxWriter.BoxString("got", string(actualString), 0)
+			boxSideBySide := asciiBoxWriter.BoxSideBySide(expectedBox, gotBox)
+			_ = boxSideBySide // TODO: xml too distorted, we need a don't center option
 			return errors.New("there were differences: Expected: \n" + string(referenceString) + "\nBut Got: \n" + string(actualString))
 		}
 	}

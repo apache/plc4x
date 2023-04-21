@@ -33,6 +33,7 @@ type BACnetDeviceStatus uint16
 
 type IBACnetDeviceStatus interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -110,8 +111,8 @@ func BACnetDeviceStatusKnows(value uint16) bool {
 	return false
 }
 
-func CastBACnetDeviceStatus(structType interface{}) BACnetDeviceStatus {
-	castFunc := func(typ interface{}) BACnetDeviceStatus {
+func CastBACnetDeviceStatus(structType any) BACnetDeviceStatus {
+	castFunc := func(typ any) BACnetDeviceStatus {
 		if sBACnetDeviceStatus, ok := typ.(BACnetDeviceStatus); ok {
 			return sBACnetDeviceStatus
 		}

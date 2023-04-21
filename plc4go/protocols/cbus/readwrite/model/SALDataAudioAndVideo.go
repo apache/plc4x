@@ -98,7 +98,7 @@ func NewSALDataAudioAndVideo(audioVideoData LightingData, salData SALData) *_SAL
 }
 
 // Deprecated: use the interface for direct cast
-func CastSALDataAudioAndVideo(structType interface{}) SALDataAudioAndVideo {
+func CastSALDataAudioAndVideo(structType any) SALDataAudioAndVideo {
 	if casted, ok := structType.(SALDataAudioAndVideo); ok {
 		return casted
 	}

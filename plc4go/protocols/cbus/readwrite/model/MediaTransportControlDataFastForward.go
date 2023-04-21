@@ -168,7 +168,7 @@ func NewMediaTransportControlDataFastForward(operation byte, commandTypeContaine
 }
 
 // Deprecated: use the interface for direct cast
-func CastMediaTransportControlDataFastForward(structType interface{}) MediaTransportControlDataFastForward {
+func CastMediaTransportControlDataFastForward(structType any) MediaTransportControlDataFastForward {
 	if casted, ok := structType.(MediaTransportControlDataFastForward); ok {
 		return casted
 	}

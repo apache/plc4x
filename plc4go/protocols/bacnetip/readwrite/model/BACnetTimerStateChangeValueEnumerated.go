@@ -94,7 +94,7 @@ func NewBACnetTimerStateChangeValueEnumerated(enumeratedValue BACnetApplicationT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueEnumerated(structType interface{}) BACnetTimerStateChangeValueEnumerated {
+func CastBACnetTimerStateChangeValueEnumerated(structType any) BACnetTimerStateChangeValueEnumerated {
 	if casted, ok := structType.(BACnetTimerStateChangeValueEnumerated); ok {
 		return casted
 	}

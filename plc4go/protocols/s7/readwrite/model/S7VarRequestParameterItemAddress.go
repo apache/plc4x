@@ -96,7 +96,7 @@ func NewS7VarRequestParameterItemAddress(address S7Address) *_S7VarRequestParame
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7VarRequestParameterItemAddress(structType interface{}) S7VarRequestParameterItemAddress {
+func CastS7VarRequestParameterItemAddress(structType any) S7VarRequestParameterItemAddress {
 	if casted, ok := structType.(S7VarRequestParameterItemAddress); ok {
 		return casted
 	}

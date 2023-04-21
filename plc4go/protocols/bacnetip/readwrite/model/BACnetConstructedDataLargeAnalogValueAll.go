@@ -86,7 +86,7 @@ func NewBACnetConstructedDataLargeAnalogValueAll(openingTag BACnetOpeningTag, pe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLargeAnalogValueAll(structType interface{}) BACnetConstructedDataLargeAnalogValueAll {
+func CastBACnetConstructedDataLargeAnalogValueAll(structType any) BACnetConstructedDataLargeAnalogValueAll {
 	if casted, ok := structType.(BACnetConstructedDataLargeAnalogValueAll); ok {
 		return casted
 	}

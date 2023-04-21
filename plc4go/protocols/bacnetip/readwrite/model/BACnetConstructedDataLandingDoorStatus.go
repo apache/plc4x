@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"io"
@@ -133,7 +132,7 @@ func NewBACnetConstructedDataLandingDoorStatus(numberOfDataElements BACnetApplic
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataLandingDoorStatus(structType interface{}) BACnetConstructedDataLandingDoorStatus {
+func CastBACnetConstructedDataLandingDoorStatus(structType any) BACnetConstructedDataLandingDoorStatus {
 	if casted, ok := structType.(BACnetConstructedDataLandingDoorStatus); ok {
 		return casted
 	}
@@ -289,7 +288,7 @@ func (m *_BACnetConstructedDataLandingDoorStatus) SerializeWithWriteBuffer(ctx c
 		}
 		for _curItem, _element := range m.GetLandingDoorStatus() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetLandingDoorStatus()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLandingDoorStatus()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

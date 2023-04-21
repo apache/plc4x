@@ -78,7 +78,7 @@ func NewMResetInd(size uint16) *_MResetInd {
 }
 
 // Deprecated: use the interface for direct cast
-func CastMResetInd(structType interface{}) MResetInd {
+func CastMResetInd(structType any) MResetInd {
 	if casted, ok := structType.(MResetInd); ok {
 		return casted
 	}

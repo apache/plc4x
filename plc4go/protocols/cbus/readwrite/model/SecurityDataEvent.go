@@ -95,7 +95,7 @@ func NewSecurityDataEvent(data []byte, commandTypeContainer SecurityCommandTypeC
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataEvent(structType interface{}) SecurityDataEvent {
+func CastSecurityDataEvent(structType any) SecurityDataEvent {
 	if casted, ok := structType.(SecurityDataEvent); ok {
 		return casted
 	}

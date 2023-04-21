@@ -94,7 +94,7 @@ func NewBACnetTimerStateChangeValueConstructedValue(constructedValue BACnetConst
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetTimerStateChangeValueConstructedValue(structType interface{}) BACnetTimerStateChangeValueConstructedValue {
+func CastBACnetTimerStateChangeValueConstructedValue(structType any) BACnetTimerStateChangeValueConstructedValue {
 	if casted, ok := structType.(BACnetTimerStateChangeValueConstructedValue); ok {
 		return casted
 	}

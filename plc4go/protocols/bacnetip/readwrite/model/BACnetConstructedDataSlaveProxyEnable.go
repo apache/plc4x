@@ -121,7 +121,7 @@ func NewBACnetConstructedDataSlaveProxyEnable(slaveProxyEnable BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSlaveProxyEnable(structType interface{}) BACnetConstructedDataSlaveProxyEnable {
+func CastBACnetConstructedDataSlaveProxyEnable(structType any) BACnetConstructedDataSlaveProxyEnable {
 	if casted, ok := structType.(BACnetConstructedDataSlaveProxyEnable); ok {
 		return casted
 	}

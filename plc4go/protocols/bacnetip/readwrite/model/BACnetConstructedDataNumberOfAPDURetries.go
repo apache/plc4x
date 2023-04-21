@@ -121,7 +121,7 @@ func NewBACnetConstructedDataNumberOfAPDURetries(numberOfApduRetries BACnetAppli
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNumberOfAPDURetries(structType interface{}) BACnetConstructedDataNumberOfAPDURetries {
+func CastBACnetConstructedDataNumberOfAPDURetries(structType any) BACnetConstructedDataNumberOfAPDURetries {
 	if casted, ok := structType.(BACnetConstructedDataNumberOfAPDURetries); ok {
 		return casted
 	}

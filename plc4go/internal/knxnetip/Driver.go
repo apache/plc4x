@@ -37,9 +37,9 @@ type Driver struct {
 }
 
 func NewDriver() *Driver {
-	return &Driver{
-		DefaultDriver: _default.NewDefaultDriver("knxnet-ip", "KNXNet/IP", "udp", NewTagHandler()),
-	}
+	driver := &Driver{}
+	driver.DefaultDriver = _default.NewDefaultDriver(driver, "knxnet-ip", "KNXNet/IP", "udp", NewTagHandler())
+	return driver
 }
 
 func (m *Driver) CheckQuery(query string) error {
@@ -47,7 +47,7 @@ func (m *Driver) CheckQuery(query string) error {
 	return err
 }
 
-func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
+func (m *Driver) GetConnectionWithContext(ctx context.Context, transportUrl url.URL, transports map[string]transports.Transport, options map[string][]string) <-chan plc4go.PlcConnectionConnectResult {
 	// Get an the transport specified in the url
 	transport, ok := transports[transportUrl.Scheme]
 	if !ok {
@@ -72,15 +72,11 @@ func (m *Driver) GetConnection(transportUrl url.URL, transports map[string]trans
 	// Create the new connection
 	connection := NewConnection(transportInstance, options, m.GetPlcTagHandler())
 	log.Trace().Str("transport", transportUrl.String()).Stringer("connection", connection).Msg("created new connection instance, trying to connect now")
-	return connection.Connect()
+	return connection.ConnectWithContext(ctx)
 }
 
 func (m *Driver) SupportsDiscovery() bool {
 	return true
-}
-
-func (m *Driver) Discover(callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {
-	return m.DiscoverWithContext(context.TODO(), callback, discoveryOptions...)
 }
 
 func (m *Driver) DiscoverWithContext(ctx context.Context, callback func(event apiModel.PlcDiscoveryItem), discoveryOptions ...options.WithDiscoveryOption) error {

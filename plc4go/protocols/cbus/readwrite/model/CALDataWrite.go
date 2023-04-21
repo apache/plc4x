@@ -111,7 +111,7 @@ func NewCALDataWrite(paramNo Parameter, code byte, parameterValue ParameterValue
 }
 
 // Deprecated: use the interface for direct cast
-func CastCALDataWrite(structType interface{}) CALDataWrite {
+func CastCALDataWrite(structType any) CALDataWrite {
 	if casted, ok := structType.(CALDataWrite); ok {
 		return casted
 	}

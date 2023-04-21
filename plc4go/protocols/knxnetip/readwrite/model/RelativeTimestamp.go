@@ -69,7 +69,7 @@ func NewRelativeTimestamp(timestamp uint16) *_RelativeTimestamp {
 }
 
 // Deprecated: use the interface for direct cast
-func CastRelativeTimestamp(structType interface{}) RelativeTimestamp {
+func CastRelativeTimestamp(structType any) RelativeTimestamp {
 	if casted, ok := structType.(RelativeTimestamp); ok {
 		return casted
 	}

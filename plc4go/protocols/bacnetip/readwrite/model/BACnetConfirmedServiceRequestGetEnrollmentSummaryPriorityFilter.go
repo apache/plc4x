@@ -93,7 +93,7 @@ func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(openingT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(structType interface{}) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
+func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter); ok {
 		return casted
 	}

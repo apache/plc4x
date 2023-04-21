@@ -118,7 +118,7 @@ func NewIdentifyReplyCommandUnitSummary(assertingNetworkBurden bool, restrikeTim
 }
 
 // Deprecated: use the interface for direct cast
-func CastIdentifyReplyCommandUnitSummary(structType interface{}) IdentifyReplyCommandUnitSummary {
+func CastIdentifyReplyCommandUnitSummary(structType any) IdentifyReplyCommandUnitSummary {
 	if casted, ok := structType.(IdentifyReplyCommandUnitSummary); ok {
 		return casted
 	}

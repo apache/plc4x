@@ -136,7 +136,7 @@ func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarm
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7MessageObjectRequest(structType interface{}) S7MessageObjectRequest {
+func CastS7MessageObjectRequest(structType any) S7MessageObjectRequest {
 	if casted, ok := structType.(S7MessageObjectRequest); ok {
 		return casted
 	}
@@ -233,7 +233,7 @@ func S7MessageObjectRequestParseWithBuffer(ctx context.Context, readBuffer utils
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7MessageObjectRequest")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -263,7 +263,7 @@ func S7MessageObjectRequestParseWithBuffer(ctx context.Context, readBuffer utils
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7MessageObjectRequest")
 		}
 		if reserved != uint8(0x34) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x34),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -346,7 +346,7 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")
@@ -374,7 +374,7 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		{
 			var reserved uint8 = uint8(0x34)
 			if m.reservedField1 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x34),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

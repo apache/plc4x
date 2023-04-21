@@ -33,6 +33,7 @@ type BACnetBackupState uint8
 
 type IBACnetBackupState interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 }
 
@@ -110,8 +111,8 @@ func BACnetBackupStateKnows(value uint8) bool {
 	return false
 }
 
-func CastBACnetBackupState(structType interface{}) BACnetBackupState {
-	castFunc := func(typ interface{}) BACnetBackupState {
+func CastBACnetBackupState(structType any) BACnetBackupState {
+	castFunc := func(typ any) BACnetBackupState {
 		if sBACnetBackupState, ok := typ.(BACnetBackupState); ok {
 			return sBACnetBackupState
 		}

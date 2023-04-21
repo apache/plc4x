@@ -28,7 +28,7 @@ import (
 	"reflect"
 )
 
-func ReadEnumGenericFailing(readBuffer utils.ReadBuffer, actualLength uint32, template interface{}) (interface{}, error) {
+func ReadEnumGenericFailing(readBuffer utils.ReadBuffer, actualLength uint32, template any) (any, error) {
 	bitsToRead := (uint8)(actualLength * 8)
 	rawValue, err := readBuffer.ReadUint32("value", bitsToRead)
 	if err != nil {
@@ -120,7 +120,7 @@ func ReadEnumGenericFailing(readBuffer utils.ReadBuffer, actualLength uint32, te
 	}
 }
 
-func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template interface{}) (interface{}, error) {
+func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template any) (any, error) {
 	bitsToRead := (uint8)(actualLength * 8)
 	rawValue, err := readBuffer.ReadUint32("value", bitsToRead)
 	if err != nil {
@@ -227,7 +227,7 @@ func ReadEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, template 
 	}
 }
 
-func ReadProprietaryEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, shouldRead bool) (interface{}, error) {
+func ReadProprietaryEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32, shouldRead bool) (any, error) {
 	if !shouldRead {
 		return uint32(0), nil
 	}
@@ -237,7 +237,7 @@ func ReadProprietaryEnumGeneric(readBuffer utils.ReadBuffer, actualLength uint32
 	return readBuffer.ReadUint32("proprietaryValue", bitsToRead)
 }
 
-func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value interface{}) error {
+func WriteEnumGeneric(writeBuffer utils.WriteBuffer, value any) error {
 	if value == nil {
 		return nil
 	}
@@ -566,7 +566,7 @@ func WriteProprietaryEnumGeneric(writeBuffer utils.WriteBuffer, value uint32, sh
 }
 
 // Deprecated: use generic above
-func ReadObjectType(readBuffer utils.ReadBuffer) (interface{}, error) {
+func ReadObjectType(readBuffer utils.ReadBuffer) (any, error) {
 	readValue, err := readBuffer.ReadUint16("objectType", 10)
 	if err != nil {
 		return 0, err
@@ -575,7 +575,7 @@ func ReadObjectType(readBuffer utils.ReadBuffer) (interface{}, error) {
 }
 
 // Deprecated: use generic above
-func ReadProprietaryObjectType(readBuffer utils.ReadBuffer, value BACnetObjectType) (interface{}, error) {
+func ReadProprietaryObjectType(readBuffer utils.ReadBuffer, value BACnetObjectType) (any, error) {
 	if value != BACnetObjectType_VENDOR_PROPRIETARY_VALUE {
 		return uint16(0), nil
 	}

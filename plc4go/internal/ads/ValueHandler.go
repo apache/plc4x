@@ -50,11 +50,11 @@ func NewValueHandlerWithDriverContext(driverContext *DriverContext, tagHandler T
 	}
 }
 
-func (t ValueHandler) NewPlcValue(tag model.PlcTag, value interface{}) (apiValues.PlcValue, error) {
+func (t ValueHandler) NewPlcValue(tag model.PlcTag, value any) (apiValues.PlcValue, error) {
 	return t.parseType(tag, value)
 }
 
-func (t ValueHandler) parseType(tag model.PlcTag, value interface{}) (apiValues.PlcValue, error) {
+func (t ValueHandler) parseType(tag model.PlcTag, value any) (apiValues.PlcValue, error) {
 	// Resolve the symbolic tag to a direct tag, that has all the important information.
 	var directTag model2.DirectPlcTag
 	switch tag.(type) {
@@ -72,7 +72,7 @@ func (t ValueHandler) parseType(tag model.PlcTag, value interface{}) (apiValues.
 	return t.AdsParseType(directTag.DataType, directTag.DataType.GetArrayInfo(), value)
 }
 
-func (t ValueHandler) AdsParseType(datatype driverModel.AdsDataTypeTableEntry, arrayInfo []driverModel.AdsDataTypeArrayInfo, value interface{}) (apiValues.PlcValue, error) {
+func (t ValueHandler) AdsParseType(datatype driverModel.AdsDataTypeTableEntry, arrayInfo []driverModel.AdsDataTypeArrayInfo, value any) (apiValues.PlcValue, error) {
 	// Do the normal resolution.
 	if (arrayInfo != nil) && (len(arrayInfo) > 0) {
 		return t.AdsParseListType(datatype, arrayInfo, value)
@@ -82,7 +82,7 @@ func (t ValueHandler) AdsParseType(datatype driverModel.AdsDataTypeTableEntry, a
 	return t.AdsParseSimpleType(datatype, value)
 }
 
-func (t ValueHandler) AdsParseListType(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []driverModel.AdsDataTypeArrayInfo, value interface{}) (apiValues.PlcValue, error) {
+func (t ValueHandler) AdsParseListType(dataType driverModel.AdsDataTypeTableEntry, arrayInfo []driverModel.AdsDataTypeArrayInfo, value any) (apiValues.PlcValue, error) {
 	// We've reached the end of the recursion.
 	if len(arrayInfo) == 0 {
 		return t.AdsParseType(dataType, arrayInfo, value)
@@ -90,9 +90,9 @@ func (t ValueHandler) AdsParseListType(dataType driverModel.AdsDataTypeTableEntr
 
 	s := reflect.ValueOf(value)
 	if s.Kind() != reflect.Slice {
-		return nil, errors.New("couldn't cast value to []interface{}")
+		return nil, errors.New("couldn't cast value to []any")
 	}
-	curValues := make([]interface{}, s.Len())
+	curValues := make([]any, s.Len())
 	for i := 0; i < s.Len(); i++ {
 		curValues[i] = s.Index(i).Interface()
 	}
@@ -120,8 +120,8 @@ func (t ValueHandler) AdsParseListType(dataType driverModel.AdsDataTypeTableEntr
 	return spiValues.NewPlcList(plcValues), nil
 }
 
-func (t ValueHandler) AdsParseStructType(dataType driverModel.AdsDataTypeTableEntry, value interface{}) (apiValues.PlcValue, error) {
-	// Unfortunately it seems impossible to cast map[string]apiValues.PlcValue to map[string]interface{}
+func (t ValueHandler) AdsParseStructType(dataType driverModel.AdsDataTypeTableEntry, value any) (apiValues.PlcValue, error) {
+	// Unfortunately it seems impossible to cast map[string]apiValues.PlcValue to map[string]any
 	if plcStruct, ok := value.(spiValues.PlcStruct); ok {
 		parsedValues := map[string]apiValues.PlcValue{}
 		childValues := plcStruct.GetStruct()
@@ -142,7 +142,7 @@ func (t ValueHandler) AdsParseStructType(dataType driverModel.AdsDataTypeTableEn
 		}
 
 		return spiValues.NewPlcStruct(parsedValues), nil
-	} else if simpleMap, ok := value.(map[string]interface{}); ok {
+	} else if simpleMap, ok := value.(map[string]any); ok {
 		parsedValues := map[string]apiValues.PlcValue{}
 
 		for _, childTypeEntry := range dataType.GetChildren() {
@@ -166,7 +166,7 @@ func (t ValueHandler) AdsParseStructType(dataType driverModel.AdsDataTypeTableEn
 	return nil, nil
 }
 
-func (t ValueHandler) AdsParseSimpleType(dataType driverModel.AdsDataTypeTableEntry, value interface{}) (apiValues.PlcValue, error) {
+func (t ValueHandler) AdsParseSimpleType(dataType driverModel.AdsDataTypeTableEntry, value any) (apiValues.PlcValue, error) {
 	// Get the PlcValue type for this ads-datatype.
 	plcValueType := t.driverContext.getDataTypeForDataTypeTableEntry(dataType)
 	return t.NewPlcValueFromType(plcValueType, value)

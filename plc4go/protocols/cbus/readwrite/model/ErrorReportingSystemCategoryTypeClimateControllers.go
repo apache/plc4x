@@ -97,7 +97,7 @@ func NewErrorReportingSystemCategoryTypeClimateControllers(categoryForType Error
 }
 
 // Deprecated: use the interface for direct cast
-func CastErrorReportingSystemCategoryTypeClimateControllers(structType interface{}) ErrorReportingSystemCategoryTypeClimateControllers {
+func CastErrorReportingSystemCategoryTypeClimateControllers(structType any) ErrorReportingSystemCategoryTypeClimateControllers {
 	if casted, ok := structType.(ErrorReportingSystemCategoryTypeClimateControllers); ok {
 		return casted
 	}

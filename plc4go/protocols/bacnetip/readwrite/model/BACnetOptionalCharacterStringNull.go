@@ -94,7 +94,7 @@ func NewBACnetOptionalCharacterStringNull(nullValue BACnetApplicationTagNull, pe
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetOptionalCharacterStringNull(structType interface{}) BACnetOptionalCharacterStringNull {
+func CastBACnetOptionalCharacterStringNull(structType any) BACnetOptionalCharacterStringNull {
 	if casted, ok := structType.(BACnetOptionalCharacterStringNull); ok {
 		return casted
 	}

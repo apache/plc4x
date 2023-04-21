@@ -121,7 +121,7 @@ func NewBACnetConstructedDataMACAddress(macAddress BACnetApplicationTagOctetStri
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataMACAddress(structType interface{}) BACnetConstructedDataMACAddress {
+func CastBACnetConstructedDataMACAddress(structType any) BACnetConstructedDataMACAddress {
 	if casted, ok := structType.(BACnetConstructedDataMACAddress); ok {
 		return casted
 	}

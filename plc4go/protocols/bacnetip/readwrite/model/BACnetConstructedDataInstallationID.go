@@ -121,7 +121,7 @@ func NewBACnetConstructedDataInstallationID(installationId BACnetApplicationTagU
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataInstallationID(structType interface{}) BACnetConstructedDataInstallationID {
+func CastBACnetConstructedDataInstallationID(structType any) BACnetConstructedDataInstallationID {
 	if casted, ok := structType.(BACnetConstructedDataInstallationID); ok {
 		return casted
 	}

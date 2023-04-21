@@ -80,7 +80,7 @@ func NewBACnetAccessRuleLocationSpecifierTagged(header BACnetTagHeader, value BA
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAccessRuleLocationSpecifierTagged(structType interface{}) BACnetAccessRuleLocationSpecifierTagged {
+func CastBACnetAccessRuleLocationSpecifierTagged(structType any) BACnetAccessRuleLocationSpecifierTagged {
 	if casted, ok := structType.(BACnetAccessRuleLocationSpecifierTagged); ok {
 		return casted
 	}

@@ -83,7 +83,7 @@ func NewHPAIDataEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress,
 }
 
 // Deprecated: use the interface for direct cast
-func CastHPAIDataEndpoint(structType interface{}) HPAIDataEndpoint {
+func CastHPAIDataEndpoint(structType any) HPAIDataEndpoint {
 	if casted, ok := structType.(HPAIDataEndpoint); ok {
 		return casted
 	}

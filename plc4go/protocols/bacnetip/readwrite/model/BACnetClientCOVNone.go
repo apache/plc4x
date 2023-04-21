@@ -94,7 +94,7 @@ func NewBACnetClientCOVNone(defaultIncrement BACnetApplicationTagNull, peekedTag
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetClientCOVNone(structType interface{}) BACnetClientCOVNone {
+func CastBACnetClientCOVNone(structType any) BACnetClientCOVNone {
 	if casted, ok := structType.(BACnetClientCOVNone); ok {
 		return casted
 	}

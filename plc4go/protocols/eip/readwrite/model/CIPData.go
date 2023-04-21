@@ -79,7 +79,7 @@ func NewCIPData(dataType CIPDataTypeCode, data []byte, packetLength uint16) *_CI
 }
 
 // Deprecated: use the interface for direct cast
-func CastCIPData(structType interface{}) CIPData {
+func CastCIPData(structType any) CIPData {
 	if casted, ok := structType.(CIPData); ok {
 		return casted
 	}

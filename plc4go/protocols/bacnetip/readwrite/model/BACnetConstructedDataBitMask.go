@@ -121,7 +121,7 @@ func NewBACnetConstructedDataBitMask(bitString BACnetApplicationTagBitString, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataBitMask(structType interface{}) BACnetConstructedDataBitMask {
+func CastBACnetConstructedDataBitMask(structType any) BACnetConstructedDataBitMask {
 	if casted, ok := structType.(BACnetConstructedDataBitMask); ok {
 		return casted
 	}

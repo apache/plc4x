@@ -104,7 +104,7 @@ func NewNLMRequestMasterKey(numberOfSupportedKeyAlgorithms uint8, encryptionAndS
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMRequestMasterKey(structType interface{}) NLMRequestMasterKey {
+func CastNLMRequestMasterKey(structType any) NLMRequestMasterKey {
 	if casted, ok := structType.(NLMRequestMasterKey); ok {
 		return casted
 	}

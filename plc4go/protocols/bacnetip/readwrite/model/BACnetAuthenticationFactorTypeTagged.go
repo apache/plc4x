@@ -80,7 +80,7 @@ func NewBACnetAuthenticationFactorTypeTagged(header BACnetTagHeader, value BACne
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetAuthenticationFactorTypeTagged(structType interface{}) BACnetAuthenticationFactorTypeTagged {
+func CastBACnetAuthenticationFactorTypeTagged(structType any) BACnetAuthenticationFactorTypeTagged {
 	if casted, ok := structType.(BACnetAuthenticationFactorTypeTagged); ok {
 		return casted
 	}

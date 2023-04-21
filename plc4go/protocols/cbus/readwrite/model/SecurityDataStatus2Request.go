@@ -77,7 +77,7 @@ func NewSecurityDataStatus2Request(commandTypeContainer SecurityCommandTypeConta
 }
 
 // Deprecated: use the interface for direct cast
-func CastSecurityDataStatus2Request(structType interface{}) SecurityDataStatus2Request {
+func CastSecurityDataStatus2Request(structType any) SecurityDataStatus2Request {
 	if casted, ok := structType.(SecurityDataStatus2Request); ok {
 		return casted
 	}

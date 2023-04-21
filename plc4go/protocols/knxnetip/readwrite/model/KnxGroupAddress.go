@@ -75,7 +75,7 @@ func NewKnxGroupAddress() *_KnxGroupAddress {
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxGroupAddress(structType interface{}) KnxGroupAddress {
+func CastKnxGroupAddress(structType any) KnxGroupAddress {
 	if casted, ok := structType.(KnxGroupAddress); ok {
 		return casted
 	}
@@ -118,7 +118,7 @@ func KnxGroupAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		InitializeParent(KnxGroupAddress)
 		GetParent() KnxGroupAddress
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child KnxGroupAddressChildSerializeRequirement
 	var typeSwitchError error
 	switch {

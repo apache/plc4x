@@ -121,7 +121,7 @@ func NewBACnetConstructedDataRelinquishDefault(relinquishDefault BACnetApplicati
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataRelinquishDefault(structType interface{}) BACnetConstructedDataRelinquishDefault {
+func CastBACnetConstructedDataRelinquishDefault(structType any) BACnetConstructedDataRelinquishDefault {
 	if casted, ok := structType.(BACnetConstructedDataRelinquishDefault); ok {
 		return casted
 	}

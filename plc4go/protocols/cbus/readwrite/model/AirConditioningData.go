@@ -107,7 +107,7 @@ func NewAirConditioningData(commandTypeContainer AirConditioningCommandTypeConta
 }
 
 // Deprecated: use the interface for direct cast
-func CastAirConditioningData(structType interface{}) AirConditioningData {
+func CastAirConditioningData(structType any) AirConditioningData {
 	if casted, ok := structType.(AirConditioningData); ok {
 		return casted
 	}
@@ -178,7 +178,7 @@ func AirConditioningDataParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		InitializeParent(AirConditioningData, AirConditioningCommandTypeContainer)
 		GetParent() AirConditioningData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child AirConditioningDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

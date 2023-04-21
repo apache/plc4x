@@ -96,7 +96,7 @@ func NewBACnetLogRecordLogDatumTimeChange(timeChange BACnetContextTagReal, openi
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogRecordLogDatumTimeChange(structType interface{}) BACnetLogRecordLogDatumTimeChange {
+func CastBACnetLogRecordLogDatumTimeChange(structType any) BACnetLogRecordLogDatumTimeChange {
 	if casted, ok := structType.(BACnetLogRecordLogDatumTimeChange); ok {
 		return casted
 	}

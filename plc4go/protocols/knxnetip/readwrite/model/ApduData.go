@@ -78,7 +78,7 @@ func NewApduData(dataLength uint8) *_ApduData {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduData(structType interface{}) ApduData {
+func CastApduData(structType any) ApduData {
 	if casted, ok := structType.(ApduData); ok {
 		return casted
 	}
@@ -129,7 +129,7 @@ func ApduDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		InitializeParent(ApduData)
 		GetParent() ApduData
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ApduDataChildSerializeRequirement
 	var typeSwitchError error
 	switch {

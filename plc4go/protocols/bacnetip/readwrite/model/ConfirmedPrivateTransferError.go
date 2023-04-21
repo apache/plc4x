@@ -121,7 +121,7 @@ func NewConfirmedPrivateTransferError(errorType ErrorEnclosed, vendorId BACnetVe
 }
 
 // Deprecated: use the interface for direct cast
-func CastConfirmedPrivateTransferError(structType interface{}) ConfirmedPrivateTransferError {
+func CastConfirmedPrivateTransferError(structType any) ConfirmedPrivateTransferError {
 	if casted, ok := structType.(ConfirmedPrivateTransferError); ok {
 		return casted
 	}

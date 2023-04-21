@@ -96,7 +96,7 @@ func NewNLMReserved(unknownBytes []byte, apduLength uint16) *_NLMReserved {
 }
 
 // Deprecated: use the interface for direct cast
-func CastNLMReserved(structType interface{}) NLMReserved {
+func CastNLMReserved(structType any) NLMReserved {
 	if casted, ok := structType.(NLMReserved); ok {
 		return casted
 	}
@@ -138,7 +138,7 @@ func NLMReservedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 	// Byte Array field (unknownBytes)
-	numberOfBytesunknownBytes := int(utils.InlineIf((bool((apduLength) > (0))), func() interface{} { return uint16((uint16(apduLength) - uint16(uint16(1)))) }, func() interface{} { return uint16(uint16(0)) }).(uint16))
+	numberOfBytesunknownBytes := int(utils.InlineIf((bool((apduLength) > (0))), func() any { return uint16((uint16(apduLength) - uint16(uint16(1)))) }, func() any { return uint16(uint16(0)) }).(uint16))
 	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
 	if _readArrayErr != nil {
 		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field of NLMReserved")

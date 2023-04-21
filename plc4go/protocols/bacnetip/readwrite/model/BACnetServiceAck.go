@@ -82,7 +82,7 @@ type BACnetServiceAckChild interface {
 func (m *_BACnetServiceAck) GetServiceAckPayloadLength() uint32 {
 	ctx := context.Background()
 	_ = ctx
-	return uint32(utils.InlineIf((bool((m.ServiceAckLength) > (0))), func() interface{} { return uint32((uint32(m.ServiceAckLength) - uint32(uint32(1)))) }, func() interface{} { return uint32(uint32(0)) }).(uint32))
+	return uint32(utils.InlineIf((bool((m.ServiceAckLength) > (0))), func() any { return uint32((uint32(m.ServiceAckLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32))
 }
 
 ///////////////////////
@@ -96,7 +96,7 @@ func NewBACnetServiceAck(serviceAckLength uint32) *_BACnetServiceAck {
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAck(structType interface{}) BACnetServiceAck {
+func CastBACnetServiceAck(structType any) BACnetServiceAck {
 	if casted, ok := structType.(BACnetServiceAck); ok {
 		return casted
 	}
@@ -151,7 +151,7 @@ func BACnetServiceAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Virtual field
-	_serviceAckPayloadLength := utils.InlineIf((bool((serviceAckLength) > (0))), func() interface{} { return uint32((uint32(serviceAckLength) - uint32(uint32(1)))) }, func() interface{} { return uint32(uint32(0)) }).(uint32)
+	_serviceAckPayloadLength := utils.InlineIf((bool((serviceAckLength) > (0))), func() any { return uint32((uint32(serviceAckLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32)
 	serviceAckPayloadLength := uint32(_serviceAckPayloadLength)
 	_ = serviceAckPayloadLength
 
@@ -161,7 +161,7 @@ func BACnetServiceAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		InitializeParent(BACnetServiceAck)
 		GetParent() BACnetServiceAck
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child BACnetServiceAckChildSerializeRequirement
 	var typeSwitchError error
 	switch {

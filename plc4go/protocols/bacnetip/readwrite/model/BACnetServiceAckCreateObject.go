@@ -96,7 +96,7 @@ func NewBACnetServiceAckCreateObject(objectIdentifier BACnetApplicationTagObject
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckCreateObject(structType interface{}) BACnetServiceAckCreateObject {
+func CastBACnetServiceAckCreateObject(structType any) BACnetServiceAckCreateObject {
 	if casted, ok := structType.(BACnetServiceAckCreateObject); ok {
 		return casted
 	}

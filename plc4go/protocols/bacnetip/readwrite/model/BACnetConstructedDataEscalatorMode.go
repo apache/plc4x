@@ -121,7 +121,7 @@ func NewBACnetConstructedDataEscalatorMode(escalatorMode BACnetEscalatorModeTagg
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataEscalatorMode(structType interface{}) BACnetConstructedDataEscalatorMode {
+func CastBACnetConstructedDataEscalatorMode(structType any) BACnetConstructedDataEscalatorMode {
 	if casted, ok := structType.(BACnetConstructedDataEscalatorMode); ok {
 		return casted
 	}

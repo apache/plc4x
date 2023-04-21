@@ -105,7 +105,7 @@ func NewDisconnectResponse(communicationChannelId uint8, status Status) *_Discon
 }
 
 // Deprecated: use the interface for direct cast
-func CastDisconnectResponse(structType interface{}) DisconnectResponse {
+func CastDisconnectResponse(structType any) DisconnectResponse {
 	if casted, ok := structType.(DisconnectResponse); ok {
 		return casted
 	}

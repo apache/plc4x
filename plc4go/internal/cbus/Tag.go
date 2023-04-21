@@ -179,7 +179,7 @@ type MMIMonitorTag interface {
 	GetApplication() *readWriteModel.ApplicationIdContainer
 }
 
-func NewMMIMonitorTag(unitAddress readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) SALMonitorTag {
+func NewMMIMonitorTag(unitAddress readWriteModel.UnitAddress, application *readWriteModel.ApplicationIdContainer, numElements uint16) MMIMonitorTag {
 	return &mmiMonitorTag{
 		tagType:     MMI_STATUS_MONITOR,
 		unitAddress: unitAddress,

@@ -122,7 +122,7 @@ func NewRequestReset(tildePeek RequestType, secondTilde *RequestType, tildePeek2
 }
 
 // Deprecated: use the interface for direct cast
-func CastRequestReset(structType interface{}) RequestReset {
+func CastRequestReset(structType any) RequestReset {
 	if casted, ok := structType.(RequestReset); ok {
 		return casted
 	}

@@ -94,7 +94,7 @@ func NewBACnetLogDataLogDataEntryFailure(failure ErrorEnclosed, peekedTagHeader 
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetLogDataLogDataEntryFailure(structType interface{}) BACnetLogDataLogDataEntryFailure {
+func CastBACnetLogDataLogDataEntryFailure(structType any) BACnetLogDataLogDataEntryFailure {
 	if casted, ok := structType.(BACnetLogDataLogDataEntryFailure); ok {
 		return casted
 	}

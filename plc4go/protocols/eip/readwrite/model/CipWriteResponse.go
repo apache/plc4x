@@ -114,7 +114,7 @@ func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *_Cip
 }
 
 // Deprecated: use the interface for direct cast
-func CastCipWriteResponse(structType interface{}) CipWriteResponse {
+func CastCipWriteResponse(structType any) CipWriteResponse {
 	if casted, ok := structType.(CipWriteResponse); ok {
 		return casted
 	}
@@ -168,7 +168,7 @@ func CipWriteResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipWriteResponse")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -228,7 +228,7 @@ func (m *_CipWriteResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

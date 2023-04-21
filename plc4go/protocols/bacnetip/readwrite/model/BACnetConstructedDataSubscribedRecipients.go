@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	spiContext "github.com/apache/plc4x/plc4go/spi/context"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 )
@@ -105,7 +104,7 @@ func NewBACnetConstructedDataSubscribedRecipients(subscribedRecipients []BACnetE
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataSubscribedRecipients(structType interface{}) BACnetConstructedDataSubscribedRecipients {
+func CastBACnetConstructedDataSubscribedRecipients(structType any) BACnetConstructedDataSubscribedRecipients {
 	if casted, ok := structType.(BACnetConstructedDataSubscribedRecipients); ok {
 		return casted
 	}
@@ -206,7 +205,7 @@ func (m *_BACnetConstructedDataSubscribedRecipients) SerializeWithWriteBuffer(ct
 		}
 		for _curItem, _element := range m.GetSubscribedRecipients() {
 			_ = _curItem
-			arrayCtx := spiContext.CreateArrayContext(ctx, len(m.GetSubscribedRecipients()), _curItem)
+			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSubscribedRecipients()), _curItem)
 			_ = arrayCtx
 			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
 			if _elementErr != nil {

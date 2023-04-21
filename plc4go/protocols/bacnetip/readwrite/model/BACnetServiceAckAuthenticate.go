@@ -99,7 +99,7 @@ func NewBACnetServiceAckAuthenticate(bytesOfRemovedService []byte, serviceAckPay
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetServiceAckAuthenticate(structType interface{}) BACnetServiceAckAuthenticate {
+func CastBACnetServiceAckAuthenticate(structType any) BACnetServiceAckAuthenticate {
 	if casted, ok := structType.(BACnetServiceAckAuthenticate); ok {
 		return casted
 	}

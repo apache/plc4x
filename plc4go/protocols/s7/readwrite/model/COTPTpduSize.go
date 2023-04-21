@@ -33,6 +33,7 @@ type COTPTpduSize uint8
 
 type ICOTPTpduSize interface {
 	fmt.Stringer
+	utils.LengthAware
 	utils.Serializable
 	SizeInBytes() uint16
 }
@@ -156,8 +157,8 @@ func COTPTpduSizeKnows(value uint8) bool {
 	return false
 }
 
-func CastCOTPTpduSize(structType interface{}) COTPTpduSize {
-	castFunc := func(typ interface{}) COTPTpduSize {
+func CastCOTPTpduSize(structType any) COTPTpduSize {
+	castFunc := func(typ any) COTPTpduSize {
 		if sCOTPTpduSize, ok := typ.(COTPTpduSize); ok {
 			return sCOTPTpduSize
 		}

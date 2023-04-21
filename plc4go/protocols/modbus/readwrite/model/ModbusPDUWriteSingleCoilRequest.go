@@ -112,7 +112,7 @@ func NewModbusPDUWriteSingleCoilRequest(address uint16, value uint16) *_ModbusPD
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUWriteSingleCoilRequest(structType interface{}) ModbusPDUWriteSingleCoilRequest {
+func CastModbusPDUWriteSingleCoilRequest(structType any) ModbusPDUWriteSingleCoilRequest {
 	if casted, ok := structType.(ModbusPDUWriteSingleCoilRequest); ok {
 		return casted
 	}

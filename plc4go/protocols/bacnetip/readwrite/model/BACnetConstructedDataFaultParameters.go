@@ -121,7 +121,7 @@ func NewBACnetConstructedDataFaultParameters(faultParameters BACnetFaultParamete
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataFaultParameters(structType interface{}) BACnetConstructedDataFaultParameters {
+func CastBACnetConstructedDataFaultParameters(structType any) BACnetConstructedDataFaultParameters {
 	if casted, ok := structType.(BACnetConstructedDataFaultParameters); ok {
 		return casted
 	}

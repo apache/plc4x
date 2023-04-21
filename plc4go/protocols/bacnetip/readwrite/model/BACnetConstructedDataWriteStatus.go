@@ -121,7 +121,7 @@ func NewBACnetConstructedDataWriteStatus(writeStatus BACnetWriteStatusTagged, op
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataWriteStatus(structType interface{}) BACnetConstructedDataWriteStatus {
+func CastBACnetConstructedDataWriteStatus(structType any) BACnetConstructedDataWriteStatus {
 	if casted, ok := structType.(BACnetConstructedDataWriteStatus); ok {
 		return casted
 	}

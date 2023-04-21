@@ -129,7 +129,7 @@ func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessI
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType interface{}) BACnetConfirmedServiceRequestConfirmedCOVNotification {
+func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType any) BACnetConfirmedServiceRequestConfirmedCOVNotification {
 	if casted, ok := structType.(BACnetConfirmedServiceRequestConfirmedCOVNotification); ok {
 		return casted
 	}

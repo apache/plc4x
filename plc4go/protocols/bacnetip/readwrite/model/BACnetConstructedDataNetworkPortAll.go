@@ -86,7 +86,7 @@ func NewBACnetConstructedDataNetworkPortAll(openingTag BACnetOpeningTag, peekedT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataNetworkPortAll(structType interface{}) BACnetConstructedDataNetworkPortAll {
+func CastBACnetConstructedDataNetworkPortAll(structType any) BACnetConstructedDataNetworkPortAll {
 	if casted, ok := structType.(BACnetConstructedDataNetworkPortAll); ok {
 		return casted
 	}

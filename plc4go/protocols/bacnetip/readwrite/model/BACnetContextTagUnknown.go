@@ -101,7 +101,7 @@ func NewBACnetContextTagUnknown(unknownData []byte, header BACnetTagHeader, actu
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetContextTagUnknown(structType interface{}) BACnetContextTagUnknown {
+func CastBACnetContextTagUnknown(structType any) BACnetContextTagUnknown {
 	if casted, ok := structType.(BACnetContextTagUnknown); ok {
 		return casted
 	}

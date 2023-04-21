@@ -89,7 +89,7 @@ func NewAdsReadDeviceInfoRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, 
 }
 
 // Deprecated: use the interface for direct cast
-func CastAdsReadDeviceInfoRequest(structType interface{}) AdsReadDeviceInfoRequest {
+func CastAdsReadDeviceInfoRequest(structType any) AdsReadDeviceInfoRequest {
 	if casted, ok := structType.(AdsReadDeviceInfoRequest); ok {
 		return casted
 	}

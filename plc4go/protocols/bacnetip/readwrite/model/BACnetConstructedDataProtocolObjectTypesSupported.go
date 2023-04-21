@@ -121,7 +121,7 @@ func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSup
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataProtocolObjectTypesSupported(structType interface{}) BACnetConstructedDataProtocolObjectTypesSupported {
+func CastBACnetConstructedDataProtocolObjectTypesSupported(structType any) BACnetConstructedDataProtocolObjectTypesSupported {
 	if casted, ok := structType.(BACnetConstructedDataProtocolObjectTypesSupported); ok {
 		return casted
 	}

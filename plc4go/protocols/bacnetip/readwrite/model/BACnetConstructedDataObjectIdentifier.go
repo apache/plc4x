@@ -121,7 +121,7 @@ func NewBACnetConstructedDataObjectIdentifier(objectIdentifier BACnetApplication
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataObjectIdentifier(structType interface{}) BACnetConstructedDataObjectIdentifier {
+func CastBACnetConstructedDataObjectIdentifier(structType any) BACnetConstructedDataObjectIdentifier {
 	if casted, ok := structType.(BACnetConstructedDataObjectIdentifier); ok {
 		return casted
 	}

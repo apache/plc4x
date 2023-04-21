@@ -135,7 +135,7 @@ func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *uint8, networkN
 }
 
 // Deprecated: use the interface for direct cast
-func CastMonitoredSALShortFormBasicMode(structType interface{}) MonitoredSALShortFormBasicMode {
+func CastMonitoredSALShortFormBasicMode(structType any) MonitoredSALShortFormBasicMode {
 	if casted, ok := structType.(MonitoredSALShortFormBasicMode); ok {
 		return casted
 	}

@@ -90,7 +90,7 @@ func NewModbusPDUWriteFileRecordResponseItem(referenceType uint8, fileNumber uin
 }
 
 // Deprecated: use the interface for direct cast
-func CastModbusPDUWriteFileRecordResponseItem(structType interface{}) ModbusPDUWriteFileRecordResponseItem {
+func CastModbusPDUWriteFileRecordResponseItem(structType any) ModbusPDUWriteFileRecordResponseItem {
 	if casted, ok := structType.(ModbusPDUWriteFileRecordResponseItem); ok {
 		return casted
 	}

@@ -77,7 +77,7 @@ func NewBACnetRecipientProcess(recipient BACnetRecipientEnclosed, processIdentif
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetRecipientProcess(structType interface{}) BACnetRecipientProcess {
+func CastBACnetRecipientProcess(structType any) BACnetRecipientProcess {
 	if casted, ok := structType.(BACnetRecipientProcess); ok {
 		return casted
 	}

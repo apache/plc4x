@@ -76,7 +76,7 @@ func NewBACnetApplicationTagNull(header BACnetTagHeader) *_BACnetApplicationTagN
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetApplicationTagNull(structType interface{}) BACnetApplicationTagNull {
+func CastBACnetApplicationTagNull(structType any) BACnetApplicationTagNull {
 	if casted, ok := structType.(BACnetApplicationTagNull); ok {
 		return casted
 	}

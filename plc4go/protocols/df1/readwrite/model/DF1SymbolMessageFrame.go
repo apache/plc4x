@@ -134,7 +134,7 @@ func NewDF1SymbolMessageFrame(destinationAddress uint8, sourceAddress uint8, com
 }
 
 // Deprecated: use the interface for direct cast
-func CastDF1SymbolMessageFrame(structType interface{}) DF1SymbolMessageFrame {
+func CastDF1SymbolMessageFrame(structType any) DF1SymbolMessageFrame {
 	if casted, ok := structType.(DF1SymbolMessageFrame); ok {
 		return casted
 	}

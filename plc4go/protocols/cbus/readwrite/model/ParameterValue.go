@@ -78,7 +78,7 @@ func NewParameterValue(numBytes uint8) *_ParameterValue {
 }
 
 // Deprecated: use the interface for direct cast
-func CastParameterValue(structType interface{}) ParameterValue {
+func CastParameterValue(structType any) ParameterValue {
 	if casted, ok := structType.(ParameterValue); ok {
 		return casted
 	}
@@ -121,7 +121,7 @@ func ParameterValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		InitializeParent(ParameterValue)
 		GetParent() ParameterValue
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ParameterValueChildSerializeRequirement
 	var typeSwitchError error
 	switch {

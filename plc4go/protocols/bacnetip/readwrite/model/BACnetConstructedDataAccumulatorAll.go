@@ -86,7 +86,7 @@ func NewBACnetConstructedDataAccumulatorAll(openingTag BACnetOpeningTag, peekedT
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetConstructedDataAccumulatorAll(structType interface{}) BACnetConstructedDataAccumulatorAll {
+func CastBACnetConstructedDataAccumulatorAll(structType any) BACnetConstructedDataAccumulatorAll {
 	if casted, ok := structType.(BACnetConstructedDataAccumulatorAll); ok {
 		return casted
 	}

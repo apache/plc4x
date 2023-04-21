@@ -120,7 +120,7 @@ func NewTelephonyDataRecallLastNumberRequest(recallLastNumberType byte, commandT
 }
 
 // Deprecated: use the interface for direct cast
-func CastTelephonyDataRecallLastNumberRequest(structType interface{}) TelephonyDataRecallLastNumberRequest {
+func CastTelephonyDataRecallLastNumberRequest(structType any) TelephonyDataRecallLastNumberRequest {
 	if casted, ok := structType.(TelephonyDataRecallLastNumberRequest); ok {
 		return casted
 	}

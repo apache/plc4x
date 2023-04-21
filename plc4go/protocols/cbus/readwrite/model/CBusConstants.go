@@ -69,7 +69,7 @@ func NewCBusConstants() *_CBusConstants {
 }
 
 // Deprecated: use the interface for direct cast
-func CastCBusConstants(structType interface{}) CBusConstants {
+func CastCBusConstants(structType any) CBusConstants {
 	if casted, ok := structType.(CBusConstants); ok {
 		return casted
 	}

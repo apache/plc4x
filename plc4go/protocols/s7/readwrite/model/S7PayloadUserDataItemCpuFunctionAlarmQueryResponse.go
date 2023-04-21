@@ -138,7 +138,7 @@ func NewS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(pudicfReturnCode Data
 }
 
 // Deprecated: use the interface for direct cast
-func CastS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(structType interface{}) S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
+func CastS7PayloadUserDataItemCpuFunctionAlarmQueryResponse(structType any) S7PayloadUserDataItemCpuFunctionAlarmQueryResponse {
 	if casted, ok := structType.(S7PayloadUserDataItemCpuFunctionAlarmQueryResponse); ok {
 		return casted
 	}
@@ -242,7 +242,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(ctx conte
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7PayloadUserDataItemCpuFunctionAlarmQueryResponse")
 		}
 		if reserved != uint8(0x00) {
-			Plc4xModelLog.Info().Fields(map[string]interface{}{
+			Plc4xModelLog.Info().Fields(map[string]any{
 				"expected value": uint8(0x00),
 				"got value":      reserved,
 			}).Msg("Got unexpected response for reserved field.")
@@ -322,7 +322,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) SerializeWithWrite
 		{
 			var reserved uint8 = uint8(0x00)
 			if m.reservedField0 != nil {
-				Plc4xModelLog.Info().Fields(map[string]interface{}{
+				Plc4xModelLog.Info().Fields(map[string]any{
 					"expected value": uint8(0x00),
 					"got value":      reserved,
 				}).Msg("Overriding reserved field with unexpected value.")

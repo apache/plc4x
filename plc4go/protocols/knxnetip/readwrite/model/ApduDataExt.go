@@ -78,7 +78,7 @@ func NewApduDataExt(length uint8) *_ApduDataExt {
 }
 
 // Deprecated: use the interface for direct cast
-func CastApduDataExt(structType interface{}) ApduDataExt {
+func CastApduDataExt(structType any) ApduDataExt {
 	if casted, ok := structType.(ApduDataExt); ok {
 		return casted
 	}
@@ -129,7 +129,7 @@ func ApduDataExtParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		InitializeParent(ApduDataExt)
 		GetParent() ApduDataExt
 	}
-	var _childTemp interface{}
+	var _childTemp any
 	var _child ApduDataExtChildSerializeRequirement
 	var typeSwitchError error
 	switch {

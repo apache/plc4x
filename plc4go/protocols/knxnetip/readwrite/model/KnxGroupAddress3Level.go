@@ -112,7 +112,7 @@ func NewKnxGroupAddress3Level(mainGroup uint8, middleGroup uint8, subGroup uint8
 }
 
 // Deprecated: use the interface for direct cast
-func CastKnxGroupAddress3Level(structType interface{}) KnxGroupAddress3Level {
+func CastKnxGroupAddress3Level(structType any) KnxGroupAddress3Level {
 	if casted, ok := structType.(KnxGroupAddress3Level); ok {
 		return casted
 	}

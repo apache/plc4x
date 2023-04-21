@@ -96,7 +96,7 @@ func NewBACnetNotificationParametersChangeOfValueNewValueChangedValue(changedVal
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetNotificationParametersChangeOfValueNewValueChangedValue(structType interface{}) BACnetNotificationParametersChangeOfValueNewValueChangedValue {
+func CastBACnetNotificationParametersChangeOfValueNewValueChangedValue(structType any) BACnetNotificationParametersChangeOfValueNewValueChangedValue {
 	if casted, ok := structType.(BACnetNotificationParametersChangeOfValueNewValueChangedValue); ok {
 		return casted
 	}

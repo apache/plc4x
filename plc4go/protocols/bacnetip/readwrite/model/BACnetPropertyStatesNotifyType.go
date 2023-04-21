@@ -94,7 +94,7 @@ func NewBACnetPropertyStatesNotifyType(notifyType BACnetNotifyTypeTagged, peeked
 }
 
 // Deprecated: use the interface for direct cast
-func CastBACnetPropertyStatesNotifyType(structType interface{}) BACnetPropertyStatesNotifyType {
+func CastBACnetPropertyStatesNotifyType(structType any) BACnetPropertyStatesNotifyType {
 	if casted, ok := structType.(BACnetPropertyStatesNotifyType); ok {
 		return casted
 	}
