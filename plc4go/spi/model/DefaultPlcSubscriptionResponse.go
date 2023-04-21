@@ -61,9 +61,13 @@ func (d *DefaultPlcSubscriptionResponse) GetRequest() model.PlcSubscriptionReque
 }
 
 func (d *DefaultPlcSubscriptionResponse) GetTagNames() []string {
+	if d.request == nil {
+		// Safety guard
+		return nil
+	}
 	var tagNames []string
 	// We take the tag names from the request to keep order as map is not ordered
-	for _, name := range d.request.(*DefaultPlcSubscriptionRequest).GetTagNames() {
+	for _, name := range d.request.GetTagNames() {
 		if _, ok := d.values[name]; ok {
 			tagNames = append(tagNames, name)
 		}

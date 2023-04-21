@@ -20,42 +20,37 @@
 package model
 
 import (
-	"context"
-	"encoding/binary"
-
 	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
 )
 
-// TODO: use generator once we figured out how to render results with ast
+//go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcBrowseResponse
 type DefaultPlcBrowseResponse struct {
 	request      model.PlcBrowseRequest
-	responseCode model.PlcResponseCode
+	responseCode model.PlcResponseCode `stringer:"true"`
 	results      map[string]*DefaultPlcBrowseResponseItem
 }
 
-func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseItem, responseCodes map[string]model.PlcResponseCode) DefaultPlcBrowseResponse {
+func NewDefaultPlcBrowseResponse(request model.PlcBrowseRequest, results map[string][]model.PlcBrowseItem, responseCodes map[string]model.PlcResponseCode) *DefaultPlcBrowseResponse {
 	res := map[string]*DefaultPlcBrowseResponseItem{}
 	for name, code := range responseCodes {
 		value := results[name]
 		res[name] = NewBrowseResponseItem(code, value)
 	}
-	return DefaultPlcBrowseResponse{
+	return &DefaultPlcBrowseResponse{
 		request: request,
 		results: res,
 	}
 }
 
-func (d DefaultPlcBrowseResponse) IsAPlcMessage() bool {
+func (d *DefaultPlcBrowseResponse) IsAPlcMessage() bool {
 	return true
 }
 
-func (d DefaultPlcBrowseResponse) GetRequest() model.PlcBrowseRequest {
+func (d *DefaultPlcBrowseResponse) GetRequest() model.PlcBrowseRequest {
 	return d.request
 }
 
-func (d DefaultPlcBrowseResponse) GetQueryNames() []string {
+func (d *DefaultPlcBrowseResponse) GetQueryNames() []string {
 	var queryNames []string
 	for queryName := range d.results {
 		queryNames = append(queryNames, queryName)
@@ -63,68 +58,10 @@ func (d DefaultPlcBrowseResponse) GetQueryNames() []string {
 	return queryNames
 }
 
-func (d DefaultPlcBrowseResponse) GetResponseCode(name string) model.PlcResponseCode {
+func (d *DefaultPlcBrowseResponse) GetResponseCode(name string) model.PlcResponseCode {
 	return d.results[name].GetCode()
 }
 
-func (d DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseItem {
+func (d *DefaultPlcBrowseResponse) GetQueryResults(queryName string) []model.PlcBrowseItem {
 	return d.results[queryName].GetResults()
-}
-
-func (d DefaultPlcBrowseResponse) Serialize() ([]byte, error) {
-	wb := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.BigEndian))
-	if err := d.SerializeWithWriteBuffer(context.Background(), wb); err != nil {
-		return nil, err
-	}
-	return wb.GetBytes(), nil
-}
-
-func (d DefaultPlcBrowseResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext("PlcBrowseResponse"); err != nil {
-		return err
-	}
-
-	if serializableRequest, ok := d.request.(utils.Serializable); ok {
-		if err := serializableRequest.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-			return err
-		}
-	} else {
-		return errors.Errorf("Error serializing. Request %T doesn't implement Serializable", d.request)
-	}
-
-	if err := writeBuffer.PushContext("results"); err != nil {
-		return err
-	}
-	for tagName, browseResponseItem := range d.results {
-		if err := writeBuffer.PushContext(tagName); err != nil {
-			return err
-		}
-		for _, tag := range browseResponseItem.GetResults() {
-			if serializableTag, ok := tag.(utils.Serializable); ok {
-				if err := serializableTag.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-					return err
-				}
-			} else {
-				return errors.Errorf("Error serializing. Tag %T doesn't implement Serializable", tag)
-			}
-		}
-		if err := writeBuffer.PopContext(tagName); err != nil {
-			return err
-		}
-	}
-	if err := writeBuffer.PopContext("results"); err != nil {
-		return err
-	}
-	if err := writeBuffer.PopContext("PlcBrowseResponse"); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (d DefaultPlcBrowseResponse) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
-		return err.Error()
-	}
-	return writeBuffer.GetBox().String()
 }

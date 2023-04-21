@@ -51,7 +51,7 @@ func (m *Connection) BrowseWithInterceptor(ctx context.Context, browseRequest ap
 		browseResponse := internalModel.NewDefaultPlcBrowseResponse(browseRequest, results, responseCodes)
 		result <- &internalModel.DefaultPlcBrowseRequestResult{
 			Request:  browseRequest,
-			Response: &browseResponse,
+			Response: browseResponse,
 			Err:      nil,
 		}
 	}()

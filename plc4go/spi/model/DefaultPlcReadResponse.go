@@ -47,6 +47,10 @@ func (d *DefaultPlcReadResponse) IsAPlcMessage() bool {
 }
 
 func (d *DefaultPlcReadResponse) GetTagNames() []string {
+	if d.request == nil {
+		// safety guard
+		return nil
+	}
 	var tagNames []string
 	// We take the tag names from the request to keep order as map is not ordered
 	for _, name := range d.request.GetTagNames() {
