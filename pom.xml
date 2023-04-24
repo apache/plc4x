@@ -147,7 +147,7 @@
     <!-- version 0.6.7 is newer, however the ExampleServer doesn't seem to run with that -->
     <!-- version 0.6.8 is being released, however the milo-examples artifact is not available yet -->
     <milo.version>0.6.9</milo.version>
-    <mockito.version>5.3.0</mockito.version>
+    <mockito.version>5.3.1</mockito.version>
     <netty.version>4.1.91.Final</netty.version>
     <pcap4j.version>1.8.2</pcap4j.version>
     <slf4j.version>2.0.7</slf4j.version>
