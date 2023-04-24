@@ -396,14 +396,27 @@ func (f *File) genDecl(node ast.Node) bool {
 			}
 			if len(field.Names) == 0 {
 				fmt.Printf("\t adding delegate\n")
-				if _, ok := field.Type.(*ast.Ident); ok {
+				switch ft := field.Type.(type) {
+				case *ast.Ident:
 					f.fields = append(f.fields, Field{
-						fieldType:  field.Type,
+						fieldType:  ft,
 						isDelegate: true,
 						isStringer: isStringer,
 					})
 					continue
-				} else {
+				case *ast.StarExpr:
+					switch set := ft.X.(type) {
+					case *ast.Ident:
+						f.fields = append(f.fields, Field{
+							fieldType:  set,
+							isDelegate: true,
+							isStringer: isStringer,
+						})
+						continue
+					default:
+						panic(fmt.Sprintf("Only pointer to struct delegates supported now. Type %T", field.Type))
+					}
+				default:
 					panic(fmt.Sprintf("Only struct delegates supported now. Type %T", field.Type))
 				}
 			}
