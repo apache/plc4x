@@ -134,6 +134,9 @@ pipeline {
             when {
                 branch 'develop'
             }
+            environment {
+                GOPATH = "$WORKSPACE/plc4go:$GOPATH"
+            }
             steps {
                 echo 'Checking Code Quality on SonarCloud'
                 withCredentials([string(credentialsId: 'chris-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
