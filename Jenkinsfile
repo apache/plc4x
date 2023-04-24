@@ -140,8 +140,7 @@ pipeline {
             steps {
                 echo 'Checking Code Quality on SonarCloud'
                 // golang coverage workaround
-                sh 'mkdir -p $GOPATH/src/github.com/apache/plc4x'
-                sh 'ln -s $WORKSPACE/plc4go $GOPATH/src/github.com/apache/plc4x/plc4go'
+                sh 'sed -i -e "s#github.com/apache/plc4x/plc4go#plc4go#g" plc4go/target/coverage.out'
                 withCredentials([string(credentialsId: 'chris-sonarcloud-token', variable: 'SONAR_TOKEN')]) {
                     //sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-python,with-proxies,with-sandbox sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
                     sh './mvnw -B -P${JENKINS_PROFILE},skip-prerequisite-check,with-c,with-go,with-sandbox sonar:sonar ${SONARCLOUD_PARAMS} -Dsonar.login=${SONAR_TOKEN}'
