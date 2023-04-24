@@ -271,7 +271,7 @@ func (s statusTag) GetAddressString() string {
 	case StatusRequestTypeLevel:
 		statusRequestType = "level"
 		if s.startingGroupAddressLabel != nil {
-			statusRequestType += fmt.Sprintf("=0x%x", *s.startingGroupAddressLabel)
+			statusRequestType += fmt.Sprintf("=%#02x", *s.startingGroupAddressLabel)
 		}
 	default:
 		statusRequestType = "invalid"

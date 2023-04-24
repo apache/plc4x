@@ -2340,7 +2340,7 @@ func Test_statusTag_GetAddressString(t *testing.T) {
 					return &label
 				}(),
 			},
-			want: "status/level=0x5/HEATING_88",
+			want: "status/level=0x05/HEATING_88",
 		},
 		{
 			name: "invalid",

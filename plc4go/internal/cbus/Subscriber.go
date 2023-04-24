@@ -221,7 +221,7 @@ func (m *Subscriber) offerMMI(unitAddressString string, calData readWriteModel.C
 	}
 	statusType := "binary"
 	if isLevel {
-		statusType = fmt.Sprintf("level=0x%X", blockStart)
+		statusType = fmt.Sprintf("level=%#02X", blockStart)
 	}
 	address[tagName] = fmt.Sprintf("status/%s/%s", statusType, applicationString)
 

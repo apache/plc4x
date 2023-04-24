@@ -316,7 +316,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 			if time.Now().Sub(now) > 2*time.Second {
 				drainableBytes := testTransportInstance.GetNumDrainableBytes()
 				actualRawOutput := testTransportInstance.DrainWriteBuffer(drainableBytes)
-				return errors.Errorf("error getting bytes from transport. Not enough data available: actual(%d)<expected(%d), \nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s",
+				return errors.Errorf("error getting bytes from transport. Not enough data available: actual(%d)<expected(%d), \nactual:   %#X\nexpected: %#X\nHexdumps:\n%s",
 					drainableBytes, expectedRawOutputLength, actualRawOutput, expectedRawOutput, utils.DiffHex(expectedRawOutput, actualRawOutput))
 			}
 			time.Sleep(2 * time.Millisecond)
@@ -343,7 +343,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 					actual, err := m.rootTypeParser(readBufferByteBased)
 					t.Logf("A readable render of expectation:\n%v\nvs actual paket\n%v\n%#v", expectedSerializable, actual, err)
 				}
-				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s", actualRawOutput, expectedRawOutput, utils.DiffHex(expectedRawOutput, actualRawOutput))
+				return errors.Errorf("actual output doesn't match expected output:\nactual:   %#X\nexpected: %#X\nHexdumps:\n%s", actualRawOutput, expectedRawOutput, utils.DiffHex(expectedRawOutput, actualRawOutput))
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging
@@ -360,7 +360,7 @@ func (m DriverTestsuite) ExecuteStep(t *testing.T, connection plc4go.PlcConnecti
 		t.Log("Comparing bytes")
 		for i := range expectedRawInput {
 			if expectedRawInput[i] != rawInput[i] {
-				return errors.Errorf("actual output doesn't match expected output:\nactual:   0x%X\nexpected: 0x%X\nHexdumps:\n%s", rawInput, expectedRawInput, utils.DiffHex(expectedRawInput, rawInput))
+				return errors.Errorf("actual output doesn't match expected output:\nactual:   %#X\nexpected: %#X\nHexdumps:\n%s", rawInput, expectedRawInput, utils.DiffHex(expectedRawInput, rawInput))
 			}
 		}
 		// If there's a difference, parse the input and display it to simplify debugging

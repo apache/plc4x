@@ -152,13 +152,13 @@ func (m *TransportInstance) Write(data []byte) error {
 	if m.writeInterceptor != nil {
 		m.writeInterceptor(m, data)
 	}
-	log.Trace().Msgf("Write data 0x%x", data)
+	log.Trace().Msgf("Write data %#x", data)
 	m.writeBuffer = append(m.writeBuffer, data...)
 	return nil
 }
 
 func (m *TransportInstance) FillReadBuffer(data []byte) {
-	log.Trace().Msgf("FillReadBuffer with 0x%x", data)
+	log.Trace().Msgf("FillReadBuffer with %#x", data)
 	m.readBuffer = append(m.readBuffer, data...)
 }
 
