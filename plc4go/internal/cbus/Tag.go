@@ -270,7 +270,11 @@ func (s statusTag) GetAddressString() string {
 		statusRequestType = "binary"
 	case StatusRequestTypeLevel:
 		statusRequestType = "level"
-		statusRequestType += fmt.Sprintf("=0x%x", *s.startingGroupAddressLabel)
+		if s.startingGroupAddressLabel != nil {
+			statusRequestType += fmt.Sprintf("=0x%x", *s.startingGroupAddressLabel)
+		}
+	default:
+		statusRequestType = "invalid"
 	}
 	return fmt.Sprintf("status/%s/%s", statusRequestType, s.application)
 }
@@ -697,11 +701,11 @@ func (s salTag) String() string {
 func (s salMonitorTag) GetAddressString() string {
 	unitAddress := "*"
 	if s.unitAddress != nil {
-		unitAddress = fmt.Sprintf("%d", s.unitAddress.GetAddress())
+		unitAddress = fmt.Sprintf("%#02x", s.unitAddress.GetAddress())
 	}
 	application := "*"
 	if s.application != nil {
-		application = fmt.Sprintf("%d", *s.application)
+		application = fmt.Sprintf("%s", *s.application)
 	}
 	return fmt.Sprintf("salmonitor/%s/%s", unitAddress, application)
 }
@@ -775,11 +779,11 @@ func (s salMonitorTag) String() string {
 func (m mmiMonitorTag) GetAddressString() string {
 	unitAddress := "*"
 	if m.unitAddress != nil {
-		unitAddress = fmt.Sprintf("%d", m.unitAddress.GetAddress())
+		unitAddress = fmt.Sprintf("%#02x", m.unitAddress.GetAddress())
 	}
 	application := "*"
 	if m.application != nil {
-		application = fmt.Sprintf("%d", *m.application)
+		application = fmt.Sprintf("%s", *m.application)
 	}
 	return fmt.Sprintf("mmimonitor/%s/%s", unitAddress, application)
 }

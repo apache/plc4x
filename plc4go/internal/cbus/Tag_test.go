@@ -22,13 +22,13 @@ package cbus
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -225,6 +225,16 @@ func TestStatusRequestType_String(t *testing.T) {
 			name: "get a string",
 			want: "StatusRequestTypeBinaryState",
 		},
+		{
+			name: "get a string",
+			s:    StatusRequestTypeLevel,
+			want: "StatusRequestTypeLevel",
+		},
+		{
+			name: "non type",
+			s:    255,
+			want: "",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -281,8 +291,15 @@ func Test_calGetStatusTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "get array info",
 			want: []apiModel.ArrayInfo{
-				model.DefaultArrayInfo{},
+				spiModel.DefaultArrayInfo{},
 			},
+		},
+		{
+			name: "one element",
+			fields: fields{
+				count: 1,
+			},
+			want: []apiModel.ArrayInfo{},
 		},
 	}
 	for _, tt := range tests {
@@ -590,8 +607,15 @@ func Test_calIdentifyTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "get empty array info",
 			want: []apiModel.ArrayInfo{
-				model.DefaultArrayInfo{},
+				spiModel.DefaultArrayInfo{},
 			},
+		},
+		{
+			name: "one element",
+			fields: fields{
+				numElements: 1,
+			},
+			want: []apiModel.ArrayInfo{},
 		},
 	}
 	for _, tt := range tests {
@@ -856,8 +880,15 @@ func Test_calRecallTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "empty array info",
 			want: []apiModel.ArrayInfo{
-				model.DefaultArrayInfo{},
+				spiModel.DefaultArrayInfo{},
 			},
+		},
+		{
+			name: "one element",
+			fields: fields{
+				count: 1,
+			},
+			want: []apiModel.ArrayInfo{},
 		},
 	}
 	for _, tt := range tests {
@@ -1215,6 +1246,25 @@ func Test_calTag_SerializeWithWriteBuffer(t *testing.T) {
 			name:    "serialize empty",
 			wantErr: assert.NoError,
 		},
+		{
+			name: "serialize with bridges",
+			fields: fields{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewBridgeAddress(2),
+					readWriteModel.NewBridgeAddress(3),
+					readWriteModel.NewBridgeAddress(4),
+					readWriteModel.NewBridgeAddress(5),
+					readWriteModel.NewBridgeAddress(6),
+				},
+				unitAddress: readWriteModel.NewUnitAddress(34),
+			},
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1268,6 +1318,17 @@ func Test_mmiMonitorTag_GetAddressString(t *testing.T) {
 		{
 			name: "get the address string",
 			want: "mmimonitor/*/*",
+		},
+		{
+			name: "get addressed sting",
+			fields: fields{
+				unitAddress: readWriteModel.NewUnitAddress(23),
+				application: func() *readWriteModel.ApplicationIdContainer {
+					a := readWriteModel.ApplicationIdContainer_HEATING_88
+					return &a
+				}(),
+			},
+			want: "mmimonitor/0x17/HEATING_88",
 		},
 	}
 	for _, tt := range tests {
@@ -1327,8 +1388,15 @@ func Test_mmiMonitorTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "mmi monitor tag",
 			want: []apiModel.ArrayInfo{
-				model.DefaultArrayInfo{},
+				spiModel.DefaultArrayInfo{},
 			},
+		},
+		{
+			name: "one element",
+			fields: fields{
+				numElements: 1,
+			},
+			want: []apiModel.ArrayInfo{},
 		},
 	}
 	for _, tt := range tests {
@@ -1492,6 +1560,21 @@ func Test_mmiMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 			},
 			wantErr: assert.NoError,
 		},
+		{
+			name: "serialize empty",
+			fields: fields{
+				unitAddress: readWriteModel.NewUnitAddress(23),
+				application: func() *readWriteModel.ApplicationIdContainer {
+					a := readWriteModel.ApplicationIdContainer_HEATING_88
+					return &a
+				}(),
+			},
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1552,6 +1635,17 @@ func Test_salMonitorTag_GetAddressString(t *testing.T) {
 			name: "get address string",
 			want: "salmonitor/*/*",
 		},
+		{
+			name: "get address string with fixed values",
+			fields: fields{
+				unitAddress: readWriteModel.NewUnitAddress(34),
+				application: func() *readWriteModel.ApplicationIdContainer {
+					a := readWriteModel.ApplicationIdContainer_HEATING_88
+					return &a
+				}(),
+			},
+			want: "salmonitor/0x22/HEATING_88",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1610,8 +1704,15 @@ func Test_salMonitorTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "get empty array info",
 			want: []apiModel.ArrayInfo{
-				model.DefaultArrayInfo{},
+				spiModel.DefaultArrayInfo{},
 			},
+		},
+		{
+			name: "one element",
+			fields: fields{
+				numElements: 1,
+			},
+			want: []apiModel.ArrayInfo{},
 		},
 	}
 	for _, tt := range tests {
@@ -1775,6 +1876,21 @@ func Test_salMonitorTag_SerializeWithWriteBuffer(t *testing.T) {
 			},
 			wantErr: assert.NoError,
 		},
+		{
+			name: "serialize with content",
+			fields: fields{
+				unitAddress: readWriteModel.NewUnitAddress(34),
+				application: func() *readWriteModel.ApplicationIdContainer {
+					a := readWriteModel.ApplicationIdContainer_HEATING_88
+					return &a
+				}(),
+			},
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1898,8 +2014,15 @@ func Test_salTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "get empty array info",
 			want: []apiModel.ArrayInfo{
-				model.DefaultArrayInfo{},
+				spiModel.DefaultArrayInfo{},
 			},
+		},
+		{
+			name: "one element",
+			fields: fields{
+				numElements: 1,
+			},
+			want: []apiModel.ArrayInfo{},
 		},
 	}
 	for _, tt := range tests {
@@ -2105,6 +2228,24 @@ func Test_salTag_SerializeWithWriteBuffer(t *testing.T) {
 			},
 			wantErr: assert.NoError,
 		},
+		{
+			name: "serialize with bridges",
+			fields: fields{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewBridgeAddress(2),
+					readWriteModel.NewBridgeAddress(3),
+					readWriteModel.NewBridgeAddress(4),
+					readWriteModel.NewBridgeAddress(5),
+					readWriteModel.NewBridgeAddress(6),
+				},
+			},
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -2173,6 +2314,41 @@ func Test_statusTag_GetAddressString(t *testing.T) {
 			name: "get address string",
 			want: "status/binary/RESERVED_00",
 		},
+		{
+			name: "get binary state",
+			fields: fields{
+				statusRequestType: StatusRequestTypeBinaryState,
+				application:       readWriteModel.ApplicationIdContainer_HEATING_88,
+			},
+			want: "status/binary/HEATING_88",
+		},
+		{
+			name: "get level",
+			fields: fields{
+				statusRequestType: StatusRequestTypeLevel,
+				application:       readWriteModel.ApplicationIdContainer_HEATING_88,
+			},
+			want: "status/level/HEATING_88",
+		},
+		{
+			name: "get level with label",
+			fields: fields{
+				statusRequestType: StatusRequestTypeLevel,
+				application:       readWriteModel.ApplicationIdContainer_HEATING_88,
+				startingGroupAddressLabel: func() *byte {
+					label := byte(5)
+					return &label
+				}(),
+			},
+			want: "status/level=0x5/HEATING_88",
+		},
+		{
+			name: "invalid",
+			fields: fields{
+				statusRequestType: 255,
+			},
+			want: "status/invalid/RESERVED_00",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -2239,8 +2415,15 @@ func Test_statusTag_GetArrayInfo(t *testing.T) {
 		{
 			name: "get empty array info",
 			want: []apiModel.ArrayInfo{
-				model.DefaultArrayInfo{},
+				spiModel.DefaultArrayInfo{},
 			},
+		},
+		{
+			name: "one element",
+			fields: fields{
+				numElements: 1,
+			},
+			want: []apiModel.ArrayInfo{},
 		},
 	}
 	for _, tt := range tests {
@@ -2484,6 +2667,32 @@ func Test_statusTag_SerializeWithWriteBuffer(t *testing.T) {
 	}{
 		{
 			name: "serialize empty",
+			args: args{
+				ctx:         context.Background(),
+				writeBuffer: utils.NewWriteBufferByteBased(),
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			name: "Serialize with bridge",
+			fields: fields{
+				bridgeAddresses: []readWriteModel.BridgeAddress{
+					readWriteModel.NewBridgeAddress(1),
+					readWriteModel.NewBridgeAddress(2),
+					readWriteModel.NewBridgeAddress(3),
+					readWriteModel.NewBridgeAddress(4),
+					readWriteModel.NewBridgeAddress(5),
+					readWriteModel.NewBridgeAddress(6),
+				},
+				tagType:           0,
+				statusRequestType: 0,
+				startingGroupAddressLabel: func() *byte {
+					label := byte(4)
+					return &label
+				}(),
+				application: 0,
+				numElements: 0,
+			},
 			args: args{
 				ctx:         context.Background(),
 				writeBuffer: utils.NewWriteBufferByteBased(),
