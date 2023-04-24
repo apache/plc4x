@@ -525,6 +525,7 @@
             <configuration>
               <buildFlags>
                 <flag>-v</flag>
+                <flag>-coverprofile=target/coverage.out</flag>
               </buildFlags>
               <outLogFile>test-out-verbose.log</outLogFile>
               <ignoreErrorExitCode>true</ignoreErrorExitCode>
