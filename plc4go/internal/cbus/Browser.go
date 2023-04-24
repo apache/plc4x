@@ -213,23 +213,6 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 		} else {
 			blockStart = int(blockStartValue.GetByte())
 		}
-		switch blockStart {
-		case 88:
-			select {
-			case blockOffset88ReceivedChan <- true:
-			default:
-			}
-		case 176:
-			select {
-			case blockOffset176ReceivedChan <- true:
-			default:
-			}
-		case 0:
-			select {
-			case blockOffset0ReceivedChan <- true:
-			default:
-			}
-		}
 
 		if plcListValue := rootStruct["values"]; plcListValue == nil || !plcListValue.IsList() {
 			log.Warn().Msgf("Ignoring %v should contain a values tag of type list", rootStruct)
@@ -250,6 +233,24 @@ func (m Browser) getInstalledUnitAddressBytes(ctx context.Context) (map[byte]any
 				case readWriteModel.GAVState_ERROR.PLC4XEnumName():
 					log.Warn().Msgf("unit %d is in error state", unitByteAddress)
 				}
+			}
+		}
+		// We notify here so we don't exit to early
+		switch blockStart {
+		case 88:
+			select {
+			case blockOffset88ReceivedChan <- true:
+			default:
+			}
+		case 176:
+			select {
+			case blockOffset176ReceivedChan <- true:
+			default:
+			}
+		case 0:
+			select {
+			case blockOffset0ReceivedChan <- true:
+			default:
 			}
 		}
 	})
