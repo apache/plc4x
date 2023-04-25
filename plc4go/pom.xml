@@ -35,8 +35,18 @@
 
   <properties>
     <!-- Tell Sonar where to find the sources -->
-    <sonar.sources>examples,internal,pkg,protocols,spi,tests,tools</sonar.sources>
+    <sonar.sources>.</sonar.sources>
+    <sonar.inclusions>**</sonar.inclusions>
+    <sonar.exclusions>target</sonar.exclusions>
+
+    <sonar.tests>.</sonar.tests>
+    <sonar.test.inclusions>**/*_test.go</sonar.test.inclusions>
+    <sonar.coverage.exclusions>**/*_test.go</sonar.coverage.exclusions>
+
+    <sonar.go.exclusions>**/vendor/**,**/*_mock.go</sonar.go.exclusions>
+    <!-- TODO: add json output to sonar.go.tests.reportPaths=${project.basedir}/target/go-test-report.out-->
     <sonar.go.coverage.reportPaths>${project.basedir}/target/coverage.out</sonar.go.coverage.reportPaths>
+
     <maven.install.skip>true</maven.install.skip>
     <!-- The deploy-goal of the go plugin uses go install to install the result, unfortunately disabling the deploy, disables the go install. -->
     <!--maven.deploy.skip>true</maven.deploy.skip-->
