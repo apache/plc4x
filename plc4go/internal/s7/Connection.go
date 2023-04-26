@@ -32,7 +32,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
 	internalModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/plcerrors"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 )
@@ -160,7 +160,7 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 		return nil
 	}, func(err error) error {
 		// If this is a timeout, do a check if the connection requires a reconnection
-		if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+		if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 			log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 			m.Close()
 		}
@@ -201,7 +201,7 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 			return nil
 		}, func(err error) error {
 			// If this is a timeout, do a check if the connection requires a reconnection
-			if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+			if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 				log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 				m.Close()
 			}
@@ -261,7 +261,7 @@ func (m *Connection) setupConnection(ctx context.Context, ch chan plc4go.PlcConn
 				return nil
 			}, func(err error) error {
 				// If this is a timeout, do a check if the connection requires a reconnection
-				if _, isTimeout := err.(plcerrors.TimeoutError); isTimeout {
+				if _, isTimeout := err.(utils.TimeoutError); isTimeout {
 					log.Warn().Msg("Timeout during Connection establishing, closing channel...")
 					m.Close()
 				}

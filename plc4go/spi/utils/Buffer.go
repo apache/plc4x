@@ -42,14 +42,8 @@ func WithRenderAsList(renderAsList bool) WithReaderWriterArgs {
 //
 
 type readerWriterArg struct {
-}
-
-func (_ readerWriterArg) isWriterArgs() bool {
-	return true
-}
-
-func (_ readerWriterArg) isReaderArgs() bool {
-	return true
+	readerArg
+	writerArg
 }
 
 type withAdditionalStringRepresentation struct {

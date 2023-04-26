@@ -230,6 +230,41 @@ func TestNewFixedSizeExecutor(t *testing.T) {
 	}
 }
 
+func TestNewDynamicExecutor(t *testing.T) {
+	type args struct {
+		numberOfWorkers int
+		queueDepth      int
+		options         []ExecutorOption
+	}
+	tests := []struct {
+		name              string
+		args              args
+		executorValidator func(*testing.T, *executor) bool
+	}{
+		{
+			name: "new Executor",
+			args: args{
+				numberOfWorkers: 13,
+				queueDepth:      14,
+				options:         nil,
+			},
+			executorValidator: func(t *testing.T, e *executor) bool {
+				assert.False(t, e.running)
+				assert.False(t, e.shutdown)
+				assert.Len(t, e.worker, 1)
+				assert.Equal(t, cap(e.queue), 14)
+				return true
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fixedSizeExecutor := NewDynamicExecutor(tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options...)
+			assert.True(t, tt.executorValidator(t, fixedSizeExecutor.(*executor)), "NewFixedSizeExecutor(%v, %v, %v)", tt.args.numberOfWorkers, tt.args.queueDepth, tt.args.options)
+		})
+	}
+}
+
 func TestWithExecutorOptionTracerWorkers(t *testing.T) {
 	type args struct {
 		traceWorkers bool

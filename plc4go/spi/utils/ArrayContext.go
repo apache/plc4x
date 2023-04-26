@@ -55,7 +55,3 @@ func GetLastItemFromContext(ctx context.Context) bool {
 	info := ctx.Value(keyArrayInfo).(arrayInfo)
 	return info.curItem == (info.numItems - 1)
 }
-
-func Dummy() {
-	// TODO: Just needed to be able to always import this package.
-}

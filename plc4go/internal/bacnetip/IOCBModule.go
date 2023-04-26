@@ -22,12 +22,12 @@ package bacnetip
 import (
 	"container/heap"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/plcerrors"
+	"sync"
+	"time"
+
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
-	"sync"
-	"time"
 )
 
 var stateLog = log.Logger
@@ -245,7 +245,7 @@ func (i *IOCB) SetTimeout(delay time.Duration) {
 		go func() {
 			select {
 			case timeout := <-i.ioTimeout.C:
-				_ = i.Abort(plcerrors.NewTimeoutError(now.Sub(timeout)))
+				_ = i.Abort(utils.NewTimeoutError(now.Sub(timeout)))
 			case <-i.ioTimoutCancel:
 			}
 		}()

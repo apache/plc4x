@@ -30,7 +30,6 @@ import (
 
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/plcerrors"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -212,7 +211,7 @@ func (m *defaultCodec) TimeoutExpectations(now time.Time) {
 			i--
 			// Call the error handler.
 			go func(expectation spi.Expectation) {
-				if err := expectation.GetHandleError()(plcerrors.NewTimeoutError(now.Sub(expectation.GetExpiration()))); err != nil {
+				if err := expectation.GetHandleError()(utils.NewTimeoutError(now.Sub(expectation.GetExpiration()))); err != nil {
 					log.Error().Err(err).Msg("Got an error handling error on expectation")
 				}
 			}(expectation)
