@@ -20,7 +20,7 @@
 package simulated
 
 import (
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"
@@ -56,7 +56,7 @@ func TestNewSimulatedField(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewSimulatedTag(tt.args.fieldType, tt.args.name, tt.args.dataTypeSize, tt.args.quantity); !reflect.DeepEqual(got, tt.want) {
+			if got := NewSimulatedTag(tt.args.fieldType, tt.args.name, tt.args.dataTypeSize, tt.args.quantity); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewSimulatedTag() = %v, want %v", got, tt.want)
 			}
 		})

@@ -20,7 +20,7 @@
 package simulated
 
 import (
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"testing"
 
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -95,7 +95,7 @@ func TestDevice_Get(t1 *testing.T) {
 			} else {
 				log.Debug().Msg("Result: nil")
 			}
-			if tt.args.verifyOutput && !reflect.DeepEqual(got, tt.want) {
+			if tt.args.verifyOutput && !assert.Equal(t1, tt.want, got) {
 				t1.Errorf("Get() = %v, want %v", got, tt.want)
 			}
 		})
@@ -257,7 +257,7 @@ func TestDevice_getRandomValue(t1 *testing.T) {
 				Name:  tt.fields.Name,
 				State: tt.fields.State,
 			}
-			if got := t.getRandomValue(tt.args.field); !reflect.DeepEqual(got, tt.want) {
+			if got := t.getRandomValue(tt.args.field); !assert.Equal(t1, tt.want, got) {
 				t1.Errorf("getRandomValue() = %v, want %v", got, tt.want)
 			}
 		})
@@ -277,7 +277,7 @@ func TestNewDevice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewDevice(tt.args.name); !reflect.DeepEqual(got, tt.want) {
+			if got := NewDevice(tt.args.name); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewDevice() = %v, want %v", got, tt.want)
 			}
 		})

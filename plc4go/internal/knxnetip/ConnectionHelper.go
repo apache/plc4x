@@ -180,7 +180,6 @@ func (m *Connection) removeSubscriber(subscriber *Subscriber) {
 	}
 }
 
-// TODO: we can replace this with reflect.DeepEqual()
 func (m *Connection) sliceEqual(a, b []byte) bool {
 	if len(a) != len(b) {
 		return false

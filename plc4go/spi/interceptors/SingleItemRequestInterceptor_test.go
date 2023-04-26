@@ -26,7 +26,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/stretchr/testify/assert"
-	"reflect"
 	"testing"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
@@ -51,7 +50,7 @@ func TestNewSingleItemRequestInterceptor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewSingleItemRequestInterceptor(tt.args.readRequestFactory, tt.args.writeRequestFactory, tt.args.readResponseFactory, tt.args.writeResponseFactory); !reflect.DeepEqual(got, tt.want) {
+			if got := NewSingleItemRequestInterceptor(tt.args.readRequestFactory, tt.args.writeRequestFactory, tt.args.readResponseFactory, tt.args.writeResponseFactory); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewSingleItemRequestInterceptor() = %v, want %v", got, tt.want)
 			}
 		})
@@ -350,7 +349,7 @@ func TestSingleItemRequestInterceptor_InterceptWriteRequest(t *testing.T) {
 				readResponseFactory:  tt.fields.readResponseFactory,
 				writeResponseFactory: tt.fields.writeResponseFactory,
 			}
-			if got := m.InterceptWriteRequest(tt.args.ctx, tt.args.writeRequest); !reflect.DeepEqual(got, tt.want) {
+			if got := m.InterceptWriteRequest(tt.args.ctx, tt.args.writeRequest); !assert.Equal(t, tt.want, got) {
 				t.Errorf("InterceptWriteRequest() = %v, want %v", got, tt.want)
 			}
 		})
@@ -704,7 +703,7 @@ func TestSingleItemRequestInterceptor_ProcessWriteResponses(t *testing.T) {
 				readResponseFactory:  tt.fields.readResponseFactory,
 				writeResponseFactory: tt.fields.writeResponseFactory,
 			}
-			if got := m.ProcessWriteResponses(tt.args.ctx, tt.args.writeRequest, tt.args.writeResults); !reflect.DeepEqual(got, tt.want) {
+			if got := m.ProcessWriteResponses(tt.args.ctx, tt.args.writeRequest, tt.args.writeResults); !assert.Equal(t, tt.want, got) {
 				t.Errorf("ProcessWriteResponses() = %v, want %v", got, tt.want)
 			}
 		})
@@ -762,7 +761,7 @@ func Test_interceptedPlcReadRequestResult_GetRequest(t *testing.T) {
 				Response: tt.fields.Response,
 				Err:      tt.fields.Err,
 			}
-			if got := d.GetRequest(); !reflect.DeepEqual(got, tt.want) {
+			if got := d.GetRequest(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetRequest() = %v, want %v", got, tt.want)
 			}
 		})
@@ -791,7 +790,7 @@ func Test_interceptedPlcReadRequestResult_GetResponse(t *testing.T) {
 				Response: tt.fields.Response,
 				Err:      tt.fields.Err,
 			}
-			if got := d.GetResponse(); !reflect.DeepEqual(got, tt.want) {
+			if got := d.GetResponse(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetResponse() = %v, want %v", got, tt.want)
 			}
 		})
@@ -849,7 +848,7 @@ func Test_interceptedPlcWriteRequestResult_GetRequest(t *testing.T) {
 				Response: tt.fields.Response,
 				Err:      tt.fields.Err,
 			}
-			if got := d.GetRequest(); !reflect.DeepEqual(got, tt.want) {
+			if got := d.GetRequest(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetRequest() = %v, want %v", got, tt.want)
 			}
 		})
@@ -878,7 +877,7 @@ func Test_interceptedPlcWriteRequestResult_GetResponse(t *testing.T) {
 				Response: tt.fields.Response,
 				Err:      tt.fields.Err,
 			}
-			if got := d.GetResponse(); !reflect.DeepEqual(got, tt.want) {
+			if got := d.GetResponse(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetResponse() = %v, want %v", got, tt.want)
 			}
 		})

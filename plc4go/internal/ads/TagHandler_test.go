@@ -20,7 +20,7 @@
 package ads
 
 import (
-	"reflect"
+	"github.com/stretchr/testify/assert"
 	"regexp"
 	"testing"
 
@@ -407,7 +407,7 @@ func TestTagHandler_ParseQuery(t *testing.T) {
 				t.Errorf("ParseQuery() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("ParseQuery() got = %v, want %v", got, tt.want)
 			}
 		})

@@ -22,9 +22,9 @@ package utils
 import (
 	"encoding/binary"
 	"github.com/icza/bitio"
+	"github.com/stretchr/testify/assert"
 	"math"
 	"math/big"
-	"reflect"
 	"testing"
 )
 
@@ -41,7 +41,7 @@ func TestNewReadBuffer(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewReadBufferByteBased(tt.args.data); !reflect.DeepEqual(got, tt.want) {
+			if got := NewReadBufferByteBased(tt.args.data); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewReadBufferByteBased() = %v, want %v", got, tt.want)
 			}
 		})
@@ -70,7 +70,7 @@ func TestReadBuffer_GetBytes(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			if got := rb.GetBytes(); !reflect.DeepEqual(got, tt.want) {
+			if got := rb.GetBytes(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetBytes() = %v, want %v", got, tt.want)
 			}
 		})
@@ -233,7 +233,7 @@ func TestReadBuffer_ReadBigFloat(t *testing.T) {
 				t.Errorf("ReadBigFloat() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("ReadBigFloat() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -272,7 +272,7 @@ func TestReadBuffer_ReadBigInt(t *testing.T) {
 				t.Errorf("ReadBigInt() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("ReadBigInt() got = %v, want %v", got, tt.want)
 			}
 		})

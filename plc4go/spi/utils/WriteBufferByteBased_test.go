@@ -24,7 +24,6 @@ import (
 	"context"
 	"encoding/binary"
 	"math/big"
-	"reflect"
 	"testing"
 
 	"github.com/icza/bitio"
@@ -44,7 +43,7 @@ func TestNewWriteBufferByteBased(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewWriteBufferByteBased(tt.args.options...); !reflect.DeepEqual(got, tt.want) {
+			if got := NewWriteBufferByteBased(tt.args.options...); !assert.Equal(t, tt.want, got) {
 				t.Errorf("NewWriteBufferByteBased() = %v, want %v", got, tt.want)
 			}
 		})
@@ -64,7 +63,7 @@ func TestWithByteOrderForByteBasedBuffer(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := WithByteOrderForByteBasedBuffer(tt.args.byteOrder); !reflect.DeepEqual(got, tt.want) {
+			if got := WithByteOrderForByteBasedBuffer(tt.args.byteOrder); !assert.Equal(t, tt.want, got) {
 				//t.Errorf("WithByteOrderForByteBasedBuffer() = %v, want %v", got, tt.want)
 			}
 		})
@@ -84,7 +83,7 @@ func TestWithCustomBufferForByteBasedBuffer(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := WithCustomBufferForByteBasedBuffer(tt.args.buffer); !reflect.DeepEqual(got, tt.want) {
+			if got := WithCustomBufferForByteBasedBuffer(tt.args.buffer); !assert.Equal(t, tt.want, got) {
 				//	t.Errorf("WithCustomBufferForByteBasedBuffer() = %v, want %v", got, tt.want)
 			}
 		})
@@ -104,7 +103,7 @@ func TestWithInitialSizeForByteBasedBuffer(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := WithInitialSizeForByteBasedBuffer(tt.args.length); !reflect.DeepEqual(got, tt.want) {
+			if got := WithInitialSizeForByteBasedBuffer(tt.args.length); !assert.Equal(t, tt.want, got) {
 				//t.Errorf("WithInitialSizeForByteBasedBuffer() = %v, want %v", got, tt.want)
 			}
 		})
@@ -133,7 +132,7 @@ func Test_byteWriteBuffer_GetByteOrder(t *testing.T) {
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
-			if got := wb.GetByteOrder(); !reflect.DeepEqual(got, tt.want) {
+			if got := wb.GetByteOrder(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetByteOrder() = %v, want %v", got, tt.want)
 			}
 		})
@@ -162,7 +161,7 @@ func Test_byteWriteBuffer_GetBytes(t *testing.T) {
 				byteOrder: tt.fields.byteOrder,
 				pos:       tt.fields.pos,
 			}
-			if got := wb.GetBytes(); !reflect.DeepEqual(got, tt.want) {
+			if got := wb.GetBytes(); !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetBytes() = %v, want %v", got, tt.want)
 			}
 		})
