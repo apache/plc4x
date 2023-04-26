@@ -19,13 +19,12 @@
 
 package spi
 
-import "github.com/apache/plc4x/plc4go/pkg/api/model"
+import apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 
+// PlcTagHandler provides apiModel.PlcTag and apiModel.PlcQuery related methods
 type PlcTagHandler interface {
-
 	// ParseTag Parser function to parse tag address strings for a given driver and produce PlcTag instances from that
-	ParseTag(tagAddress string) (model.PlcTag, error)
-
+	ParseTag(tagAddress string) (apiModel.PlcTag, error)
 	// ParseQuery Parser function to parse query strings for a given driver and produce PlcTag instances from that
-	ParseQuery(query string) (model.PlcQuery, error)
+	ParseQuery(query string) (apiModel.PlcQuery, error)
 }

@@ -22,7 +22,6 @@ package cache
 import (
 	"github.com/apache/plc4x/plc4go/internal/simulated"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/stretchr/testify/assert"
 	"github.com/viney-shih/go-lock"
 	"testing"
@@ -50,7 +49,7 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 		if assert.NotNil(t, connectionResult) {
 			assert.Nil(t, connectionResult.GetErr())
 			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection().(spi.PlcConnection)
+				connection := connectionResult.GetConnection().(tracedPlcConnection)
 				assert.True(t, connection.IsTraceEnabled())
 				connection.BlockingClose()
 				func() {
@@ -76,7 +75,7 @@ func TestLeasedPlcConnection_IsTraceEnabled(t *testing.T) {
 		if assert.NotNil(t, connectionResult) {
 			assert.Nil(t, connectionResult.GetErr())
 			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection().(spi.PlcConnection)
+				connection := connectionResult.GetConnection().(tracedPlcConnection)
 				assert.False(t, connection.IsTraceEnabled())
 				connection.BlockingClose()
 				func() {
@@ -117,7 +116,7 @@ func TestLeasedPlcConnection_GetTracer(t *testing.T) {
 		if assert.NotNil(t, connectionResult) {
 			assert.Nil(t, connectionResult.GetErr())
 			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection().(spi.PlcConnection)
+				connection := connectionResult.GetConnection().(tracedPlcConnection)
 				assert.NotNil(t, connection.GetTracer())
 				connection.BlockingClose()
 				func() {
@@ -158,7 +157,7 @@ func TestLeasedPlcConnection_GetConnectionId(t *testing.T) {
 		if assert.NotNil(t, connectionResult) {
 			assert.Nil(t, connectionResult.GetErr())
 			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection().(spi.PlcConnection)
+				connection := connectionResult.GetConnection().(tracedPlcConnection)
 				assert.Greater(t, len(connection.GetConnectionId()), 0)
 				connection.BlockingClose()
 				func() {
@@ -199,7 +198,7 @@ func TestLeasedPlcConnection_Connect(t *testing.T) {
 		if assert.NotNil(t, connectionResult) {
 			assert.Nil(t, connectionResult.GetErr())
 			if assert.NotNil(t, connectionResult.GetConnection()) {
-				connection := connectionResult.GetConnection().(spi.PlcConnection)
+				connection := connectionResult.GetConnection().(tracedPlcConnection)
 				func() {
 					defer func() {
 						if r := recover(); r != nil {

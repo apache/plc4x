@@ -22,10 +22,10 @@ package cbus
 import (
 	"context"
 	"fmt"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/transports"
@@ -45,7 +45,7 @@ func TestNewBrowser(t *testing.T) {
 func TestBrowser_BrowseQuery(t *testing.T) {
 	type fields struct {
 		DefaultBrowser  _default.DefaultBrowser
-		connection      spi.PlcConnection
+		connection      plc4go.PlcConnection
 		sequenceCounter uint8
 	}
 	type args struct {
@@ -69,7 +69,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 			name: "non responding browse",
 			fields: fields{
 				DefaultBrowser: nil,
-				connection: func() spi.PlcConnection {
+				connection: func() plc4go.PlcConnection {
 					transport := test.NewTransport()
 					transportUrl := url.URL{Scheme: "test"}
 					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
@@ -145,8 +145,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 						t.FailNow()
 						return nil
 					}
-					connection := connectionConnectResult.GetConnection()
-					return connection.(spi.PlcConnection)
+					return connectionConnectResult.GetConnection()
 				}(),
 				sequenceCounter: 0,
 			},
@@ -189,7 +188,7 @@ func TestBrowser_BrowseQuery(t *testing.T) {
 func TestBrowser_extractUnits(t *testing.T) {
 	type fields struct {
 		DefaultBrowser  _default.DefaultBrowser
-		connection      spi.PlcConnection
+		connection      plc4go.PlcConnection
 		sequenceCounter uint8
 	}
 	type args struct {
@@ -262,7 +261,7 @@ func TestBrowser_extractUnits(t *testing.T) {
 func TestBrowser_extractAttributes(t *testing.T) {
 	type fields struct {
 		DefaultBrowser  _default.DefaultBrowser
-		connection      spi.PlcConnection
+		connection      plc4go.PlcConnection
 		sequenceCounter uint8
 	}
 	type args struct {
@@ -312,7 +311,7 @@ func TestBrowser_extractAttributes(t *testing.T) {
 func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 	type fields struct {
 		DefaultBrowser  _default.DefaultBrowser
-		connection      spi.PlcConnection
+		connection      plc4go.PlcConnection
 		sequenceCounter uint8
 	}
 	type args struct {
@@ -329,7 +328,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 			name: "get units",
 			fields: fields{
 				DefaultBrowser: nil,
-				connection: func() spi.PlcConnection {
+				connection: func() plc4go.PlcConnection {
 					transport := test.NewTransport()
 					transportUrl := url.URL{Scheme: "test"}
 					transportInstance, err := transport.CreateTransportInstance(transportUrl, nil)
@@ -400,8 +399,7 @@ func TestBrowser_getInstalledUnitAddressBytes(t *testing.T) {
 						t.FailNow()
 						return nil
 					}
-					connection := connectionConnectResult.GetConnection()
-					return connection.(spi.PlcConnection)
+					return connectionConnectResult.GetConnection()
 				}(),
 				sequenceCounter: 0,
 			},

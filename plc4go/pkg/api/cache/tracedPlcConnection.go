@@ -17,16 +17,17 @@
  * under the License.
  */
 
-package spi
+package cache
 
 import (
 	"github.com/apache/plc4x/plc4go/pkg/api"
+	"github.com/apache/plc4x/plc4go/spi"
 )
 
-type PlcConnection interface {
+type tracedPlcConnection interface {
 	plc4go.PlcConnection
 
 	GetConnectionId() string
 	IsTraceEnabled() bool
-	GetTracer() *Tracer
+	GetTracer() *spi.Tracer
 }

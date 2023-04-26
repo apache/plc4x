@@ -23,7 +23,6 @@ import (
 	"fmt"
 	"github.com/apache/plc4x/plc4go/internal/simulated"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
@@ -38,7 +37,7 @@ func Test_connectionContainer_String(t1 *testing.T) {
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
 		tracerEnabled    bool
-		connection       spi.PlcConnection
+		connection       tracedPlcConnection
 		leaseCounter     uint32
 		closed           bool
 		state            cachedPlcConnectionState
@@ -79,7 +78,7 @@ func Test_connectionContainer_addListener(t1 *testing.T) {
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
 		tracerEnabled    bool
-		connection       spi.PlcConnection
+		connection       tracedPlcConnection
 		leaseCounter     uint32
 		closed           bool
 		state            cachedPlcConnectionState
@@ -123,7 +122,7 @@ func Test_connectionContainer_connect(t1 *testing.T) {
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
 		tracerEnabled    bool
-		connection       spi.PlcConnection
+		connection       tracedPlcConnection
 		leaseCounter     uint32
 		closed           bool
 		state            cachedPlcConnectionState
@@ -176,7 +175,7 @@ func Test_connectionContainer_lease(t1 *testing.T) {
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
 		tracerEnabled    bool
-		connection       spi.PlcConnection
+		connection       tracedPlcConnection
 		leaseCounter     uint32
 		closed           bool
 		state            cachedPlcConnectionState
@@ -231,7 +230,7 @@ func Test_connectionContainer_returnConnection(t1 *testing.T) {
 		connectionString string
 		driverManager    plc4go.PlcDriverManager
 		tracerEnabled    bool
-		connection       spi.PlcConnection
+		connection       tracedPlcConnection
 		leaseCounter     uint32
 		closed           bool
 		state            cachedPlcConnectionState

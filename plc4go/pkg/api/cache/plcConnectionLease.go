@@ -36,10 +36,10 @@ type plcConnectionLease struct {
 	// Counter for the number of times this connection has been used before.
 	leaseId uint32
 	// The actual connection being cached.
-	connection spi.PlcConnection
+	connection tracedPlcConnection
 }
 
-func newPlcConnectionLease(connectionContainer *connectionContainer, leaseId uint32, connection spi.PlcConnection) *plcConnectionLease {
+func newPlcConnectionLease(connectionContainer *connectionContainer, leaseId uint32, connection tracedPlcConnection) *plcConnectionLease {
 	p := &plcConnectionLease{
 		connectionContainer: connectionContainer,
 		leaseId:             leaseId,

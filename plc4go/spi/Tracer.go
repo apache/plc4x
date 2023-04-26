@@ -99,31 +99,29 @@ func (t *Tracer) AddTransactionalTrace(transactionId string, operation string, m
 
 func (t *Tracer) FilterTraces(traces []TraceEntry, connectionIdFilter string, transactionIdFilter string, operationFilter string, messageFilter string) []TraceEntry {
 	var result []TraceEntry
+traceFiltering:
 	for _, trace := range traces {
-		matches := true
 		if connectionIdFilter != "" {
 			if trace.ConnectionId != connectionIdFilter {
-				matches = false
+				continue traceFiltering
 			}
 		}
-		if matches && transactionIdFilter != "" {
+		if transactionIdFilter != "" {
 			if trace.TransactionId != transactionIdFilter {
-				matches = false
+				continue traceFiltering
 			}
 		}
-		if matches && operationFilter != "" {
+		if operationFilter != "" {
 			if trace.Operation != operationFilter {
-				matches = false
+				continue traceFiltering
 			}
 		}
-		if matches && messageFilter != "" {
+		if messageFilter != "" {
 			if trace.Message != messageFilter {
-				matches = false
+				continue traceFiltering
 			}
 		}
-		if matches {
-			result = append(result, trace)
-		}
+		result = append(result, trace)
 	}
 	return result
 }

@@ -22,7 +22,6 @@ package cache
 import (
 	"fmt"
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
-	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -35,7 +34,7 @@ type connectionContainer struct {
 	connectionString string
 	driverManager    plc4go.PlcDriverManager
 	tracerEnabled    bool
-	connection       spi.PlcConnection
+	connection       tracedPlcConnection
 	leaseCounter     uint32
 	closed           bool
 	// The current state of this connection.
@@ -102,8 +101,8 @@ func (t *connectionContainer) connect() {
 
 	t.cacheLog.Debug().Str("connectionString", t.connectionString).Msg("Successfully connected new cached connection.")
 	// Inject the real connection into the container.
-	if connection, ok := connectionResult.GetConnection().(spi.PlcConnection); !ok {
-		panic("Return connection doesn't implement the spi.PlcConnection interface")
+	if connection, ok := connectionResult.GetConnection().(tracedPlcConnection); !ok {
+		panic("Return connection doesn't implement the cache.tracedPlcConnection interface")
 	} else {
 		t.connection = connection
 	}

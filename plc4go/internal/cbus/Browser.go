@@ -22,12 +22,12 @@ package cbus
 import (
 	"context"
 	"fmt"
+	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	"time"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 
@@ -37,11 +37,11 @@ import (
 
 type Browser struct {
 	_default.DefaultBrowser
-	connection      spi.PlcConnection
+	connection      plc4go.PlcConnection
 	sequenceCounter uint8
 }
 
-func NewBrowser(connection spi.PlcConnection) *Browser {
+func NewBrowser(connection plc4go.PlcConnection) *Browser {
 	browser := Browser{
 		connection:      connection,
 		sequenceCounter: 0,
