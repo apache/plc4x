@@ -136,14 +136,11 @@ func (r *requestTransactionManager) SetNumberOfConcurrentRequests(numberOfConcur
 	r.processWorklog()
 }
 
-func (r *requestTransactionManager) submitHandle(handle *requestTransaction) {
-	if handle.operation == nil {
-		panic("invalid handle")
-	}
-	// Add this Request with this handle i the Worklog
+func (r *requestTransactionManager) submitTransaction(transaction *requestTransaction) {
+	// Add this Request with this transaction i the Worklog
 	// Put Transaction into Worklog
 	r.workLogMutex.Lock()
-	r.workLog.PushFront(handle)
+	r.workLog.PushFront(transaction)
 	r.workLogMutex.Unlock()
 	// Try to Process the Worklog
 	r.processWorklog()
@@ -155,9 +152,6 @@ func (r *requestTransactionManager) processWorklog() {
 	log.Debug().Msgf("Processing work log with size of %d (%d concurrent requests allowed)", r.workLog.Len(), r.numberOfConcurrentRequests)
 	for len(r.runningRequests) < r.numberOfConcurrentRequests && r.workLog.Len() > 0 {
 		front := r.workLog.Front()
-		if front == nil {
-			return
-		}
 		next := front.Value.(*requestTransaction)
 		log.Debug().Msgf("Handling next %v. (Adding to running requests (length: %d))", next, len(r.runningRequests))
 		r.runningRequests = append(r.runningRequests, next)
@@ -232,7 +226,7 @@ func (t *requestTransaction) EndRequest() error {
 
 func (t *requestTransaction) Submit(operation utils.Runnable) {
 	if t.operation != nil {
-		panic("Operation already set")
+		log.Warn().Msg("Operation already set")
 	}
 	t.transactionLog.Trace().Msgf("Submission of transaction %d", t.transactionId)
 	t.operation = func() {
@@ -240,12 +234,13 @@ func (t *requestTransaction) Submit(operation utils.Runnable) {
 		operation()
 		t.transactionLog.Trace().Msgf("Completed execution of transaction %d", t.transactionId)
 	}
-	t.parent.submitHandle(t)
+	t.parent.submitTransaction(t)
 }
 
 func (t *requestTransaction) AwaitCompletion(ctx context.Context) error {
 	for t.completionFuture == nil {
 		time.Sleep(time.Millisecond * 10)
+		// TODO: this should timeout and not loop infinite...
 	}
 	if err := t.completionFuture.AwaitCompletion(ctx); err != nil {
 		return err
