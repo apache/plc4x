@@ -1890,7 +1890,7 @@
           <plugin>
             <groupId>org.cyclonedx</groupId>
             <artifactId>cyclonedx-maven-plugin</artifactId>
-            <version>2.7.7</version>
+            <version>2.7.8</version>
             <!-- Only run this in the root module of the project -->
             <inherited>false</inherited>
             <configuration>
